@@ -1,18 +1,11 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/supabase/server"
 import { uploadFile, checkFileQuota } from "@/lib/blob-storage"
+import { withAuth } from "@/lib/auth-utils"
 
-export async function POST(request: NextRequest) {
+export const POST = withAuth(async (request: NextRequest, user) => {
   try {
     const supabase = await createClient()
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
-
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
 
     const formData = await request.formData()
     const file = formData.get("file") as File
@@ -73,19 +66,11 @@ export async function POST(request: NextRequest) {
     console.error("Upload error:", error)
     return NextResponse.json({ error: "Failed to upload file" }, { status: 500 })
   }
-}
+})
 
-export async function GET(request: NextRequest) {
+export const GET = withAuth(async (request: NextRequest, user) => {
   try {
     const supabase = await createClient()
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
-
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
 
     // Get user's files from database
     const { data: files, error } = await supabase
@@ -113,4 +98,4 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching files:", error)
     return NextResponse.json({ error: "Failed to fetch files" }, { status: 500 })
   }
-}
+})

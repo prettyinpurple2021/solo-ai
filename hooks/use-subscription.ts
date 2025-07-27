@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { useAuth } from "./use-auth"
+import { useAsyncState } from "./use-async-state"
 
 export interface Subscription {
   id: string
@@ -68,15 +69,13 @@ export const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
 ]
 
 export function useSubscription() {
-  const [subscription, setSubscription] = useState<Subscription | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { data: subscription, loading, error, setData, setLoading, setError } = useAsyncState<Subscription>()
   const { user } = useAuth()
   const supabase = createClient()
 
   useEffect(() => {
     if (!user) {
-      setSubscription(null)
+      setData(null)
       setLoading(false)
       return
     }
@@ -97,7 +96,7 @@ export function useSubscription() {
           throw fetchError
         }
 
-        setSubscription(data || null)
+        setData(data || null)
       } catch (err: any) {
         console.error("Error fetching subscription:", err)
         setError(err.message)
