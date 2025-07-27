@@ -92,7 +92,6 @@ export const getTierFromPriceId = (priceId: string): SubscriptionTier => {
   }
   return "launchpad"
 }
-}
 
 export const getURL = () => {
   let url = process.env.NEXT_PUBLIC_APP_URL ?? "https://v0-solo-boss-ai.vercel.app/"
