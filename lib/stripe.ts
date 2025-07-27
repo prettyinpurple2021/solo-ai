@@ -52,7 +52,7 @@ export const TIER_FEATURES = {
   dominator: {
     name: "Dominator Empire",
     price: 49,
-    priceId: process.env.STRIPE_DOMINATOR_PRICE_ID || "price_dominator_placeholder",
+    priceId: process.env.STRIPE_DOMINATOR_PRICE_ID_MONTHLY || "price_dominator_placeholder",
     features: [
       "Everything in Pro",
       "Unlimited Storage",
