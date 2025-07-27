@@ -1,8 +1,9 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { stripe, getURL } from "@/lib/stripe"
 import { createClient } from "@/lib/supabase/server"
+import { withAuth } from "@/lib/auth-utils"
 
-export async function POST(req: NextRequest) {
+export const POST = withAuth(async (req: NextRequest, user) => {
   try {
     if (!stripe) {
       return NextResponse.json({ error: "Stripe is not configured" }, { status: 500 })
@@ -15,14 +16,6 @@ export async function POST(req: NextRequest) {
     }
 
     const supabase = await createClient()
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser()
-
-    if (authError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
-    }
 
     // Get user profile
     const { data: profile, error: profileError } = await supabase
@@ -75,4 +68,4 @@ export async function POST(req: NextRequest) {
     console.error("Error creating checkout session:", error)
     return NextResponse.json({ error: "Failed to create checkout session" }, { status: 500 })
   }
-}
+})
