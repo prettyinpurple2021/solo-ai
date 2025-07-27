@@ -13,18 +13,18 @@ export class WindowsTerminal {
     console.log('Terminal initialized on process:', process.pid);
   }
 
-  // Parameter 'callback' implicitly has 'any' type
-  start(callback) {
+  // Add explicit type for callback parameter
+  start(callback: () => void) {
     this.server.listen(8080, callback);
   }
 
-  // Parameter 'handler' implicitly has 'any' type
-  onConnection(handler) {
+  // Add explicit type for handler parameter
+  onConnection(handler: (socket: net.Socket) => void) {
     this.server.on('connection', handler);
   }
 
-  // Parameter 'errorHandler' implicitly has 'any' type
-  onError(errorHandler) {
+  // Add explicit type for errorHandler parameter
+  onError(errorHandler: (err: Error) => void) {
     this.server.on('error', errorHandler);
   }
 }
