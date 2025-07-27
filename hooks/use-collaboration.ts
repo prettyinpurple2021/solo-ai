@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useAsyncState } from "./use-async-state"
 import type { CollaborationTask, AgentHandoff } from "@/lib/agent-collaboration"
 
 interface CollaborationResult {
@@ -9,8 +9,7 @@ interface CollaborationResult {
 }
 
 export function useCollaboration() {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const { loading, error, setLoading, setError } = useAsyncState()
 
   const createTask = async (workflowType: string, customization?: any): Promise<CollaborationTask | null> => {
     setLoading(true)
