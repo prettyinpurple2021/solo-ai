@@ -13,7 +13,7 @@
     "@ai-sdk/google": "^0.0.52",
     "@ai-sdk/openai": "latest",
     "@emotion/is-prop-valid": "latest",
-    "@hookform/resolvers": "^3.9.0",
+    "@hookform/resolvers": "^3.9.1",
     "@jest/globals": "latest",
     "@radix-ui/react-accordion": "latest",
     "@radix-ui/react-alert-dialog": "latest",

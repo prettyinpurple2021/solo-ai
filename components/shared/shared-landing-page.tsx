@@ -3,15 +3,15 @@
 import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Menu, X, Star, Sparkles, Brain, Target, Rocket, Heart, Crown, Gem } from "lucide-react"
+import { Menu, X, Star, Sparkles, Brain, Zap, Shield, Users } from "lucide-react"
 
 interface SharedLandingPageProps {
   showAuthModal?: boolean
   onShowAuthModal?: () => void
-  styleVariant?: "default" | "premium"
+  styleVariant?: "default" | "minimal"
 }
 
 export function SharedLandingPage({
@@ -23,94 +23,94 @@ export function SharedLandingPage({
 
   const features = [
     {
-      icon: <Brain className="h-8 w-8" />,
-      title: "AI-Powered Intelligence",
-      description: "Advanced AI agents that understand your business needs and adapt to your workflow.",
+      icon: Brain,
+      title: "AI-Powered Insights",
+      description: "Get personalized recommendations and insights powered by advanced AI technology.",
     },
     {
-      icon: <Target className="h-8 w-8" />,
-      title: "Precision Focus",
-      description: "Stay laser-focused on what matters most with intelligent task prioritization.",
+      icon: Zap,
+      title: "Lightning Fast",
+      description: "Experience blazing-fast performance with our optimized AI processing engine.",
     },
     {
-      icon: <Rocket className="h-8 w-8" />,
-      title: "Accelerated Growth",
-      description: "Scale your business faster with AI-driven insights and automation.",
+      icon: Shield,
+      title: "Secure & Private",
+      description: "Your data is protected with enterprise-grade security and privacy measures.",
     },
     {
-      icon: <Crown className="h-8 w-8" />,
-      title: "Boss-Level Control",
-      description: "Maintain complete control while leveraging AI to amplify your capabilities.",
+      icon: Users,
+      title: "Team Collaboration",
+      description: "Work seamlessly with your team using our collaborative AI workspace.",
     },
   ]
 
   const aiAgents = [
     {
       name: "Roxy",
-      role: "Strategic Advisor",
+      role: "Creative Director",
       image: "/images/agents/roxy.png",
-      skills: ["Business Strategy", "Market Analysis", "Growth Planning"],
-      personality: "Bold and decisive, Roxy helps you make strategic decisions with confidence.",
+      skills: ["Brand Strategy", "Creative Campaigns", "Visual Design"],
+      personality: "Bold, innovative, and trend-setting",
     },
     {
       name: "Blaze",
-      role: "Marketing Maverick",
+      role: "Marketing Strategist",
       image: "/images/agents/blaze.png",
-      skills: ["Content Creation", "Social Media", "Brand Building"],
-      personality: "Creative and energetic, Blaze ignites your marketing campaigns.",
+      skills: ["Growth Hacking", "Social Media", "Content Strategy"],
+      personality: "Energetic, results-driven, and data-focused",
     },
     {
       name: "Echo",
-      role: "Communication Expert",
+      role: "Content Creator",
       image: "/images/agents/echo.png",
-      skills: ["Email Management", "Client Relations", "Team Communication"],
-      personality: "Articulate and diplomatic, Echo ensures your message resonates.",
+      skills: ["Copywriting", "Storytelling", "SEO Optimization"],
+      personality: "Articulate, creative, and audience-focused",
     },
     {
       name: "Lumi",
-      role: "Data Analyst",
+      role: "Analytics Expert",
       image: "/images/agents/lumi.png",
-      skills: ["Analytics", "Reporting", "Insights"],
-      personality: "Brilliant and analytical, Lumi illuminates patterns in your data.",
+      skills: ["Data Analysis", "Performance Tracking", "Insights"],
+      personality: "Analytical, precise, and insight-driven",
     },
     {
       name: "Vex",
-      role: "Problem Solver",
+      role: "Tech Innovator",
       image: "/images/agents/vex.png",
-      skills: ["Troubleshooting", "Process Optimization", "Innovation"],
-      personality: "Sharp and resourceful, Vex tackles complex challenges head-on.",
+      skills: ["Automation", "Integration", "Tech Solutions"],
+      personality: "Technical, innovative, and solution-oriented",
     },
     {
       name: "Lexi",
-      role: "Learning Specialist",
+      role: "Business Strategist",
       image: "/images/agents/lexi.png",
-      skills: ["Training", "Knowledge Management", "Skill Development"],
-      personality: "Patient and knowledgeable, Lexi accelerates your learning journey.",
+      skills: ["Business Planning", "Market Research", "Strategy"],
+      personality: "Strategic, analytical, and goal-oriented",
     },
   ]
 
   const testimonials = [
     {
-      name: "Sarah Chen",
+      name: "Sarah Johnson",
       role: "CEO, TechStart",
       content:
-        "SoloBoss AI transformed how I run my business. The AI agents feel like having a world-class team at my fingertips.",
+        "SoloBoss AI transformed how I run my business. The AI agents are like having a full team of experts at my fingertips.",
       rating: 5,
       avatar: "/placeholder-user.jpg",
     },
     {
-      name: "Marcus Rodriguez",
-      role: "Founder, Creative Studio",
+      name: "Marcus Chen",
+      role: "Freelance Designer",
       content:
-        "The strategic insights from Roxy and creative support from Blaze have doubled my revenue in just 6 months.",
+        "The creative insights from Roxy have elevated my design work to a whole new level. It's like having a creative director 24/7.",
       rating: 5,
       avatar: "/placeholder-user.jpg",
     },
     {
-      name: "Emily Watson",
-      role: "Solo Entrepreneur",
+      name: "Emily Rodriguez",
+      role: "Marketing Consultant",
       content:
-        "Finally, AI that actually understands my business. It's like having mentors, assistants, and advisors all in one.",
+        "Blaze's marketing strategies have helped me double my client's engagement rates. The ROI speaks for itself.",
       rating: 5,
       avatar: "/placeholder-user.jpg",
     },
@@ -160,7 +160,7 @@ export function SharedLandingPage({
                 href="#testimonials"
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
-                Success Stories
+                Testimonials
               </a>
               <ThemeToggle />
               <Button
@@ -178,7 +178,7 @@ export function SharedLandingPage({
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400"
               >
-                {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
             </div>
           </div>
@@ -203,7 +203,7 @@ export function SharedLandingPage({
                   href="#testimonials"
                   className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
                 >
-                  Success Stories
+                  Testimonials
                 </a>
                 <Button
                   onClick={onShowAuthModal}
@@ -218,44 +218,42 @@ export function SharedLandingPage({
       </nav>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
-          <div className="mb-8">
-            <Badge className="mb-4 bg-gradient-to-r from-pink-500 to-purple-600 text-white border-0">
+          <div className="flex justify-center mb-6">
+            <Badge className="bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-2">
               <Sparkles className="w-4 h-4 mr-2" />
-              AI-Powered Business Intelligence
+              AI-Powered Business Assistant
             </Badge>
-            <h1 className="text-4xl md:text-6xl font-bold mb-6">
-              <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 dark:from-pink-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
-                Unleash Your
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-purple-600 via-indigo-600 to-pink-600 dark:from-purple-400 dark:via-indigo-400 dark:to-pink-400 bg-clip-text text-transparent">
-                Inner Boss
-              </span>
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-              Transform your business with AI agents that think, strategize, and execute like your personal board of
-              advisors. Be confident, creative, and in complete control.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                onClick={onShowAuthModal}
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-3"
-              >
-                <Crown className="w-5 h-5 mr-2" />
-                Start Your Empire
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-pink-300 dark:border-purple-400 text-pink-600 dark:text-purple-400 hover:bg-pink-50 dark:hover:bg-purple-900/20 text-lg px-8 py-3 bg-transparent"
-              >
-                <Gem className="w-5 h-5 mr-2" />
-                See It In Action
-              </Button>
-            </div>
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-bold mb-6">
+            <span className="bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 dark:from-pink-400 dark:via-purple-400 dark:to-indigo-400 bg-clip-text text-transparent">
+              Unleash Your Inner Boss
+            </span>
+          </h1>
+
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+            Transform your business with our AI-powered platform. Get personalized insights, automate workflows, and
+            scale your success with intelligent assistance.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              onClick={onShowAuthModal}
+              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-3"
+            >
+              Start Your Journey
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={onShowAuthModal}
+              className="border-pink-300 text-pink-600 hover:bg-pink-50 dark:border-pink-600 dark:text-pink-400 dark:hover:bg-pink-900/20 px-8 py-3 bg-transparent"
+            >
+              Watch Demo
+            </Button>
           </div>
         </div>
       </section>
@@ -266,27 +264,26 @@ export function SharedLandingPage({
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">
               <span className="bg-gradient-to-r from-pink-600 to-purple-600 dark:from-pink-400 dark:to-purple-400 bg-clip-text text-transparent">
-                Why Choose SoloBoss AI?
+                Powerful Features
               </span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Experience the power of AI that adapts to your unique business style and amplifies your natural strengths.
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Everything you need to supercharge your business with AI-powered intelligence
             </p>
           </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
               <Card
                 key={index}
-                className="border-pink-200 dark:border-purple-800 hover:shadow-lg transition-shadow bg-white/80 dark:bg-slate-900/80"
+                className="group hover:shadow-lg transition-all duration-300 border-pink-100 dark:border-blue-800 hover:border-pink-300 dark:hover:border-blue-600"
               >
-                <CardHeader>
-                  <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg flex items-center justify-center text-white mb-4">
-                    {feature.icon}
+                <CardContent className="p-6 text-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                    <feature.icon className="w-6 h-6 text-white" />
                   </div>
-                  <CardTitle className="text-gray-900 dark:text-white">{feature.title}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-gray-600 dark:text-gray-300">{feature.description}</CardDescription>
+                  <h3 className="text-lg font-semibold mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
                 </CardContent>
               </Card>
             ))}
@@ -303,44 +300,41 @@ export function SharedLandingPage({
                 Meet Your AI Squad
               </span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Each AI agent brings unique expertise and personality to support different aspects of your business
-              journey.
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Each AI agent brings unique expertise to help you dominate your industry
             </p>
           </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {aiAgents.map((agent, index) => (
               <Card
                 key={index}
-                className="border-pink-200 dark:border-purple-800 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-white/80 dark:bg-slate-900/80"
+                className="group hover:shadow-xl transition-all duration-300 border-pink-100 dark:border-blue-800 hover:border-pink-300 dark:hover:border-blue-600 overflow-hidden"
               >
-                <CardHeader className="text-center">
-                  <div className="w-24 h-24 mx-auto mb-4 rounded-full overflow-hidden bg-gradient-to-r from-pink-500 to-purple-600 p-1">
+                <CardContent className="p-0">
+                  <div className="relative h-48 bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/20 dark:to-purple-900/20">
                     <Image
                       src={agent.image || "/placeholder.svg"}
                       alt={agent.name}
-                      width={96}
-                      height={96}
-                      className="w-full h-full object-cover rounded-full"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   </div>
-                  <CardTitle className="text-xl text-gray-900 dark:text-white">{agent.name}</CardTitle>
-                  <CardDescription className="text-pink-600 dark:text-purple-400 font-medium">
-                    {agent.role}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">{agent.personality}</p>
-                  <div className="flex flex-wrap gap-2">
-                    {agent.skills.map((skill, skillIndex) => (
-                      <Badge
-                        key={skillIndex}
-                        variant="secondary"
-                        className="bg-pink-100 dark:bg-purple-900/30 text-pink-700 dark:text-purple-300"
-                      >
-                        {skill}
-                      </Badge>
-                    ))}
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold mb-1 text-gray-900 dark:text-white">{agent.name}</h3>
+                    <p className="text-pink-600 dark:text-pink-400 font-medium mb-3">{agent.role}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">{agent.personality}</p>
+                    <div className="flex flex-wrap gap-2">
+                      {agent.skills.map((skill, skillIndex) => (
+                        <Badge
+                          key={skillIndex}
+                          variant="secondary"
+                          className="text-xs bg-pink-100 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300"
+                        >
+                          {skill}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -358,37 +352,34 @@ export function SharedLandingPage({
                 Success Stories
               </span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              See how entrepreneurs are transforming their businesses with SoloBoss AI.
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              See how SoloBoss AI is transforming businesses worldwide
             </p>
           </div>
+
           <div className="grid md:grid-cols-3 gap-8">
             {testimonials.map((testimonial, index) => (
-              <Card key={index} className="border-pink-200 dark:border-purple-800 bg-white/80 dark:bg-slate-900/80">
-                <CardHeader>
-                  <div className="flex items-center space-x-4">
+              <Card key={index} className="border-pink-100 dark:border-blue-800">
+                <CardContent className="p-6">
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
+                  </div>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6 italic">"{testimonial.content}"</p>
+                  <div className="flex items-center">
                     <Image
                       src={testimonial.avatar || "/placeholder.svg"}
                       alt={testimonial.name}
                       width={48}
                       height={48}
-                      className="rounded-full"
+                      className="rounded-full mr-4"
                     />
                     <div>
-                      <CardTitle className="text-lg text-gray-900 dark:text-white">{testimonial.name}</CardTitle>
-                      <CardDescription className="text-pink-600 dark:text-purple-400">
-                        {testimonial.role}
-                      </CardDescription>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">{testimonial.name}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">{testimonial.role}</p>
                     </div>
                   </div>
-                  <div className="flex space-x-1">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 dark:text-gray-300 italic">"{testimonial.content}"</p>
                 </CardContent>
               </Card>
             ))}
@@ -399,26 +390,25 @@ export function SharedLandingPage({
       {/* CTA Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center">
-          <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-3xl p-12 text-white">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Become the Boss You Were Meant to Be?</h2>
+          <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl p-12 text-white">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Ready to Become the Boss?</h2>
             <p className="text-xl mb-8 opacity-90">
-              Join thousands of entrepreneurs who've transformed their businesses with AI-powered intelligence.
+              Join thousands of entrepreneurs who are already dominating their industries with SoloBoss AI
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
                 onClick={onShowAuthModal}
-                className="bg-white text-purple-600 hover:bg-gray-100 text-lg px-8 py-3"
+                className="bg-white text-pink-600 hover:bg-gray-100 px-8 py-3"
               >
-                <Crown className="w-5 h-5 mr-2" />
-                Start Your Free Trial
+                Start Free Trial
               </Button>
               <Button
                 size="lg"
                 variant="outline"
-                className="border-white text-white hover:bg-white/10 text-lg px-8 py-3 bg-transparent"
+                onClick={onShowAuthModal}
+                className="border-white text-white hover:bg-white/10 px-8 py-3 bg-transparent"
               >
-                <Heart className="w-5 h-5 mr-2" />
                 Schedule Demo
               </Button>
             </div>
@@ -442,9 +432,10 @@ export function SharedLandingPage({
                 <span className="text-xl font-bold">SoloBoss AI</span>
               </div>
               <p className="text-gray-400 mb-4">
-                Empowering entrepreneurs with AI-driven business intelligence. Be confident, creative, and in control.
+                Empowering entrepreneurs with AI-powered business intelligence and automation.
               </p>
             </div>
+
             <div>
               <h3 className="font-semibold mb-4">Product</h3>
               <ul className="space-y-2 text-gray-400">
@@ -465,39 +456,41 @@ export function SharedLandingPage({
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
-                    Enterprise
+                    API
                   </a>
                 </li>
               </ul>
             </div>
+
             <div>
-              <h3 className="font-semibold mb-4">Support</h3>
+              <h3 className="font-semibold mb-4">Company</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
-                    Help Center
+                    About
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
-                    Contact Us
+                    Blog
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
-                    Privacy Policy
+                    Careers
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-white transition-colors">
-                    Terms of Service
+                    Contact
                   </a>
                 </li>
               </ul>
             </div>
           </div>
+
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2024 SoloBoss AI. All rights reserved. Built for bosses, by bosses.</p>
+            <p>&copy; 2024 SoloBoss AI. All rights reserved.</p>
           </div>
         </div>
       </footer>
