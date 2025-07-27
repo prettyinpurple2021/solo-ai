@@ -1,157 +1,198 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
+import { Crown, Zap, Users, MessageSquare, Calendar, TrendingUp } from "lucide-react"
 import { useSubscription } from "@/hooks/use-subscription"
-import { useAuth } from "@/hooks/use-auth"
-import { formatPrice } from "@/lib/stripe"
-import { Crown, Zap, Rocket, Calendar, CreditCard, TrendingUp, Database, Users } from "lucide-react"
+
+const PLAN_DETAILS = {
+  launchpad: {
+    name: "Launchpad",
+    icon: Zap,
+    color: "from-blue-500 to-cyan-500",
+    badge: "bg-blue-100 text-blue-700 border-blue-200",
+  },
+  accelerator: {
+    name: "Accelerator",
+    icon: Zap,
+    color: "from-purple-500 to-pink-500",
+    badge: "bg-purple-100 text-purple-700 border-purple-200",
+  },
+  dominator: {
+    name: "Dominator",
+    icon: Crown,
+    color: "from-yellow-500 to-orange-500",
+    badge: "bg-yellow-100 text-yellow-700 border-yellow-200",
+  },
+}
 
 export function SubscriptionStatus() {
-  const {} = useAuth()
-  const { currentTier, tierFeatures, isActive, getRemainingStorage, getBillingPortalUrl, isPro, isEmpire, isFree } =
-    useSubscription()
+  const { subscription, usage, isLoading } = useSubscription()
 
-  const handleManageBilling = async () => {
-    try {
-      const url = await getBillingPortalUrl()
-      window.location.href = url
-    } catch (error) {
-      console.error("Failed to open billing portal:", error)
-    }
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="p-6">
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+            <div className="h-8 bg-gray-200 rounded"></div>
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+          </div>
+        </CardContent>
+      </Card>
+    )
   }
 
-  const getTierIcon = () => {
-    if (isEmpire) return Crown
-    if (isPro) return Zap
-    return Rocket
-  }
-
-  const getTierColor = () => {
-    if (isEmpire) return "from-yellow-400 to-orange-500"
-    if (isPro) return "from-purple-500 to-pink-500"
-    return "from-gray-400 to-gray-600"
-  }
-
-  const Icon = getTierIcon()
-  const colorClass = getTierColor()
-
-  const storageUsed = 0.5 // Mock data - in real app, calculate actual usage
-  const storageLimit = tierFeatures.limits.briefcaseStorage
-  const storagePercentage = (storageUsed / storageLimit) * 100
+  const planDetails = PLAN_DETAILS[subscription.plan]
+  const PlanIcon = planDetails.icon
 
   return (
-    <Card className="boss-card">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-3">
-          <div className={`p-2 bg-gradient-to-r ${colorClass} rounded-lg`}>
-            <Icon className="h-5 w-5 text-white" />
-          </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="boss-heading">{tierFeatures.name}</span>
-              <Badge className={`bg-gradient-to-r ${colorClass} text-white`}>{isActive ? "Active" : "Inactive"}</Badge>
-            </div>
-            <p className="text-sm text-gray-600 font-normal">
-              {isFree ? "Free forever" : `${formatPrice(tierFeatures.price)}/month`}
-            </p>
-          </div>
-        </CardTitle>
-      </CardHeader>
-
-      <CardContent className="space-y-6">
-        {/* Subscription Details */}
-        {!isFree && (
-          <div className="grid grid-cols-2 gap-4">
-            <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-              <Calendar className="h-5 w-5 text-purple-600" />
+    <div className="space-y-6">
+      {/* Current Plan */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div
+                className={`w-12 h-12 rounded-2xl bg-gradient-to-r ${planDetails.color} flex items-center justify-center`}
+              >
+                <PlanIcon className="w-6 h-6 text-white" />
+              </div>
               <div>
-                <p className="text-sm font-medium text-gray-800">Next Billing</p>
-                <p className="text-xs text-gray-600">
-                  {profile?.subscription_current_period_end
-                    ? new Date(profile.subscription_current_period_end).toLocaleDateString()
-                    : "N/A"}
-                </p>
+                <CardTitle className="text-xl">Current Plan</CardTitle>
+                <CardDescription>Your empire level and benefits</CardDescription>
               </div>
             </div>
+            <Badge className={planDetails.badge}>{planDetails.name}</Badge>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm font-medium text-gray-600">Status</span>
+              <Badge className="bg-green-100 text-green-700 border-green-200">{subscription.status}</Badge>
+            </div>
 
-            <div className="flex items-center gap-3 p-3 bg-pink-50 rounded-lg">
-              <CreditCard className="h-5 w-5 text-pink-600" />
-              <div>
-                <p className="text-sm font-medium text-gray-800">Status</p>
-                <p className="text-xs text-gray-600 capitalize">{profile?.subscription_status || "Active"}</p>
-              </div>
+            {subscription.plan !== "launchpad" && (
+              <>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-600">Billing Cycle</span>
+                  <span className="text-sm text-gray-800 capitalize">{subscription.billingCycle}</span>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <span className="text-sm font-medium text-gray-600">Next Billing</span>
+                  <span className="text-sm text-gray-800">{subscription.nextBilling}</span>
+                </div>
+              </>
+            )}
+
+            <div className="pt-4">
+              <Button variant="outline" className="w-full bg-transparent" disabled={subscription.plan === "dominator"}>
+                {subscription.plan === "dominator" ? "You're at the top!" : "Upgrade Plan"}
+              </Button>
             </div>
           </div>
-        )}
+        </CardContent>
+      </Card>
 
-        {/* Usage Stats */}
-        <div className="space-y-4">
-          <h4 className="font-semibold text-gray-800 flex items-center gap-2">
-            <TrendingUp className="h-4 w-4 text-purple-600" />
-            Usage Overview
-          </h4>
-
-          {/* Storage Usage */}
+      {/* Usage Statistics */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center space-x-2">
+            <TrendingUp className="w-5 h-5 text-purple-600" />
+            <span>Usage This Month</span>
+          </CardTitle>
+          <CardDescription>Track your empire building activities</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* AI Conversations */}
           <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <span className="text-sm font-medium flex items-center gap-2">
-                <Database className="h-4 w-4 text-gray-600" />
-                Briefcase Storage
-              </span>
+              <div className="flex items-center space-x-2">
+                <MessageSquare className="w-4 h-4 text-purple-600" />
+                <span className="text-sm font-medium">AI Conversations</span>
+              </div>
               <span className="text-sm text-gray-600">
-                {storageUsed}GB / {storageLimit}GB
+                {usage.conversations.used} / {usage.conversations.limit === -1 ? "∞" : usage.conversations.limit}
               </span>
             </div>
-            <Progress value={storagePercentage} className="h-2" />
+            {usage.conversations.limit !== -1 && (
+              <Progress value={(usage.conversations.used / usage.conversations.limit) * 100} className="h-2" />
+            )}
           </div>
 
           {/* AI Agents */}
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium flex items-center gap-2">
-              <Users className="h-4 w-4 text-gray-600" />
-              AI Agents Available
-            </span>
-            <span className="text-sm text-gray-600">
-              {tierFeatures.limits.aiAgents === -1 ? "Unlimited" : tierFeatures.limits.aiAgents}
-            </span>
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <Users className="w-4 h-4 text-purple-600" />
+                <span className="text-sm font-medium">AI Agents Access</span>
+              </div>
+              <span className="text-sm text-gray-600">
+                {usage.agents.used} / {usage.agents.limit}
+              </span>
+            </div>
+            <Progress value={(usage.agents.used / usage.agents.limit) * 100} className="h-2" />
           </div>
 
-          {/* Monthly Tasks */}
-          <div className="flex justify-between items-center">
-            <span className="text-sm font-medium flex items-center gap-2">
-              <Zap className="h-4 w-4 text-gray-600" />
-              Monthly Tasks
-            </span>
-            <span className="text-sm text-gray-600">
-              {tierFeatures.limits.monthlyTasks === -1 ? "Unlimited" : `${tierFeatures.limits.monthlyTasks} tasks`}
-            </span>
+          {/* Automations */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <Zap className="w-4 h-4 text-purple-600" />
+                <span className="text-sm font-medium">Automations</span>
+              </div>
+              <span className="text-sm text-gray-600">
+                {usage.automations.used} / {usage.automations.limit === -1 ? "∞" : usage.automations.limit}
+              </span>
+            </div>
+            {usage.automations.limit !== -1 && (
+              <Progress value={(usage.automations.used / usage.automations.limit) * 100} className="h-2" />
+            )}
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-3">
-          {!isFree && (
-            <Button
-              onClick={handleManageBilling}
-              variant="outline"
-              className="flex-1 bg-transparent border-purple-200 hover:bg-purple-50"
-            >
-              <CreditCard className="mr-2 h-4 w-4" />
-              Manage Billing
-            </Button>
-          )}
+          {/* Team Members */}
+          <div className="space-y-2">
+            <div className="flex justify-between items-center">
+              <div className="flex items-center space-x-2">
+                <Users className="w-4 h-4 text-purple-600" />
+                <span className="text-sm font-medium">Team Members</span>
+              </div>
+              <span className="text-sm text-gray-600">
+                {usage.teamMembers.used} / {usage.teamMembers.limit === -1 ? "∞" : usage.teamMembers.limit}
+              </span>
+            </div>
+            {usage.teamMembers.limit !== -1 && (
+              <Progress value={(usage.teamMembers.used / usage.teamMembers.limit) * 100} className="h-2" />
+            )}
+          </div>
+        </CardContent>
+      </Card>
 
-          <Button
-            onClick={() => (window.location.href = "/pricing")}
-            className={`flex-1 bg-gradient-to-r ${colorClass} hover:opacity-90 text-white`}
-          >
-            {isFree ? "Upgrade Plan" : "Change Plan"}
+      {/* Quick Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Quick Actions</CardTitle>
+          <CardDescription>Manage your subscription and billing</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Button variant="outline" className="w-full justify-start bg-transparent">
+            <Calendar className="w-4 h-4 mr-2" />
+            View Billing History
           </Button>
-        </div>
-      </CardContent>
-    </Card>
+          <Button variant="outline" className="w-full justify-start bg-transparent">
+            <Users className="w-4 h-4 mr-2" />
+            Manage Team
+          </Button>
+          <Button variant="outline" className="w-full justify-start bg-transparent">
+            <TrendingUp className="w-4 h-4 mr-2" />
+            Usage Analytics
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
   )
 }

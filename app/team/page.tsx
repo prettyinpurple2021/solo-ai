@@ -1,489 +1,301 @@
 "use client"
 
-import type React from "react"
-
 import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
-import { Separator } from "@/components/ui/separator"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AuthGuard } from "@/components/auth/auth-guard"
-import { useAiChat } from "@/hooks/use-ai-chat"
+import { AppSidebar } from "@/components/app-sidebar"
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import {
-  MessageCircle,
-  Users,
-  TrendingUp,
-  Megaphone,
-  HeadphonesIcon,
-  PenTool,
-  Calendar,
-  BarChart3,
-  Settings,
-  Send,
-  Bot,
-  Loader2,
-  Sparkles,
-  FileText,
-  Crown,
-  Heart,
-  Star,
-} from "lucide-react"
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Separator } from "@/components/ui/separator"
+import { SidebarTrigger } from "@/components/ui/sidebar"
+import { AI_SQUAD } from "@/lib/landing-data"
+import { useAIChat } from "@/hooks/use-ai-chat"
+import { MessageSquare, Mic, MicOff, Volume2, VolumeX } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
+import Image from "next/image"
 
-export default function VirtualTeam() {
-  const [selectedMember, setSelectedMember] = useState<any>(null)
-  const [message, setMessage] = useState("")
+export default function TeamPage() {
+  const [selectedAgent, setSelectedAgent] = useState(AI_SQUAD[0])
+  const [isListening, setIsListening] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
+  const [audioLevel, setAudioLevel] = useState(0)
 
-  // AI chat hook for the selected member
-  const { chatHistory, sendMessage, clearHistory, isLoading, error } = useAiChat({
-    memberId: selectedMember?.name?.toLowerCase() || "",
-    initialHistory: [],
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useAIChat({
+    api: "/api/chat",
+    initialMessages: [
+      {
+        id: "welcome",
+        role: "assistant",
+        content: `Hey boss! I'm ${selectedAgent.name}, your ${selectedAgent.role}. Ready to build your empire together? What can I help you dominate today?`,
+      },
+    ],
   })
 
-  const teamMembers = [
-    {
-      id: 1,
-      name: "Roxy",
-      role: "Executive Assistant",
-      avatar: "/images/agents/roxy.png",
-      status: "active",
-      expertise: ["Schedule Management", "Workflow Optimization", "Delegation Planning", "Quarterly Reviews"],
-      description: "I manage your schedule, streamline workflows, and provide proactive executive assistance.",
-      icon: Calendar,
-      color: "bg-blue-500",
-      aiModel: "GPT-4o",
-      specialization: "Efficient, organized, proactive executive support",
-      personality: "💪 Boss-level organized",
-      currentMood: "Ready to slay your schedule! 📅",
-    },
-    {
-      id: 2,
-      name: "Blaze",
-      role: "Growth & Sales Strategist",
-      avatar: "/images/agents/blaze.png",
-      status: "active",
-      expertise: ["Idea Validation", "Sales Funnels", "Pitch Decks", "Negotiation Strategy"],
-      description: "I drive growth through strategic sales planning and business development.",
-      icon: TrendingUp,
-      color: "bg-red-500",
-      aiModel: "GPT-4o",
-      specialization: "Energetic, results-driven growth expert",
-      personality: "🔥 Fire sales energy",
-      currentMood: "Let's crush those numbers! 📈",
-    },
-    {
-      id: 3,
-      name: "Echo",
-      role: "Marketing Maven",
-      avatar: "/images/agents/echo.png",
-      status: "active",
-      expertise: ["Campaign Content", "Brand Strategy", "Viral Hooks", "Partnership Planning"],
-      description: "I create high-converting marketing content and build authentic brand connections.",
-      icon: Megaphone,
-      color: "bg-pink-500",
-      aiModel: "Claude-3.5",
-      specialization: "Fun, collaborative, connection-focused marketing",
-      personality: "✨ Creative content queen",
-      currentMood: "Ready to make you go viral! 🚀",
-    },
-    {
-      id: 4,
-      name: "Lumi",
-      role: "Legal & Docs Agent",
-      avatar: "/images/agents/lumi.png",
-      status: "active",
-      expertise: ["Legal Requirements", "Document Generation", "Contract Templates", "Risk Assessment"],
-      description: "I provide legal guidance and document generation with appropriate disclaimers.",
-      icon: FileText,
-      color: "bg-purple-500",
-      aiModel: "Claude-3.5",
-      specialization: "Knowledgeable, precise legal assistance",
-      personality: "🛡️ Legal protection boss",
-      currentMood: "Protecting your empire! ⚖️",
-    },
-    {
-      id: 5,
-      name: "Vex",
-      role: "Technical Architect",
-      avatar: "/images/agents/vex.png",
-      status: "active",
-      expertise: ["Technical Specs", "Technology Decisions", "System Architecture", "Security Planning"],
-      description: "I design technical solutions and guide technology decisions for your projects.",
-      icon: Settings,
-      color: "bg-indigo-500",
-      aiModel: "GPT-4o",
-      specialization: "Analytical, detail-oriented technical expert",
-      personality: "⚙️ Tech architecture genius",
-      currentMood: "Building your tech empire! 💻",
-    },
-    {
-      id: 6,
-      name: "Lexi",
-      role: "Strategy & Insight Analyst",
-      avatar: "/images/agents/lexi.png",
-      status: "active",
-      expertise: ["Data Analysis", "Strategic Insights", "KPI Tracking", "Values Alignment"],
-      description: "I analyze data patterns and provide strategic insights for informed decision-making.",
-      icon: BarChart3,
-      color: "bg-green-500",
-      aiModel: "Claude-3.5",
-      specialization: "Data-driven strategic analysis expert",
-      personality: "📊 Data-driven strategist",
-      currentMood: "Analyzing your success! 📈",
-    },
-    {
-      id: 7,
-      name: "Nova",
-      role: "Product Designer",
-      avatar: "/images/agents/nova.png",
-      status: "active",
-      expertise: ["UI/UX Design", "Wireframing", "User Experience", "Design Systems"],
-      description: "I create user-centric designs and optimize user experiences across all touchpoints.",
-      icon: PenTool,
-      color: "bg-orange-500",
-      aiModel: "GPT-4o",
-      specialization: "Creative, visual, user-centric designer",
-      personality: "🎨 Design visionary",
-      currentMood: "Designing your dreams! ✨",
-    },
-    {
-      id: 8,
-      name: "Glitch",
-      role: "QA & Debug Agent",
-      avatar: "/images/agents/glitch.png",
-      status: "active",
-      expertise: ["UX Friction Detection", "System Debugging", "Launch Tracking", "Quality Assurance"],
-      description: "I identify friction points and system flaws to ensure optimal user experiences.",
-      icon: HeadphonesIcon,
-      color: "bg-teal-500",
-      aiModel: "GPT-4o",
-      specialization: "Detail-oriented quality assurance specialist",
-      personality: "🔍 Quality perfectionist",
-      currentMood: "Perfecting your empire! 🎯",
-    },
-  ]
+  const handleVoiceToggle = () => {
+    if (isListening) {
+      // Stop listening
+      setIsListening(false)
+      setAudioLevel(0)
+    } else {
+      // Start listening
+      setIsListening(true)
+      // Simulate audio level changes
+      const interval = setInterval(() => {
+        setAudioLevel(Math.random() * 100)
+      }, 100)
 
-  const handleSendMessage = async () => {
-    if (message.trim() && selectedMember) {
-      await sendMessage(message)
-      setMessage("")
+      setTimeout(() => {
+        setIsListening(false)
+        setAudioLevel(0)
+        clearInterval(interval)
+      }, 3000)
     }
   }
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      handleSendMessage()
-    }
+  const handleSpeakToggle = () => {
+    setIsSpeaking(!isSpeaking)
   }
 
   return (
     <AuthGuard>
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 bg-gradient-to-r from-purple-50 to-teal-50">
-          <div className="flex items-center gap-2 px-4">
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
             <Breadcrumb>
               <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="/dashboard">Dashboard</BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage className="font-semibold">AI Squad</BreadcrumbPage>
+                  <BreadcrumbPage>AI Squad</BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
-          </div>
-        </header>
+            <div className="ml-auto">
+              <ThemeToggle />
+            </div>
+          </header>
 
-        <div className="flex flex-1 flex-col gap-6 p-6 pt-4 bg-gradient-to-br from-purple-50/30 via-white to-teal-50/30">
-          {/* Header Section */}
-          <div className="space-y-3">
-            <h1 className="text-4xl font-bold tracking-tight boss-heading flex items-center gap-3">
-              <Users className="h-10 w-10 text-purple-600" />
-              Your AI Girl Gang
-              <span className="text-2xl">👯‍♀️</span>
-            </h1>
-            <p className="text-lg text-muted-foreground font-medium">
-              Your intelligent team of AI specialists, powered by GPT-4o and Claude-3.5
-              <br />
-              <span className="empowering-text font-semibold">
-                Because every boss needs a squad that's got her back! 💪
-              </span>
-            </p>
-          </div>
+          <div className="flex flex-1 flex-col gap-4 p-4">
+            <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+              <div className="aspect-video rounded-xl bg-muted/50" />
+              <div className="aspect-video rounded-xl bg-muted/50" />
+              <div className="aspect-video rounded-xl bg-muted/50" />
+            </div>
 
-          {/* Team Overview Stats */}
-          <div className="grid gap-4 md:grid-cols-4">
-            <Card className="boss-card glitter-effect">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-bold empowering-text">Squad Members</CardTitle>
-                <div className="flex items-center gap-1">
-                  <Users className="h-4 w-4 text-purple-600" />
-                  <Crown className="h-3 w-3 text-pink-500" />
+            <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min p-6">
+              <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-8">
+                  <h1 className="text-4xl font-bold gradient-text-primary mb-4">Your AI Squad Command Center</h1>
+                  <p className="text-xl text-foreground/70 max-w-3xl mx-auto">
+                    Meet your personal army of 8 specialized AI agents. Each one is ready to help you dominate your
+                    industry and build your empire.
+                  </p>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold soloboss-text-gradient">{teamMembers.length}</div>
-                <p className="text-sm text-muted-foreground font-medium">AI boss babes ready 👑</p>
-              </CardContent>
-            </Card>
 
-            <Card className="boss-card glitter-effect">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-bold empowering-text">Active Squad</CardTitle>
-                <div className="flex items-center gap-1">
-                  <div className="h-2 w-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <Star className="h-3 w-3 text-teal-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold soloboss-text-gradient">
-                  {teamMembers.filter((m) => m.status === "active").length}
-                </div>
-                <p className="text-sm text-muted-foreground font-medium">Ready to slay 🔥</p>
-              </CardContent>
-            </Card>
+                <Tabs defaultValue="chat" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="chat">Squad Chat</TabsTrigger>
+                    <TabsTrigger value="overview">Squad Overview</TabsTrigger>
+                  </TabsList>
 
-            <Card className="boss-card glitter-effect">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-bold empowering-text">AI Models</CardTitle>
-                <div className="flex items-center gap-1">
-                  <Sparkles className="h-4 w-4 text-pink-600" />
-                  <Bot className="h-3 w-3 text-purple-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold soloboss-text-gradient">2</div>
-                <p className="text-sm text-muted-foreground font-medium">GPT-4o & Claude-3.5 ✨</p>
-              </CardContent>
-            </Card>
-
-            <Card className="boss-card glitter-effect">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-bold empowering-text">Squad Chats</CardTitle>
-                <div className="flex items-center gap-1">
-                  <MessageCircle className="h-4 w-4 text-purple-600" />
-                  <Heart className="h-3 w-3 text-pink-500" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl font-bold soloboss-text-gradient">{chatHistory.length}</div>
-                <p className="text-sm text-muted-foreground font-medium">Boss conversations 💬</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Team Members Grid */}
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {teamMembers.map((member) => (
-              <Card key={member.id} className="boss-card bounce-on-hover">
-                <CardHeader className="pb-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
-                        <img
-                          src={member.avatar || "/placeholder.svg"}
-                          alt={member.name}
-                          className="h-12 w-12 rounded-full object-cover border-3 border-purple-200 punk-shadow"
-                        />
-                        <div className="absolute -bottom-1 -right-1 h-4 w-4 bg-gradient-to-r from-teal-400 to-teal-500 rounded-full border-2 border-white flex items-center justify-center">
-                          <div className="w-2 h-2 bg-white rounded-full"></div>
-                        </div>
-                      </div>
-                      <div>
-                        <CardTitle className="text-base boss-heading">{member.name}</CardTitle>
-                        <CardDescription className="text-sm font-medium">{member.role}</CardDescription>
-                      </div>
-                    </div>
-                    <Badge className="girlboss-badge text-xs">{member.aiModel}</Badge>
-                  </div>
-                </CardHeader>
-
-                <CardContent className="space-y-4">
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground font-medium">{member.description}</p>
-                    <div className="text-sm">
-                      <span className="font-semibold empowering-text">Vibe:</span> {member.personality}
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-semibold empowering-text">Current Mood:</span> {member.currentMood}
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-bold empowering-text">Boss Skills</h4>
-                    <div className="flex flex-wrap gap-1">
-                      {member.expertise.slice(0, 2).map((skill) => (
-                        <Badge key={skill} variant="outline" className="text-xs font-medium border-purple-200">
-                          {skill}
-                        </Badge>
-                      ))}
-                      {member.expertise.length > 2 && (
-                        <Badge variant="outline" className="text-xs font-medium border-purple-200">
-                          +{member.expertise.length - 2} more
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
-
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        className="w-full punk-button text-white font-semibold"
-                        size="sm"
-                        onClick={() => setSelectedMember(member)}
-                      >
-                        <MessageCircle className="mr-2 h-4 w-4" />
-                        Chat with {member.name}
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[600px] h-[600px] flex flex-col boss-card border-2 border-purple-200">
-                      <DialogHeader>
-                        <DialogTitle className="flex items-center gap-3 boss-heading">
-                          <img
-                            src={member.avatar || "/placeholder.svg"}
-                            alt={member.name}
-                            className="h-8 w-8 rounded-full object-cover punk-shadow"
-                          />
-                          Chat with {member.name}
-                          <Badge className="girlboss-badge ml-auto">{member.aiModel}</Badge>
-                        </DialogTitle>
-                        <DialogDescription className="font-medium">
-                          {member.role} • {member.specialization}
-                          <br />
-                          <span className="empowering-text">{member.currentMood}</span>
-                        </DialogDescription>
-                      </DialogHeader>
-
-                      <div className="flex-1 flex flex-col space-y-4">
-                        {/* Chat History */}
-                        <ScrollArea className="flex-1 border rounded-lg p-3 boss-card">
-                          <div className="space-y-3">
-                            {chatHistory.length === 0 ? (
-                              <div className="flex items-center justify-center h-32 text-muted-foreground">
-                                <div className="text-center">
-                                  <div className="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-r from-purple-100 to-teal-100 flex items-center justify-center">
-                                    <Bot className="h-8 w-8 text-purple-600" />
-                                  </div>
-                                  <p className="font-semibold empowering-text">
-                                    Hey boss! I'm {member.name}. Ready to slay together? 💪
-                                  </p>
-                                  <p className="text-xs mt-1">Ask me about {member.expertise[0].toLowerCase()}</p>
+                  <TabsContent value="chat" className="space-y-6">
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                      {/* Agent Selection Sidebar */}
+                      <div className="lg:col-span-1">
+                        <h3 className="text-lg font-semibold mb-4 text-foreground">Choose Your Agent</h3>
+                        <div className="space-y-2">
+                          {AI_SQUAD.map((agent) => (
+                            <Button
+                              key={agent.id}
+                              variant={selectedAgent.id === agent.id ? "default" : "ghost"}
+                              className="w-full justify-start p-3 h-auto"
+                              onClick={() => setSelectedAgent(agent)}
+                            >
+                              <div className="flex items-center space-x-3">
+                                <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-r from-purple-100 to-pink-100 dark:from-blue-900 dark:to-green-900 flex items-center justify-center">
+                                  <Image
+                                    src={agent.image || "/placeholder.svg"}
+                                    alt={agent.name}
+                                    width={40}
+                                    height={40}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div className="text-left">
+                                  <div className="font-medium">{agent.name}</div>
+                                  <div className="text-xs text-foreground/60">{agent.role}</div>
                                 </div>
                               </div>
-                            ) : (
-                              chatHistory.map((msg) => (
-                                <div
-                                  key={msg.id}
-                                  className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
+                            </Button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Chat Interface */}
+                      <div className="lg:col-span-3">
+                        <Card className="h-[600px] flex flex-col">
+                          <CardHeader className="border-b">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center space-x-3">
+                                <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-r from-purple-100 to-pink-100 dark:from-blue-900 dark:to-green-900 flex items-center justify-center">
+                                  <Image
+                                    src={selectedAgent.image || "/placeholder.svg"}
+                                    alt={selectedAgent.name}
+                                    width={48}
+                                    height={48}
+                                    className="w-full h-full object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <CardTitle className="text-lg">{selectedAgent.name}</CardTitle>
+                                  <CardDescription>{selectedAgent.role}</CardDescription>
+                                </div>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={handleVoiceToggle}
+                                  className={`${isListening ? "bg-red-500 text-white" : ""}`}
                                 >
-                                  <div
-                                    className={`max-w-[80%] rounded-lg p-3 text-sm ${
-                                      msg.sender === "user"
-                                        ? "punk-button text-white"
-                                        : "boss-card border border-purple-200"
-                                    }`}
-                                  >
-                                    {msg.sender === "ai" && (
-                                      <div className="flex items-center gap-2 mb-1">
-                                        <img
-                                          src={member.avatar || "/placeholder.svg"}
-                                          alt={member.name}
-                                          className="w-4 h-4 rounded-full object-cover"
-                                        />
-                                        <span className="text-xs font-bold empowering-text">{member.name}</span>
-                                      </div>
-                                    )}
-                                    <p className="whitespace-pre-wrap font-medium">{msg.text}</p>
-                                    <p className="text-xs opacity-70 mt-1 font-medium">{msg.timestamp}</p>
+                                  {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                                </Button>
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={handleSpeakToggle}
+                                  className={`${isSpeaking ? "bg-blue-500 text-white" : ""}`}
+                                >
+                                  {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                                </Button>
+                              </div>
+                            </div>
+                            {isListening && (
+                              <div className="mt-2">
+                                <div className="flex items-center space-x-2">
+                                  <span className="text-sm text-foreground/70">Listening...</span>
+                                  <div className="flex-1 bg-muted rounded-full h-2">
+                                    <div
+                                      className="bg-red-500 h-2 rounded-full transition-all duration-100"
+                                      style={{ width: `${audioLevel}%` }}
+                                    />
                                   </div>
                                 </div>
-                              ))
+                              </div>
                             )}
+                          </CardHeader>
+
+                          <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
+                            {messages.map((message) => (
+                              <div
+                                key={message.id}
+                                className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
+                              >
+                                <div
+                                  className={`max-w-[80%] rounded-lg p-3 ${
+                                    message.role === "user" ? "gradient-primary text-white" : "bg-muted text-foreground"
+                                  }`}
+                                >
+                                  {message.content}
+                                </div>
+                              </div>
+                            ))}
                             {isLoading && (
                               <div className="flex justify-start">
-                                <div className="boss-card border border-purple-200 rounded-lg p-3 text-sm max-w-[80%]">
-                                  <div className="flex items-center gap-2">
-                                    <div className="w-4 h-4 rounded-full bg-gradient-to-r from-purple-500 to-teal-500"></div>
-                                    <span className="text-xs font-bold empowering-text">{member.name}</span>
-                                    <Loader2 className="h-3 w-3 animate-spin" />
+                                <div className="bg-muted text-foreground rounded-lg p-3">
+                                  <div className="flex space-x-1">
+                                    <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce" />
+                                    <div
+                                      className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce"
+                                      style={{ animationDelay: "0.1s" }}
+                                    />
+                                    <div
+                                      className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce"
+                                      style={{ animationDelay: "0.2s" }}
+                                    />
                                   </div>
-                                  <p className="text-muted-foreground font-medium">Thinking like a boss...</p>
                                 </div>
                               </div>
                             )}
+                          </CardContent>
+
+                          <div className="border-t p-4">
+                            <form onSubmit={handleSubmit} className="flex space-x-2">
+                              <input
+                                value={input}
+                                onChange={handleInputChange}
+                                placeholder={`Chat with ${selectedAgent.name}...`}
+                                className="flex-1 px-3 py-2 border border-border rounded-lg bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                                disabled={isLoading}
+                              />
+                              <Button type="submit" disabled={isLoading || !input.trim()}>
+                                <MessageSquare className="w-4 h-4" />
+                              </Button>
+                            </form>
                           </div>
-                        </ScrollArea>
-
-                        {/* Message Input */}
-                        <div className="flex gap-2">
-                          <Input
-                            placeholder={`Ask ${member.name} about ${member.expertise[0].toLowerCase()}...`}
-                            value={message}
-                            onChange={(e) => setMessage(e.target.value)}
-                            onKeyPress={handleKeyPress}
-                            disabled={isLoading}
-                            className="border-2 border-purple-200 focus:border-purple-400 font-medium"
-                          />
-                          <Button
-                            onClick={handleSendMessage}
-                            disabled={isLoading || !message.trim()}
-                            className="punk-button text-white"
-                          >
-                            {isLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                          </Button>
-                        </div>
+                        </Card>
                       </div>
+                    </div>
+                  </TabsContent>
 
-                      {error && (
-                        <div className="text-sm text-red-500 bg-red-50 p-2 rounded font-medium">
-                          Error: {error.message}
-                        </div>
-                      )}
-
-                      <div className="flex justify-between text-xs text-muted-foreground font-medium">
-                        <span>Powered by {member.aiModel} ✨</span>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={clearHistory}
-                          className="h-auto p-0 text-xs hover:text-purple-600"
-                        >
-                          Clear chat
-                        </Button>
-                      </div>
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-            ))}
+                  <TabsContent value="overview" className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {AI_SQUAD.map((agent) => (
+                        <Card key={agent.id} className="hover:shadow-lg transition-shadow">
+                          <CardHeader className="text-center">
+                            <div className="w-20 h-20 rounded-full mx-auto mb-4 overflow-hidden bg-gradient-to-r from-purple-100 to-pink-100 dark:from-blue-900 dark:to-green-900 flex items-center justify-center">
+                              <Image
+                                src={agent.image || "/placeholder.svg"}
+                                alt={agent.name}
+                                width={80}
+                                height={80}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <CardTitle className="text-lg">{agent.name}</CardTitle>
+                            <Badge variant="secondary" className="gradient-text-accent">
+                              {agent.role}
+                            </Badge>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-sm text-foreground/70 mb-4">{agent.description}</p>
+                            <Button
+                              className="w-full"
+                              onClick={() => {
+                                setSelectedAgent(agent)
+                                // Switch to chat tab
+                                const chatTab = document.querySelector('[value="chat"]') as HTMLButtonElement
+                                chatTab?.click()
+                              }}
+                            >
+                              Chat with {agent.name}
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+            </div>
           </div>
-
-          {/* Motivational Footer */}
-          <Card className="boss-card soloboss-gradient text-white">
-            <CardContent className="p-6 text-center">
-              <h3 className="text-2xl font-bold mb-2 flex items-center justify-center gap-2">
-                <Crown className="h-6 w-6" />
-                Your business. Your terms. Your AI squad.
-                <Crown className="h-6 w-6" />
-              </h3>
-              <p className="text-lg opacity-90">
-                Every boss needs a team that's got her back. Your AI girl gang is here 24/7! 💪✨
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </SidebarInset>
+        </SidebarInset>
+      </SidebarProvider>
     </AuthGuard>
   )
 }

@@ -1,64 +1,85 @@
 "use client"
 
-import type React from "react"
-
-import { useSubscription } from "@/hooks/use-subscription"
+import type { ReactNode } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Crown, Lock } from "lucide-react"
-import Link from "next/link"
+import { Badge } from "@/components/ui/badge"
+import { Crown, Zap, Lock } from "lucide-react"
 
 interface FeatureGateProps {
-  tier: "free" | "accelerator" | "dominator"
-  children: React.ReactNode
-  fallback?: React.ReactNode
-  showUpgrade?: boolean
+  children: ReactNode
+  requiredPlan: "launchpad" | "accelerator" | "dominator"
+  featureName: string
+  description?: string
+  currentPlan?: "launchpad" | "accelerator" | "dominator"
 }
 
-export function FeatureGate({ tier, children, fallback, showUpgrade = true }: FeatureGateProps) {
-  const { subscription, loading } = useSubscription()
+const PLAN_HIERARCHY = {
+  launchpad: 1,
+  accelerator: 2,
+  dominator: 3,
+}
 
-  if (loading) {
-    return <div className="animate-pulse bg-gray-200 rounded-lg h-32" />
-  }
+const PLAN_DETAILS = {
+  launchpad: {
+    name: "Launchpad",
+    icon: Zap,
+    color: "from-blue-500 to-cyan-500",
+  },
+  accelerator: {
+    name: "Accelerator",
+    icon: Zap,
+    color: "from-purple-500 to-pink-500",
+  },
+  dominator: {
+    name: "Dominator",
+    icon: Crown,
+    color: "from-yellow-500 to-orange-500",
+  },
+}
 
-  const hasAccess = () => {
-    if (!subscription) return tier === "free"
+export function FeatureGate({
+  children,
+  requiredPlan,
+  featureName,
+  description,
+  currentPlan = "dominator", // Default to highest plan for development
+}: FeatureGateProps) {
+  const hasAccess = PLAN_HIERARCHY[currentPlan] >= PLAN_HIERARCHY[requiredPlan]
 
-    const tierHierarchy = { free: 0, accelerator: 1, dominator: 2 }
-    return tierHierarchy[subscription.tier] >= tierHierarchy[tier]
-  }
-
-  if (hasAccess()) {
+  // For development, always allow access
+  if (process.env.NODE_ENV === "development" || hasAccess) {
     return <>{children}</>
   }
 
-  if (fallback) {
-    return <>{fallback}</>
-  }
-
-  if (!showUpgrade) {
-    return null
-  }
+  const requiredPlanDetails = PLAN_DETAILS[requiredPlan]
+  const RequiredIcon = requiredPlanDetails.icon
 
   return (
-    <Card className="border-2 border-dashed border-purple-300 bg-gradient-to-r from-purple-50 to-pink-50">
+    <Card className="border-2 border-dashed border-gray-300">
       <CardHeader className="text-center">
-        <CardTitle className="flex items-center justify-center gap-2">
-          <Lock className="h-5 w-5 text-purple-500" />
-          Premium Feature
+        <div className="flex justify-center mb-4">
+          <div
+            className={`w-16 h-16 rounded-2xl bg-gradient-to-r ${requiredPlanDetails.color} flex items-center justify-center`}
+          >
+            <Lock className="w-8 h-8 text-white" />
+          </div>
+        </div>
+        <CardTitle className="flex items-center justify-center space-x-2">
+          <span>{featureName}</span>
+          <Badge className="bg-purple-100 text-purple-700 border-purple-200">
+            <RequiredIcon className="w-3 h-3 mr-1" />
+            {requiredPlanDetails.name}
+          </Badge>
         </CardTitle>
         <CardDescription>
-          Upgrade to {tier === "accelerator" ? "Empire Builder" : "Legendary Boss"} to unlock this feature
+          {description || `This feature requires the ${requiredPlanDetails.name} plan or higher.`}
         </CardDescription>
       </CardHeader>
       <CardContent className="text-center">
-        <Link href="/pricing">
-          <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white">
-            <Crown className="mr-2 h-4 w-4" />
-            Upgrade Now
-          </Button>
-        </Link>
+        <Button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white font-semibold">
+          Upgrade to {requiredPlanDetails.name}
+        </Button>
       </CardContent>
     </Card>
   )

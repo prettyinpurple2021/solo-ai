@@ -1,152 +1,128 @@
 "use client"
 
-import { useEffect } from "react"
-import { createClient } from "@/lib/supabase/client"
-import { useAuth } from "./use-auth"
-import { useAsyncState } from "./use-async-state"
+import { useState, useEffect } from "react"
 
 export interface Subscription {
-  id: string
-  user_id: string
-  status: string
-  price_id: string
-  quantity: number
-  cancel_at_period_end: boolean
-  created: string
-  current_period_start: string
-  current_period_end: string
-  ended_at?: string
-  cancel_at?: string
-  canceled_at?: string
-  trial_start?: string
-  trial_end?: string
+  plan: "launchpad" | "accelerator" | "dominator"
+  status: "active" | "canceled" | "past_due" | "trialing"
+  billingCycle: "monthly" | "yearly"
+  nextBilling: string
+  cancelAtPeriodEnd: boolean
 }
 
-export interface SubscriptionTier {
-  name: string
-  price: number
-  priceId: string
-  features: string[]
-  popular?: boolean
+export interface Usage {
+  conversations: {
+    used: number
+    limit: number // -1 for unlimited
+  }
+  agents: {
+    used: number
+    limit: number
+  }
+  automations: {
+    used: number
+    limit: number // -1 for unlimited
+  }
+  teamMembers: {
+    used: number
+    limit: number // -1 for unlimited
+  }
 }
-
-export const SUBSCRIPTION_TIERS: SubscriptionTier[] = [
-  {
-    name: "Free",
-    price: 0,
-    priceId: "free",
-    features: ["Basic AI assistance", "5 tasks per day", "Standard support", "Basic templates"],
-  },
-  {
-    name: "Accelerator",
-    price: 20,
-    priceId: process.env.NEXT_PUBLIC_STRIPE_ACCELERATOR_PRICE_ID || "",
-    features: [
-      "Advanced AI assistance",
-      "Unlimited tasks",
-      "Priority support",
-      "Premium templates",
-      "Team collaboration",
-      "Advanced analytics",
-    ],
-    popular: true,
-  },
-  {
-    name: "Dominator",
-    price: 49,
-    priceId: process.env.NEXT_PUBLIC_STRIPE_DOMINATOR_PRICE_ID || "",
-    features: [
-      "Elite AI assistance",
-      "Unlimited everything",
-      "24/7 premium support",
-      "Custom templates",
-      "Advanced team features",
-      "White-label options",
-      "API access",
-      "Custom integrations",
-    ],
-  },
-]
 
 export function useSubscription() {
-  const { data: subscription, loading, error, setData, setLoading, setError } = useAsyncState<Subscription>()
-  const { user } = useAuth()
-  const supabase = createClient()
+  const [subscription, setSubscription] = useState<Subscription>({
+    plan: "dominator", // Default to highest plan for development
+    status: "active",
+    billingCycle: "monthly",
+    nextBilling: "2024-02-15",
+    cancelAtPeriodEnd: false,
+  })
 
+  const [usage, setUsage] = useState<Usage>({
+    conversations: {
+      used: 45,
+      limit: -1, // Unlimited for dominator
+    },
+    agents: {
+      used: 8,
+      limit: 8,
+    },
+    automations: {
+      used: 12,
+      limit: -1, // Unlimited for dominator
+    },
+    teamMembers: {
+      used: 3,
+      limit: -1, // Unlimited for dominator
+    },
+  })
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  // Mock data based on plan
   useEffect(() => {
-    if (!user) {
-      setData(null)
-      setLoading(false)
-      return
-    }
-
-    const fetchSubscription = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        const { data, error: fetchError } = await supabase
-          .from("subscriptions")
-          .select("*")
-          .eq("user_id", user.id)
-          .eq("status", "active")
-          .single()
-
-        if (fetchError && fetchError.code !== "PGRST116") {
-          throw fetchError
-        }
-
-        setData(data || null)
-      } catch (err: any) {
-        console.error("Error fetching subscription:", err)
-        setError(err.message)
-      } finally {
-        setLoading(false)
+    const updateUsageBasedOnPlan = () => {
+      switch (subscription.plan) {
+        case "launchpad":
+          setUsage({
+            conversations: { used: 3, limit: 5 },
+            agents: { used: 2, limit: 2 },
+            automations: { used: 1, limit: 3 },
+            teamMembers: { used: 1, limit: 1 },
+          })
+          break
+        case "accelerator":
+          setUsage({
+            conversations: { used: 67, limit: 100 },
+            agents: { used: 5, limit: 5 },
+            automations: { used: 8, limit: 15 },
+            teamMembers: { used: 2, limit: 3 },
+          })
+          break
+        case "dominator":
+          setUsage({
+            conversations: { used: 156, limit: -1 },
+            agents: { used: 8, limit: 8 },
+            automations: { used: 23, limit: -1 },
+            teamMembers: { used: 5, limit: -1 },
+          })
+          break
       }
     }
 
-    fetchSubscription()
-  }, [user, supabase])
+    updateUsageBasedOnPlan()
+  }, [subscription.plan])
 
-  const getCurrentTier = (): SubscriptionTier => {
-    if (!subscription) {
-      return SUBSCRIPTION_TIERS[0] // Free tier
-    }
-
-    return SUBSCRIPTION_TIERS.find((tier) => tier.priceId === subscription.price_id) || SUBSCRIPTION_TIERS[0]
+  const upgradePlan = async (newPlan: "accelerator" | "dominator") => {
+    setIsLoading(true)
+    // Mock API call
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    setSubscription((prev) => ({ ...prev, plan: newPlan }))
+    setIsLoading(false)
   }
 
-  const hasFeature = (feature: string): boolean => {
-    const currentTier = getCurrentTier()
-    return currentTier.features.includes(feature)
+  const cancelSubscription = async () => {
+    setIsLoading(true)
+    // Mock API call
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    setSubscription((prev) => ({ ...prev, cancelAtPeriodEnd: true }))
+    setIsLoading(false)
   }
 
-  const isFreeTier = (): boolean => {
-    return !subscription || subscription.price_id === "free"
-  }
-
-  const isPaidTier = (): boolean => {
-    return !isFreeTier()
-  }
-
-  const canUpgrade = (): boolean => {
-    const currentTier = getCurrentTier()
-    const currentIndex = SUBSCRIPTION_TIERS.findIndex((tier) => tier.name === currentTier.name)
-    return currentIndex < SUBSCRIPTION_TIERS.length - 1
+  const reactivateSubscription = async () => {
+    setIsLoading(true)
+    // Mock API call
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    setSubscription((prev) => ({ ...prev, cancelAtPeriodEnd: false }))
+    setIsLoading(false)
   }
 
   return {
     subscription,
-    loading,
-    error,
-    currentTier: getCurrentTier(),
-    hasFeature,
-    isFreeTier,
-    isPaidTier,
-    canUpgrade,
-    tiers: SUBSCRIPTION_TIERS,
+    usage,
+    isLoading,
+    upgradePlan,
+    cancelSubscription,
+    reactivateSubscription,
   }
 }
-
-// Named export for compatibility
-export { useSubscription as default }
