@@ -78,9 +78,20 @@ export const formatPrice = (price: number): string => {
 }
 
 export const getTierFromPriceId = (priceId: string): SubscriptionTier => {
-  if (priceId === TIER_FEATURES.accelerator.priceId) return "accelerator"
-  if (priceId === TIER_FEATURES.dominator.priceId) return "dominator"
+  if (
+    priceId === process.env.STRIPE_ACCELERATOR_PRICE_ID_MONTHLY ||
+    priceId === process.env.STRIPE_ACCELERATOR_PRICE_ID_YEARLY
+  ) {
+    return "accelerator"
+  }
+  if (
+    priceId === process.env.STRIPE_DOMINATOR_PRICE_ID_MONTHLY ||
+    priceId === process.env.STRIPE_DOMINATOR_PRICE_ID_YEARLY
+  ) {
+    return "dominator"
+  }
   return "launchpad"
+}
 }
 
 export const getURL = () => {
