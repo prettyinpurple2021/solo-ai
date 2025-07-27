@@ -73,3 +73,6 @@ export function useAiChat({ memberId, initialHistory = [] }: UseAiChatProps) {
     handleInputChange,
   }
 }
+
+// Export with the exact name expected
+export { useAiChat as useAIChat }
