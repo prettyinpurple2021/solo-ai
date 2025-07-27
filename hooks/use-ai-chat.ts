@@ -1,78 +1,123 @@
 "use client"
 
-import { useState } from "react"
-import { useChat } from "ai/react"
+import { useState, useCallback } from "react"
 
-interface ChatMessage {
+export interface Message {
   id: string
-  text: string
-  sender: "user" | "ai"
-  timestamp: string
+  role: "user" | "assistant"
+  content: string
+  timestamp: Date
 }
 
-interface UseAiChatProps {
-  memberId: string
-  initialHistory?: ChatMessage[]
+export interface UseAiChatOptions {
+  agentId?: string
+  initialMessages?: Message[]
 }
 
-export function useAiChat({ memberId, initialHistory = [] }: UseAiChatProps) {
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>(initialHistory)
+export interface UseAiChatReturn {
+  messages: Message[]
+  input: string
+  isLoading: boolean
+  error: string | null
+  setInput: (input: string) => void
+  sendMessage: (message?: string) => Promise<void>
+  clearMessages: () => void
+  regenerateLastMessage: () => Promise<void>
+}
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useChat({
-    api: "/api/chat",
-    body: {
-      memberId: memberId.toLowerCase(),
-      chatHistory,
-    },
-    onFinish: (message) => {
-      // Add AI response to chat history
-      const aiMessage: ChatMessage = {
+export function useAiChat(options: UseAiChatOptions = {}): UseAiChatReturn {
+  const { agentId, initialMessages = [] } = options
+
+  const [messages, setMessages] = useState<Message[]>(initialMessages)
+  const [input, setInput] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const sendMessage = useCallback(
+    async (messageContent?: string) => {
+      const content = messageContent || input.trim()
+      if (!content || isLoading) return
+
+      const userMessage: Message = {
         id: Date.now().toString(),
-        text: message.content,
-        sender: "ai",
-        timestamp: new Date().toLocaleTimeString(),
+        role: "user",
+        content,
+        timestamp: new Date(),
       }
-      setChatHistory((prev) => [...prev, aiMessage])
+
+      setMessages((prev) => [...prev, userMessage])
+      setInput("")
+      setIsLoading(true)
+      setError(null)
+
+      try {
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            messages: [...messages, userMessage].map((msg) => ({
+              role: msg.role,
+              content: msg.content,
+            })),
+            agentId,
+          }),
+        })
+
+        if (!response.ok) {
+          throw new Error("Failed to send message")
+        }
+
+        const data = await response.json()
+
+        const assistantMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          role: "assistant",
+          content: data.content || "Sorry, I encountered an error processing your request.",
+          timestamp: new Date(),
+        }
+
+        setMessages((prev) => [...prev, assistantMessage])
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred")
+        console.error("Chat error:", err)
+      } finally {
+        setIsLoading(false)
+      }
     },
-  })
+    [input, messages, isLoading, agentId],
+  )
 
-  const sendMessage = async (messageText: string) => {
-    if (!messageText.trim()) return
+  const clearMessages = useCallback(() => {
+    setMessages([])
+    setError(null)
+  }, [])
 
-    // Add user message to chat history
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      text: messageText,
-      sender: "user",
-      timestamp: new Date().toLocaleTimeString(),
-    }
+  const regenerateLastMessage = useCallback(async () => {
+    if (messages.length < 2) return
 
-    setChatHistory((prev) => [...prev, userMessage])
+    const lastUserMessage = messages[messages.length - 2]
+    if (lastUserMessage.role !== "user") return
 
-    // Send message through useChat
-    const syntheticEvent = {
-      preventDefault: () => {},
-      target: { value: messageText },
-    } as any
+    // Remove the last assistant message
+    setMessages((prev) => prev.slice(0, -1))
 
-    handleInputChange({ target: { value: messageText } } as any)
-    handleSubmit(syntheticEvent)
-  }
-
-  const clearHistory = () => {
-    setChatHistory([])
-  }
+    // Resend the last user message
+    await sendMessage(lastUserMessage.content)
+  }, [messages, sendMessage])
 
   return {
-    chatHistory,
-    sendMessage,
-    clearHistory,
+    messages,
+    input,
     isLoading,
     error,
-    currentInput: input,
-    handleInputChange,
+    setInput,
+    sendMessage,
+    clearMessages,
+    regenerateLastMessage,
   }
 }
 
-// Export with the exact name expected
-export { useAiChat as useAIChat }
+// Export types for external use
+export type { Message, UseAiChatOptions, UseAiChatReturn }

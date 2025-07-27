@@ -7,28 +7,31 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Textarea } from "@/components/ui/textarea"
-import { Mic, MicOff, Volume2, VolumeX, MessageCircle, Send, Users, ArrowLeft } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Mic, MicOff, Volume2, VolumeX, Send, Crown, Sparkles, MessageCircle, Users, Zap } from "lucide-react"
 import { aiAgents } from "@/lib/landing-data"
-import { useAIChat } from "@/hooks/use-ai-chat"
-import Link from "next/link"
+import { useAiChat } from "@/hooks/use-ai-chat"
 
 export default function TeamPage() {
-  const [selectedAgent, setSelectedAgent] = useState<string | null>(null)
-  const [isVoiceActive, setIsVoiceActive] = useState(false)
-  const [isSpeakerOn, setIsSpeakerOn] = useState(true)
+  const [selectedAgent, setSelectedAgent] = useState(aiAgents[0])
   const [message, setMessage] = useState("")
 
-  const selectedAgentData = selectedAgent ? aiAgents.find((agent) => agent.id === selectedAgent) : null
-
-  const { chatHistory, sendMessage, isLoading } = useAIChat({
-    memberId: selectedAgent || "roxy",
-    initialHistory: [],
-  })
+  const {
+    messages,
+    isLoading,
+    sendMessage,
+    clearMessages,
+    isListening,
+    startListening,
+    stopListening,
+    isSpeaking,
+    speak,
+    stopSpeaking,
+  } = useAiChat({ agentId: selectedAgent.id })
 
   const handleSendMessage = async () => {
-    if (!message.trim() || !selectedAgent) return
-
+    if (!message.trim()) return
     await sendMessage(message)
     setMessage("")
   }
@@ -40,221 +43,264 @@ export default function TeamPage() {
     }
   }
 
+  const handleSpeakResponse = (text: string) => {
+    if (isSpeaking) {
+      stopSpeaking()
+    } else {
+      speak(text)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b border-border/40 bg-background/95 backdrop-blur">
-        <div className="container mx-auto px-4 py-4">
+      <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Button variant="ghost" size="sm" asChild>
-                <Link href="/">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Back to Home
-                </Link>
-              </Button>
-              <div className="flex items-center space-x-3">
-                <Image
-                  src="/images/soloboss-logo.png"
-                  alt="SoloBoss AI"
-                  width={32}
-                  height={32}
-                  className="rounded-lg"
-                />
+              <Crown className="w-8 h-8 text-primary" />
+              <div>
                 <h1 className="text-2xl font-bold gradient-text-primary">AI Squad Command Center</h1>
+                <p className="text-sm text-muted-foreground">Manage your 8 specialized AI agents</p>
               </div>
             </div>
-
-            <div className="flex items-center space-x-2">
-              <Users className="w-5 h-5 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">{aiAgents.length} Agents Ready</span>
-            </div>
+            <Badge className="bg-gradient-primary text-white border-0">
+              <Users className="w-4 h-4 mr-2" />8 Agents Active
+            </Badge>
           </div>
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Agent Selection Panel */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Agent Selection Sidebar */}
           <div className="lg:col-span-1">
-            <Card>
+            <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle className="gradient-text-primary">Your AI Squad</CardTitle>
+                <CardTitle className="flex items-center">
+                  <Sparkles className="w-5 h-5 mr-2 text-primary" />
+                  Your AI Squad
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {aiAgents.map((agent) => (
-                  <div
-                    key={agent.id}
-                    className={`p-4 rounded-lg border cursor-pointer transition-all duration-200 ${
-                      selectedAgent === agent.id
-                        ? "border-primary bg-primary/5"
-                        : "border-border hover:border-primary/50 hover:bg-muted/50"
-                    }`}
-                    onClick={() => setSelectedAgent(agent.id)}
-                  >
-                    <div className="flex items-center space-x-3">
-                      <div className="relative">
-                        <div className="w-12 h-12 rounded-full gradient-primary p-0.5">
-                          <Image
-                            src={agent.image || "/placeholder.svg"}
-                            alt={agent.name}
-                            width={48}
-                            height={48}
-                            className="w-full h-full rounded-full object-cover"
-                          />
-                        </div>
-                        {agent.voiceEnabled && (
-                          <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
-                            <Mic className="w-2 h-2 text-white" />
+              <CardContent className="p-0">
+                <ScrollArea className="h-[600px]">
+                  <div className="space-y-2 p-4">
+                    {aiAgents.map((agent) => (
+                      <Button
+                        key={agent.id}
+                        variant={selectedAgent.id === agent.id ? "default" : "ghost"}
+                        className={`w-full justify-start p-4 h-auto ${
+                          selectedAgent.id === agent.id ? "bg-gradient-primary text-white" : "hover:bg-muted"
+                        }`}
+                        onClick={() => setSelectedAgent(agent)}
+                      >
+                        <div className="flex items-center space-x-3">
+                          <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${agent.color} p-0.5`}>
+                            <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
+                              <Image
+                                src={agent.avatar || "/placeholder.svg"}
+                                alt={agent.name}
+                                width={32}
+                                height={32}
+                                className="w-8 h-8 rounded-full object-cover"
+                              />
+                            </div>
                           </div>
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-sm gradient-text-primary">{agent.name}</h3>
-                        <p className="text-xs text-muted-foreground truncate">{agent.role}</p>
-                      </div>
-                    </div>
+                          <div className="text-left">
+                            <div className="font-medium">{agent.name}</div>
+                            <div className="text-xs opacity-80">{agent.role}</div>
+                            {agent.isVoiceEnabled && (
+                              <Badge className="mt-1 bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30 text-xs">
+                                🎤 Voice
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </Button>
+                    ))}
                   </div>
-                ))}
+                </ScrollArea>
               </CardContent>
             </Card>
           </div>
 
-          {/* Chat Interface */}
-          <div className="lg:col-span-2">
-            {selectedAgentData ? (
-              <Card className="h-[600px] flex flex-col">
-                <CardHeader className="border-b border-border/40">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 rounded-full gradient-primary p-0.5">
+          {/* Main Chat Interface */}
+          <div className="lg:col-span-3">
+            <Card className="h-[700px] flex flex-col">
+              {/* Agent Header */}
+              <CardHeader className="border-b border-border">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${selectedAgent.color} p-0.5`}>
+                      <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
                         <Image
-                          src={selectedAgentData.image || "/placeholder.svg"}
-                          alt={selectedAgentData.name}
-                          width={48}
-                          height={48}
-                          className="w-full h-full rounded-full object-cover"
+                          src={selectedAgent.avatar || "/placeholder.svg"}
+                          alt={selectedAgent.name}
+                          width={40}
+                          height={40}
+                          className="w-10 h-10 rounded-full object-cover"
                         />
                       </div>
-                      <div>
-                        <h2 className="text-xl font-bold gradient-text-primary">{selectedAgentData.name}</h2>
-                        <p className="text-sm text-muted-foreground">{selectedAgentData.role}</p>
-                      </div>
                     </div>
+                    <div>
+                      <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
+                      <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
+                      <p className="text-xs text-muted-foreground mt-1">{selectedAgent.personality.split(".")[0]}.</p>
+                    </div>
+                  </div>
 
-                    {selectedAgentData.voiceEnabled && (
-                      <div className="flex items-center space-x-2">
-                        <Button
-                          variant={isVoiceActive ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setIsVoiceActive(!isVoiceActive)}
-                          className={isVoiceActive ? "gradient-primary text-white" : ""}
-                        >
-                          {isVoiceActive ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
-                        </Button>
-                        <Button
-                          variant={isSpeakerOn ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => setIsSpeakerOn(!isSpeakerOn)}
-                          className={isSpeakerOn ? "gradient-primary text-white" : ""}
-                        >
-                          {isSpeakerOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-                        </Button>
+                  {/* Voice Controls */}
+                  {selectedAgent.isVoiceEnabled && (
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        variant={isListening ? "destructive" : "outline"}
+                        size="sm"
+                        onClick={isListening ? stopListening : startListening}
+                        className={isListening ? "animate-pulse-mic" : ""}
+                      >
+                        {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+                      </Button>
+
+                      {/* Audio Level Indicator */}
+                      {isListening && (
+                        <div className="flex items-center space-x-1">
+                          <div className="w-1 bg-green-500 rounded-full animate-audio-wave"></div>
+                          <div className="w-1 bg-green-500 rounded-full animate-audio-wave"></div>
+                          <div className="w-1 bg-green-500 rounded-full animate-audio-wave"></div>
+                          <div className="w-1 bg-green-500 rounded-full animate-audio-wave"></div>
+                          <div className="w-1 bg-green-500 rounded-full animate-audio-wave"></div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </CardHeader>
+
+              {/* Chat Messages */}
+              <CardContent className="flex-1 p-0">
+                <ScrollArea className="h-full p-4">
+                  {messages.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center h-full text-center">
+                      <div className={`w-20 h-20 rounded-full bg-gradient-to-r ${selectedAgent.color} p-1 mb-4`}>
+                        <div className="w-full h-full rounded-full bg-background flex items-center justify-center">
+                          <Image
+                            src={selectedAgent.avatar || "/placeholder.svg"}
+                            alt={selectedAgent.name}
+                            width={64}
+                            height={64}
+                            className="w-16 h-16 rounded-full object-cover"
+                          />
+                        </div>
                       </div>
+                      <h3 className="text-lg font-semibold mb-2">Chat with {selectedAgent.name}</h3>
+                      <p className="text-muted-foreground max-w-md">
+                        Start a conversation with your {selectedAgent.role.toLowerCase()}.
+                        {selectedAgent.isVoiceEnabled && " You can type or use voice commands."}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {messages.map((msg) => (
+                        <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                          <div
+                            className={`max-w-[80%] rounded-lg p-3 ${
+                              msg.role === "user" ? "bg-gradient-primary text-white" : "bg-muted"
+                            }`}
+                          >
+                            <p className="text-sm">{msg.content}</p>
+                            {msg.role === "assistant" && selectedAgent.isVoiceEnabled && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="mt-2 h-6 px-2 text-xs"
+                                onClick={() => handleSpeakResponse(msg.content)}
+                              >
+                                {isSpeaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                      {isLoading && (
+                        <div className="flex justify-start">
+                          <div className="bg-muted rounded-lg p-3 max-w-[80%]">
+                            <div className="flex items-center space-x-2">
+                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
+                              <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </ScrollArea>
+              </CardContent>
+
+              {/* Message Input */}
+              <div className="border-t border-border p-4">
+                <div className="flex items-center space-x-2">
+                  <Input
+                    placeholder={`Message ${selectedAgent.name}...`}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    onKeyPress={handleKeyPress}
+                    disabled={isLoading}
+                    className="flex-1"
+                  />
+                  <Button
+                    onClick={handleSendMessage}
+                    disabled={isLoading || !message.trim()}
+                    size="sm"
+                    className="gradient-primary text-white hover:opacity-90"
+                  >
+                    <Send className="w-4 h-4" />
+                  </Button>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex items-center space-x-2">
+                    <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs">
+                      Clear Chat
+                    </Button>
+                    {isListening && (
+                      <Badge className="bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30 text-xs">
+                        <Mic className="w-3 h-3 mr-1" />
+                        Listening...
+                      </Badge>
                     )}
                   </div>
 
-                  <div className="flex flex-wrap gap-2 mt-4">
-                    {selectedAgentData.specialties.map((specialty, index) => (
-                      <Badge key={index} variant="secondary" className="text-xs">
-                        {specialty}
-                      </Badge>
-                    ))}
+                  <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                    <MessageCircle className="w-3 h-3" />
+                    <span>{messages.length} messages</span>
                   </div>
-                </CardHeader>
-
-                {/* Chat Messages */}
-                <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
-                  {chatHistory.length === 0 ? (
-                    <div className="text-center text-muted-foreground py-8">
-                      <MessageCircle className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                      <p className="text-lg font-medium mb-2">Start chatting with {selectedAgentData.name}</p>
-                      <p className="text-sm">{selectedAgentData.description}</p>
-                    </div>
-                  ) : (
-                    chatHistory.map((msg) => (
-                      <div key={msg.id} className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}>
-                        <div
-                          className={`max-w-[80%] p-3 rounded-lg ${
-                            msg.sender === "user" ? "gradient-primary text-white" : "bg-muted text-foreground"
-                          }`}
-                        >
-                          <p className="text-sm">{msg.text}</p>
-                          <p className="text-xs opacity-70 mt-1">{msg.timestamp}</p>
-                        </div>
-                      </div>
-                    ))
-                  )}
-
-                  {isLoading && (
-                    <div className="flex justify-start">
-                      <div className="bg-muted text-foreground p-3 rounded-lg">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-current rounded-full animate-pulse"></div>
-                          <div
-                            className="w-2 h-2 bg-current rounded-full animate-pulse"
-                            style={{ animationDelay: "0.2s" }}
-                          ></div>
-                          <div
-                            className="w-2 h-2 bg-current rounded-full animate-pulse"
-                            style={{ animationDelay: "0.4s" }}
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </CardContent>
-
-                {/* Message Input */}
-                <div className="border-t border-border/40 p-4">
-                  <div className="flex space-x-2">
-                    <Textarea
-                      placeholder={`Message ${selectedAgentData.name}...`}
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      className="flex-1 min-h-[44px] max-h-32 resize-none"
-                      rows={1}
-                    />
-                    <Button
-                      onClick={handleSendMessage}
-                      disabled={!message.trim() || isLoading}
-                      className="gradient-primary text-white hover:opacity-90"
-                    >
-                      <Send className="w-4 h-4" />
-                    </Button>
-                  </div>
-
-                  {isVoiceActive && (
-                    <div className="mt-2 flex items-center justify-center">
-                      <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                        <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
-                        <span>Voice chat active - Speak now</span>
-                      </div>
-                    </div>
-                  )}
                 </div>
-              </Card>
-            ) : (
-              <Card className="h-[600px] flex items-center justify-center">
-                <div className="text-center text-muted-foreground">
-                  <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <h3 className="text-xl font-semibold mb-2">Select an AI Agent</h3>
-                  <p>Choose an agent from your squad to start chatting</p>
-                </div>
-              </Card>
-            )}
+              </div>
+            </Card>
           </div>
+        </div>
+
+        {/* Agent Specialties */}
+        <div className="mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Zap className="w-5 h-5 mr-2 text-primary" />
+                {selectedAgent.name}'s Specialties
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {selectedAgent.specialties?.map((specialty, index) => (
+                  <Badge key={index} variant="secondary" className="justify-center py-2">
+                    {specialty}
+                  </Badge>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
