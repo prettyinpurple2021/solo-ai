@@ -35,7 +35,7 @@ export const TIER_FEATURES = {
   accelerator: {
     name: "Accelerator Pro",
     price: 20,
-    priceId: process.env.STRIPE_ACCELERATOR_PRICE_ID || "price_accelerator_placeholder",
+    priceId: process.env.STRIPE_ACCELERATOR_PRICE_ID_MONTHLY || "price_accelerator_placeholder",
     features: [
       "All 8 AI Agents",
       "Unlimited Tasks",
