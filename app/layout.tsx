@@ -10,7 +10,16 @@ const inter = Inter({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "SoloBoss AI - Build Your Empire",
   description: "AI-powered productivity platform for solo entrepreneurs",
-    generator: 'v0.dev'
+  generator: "Next.js",
+  keywords: ["AI", "productivity", "entrepreneur", "automation", "business"],
+  authors: [{ name: "SoloBoss AI Team" }],
+  creator: "SoloBoss AI",
+  publisher: "SoloBoss AI",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
 }
 
 export default function RootLayout({

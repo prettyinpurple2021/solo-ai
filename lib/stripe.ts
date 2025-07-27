@@ -89,3 +89,25 @@ export const getURL = () => {
   url = url.charAt(url.length - 1) === "/" ? url : `${url}/`
   return url
 }
+
+// Additional Stripe configuration
+export const STRIPE_CONFIG = {
+  products: {
+    launchpad: process.env.STRIPE_LAUNCHPAD_PRODUCT_ID!,
+    accelerator: process.env.STRIPE_ACCELERATOR_PRODUCT_ID!,
+    dominator: process.env.STRIPE_DOMINATOR_PRODUCT_ID!,
+  },
+  prices: {
+    launchpad: {
+      monthly: process.env.STRIPE_LAUNCHPAD_PRICE_ID_MONTHLY!,
+    },
+    accelerator: {
+      monthly: process.env.STRIPE_ACCELERATOR_PRICE_ID_MONTHLY!,
+      yearly: process.env.STRIPE_ACCELERATOR_PRICE_ID_YEARLY!,
+    },
+    dominator: {
+      monthly: process.env.STRIPE_DOMINATOR_PRICE_ID_MONTHLY!,
+      yearly: process.env.STRIPE_DOMINATOR_PRICE_ID_YEARLY!,
+    },
+  },
+}
