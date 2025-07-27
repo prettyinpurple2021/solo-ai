@@ -1,172 +1,180 @@
-export const aiAgents = [
+export interface AIAgent {
+  id: string
+  name: string
+  role: string
+  specialty: string
+  image: string
+  description: string
+  skills: string[]
+  personality: {
+    tone: string
+    approach: string
+    strengths: string[]
+  }
+}
+
+export const aiAgents: AIAgent[] = [
   {
     id: "roxy",
     name: "Roxy",
-    role: "Brand Strategist",
-    avatar: "/images/agents/roxy.png",
-    color: "from-pink-500 to-rose-500",
-    personality:
-      "Fierce and fabulous brand guru who turns your vision into viral gold. She's got that boss babe energy that makes brands unforgettable.",
-    specialties: ["Brand Identity", "Visual Design", "Market Positioning"],
-    isVoiceEnabled: true,
+    role: "Creative Strategist",
+    specialty: "Brand & Content Creation",
+    image: "/images/agents/roxy.png",
+    description: "Transforms ideas into compelling brand stories and viral content.",
+    skills: ["Brand Strategy", "Content Creation", "Social Media", "Copywriting"],
+    personality: {
+      tone: "Creative and inspiring",
+      approach: "Innovative and trend-focused",
+      strengths: ["Visual storytelling", "Brand positioning", "Content strategy"],
+    },
   },
   {
     id: "blaze",
     name: "Blaze",
-    role: "Marketing Maverick",
-    avatar: "/images/agents/blaze.png",
-    color: "from-orange-500 to-red-500",
-    personality:
-      "High-energy marketing machine who creates campaigns that set the internet on fire. She lives for viral moments and explosive growth.",
-    specialties: ["Social Media", "Content Strategy", "Viral Marketing"],
-    isVoiceEnabled: true,
+    role: "Performance Coach",
+    specialty: "Productivity & Goal Achievement",
+    image: "/images/agents/blaze.png",
+    description: "Ignites your potential and drives peak performance results.",
+    skills: ["Goal Setting", "Time Management", "Motivation", "Performance Tracking"],
+    personality: {
+      tone: "Energetic and motivational",
+      approach: "Results-driven and systematic",
+      strengths: ["Goal achievement", "Productivity optimization", "Habit formation"],
+    },
   },
   {
     id: "echo",
     name: "Echo",
-    role: "Content Creator",
-    avatar: "/images/agents/echo.png",
-    color: "from-purple-500 to-indigo-500",
-    personality:
-      "Creative storyteller who crafts content that resonates deep in your audience's soul. She turns ideas into irresistible narratives.",
-    specialties: ["Copywriting", "Storytelling", "Content Planning"],
-    isVoiceEnabled: true,
+    role: "Communication Expert",
+    specialty: "Networking & Relationships",
+    image: "/images/agents/echo.png",
+    description: "Amplifies your voice and builds meaningful connections.",
+    skills: ["Networking", "Communication", "Relationship Building", "Public Speaking"],
+    personality: {
+      tone: "Empathetic and articulate",
+      approach: "Relationship-focused and authentic",
+      strengths: ["Active listening", "Conflict resolution", "Network building"],
+    },
   },
   {
     id: "lumi",
     name: "Lumi",
-    role: "Tech Wizard",
-    avatar: "/images/agents/lumi.png",
-    color: "from-cyan-500 to-blue-500",
-    personality:
-      "Brilliant tech genius who makes complex systems feel like magic. She's your go-to for turning technical challenges into competitive advantages.",
-    specialties: ["Automation", "Systems", "Tech Strategy"],
-    isVoiceEnabled: true,
+    role: "Innovation Catalyst",
+    specialty: "Creative Problem Solving",
+    image: "/images/agents/lumi.png",
+    description: "Illuminates new possibilities and breakthrough solutions.",
+    skills: ["Innovation", "Problem Solving", "Design Thinking", "Strategy"],
+    personality: {
+      tone: "Curious and insightful",
+      approach: "Analytical and creative",
+      strengths: ["Pattern recognition", "Strategic thinking", "Innovation frameworks"],
+    },
   },
   {
     id: "vex",
     name: "Vex",
-    role: "Sales Assassin",
-    avatar: "/images/agents/vex.png",
-    color: "from-green-500 to-emerald-500",
-    personality:
-      "Ruthless sales machine who closes deals like a boss. She turns prospects into raving fans and objections into opportunities.",
-    specialties: ["Sales Funnels", "Conversion", "Customer Psychology"],
-    isVoiceEnabled: true,
+    role: "Tech Specialist",
+    specialty: "Digital Solutions & Automation",
+    image: "/images/agents/vex.png",
+    description: "Masters technology to streamline and optimize your workflow.",
+    skills: ["Automation", "Tech Solutions", "Digital Tools", "Process Optimization"],
+    personality: {
+      tone: "Logical and efficient",
+      approach: "Technical and systematic",
+      strengths: ["Process automation", "Tool integration", "System optimization"],
+    },
   },
   {
     id: "lexi",
     name: "Lexi",
-    role: "Data Analyst",
-    avatar: "/images/agents/lexi.png",
-    color: "from-violet-500 to-purple-500",
-    personality:
-      "Numbers ninja who finds gold in your data. She turns analytics into actionable insights that drive real business growth.",
-    specialties: ["Analytics", "Performance Tracking", "Growth Metrics"],
-    isVoiceEnabled: true,
+    role: "Learning Accelerator",
+    specialty: "Skill Development & Growth",
+    image: "/images/agents/lexi.png",
+    description: "Accelerates your learning journey and skill mastery.",
+    skills: ["Learning Strategy", "Skill Development", "Knowledge Management", "Growth Planning"],
+    personality: {
+      tone: "Supportive and knowledgeable",
+      approach: "Educational and structured",
+      strengths: ["Learning optimization", "Skill assessment", "Growth planning"],
+    },
   },
   {
     id: "nova",
     name: "Nova",
-    role: "Innovation Catalyst",
-    avatar: "/images/agents/nova.png",
-    color: "from-yellow-500 to-orange-500",
-    personality:
-      "Visionary innovator who sees opportunities where others see obstacles. She's always three steps ahead with game-changing ideas.",
-    specialties: ["Strategy", "Innovation", "Future Planning"],
-    isVoiceEnabled: true,
+    role: "Vision Architect",
+    specialty: "Strategic Planning & Future Thinking",
+    image: "/images/agents/nova.png",
+    description: "Designs your path to extraordinary success with visionary insights.",
+    skills: ["Strategic Planning", "Vision Development", "Future Forecasting", "Leadership"],
+    personality: {
+      tone: "Visionary and inspiring",
+      approach: "Strategic and forward-thinking",
+      strengths: ["Long-term planning", "Vision articulation", "Strategic alignment"],
+    },
   },
   {
     id: "glitch",
     name: "Glitch",
-    role: "Problem Solver",
-    avatar: "/images/agents/glitch.png",
-    color: "from-slate-500 to-gray-500",
-    personality:
-      "Master troubleshooter who thrives on solving impossible challenges. She turns your biggest problems into your greatest victories.",
-    specialties: ["Problem Solving", "Crisis Management", "Optimization"],
-    isVoiceEnabled: true,
+    role: "Disruption Specialist",
+    specialty: "Innovation & Market Disruption",
+    image: "/images/agents/glitch.png",
+    description: "Breaks conventional thinking to create breakthrough opportunities.",
+    skills: ["Market Analysis", "Disruption Strategy", "Innovation", "Competitive Intelligence"],
+    personality: {
+      tone: "Bold and unconventional",
+      approach: "Disruptive and innovative",
+      strengths: ["Market disruption", "Competitive analysis", "Innovation strategy"],
+    },
   },
 ]
 
 export const features = [
   {
-    icon: "🎯",
-    title: "AI Squad Command Center",
+    title: "AI-Powered Insights",
+    description: "Get personalized recommendations and strategies tailored to your unique goals and challenges.",
+    icon: "brain",
+  },
+  {
+    title: "Instant Productivity Boost",
+    description: "Streamline your workflow with intelligent automation and smart task management.",
+    icon: "zap",
+  },
+  {
+    title: "Goal Achievement System",
+    description: "Track progress, celebrate wins, and stay motivated with our comprehensive goal framework.",
+    icon: "target",
+  },
+  {
+    title: "Expert AI Team",
     description:
-      "Control your entire AI team from one powerful dashboard. Assign tasks, track progress, and watch your empire grow.",
-  },
-  {
-    icon: "🚀",
-    title: "Instant Business Scaling",
-    description:
-      "From startup to empire in record time. Your AI squad works 24/7 to accelerate every aspect of your business.",
-  },
-  {
-    icon: "💎",
-    title: "Premium Brand Building",
-    description:
-      "Create a brand that commands respect and premium prices. Stand out in any market with AI-powered positioning.",
-  },
-  {
-    icon: "📈",
-    title: "Revenue Optimization",
-    description: "Maximize every revenue stream with data-driven insights and automated optimization strategies.",
-  },
-  {
-    icon: "🎨",
-    title: "Creative Content Engine",
-    description:
-      "Never run out of engaging content. Your AI squad creates, schedules, and optimizes content that converts.",
-  },
-  {
-    icon: "🔥",
-    title: "Viral Marketing Machine",
-    description: "Create campaigns that spread like wildfire. Your AI squad knows exactly what makes content go viral.",
+      "Access specialized AI agents, each with unique expertise to support different aspects of your journey.",
+    icon: "users",
   },
 ]
 
 export const testimonials = [
   {
     name: "Sarah Chen",
-    role: "E-commerce Empire Builder",
+    role: "Entrepreneur",
     content:
-      "My AI squad helped me scale from $10K to $100K monthly revenue in just 6 months. They're like having a team of experts working around the clock!",
+      "SoloBoss AI transformed how I approach my business. The AI agents feel like having a whole team of experts at my fingertips.",
     rating: 5,
     avatar: "/placeholder-user.jpg",
   },
   {
-    name: "Maria Rodriguez",
-    role: "Digital Marketing Boss",
+    name: "Marcus Rodriguez",
+    role: "Freelancer",
     content:
-      "I went from struggling solopreneur to industry leader. My AI agents handle everything while I focus on the big picture. Game changer!",
+      "The productivity boost is incredible. I've doubled my output while working fewer hours thanks to the smart automation.",
     rating: 5,
     avatar: "/placeholder-user.jpg",
   },
   {
-    name: "Jessica Kim",
-    role: "Tech Startup Founder",
+    name: "Emily Watson",
+    role: "Content Creator",
     content:
-      "The AI squad doesn't just work for you - they think with you. It's like having 8 brilliant business partners who never sleep.",
+      "Roxy helped me develop a brand strategy that increased my engagement by 300%. This platform is a game-changer.",
     rating: 5,
     avatar: "/placeholder-user.jpg",
-  },
-]
-
-export const stats = [
-  {
-    number: "10,000+",
-    label: "Boss Babes Empowered",
-    description: "Entrepreneurs building empires",
-  },
-  {
-    number: "$50M+",
-    label: "Revenue Generated",
-    description: "By our AI squad users",
-  },
-  {
-    number: "24/7",
-    label: "AI Squad Availability",
-    description: "Your team never sleeps",
   },
 ]
