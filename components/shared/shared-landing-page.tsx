@@ -505,12 +505,12 @@ export function SharedLandingPage({
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a href="/pricing" className="hover:text-white transition-colors">
                     Pricing
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a href="/api-docs" className="hover:text-white transition-colors">
                     API
                   </a>
                 </li>
