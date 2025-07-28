@@ -6,8 +6,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { CheckCircle, X, ArrowLeft, Crown, Rocket, Zap } from "lucide-react"
+import { CheckCircle, X, ArrowLeft, Crown, Rocket, Zap, MessageCircle } from "lucide-react"
 import Link from "next/link"
+import { AuthModal } from "@/components/auth/auth-modal"
+import { useRouter } from "next/navigation"
 
 const PRICING_PLANS = [
   {
@@ -18,6 +20,8 @@ const PRICING_PLANS = [
     popular: false,
     icon: Rocket,
     color: "from-blue-500 to-cyan-500",
+    cta: "Start Free",
+    ctaType: "signup",
     features: [
       "Access to 2 AI agents (Nova & Echo)",
       "5 AI conversations per day",
@@ -36,6 +40,8 @@ const PRICING_PLANS = [
     popular: true,
     icon: Zap,
     color: "from-purple-500 to-pink-500",
+    cta: "Start Building",
+    ctaType: "signup",
     features: [
       "Access to 5 AI agents",
       "100 AI conversations per day",
@@ -56,6 +62,8 @@ const PRICING_PLANS = [
     popular: false,
     icon: Crown,
     color: "from-yellow-500 to-orange-500",
+    cta: "Contact Sales",
+    ctaType: "contact",
     features: [
       "Access to all 8 AI agents",
       "Unlimited AI conversations",
@@ -107,12 +115,30 @@ const FAQ_ITEMS = [
 
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false)
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  const router = useRouter()
 
   const calculateSavings = (monthly: string, yearly: string) => {
     if (monthly === "Free" || yearly === "Free") return 0
     const monthlyNum = Number.parseInt(monthly.replace("$", ""))
     const yearlyNum = Number.parseInt(yearly.replace("$", ""))
     return Math.round(((monthlyNum * 12 - yearlyNum * 12) / (monthlyNum * 12)) * 100)
+  }
+
+  const handleCTAClick = (plan: typeof PRICING_PLANS[0]) => {
+    if (plan.ctaType === "signup") {
+      setIsAuthModalOpen(true)
+    } else if (plan.ctaType === "contact") {
+      // For now, we'll scroll to the contact section or show a simple alert
+      // In a real app, this could open a contact modal or navigate to a contact page
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+      // You could also implement: router.push('/contact') if a contact page exists
+    }
+  }
+
+  const handleAuthSuccess = () => {
+    setIsAuthModalOpen(false)
+    router.push('/dashboard')
   }
 
   return (
@@ -251,8 +277,10 @@ export default function PricingPage() {
                           ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white animate-pulse"
                           : "bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white"
                       }`}
+                      onClick={() => handleCTAClick(plan)}
                     >
-                      {plan.name === "Launchpad" ? "Start Free" : "Start Building"}
+                      {plan.ctaType === "contact" && <MessageCircle className="w-4 h-4 mr-2" />}
+                      {plan.cta}
                     </Button>
                   </CardContent>
                 </Card>
@@ -374,6 +402,7 @@ export default function PricingPage() {
             <Button
               size="lg"
               className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
+              onClick={() => setIsAuthModalOpen(true)}
             >
               Start Free Trial
             </Button>
@@ -381,12 +410,67 @@ export default function PricingPage() {
               size="lg"
               variant="outline"
               className="border-2 border-white text-white hover:bg-white hover:text-purple-600 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200 bg-transparent"
+              onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
             >
               Schedule Demo
             </Button>
           </div>
         </div>
       </section>
+
+      {/* Contact Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="flex items-center justify-center mb-8">
+            <MessageCircle className="w-8 h-8 text-purple-600 mr-3" />
+            <h2 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Ready for Enterprise?
+            </h2>
+          </div>
+          <p className="text-xl text-gray-600 mb-8">
+            Need custom solutions, white-labeling, or enterprise features? Our sales team is ready to help you build your empire.
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <Card className="p-6 text-center">
+              <h3 className="text-lg font-bold text-gray-800 mb-2">Custom Pricing</h3>
+              <p className="text-gray-600 text-sm">Tailored plans for your specific needs and budget.</p>
+            </Card>
+            <Card className="p-6 text-center">
+              <h3 className="text-lg font-bold text-gray-800 mb-2">White Labeling</h3>
+              <p className="text-gray-600 text-sm">Complete branding customization for your business.</p>
+            </Card>
+            <Card className="p-6 text-center">
+              <h3 className="text-lg font-bold text-gray-800 mb-2">Dedicated Support</h3>
+              <p className="text-gray-600 text-sm">24/7 premium support with dedicated account manager.</p>
+            </Card>
+          </div>
+          <div className="space-y-4 md:space-y-0 md:space-x-4 md:flex md:justify-center">
+            <Button
+              size="lg"
+              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
+              onClick={() => window.open('mailto:sales@soloboss.ai?subject=Enterprise%20Inquiry&body=Hello,%20I%27m%20interested%20in%20learning%20more%20about%20enterprise%20solutions%20for%20SoloBoss%20AI.', '_blank')}
+            >
+              <MessageCircle className="w-4 h-4 mr-2" />
+              Contact Sales Team
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-purple-300 text-purple-600 hover:bg-purple-50 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
+              onClick={() => window.open('https://calendly.com/soloboss-ai', '_blank')}
+            >
+              Schedule a Call
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={handleAuthSuccess}
+      />
     </div>
   )
 }
