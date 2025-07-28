@@ -19,6 +19,7 @@ export function SharedLandingPage({
   onShowAuthModal = () => {},
   styleVariant = "default",
 }: SharedLandingPageProps) {
+  // Mobile menu state for responsive navigation
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const features = [
