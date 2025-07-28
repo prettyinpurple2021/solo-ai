@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/theme-toggle"
+
 import { Menu, X, Star, Sparkles, Brain, Zap, Shield, Users } from "lucide-react"
 import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
+
 
 interface SharedLandingPageProps {
   showAuthModal?: boolean
@@ -20,8 +22,11 @@ export function SharedLandingPage({
   onShowAuthModal = () => {},
   styleVariant = "default",
 }: SharedLandingPageProps) {
+  // Mobile menu state for responsive navigation
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
   const [showScheduleModal, setShowScheduleModal] = useState(false)
+
 
   const features = [
     {
@@ -148,18 +153,30 @@ export function SharedLandingPage({
             <div className="hidden md:flex items-center space-x-8">
               <a
                 href="#features"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection("features")
+                }}
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
                 Features
               </a>
               <a
                 href="#agents"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection("agents")
+                }}
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
                 AI Squad
               </a>
               <a
                 href="#testimonials"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection("testimonials")
+                }}
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
                 Testimonials
@@ -191,18 +208,33 @@ export function SharedLandingPage({
               <div className="flex flex-col space-y-4">
                 <a
                   href="#features"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    scrollToSection("features")
+                    setMobileMenuOpen(false)
+                  }}
                   className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
                 >
                   Features
                 </a>
                 <a
                   href="#agents"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    scrollToSection("agents")
+                    setMobileMenuOpen(false)
+                  }}
                   className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
                 >
                   AI Squad
                 </a>
                 <a
                   href="#testimonials"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    scrollToSection("testimonials")
+                    setMobileMenuOpen(false)
+                  }}
                   className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
                 >
                   Testimonials
@@ -251,10 +283,11 @@ export function SharedLandingPage({
             <Button
               size="lg"
               variant="outline"
-              onClick={onShowAuthModal}
+              onClick={() => setIsVideoPlaying(true)}
               className="border-pink-300 text-pink-600 hover:bg-pink-50 dark:border-pink-600 dark:text-pink-400 dark:hover:bg-pink-900/20 px-8 py-3 bg-transparent"
             >
               Watch Demo
+              <Play className="ml-2 h-5 w-5" />
             </Button>
           </div>
         </div>
@@ -442,22 +475,36 @@ export function SharedLandingPage({
               <h3 className="font-semibold mb-4">Product</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <a href="#features" className="hover:text-white transition-colors">
+                  <a
+                    href="#features"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      scrollToSection("features")
+                    }}
+                    className="hover:text-white transition-colors"
+                  >
                     Features
                   </a>
                 </li>
                 <li>
-                  <a href="#agents" className="hover:text-white transition-colors">
+                  <a
+                    href="#agents"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      scrollToSection("agents")
+                    }}
+                    className="hover:text-white transition-colors"
+                  >
                     AI Squad
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a href="/pricing" className="hover:text-white transition-colors">
                     Pricing
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-white transition-colors">
+                  <a href="/api-docs" className="hover:text-white transition-colors">
                     API
                   </a>
                 </li>
@@ -497,11 +544,13 @@ export function SharedLandingPage({
         </div>
       </footer>
 
+
       {/* Schedule Demo Modal */}
       <ScheduleDemoModal
         isOpen={showScheduleModal}
         onClose={() => setShowScheduleModal(false)}
       />
+
     </div>
   )
 }
