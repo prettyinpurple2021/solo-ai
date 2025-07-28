@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { ThemeToggle } from "@/components/theme-toggle"
+
 import {
   ArrowRight,
   Sparkles,
@@ -20,9 +21,13 @@ import {
   X,
   Menu,
   Play,
+  Brain
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
+
+
 
 const features = [
   {
@@ -56,6 +61,7 @@ const features = [
     description: "Bank-level security with end-to-end encryption and compliance certifications.",
   },
 ]
+
 
 const testimonials = [
   {
@@ -130,6 +136,41 @@ const pricingPlans = [
 ]
 
 export function SharedLandingPage({
+  showAuthModal = false,
+  onShowAuthModal = () => {},
+  styleVariant = "default",
+}: SharedLandingPageProps) {
+  // Mobile menu state for responsive navigation
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const [showScheduleModal, setShowScheduleModal] = useState(false)
+
+
+  const features = [
+    {
+      icon: Brain,
+      title: "AI-Powered Insights",
+      description: "Get personalized recommendations and insights powered by advanced AI technology.",
+    },
+    {
+      icon: Zap,
+      title: "Lightning Fast",
+      description: "Experience blazing-fast performance with our optimized AI processing engine.",
+    },
+    {
+      icon: Shield,
+      title: "Secure & Private",
+      description: "Your data is protected with enterprise-grade security and privacy measures.",
+    },
+    {
+      icon: Users,
+      title: "Team Collaboration",
+      description: "Work seamlessly with your team using our collaborative AI workspace.",
+    },
+  ]
+
+
+export function SharedLandingPage({
   showAuthModal,
   onShowAuthModal,
   styleVariant,
@@ -187,20 +228,34 @@ export function SharedLandingPage({
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              <button
-                onClick={() => scrollToSection("features")}
+
+              <a
+                href="#features"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection("features")
+                }}
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
                 Features
-              </button>
-              <button
-                onClick={() => scrollToSection("testimonials")}
+              </a>
+              <a
+                href="#agents"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection("agents")
+                }}
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
-                Testimonials
-              </button>
-              <button
-                onClick={() => scrollToSection("pricing")}
+                AI Squad
+              </a>
+              <a
+                href="#testimonials"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection("testimonials")
+                }}
+
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
                 Pricing
@@ -224,43 +279,71 @@ export function SharedLandingPage({
           </div>
 
           {/* Mobile Navigation */}
-          <AnimatePresence>
-            {isMenuOpen && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="md:hidden mt-4 pb-4 border-t border-pink-200 dark:border-purple-800"
-              >
-                <div className="flex flex-col space-y-4 pt-4">
-                  <button
-                    onClick={() => scrollToSection("features")}
-                    className="text-left text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-                  >
-                    Features
-                  </button>
-                  <button
-                    onClick={() => scrollToSection("testimonials")}
-                    className="text-left text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-                  >
-                    Testimonials
-                  </button>
-                  <button
-                    onClick={() => scrollToSection("pricing")}
-                    className="text-left text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-                  >
-                    Pricing
-                  </button>
-                  <Link href="/dashboard">
-                    <Button className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white">
-                      Get Started
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </Button>
-                  </Link>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+
+<AnimatePresence>
+  {mobileMenuOpen && (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      className="md:hidden py-4 border-t border-pink-200 dark:border-purple-800"
+    >
+      <div className="flex flex-col space-y-4">
+        <a
+          href="#features"
+          onClick={(e) => {
+            e.preventDefault()
+            scrollToSection("features")
+            setMobileMenuOpen(false)
+          }}
+          className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+        >
+          Features
+        </a>
+        <a
+          href="#agents"
+          onClick={(e) => {
+            e.preventDefault()
+            scrollToSection("agents")
+            setMobileMenuOpen(false)
+          }}
+          className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+        >
+          AI Squad
+        </a>
+        <a
+          href="#testimonials"
+          onClick={(e) => {
+            e.preventDefault()
+            scrollToSection("testimonials")
+            setMobileMenuOpen(false)
+          }}
+          className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+        >
+          Testimonials
+        </a>
+        <a
+          href="#pricing"
+          onClick={(e) => {
+            e.preventDefault()
+            scrollToSection("pricing")
+            setMobileMenuOpen(false)
+          }}
+          className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+        >
+          Pricing
+        </a>
+        <Button
+          onClick={onShowAuthModal}
+          className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white w-full"
+        >
+          Get Started
+        </Button>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
+
         </div>
       </nav>
 
@@ -300,6 +383,7 @@ export function SharedLandingPage({
               </Button>
             </div>
 
+
             {/* Stats */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
               <motion.div
@@ -331,6 +415,26 @@ export function SharedLandingPage({
               </motion.div>
             </div>
           </motion.div>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button
+              size="lg"
+              onClick={onShowAuthModal}
+              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-3"
+            >
+              Start Your Journey
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => setIsVideoPlaying(true)}
+              className="border-pink-300 text-pink-600 hover:bg-pink-50 dark:border-pink-600 dark:text-pink-400 dark:hover:bg-pink-900/20 px-8 py-3 bg-transparent"
+            >
+              Watch Demo
+              <Play className="ml-2 h-5 w-5" />
+            </Button>
+          </div>
+
         </div>
       </section>
 
@@ -557,7 +661,12 @@ export function SharedLandingPage({
               <Button
                 size="lg"
                 variant="outline"
+
                 className="text-lg px-8 py-4 border-pink-300 dark:border-purple-600 bg-transparent"
+
+                onClick={() => setShowScheduleModal(true)}
+                className="border-white text-white hover:bg-white/10 px-8 py-3 bg-transparent"
+
               >
                 Schedule Demo
               </Button>
@@ -587,17 +696,55 @@ export function SharedLandingPage({
               <h3 className="font-bold mb-4">Product</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Features
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+
+            <a
+  href="#features"
+  onClick={(e) => {
+    e.preventDefault()
+    scrollToSection("features")
+  }}
+  className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+>
+  Features
+</a>
+<a
+  href="#agents"
+  onClick={(e) => {
+    e.preventDefault()
+    scrollToSection("agents")
+  }}
+  className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+>
+  AI Squad
+</a>
+<a
+  href="#testimonials"
+  onClick={(e) => {
+    e.preventDefault()
+    scrollToSection("testimonials")
+  }}
+  className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+>
+  Testimonials
+</a>
+<a
+  href="#pricing"
+  onClick={(e) => {
+    e.preventDefault()
+    scrollToSection("pricing")
+  }}
+  className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
+>
+  Pricing
+</a>
+
                     Pricing
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+
+                  <a href="/api-docs" className="hover:text-white transition-colors">
+
                     API
                   </Link>
                 </li>
@@ -676,6 +823,14 @@ export function SharedLandingPage({
           </div>
         </div>
       </footer>
+
+
+      {/* Schedule Demo Modal */}
+      <ScheduleDemoModal
+        isOpen={showScheduleModal}
+        onClose={() => setShowScheduleModal(false)}
+      />
+
     </div>
   )
 }

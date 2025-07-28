@@ -6,8 +6,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { CheckCircle, X, ArrowLeft, Crown, Rocket, Zap } from "lucide-react"
+import { CheckCircle, X, ArrowLeft, Crown, Rocket, Zap, MessageCircle } from "lucide-react"
 import Link from "next/link"
+
+import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
+
 
 const PRICING_PLANS = [
   {
@@ -18,6 +21,8 @@ const PRICING_PLANS = [
     popular: false,
     icon: Rocket,
     color: "from-blue-500 to-cyan-500",
+    cta: "Start Free",
+    ctaType: "signup",
     features: [
       "Access to 2 AI agents (Nova & Echo)",
       "5 AI conversations per day",
@@ -36,6 +41,8 @@ const PRICING_PLANS = [
     popular: true,
     icon: Zap,
     color: "from-purple-500 to-pink-500",
+    cta: "Start Building",
+    ctaType: "signup",
     features: [
       "Access to 5 AI agents",
       "100 AI conversations per day",
@@ -56,6 +63,8 @@ const PRICING_PLANS = [
     popular: false,
     icon: Crown,
     color: "from-yellow-500 to-orange-500",
+    cta: "Contact Sales",
+    ctaType: "contact",
     features: [
       "Access to all 8 AI agents",
       "Unlimited AI conversations",
@@ -108,11 +117,31 @@ const FAQ_ITEMS = [
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false)
 
+  const [showScheduleModal, setShowScheduleModal] = useState(false)
+
+
+
   const calculateSavings = (monthly: string, yearly: string) => {
     if (monthly === "Free" || yearly === "Free") return 0
     const monthlyNum = Number.parseInt(monthly.replace("$", ""))
     const yearlyNum = Number.parseInt(yearly.replace("$", ""))
     return Math.round(((monthlyNum * 12 - yearlyNum * 12) / (monthlyNum * 12)) * 100)
+  }
+
+  const handleCTAClick = (plan: typeof PRICING_PLANS[0]) => {
+    if (plan.ctaType === "signup") {
+      setIsAuthModalOpen(true)
+    } else if (plan.ctaType === "contact") {
+      // For now, we'll scroll to the contact section or show a simple alert
+      // In a real app, this could open a contact modal or navigate to a contact page
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+      // You could also implement: router.push('/contact') if a contact page exists
+    }
+  }
+
+  const handleAuthSuccess = () => {
+    setIsAuthModalOpen(false)
+    router.push('/dashboard')
   }
 
   return (
@@ -251,8 +280,10 @@ export default function PricingPage() {
                           ? "bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white animate-pulse"
                           : "bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white"
                       }`}
+                      onClick={() => handleCTAClick(plan)}
                     >
-                      {plan.name === "Launchpad" ? "Start Free" : "Start Building"}
+                      {plan.ctaType === "contact" && <MessageCircle className="w-4 h-4 mr-2" />}
+                      {plan.cta}
                     </Button>
                   </CardContent>
                 </Card>
@@ -374,19 +405,30 @@ export default function PricingPage() {
             <Button
               size="lg"
               className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
+              onClick={() => setIsAuthModalOpen(true)}
             >
               Start Free Trial
             </Button>
             <Button
               size="lg"
               variant="outline"
+              onClick={() => setShowScheduleModal(true)}
               className="border-2 border-white text-white hover:bg-white hover:text-purple-600 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200 bg-transparent"
+              onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
             >
               Schedule Demo
             </Button>
           </div>
         </div>
       </section>
+
+
+      {/* Schedule Demo Modal */}
+      <ScheduleDemoModal
+        isOpen={showScheduleModal}
+        onClose={() => setShowScheduleModal(false)}
+
+      />
     </div>
   )
 }
