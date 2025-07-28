@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -26,9 +26,43 @@ import {
   Edit3,
 } from "lucide-react"
 
+// Force dynamic rendering to avoid build-time auth errors
+export const dynamic = 'force-dynamic'
+
 export default function ProfilePage() {
-  const { user, profile } = useAuth()
+  const [mounted, setMounted] = useState(false)
   const [showProfileModal, setShowProfileModal] = useState(false)
+  
+  // Only access useAuth after component mounts
+  const auth = mounted ? useAuth() : null
+  const user = auth?.user || null
+  // Mock profile for now since it's not in the auth context
+  const profile = user ? {
+    full_name: user.user_metadata?.full_name || "Boss Babe",
+    email: user.email,
+    company_name: "Building My Empire",
+    industry: null,
+    business_type: null,
+    phone: null,
+    website: null,
+    bio: null,
+    avatar_url: user.user_metadata?.avatar_url,
+    timezone: null
+  } : null
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Don't render anything until mounted
+  if (!mounted) {
+    return <div className="min-h-screen flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto"></div>
+        <p className="mt-4 text-gray-600">Loading your boss profile...</p>
+      </div>
+    </div>
+  }
 
   const profileCompletion = () => {
     if (!profile) return 0

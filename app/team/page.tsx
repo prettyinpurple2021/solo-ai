@@ -2,6 +2,9 @@
 
 import type React from "react"
 
+// Force dynamic rendering to avoid build-time data structure errors
+export const dynamic = 'force-dynamic'
+
 import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -145,7 +148,9 @@ export default function TeamPage() {
                     <div>
                       <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                       <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{selectedAgent.personality.split(".")[0]}.</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {selectedAgent.specialty}
+                      </p>
                     </div>
                   </div>
 

@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { AuthGuard } from "@/components/auth/auth-guard"
 import { Plus, Target, CheckSquare, Calendar, Clock, TrendingUp, Crown, Flame, Star, Zap } from "lucide-react"
 
 export default function SlayList() {
@@ -142,8 +141,7 @@ export default function SlayList() {
   }
 
   return (
-    <AuthGuard>
-      <SidebarInset>
+    <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 bg-gradient-to-r from-purple-50 to-teal-50">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
@@ -407,6 +405,5 @@ export default function SlayList() {
           </Card>
         </div>
       </SidebarInset>
-    </AuthGuard>
   )
 }

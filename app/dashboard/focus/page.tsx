@@ -7,7 +7,6 @@ import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { AuthGuard } from "@/components/auth/auth-guard"
 import { Play, Pause, RotateCcw, Clock, Target, TrendingUp, Coffee, Brain, Zap, Crown, Flame, Star } from "lucide-react"
 
 export default function FocusMode() {
@@ -76,8 +75,7 @@ export default function FocusMode() {
     ((sessionTypes[sessionType].duration * 60 - timeLeft) / (sessionTypes[sessionType].duration * 60)) * 100
 
   return (
-    <AuthGuard>
-      <SidebarInset>
+    <SidebarInset>
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 bg-gradient-to-r from-purple-50 to-teal-50">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
@@ -323,6 +321,5 @@ export default function FocusMode() {
           </Card>
         </div>
       </SidebarInset>
-    </AuthGuard>
   )
 }
