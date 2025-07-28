@@ -13,7 +13,6 @@
     "@ai-sdk/openai": "latest",
     "@emotion/is-prop-valid": "latest",
     "@hookform/resolvers": "^3.9.1",
-    "@jest/globals": "latest",
     "@radix-ui/react-accordion": "latest",
     "@radix-ui/react-alert-dialog": "latest",
     "@radix-ui/react-aspect-ratio": "latest",
@@ -54,7 +53,6 @@
     "framer-motion": "latest",
     "input-otp": "latest",
     "lucide-react": "^0.454.0",
-    "net": "latest",
     "next": "15.2.4",
     "next-themes": "latest",
     "react": "^19",
@@ -69,7 +67,6 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "latest",
-    "worker_threads": "latest",
     "zod": "^3.24.1"
   },
   "devDependencies": {
