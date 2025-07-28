@@ -13,7 +13,6 @@
     "@ai-sdk/google": "^0.0.54",
     "@ai-sdk/openai": "latest",
     "@hookform/resolvers": "^3.9.0",
-    "@jest/globals": "latest",
     "@radix-ui/react-accordion": "latest",
     "@radix-ui/react-alert-dialog": "latest",
     "@radix-ui/react-aspect-ratio": "latest",
@@ -33,7 +32,6 @@
     "@radix-ui/react-scroll-area": "latest",
     "@radix-ui/react-select": "latest",
     "@radix-ui/react-separator": "latest",
-    "@radix-ui/react-sheet": "^1.1.0",
     "@radix-ui/react-slider": "latest",
     "@radix-ui/react-slot": "latest",
     "@radix-ui/react-switch": "latest",
@@ -57,7 +55,6 @@
     "framer-motion": "^11.11.17",
     "input-otp": "latest",
     "lucide-react": "^0.454.0",
-    "net": "latest",
     "next": "15.2.4",
     "next-themes": "latest",
     "react": "^19",
@@ -72,7 +69,6 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5",
     "vaul": "latest",
-    "worker_threads": "latest",
     "zod": "^3.23.8"
   },
   "devDependencies": {
