@@ -1,5 +1,5 @@
 {
-  "name": "soloboss-ai",
+  "name": "soloboss-ai-platform",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,12 +10,10 @@
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
+    "@ai-sdk/google": "^0.0.54",
     "@ai-sdk/openai": "latest",
-    "@emotion/is-prop-valid": "latest",
-    "@hookform/resolvers": "^3.9.1",
-
-
-
+    "@hookform/resolvers": "^3.9.0",
+    "@jest/globals": "latest",
     "@radix-ui/react-accordion": "latest",
     "@radix-ui/react-alert-dialog": "latest",
     "@radix-ui/react-aspect-ratio": "latest",
@@ -35,6 +33,7 @@
     "@radix-ui/react-scroll-area": "latest",
     "@radix-ui/react-select": "latest",
     "@radix-ui/react-separator": "latest",
+    "@radix-ui/react-sheet": "^1.1.0",
     "@radix-ui/react-slider": "latest",
     "@radix-ui/react-slot": "latest",
     "@radix-ui/react-switch": "latest",
@@ -45,6 +44,9 @@
     "@radix-ui/react-tooltip": "latest",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "@vercel/blob": "latest",
     "ai": "latest",
     "class-variance-authority": "^0.7.1",
@@ -52,12 +54,10 @@
     "cmdk": "latest",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "latest",
-    "framer-motion": "latest",
+    "framer-motion": "^11.11.17",
     "input-otp": "latest",
     "lucide-react": "^0.454.0",
-
-
-
+    "net": "latest",
     "next": "15.2.4",
     "next-themes": "latest",
     "react": "^19",
@@ -70,19 +70,18 @@
     "sonner": "latest",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "typescript": "^5",
     "vaul": "latest",
-
-
-
-    "zod": "^3.24.1"
+    "worker_threads": "latest",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/eslint": "^9",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "autoprefixer": "^10.4.20",
-    "eslint": "^9.32.0",
-    "eslint-config-next": "^15.4.4",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.0",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"

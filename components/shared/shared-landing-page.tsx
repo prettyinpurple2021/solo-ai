@@ -1,836 +1,755 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import type React from "react"
+
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
-import { ThemeToggle } from "@/components/theme-toggle"
-
+import { useTheme } from "next-themes"
 import {
-  ArrowRight,
-  Sparkles,
-  Zap,
-  Target,
-  Users,
-  TrendingUp,
-  Shield,
   Star,
+  Users,
+  Zap,
+  Shield,
+  Crown,
+  Sparkles,
+  Target,
+  TrendingUp,
   CheckCircle,
-  X,
   Menu,
-  Play,
-  Brain
+  X,
+  MessageSquare,
+  Brain,
+  Rocket,
+  Heart,
+  Award,
+  Globe,
+  Smartphone,
+  Headphones,
+  Mail,
+  Phone,
+  MapPin,
 } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
 
-
-
-const features = [
-  {
-    icon: Sparkles,
-    title: "AI-Powered Productivity",
-    description: "Leverage cutting-edge AI to automate tasks, generate insights, and boost your efficiency by 300%.",
-  },
-  {
-    icon: Target,
-    title: "Goal Achievement System",
-    description: "Set, track, and crush your goals with our intelligent goal-setting framework and progress analytics.",
-  },
-  {
-    icon: Zap,
-    title: "Instant Automation",
-    description: "Automate repetitive tasks and workflows with our no-code automation engine.",
-  },
-  {
-    icon: TrendingUp,
-    title: "Performance Analytics",
-    description: "Get detailed insights into your productivity patterns and optimize your workflow.",
-  },
-  {
-    icon: Users,
-    title: "Team Collaboration",
-    description: "Seamlessly collaborate with your team using our advanced collaboration tools.",
-  },
-  {
-    icon: Shield,
-    title: "Enterprise Security",
-    description: "Bank-level security with end-to-end encryption and compliance certifications.",
-  },
-]
-
-
-const testimonials = [
-  {
-    name: "Sarah Chen",
-    role: "CEO, TechStart",
-    content: "SoloBoss AI transformed how I manage my business. I've increased productivity by 250% in just 3 months.",
-    rating: 5,
-    avatar: "/placeholder-user.jpg",
-  },
-  {
-    name: "Marcus Rodriguez",
-    role: "Freelance Designer",
-    content:
-      "The AI agents are like having a full team. I can focus on creative work while they handle everything else.",
-    rating: 5,
-    avatar: "/placeholder-user.jpg",
-  },
-  {
-    name: "Emily Watson",
-    role: "Marketing Director",
-    content: "Game-changer for our agency. Client satisfaction up 40%, team stress down 60%. Incredible ROI.",
-    rating: 5,
-    avatar: "/placeholder-user.jpg",
-  },
-]
-
-const pricingPlans = [
-  {
-    name: "Starter",
-    price: "$29",
-    period: "/month",
-    description: "Perfect for solopreneurs getting started",
-    features: ["3 AI Agents", "Basic Automation", "5GB Storage", "Email Support", "Mobile App Access"],
-    popular: false,
-    cta: "Start Free Trial",
-  },
-  {
-    name: "Professional",
-    price: "$79",
-    period: "/month",
-    description: "For growing businesses and teams",
-    features: [
-      "8 AI Agents",
-      "Advanced Automation",
-      "50GB Storage",
-      "Priority Support",
-      "Team Collaboration",
-      "Custom Integrations",
-      "Analytics Dashboard",
-    ],
-    popular: true,
-    cta: "Start Free Trial",
-  },
-  {
-    name: "Enterprise",
-    price: "$199",
-    period: "/month",
-    description: "For large organizations",
-    features: [
-      "Unlimited AI Agents",
-      "Enterprise Automation",
-      "500GB Storage",
-      "24/7 Phone Support",
-      "Advanced Security",
-      "Custom Development",
-      "Dedicated Account Manager",
-      "SLA Guarantee",
-    ],
-    popular: false,
-    cta: "Contact Sales",
-  },
-]
-
-export function SharedLandingPage({
-  showAuthModal = false,
-  onShowAuthModal = () => {},
-  styleVariant = "default",
-}: SharedLandingPageProps) {
-  // Mobile menu state for responsive navigation
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-
-  const [showScheduleModal, setShowScheduleModal] = useState(false)
-
+export function SharedLandingPage() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [email, setEmail] = useState("")
+  const { theme } = useTheme()
 
   const features = [
     {
-      icon: Brain,
-      title: "AI-Powered Insights",
-      description: "Get personalized recommendations and insights powered by advanced AI technology.",
+      icon: <Brain className="h-8 w-8" />,
+      title: "AI Squad Management",
+      description: "8 specialized AI agents working together to optimize every aspect of your business operations.",
     },
     {
-      icon: Zap,
-      title: "Lightning Fast",
-      description: "Experience blazing-fast performance with our optimized AI processing engine.",
+      icon: <Target className="h-8 w-8" />,
+      title: "Smart Task Automation",
+      description: "Intelligent task prioritization and automation that adapts to your workflow and business goals.",
     },
     {
-      icon: Shield,
-      title: "Secure & Private",
-      description: "Your data is protected with enterprise-grade security and privacy measures.",
+      icon: <TrendingUp className="h-8 w-8" />,
+      title: "Performance Analytics",
+      description: "Real-time insights and analytics to track your productivity and business growth metrics.",
     },
     {
-      icon: Users,
-      title: "Team Collaboration",
-      description: "Work seamlessly with your team using our collaborative AI workspace.",
+      icon: <MessageSquare className="h-8 w-8" />,
+      title: "Voice Chat Integration",
+      description: "Natural voice conversations with your AI team members for seamless collaboration.",
+    },
+    {
+      icon: <Shield className="h-8 w-8" />,
+      title: "Enterprise Security",
+      description: "Bank-level security with end-to-end encryption to protect your sensitive business data.",
+    },
+    {
+      icon: <Smartphone className="h-8 w-8" />,
+      title: "Mobile Optimized",
+      description: "Full-featured mobile experience so you can manage your empire from anywhere.",
     },
   ]
 
+  const testimonials = [
+    {
+      name: "Sarah Chen",
+      role: "CEO, TechStart Inc.",
+      content:
+        "SoloBoss AI transformed how I run my business. The AI squad handles everything from scheduling to analytics, giving me back 20+ hours per week.",
+      rating: 5,
+    },
+    {
+      name: "Marcus Rodriguez",
+      role: "Entrepreneur",
+      content:
+        "The voice chat feature is game-changing. I can literally talk to my AI team like they're real assistants. It's the future of business management.",
+      rating: 5,
+    },
+    {
+      name: "Emily Watson",
+      role: "Freelance Consultant",
+      content:
+        "As a solo entrepreneur, SoloBoss AI is like having an entire team. The productivity boost is incredible - I've scaled my business 3x in 6 months.",
+      rating: 5,
+    },
+  ]
 
-export function SharedLandingPage({
-  showAuthModal,
-  onShowAuthModal,
-  styleVariant,
-}: {
-  showAuthModal: boolean
-  onShowAuthModal: () => void
-  styleVariant: string
-}) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const pricingPlans = [
+    {
+      name: "Launchpad",
+      price: "$29",
+      period: "per month",
+      description: "Perfect for solo entrepreneurs starting their journey",
+      features: [
+        "4 AI Squad Members",
+        "Basic Task Automation",
+        "Email Support",
+        "Mobile App Access",
+        "Basic Analytics",
+      ],
+      popular: false,
+    },
+    {
+      name: "Accelerator",
+      price: "$79",
+      period: "per month",
+      description: "Ideal for growing businesses and teams",
+      features: [
+        "8 AI Squad Members",
+        "Advanced Automation",
+        "Voice Chat Integration",
+        "Priority Support",
+        "Advanced Analytics",
+        "Team Collaboration",
+        "Custom Integrations",
+      ],
+      popular: true,
+    },
+    {
+      name: "Dominator",
+      price: "$199",
+      period: "per month",
+      description: "For enterprises and power users",
+      features: [
+        "Unlimited AI Squad Members",
+        "Enterprise Automation",
+        "White-label Options",
+        "24/7 Phone Support",
+        "Custom AI Training",
+        "API Access",
+        "Dedicated Account Manager",
+      ],
+      popular: false,
+    },
+  ]
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [])
-
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" })
-    }
-    setIsMenuOpen(false)
+  const handleNewsletterSignup = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle newsletter signup
+    console.log("Newsletter signup:", email)
+    setEmail("")
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 dark:from-slate-900 dark:via-purple-900/20 dark:to-indigo-900/20">
+    <div className="min-h-screen bg-background">
       {/* Custom Banner */}
-      <div className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 py-3">
+      <div className="w-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 py-2">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-evenly">
-            <Image
+          <div className="flex items-center justify-center">
+            <img
               src="/images/soloboss-banner.png"
-              alt="SoloBoss AI Banner"
-              width={800}
-              height={120}
-              className="max-w-full h-auto"
-              priority
+              alt="SoloBoss AI Platform Banner"
+              className="h-12 w-auto object-contain"
             />
           </div>
         </div>
       </div>
 
       {/* Navigation */}
-      <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-pink-200 dark:border-purple-800">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+      <nav className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              <Image src="/images/soloboss-logo.png" alt="SoloBoss AI" width={40} height={40} className="rounded-lg" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+              <img src="/images/soloboss-logo.png" alt="SoloBoss AI" className="h-10 w-auto" />
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 SoloBoss AI
               </span>
             </div>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-
-              <a
-                href="#features"
-                onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection("features")
-                }}
-                className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-              >
+              <a href="#features" className="text-foreground/80 hover:text-foreground transition-colors">
                 Features
               </a>
-              <a
-                href="#agents"
-                onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection("agents")
-                }}
-                className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-              >
-                AI Squad
+              <a href="#testimonials" className="text-foreground/80 hover:text-foreground transition-colors">
+                Testimonials
               </a>
-              <a
-                href="#testimonials"
-                onClick={(e) => {
-                  e.preventDefault()
-                  scrollToSection("testimonials")
-                }}
-
-                className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-              >
+              <a href="#pricing" className="text-foreground/80 hover:text-foreground transition-colors">
                 Pricing
-              </button>
+              </a>
+              <a href="#contact" className="text-foreground/80 hover:text-foreground transition-colors">
+                Contact
+              </a>
               <ThemeToggle />
-              <Link href="/dashboard">
-                <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white">
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+              <ScheduleDemoModal />
             </div>
 
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center space-x-2">
               <ThemeToggle />
               <Button variant="ghost" size="sm" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
               </Button>
             </div>
           </div>
 
           {/* Mobile Navigation */}
-
-<AnimatePresence>
-  {mobileMenuOpen && (
-    <motion.div
-      initial={{ opacity: 0, height: 0 }}
-      animate={{ opacity: 1, height: "auto" }}
-      exit={{ opacity: 0, height: 0 }}
-      className="md:hidden py-4 border-t border-pink-200 dark:border-purple-800"
-    >
-      <div className="flex flex-col space-y-4">
-        <a
-          href="#features"
-          onClick={(e) => {
-            e.preventDefault()
-            scrollToSection("features")
-            setMobileMenuOpen(false)
-          }}
-          className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-        >
-          Features
-        </a>
-        <a
-          href="#agents"
-          onClick={(e) => {
-            e.preventDefault()
-            scrollToSection("agents")
-            setMobileMenuOpen(false)
-          }}
-          className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-        >
-          AI Squad
-        </a>
-        <a
-          href="#testimonials"
-          onClick={(e) => {
-            e.preventDefault()
-            scrollToSection("testimonials")
-            setMobileMenuOpen(false)
-          }}
-          className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-        >
-          Testimonials
-        </a>
-        <a
-          href="#pricing"
-          onClick={(e) => {
-            e.preventDefault()
-            scrollToSection("pricing")
-            setMobileMenuOpen(false)
-          }}
-          className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
-        >
-          Pricing
-        </a>
-        <Button
-          onClick={onShowAuthModal}
-          className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white w-full"
-        >
-          Get Started
-        </Button>
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
-
+          {isMenuOpen && (
+            <div className="md:hidden py-4 border-t">
+              <div className="flex flex-col space-y-4">
+                <a href="#features" className="text-foreground/80 hover:text-foreground transition-colors">
+                  Features
+                </a>
+                <a href="#testimonials" className="text-foreground/80 hover:text-foreground transition-colors">
+                  Testimonials
+                </a>
+                <a href="#pricing" className="text-foreground/80 hover:text-foreground transition-colors">
+                  Pricing
+                </a>
+                <a href="#contact" className="text-foreground/80 hover:text-foreground transition-colors">
+                  Contact
+                </a>
+                <ScheduleDemoModal />
+              </div>
+            </div>
+          )}
         </div>
       </nav>
 
       {/* Hero Section */}
       <section className="py-20 px-4">
         <div className="container mx-auto text-center">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-            <Badge className="mb-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white">
-              🚀 AI-Powered Productivity Revolution
+          <div className="max-w-4xl mx-auto">
+            <Badge className="mb-6 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border-purple-200">
+              <Sparkles className="w-4 h-4 mr-2" />
+              AI-Powered Business Management
             </Badge>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
-              Become the Ultimate
+
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700 bg-clip-text text-transparent leading-tight">
+              Your AI Squad
               <br />
-              <span className="text-6xl md:text-8xl">SoloBoss</span>
+              Your Empire
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-              Transform your productivity with AI agents that work 24/7. Automate everything, achieve more, and dominate
-              your industry like never before.
+
+            <p className="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
+              Meet your 8-member AI squad that works 24/7 to optimize your business operations, boost productivity, and
+              scale your empire to new heights.
             </p>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link href="/dashboard">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
-                >
-                  Start Your Empire
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Button
-                size="lg"
-                variant="outline"
-                className="text-lg px-8 py-4 border-pink-300 dark:border-purple-600 bg-transparent"
-              >
-                Watch Demo
-                <Play className="ml-2 h-5 w-5" />
+              <ScheduleDemoModal />
+              <Button variant="outline" size="lg" className="text-lg px-8 py-6 bg-transparent">
+                <MessageSquare className="w-5 h-5 mr-2" />
+                Try Voice Chat
               </Button>
             </div>
 
-
             {/* Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-center"
-              >
-                <div className="text-4xl font-bold text-pink-600 dark:text-pink-400">300%</div>
-                <div className="text-gray-600 dark:text-gray-300">Productivity Increase</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-center"
-              >
-                <div className="text-4xl font-bold text-purple-600 dark:text-purple-400">50K+</div>
-                <div className="text-gray-600 dark:text-gray-300">Active Users</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                className="text-center"
-              >
-                <div className="text-4xl font-bold text-indigo-600 dark:text-indigo-400">$2M+</div>
-                <div className="text-gray-600 dark:text-gray-300">Revenue Generated</div>
-              </motion.div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-purple-600 mb-2">10,000+</div>
+                <div className="text-muted-foreground">Active Users</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-pink-600 mb-2">500%</div>
+                <div className="text-muted-foreground">Avg. Productivity Boost</div>
+              </div>
+              <div className="text-center">
+                <div className="text-4xl font-bold text-purple-600 mb-2">24/7</div>
+                <div className="text-muted-foreground">AI Squad Support</div>
+              </div>
             </div>
-          </motion.div>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              onClick={onShowAuthModal}
-              className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-3"
-            >
-              Start Your Journey
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => setIsVideoPlaying(true)}
-              className="border-pink-300 text-pink-600 hover:bg-pink-50 dark:border-pink-600 dark:text-pink-400 dark:hover:bg-pink-900/20 px-8 py-3 bg-transparent"
-            >
-              Watch Demo
-              <Play className="ml-2 h-5 w-5" />
-            </Button>
           </div>
-
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 bg-white/50 dark:bg-slate-800/50">
+      <section id="features" className="py-20 px-4 bg-muted/30">
         <div className="container mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-              Supercharge Your Success
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border-purple-200">
+              <Zap className="w-4 h-4 mr-2" />
+              Powerful Features
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Everything You Need to
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {" "}
+                Dominate
+              </span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Our AI-powered platform gives you everything you need to dominate your market and achieve unprecedented
-              growth.
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Our AI squad combines cutting-edge technology with intuitive design to give you the ultimate business
+              management experience.
             </p>
-          </motion.div>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <motion.div
+              <Card
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                className="group hover:shadow-lg transition-all duration-300 border-2 hover:border-purple-200"
               >
-                <Card className="h-full hover:shadow-xl transition-all duration-300 border-pink-200 dark:border-purple-800 hover:border-pink-300 dark:hover:border-purple-600">
-                  <CardHeader>
-                    <div className="w-12 h-12 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg flex items-center justify-center mb-4">
-                      <feature.icon className="h-6 w-6 text-white" />
-                    </div>
-                    <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">{feature.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription className="text-gray-600 dark:text-gray-300">
-                      {feature.description}
-                    </CardDescription>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                <CardHeader>
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="text-purple-600">{feature.icon}</div>
+                  </div>
+                  <CardTitle className="text-xl">{feature.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-base leading-relaxed">{feature.description}</CardDescription>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* AI Squad Section */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border-purple-200">
+              <Users className="w-4 h-4 mr-2" />
+              Meet Your Squad
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Your 8-Member
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {" "}
+                AI Dream Team
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Each AI agent specializes in different aspects of your business, working together seamlessly to maximize
+              your success.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              {
+                name: "Roxy",
+                role: "Operations Manager",
+                specialty: "Task Management & Scheduling",
+                image: "/images/agents/roxy.png",
+              },
+              {
+                name: "Blaze",
+                role: "Business Strategist",
+                specialty: "Growth & Scaling",
+                image: "/images/agents/blaze.png",
+              },
+              {
+                name: "Echo",
+                role: "Content Creator",
+                specialty: "Marketing & Social Media",
+                image: "/images/agents/echo.png",
+              },
+              {
+                name: "Lumi",
+                role: "Legal Advisor",
+                specialty: "Compliance & Contracts",
+                image: "/images/agents/lumi.png",
+              },
+              {
+                name: "Vex",
+                role: "Tech Architect",
+                specialty: "Systems & Automation",
+                image: "/images/agents/vex.png",
+              },
+              {
+                name: "Lexi",
+                role: "Data Analyst",
+                specialty: "Analytics & Insights",
+                image: "/images/agents/lexi.png",
+              },
+              {
+                name: "Nova",
+                role: "Creative Director",
+                specialty: "Design & Branding",
+                image: "/images/agents/nova.png",
+              },
+              {
+                name: "Glitch",
+                role: "Quality Assurance",
+                specialty: "Testing & Optimization",
+                image: "/images/agents/glitch.png",
+              },
+            ].map((agent, index) => (
+              <Card
+                key={index}
+                className="group hover:shadow-xl transition-all duration-300 border-2 hover:border-purple-200 overflow-hidden"
+              >
+                <div className="aspect-square relative overflow-hidden">
+                  <img
+                    src={agent.image || "/placeholder.svg"}
+                    alt={agent.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                  <div className="absolute bottom-4 left-4 text-white">
+                    <h3 className="font-bold text-lg">{agent.name}</h3>
+                    <p className="text-sm opacity-90">{agent.role}</p>
+                  </div>
+                </div>
+                <CardContent className="p-4">
+                  <p className="text-sm text-muted-foreground">{agent.specialty}</p>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 px-4">
+      <section id="testimonials" className="py-20 px-4 bg-muted/30">
         <div className="container mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border-purple-200">
+              <Heart className="w-4 h-4 mr-2" />
               Success Stories
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Loved by
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {" "}
+                Entrepreneurs
+              </span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Join thousands of entrepreneurs who've transformed their businesses with SoloBoss AI.
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              See how SoloBoss AI is transforming businesses and empowering entrepreneurs worldwide.
             </p>
-          </motion.div>
-
-          <div className="max-w-4xl mx-auto">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentTestimonial}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.5 }}
-              >
-                <Card className="text-center p-8 border-pink-200 dark:border-purple-800">
-                  <CardContent>
-                    <div className="flex justify-center mb-4">
-                      {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
-                        <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
-                      ))}
-                    </div>
-                    <blockquote className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-6 italic">
-                      "{testimonials[currentTestimonial].content}"
-                    </blockquote>
-                    <div className="flex items-center justify-center space-x-4">
-                      <Image
-                        src={testimonials[currentTestimonial].avatar || "/placeholder.svg"}
-                        alt={testimonials[currentTestimonial].name}
-                        width={60}
-                        height={60}
-                        className="rounded-full"
-                      />
-                      <div>
-                        <div className="font-bold text-gray-900 dark:text-white">
-                          {testimonials[currentTestimonial].name}
-                        </div>
-                        <div className="text-gray-600 dark:text-gray-400">{testimonials[currentTestimonial].role}</div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </AnimatePresence>
-
-            <div className="flex justify-center mt-8 space-x-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentTestimonial(index)}
-                  className={`w-3 h-3 rounded-full transition-colors ${
-                    index === currentTestimonial ? "bg-pink-500" : "bg-gray-300 dark:bg-gray-600"
-                  }`}
-                />
-              ))}
-            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 bg-white/50 dark:bg-slate-800/50">
-        <div className="container mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-              Choose Your Power Level
-            </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Start your journey to becoming a SoloBoss with our flexible pricing plans.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {pricingPlans.map((plan, index) => (
-              <motion.div
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: index * 0.1 }}
-                viewport={{ once: true }}
-                className={`relative ${plan.popular ? "scale-105" : ""}`}
+                className="hover:shadow-lg transition-all duration-300 border-2 hover:border-purple-200"
               >
-                {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <Badge className="bg-gradient-to-r from-pink-500 to-purple-600 text-white">Most Popular</Badge>
+                <CardContent className="p-6">
+                  <div className="flex mb-4">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                    ))}
                   </div>
-                )}
-                <Card
-                  className={`h-full ${
-                    plan.popular
-                      ? "border-pink-300 dark:border-purple-600 shadow-xl"
-                      : "border-pink-200 dark:border-purple-800"
-                  }`}
-                >
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl font-bold text-gray-900 dark:text-white">{plan.name}</CardTitle>
-                    <div className="text-4xl font-bold text-pink-600 dark:text-pink-400">
-                      {plan.price}
-                      <span className="text-lg text-gray-600 dark:text-gray-400">{plan.period}</span>
-                    </div>
-                    <CardDescription className="text-gray-600 dark:text-gray-300">{plan.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-1">
-                    <ul className="space-y-3 mb-8">
-                      {plan.features.map((feature, featureIndex) => (
-                        <li key={featureIndex} className="flex items-center space-x-3">
-                          <CheckCircle className="h-5 w-5 text-green-500 flex-shrink-0" />
-                          <span className="text-gray-700 dark:text-gray-300">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      className={`w-full ${
-                        plan.popular
-                          ? "bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
-                          : "border-pink-300 dark:border-purple-600 text-pink-600 dark:text-purple-400 hover:bg-pink-50 dark:hover:bg-purple-900/20"
-                      }`}
-                      variant={plan.popular ? "default" : "outline"}
-                    >
-                      {plan.cta}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                  <p className="text-muted-foreground mb-6 leading-relaxed">"{testimonial.content}"</p>
+                  <div>
+                    <div className="font-semibold">{testimonial.name}</div>
+                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
-              Ready to Become a SoloBoss?
+      {/* Pricing Section */}
+      <section id="pricing" className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border-purple-200">
+              <Crown className="w-4 h-4 mr-2" />
+              Simple Pricing
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Choose Your
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {" "}
+                Power Level
+              </span>
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-              Join the revolution of AI-powered entrepreneurs. Start your free trial today and experience the future of
-              productivity.
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Start free, scale as you grow. No hidden fees, no surprises. Just pure AI-powered business domination.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/dashboard">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
-                >
-                  Start Free Trial
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-              <Button
-                size="lg"
-                variant="outline"
+          </div>
 
-                className="text-lg px-8 py-4 border-pink-300 dark:border-purple-600 bg-transparent"
-
-                onClick={() => setShowScheduleModal(true)}
-                className="border-white text-white hover:bg-white/10 px-8 py-3 bg-transparent"
-
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {pricingPlans.map((plan, index) => (
+              <Card
+                key={index}
+                className={`relative hover:shadow-xl transition-all duration-300 ${
+                  plan.popular ? "border-2 border-purple-500 shadow-lg scale-105" : "border-2 hover:border-purple-200"
+                }`}
               >
-                Schedule Demo
+                {plan.popular && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <Badge className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-1">
+                      <Award className="w-4 h-4 mr-1" />
+                      Most Popular
+                    </Badge>
+                  </div>
+                )}
+
+                <CardHeader className="text-center pb-8">
+                  <CardTitle className="text-2xl font-bold">{plan.name}</CardTitle>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold">{plan.price}</span>
+                    <span className="text-muted-foreground">/{plan.period}</span>
+                  </div>
+                  <CardDescription className="mt-2 text-base">{plan.description}</CardDescription>
+                </CardHeader>
+
+                <CardContent className="space-y-4">
+                  {plan.features.map((feature, featureIndex) => (
+                    <div key={featureIndex} className="flex items-center">
+                      <CheckCircle className="w-5 h-5 text-green-500 mr-3 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </div>
+                  ))}
+
+                  <Button
+                    className={`w-full mt-8 ${
+                      plan.popular
+                        ? "bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                        : ""
+                    }`}
+                    variant={plan.popular ? "default" : "outline"}
+                    size="lg"
+                  >
+                    <Rocket className="w-4 h-4 mr-2" />
+                    Get Started
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-purple-600 via-pink-600 to-purple-700">
+        <div className="container mx-auto text-center">
+          <div className="max-w-2xl mx-auto text-white">
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Build Your Empire?</h2>
+            <p className="text-xl mb-8 opacity-90">
+              Join thousands of entrepreneurs who are already dominating their markets with AI.
+            </p>
+
+            <form onSubmit={handleNewsletterSignup} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-white/10 border-white/20 text-white placeholder:text-white/70"
+                required
+              />
+              <Button type="submit" variant="secondary" className="bg-white text-purple-600 hover:bg-white/90">
+                <Mail className="w-4 h-4 mr-2" />
+                Get Started
               </Button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-20 px-4">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="mb-4 bg-gradient-to-r from-purple-100 to-pink-100 text-purple-800 border-purple-200">
+              <Headphones className="w-4 h-4 mr-2" />
+              Get in Touch
+            </Badge>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              Ready to
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                {" "}
+                Dominate?
+              </span>
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Have questions? Want a demo? Our team is here to help you build your empire.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
+            {/* Contact Form */}
+            <Card className="border-2 hover:border-purple-200 transition-colors">
+              <CardHeader>
+                <CardTitle className="text-2xl">Send us a message</CardTitle>
+                <CardDescription>We'll get back to you within 24 hours.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">First Name</label>
+                    <Input placeholder="John" />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Last Name</label>
+                    <Input placeholder="Doe" />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Email</label>
+                  <Input type="email" placeholder="john@example.com" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Subject</label>
+                  <Input placeholder="I'm interested in SoloBoss AI" />
+                </div>
+                <div>
+                  <label className="text-sm font-medium mb-2 block">Message</label>
+                  <Textarea
+                    placeholder="Tell us about your business and how we can help..."
+                    className="min-h-[120px]"
+                  />
+                </div>
+                <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+                  <Mail className="w-4 h-4 mr-2" />
+                  Send Message
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Contact Info */}
+            <div className="space-y-8">
+              <Card className="border-2 hover:border-purple-200 transition-colors">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mr-4">
+                      <Mail className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Email Us</h3>
+                      <p className="text-muted-foreground">hello@soloboss.ai</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 hover:border-purple-200 transition-colors">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mr-4">
+                      <Phone className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Call Us</h3>
+                      <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 hover:border-purple-200 transition-colors">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-100 to-pink-100 rounded-lg flex items-center justify-center mr-4">
+                      <MapPin className="w-6 h-6 text-purple-600" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Visit Us</h3>
+                      <p className="text-muted-foreground">San Francisco, CA</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 hover:border-purple-200 transition-colors bg-gradient-to-r from-purple-50 to-pink-50">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold mb-2">Schedule a Demo</h3>
+                  <p className="text-muted-foreground mb-4">See SoloBoss AI in action with a personalized demo.</p>
+                  <ScheduleDemoModal />
+                </CardContent>
+              </Card>
             </div>
-          </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
+      <footer className="bg-muted/50 py-12 px-4 border-t">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Image
-                  src="/images/soloboss-logo.png"
-                  alt="SoloBoss AI"
-                  width={32}
-                  height={32}
-                  className="rounded-lg"
-                />
-                <span className="text-xl font-bold">SoloBoss AI</span>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <img src="/images/soloboss-logo.png" alt="SoloBoss AI" className="h-8 w-auto" />
+                <span className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  SoloBoss AI
+                </span>
               </div>
-              <p className="text-gray-400">Empowering entrepreneurs with AI-powered productivity tools.</p>
+              <p className="text-muted-foreground">
+                Empowering entrepreneurs with AI-driven business management solutions.
+              </p>
             </div>
+
             <div>
-              <h3 className="font-bold mb-4">Product</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-
-            <a
-  href="#features"
-  onClick={(e) => {
-    e.preventDefault()
-    scrollToSection("features")
-  }}
-  className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
->
-  Features
-</a>
-<a
-  href="#agents"
-  onClick={(e) => {
-    e.preventDefault()
-    scrollToSection("agents")
-  }}
-  className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
->
-  AI Squad
-</a>
-<a
-  href="#testimonials"
-  onClick={(e) => {
-    e.preventDefault()
-    scrollToSection("testimonials")
-  }}
-  className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
->
-  Testimonials
-</a>
-<a
-  href="#pricing"
-  onClick={(e) => {
-    e.preventDefault()
-    scrollToSection("pricing")
-  }}
-  className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
->
-  Pricing
-</a>
-
-                    Pricing
-                  </Link>
-                </li>
-                <li>
-
-                  <a href="/api-docs" className="hover:text-white transition-colors">
-
-                    API
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Integrations
-                  </Link>
-                </li>
-              </ul>
+              <h4 className="font-semibold mb-4">Product</h4>
+              <div className="space-y-2 text-sm">
+                <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors block">
+                  Features
+                </a>
+                <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors block">
+                  Pricing
+                </a>
+                <a href="/team" className="text-muted-foreground hover:text-foreground transition-colors block">
+                  AI Squad
+                </a>
+              </div>
             </div>
+
             <div>
-              <h3 className="font-bold mb-4">Company</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    About
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Careers
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Contact
-                  </Link>
-                </li>
-              </ul>
+              <h4 className="font-semibold mb-4">Company</h4>
+              <div className="space-y-2 text-sm">
+                <a href="/about" className="text-muted-foreground hover:text-foreground transition-colors block">
+                  About
+                </a>
+                <a href="/blog" className="text-muted-foreground hover:text-foreground transition-colors block">
+                  Blog
+                </a>
+                <a href="/careers" className="text-muted-foreground hover:text-foreground transition-colors block">
+                  Careers
+                </a>
+              </div>
             </div>
+
             <div>
-              <h3 className="font-bold mb-4">Support</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Documentation
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Community
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="hover:text-white transition-colors">
-                    Status
-                  </Link>
-                </li>
-              </ul>
+              <h4 className="font-semibold mb-4">Support</h4>
+              <div className="space-y-2 text-sm">
+                <a href="/help" className="text-muted-foreground hover:text-foreground transition-colors block">
+                  Help Center
+                </a>
+                <a href="#contact" className="text-muted-foreground hover:text-foreground transition-colors block">
+                  Contact
+                </a>
+                <a href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors block">
+                  Privacy
+                </a>
+              </div>
             </div>
           </div>
-          <Separator className="my-8 bg-gray-800" />
+
+          <Separator className="my-8" />
+
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-gray-400">© 2024 SoloBoss AI. All rights reserved.</p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                Privacy
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                Terms
-              </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
-                Cookies
-              </Link>
+            <p className="text-muted-foreground text-sm">© 2024 SoloBoss AI. All rights reserved.</p>
+            <div className="flex items-center space-x-4 mt-4 md:mt-0">
+              <Globe className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm text-muted-foreground">Built with ❤️ for entrepreneurs</span>
             </div>
           </div>
         </div>
       </footer>
-
-
-      {/* Schedule Demo Modal */}
-      <ScheduleDemoModal
-        isOpen={showScheduleModal}
-        onClose={() => setShowScheduleModal(false)}
-      />
-
     </div>
   )
 }
