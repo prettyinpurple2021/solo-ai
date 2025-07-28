@@ -129,7 +129,15 @@ const pricingPlans = [
   },
 ]
 
-export function SharedLandingPage() {
+export function SharedLandingPage({
+  showAuthModal,
+  onShowAuthModal,
+  styleVariant,
+}: {
+  showAuthModal: boolean
+  onShowAuthModal: () => void
+  styleVariant: string
+}) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
