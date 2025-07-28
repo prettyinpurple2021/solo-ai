@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/theme-toggle"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { Menu, X, Star, Sparkles, Brain, Zap, Shield, Users, Play } from "lucide-react"
+
+import { Menu, X, Star, Sparkles, Brain, Zap, Shield, Users } from "lucide-react"
+import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
+
 
 interface SharedLandingPageProps {
   showAuthModal?: boolean
@@ -22,17 +24,9 @@ export function SharedLandingPage({
 }: SharedLandingPageProps) {
   // Mobile menu state for responsive navigation
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
-  const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId)
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      })
-    }
-  }
+  const [showScheduleModal, setShowScheduleModal] = useState(false)
+
 
   const features = [
     {
@@ -447,7 +441,7 @@ export function SharedLandingPage({
               <Button
                 size="lg"
                 variant="outline"
-                onClick={onShowAuthModal}
+                onClick={() => setShowScheduleModal(true)}
                 className="border-white text-white hover:bg-white/10 px-8 py-3 bg-transparent"
               >
                 Schedule Demo
@@ -550,30 +544,13 @@ export function SharedLandingPage({
         </div>
       </footer>
 
-      {/* Video Demo Modal */}
-      <Dialog open={isVideoPlaying} onOpenChange={setIsVideoPlaying}>
-        <DialogContent className="max-w-4xl w-full">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 dark:from-pink-400 dark:to-purple-400 bg-clip-text text-transparent">
-              SoloBoss AI Demo
-            </DialogTitle>
-            <DialogDescription className="text-gray-600 dark:text-gray-300">
-              Watch our comprehensive demo to see how SoloBoss AI can transform your business.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="aspect-video bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <Play className="w-16 h-16 text-pink-600 dark:text-pink-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Demo Video Coming Soon
-              </h3>
-              <p className="text-gray-600 dark:text-gray-300">
-                Experience the power of SoloBoss AI with our comprehensive demo video.
-              </p>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+
+      {/* Schedule Demo Modal */}
+      <ScheduleDemoModal
+        isOpen={showScheduleModal}
+        onClose={() => setShowScheduleModal(false)}
+      />
+
     </div>
   )
 }
