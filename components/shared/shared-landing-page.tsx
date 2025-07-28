@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { Menu, X, Star, Sparkles, Brain, Zap, Shield, Users } from "lucide-react"
+import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
 
 interface SharedLandingPageProps {
   showAuthModal?: boolean
@@ -20,6 +21,7 @@ export function SharedLandingPage({
   styleVariant = "default",
 }: SharedLandingPageProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [showScheduleModal, setShowScheduleModal] = useState(false)
 
   const features = [
     {
@@ -406,7 +408,7 @@ export function SharedLandingPage({
               <Button
                 size="lg"
                 variant="outline"
-                onClick={onShowAuthModal}
+                onClick={() => setShowScheduleModal(true)}
                 className="border-white text-white hover:bg-white/10 px-8 py-3 bg-transparent"
               >
                 Schedule Demo
@@ -494,6 +496,12 @@ export function SharedLandingPage({
           </div>
         </div>
       </footer>
+
+      {/* Schedule Demo Modal */}
+      <ScheduleDemoModal
+        isOpen={showScheduleModal}
+        onClose={() => setShowScheduleModal(false)}
+      />
     </div>
   )
 }

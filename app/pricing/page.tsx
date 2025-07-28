@@ -8,6 +8,7 @@ import { Switch } from "@/components/ui/switch"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { CheckCircle, X, ArrowLeft, Crown, Rocket, Zap } from "lucide-react"
 import Link from "next/link"
+import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
 
 const PRICING_PLANS = [
   {
@@ -107,6 +108,7 @@ const FAQ_ITEMS = [
 
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false)
+  const [showScheduleModal, setShowScheduleModal] = useState(false)
 
   const calculateSavings = (monthly: string, yearly: string) => {
     if (monthly === "Free" || yearly === "Free") return 0
@@ -380,6 +382,7 @@ export default function PricingPage() {
             <Button
               size="lg"
               variant="outline"
+              onClick={() => setShowScheduleModal(true)}
               className="border-2 border-white text-white hover:bg-white hover:text-purple-600 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200 bg-transparent"
             >
               Schedule Demo
@@ -387,6 +390,12 @@ export default function PricingPage() {
           </div>
         </div>
       </section>
+
+      {/* Schedule Demo Modal */}
+      <ScheduleDemoModal
+        isOpen={showScheduleModal}
+        onClose={() => setShowScheduleModal(false)}
+      />
     </div>
   )
 }
