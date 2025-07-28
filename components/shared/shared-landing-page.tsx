@@ -312,7 +312,7 @@ export function SharedLandingPage({
                 className="group hover:shadow-xl transition-all duration-300 border-pink-100 dark:border-blue-800 hover:border-pink-300 dark:hover:border-blue-600 overflow-hidden"
               >
                 <CardContent className="p-0">
-                  <div className="relative h-48 bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/20 dark:to-purple-900/20">
+                  <div className="relative bg-gradient-to-br from-pink-100 to-purple-100 dark:from-pink-900/20 dark:to-purple-900/20 h-96">
                     <Image
                       src={agent.image || "/placeholder.svg"}
                       alt={agent.name}
