@@ -140,7 +140,6 @@ export function SharedLandingPage({
 }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
-  const [isMuted, setIsMuted] = useState(true)
 
   useEffect(() => {
     const interval = setInterval(() => {
