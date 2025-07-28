@@ -23,6 +23,16 @@ export function SharedLandingPage({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }
+  }
+
   const features = [
     {
       icon: Brain,
@@ -148,18 +158,30 @@ export function SharedLandingPage({
             <div className="hidden md:flex items-center space-x-8">
               <a
                 href="#features"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection("features")
+                }}
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
                 Features
               </a>
               <a
                 href="#agents"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection("agents")
+                }}
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
                 AI Squad
               </a>
               <a
                 href="#testimonials"
+                onClick={(e) => {
+                  e.preventDefault()
+                  scrollToSection("testimonials")
+                }}
                 className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
               >
                 Testimonials
@@ -191,18 +213,33 @@ export function SharedLandingPage({
               <div className="flex flex-col space-y-4">
                 <a
                   href="#features"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    scrollToSection("features")
+                    setMobileMenuOpen(false)
+                  }}
                   className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
                 >
                   Features
                 </a>
                 <a
                   href="#agents"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    scrollToSection("agents")
+                    setMobileMenuOpen(false)
+                  }}
                   className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
                 >
                   AI Squad
                 </a>
                 <a
                   href="#testimonials"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    scrollToSection("testimonials")
+                    setMobileMenuOpen(false)
+                  }}
                   className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 transition-colors"
                 >
                   Testimonials
@@ -443,12 +480,26 @@ export function SharedLandingPage({
               <h3 className="font-semibold mb-4">Product</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <a href="#features" className="hover:text-white transition-colors">
+                  <a
+                    href="#features"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      scrollToSection("features")
+                    }}
+                    className="hover:text-white transition-colors"
+                  >
                     Features
                   </a>
                 </li>
                 <li>
-                  <a href="#agents" className="hover:text-white transition-colors">
+                  <a
+                    href="#agents"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      scrollToSection("agents")
+                    }}
+                    className="hover:text-white transition-colors"
+                  >
                     AI Squad
                   </a>
                 </li>
