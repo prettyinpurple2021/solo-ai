@@ -195,7 +195,7 @@ export default function ProfilePage() {
                   {profile?.timezone && (
                     <div className="flex items-center gap-3">
                       <MapPin className="h-5 w-5 text-purple-500" />
-                      <span className="text-gray-700">{profile.timezone.replace("_", " ")}</span>
+                      <span className="text-gray-700">{String(profile.timezone).replace("_", " ")}</span>
                     </div>
                   )}
                 </div>

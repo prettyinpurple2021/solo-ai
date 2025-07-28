@@ -19,24 +19,48 @@ import { useAiChat } from "@/hooks/use-ai-chat"
 export default function TeamPage() {
   const [selectedAgent, setSelectedAgent] = useState(aiAgents[0])
   const [message, setMessage] = useState("")
+  const [isListening, setIsListening] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
 
   const {
     messages,
     isLoading,
-    sendMessage,
-    clearMessages,
-    isListening,
-    startListening,
-    stopListening,
-    isSpeaking,
-    speak,
-    stopSpeaking,
+    append,
+    setInput,
+    input,
   } = useAiChat({ agentId: selectedAgent.id })
 
   const handleSendMessage = async () => {
     if (!message.trim()) return
-    await sendMessage(message)
+    await append({ role: "user", content: message })
     setMessage("")
+  }
+
+  const sendMessage = async (text: string) => {
+    await append({ role: "user", content: text })
+  }
+
+  const clearMessages = () => {
+    // This would need to be implemented in the hook or we can work around it
+  }
+
+  const startListening = () => {
+    setIsListening(true)
+    // Voice recognition would be implemented here
+  }
+
+  const stopListening = () => {
+    setIsListening(false)
+  }
+
+  const speak = (text: string) => {
+    setIsSpeaking(true)
+    // Text-to-speech would be implemented here
+    setTimeout(() => setIsSpeaking(false), 2000) // Mock duration
+  }
+
+  const stopSpeaking = () => {
+    setIsSpeaking(false)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {

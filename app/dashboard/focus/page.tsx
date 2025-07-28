@@ -12,7 +12,7 @@ import { Play, Pause, RotateCcw, Clock, Target, TrendingUp, Coffee, Brain, Zap, 
 export default function FocusMode() {
   const [isActive, setIsActive] = useState(false)
   const [timeLeft, setTimeLeft] = useState(25 * 60) // 25 minutes in seconds
-  const [sessionType, setSessionType] = useState("work") // work, short-break, long-break
+  const [sessionType, setSessionType] = useState<keyof typeof sessionTypes>("work") // work, short-break, long-break
   const [sessionDuration, setSessionDuration] = useState(25)
   const [completedSessions, setCompletedSessions] = useState(0)
   const [weeklyGoal] = useState(20)
@@ -21,7 +21,7 @@ export default function FocusMode() {
     work: { duration: 25, label: "Boss Work Session", color: "bg-gradient-to-r from-purple-500 to-pink-500" },
     "short-break": { duration: 5, label: "Quick Recharge", color: "bg-gradient-to-r from-teal-500 to-green-500" },
     "long-break": { duration: 15, label: "Power Break", color: "bg-gradient-to-r from-blue-500 to-purple-500" },
-  }
+  } as const
 
   const focusTips = [
     "Remove all distractions from your boss workspace 💪",
@@ -40,7 +40,7 @@ export default function FocusMode() {
   ]
 
   useEffect(() => {
-    let interval = null
+    let interval: NodeJS.Timeout | null = null
     if (isActive && timeLeft > 0) {
       interval = setInterval(() => {
         setTimeLeft((timeLeft) => timeLeft - 1)
@@ -52,16 +52,20 @@ export default function FocusMode() {
       }
       // Auto-switch to break or work
       const nextType = sessionType === "work" ? (completedSessions % 4 === 3 ? "long-break" : "short-break") : "work"
-      setSessionType(nextType)
+      setSessionType(nextType as keyof typeof sessionTypes)
       setTimeLeft(sessionTypes[nextType].duration * 60)
     }
-    return () => clearInterval(interval)
+    return () => {
+      if (interval) {
+        clearInterval(interval)
+      }
+    }
   }, [isActive, timeLeft, sessionType, completedSessions])
 
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+  const formatTime = (seconds: number): string => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`
   }
 
   const startTimer = () => setIsActive(true)
@@ -235,14 +239,16 @@ export default function FocusMode() {
 
                 {/* Session Type Selector */}
                 <div className="flex justify-center">
-                  <Select value={sessionType} onValueChange={setSessionType}>
-                    <SelectTrigger className="w-64 border-2 border-purple-200 focus:border-purple-400 font-semibold">
-                      <SelectValue />
+                                    <Select value={sessionType} onValueChange={(value) => setSessionType(value as keyof typeof sessionTypes)}>
+                    <SelectTrigger className="w-full border-purple-200 dark:border-purple-800">
+                      <SelectValue placeholder="Select session type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="work">Boss Work Session 👑</SelectItem>
-                      <SelectItem value="short-break">Quick Recharge ⚡</SelectItem>
-                      <SelectItem value="long-break">Power Break 🔋</SelectItem>
+                      {Object.entries(sessionTypes).map(([key, type]) => (
+                        <SelectItem key={key} value={key}>
+                          {type.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
