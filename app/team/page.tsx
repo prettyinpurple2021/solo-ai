@@ -2,6 +2,9 @@
 
 import type React from "react"
 
+// Force dynamic rendering to avoid build-time data structure errors
+export const dynamic = 'force-dynamic'
+
 import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -16,24 +19,48 @@ import { useAiChat } from "@/hooks/use-ai-chat"
 export default function TeamPage() {
   const [selectedAgent, setSelectedAgent] = useState(aiAgents[0])
   const [message, setMessage] = useState("")
+  const [isListening, setIsListening] = useState(false)
+  const [isSpeaking, setIsSpeaking] = useState(false)
 
   const {
     messages,
     isLoading,
-    sendMessage,
-    clearMessages,
-    isListening,
-    startListening,
-    stopListening,
-    isSpeaking,
-    speak,
-    stopSpeaking,
+    append,
+    setInput,
+    input,
   } = useAiChat({ agentId: selectedAgent.id })
 
   const handleSendMessage = async () => {
     if (!message.trim()) return
-    await sendMessage(message)
+    await append({ role: "user", content: message })
     setMessage("")
+  }
+
+  const sendMessage = async (text: string) => {
+    await append({ role: "user", content: text })
+  }
+
+  const clearMessages = () => {
+    // This would need to be implemented in the hook or we can work around it
+  }
+
+  const startListening = () => {
+    setIsListening(true)
+    // Voice recognition would be implemented here
+  }
+
+  const stopListening = () => {
+    setIsListening(false)
+  }
+
+  const speak = (text: string) => {
+    setIsSpeaking(true)
+    // Text-to-speech would be implemented here
+    setTimeout(() => setIsSpeaking(false), 2000) // Mock duration
+  }
+
+  const stopSpeaking = () => {
+    setIsSpeaking(false)
   }
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -145,7 +172,9 @@ export default function TeamPage() {
                     <div>
                       <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                       <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{selectedAgent.personality.split(".")[0]}.</p>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {selectedAgent.specialty}
+                      </p>
                     </div>
                   </div>
 

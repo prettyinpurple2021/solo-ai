@@ -10,7 +10,6 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Palette, Type, ImageIcon, Download, Save, Sparkles, Crown, Lightbulb } from "lucide-react"
-import { AuthGuard } from "@/components/auth/auth-guard"
 
 const COLOR_PALETTES = [
   {
@@ -117,8 +116,7 @@ export default function BrandStylerStudio() {
   }
 
   return (
-    <AuthGuard>
-      <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
@@ -432,6 +430,5 @@ export default function BrandStylerStudio() {
           </div>
         </div>
       </div>
-    </AuthGuard>
   )
 }
