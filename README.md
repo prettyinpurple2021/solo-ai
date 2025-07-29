@@ -200,13 +200,39 @@ vercel --prod
 - ✅ **AI Agent System** - Enhanced interface with proper TypeScript support
 - ✅ **Focus Timer** - Improved type safety and session management
 
+## 📚 Documentation
+
+### Comprehensive Wiki
+Explore our detailed documentation covering all aspects of the platform:
+
+- **[📖 Complete Wiki](./wiki/README.md)** - Comprehensive documentation hub
+- **[🏗️ Architecture Guide](./wiki/architecture/README.md)** - System design and technical details
+- **[🔌 API Documentation](./wiki/api/README.md)** - Complete API reference and examples
+- **[👨‍💻 Development Guide](./wiki/development/getting-started.md)** - Get started with development
+- **[👥 User Manual](./wiki/user-guides/README.md)** - Complete user documentation
+- **[🔧 Troubleshooting](./wiki/troubleshooting/common-issues.md)** - Solutions to common issues
+
+### Quick Links
+- **Features**: [Focus Sessions](./wiki/features/focus-sessions.md) | [AI Team](./wiki/features/ai-team.md) | [Task Management](./wiki/features/task-management.md)
+- **Development**: [Getting Started](./wiki/development/getting-started.md) | [Code Style](./wiki/development/code-style.md) | [Testing](./wiki/development/testing.md)
+- **Deployment**: [Environment Setup](./wiki/deployment/environment.md) | [Monitoring](./wiki/deployment/monitoring.md)
+
 ## 🤝 Contributing
 
+We welcome contributions from developers, designers, and productivity enthusiasts! 
+
+- **[📋 Contribution Guide](./wiki/contributing/README.md)** - Complete guide to contributing
+- **[🐛 Report Issues](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/issues)** - Bug reports and feature requests
+- **[💬 Discussions](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/discussions)** - Community discussions
+
+### Quick Start for Contributors
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Follow our [Development Guide](./wiki/development/getting-started.md)
+3. Check our [Contribution Guidelines](./wiki/contributing/README.md)
+4. Create a feature branch (`git checkout -b feature/amazing-feature`)
+5. Commit your changes (`git commit -m 'Add amazing feature'`)
+6. Push to the branch (`git push origin feature/amazing-feature`)
+7. Open a Pull Request
 
 ## 📝 License
 
