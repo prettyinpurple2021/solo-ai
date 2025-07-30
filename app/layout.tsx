@@ -3,52 +3,13 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { Toaster } from "@/components/ui/sonner"
+import { AuthProvider } from "@/hooks/use-auth"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "SoloBoss AI - Build Your Empire With AI Squad Power",
-  description:
-    "Command your personal army of 8 specialized AI agents and transform into the legendary boss you were meant to be.",
-  keywords: "AI, entrepreneurship, business automation, AI agents, solopreneur, business growth",
-  authors: [{ name: "SoloBoss AI Team" }],
-  creator: "SoloBoss AI",
-  publisher: "SoloBoss AI",
-  formatDetection: {
-    email: false,
-    address: false,
-    telephone: false,
-  },
-  metadataBase: new URL("https://soloboss-ai.vercel.app"),
-  openGraph: {
-    title: "SoloBoss AI - Build Your Empire With AI Squad Power",
-    description:
-      "Command your personal army of 8 specialized AI agents and transform into the legendary boss you were meant to be.",
-    url: "https://soloboss-ai.vercel.app",
-    siteName: "SoloBoss AI",
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "SoloBoss AI - Build Your Empire With AI Squad Power",
-    description:
-      "Command your personal army of 8 specialized AI agents and transform into the legendary boss you were meant to be.",
-    creator: "@solobossai",
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
-  },
-    generator: 'v0.dev'
+  title: "SoloBoss AI - Your Virtual AI Team",
+  description: "Build, grow, and scale your business with your personal AI-powered team of experts.",
 }
 
 export default function RootLayout({
@@ -57,11 +18,17 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange={false}>
-          {children}
-          <Toaster />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <AuthProvider>
+            {children}
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
