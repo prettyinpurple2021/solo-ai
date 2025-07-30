@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, memo } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
@@ -62,21 +62,49 @@ export default function FocusMode() {
     }
   }, [isActive, timeLeft, sessionType, completedSessions])
 
-  const formatTime = (seconds: number): string => {
+  const formatTime = useCallback((seconds: number): string => {
     const minutes = Math.floor(seconds / 60)
     const remainingSeconds = seconds % 60
     return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`
-  }
+  }, [])
 
-  const startTimer = () => setIsActive(true)
-  const pauseTimer = () => setIsActive(false)
-  const resetTimer = () => {
+  const startTimer = useCallback(() => setIsActive(true), [])
+  const pauseTimer = useCallback(() => setIsActive(false), [])
+  const resetTimer = useCallback(() => {
     setIsActive(false)
     setTimeLeft(sessionTypes[sessionType].duration * 60)
-  }
+  }, [sessionType])
 
   const progress =
     ((sessionTypes[sessionType].duration * 60 - timeLeft) / (sessionTypes[sessionType].duration * 60)) * 100
+
+  // Memoized motivational footer to prevent unnecessary re-renders
+  const MotivationalFooter = memo(() => (
+    <Card className="boss-card soloboss-gradient text-white static-content">
+      <CardContent className="p-6 text-center">
+        <h3 className="text-2xl font-bold mb-2 flex items-center justify-center gap-2">
+          <Target className="h-6 w-6" />
+          Focus like a boss. Slay like a queen.
+          <Crown className="h-6 w-6" />
+        </h3>
+        <p className="text-lg opacity-90 opacity-optimized">
+          Every focused minute is a step closer to your empire. You've got this! 💪✨
+        </p>
+      </CardContent>
+    </Card>
+  ))
+
+  const handlePresetClick = useCallback((preset: typeof presets[0]) => {
+    setSessionType("work")
+    setTimeLeft(preset.work * 60)
+    setIsActive(false)
+  }, [])
+
+  const handleSessionTypeChange = useCallback((value: string) => {
+    setSessionType(value as keyof typeof sessionTypes)
+  }, [])
+
+  MotivationalFooter.displayName = 'MotivationalFooter'
 
   return (
     <SidebarInset>
@@ -139,8 +167,11 @@ export default function FocusMode() {
                 </div>
                 <div className="mt-2 rebel-progress">
                   <div
-                    className="h-full transition-all duration-500 ease-out"
-                    style={{ width: `${(completedSessions / weeklyGoal) * 100}%` }}
+                    className="h-full transition-all duration-500 ease-out opacity-optimized"
+                    style={{ 
+                      width: `${(completedSessions / weeklyGoal) * 100}%`,
+                      transform: 'translateZ(0)' // GPU acceleration
+                    }}
                   />
                 </div>
                 <p className="text-sm text-muted-foreground font-medium mt-1">On track to dominate! 👑</p>
@@ -200,7 +231,13 @@ export default function FocusMode() {
                     {formatTime(timeLeft)}
                   </div>
                   <div className="w-full max-w-md mx-auto rebel-progress">
-                    <div className="h-full transition-all duration-1000 ease-out" style={{ width: `${progress}%` }} />
+                    <div 
+                      className="h-full transition-all duration-1000 ease-out opacity-optimized" 
+                      style={{ 
+                        width: `${progress}%`,
+                        transform: 'translateZ(0)' // GPU acceleration
+                      }} 
+                    />
                   </div>
                 </div>
 
@@ -239,7 +276,7 @@ export default function FocusMode() {
 
                 {/* Session Type Selector */}
                 <div className="flex justify-center">
-                                    <Select value={sessionType} onValueChange={(value) => setSessionType(value as keyof typeof sessionTypes)}>
+                                    <Select value={sessionType} onValueChange={handleSessionTypeChange}>
                     <SelectTrigger className="w-full border-purple-200 dark:border-purple-800">
                       <SelectValue placeholder="Select session type" />
                     </SelectTrigger>
@@ -289,11 +326,7 @@ export default function FocusMode() {
                         key={index}
                         variant="outline"
                         className="w-full justify-start text-left bg-transparent border-2 border-purple-200 hover:border-purple-400 bounce-on-hover"
-                        onClick={() => {
-                          setSessionType("work")
-                          setTimeLeft(preset.work * 60)
-                          setIsActive(false)
-                        }}
+                        onClick={() => handlePresetClick(preset)}
                       >
                         <div className="flex items-center gap-3">
                           <span className="text-lg">{preset.emoji}</span>
@@ -313,18 +346,7 @@ export default function FocusMode() {
           </div>
 
           {/* Motivational Footer */}
-          <Card className="boss-card soloboss-gradient text-white">
-            <CardContent className="p-6 text-center">
-              <h3 className="text-2xl font-bold mb-2 flex items-center justify-center gap-2">
-                <Target className="h-6 w-6" />
-                Focus like a boss. Slay like a queen.
-                <Crown className="h-6 w-6" />
-              </h3>
-              <p className="text-lg opacity-90">
-                Every focused minute is a step closer to your empire. You've got this! 💪✨
-              </p>
-            </CardContent>
-          </Card>
+          <MotivationalFooter />
         </div>
       </SidebarInset>
   )
