@@ -410,7 +410,7 @@ export default function PricingPage() {
               className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
               onClick={() => setIsAuthModalOpen(true)}
             >
-              Start Free Trial
+              Start for free
             </Button>
             <Button
               size="lg"
