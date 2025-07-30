@@ -1,7 +1,8 @@
 "use client"
 
 import Link from "next/link"
-import { Crown, Heart, Sparkles, Twitter, Instagram, Linkedin, Github, Mail } from "lucide-react"
+import { useState } from "react"
+import { Crown, Heart, Sparkles, Twitter, Instagram, Linkedin, Github, Mail, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -45,6 +46,44 @@ const socialLinks = [
 ]
 
 export function AppFooter() {
+  const [email, setEmail] = useState("")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubscribed, setIsSubscribed] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!email || isSubmitting) return
+
+    setIsSubmitting(true)
+    setErrorMessage("")
+
+    try {
+      const response = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        setIsSubscribed(true)
+        setEmail("")
+        // Reset success state after 5 seconds
+        setTimeout(() => setIsSubscribed(false), 5000)
+      } else {
+        setErrorMessage(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch (error) {
+      setErrorMessage('Network error. Please try again.')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
   return (
     <footer className="bg-gradient-to-b from-purple-50 to-white border-t-2 border-purple-200">
       {/* Newsletter Section */}
@@ -60,19 +99,44 @@ export function AppFooter() {
               Get exclusive boss tips, AI updates, and empire-building strategies delivered to your inbox. No spam, just
               pure boss energy! 💪✨
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-              <Input
-                type="email"
-                placeholder="Enter your boss email..."
-                className="bg-white/10 border-white/20 text-white placeholder:text-white/70 focus:bg-white/20"
-              />
-              <Button
-                variant="secondary"
-                className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 bounce-on-hover"
-              >
-                Subscribe 🚀
-              </Button>
-            </div>
+            {isSubscribed ? (
+              <div className="flex items-center justify-center gap-2 text-white">
+                <CheckCircle className="w-6 h-6" />
+                <span className="text-lg font-semibold">Welcome to the Boss Revolution! 🎉</span>
+              </div>
+            ) : (
+              <form onSubmit={handleNewsletterSubmit} className="max-w-md mx-auto">
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your boss email..."
+                    className="bg-white/10 border-white/20 text-white placeholder:text-white/70 focus:bg-white/20"
+                    disabled={isSubmitting}
+                    required
+                  />
+                  <Button
+                    type="submit"
+                    variant="secondary"
+                    disabled={isSubmitting || !email}
+                    className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 bounce-on-hover disabled:opacity-50"
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 border-2 border-purple-600 border-t-transparent rounded-full animate-spin" />
+                        Joining...
+                      </div>
+                    ) : (
+                      "Subscribe 🚀"
+                    )}
+                  </Button>
+                </div>
+                {errorMessage && (
+                  <p className="text-red-200 text-sm mt-2 text-center">{errorMessage}</p>
+                )}
+              </form>
+            )}
           </div>
         </div>
       </div>

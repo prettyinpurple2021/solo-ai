@@ -56,7 +56,7 @@ const data = {
     },
     {
       title: "SlayList",
-      url: "/slaylist",
+      url: "/dashboard/slaylist",
       icon: CheckSquare,
     },
     {
@@ -66,39 +66,39 @@ const data = {
     },
     {
       title: "Briefcase",
-      url: "/briefcase",
+      url: "/dashboard/briefcase",
       icon: Briefcase,
     },
     {
       title: "Brand Studio",
-      url: "/brand",
+      url: "/dashboard/brand",
       icon: Palette,
     },
     {
       title: "Focus Mode",
-      url: "/focus",
+      url: "/dashboard/focus",
       icon: Target,
     },
     {
       title: "Burnout Shield",
-      url: "/burnout",
+      url: "/dashboard/burnout",
       icon: Shield,
     },
   ],
   projects: [
     {
       name: "Empire Builder Pro",
-      url: "#",
+      url: "/dashboard/brand",
       icon: Frame,
     },
     {
       name: "Boss Automation",
-      url: "#",
+      url: "/dashboard/focus",
       icon: PieChart,
     },
     {
       name: "Success Tracker",
-      url: "#",
+      url: "/dashboard/slaylist",
       icon: Map,
     },
   ],

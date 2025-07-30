@@ -252,7 +252,7 @@ export default function DashboardPage() {
                   </div>
                 ))}
                 <Button variant="outline" className="w-full mt-3 bg-transparent" asChild>
-                  <a href="/slaylist">View All Tasks</a>
+                  <a href="/dashboard/slaylist">View All Tasks</a>
                 </Button>
               </div>
             </CardContent>
@@ -331,7 +331,7 @@ export default function DashboardPage() {
         {/* Quick Actions */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Button asChild className="punk-button h-16 text-white">
-            <a href="/slaylist" className="flex flex-col items-center gap-2">
+            <a href="/dashboard/slaylist" className="flex flex-col items-center gap-2">
               <Target className="h-6 w-6" />
               <span>SlayList</span>
             </a>
@@ -341,13 +341,13 @@ export default function DashboardPage() {
             variant="outline"
             className="h-16 bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200"
           >
-            <a href="/briefcase" className="flex flex-col items-center gap-2">
+            <a href="/dashboard/briefcase" className="flex flex-col items-center gap-2">
               <Briefcase className="h-6 w-6 text-purple-600" />
               <span className="empowering-text">Briefcase</span>
             </a>
           </Button>
           <Button asChild variant="outline" className="h-16 bg-gradient-to-r from-teal-50 to-blue-50 border-teal-200">
-            <a href="/brand" className="flex flex-col items-center gap-2">
+            <a href="/dashboard/brand" className="flex flex-col items-center gap-2">
               <Palette className="h-6 w-6 text-teal-600" />
               <span className="empowering-text">Brand Studio</span>
             </a>
@@ -357,7 +357,7 @@ export default function DashboardPage() {
             variant="outline"
             className="h-16 bg-gradient-to-r from-green-50 to-emerald-50 border-green-200"
           >
-            <a href="/focus" className="flex flex-col items-center gap-2">
+            <a href="/dashboard/focus" className="flex flex-col items-center gap-2">
               <Focus className="h-6 w-6 text-green-600" />
               <span className="empowering-text">Focus Mode</span>
             </a>
