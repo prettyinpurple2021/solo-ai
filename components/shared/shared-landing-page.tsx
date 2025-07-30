@@ -436,6 +436,101 @@ export function SharedLandingPage({
         </div>
       </section>
 
+      {/* AI Agents Section */}
+      <section id="agents" className="py-20 px-4 bg-white/50 dark:bg-slate-800/50">
+        <div className="container mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+              Meet Your AI Squad 🤖
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+              8 specialized AI agents, each with unique personalities and expertise to handle different aspects of your business. 
+              Your virtual dream team, available 24/7.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {[
+              { name: "Roxy", role: "Creative Strategist", specialty: "Brand & Content Creation", color: "from-pink-500 to-purple-500", image: "/images/agents/roxy.png" },
+              { name: "Blaze", role: "Performance Coach", specialty: "Productivity & Goal Achievement", color: "from-orange-500 to-red-500", image: "/images/agents/blaze.png" },
+              { name: "Echo", role: "Communication Expert", specialty: "Networking & Relationships", color: "from-blue-500 to-teal-500", image: "/images/agents/echo.png" },
+              { name: "Sage", role: "Strategic Advisor", specialty: "Business Intelligence & Analysis", color: "from-green-500 to-emerald-500", image: "/images/agents/sage.png" },
+              { name: "Lumi", role: "Legal & Docs Agent", specialty: "Legal Compliance & Documentation", color: "from-indigo-500 to-purple-500", image: "/images/agents/lumi.png" },
+              { name: "Vex", role: "Tech & Automation", specialty: "Technical Solutions & Workflows", color: "from-cyan-500 to-blue-500", image: "/images/agents/vex.png" },
+              { name: "Lexi", role: "Data & Analytics", specialty: "Business Intelligence & Insights", color: "from-emerald-500 to-teal-500", image: "/images/agents/lexi.png" },
+              { name: "Nova", role: "Innovation & Growth", specialty: "Strategy & Market Expansion", color: "from-violet-500 to-purple-500", image: "/images/agents/nova.png" }
+            ].map((agent, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: index * 0.1 }}
+                viewport={{ once: true }}
+              >
+                <Card className="h-full hover:shadow-xl transition-all duration-300 border-pink-200 dark:border-purple-800 hover:border-pink-300 dark:hover:border-purple-600 text-center">
+                  <CardHeader>
+                    <div className={`w-20 h-20 bg-gradient-to-r ${agent.color} rounded-full flex items-center justify-center mx-auto mb-4 relative overflow-hidden`}>
+                      <Image
+                        src={agent.image}
+                        alt={agent.name}
+                        width={60}
+                        height={60}
+                        className="rounded-full object-cover"
+                        onError={(e) => {
+                          // Fallback to initials if image fails to load
+                          e.currentTarget.style.display = 'none';
+                          const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (nextSibling) {
+                            nextSibling.style.display = 'flex';
+                          }
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white" style={{ display: 'none' }}>
+                        {agent.name.charAt(0)}
+                      </div>
+                    </div>
+                    <CardTitle className="text-xl font-bold text-gray-900 dark:text-white">{agent.name}</CardTitle>
+                    <Badge variant="secondary" className="bg-pink-100 text-pink-800 dark:bg-purple-900 dark:text-purple-200">
+                      {agent.role}
+                    </Badge>
+                  </CardHeader>
+                  <CardContent>
+                    <CardDescription className="text-gray-600 dark:text-gray-300 text-sm">
+                      {agent.specialty}
+                    </CardDescription>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              viewport={{ once: true }}
+            >
+              <Link href="/team">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+                >
+                  Meet Your Full AI Team
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials Section */}
       <section id="testimonials" className="py-20 px-4">
         <div className="container mx-auto">
