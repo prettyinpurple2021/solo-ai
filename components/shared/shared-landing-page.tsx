@@ -459,7 +459,7 @@ export function SharedLandingPage({
               { name: "Roxy", role: "Creative Strategist", specialty: "Brand & Content Creation", color: "from-pink-500 to-purple-500", image: "/images/agents/roxy.png" },
               { name: "Blaze", role: "Performance Coach", specialty: "Productivity & Goal Achievement", color: "from-orange-500 to-red-500", image: "/images/agents/blaze.png" },
               { name: "Echo", role: "Communication Expert", specialty: "Networking & Relationships", color: "from-blue-500 to-teal-500", image: "/images/agents/echo.png" },
-              { name: "Sage", role: "Strategic Advisor", specialty: "Business Intelligence & Analysis", color: "from-green-500 to-emerald-500", image: "/images/agents/sage.png" },
+              { name: "Glitch", role: "QA & Debug Agent", specialty: "Quality Assurance & Testing", color: "from-red-500 to-orange-500", image: "/images/agents/glitch.png" },
               { name: "Lumi", role: "Legal & Docs Agent", specialty: "Legal Compliance & Documentation", color: "from-indigo-500 to-purple-500", image: "/images/agents/lumi.png" },
               { name: "Vex", role: "Tech & Automation", specialty: "Technical Solutions & Workflows", color: "from-cyan-500 to-blue-500", image: "/images/agents/vex.png" },
               { name: "Lexi", role: "Data & Analytics", specialty: "Business Intelligence & Insights", color: "from-emerald-500 to-teal-500", image: "/images/agents/lexi.png" },
