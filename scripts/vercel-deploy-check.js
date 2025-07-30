@@ -43,8 +43,55 @@ console.log('• Test deployed URLs: https://your-vercel-domain/privacy and /ter
 console.log('• Test in incognito window and clear browser cache.');
 console.log('• If issues persist, check Vercel deployment logs for errors.');
 
-function echoSection(title) {
-  console.log(`\n--- ${title} ---`);
+// 5. Check for /privacy and /terms pages
+const privacyPage = path.join(__dirname, '../app/privacy/page.tsx');
+const termsPage = path.join(__dirname, '../app/terms/page.tsx');
+if (fs.existsSync(privacyPage)) {
+  console.log('✅ app/privacy/page.tsx exists.');
+} else {
+  console.warn('❌ WARNING: app/privacy/page.tsx does NOT exist!');
+}
+if (fs.existsSync(termsPage)) {
+  console.log('✅ app/terms/page.tsx exists.');
+} else {
+  console.warn('❌ WARNING: app/terms/page.tsx does NOT exist!');
 }
 
-console.log('\n--- Automated check complete. ---');
+// 6. Check footer for legal links
+const footerPath = path.join(__dirname, '../components/footer/app-footer.tsx');
+if (fs.existsSync(footerPath)) {
+  const footerContent = fs.readFileSync(footerPath, 'utf8');
+  const hasPrivacy = /href=["'`]\/privacy["'`]/.test(footerContent);
+  const hasTerms = /href=["'`]\/terms["'`]/.test(footerContent);
+  if (hasPrivacy && hasTerms) {
+    console.log('✅ Footer contains links to /privacy and /terms.');
+  } else {
+    if (!hasPrivacy) console.warn('❌ WARNING: Footer does NOT contain a link to /privacy!');
+    if (!hasTerms) console.warn('❌ WARNING: Footer does NOT contain a link to /terms!');
+  }
+} else {
+  console.warn('⚠️ components/footer/app-footer.tsx not found.');
+}
+
+// 7. Check app/layout.tsx for providers and analytics
+const layoutPath = path.join(__dirname, '../app/layout.tsx');
+if (fs.existsSync(layoutPath)) {
+  const layoutContent = fs.readFileSync(layoutPath, 'utf8');
+  const hasThemeProvider = /ThemeProvider/.test(layoutContent);
+  const hasAuthProvider = /AuthProvider/.test(layoutContent);
+  const hasAnalytics = /Analytics/.test(layoutContent);
+  const hasSpeedInsights = /SpeedInsights/.test(layoutContent);
+  if (hasThemeProvider && hasAuthProvider && hasAnalytics && hasSpeedInsights) {
+    console.log('✅ app/layout.tsx includes ThemeProvider, AuthProvider, Analytics, and SpeedInsights.');
+  } else {
+    if (!hasThemeProvider) console.warn('❌ WARNING: app/layout.tsx does NOT include ThemeProvider!');
+    if (!hasAuthProvider) console.warn('❌ WARNING: app/layout.tsx does NOT include AuthProvider!');
+    if (!hasAnalytics) console.warn('❌ WARNING: app/layout.tsx does NOT include Analytics!');
+    if (!hasSpeedInsights) console.warn('❌ WARNING: app/layout.tsx does NOT include SpeedInsights!');
+  }
+} else {
+  console.warn('⚠️ app/layout.tsx not found.');
+}
+
+function echoSection(title) {
+  console.log(`
