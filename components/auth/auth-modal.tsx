@@ -34,6 +34,17 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
     try {
       console.log("Starting email sign-up process...")
+      
+      // Check if Supabase is properly configured
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+        toast({
+          title: "Configuration Required",
+          description: "Please configure Supabase to enable authentication.",
+          variant: "destructive",
+        })
+        return
+      }
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
@@ -84,6 +95,17 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
     try {
       console.log("Starting email sign-in process...")
+      
+      // Check if Supabase is properly configured
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+        toast({
+          title: "Configuration Required",
+          description: "Please configure Supabase to enable authentication.",
+          variant: "destructive",
+        })
+        return
+      }
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -125,6 +147,17 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
     try {
       console.log("Starting Google OAuth process...")
+      
+      // Check if Supabase is properly configured
+      if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
+        toast({
+          title: "Configuration Required",
+          description: "Please configure Supabase to enable authentication.",
+          variant: "destructive",
+        })
+        return
+      }
+      
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
