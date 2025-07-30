@@ -94,4 +94,5 @@ if (fs.existsSync(layoutPath)) {
 }
 
 function echoSection(title) {
-  console.log(`
+  console.log(`\n--- ${title} ---\n`);
+}
