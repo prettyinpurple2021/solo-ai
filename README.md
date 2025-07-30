@@ -313,3 +313,69 @@ Your SoloBoss AI platform is now a **fully functional MVP** that users can immed
 ---
 
 *Built with ❤️ using Next.js, Supabase, and the power of AI*
+
+---
+
+## Vercel Deployment Troubleshooting Checklist
+
+1. **Check Next.js Config**
+   - Ensure your `next.config.mjs` does NOT include `output: 'export'`.
+   - Example:
+     ```js
+     // next.config.mjs
+     export default {
+       // No 'output: export'
+     }
+     ```
+
+2. **Clean Local Build**
+   - Run the following commands:
+     ```bash
+     rm -rf .next
+     npm install
+     npm run build
+     npm start
+     ```
+   - Test `/privacy` and `/terms` locally at `http://localhost:3000/privacy` and `http://localhost:3000/terms`.
+
+3. **Vercel Project Settings**
+   - Framework Preset: **Next.js**
+   - Build Command: `npm run build`
+   - Output Directory: `.next`
+
+4. **No Custom Redirects**
+   - In Vercel dashboard, check **Settings > Redirects**: No catch-all redirects to `/` or `/landing`.
+   - If you have a `vercel.json`, ensure it does NOT contain:
+     ```json
+     {
+       "redirects": [
+         { "source": "/(.*)", "destination": "/", "permanent": false }
+       ]
+     }
+     ```
+
+5. **Test in Incognito**
+   - Open your site in an incognito window and clear your cache.
+
+6. **Check Deployment Logs**
+   - In Vercel dashboard, review build and runtime logs for errors.
+
+7. **Test Deployed URLs**
+   - Visit `https://your-vercel-domain/privacy` and `https://your-vercel-domain/terms` directly.
+
+---
+
+## Script: Clean Local Build for Next.js
+
+```bash
+# Remove previous build artifacts
+rm -rf .next
+# Install dependencies
+npm install
+# Build the app
+npm run build
+# Start the app locally
+npm start
+```
+
+---
