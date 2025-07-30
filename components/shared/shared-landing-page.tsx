@@ -335,15 +335,14 @@ export function SharedLandingPage({
               your industry like never before.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link href="/dashboard">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
-                >
-                  Start Your Empire
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+              <Button
+                size="lg"
+                onClick={onShowAuthModal}
+                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+              >
+                Start Your Empire
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
               <Button
                 size="lg"
                 variant="outline"
@@ -695,15 +694,16 @@ export function SharedLandingPage({
               productivity.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link href="/dashboard">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
-                >
-                  Start for free
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
+
+              <Button
+                size="lg"
+                onClick={onShowAuthModal}
+                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+              >
+                Start for free
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+
               <Button
                 size="lg"
                 variant="outline"
