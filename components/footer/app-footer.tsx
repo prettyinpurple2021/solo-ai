@@ -9,26 +9,19 @@ import { Separator } from "@/components/ui/separator"
 
 const footerLinks = {
   product: [
-    { name: "BossRoom Dashboard", href: "/" },
-    { name: "AI Squad", href: "/team" },
-    { name: "SlayList Goals", href: "/slaylist" },
-    { name: "BrandStyler", href: "/brand" },
-    { name: "Focus Mode", href: "/focus" },
-    { name: "Burnout Shield", href: "/burnout" },
+    { name: "Features", href: "/features" },
+    { name: "Pricing", href: "/pricing" },
+    { name: "System Status", href: "/status" },
   ],
   company: [
     { name: "About SoloBoss", href: "/about" },
     { name: "Boss Blog", href: "/blog" },
-    { name: "Careers", href: "/careers" },
-    { name: "Press Kit", href: "/press" },
-    { name: "Boss Community", href: "/community" },
+    { name: "Contact Us", href: "/contact" },
   ],
   resources: [
     { name: "Help Center", href: "/help" },
-    { name: "API Docs", href: "/docs" },
-    { name: "Boss Academy", href: "/academy" },
+    { name: "Boss Community", href: "/community" },
     { name: "Templates", href: "/templates" },
-    { name: "Integrations", href: "/integrations" },
   ],
   legal: [
     { name: "Privacy Policy", href: "/privacy" },
