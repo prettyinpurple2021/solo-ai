@@ -59,14 +59,14 @@ export const cardVariants = cva("", {
 /**
  * Utility function to get gradient classes
  */
-export function getGradient(variant: keyof typeof gradientVariants.defaultVariants.variant = "purple-pink") {
+export function getGradient(variant: "purple-pink" | "purple-pink-text" | "teal-purple" | "pink-purple" | "purple-teal" | "teal-pink" | "pink-teal" = "purple-pink") {
   return gradientVariants({ variant })
 }
 
 /**
  * Utility function to get animation classes  
  */
-export function getAnimation(hover: keyof typeof animationVariants.defaultVariants.hover = "scale") {
+export function getAnimation(hover: "scale" | "bounce" | "glow" = "scale") {
   return animationVariants({ hover })
 }
 

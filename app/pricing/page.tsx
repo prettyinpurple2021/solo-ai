@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -9,6 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { CheckCircle, X, ArrowLeft, Crown, Rocket, Zap, MessageCircle } from "lucide-react"
 import Link from "next/link"
 
+import { AuthModal } from "@/components/auth/auth-modal"
 import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
 
 
@@ -115,10 +117,11 @@ const FAQ_ITEMS = [
 ]
 
 export default function PricingPage() {
-  const [isYearly, setIsYearly] = useState(false)
-
+  const [selectedPlan, setSelectedPlan] = useState("Accelerator")
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
   const [showScheduleModal, setShowScheduleModal] = useState(false)
-
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  const router = useRouter()
 
 
   const calculateSavings = (monthly: string, yearly: string) => {
@@ -201,9 +204,9 @@ export default function PricingPage() {
 
           {/* Billing Toggle */}
           <div className="flex items-center justify-center space-x-4 mb-12">
-            <span className={`font-medium ${!isYearly ? "text-purple-600" : "text-gray-500"}`}>Monthly</span>
-            <Switch checked={isYearly} onCheckedChange={setIsYearly} className="data-[state=checked]:bg-purple-600" />
-            <span className={`font-medium ${isYearly ? "text-purple-600" : "text-gray-500"}`}>Yearly</span>
+            <span className={`font-medium ${billingCycle === "monthly" ? "text-purple-600" : "text-gray-500"}`}>Monthly</span>
+            <Switch checked={billingCycle === "yearly"} onCheckedChange={(checked) => setBillingCycle(checked ? "yearly" : "monthly")} className="data-[state=checked]:bg-purple-600" />
+            <span className={`font-medium ${billingCycle === "yearly" ? "text-purple-600" : "text-gray-500"}`}>Yearly</span>
             <Badge className="bg-green-100 text-green-700 border-green-200">Save up to 20%</Badge>
           </div>
         </div>
@@ -215,7 +218,7 @@ export default function PricingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {PRICING_PLANS.map((plan, index) => {
               const savings = calculateSavings(plan.monthlyPrice, plan.yearlyPrice)
-              const currentPrice = isYearly ? plan.yearlyPrice : plan.monthlyPrice
+              const currentPrice = billingCycle === "yearly" ? plan.yearlyPrice : plan.monthlyPrice
 
               return (
                 <Card
@@ -249,10 +252,10 @@ export default function PricingPage() {
                           {currentPrice}
                         </span>
                         {currentPrice !== "Free" && (
-                          <span className="text-gray-600 ml-2">/{isYearly ? "year" : "month"}</span>
+                          <span className="text-gray-600 ml-2">/{billingCycle === "yearly" ? "year" : "month"}</span>
                         )}
                       </div>
-                      {isYearly && savings > 0 && (
+                      {billingCycle === "yearly" && savings > 0 && (
                         <Badge className="bg-green-100 text-green-700 border-green-200 mt-2">Save {savings}%</Badge>
                       )}
                     </div>
@@ -414,7 +417,6 @@ export default function PricingPage() {
               variant="outline"
               onClick={() => setShowScheduleModal(true)}
               className="border-2 border-white text-white hover:bg-white hover:text-purple-600 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200 bg-transparent"
-              onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
             >
               Schedule Demo
             </Button>
@@ -428,6 +430,13 @@ export default function PricingPage() {
         isOpen={showScheduleModal}
         onClose={() => setShowScheduleModal(false)}
 
+      />
+
+      {/* Auth Modal */}
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onSuccess={handleAuthSuccess}
       />
     </div>
   )

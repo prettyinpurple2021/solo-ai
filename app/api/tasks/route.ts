@@ -313,7 +313,7 @@ async function updateGoalProgress(supabase: any, goalId: string, userId: string)
       .eq('user_id', userId)
 
     if (tasks && tasks.length > 0) {
-      const completedTasks = tasks.filter(t => t.status === 'completed').length
+      const completedTasks = tasks.filter((t: any) => t.status === 'completed').length
       const totalTasks = tasks.length
       const progressPercentage = Math.round((completedTasks / totalTasks) * 100)
 

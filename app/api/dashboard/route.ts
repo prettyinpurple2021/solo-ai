@@ -210,7 +210,7 @@ export async function GET(request: NextRequest) {
         target_date: goal.target_date,
         category: goal.category,
         tasks_total: goal.tasks?.length || 0,
-        tasks_completed: goal.tasks?.filter(t => t.status === 'completed').length || 0,
+        tasks_completed: goal.tasks?.filter((t: any) => t.status === 'completed').length || 0,
       })) || [],
 
       recentConversations: recentConversations?.map(conv => ({
