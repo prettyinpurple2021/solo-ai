@@ -113,8 +113,18 @@
   }
 }
 
-/* Smooth transitions for theme changes */
-* {
+/* Smooth transitions for theme changes - Applied selectively for better performance */
+.theme-transition {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Apply transitions only to specific elements that need them */
+body, 
+[data-theme], 
+.card, 
+.button, 
+nav,
+.sidebar {
   transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
@@ -170,15 +180,36 @@
 
 .animate-bounce-gentle {
   animation: bounce-gentle 2s infinite;
+  /* GPU acceleration for better performance */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .animate-pulse-soft {
   animation: pulse-soft 2s infinite;
+  /* GPU acceleration for better performance */
+  transform: translateZ(0);
+  will-change: opacity;
 }
 
 .animate-gradient {
   background-size: 200% 200%;
   animation: gradient-shift 3s ease infinite;
+  /* GPU acceleration for better performance */
+  transform: translateZ(0);
+  will-change: background-position;
+}
+
+/* Performance optimization for static content */
+.static-content {
+  contain: layout style paint;
+  transform: translateZ(0);
+}
+
+/* Optimize opacity changes for better INP */
+.opacity-optimized {
+  will-change: opacity;
+  transform: translateZ(0);
 }
 
 /* Focus styles */
