@@ -436,7 +436,7 @@ export default function FeaturesPage() {
           <h2 className="text-4xl md:text-5xl font-bold mb-6">Ready to Build Your Empire?</h2>
           <p className="text-xl mb-8 opacity-90">
             Join thousands of solo entrepreneurs who've transformed their businesses with SoloBoss AI. 
-            Start your free trial today and experience the power of having an AI squad! 🚀
+            Start your journey today and experience the power of having an AI squad! 🚀
           </p>
           <div className="space-y-4 md:space-y-0 md:space-x-4 md:flex md:justify-center">
             <Link href="/">
@@ -444,7 +444,7 @@ export default function FeaturesPage() {
                 size="lg"
                 className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
               >
-                Start Free Trial
+                Start for free
               </Button>
             </Link>
             <Link href="/pricing">
