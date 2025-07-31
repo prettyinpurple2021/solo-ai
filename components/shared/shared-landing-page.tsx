@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { Button } from "../ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
+// If Badge exists elsewhere, update the path accordingly, for example:
+import { Badge } from "../ui/badge"
+// Or, if you need to create it, create a file at components/ui/badge.tsx with a Badge component.
+// import { ThemeToggle } from "@/components/theme-toggle"
+import { ThemeToggle } from "../theme-toggle"
+import { Separator } from "../ui/separator"
 
 import {
   ArrowRight,
@@ -825,7 +828,7 @@ export function SharedLandingPage({
             </div>
           </div>
           <Separator className="my-8 bg-gray-800" />
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="my-8 h-px w-full bg-gray-800" />
             <p className="text-gray-400">© 2024 SoloBoss AI. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
