@@ -99,7 +99,7 @@ const pricingPlans = [
     description: "Perfect for solopreneurs getting started",
     features: ["3 AI Agents", "Basic Automation", "5GB Storage", "Email Support", "Mobile App Access"],
     popular: false,
-    cta: "Start Free Trial",
+    cta: "Start for free",
   },
   {
     name: "Professional",
@@ -116,7 +116,7 @@ const pricingPlans = [
       "Analytics Dashboard",
     ],
     popular: true,
-    cta: "Start Free Trial",
+    cta: "Start for free",
   },
   {
     name: "Enterprise",
@@ -460,7 +460,7 @@ export function SharedLandingPage({
               { name: "Roxy", role: "Creative Strategist", specialty: "Brand & Content Creation", color: "from-pink-500 to-purple-500", image: "/images/agents/roxy.png" },
               { name: "Blaze", role: "Performance Coach", specialty: "Productivity & Goal Achievement", color: "from-orange-500 to-red-500", image: "/images/agents/blaze.png" },
               { name: "Echo", role: "Communication Expert", specialty: "Networking & Relationships", color: "from-blue-500 to-teal-500", image: "/images/agents/echo.png" },
-              { name: "Sage", role: "Strategic Advisor", specialty: "Business Intelligence & Analysis", color: "from-green-500 to-emerald-500", image: "/images/agents/sage.png" },
+              { name: "Glitch", role: "QA & Debug Agent", specialty: "Quality Assurance & Testing", color: "from-red-500 to-orange-500", image: "/images/agents/glitch.png" },
               { name: "Lumi", role: "Legal & Docs Agent", specialty: "Legal Compliance & Documentation", color: "from-indigo-500 to-purple-500", image: "/images/agents/lumi.png" },
               { name: "Vex", role: "Tech & Automation", specialty: "Technical Solutions & Workflows", color: "from-cyan-500 to-blue-500", image: "/images/agents/vex.png" },
               { name: "Lexi", role: "Data & Analytics", specialty: "Business Intelligence & Insights", color: "from-emerald-500 to-teal-500", image: "/images/agents/lexi.png" },
@@ -691,7 +691,7 @@ export function SharedLandingPage({
               Ready to Become a SoloBoss?
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
-              Join the revolution of AI-powered entrepreneurs. Start your free trial today and experience the future of
+              Join the revolution of AI-powered entrepreneurs. Start for free today and experience the future of
               productivity.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
@@ -700,7 +700,7 @@ export function SharedLandingPage({
                   size="lg"
                   className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
                 >
-                  Start Free Trial
+                  Start for free
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
@@ -828,13 +828,13 @@ export function SharedLandingPage({
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400">© 2024 SoloBoss AI. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
                 Privacy
               </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
                 Terms
               </Link>
-              <Link href="#" className="text-gray-400 hover:text-white transition-colors">
+              <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors">
                 Cookies
               </Link>
             </div>
