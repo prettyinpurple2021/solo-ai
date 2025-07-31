@@ -263,9 +263,3 @@ export function useAiChat(options: UseAiChatOptions = {}): UseAiChatReturn {
     setMessages,
   }
 }
-
-// Remove the duplicate export statement and keep just the individual exports
-export type { UseAiChatOptions }
-export type { UseAiChatReturn }  
-export type { Message }
-export type { ChatState }

@@ -157,7 +157,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
       // Try to find a female voice for more personality
       const voices = synthRef.current.getVoices()
       const femaleVoice = voices.find(
-        (voice) =>
+        (voice: any) =>
           voice.name.toLowerCase().includes("female") ||
           voice.name.toLowerCase().includes("woman") ||
           voice.name.toLowerCase().includes("samantha") ||

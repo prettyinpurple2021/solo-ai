@@ -26,5 +26,9 @@ export default [...compat.extends("next/core-web-vitals", "next/typescript"), {
         }],
 
         "import/no-relative-parent-imports": "warn",
+        "react/no-unescaped-entities": "warn",
+        "@typescript-eslint/no-explicit-any": "warn",
+        "@typescript-eslint/no-empty-object-type": "off",
+        "@next/next/no-img-element": "warn",
     },
 }];

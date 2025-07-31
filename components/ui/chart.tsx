@@ -111,6 +111,11 @@ interface ChartTooltipContentProps {
   indicator?: "line" | "dot" | "dashed";
   nameKey?: string;
   labelKey?: string;
+  labelFormatter?: (value: any, payload: any) => React.ReactNode;
+  labelClassName?: string;
+  color?: string;
+  formatter?: (value: any, name: any, item: any, index: any, payload: any) => React.ReactNode;
+  nestLabel?: boolean;
 }
 
 const ChartTooltipContent = React.forwardRef<
@@ -127,6 +132,11 @@ const ChartTooltipContent = React.forwardRef<
       indicator = "dot",
       nameKey,
       labelKey,
+      labelFormatter,
+      labelClassName,
+      color,
+      formatter,
+      nestLabel,
       ...props
     },
     ref
@@ -259,11 +269,12 @@ const ChartLegend = RechartsPrimitive.Legend
 
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-      hideIcon?: boolean
-      nameKey?: string
-    }
+  React.ComponentProps<"div"> & {
+    payload?: any[];
+    verticalAlign?: string;
+    hideIcon?: boolean;
+    nameKey?: string;
+  }
 >(
   (
     { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },

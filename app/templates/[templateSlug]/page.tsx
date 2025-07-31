@@ -5,10 +5,13 @@ import { Badge } from '@/components/ui/badge';
 import * as TemplateComponents from '@/components/templates';
 import { checkRequiredEnvVars } from '@/lib/env-validation';
 
+// Make this page dynamic to avoid static generation issues
+export const dynamic = 'force-dynamic';
+
 type TemplatePageProps = {
-  params: {
+  params: Promise<{
     templateSlug: string;
-  };
+  }>;
 };
 
 /**
@@ -17,6 +20,9 @@ type TemplatePageProps = {
  */
 export default async function TemplatePage({ params }: TemplatePageProps) {
   try {
+    // Await the params in Next.js 15+
+    const { templateSlug } = await params;
+    
     // Check if required environment variables are available
     const hasRequiredEnv = checkRequiredEnvVars([
       'NEXT_PUBLIC_SUPABASE_URL',
@@ -38,7 +44,7 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
       );
     }
 
-    const template = await getTemplateBySlug(params.templateSlug);
+    const template = await getTemplateBySlug(templateSlug);
 
     if (!template) {
       notFound();
