@@ -92,28 +92,28 @@
             "title": "Pre-Mortem Template",
             "description": "Instead of a post-mortem, this AI-powered doc helps founders predict what could go wrong with a project — and fix it in advance.",
             "slug": "pre-mortem-template",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "pro_accelerator"
         },
         {
             "title": "Reverse Engineer Your Role Models",
             "description": "A template that helps break down their success into replicable elements.",
             "slug": "reverse-engineer-role-models",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "free_launchpad"
         },
         {
             "title": "\"Big Leap\" Planner",
             "description": "For bold pivots or risks — plan out one big scary move, with Blaze/Echo voice coaching along the way.",
             "slug": "big-leap-planner",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "pro_accelerator"
         },
         {
             "title": "Offer Naming Generator",
             "description": "Drop your product details, vibe, and target — AI returns 3–5 names with reasons, vibes, and tone tags.",
             "slug": "offer-naming-generator",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "pro_accelerator"
         },
         {
@@ -134,7 +134,7 @@
             "title": "Brag Bank Template",
             "description": "Save wins, praise, testimonials, and accomplishments. Ready-to-paste into your pitch, portfolio, or case studies.",
             "slug": "brag-bank-template",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "free_launchpad"
         },
         {
