@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/hooks/use-auth"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import { statsigAdapter } from "@flags-sdk/statsig"
+import { DynamicStatsigProvider } from "@/components/dynamic-statsig-provider"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -14,11 +16,15 @@ export const metadata: Metadata = {
   description: "Build, grow, and scale your business with your personal AI-powered team of experts.",
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const Statsig = await statsigAdapter.initialize();
+  const datafile = await Statsig.getClientInitializeResponse({userID: "1234"}, {hash: "djb2",});
+  // minimal example, you'll want to customize your user object, likely using the flags SDK's identify function
+
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -29,7 +35,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
+            <DynamicStatsigProvider datafile={datafile}>
+              {children}
+            </DynamicStatsigProvider>
           </AuthProvider>
         </ThemeProvider>
         <Analytics />

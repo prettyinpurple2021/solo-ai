@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { SavedTemplatesList } from "@/components/templates/saved-templates-list"
 import {
   Upload,
   FolderPlus,
@@ -37,6 +38,7 @@ import {
 export default function Briefcase() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedFolder, setSelectedFolder] = useState("root")
+  const [activeTab, setActiveTab] = useState<"files" | "templates">("files")
 
   const folders = [
     { id: "contracts", name: "Contracts", count: 12, encrypted: true },
@@ -217,116 +219,148 @@ export default function Briefcase() {
           </Card>
         </div>
 
-        {/* Search and Filters */}
-        <div className="flex items-center gap-4">
-          <div className="relative flex-1 max-w-sm">
-            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search files..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-8"
-            />
-          </div>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">
-                <Folder className="mr-2 h-4 w-4" />
-                {selectedFolder === "root" ? "All Files" : folders.find((f) => f.id === selectedFolder)?.name}
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem onClick={() => setSelectedFolder("root")}>All Files</DropdownMenuItem>
-              {folders.map((folder) => (
-                <DropdownMenuItem key={folder.id} onClick={() => setSelectedFolder(folder.id)}>
-                  {folder.name}
-                </DropdownMenuItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
+        {/* Tabs */}
+        <div className="flex space-x-1 bg-muted p-1 rounded-lg">
+          <Button
+            variant={activeTab === "files" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setActiveTab("files")}
+          >
+            <File className="w-4 h-4 mr-2" />
+            Files
+          </Button>
+          <Button
+            variant={activeTab === "templates" ? "default" : "ghost"}
+            size="sm"
+            onClick={() => setActiveTab("templates")}
+          >
+            <FileText className="w-4 h-4 mr-2" />
+            Templates
+          </Button>
         </div>
 
-        {/* Folders Grid */}
-        {selectedFolder === "root" && (
-          <div>
-            <h3 className="text-lg font-semibold mb-3">Folders</h3>
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-              {folders.map((folder) => (
-                <Card
-                  key={folder.id}
-                  className="hover:shadow-md transition-shadow cursor-pointer"
-                  onClick={() => setSelectedFolder(folder.id)}
-                >
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-2">
-                      <Folder className="h-8 w-8 text-blue-500" />
-                      {folder.encrypted && <Shield className="h-4 w-4 text-green-500" />}
-                    </div>
-                    <h4 className="font-medium truncate">{folder.name}</h4>
-                    <p className="text-sm text-muted-foreground">{folder.count} files</p>
-                  </CardContent>
-                </Card>
-              ))}
+        {activeTab === "files" && (
+          <>
+            {/* Search and Filters */}
+            <div className="flex items-center gap-4">
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search files..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-8"
+                />
+              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline">
+                    <Folder className="mr-2 h-4 w-4" />
+                    {selectedFolder === "root" ? "All Files" : folders.find((f) => f.id === selectedFolder)?.name}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem onClick={() => setSelectedFolder("root")}>All Files</DropdownMenuItem>
+                  {folders.map((folder) => (
+                    <DropdownMenuItem key={folder.id} onClick={() => setSelectedFolder(folder.id)}>
+                      {folder.name}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-          </div>
+          </>
         )}
 
-        {/* Files List */}
-        <div>
-          <h3 className="text-lg font-semibold mb-3">{selectedFolder === "root" ? "Recent Files" : "Files"}</h3>
-          <div className="space-y-2">
-            {filteredFiles.map((file) => {
-              const FileIcon = getFileIcon(file.type)
-              return (
-                <Card key={file.id}>
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <FileIcon className="h-8 w-8 text-muted-foreground" />
-                        <div>
-                          <h4 className="font-medium">{file.name}</h4>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <span>{file.size}</span>
-                            <span>•</span>
-                            <span>{file.modified}</span>
-                            {file.encrypted && (
-                              <>
-                                <span>•</span>
-                                <div className="flex items-center gap-1">
-                                  <Shield className="h-3 w-3 text-green-500" />
-                                  <span className="text-green-600">Encrypted</span>
-                                </div>
-                              </>
-                            )}
-                          </div>
+        {activeTab === "files" && (
+          <>
+            {/* Folders Grid */}
+            {selectedFolder === "root" && (
+              <div>
+                <h3 className="text-lg font-semibold mb-3">Folders</h3>
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+                  {folders.map((folder) => (
+                    <Card
+                      key={folder.id}
+                      className="hover:shadow-md transition-shadow cursor-pointer"
+                      onClick={() => setSelectedFolder(folder.id)}
+                    >
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between mb-2">
+                          <Folder className="h-8 w-8 text-blue-500" />
+                          {folder.encrypted && <Shield className="h-4 w-4 text-green-500" />}
                         </div>
-                      </div>
+                        <h4 className="font-medium truncate">{folder.name}</h4>
+                        <p className="text-sm text-muted-foreground">{folder.count} files</p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            )}
 
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="sm">
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
-                            <Download className="mr-2 h-4 w-4" />
-                            Download
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </div>
-                  </CardContent>
-                </Card>
-              )
-            })}
-          </div>
-        </div>
+            {/* Files List */}
+            <div>
+              <h3 className="text-lg font-semibold mb-3">{selectedFolder === "root" ? "Recent Files" : "Files"}</h3>
+              <div className="space-y-2">
+                {filteredFiles.map((file) => {
+                  const FileIcon = getFileIcon(file.type)
+                  return (
+                    <Card key={file.id}>
+                      <CardContent className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <FileIcon className="h-8 w-8 text-muted-foreground" />
+                            <div>
+                              <h4 className="font-medium">{file.name}</h4>
+                              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                                <span>{file.size}</span>
+                                <span>•</span>
+                                <span>{file.modified}</span>
+                                {file.encrypted && (
+                                  <>
+                                    <span>•</span>
+                                    <div className="flex items-center gap-1">
+                                      <Shield className="h-3 w-3 text-green-500" />
+                                      <span className="text-green-600">Encrypted</span>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="sm">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem>
+                                <Download className="mr-2 h-4 w-4" />
+                                Download
+                              </DropdownMenuItem>
+                              <DropdownMenuItem className="text-red-600">
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )
+                })}
+              </div>
+            </div>
+          </>
+        )}
+
+        {activeTab === "templates" && (
+          <SavedTemplatesList />
+        )}
       </div>
     </SidebarInset>
   )

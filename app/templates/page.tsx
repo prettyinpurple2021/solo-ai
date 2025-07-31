@@ -1,67 +1,15 @@
-"use client"
+import { getAllTemplates } from '@/lib/templates-client';
+import { TemplateCategory } from '@/lib/templates-types';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Icon } from '@/components/ui/icon';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
-import Link from "next/link"
-import { ArrowLeft, Download, Star, FileText, Presentation, Mail, Calendar, Briefcase } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+export default async function TemplatesPage() {
+  const categories = await getAllTemplates();
 
-const templates = [
-  {
-    id: 1,
-    title: "Business Plan Template",
-    description: "Comprehensive business plan template for solo entrepreneurs",
-    category: "Business",
-    icon: FileText,
-    downloads: 1250,
-    rating: 4.9,
-    premium: false
-  },
-  {
-    id: 2,
-    title: "Pitch Deck Template",
-    description: "Professional pitch deck template for investors and clients",
-    category: "Presentation",
-    icon: Presentation,
-    downloads: 980,
-    rating: 4.8,
-    premium: true
-  },
-  {
-    id: 3,
-    title: "Email Marketing Templates",
-    description: "Collection of high-converting email templates",
-    category: "Marketing",
-    icon: Mail,
-    downloads: 2100,
-    rating: 4.7,
-    premium: false
-  },
-  {
-    id: 4,
-    title: "Content Calendar Template",
-    description: "Monthly content planning template for social media",
-    category: "Planning",
-    icon: Calendar,
-    downloads: 1580,
-    rating: 4.9,
-    premium: false
-  },
-  {
-    id: 5,
-    title: "Client Proposal Template",
-    description: "Professional proposal template for client projects",
-    category: "Business",
-    icon: Briefcase,
-    downloads: 890,
-    rating: 4.6,
-    premium: true
-  }
-]
-
-const categories = ["All", "Business", "Marketing", "Presentation", "Planning"]
-
-export default function TemplatesPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
       {/* Navigation */}
@@ -109,63 +57,29 @@ export default function TemplatesPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* Category Filter */}
-        <div className="flex flex-wrap gap-4 mb-12 justify-center">
+        <div className="space-y-8">
           {categories.map((category) => (
-            <Button
-              key={category}
-              variant={category === "All" ? "default" : "outline"}
-              className={category === "All" ? "bg-purple-600 hover:bg-purple-700" : "hover:bg-purple-50"}
-            >
-              {category}
-            </Button>
-          ))}
-        </div>
-
-        {/* Templates Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {templates.map((template) => (
-            <Card key={template.id} className="hover:shadow-lg transition-shadow border-2 hover:border-purple-200">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-100 rounded-lg">
-                      <template.icon className="w-6 h-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <CardTitle className="text-lg">{template.title}</CardTitle>
-                      <Badge variant="outline" className="mt-1">
-                        {template.category}
-                      </Badge>
-                    </div>
-                  </div>
-                  {template.premium && (
-                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-500">
-                      Premium
-                    </Badge>
-                  )}
-                </div>
-              </CardHeader>
-              <CardContent>
-                <CardDescription className="mb-4">
-                  {template.description}
-                </CardDescription>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center gap-1">
-                    <Star className="w-4 h-4 text-yellow-500 fill-current" />
-                    <span className="text-sm font-medium">{template.rating}</span>
-                  </div>
-                  <div className="flex items-center gap-1 text-sm text-gray-500">
-                    <Download className="w-4 h-4" />
-                    <span>{template.downloads}</span>
-                  </div>
-                </div>
-                <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                  <Download className="w-4 h-4 mr-2" />
-                  Download Template
-                </Button>
-              </CardContent>
-            </Card>
+            <div key={category.id}>
+              <div className="flex items-center space-x-2 mb-4">
+                <Icon name={category.icon as any} className="w-6 h-6" />
+                <h2 className="text-2xl font-bold">{category.category}</h2>
+              </div>
+              <p className="text-muted-foreground mb-6">{category.description}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {category.templates.map((template) => (
+                  <Link href={`/templates/${template.slug}`} key={template.id}>
+                    <Card className="hover:shadow-lg transition-shadow">
+                      <CardHeader>
+                        <CardTitle>{template.title}</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-muted-foreground">{template.description}</p>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
 
