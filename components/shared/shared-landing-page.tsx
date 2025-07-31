@@ -37,32 +37,32 @@ const features = [
   {
     icon: Brain,
     title: "8-Member AI Squad",
-    description: "Meet your virtual team: from Roxy (Executive Assistant) to Glitch (QA & Debug). Each agent specializes in different aspects of your business.",
+    description: "Meet your virtual dream team: from Roxy (Executive Assistant extraordinaire) to Glitch (QA & Debug specialist). Each agent brings punk rock personality with professional precision to different aspects of your empire.",
   },
   {
     icon: Target,
     title: "SlayList Goal System",
-    description: "Set ambitious goals, break them into actionable tasks, and let AI help you prioritize. Built specifically for solo entrepreneurs who juggle everything.",
+    description: "Set audacious goals, break them into conquerable tasks, and let AI help you prioritize like the strategic boss you are. Built specifically for solo entrepreneurs who refuse to settle for ordinary.",
   },
   {
     icon: Sparkles,
     title: "BrandStyler Studio",
-    description: "Create consistent brand assets, marketing materials, and content with AI-powered design tools that understand your unique style.",
+    description: "Create consistent brand assets, magnetic marketing materials, and content that converts with AI-powered design tools that understand your unique boss energy and aesthetic vision.",
   },
   {
     icon: Zap,
-    title: "Anti-Burnout Focus Mode",
-    description: "Work smarter, not harder. Our AI prevents overwhelm by optimizing your schedule and protecting your mental energy.",
+    title: "Burnout Shield Focus Mode",
+    description: "Work smarter, not harder, like the strategic genius you are. Our AI prevents overwhelm by optimizing your schedule and protecting your mental energy because self-care is the ultimate punk rock move.",
   },
   {
     icon: TrendingUp,
-    title: "Empire Analytics",
-    description: "Track your business growth, productivity patterns, and goal progress with insights designed for solo entrepreneurs.",
+    title: "Empire Analytics Dashboard",
+    description: "Track your business growth, productivity patterns, and goal achievement with insights designed specifically for solo entrepreneurs building empires one strategic move at a time.",
   },
   {
     icon: Shield,
-    title: "Briefcase Security",
-    description: "Your business data is protected with bank-level encryption. Store files, documents, and sensitive information safely in your AI Briefcase.",
+    title: "Briefcase Security Vault",
+    description: "Your business data is protected with bank-level encryption because your empire deserves fortress-level security. Store files, documents, and sensitive information with confidence.",
   },
 ]
 
@@ -325,7 +325,7 @@ export function SharedLandingPage({
             <Badge className="mb-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white">
               🚀 AI-Powered Productivity Revolution
             </Badge>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
               Become the Ultimate
               <br />
               <span className="text-6xl md:text-8xl">SoloBoss</span>
