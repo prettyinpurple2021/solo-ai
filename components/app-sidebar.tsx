@@ -72,7 +72,9 @@ const data = {
     },
     {
       title: "Templates",
-      url: "/dashboard/templates",
+
+      url: "/templates",
+
       icon: FileText,
     },
     {
