@@ -29,7 +29,10 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
       'NEXT_PUBLIC_SUPABASE_ANON_KEY'
     ]);
 
-    if (!hasRequiredEnv) {
+    // In development mode, allow templates to work without database
+    const isDev = process.env.NODE_ENV === 'development';
+
+    if (!hasRequiredEnv && !isDev) {
       return (
         <div className="container mx-auto py-8">
           <Card>
@@ -50,7 +53,16 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
       notFound();
     }
 
-    const TemplateComponent = TemplateComponents[template.slug as keyof typeof TemplateComponents];
+    // Convert slug to component name (kebab-case to PascalCase)
+    const getComponentName = (slug: string): string => {
+      return slug
+        .split('-')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('');
+    };
+
+    const componentName = getComponentName(template.slug);
+    const TemplateComponent = TemplateComponents[componentName as keyof typeof TemplateComponents];
 
     return (
       <div className="container mx-auto py-8">
