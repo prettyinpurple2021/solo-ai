@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
+import { useDashboardData } from "@/hooks/use-dashboard-data"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -24,27 +25,30 @@ import {
   Award,
   Flame,
   Heart,
+  AlertCircle,
+  RefreshCw,
 } from "lucide-react"
 
 export default function DashboardPage() {
-  const { user, loading } = useAuth()
+  const { user, loading: authLoading } = useAuth()
+  const { data: dashboardData, loading: dataLoading, error, refetch, lastUpdated } = useDashboardData()
   const router = useRouter()
   const [currentTime, setCurrentTime] = useState(new Date())
 
   // Redirect to landing page if not authenticated
   useEffect(() => {
-    if (!loading && !user) {
+    if (!authLoading && !user) {
       router.push('/')
     }
-  }, [user, loading, router])
+  }, [user, authLoading, router])
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000)
     return () => clearInterval(timer)
   }, [])
 
-  // Show loading state while checking authentication
-  if (loading) {
+  // Show loading state while checking authentication or loading data
+  if (authLoading || dataLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
@@ -60,41 +64,70 @@ export default function DashboardPage() {
     return null
   }
 
-  // Mock user data
-  const userStats = {
-    level: 12,
-    totalPoints: 2450,
-    currentStreak: 7,
-    tasksCompleted: 156,
-    goalsAchieved: 23,
-    focusMinutes: 1240,
-    wellnessScore: 87,
+  // Show error state if data failed to load
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Failed to load dashboard</h2>
+          <p className="text-muted-foreground mb-4">{error}</p>
+          <Button onClick={refetch} variant="outline">
+            Try Again
+          </Button>
+        </div>
+      </div>
+    )
   }
 
-  const todaysTasks = [
-    { id: 1, title: "Review Q4 marketing strategy", completed: false, priority: "high" },
-    { id: 2, title: "Client call with Sarah", completed: true, priority: "medium" },
-    { id: 3, title: "Update website copy", completed: false, priority: "high" },
-    { id: 4, title: "Social media content batch", completed: true, priority: "low" },
-    { id: 5, title: "Team standup meeting", completed: true, priority: "medium" },
-  ]
+  // Use real data from API
+  const userStats = dashboardData?.user || {
+    level: 1,
+    total_points: 0,
+    current_streak: 0,
+    wellness_score: 50,
+    focus_minutes: 0,
+  }
 
-  const aiAgents = [
-    { name: "Roxy", status: "active", mood: "💪", lastActive: "2 min ago" },
-    { name: "Blaze", status: "active", mood: "🔥", lastActive: "5 min ago" },
-    { name: "Echo", status: "idle", mood: "✨", lastActive: "1 hour ago" },
-    { name: "Nova", status: "active", mood: "🎨", lastActive: "Just now" },
-  ]
+  const todaysStats = dashboardData?.todaysStats || {
+    tasks_completed: 0,
+    total_tasks: 0,
+    focus_minutes: 0,
+    ai_interactions: 0,
+    goals_achieved: 0,
+    productivity_score: 0,
+  }
 
-  const recentAchievements = [
-    { title: "Week Warrior", description: "7-day streak achieved!", emoji: "🔥", rarity: "rare" },
-    { title: "Goal Crusher", description: "Completed 20+ goals", emoji: "🎯", rarity: "epic" },
-    { title: "Focus Master", description: "20+ hours focused work", emoji: "🧠", rarity: "legendary" },
-  ]
+  const todaysTasks = dashboardData?.todaysTasks || []
+  const activeGoals = dashboardData?.activeGoals || []
+  const recentConversations = dashboardData?.recentConversations || []
+  const recentAchievements = dashboardData?.recentAchievements || []
+  const weeklyFocus = dashboardData?.weeklyFocus || {
+    total_minutes: 0,
+    sessions_count: 0,
+    average_session: 0,
+  }
 
-  const completedTasks = todaysTasks.filter((task) => task.completed).length
+  // Calculate completion rate
+  const completedTasks = todaysTasks.filter((task) => task.status === 'completed').length
   const totalTasks = todaysTasks.length
-  const completionRate = Math.round((completedTasks / totalTasks) * 100)
+  const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+
+  // Format AI agent status for display
+  const aiAgents = recentConversations.slice(0, 4).map(conv => ({
+    name: conv.agent.display_name,
+    status: "active" as const,
+    mood: "💪",
+    lastActive: formatTimeAgo(conv.last_message_at),
+  }))
+
+  // Format achievements for display
+  const formattedAchievements = recentAchievements.slice(0, 3).map(userAchiev => ({
+    title: userAchiev.achievement.title,
+    description: userAchiev.achievement.description,
+    emoji: "🏆",
+    rarity: "rare" as const,
+  }))
 
   const getRarityColor = (rarity: string) => {
     switch (rarity) {
@@ -107,6 +140,29 @@ export default function DashboardPage() {
       default:
         return "bg-gray-100 text-gray-800"
     }
+  }
+
+  // Helper function to format time ago
+  function formatTimeAgo(dateString: string): string {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60))
+    
+    if (diffInMinutes < 1) return "Just now"
+    if (diffInMinutes < 60) return `${diffInMinutes} min ago`
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)} hour${Math.floor(diffInMinutes / 60) > 1 ? 's' : ''} ago`
+    return `${Math.floor(diffInMinutes / 1440)} day${Math.floor(diffInMinutes / 1440) > 1 ? 's' : ''} ago`
+  }
+
+  // Helper function to format last updated time
+  function formatLastUpdated(date: Date | null): string {
+    if (!date) return "Never"
+    const now = new Date()
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000)
+    
+    if (diffInSeconds < 60) return "Just now"
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m ago`
+    return `${Math.floor(diffInSeconds / 3600)}h ago`
   }
 
   return (
@@ -122,6 +178,21 @@ export default function DashboardPage() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+        </div>
+        <div className="ml-auto flex items-center gap-2 px-4">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Clock className="h-4 w-4" />
+            <span>Updated {formatLastUpdated(lastUpdated)}</span>
+          </div>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={refetch}
+            disabled={dataLoading}
+            className="h-8 w-8 p-0"
+          >
+            <RefreshCw className={`h-4 w-4 ${dataLoading ? 'animate-spin' : ''}`} />
+          </Button>
         </div>
       </header>
 
@@ -150,7 +221,7 @@ export default function DashboardPage() {
           </div>
           <div className="text-right">
             <div className="text-3xl font-bold soloboss-text-gradient">Level {userStats.level}</div>
-            <div className="text-sm text-muted-foreground">{userStats.totalPoints} Boss Points</div>
+            <div className="text-sm text-muted-foreground">{userStats.total_points} Boss Points</div>
           </div>
         </div>
 
@@ -162,7 +233,7 @@ export default function DashboardPage() {
               <Flame className="h-4 w-4 text-orange-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold soloboss-text-gradient">{userStats.currentStreak} days</div>
+              <div className="text-3xl font-bold soloboss-text-gradient">{userStats.current_streak} days</div>
               <div className="flex items-center gap-1 mt-1">
                 <TrendingUp className="h-3 w-3 text-green-500" />
                 <span className="text-sm font-medium text-green-600">Keep it up!</span>
@@ -176,9 +247,9 @@ export default function DashboardPage() {
               <CheckSquare className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold soloboss-text-gradient">{userStats.tasksCompleted}</div>
+              <div className="text-3xl font-bold soloboss-text-gradient">{todaysStats.tasks_completed}</div>
               <div className="flex items-center gap-1 mt-1">
-                <span className="text-sm text-muted-foreground">Total lifetime</span>
+                <span className="text-sm text-muted-foreground">Today</span>
               </div>
             </CardContent>
           </Card>
@@ -190,10 +261,10 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold soloboss-text-gradient">
-                {Math.round(userStats.focusMinutes / 60)}h
+                {Math.round(weeklyFocus.total_minutes / 60)}h
               </div>
               <div className="flex items-center gap-1 mt-1">
-                <span className="text-sm text-muted-foreground">This month</span>
+                <span className="text-sm text-muted-foreground">This week</span>
               </div>
             </CardContent>
           </Card>
@@ -204,7 +275,7 @@ export default function DashboardPage() {
               <Heart className="h-4 w-4 text-pink-600" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold soloboss-text-gradient">{userStats.wellnessScore}%</div>
+              <div className="text-3xl font-bold soloboss-text-gradient">{userStats.wellness_score}%</div>
               <div className="flex items-center gap-1 mt-1">
                 <TrendingUp className="h-3 w-3 text-green-500" />
                 <span className="text-sm font-medium text-green-600">Excellent!</span>
@@ -232,7 +303,7 @@ export default function DashboardPage() {
                   <div key={task.id} className="flex items-center gap-3">
                     <div
                       className={`w-2 h-2 rounded-full ${
-                        task.completed
+                        task.status === 'completed'
                           ? "bg-green-500"
                           : task.priority === "high"
                             ? "bg-red-500"
@@ -243,14 +314,19 @@ export default function DashboardPage() {
                     />
                     <span
                       className={`text-sm flex-1 ${
-                        task.completed ? "line-through text-muted-foreground" : "empowering-text"
+                        task.status === 'completed' ? "line-through text-muted-foreground" : "empowering-text"
                       }`}
                     >
                       {task.title}
                     </span>
-                    {task.completed && <CheckSquare className="h-4 w-4 text-green-500" />}
+                    {task.status === 'completed' && <CheckSquare className="h-4 w-4 text-green-500" />}
                   </div>
                 ))}
+                {todaysTasks.length === 0 && (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    No tasks scheduled for today. Time to slay some goals! 💪
+                  </p>
+                )}
                 <Button variant="outline" className="w-full mt-3 bg-transparent" asChild>
                   <a href="/dashboard/slaylist">View All Tasks</a>
                 </Button>
@@ -269,23 +345,29 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {aiAgents.map((agent, index) => (
-                  <div
-                    key={index}
-                    className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className="text-2xl">{agent.mood}</div>
-                      <div>
-                        <p className="font-semibold empowering-text">{agent.name}</p>
-                        <p className="text-xs text-muted-foreground">{agent.lastActive}</p>
+                {aiAgents.length > 0 ? (
+                  aiAgents.map((agent, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="text-2xl">{agent.mood}</div>
+                        <div>
+                          <p className="font-semibold empowering-text">{agent.name}</p>
+                          <p className="text-xs text-muted-foreground">{agent.lastActive}</p>
+                        </div>
                       </div>
+                      <Badge variant={agent.status === "active" ? "default" : "secondary"} className="text-xs">
+                        {agent.status}
+                      </Badge>
                     </div>
-                    <Badge variant={agent.status === "active" ? "default" : "secondary"} className="text-xs">
-                      {agent.status}
-                    </Badge>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Start chatting with your AI squad to see them here! 💬
+                  </p>
+                )}
                 <Button variant="outline" className="w-full mt-3 bg-transparent" asChild>
                   <a href="/team">Manage Squad</a>
                 </Button>
@@ -304,22 +386,28 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {recentAchievements.map((achievement, index) => (
-                  <div key={index} className="p-3 border rounded-lg boss-card bounce-on-hover">
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl">{achievement.emoji}</span>
-                        <div>
-                          <h4 className="font-semibold empowering-text text-sm">{achievement.title}</h4>
-                          <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                {formattedAchievements.length > 0 ? (
+                  formattedAchievements.map((achievement, index) => (
+                    <div key={index} className="p-3 border rounded-lg boss-card bounce-on-hover">
+                      <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">{achievement.emoji}</span>
+                          <div>
+                            <h4 className="font-semibold empowering-text text-sm">{achievement.title}</h4>
+                            <p className="text-xs text-muted-foreground">{achievement.description}</p>
+                          </div>
                         </div>
+                        <Badge className={`${getRarityColor(achievement.rarity)} text-xs font-bold`}>
+                          {achievement.rarity.toUpperCase()}
+                        </Badge>
                       </div>
-                      <Badge className={`${getRarityColor(achievement.rarity)} text-xs font-bold`}>
-                        {achievement.rarity.toUpperCase()}
-                      </Badge>
                     </div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-sm text-muted-foreground text-center py-4">
+                    Complete tasks and goals to earn achievements! 🎯
+                  </p>
+                )}
                 <Button variant="outline" className="w-full mt-3 bg-transparent">
                   View All Achievements
                 </Button>
