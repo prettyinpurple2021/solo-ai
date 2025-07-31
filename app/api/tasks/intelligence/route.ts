@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { TaskIntelligenceEngine, TaskIntelligenceData } from '@/lib/ai-task-intelligence'
 
+/**
+ * POST /api/tasks/intelligence
+ * Handles AI-powered task intelligence operations like optimization and suggestions
+ */
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient()
@@ -30,12 +34,13 @@ export async function POST(request: NextRequest) {
     const engine = new TaskIntelligenceEngine(userContext)
 
     switch (action) {
-      case 'optimize':
+      case 'optimize': {
         // Optimize all tasks
         const optimizationResult = await engine.optimizeTaskList(tasks as TaskIntelligenceData[])
         return NextResponse.json(optimizationResult)
+      }
 
-      case 'suggest':
+      case 'suggest': {
         // Get suggestions for specific tasks
         if (!taskIds || !Array.isArray(taskIds)) {
           return NextResponse.json({ error: 'Task IDs required' }, { status: 400 })
@@ -47,12 +52,14 @@ export async function POST(request: NextRequest) {
         )
 
         return NextResponse.json({ suggestions })
+      }
 
-      case 'analyze_workload':
+      case 'analyze_workload': {
         // Analyze workload without full optimization
         const activeTasks = tasks.filter(task => task.status !== 'completed')
         const workloadAnalysis = engine['analyzeWorkload'](activeTasks as TaskIntelligenceData[], [])
         return NextResponse.json({ workloadAnalysis })
+      }
 
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
@@ -64,6 +71,49 @@ export async function POST(request: NextRequest) {
   }
 }
 
+/**
+ * Generate quick recommendations based on workload metrics
+ */
+function generateQuickRecommendations(
+  totalTasks: number,
+  estimatedTime: number,
+  highPriorityTasks: number,
+  overdueTasks: number,
+  workloadScore: number
+): string[] {
+  const recommendations: string[] = []
+
+  if (overdueTasks > 0) {
+    recommendations.push(`Focus on ${overdueTasks} overdue task${overdueTasks > 1 ? 's' : ''} first`)
+  }
+
+  if (highPriorityTasks > 3) {
+    recommendations.push("Consider breaking down high-priority tasks into smaller chunks")
+  }
+
+  if (estimatedTime > 480) { // More than 8 hours
+    recommendations.push("Your workload is heavy - consider delegating or postponing some tasks")
+  }
+
+  if (workloadScore > 80) {
+    recommendations.push("Take breaks to avoid burnout - your workload is quite intense")
+  }
+
+  if (totalTasks > 20) {
+    recommendations.push("Consider using the Eisenhower Matrix to prioritize your tasks")
+  }
+
+  if (recommendations.length === 0) {
+    recommendations.push("Your workload looks manageable - keep up the good work!")
+  }
+
+  return recommendations
+}
+
+/**
+ * GET /api/tasks/intelligence
+ * Provides quick task analysis without AI processing
+ */
 export async function GET(request: NextRequest) {
   try {
     const supabase = await createClient()
@@ -88,10 +138,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch tasks' }, { status: 500 })
     }
 
-    const engine = new TaskIntelligenceEngine()
-
     switch (action) {
-      case 'quick_analysis':
+      case 'quick_analysis': {
         // Quick workload analysis without AI
         const activeTasks = tasks.filter(task => task.status !== 'completed')
         const totalTasks = activeTasks.length
@@ -117,66 +165,14 @@ export async function GET(request: NextRequest) {
           workloadScore,
           recommendations: generateQuickRecommendations(totalTasks, estimatedTime, highPriorityTasks, overdueTasks, workloadScore)
         })
-
-      case 'suggested_order':
-        // Get suggested task order based on priority and due dates
-        const sortedTasks = tasks.sort((a, b) => {
-          const priorityOrder = { urgent: 4, high: 3, medium: 2, low: 1 }
-          const aPriority = priorityOrder[a.priority as keyof typeof priorityOrder] || 2
-          const bPriority = priorityOrder[b.priority as keyof typeof priorityOrder] || 2
-
-          if (aPriority !== bPriority) return bPriority - aPriority
-
-          // If same priority, sort by due date
-          if (a.due_date && b.due_date) {
-            return new Date(a.due_date).getTime() - new Date(b.due_date).getTime()
-          }
-
-          return 0
-        })
-
-        return NextResponse.json({
-          suggestedOrder: sortedTasks.map(task => task.id)
-        })
+      }
 
       default:
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
 
   } catch (error) {
-    console.error('Task intelligence API error:', error)
+    console.error('Task intelligence GET API error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
-}
-
-function generateQuickRecommendations(
-  totalTasks: number,
-  estimatedTime: number,
-  highPriorityTasks: number,
-  overdueTasks: number,
-  workloadScore: number
-): string[] {
-  const recommendations: string[] = []
-
-  if (workloadScore > 80) {
-    recommendations.push('🚨 High workload detected! Consider delegating or postponing non-urgent tasks.')
-  } else if (workloadScore > 60) {
-    recommendations.push('⚠️ Moderate workload. Focus on high-priority items first.')
-  } else {
-    recommendations.push('✅ Manageable workload. You can take on additional tasks if needed.')
-  }
-
-  if (overdueTasks > 0) {
-    recommendations.push(`⏰ You have ${overdueTasks} overdue task(s). Address these immediately.`)
-  }
-
-  if (highPriorityTasks > 5) {
-    recommendations.push(`🎯 You have ${highPriorityTasks} high-priority tasks. Consider breaking them down.`)
-  }
-
-  if (estimatedTime > 480) { // More than 8 hours
-    recommendations.push('⏱️ Estimated work time exceeds 8 hours. Consider spreading tasks across multiple days.')
-  }
-
-  return recommendations
 } 

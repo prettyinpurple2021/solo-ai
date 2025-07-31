@@ -23,9 +23,19 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const Statsig = await statsigAdapter.initialize();
-  const datafile = await Statsig.getClientInitializeResponse({userID: "1234"}, {hash: "djb2",});
-  // minimal example, you'll want to customize your user object, likely using the flags SDK's identify function
+  // Initialize Statsig with fallback for build time
+  let Statsig: any = null;
+  let datafile: any = null;
+
+  try {
+    // Only initialize Statsig if we have proper environment setup
+    if (process.env.NODE_ENV === 'production' || process.env.STATSIG_SERVER_SECRET_KEY) {
+      Statsig = await statsigAdapter.initialize();
+      datafile = await Statsig.getClientInitializeResponse({userID: "1234"}, {hash: "djb2"});
+    }
+  } catch (error) {
+    console.warn('Statsig initialization failed, continuing without feature flags:', error);
+  }
 
   return (
     <html lang="en">

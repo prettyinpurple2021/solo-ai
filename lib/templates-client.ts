@@ -2,10 +2,15 @@ import { createClient } from './supabase/client';
 import { Template, TemplateCategory } from './templates-types';
 import templateData from '../data/templates.json';
 
-const supabase = createClient();
-
 export async function getAllTemplates(): Promise<TemplateCategory[]> {
   try {
+    // Only try to connect to database if environment variables are available
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.log('Supabase environment variables not available, using fallback data');
+      return templateData as TemplateCategory[];
+    }
+
+    const supabase = createClient();
     const { data, error } = await supabase
       .from('template_categories')
       .select(`
@@ -30,7 +35,18 @@ export async function getAllTemplates(): Promise<TemplateCategory[]> {
       return templateData as TemplateCategory[];
     }
 
-    return data as TemplateCategory[];
+    // Map database fields to match TypeScript interface
+    const mappedData = data?.map((category: any) => ({
+      ...category,
+      templates: category.templates?.map((template: any) => ({
+        ...template,
+        isInteractive: template.is_interactive,
+        requiredRole: template.required_role,
+        categoryId: template.category_id,
+      })) || []
+    }));
+
+    return mappedData as TemplateCategory[];
   } catch (error) {
     console.error('Database connection failed, using JSON fallback:', error);
     // Fallback to JSON data
@@ -40,6 +56,13 @@ export async function getAllTemplates(): Promise<TemplateCategory[]> {
 
 export async function getTemplateBySlug(slug: string): Promise<Template | null> {
   try {
+    // Only try to connect to database if environment variables are available
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.log('Supabase environment variables not available, using fallback data');
+      return findTemplateInJson(slug);
+    }
+
+    const supabase = createClient();
     const { data, error } = await supabase
       .from('templates')
       .select('*')

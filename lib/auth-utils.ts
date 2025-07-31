@@ -37,7 +37,8 @@ export async function authenticateRequest(): Promise<AuthResult> {
       },
       error: null
     }
-  } catch (error) {
+  } catch (authError) {
+    console.error("Authentication error:", authError)
     return {
       user: null,
       error: NextResponse.json({ error: "Authentication failed" }, { status: 500 })
@@ -49,7 +50,7 @@ export async function authenticateRequest(): Promise<AuthResult> {
  * Middleware-style authentication wrapper for API route handlers
  */
 export function withAuth<T>(
-  handler: (req: NextRequest, user: AuthenticatedUser) => Promise<T>
+  handler: (_req: NextRequest, _user: AuthenticatedUser) => Promise<T>
 ) {
   return async (req: NextRequest): Promise<T | NextResponse> => {
     const { user, error } = await authenticateRequest()

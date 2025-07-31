@@ -1,8 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-// GET - Fetch all active AI agents
-export async function GET(request: NextRequest) {
+/**
+ * GET /api/ai-agents
+ * Fetches all active AI agents available to users
+ * @returns JSON response with agents array or error
+ */
+export async function GET() {
   try {
     const supabase = await createClient()
 
@@ -14,6 +18,7 @@ export async function GET(request: NextRequest) {
       .order('name')
 
     if (error) {
+      console.error('Database error fetching AI agents:', error)
       return NextResponse.json({ error: 'Failed to fetch AI agents' }, { status: 500 })
     }
 

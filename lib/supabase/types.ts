@@ -955,7 +955,7 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      // Views are not currently used in the database schema
     }
     Functions: {
       get_or_create_monthly_usage: {
@@ -1018,10 +1018,10 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      // Enums are not currently used in the database schema
     }
     CompositeTypes: {
-      [_ in never]: never
+      // Composite types are not currently used in the database schema
     }
   }
 }

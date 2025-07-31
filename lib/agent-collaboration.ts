@@ -202,7 +202,7 @@ Provide your analysis and recommendations for this phase of the project.
     task: CollaborationTask,
   ): Promise<AgentHandoff> {
     const fromConfig = getTeamMemberConfig(fromAgent)
-    const toConfig = getTeamMemberConfig(toAgent)
+    // const toConfig = getTeamMemberConfig(toAgent) // Reserved for future use
 
     const handoffPrompt = `
 You are ${fromAgent} completing your phase of the collaboration task "${task.title}".

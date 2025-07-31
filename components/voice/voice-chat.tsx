@@ -19,10 +19,14 @@ interface VoiceChatProps {
   agentId: string
   agentName: string
   agentAvatar: string
-  onTranscript?: (text: string) => void
-  onResponse?: (text: string) => void
+  onTranscript?: (_text: string) => void
+  onResponse?: (_text: string) => void
 }
 
+/**
+ * VoiceChat component provides voice interaction with AI agents
+ * Supports speech recognition and text-to-speech synthesis
+ */
 export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onResponse }: VoiceChatProps) {
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
@@ -32,7 +36,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
   const [error, setError] = useState<string | null>(null)
 
   const recognitionRef = useRef<any>(null)
-  const synthRef = useRef<SpeechSynthesis | null>(null)
+  const synthRef = useRef<any>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
   const analyserRef = useRef<AnalyserNode | null>(null)
   const microphoneRef = useRef<MediaStreamAudioSourceNode | null>(null)
@@ -129,7 +133,8 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
         setIsListening(true)
         setIsConnected(true)
       }
-    } catch (err) {
+    } catch (error) {
+      console.error("Microphone setup error:", error)
       setError("Microphone access denied or not available")
     }
   }
@@ -152,7 +157,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
       // Try to find a female voice for more personality
       const voices = synthRef.current.getVoices()
       const femaleVoice = voices.find(
-        (voice) =>
+        (voice: any) =>
           voice.name.toLowerCase().includes("female") ||
           voice.name.toLowerCase().includes("woman") ||
           voice.name.toLowerCase().includes("samantha") ||
@@ -176,13 +181,6 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
       if (onResponse) {
         onResponse(text)
       }
-    }
-  }
-
-  const stopSpeaking = () => {
-    if (synthRef.current) {
-      synthRef.current.cancel()
-      setIsSpeaking(false)
     }
   }
 
