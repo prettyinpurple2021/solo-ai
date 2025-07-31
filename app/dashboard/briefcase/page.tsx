@@ -33,6 +33,7 @@ import {
   Shield,
   HardDrive,
   Clock,
+  ArrowLeft,
 } from "lucide-react"
 
 export default function Briefcase() {
@@ -129,8 +130,27 @@ export default function Briefcase() {
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
-                <BreadcrumbPage>Briefcase</BreadcrumbPage>
+                {selectedFolder === "root" ? (
+                  <BreadcrumbPage>Briefcase</BreadcrumbPage>
+                ) : (
+                  <button
+                    onClick={() => setSelectedFolder("root")}
+                    className="hover:text-foreground transition-colors text-muted-foreground"
+                  >
+                    Briefcase
+                  </button>
+                )}
               </BreadcrumbItem>
+              {selectedFolder !== "root" && (
+                <>
+                  <span className="text-muted-foreground mx-2">/</span>
+                  <BreadcrumbItem>
+                    <BreadcrumbPage>
+                      {folders.find((f) => f.id === selectedFolder)?.name}
+                    </BreadcrumbPage>
+                  </BreadcrumbItem>
+                </>
+              )}
             </BreadcrumbList>
           </Breadcrumb>
         </div>
@@ -139,9 +159,32 @@ export default function Briefcase() {
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         {/* Header Section */}
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Briefcase</h1>
-            <p className="text-muted-foreground">Secure document storage and organization</p>
+          <div className="flex items-center gap-4">
+            {selectedFolder !== "root" && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setSelectedFolder("root")}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Briefcase
+              </Button>
+            )}
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">
+                {selectedFolder === "root" 
+                  ? "Briefcase" 
+                  : folders.find((f) => f.id === selectedFolder)?.name || "Briefcase"
+                }
+              </h1>
+              <p className="text-muted-foreground">
+                {selectedFolder === "root" 
+                  ? "Secure document storage and organization"
+                  : "Folder contents"
+                }
+              </p>
+            </div>
           </div>
 
           <div className="flex gap-2">
