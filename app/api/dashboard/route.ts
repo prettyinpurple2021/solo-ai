@@ -1,7 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 
-export async function GET(request: NextRequest) {
+/**
+ * GET /api/dashboard
+ * Fetches comprehensive dashboard data for the authenticated user
+ * Includes user profile, tasks, goals, conversations, achievements, and analytics
+ * @returns JSON response with dashboard data or error
+ */
+export async function GET() {
   try {
     const supabase = await createClient()
 

@@ -1,6 +1,7 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+import Script from "next/script"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/hooks/use-auth"
@@ -22,13 +23,46 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const Statsig = await statsigAdapter.initialize();
-  const datafile = await Statsig.getClientInitializeResponse({userID: "1234"}, {hash: "djb2",});
-  // minimal example, you'll want to customize your user object, likely using the flags SDK's identify function
+  // Initialize Statsig with fallback for build time
+  let Statsig: any = null;
+  let datafile: any = null;
+
+  try {
+    // Only initialize Statsig if we have proper environment setup
+    if (process.env.NODE_ENV === 'production' || process.env.STATSIG_SERVER_SECRET_KEY) {
+      Statsig = await statsigAdapter.initialize();
+      datafile = await Statsig.getClientInitializeResponse({userID: "1234"}, {hash: "djb2"});
+    }
+  } catch (error) {
+    console.warn('Statsig initialization failed, continuing without feature flags:', error);
+  }
 
   return (
     <html lang="en">
       <body className={inter.className}>
+        {/* Google Tag Manager */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-5MKXFX2T');`,
+          }}
+        />
+        {/* End Google Tag Manager */}
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-5MKXFX2T"
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+        {/* End Google Tag Manager (noscript) */}
         <ThemeProvider
           attribute="class"
           defaultTheme="system"

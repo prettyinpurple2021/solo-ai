@@ -209,13 +209,13 @@ export class GamificationEngine {
     this.unlockedAchievements = new Set(unlockedAchievements)
   }
 
-  checkAchievements(activityType: string, value = 1): Achievement[] {
+  checkAchievements(_activityType: string, _value = 1): Achievement[] {
     const newAchievements: Achievement[] = []
 
     for (const achievement of achievements) {
       if (this.unlockedAchievements.has(achievement.id)) continue
 
-      const isUnlocked = this.evaluateAchievement(achievement, activityType, value)
+      const isUnlocked = this.evaluateAchievement(achievement)
 
       if (isUnlocked) {
         newAchievements.push(achievement)
@@ -227,7 +227,7 @@ export class GamificationEngine {
     return newAchievements
   }
 
-  private evaluateAchievement(achievement: Achievement, activityType: string, value: number): boolean {
+  private evaluateAchievement(achievement: Achievement): boolean {
     const { requirements } = achievement
 
     // Map activity types to user stats

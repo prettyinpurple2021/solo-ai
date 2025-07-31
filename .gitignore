@@ -32,3 +32,6 @@ next-env.d.ts
 *.tmp
 *~
 .env*.local
+
+# migration and template features (exclude from build)
+/Templates feature/

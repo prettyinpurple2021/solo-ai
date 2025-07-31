@@ -7,6 +7,9 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
+// Make this page dynamic to avoid static generation issues
+export const dynamic = 'force-dynamic';
+
 export default async function TemplatesPage() {
   const categories = await getAllTemplates();
 
