@@ -90,6 +90,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
     "@jest/globals": "latest",
     "@types/eslint": "^9",
     "@types/node": "^22",
