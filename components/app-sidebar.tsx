@@ -15,7 +15,6 @@ import {
   Target,
   Shield,
   CheckSquare,
-  FileText,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -71,8 +70,8 @@ const data = {
       icon: Briefcase,
     },
     {
-      title: "Saved Templates",
-      url: "/dashboard/saved-templates",
+      title: "Templates",
+      url: "/templates",
       icon: FileText,
     },
     {
