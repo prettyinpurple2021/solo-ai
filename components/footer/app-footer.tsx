@@ -21,7 +21,6 @@ const footerLinks = {
   resources: [
     { name: "Help Center", href: "/help" },
     { name: "Boss Community", href: "/community" },
-    { name: "Templates", href: "/templates" },
   ],
   legal: [
     { name: "Privacy Policy", href: "/privacy" },

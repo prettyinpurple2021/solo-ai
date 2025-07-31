@@ -15,6 +15,7 @@ import {
   Target,
   Shield,
   CheckSquare,
+  FileText,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -68,6 +69,11 @@ const data = {
       title: "Briefcase",
       url: "/dashboard/briefcase",
       icon: Briefcase,
+    },
+    {
+      title: "Saved Templates",
+      url: "/dashboard/saved-templates",
+      icon: FileText,
     },
     {
       title: "Brand Studio",
