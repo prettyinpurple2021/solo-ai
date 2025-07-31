@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Palette, Type, ImageIcon, Download, Save, Sparkles, Crown, Lightbulb, Loader2 } from "lucide-react"
+import { Palette, Type, ImageIcon, Download, Save, Sparkles, Crown, Lightbulb, Loader2, ArrowLeft } from "lucide-react"
+import Link from "next/link"
 
 // Simple color picker component
 const ColorPicker = ({ label, value, onChange }: { label: string; value: string; onChange: (color: string) => void }) => (
@@ -131,7 +132,7 @@ const BOSS_TIPS = [
   "Your brand should evolve as your empire grows",
 ]
 
-export default function BrandStylerStudio() {
+export default function BrandStylerStudioDemo() {
   const [selectedPalette, setSelectedPalette] = useState(COLOR_PALETTES[0])
   const [selectedTypography, setSelectedTypography] = useState(TYPOGRAPHY_OPTIONS[0])
   const [selectedLogo, setSelectedLogo] = useState(LOGO_STYLES[0])
@@ -244,18 +245,27 @@ export default function BrandStylerStudio() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* Header */}
           <div className="mb-8">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
-                <Palette className="w-6 h-6 text-white" />
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                  <Palette className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    BrandStyler Studio
+                  </h1>
+                  <p className="text-gray-600">Create a legendary brand that commands attention</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  BrandStyler Studio
-                </h1>
-                <p className="text-gray-600">Create a legendary brand that commands attention</p>
-              </div>
+              <Link href="/" className="flex items-center space-x-2 text-gray-600 hover:text-gray-800">
+                <ArrowLeft className="w-4 h-4" />
+                <span>Back to Home</span>
+              </Link>
             </div>
-            <Badge className="bg-purple-100 text-purple-700 border-purple-200">✨ AI-Powered Brand Creation</Badge>
+            <div className="flex space-x-2">
+              <Badge className="bg-purple-100 text-purple-700 border-purple-200">✨ AI-Powered Brand Creation</Badge>
+              <Badge className="bg-green-100 text-green-700 border-green-200">🎨 Enhanced with Custom Options</Badge>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -266,7 +276,7 @@ export default function BrandStylerStudio() {
                   <TabsTrigger value="basics">Brand Basics</TabsTrigger>
                   <TabsTrigger value="colors">Colors</TabsTrigger>
                   <TabsTrigger value="typography">Typography</TabsTrigger>
-                  <TabsTrigger value="logo">Logo Style</TabsTrigger>
+                  <TabsTrigger value="logo">Logo Generator</TabsTrigger>
                 </TabsList>
 
                 {/* Brand Basics Tab */}
@@ -529,7 +539,7 @@ export default function BrandStylerStudio() {
                   </Card>
                 </TabsContent>
 
-                {/* Logo Style Tab */}
+                {/* Logo Generator Tab */}
                 <TabsContent value="logo">
                   <Card>
                     <CardHeader>
