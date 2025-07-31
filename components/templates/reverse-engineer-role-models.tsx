@@ -69,8 +69,8 @@ export function ReverseEngineerRoleModels() {
         </div>
       </div>
 
-      <div className="bg-blue-50 p-4 rounded-lg">
-        <p className="text-sm text-blue-800">
+      <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+        <p className="text-sm text-primary">
           <Star className="w-4 h-4 inline mr-2" />
           Analyze successful people in your field to identify replicable patterns and strategies you can adapt for your own journey.
         </p>

@@ -126,8 +126,8 @@ export function ViralHookGenerator() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-lg">
-        <p className="text-sm text-purple-800">
+      <div className="bg-accent/10 p-4 rounded-lg border border-accent/20">
+        <p className="text-sm text-accent-foreground">
           <Zap className="w-4 h-4 inline mr-2" />
           Create scroll-stopping hooks that grab attention and drive engagement. Perfect for breaking through the noise!
         </p>

@@ -86,8 +86,8 @@ export function AiCollabPlanner() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-lg">
-        <p className="text-sm text-blue-800">
+      <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+        <p className="text-sm text-primary">
           <Users className="w-4 h-4 inline mr-2" />
           Plan strategic collaborations that benefit both audiences. Create win-win partnerships with clear value propositions.
         </p>

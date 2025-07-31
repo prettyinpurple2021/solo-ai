@@ -105,8 +105,8 @@ export function BragBankTemplate() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-4 rounded-lg">
-        <p className="text-sm text-amber-800">
+      <div className="bg-chart-4/10 p-4 rounded-lg border border-chart-4/20">
+        <p className="text-sm text-chart-4">
           <Star className="w-4 h-4 inline mr-2" />
           Store your wins, praise, and accomplishments here. Perfect for updating your portfolio, pitch decks, or when you need a confidence boost!
         </p>

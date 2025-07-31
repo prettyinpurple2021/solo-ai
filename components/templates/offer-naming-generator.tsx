@@ -99,8 +99,8 @@ export function OfferNamingGenerator() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg">
-        <p className="text-sm text-orange-800">
+      <div className="bg-chart-5/10 p-4 rounded-lg border border-chart-5/20">
+        <p className="text-sm text-chart-5">
           <Sparkles className="w-4 h-4 inline mr-2" />
           Create compelling names for your offers with AI-generated options that match your vibe and target audience.
         </p>

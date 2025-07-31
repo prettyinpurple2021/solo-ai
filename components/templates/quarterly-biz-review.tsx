@@ -44,7 +44,7 @@ export function QuarterlyBizReview() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-blue-500" />
+          <Calendar className="w-5 h-5 text-primary" />
           <h3 className="text-lg font-semibold">Quarterly Business Review</h3>
         </div>
         <div className="flex gap-2">

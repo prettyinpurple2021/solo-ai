@@ -136,8 +136,8 @@ Business: ${businessDescription}`;
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg">
-        <p className="text-sm text-green-800">
+      <div className="bg-chart-2/10 p-4 rounded-lg border border-chart-2/20">
+        <p className="text-sm text-chart-2">
           <Megaphone className="w-4 h-4 inline mr-2" />
           Craft compelling PR pitches that get media attention. Include your story, credibility, and clear value for their audience.
         </p>

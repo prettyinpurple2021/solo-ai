@@ -69,9 +69,9 @@ export function ValuesAlignedBizFilter() {
   };
 
   const getAlignmentColor = (score: number) => {
-    if (score >= 8) return 'text-green-600';
-    if (score >= 6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 8) return 'text-chart-2';
+    if (score >= 6) return 'text-chart-4';
+    return 'text-destructive';
   };
 
   const getAlignmentLabel = (score: number) => {
@@ -114,8 +114,8 @@ export function ValuesAlignedBizFilter() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg">
-        <p className="text-sm text-blue-800">
+      <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+        <p className="text-sm text-primary">
           <Heart className="w-4 h-4 inline mr-2" />
           Filter business opportunities through your values and long-term vision. Build a business that feels authentic and sustainable.
         </p>
@@ -253,24 +253,24 @@ export function ValuesAlignedBizFilter() {
                 </div>
 
                 {opportunity.alignment >= 8 && (
-                  <div className="bg-green-50 p-3 rounded border border-green-200">
-                    <div className="flex items-center text-green-800">
+                  <div className="bg-chart-2/10 p-3 rounded border border-chart-2/20">
+                    <div className="flex items-center text-chart-2">
                       <Shield className="w-4 h-4 mr-2" />
                       <strong>Strong Values Match!</strong>
                     </div>
-                    <p className="text-sm text-green-700 mt-1">
+                    <p className="text-sm text-chart-2/80 mt-1">
                       This opportunity aligns well with your core values and vision.
                     </p>
                   </div>
                 )}
 
                 {opportunity.alignment <= 4 && (
-                  <div className="bg-red-50 p-3 rounded border border-red-200">
-                    <div className="flex items-center text-red-800">
+                  <div className="bg-destructive/10 p-3 rounded border border-destructive/20">
+                    <div className="flex items-center text-destructive">
                       <AlertTriangle className="w-4 h-4 mr-2" />
                       <strong>Values Conflict Alert</strong>
                     </div>
-                    <p className="text-sm text-red-700 mt-1">
+                    <p className="text-sm text-destructive/80 mt-1">
                       Consider if the benefits outweigh the misalignment with your values.
                     </p>
                   </div>
@@ -292,7 +292,7 @@ export function ValuesAlignedBizFilter() {
                   <div className="text-sm text-muted-foreground">Total Opportunities</div>
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-green-600">
+                  <div className="text-2xl font-bold text-chart-2">
                     {opportunities.filter(o => o.alignment >= 7).length}
                   </div>
                   <div className="text-sm text-muted-foreground">Well Aligned</div>

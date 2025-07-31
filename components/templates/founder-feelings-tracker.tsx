@@ -110,8 +110,8 @@ export function FounderFeelingsTracker() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-pink-50 to-purple-50 p-4 rounded-lg">
-        <p className="text-sm text-purple-800">
+      <div className="bg-accent/10 p-4 rounded-lg border border-accent/20">
+        <p className="text-sm text-accent-foreground">
           <Heart className="w-4 h-4 inline mr-2" />
           Track your emotional patterns to understand what energizes you and what drains you. Self-awareness is your superpower!
         </p>
@@ -122,7 +122,7 @@ export function FounderFeelingsTracker() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center">
-                <Zap className="w-4 h-4 mr-2 text-yellow-500" />
+                <Zap className="w-4 h-4 mr-2 text-chart-4" />
                 Avg Energy
               </CardTitle>
             </CardHeader>
@@ -134,7 +134,7 @@ export function FounderFeelingsTracker() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center">
-                <Brain className="w-4 h-4 mr-2 text-blue-500" />
+                <Brain className="w-4 h-4 mr-2 text-primary" />
                 Avg Focus
               </CardTitle>
             </CardHeader>
@@ -146,7 +146,7 @@ export function FounderFeelingsTracker() {
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center">
-                <TrendingDown className="w-4 h-4 mr-2 text-green-500" />
+                <TrendingDown className="w-4 h-4 mr-2 text-chart-2" />
                 Avg Motivation
               </CardTitle>
             </CardHeader>

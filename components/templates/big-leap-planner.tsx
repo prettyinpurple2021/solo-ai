@@ -62,8 +62,8 @@ export function BigLeapPlanner() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-lg">
-        <p className="text-sm text-purple-800">
+      <div className="bg-accent/10 p-4 rounded-lg border border-accent/20">
+        <p className="text-sm text-accent-foreground">
           <TrendingUp className="w-4 h-4 inline mr-2" />
           Plan your bold pivot or scary move with confidence. This template helps you prepare for big decisions that could transform your business.
         </p>
@@ -115,7 +115,7 @@ export function BigLeapPlanner() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center">
-                <AlertTriangle className="w-4 h-4 mr-2 text-orange-500" />
+                <AlertTriangle className="w-4 h-4 mr-2 text-chart-5" />
                 Fears & Concerns
               </CardTitle>
             </CardHeader>
@@ -132,7 +132,7 @@ export function BigLeapPlanner() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm flex items-center">
-                <TrendingUp className="w-4 h-4 mr-2 text-green-500" />
+                <TrendingUp className="w-4 h-4 mr-2 text-chart-2" />
                 Opportunities
               </CardTitle>
             </CardHeader>
