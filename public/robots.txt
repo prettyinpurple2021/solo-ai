@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Allow access to public assets
+Allow: /images/
+Allow: /_next/static/
+Allow: /favicon.ico
+
+# Disallow crawling of API endpoints
+Disallow: /api/
+
+# Disallow crawling of admin areas
+Disallow: /admin/
+Disallow: /dashboard/
+
+# Disallow crawling of user-specific areas
+Disallow: /profile/
+Disallow: /settings/
+
+# Allow robots to crawl main public pages
+Allow: /about
+Allow: /pricing
+Allow: /contact
+Allow: /features
+Allow: /docs
+
+# If you have a sitemap, uncomment and update the URL below
+# Sitemap: https://solobossai.fun/sitemap.xml
