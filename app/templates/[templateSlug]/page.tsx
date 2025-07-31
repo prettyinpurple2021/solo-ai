@@ -2,7 +2,7 @@ import { getTemplateBySlug } from '@/lib/templates-client';
 import { notFound } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import * as TemplateComponents from '@/components/templates';
+import { templateComponents } from '@/components/templates';
 import { checkRequiredEnvVars } from '@/lib/env-validation';
 
 // Make this page dynamic to avoid static generation issues
@@ -23,34 +23,14 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
     // Await the params in Next.js 15+
     const { templateSlug } = await params;
     
-    // Check if required environment variables are available
-    const hasRequiredEnv = checkRequiredEnvVars([
-      'NEXT_PUBLIC_SUPABASE_URL',
-      'NEXT_PUBLIC_SUPABASE_ANON_KEY'
-    ]);
-
-    if (!hasRequiredEnv) {
-      return (
-        <div className="container mx-auto py-8">
-          <Card>
-            <CardContent className="p-6">
-              <h1 className="text-2xl font-bold text-red-600 mb-4">Configuration Error</h1>
-              <p className="text-muted-foreground">
-                This template requires database connectivity. Please ensure all environment variables are properly configured.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      );
-    }
-
+    // Get template information (will fallback to JSON if database not available)
     const template = await getTemplateBySlug(templateSlug);
 
     if (!template) {
       notFound();
     }
 
-    const TemplateComponent = TemplateComponents[template.slug as keyof typeof TemplateComponents];
+    const TemplateComponent = templateComponents[templateSlug];
 
     return (
       <div className="container mx-auto py-8">
@@ -64,6 +44,20 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
             </Badge>
           </div>
         </div>
+
+        {/* Show environment warning if database features unavailable */}
+        {!checkRequiredEnvVars(['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY']) && (
+          <Card className="mb-6 border-yellow-200 bg-yellow-50">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <span className="text-yellow-600">⚠️</span>
+                <p className="text-yellow-800">
+                  Template save functionality is currently unavailable. You can still use the template, but changes won't be saved.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardContent className="p-6">
