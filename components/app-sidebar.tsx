@@ -15,6 +15,7 @@ import {
   Target,
   Shield,
   CheckSquare,
+  FileText,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -71,7 +72,9 @@ const data = {
     },
     {
       title: "Templates",
+
       url: "/templates",
+
       icon: FileText,
     },
     {
