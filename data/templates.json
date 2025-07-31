@@ -120,7 +120,7 @@
             "title": "Founder Feelings Tracker",
             "description": "Part journal, part dashboard. Lets users log energy levels, focus blocks, and motivation triggers for pattern insight.",
             "slug": "founder-feelings-tracker",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "free_launchpad"
         }
     ]
@@ -141,28 +141,28 @@
             "title": "AI Collab Planner (For Guest Content)",
             "description": "Use this to plan guest posts, podcast appearances, and collabs — includes smart prompts for positioning and topics.",
             "slug": "ai-collab-planner",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "pro_accelerator"
         },
         {
             "title": "PR Pitch Template",
             "description": "Send story ideas to media, blogs, or podcast hosts. Includes headline hooks, founder bio boilerplate, and intro email drafts.",
             "slug": "pr-pitch-template",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "pro_accelerator"
         },
         {
             "title": "Viral Hook Generator",
             "description": "Input content idea + vibe. Get high-engagement hook options (e.g., \"what nobody tells you about…\") in text or video format.",
             "slug": "viral-hook-generator",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "pro_accelerator"
         },
         {
             "title": "Values-Aligned Biz Filter",
             "description": "A template to evaluate biz opportunities, partnerships, or decisions against your core values and long-term vision.",
             "slug": "values-aligned-biz-filter",
-            "isInteractive": false,
+            "isInteractive": true,
             "requiredRole": "free_launchpad"
         }
     ]

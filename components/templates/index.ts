@@ -13,6 +13,11 @@ export { ReverseEngineerRoleModels } from './reverse-engineer-role-models';
 export { BigLeapPlanner } from './big-leap-planner';
 export { OfferNamingGenerator } from './offer-naming-generator';
 export { BragBankTemplate } from './brag-bank-template';
+export { FounderFeelingsTracker } from './founder-feelings-tracker';
+export { ViralHookGenerator } from './viral-hook-generator';
+export { ValuesAlignedBizFilter } from './values-aligned-biz-filter';
+export { AiCollabPlanner } from './ai-collab-planner';
+export { PrPitchTemplate } from './pr-pitch-template';
 
 // Import components
 import { DecisionDashboard } from './decision-dashboard';
@@ -30,6 +35,11 @@ import { ReverseEngineerRoleModels } from './reverse-engineer-role-models';
 import { BigLeapPlanner } from './big-leap-planner';
 import { OfferNamingGenerator } from './offer-naming-generator';
 import { BragBankTemplate } from './brag-bank-template';
+import { FounderFeelingsTracker } from './founder-feelings-tracker';
+import { ViralHookGenerator } from './viral-hook-generator';
+import { ValuesAlignedBizFilter } from './values-aligned-biz-filter';
+import { AiCollabPlanner } from './ai-collab-planner';
+import { PrPitchTemplate } from './pr-pitch-template';
 
 // Slug-based mapping for dynamic component loading
 export const templateComponents: Record<string, React.ComponentType> = {
@@ -48,4 +58,9 @@ export const templateComponents: Record<string, React.ComponentType> = {
   'big-leap-planner': BigLeapPlanner,
   'offer-naming-generator': OfferNamingGenerator,
   'brag-bank-template': BragBankTemplate,
+  'founder-feelings-tracker': FounderFeelingsTracker,
+  'viral-hook-generator': ViralHookGenerator,
+  'values-aligned-biz-filter': ValuesAlignedBizFilter,
+  'ai-collab-planner': AiCollabPlanner,
+  'pr-pitch-template': PrPitchTemplate,
 }; 
