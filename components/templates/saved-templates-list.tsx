@@ -165,7 +165,7 @@ export function SavedTemplatesList() {
                   variant="ghost" 
                   size="sm"
                   onClick={() => handleDeleteTemplate(template.id)}
-                  className="text-red-600 hover:text-red-800"
+                  className="text-destructive hover:text-destructive/80"
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>

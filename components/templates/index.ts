@@ -8,6 +8,8 @@ export { OfferComparisonMatrix } from './offer-comparison-matrix';
 export { QuarterlyBizReview } from './quarterly-biz-review';
 export { UpsellFlowBuilder } from './upsell-flow-builder';
 export { VisionBoardGenerator } from './vision-board-generator';
+
+// Thinking & Planning Tools
 export { PreMortemTemplate } from './pre-mortem-template';
 export { ReverseEngineerRoleModels } from './reverse-engineer-role-models';
 export { BigLeapPlanner } from './big-leap-planner';
@@ -19,7 +21,7 @@ export { ValuesAlignedBizFilter } from './values-aligned-biz-filter';
 export { AiCollabPlanner } from './ai-collab-planner';
 export { PrPitchTemplate } from './pr-pitch-template';
 
-// Import components
+// Import components for slug-based mapping
 import { DecisionDashboard } from './decision-dashboard';
 import { DelegationListBuilder } from './delegation-list-builder';
 import { DmSalesScriptGenerator } from './dm-sales-script-generator';
@@ -63,4 +65,4 @@ export const templateComponents: Record<string, React.ComponentType> = {
   'values-aligned-biz-filter': ValuesAlignedBizFilter,
   'ai-collab-planner': AiCollabPlanner,
   'pr-pitch-template': PrPitchTemplate,
-}; 
+};

@@ -4,74 +4,124 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { useTemplateSave } from '@/hooks/use-template-save';
-import { Save, Megaphone, Edit, User, FileText } from 'lucide-react';
+import { Save, Megaphone, Copy, Plus, Trash2 } from 'lucide-react';
+
+interface PitchTemplate {
+  outlet: string;
+  contactName: string;
+  contactEmail: string;
+  storyAngle: string;
+  headline: string;
+  personalStory: string;
+  credentials: string;
+  whyNow: string;
+  callToAction: string;
+}
 
 export function PrPitchTemplate() {
-  const [storyHeadline, setStoryHeadline] = useState('');
-  const [newsAngle, setNewsAngle] = useState('');
-  const [whyNow, setWhyNow] = useState('');
+  const [pitches, setPitches] = useState<PitchTemplate[]>([
+    {
+      outlet: '',
+      contactName: '',
+      contactEmail: '',
+      storyAngle: '',
+      headline: '',
+      personalStory: '',
+      credentials: '',
+      whyNow: '',
+      callToAction: ''
+    }
+  ]);
   const [founderBio, setFounderBio] = useState('');
-  const [companyInfo, setCompanyInfo] = useState('');
-  const [targetMedia, setTargetMedia] = useState('');
-  const [keyMessages, setKeyMessages] = useState('');
-  const [pitchEmail, setPitchEmail] = useState('');
+  const [businessDescription, setBusinessDescription] = useState('');
   const [title, setTitle] = useState('');
   
   const { saveTemplate, isSaving } = useTemplateSave();
 
-  const generatePitchEmail = () => {
-    const email = `Subject: ${storyHeadline}
+  const storyAngles = [
+    'Founder Journey', 'Industry Disruption', 'Social Impact', 'Innovation', 
+    'Against the Odds', 'Market Trends', 'Expert Commentary', 'Behind the Scenes'
+  ];
 
-Hi [JOURNALIST NAME],
+  const addPitch = () => {
+    setPitches([...pitches, {
+      outlet: '',
+      contactName: '',
+      contactEmail: '',
+      storyAngle: '',
+      headline: '',
+      personalStory: '',
+      credentials: '',
+      whyNow: '',
+      callToAction: ''
+    }]);
+  };
 
-I hope this email finds you well. I'm reaching out because I believe I have a story that would resonate with [PUBLICATION] readers.
+  const removePitch = (index: number) => {
+    setPitches(pitches.filter((_, i) => i !== index));
+  };
 
-${newsAngle}
+  const updatePitch = (index: number, field: keyof PitchTemplate, value: string) => {
+    const newPitches = [...pitches];
+    newPitches[index][field] = value;
+    setPitches(newPitches);
+  };
 
-${whyNow}
+  const generateEmailTemplate = (pitch: PitchTemplate) => {
+    return `Subject: ${pitch.headline}
 
-About me: ${founderBio}
+Hi ${pitch.contactName || '[Name]'},
 
-Company background: ${companyInfo}
+I hope this email finds you well. I'm reaching out because I believe I have a story that would resonate strongly with ${pitch.outlet}'s audience.
 
-Key points for the story:
-${keyMessages}
+${pitch.personalStory}
 
-I'd be happy to provide additional information, data, or arrange an interview at your convenience.
+Here's why this story matters right now:
+${pitch.whyNow}
+
+A bit about my background:
+${pitch.credentials}
+
+${founderBio}
+
+I'd love to discuss how we can bring this story to your audience. ${pitch.callToAction}
+
+Looking forward to hearing from you!
 
 Best regards,
-[YOUR NAME]
-[YOUR CONTACT INFO]`;
+[Your Name]
+[Your Contact Information]
 
-    setPitchEmail(email);
+---
+Business: ${businessDescription}`;
+  };
+
+  const copyEmailTemplate = (pitch: PitchTemplate) => {
+    const emailTemplate = generateEmailTemplate(pitch);
+    navigator.clipboard.writeText(emailTemplate);
   };
 
   const handleSave = async () => {
     const templateData = {
-      storyHeadline,
-      newsAngle,
-      whyNow,
+      pitches,
       founderBio,
-      companyInfo,
-      targetMedia,
-      keyMessages,
-      pitchEmail,
+      businessDescription,
+      totalPitches: pitches.length,
     };
 
-    const saveTitle = title || `PR Pitch: ${storyHeadline || 'Untitled Story'}`;
+    const saveTitle = title || `PR Pitches (${pitches.length} outlets)`;
     
-    await saveTemplate('pr-pitch-template', templateData, saveTitle, `Media pitch for ${targetMedia || 'various outlets'}`);
+    await saveTemplate('pr-pitch-template', templateData, saveTitle, `${pitches.filter(p => p.outlet).length} PR pitches prepared`);
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Megaphone className="w-5 h-5 text-orange-500" />
-          <h3 className="text-lg font-semibold">PR Pitch Template</h3>
-        </div>
+        <h3 className="text-lg font-semibold">PR Pitch Template</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -81,106 +131,194 @@ Best regards,
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
-            Save
+            {isSaving ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-4">
-        <div>
-          <Label htmlFor="storyHeadline">Story Headline/Hook</Label>
-          <Input
-            id="storyHeadline"
-            placeholder="What's your compelling headline? (e.g., 'Solo Entrepreneur Builds $1M Business in 18 Months')"
-            value={storyHeadline}
-            onChange={(e) => setStoryHeadline(e.target.value)}
-          />
-        </div>
+      <div className="bg-chart-2/10 p-4 rounded-lg border border-chart-2/20">
+        <p className="text-sm text-chart-2">
+          <Megaphone className="w-4 h-4 inline mr-2" />
+          Craft compelling PR pitches that get media attention. Include your story, credibility, and clear value for their audience.
+        </p>
+      </div>
 
-        <div>
-          <Label htmlFor="newsAngle">News Angle/Story Pitch</Label>
-          <Textarea
-            id="newsAngle"
-            placeholder="What's newsworthy about your story? What makes it interesting now?"
-            value={newsAngle}
-            onChange={(e) => setNewsAngle(e.target.value)}
-            rows={3}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="whyNow">Why Now? (Timeliness)</Label>
-          <Textarea
-            id="whyNow"
-            placeholder="Why is this story relevant right now? Any trends, events, or timing factors?"
-            value={whyNow}
-            onChange={(e) => setWhyNow(e.target.value)}
-            rows={2}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="targetMedia">Target Media Outlets</Label>
-          <Input
-            id="targetMedia"
-            placeholder="Which publications, podcasts, or blogs are you targeting?"
-            value={targetMedia}
-            onChange={(e) => setTargetMedia(e.target.value)}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="founderBio">Founder Bio (Boilerplate)</Label>
-          <Textarea
-            id="founderBio"
-            placeholder="Brief founder bio with credentials, background, and relevant experience..."
-            value={founderBio}
-            onChange={(e) => setFounderBio(e.target.value)}
-            rows={3}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="companyInfo">Company Background</Label>
-          <Textarea
-            id="companyInfo"
-            placeholder="Brief company description, what you do, key achievements, metrics..."
-            value={companyInfo}
-            onChange={(e) => setCompanyInfo(e.target.value)}
-            rows={3}
-          />
-        </div>
-
-        <div>
-          <Label htmlFor="keyMessages">Key Messages/Talking Points</Label>
-          <Textarea
-            id="keyMessages"
-            placeholder="List your key messages, quotes, data points, or story angles (one per line)..."
-            value={keyMessages}
-            onChange={(e) => setKeyMessages(e.target.value)}
-            rows={4}
-          />
-        </div>
-
-        <Button onClick={generatePitchEmail} className="self-start">
-          <Edit className="w-4 h-4 mr-2" />
-          Generate Pitch Email
-        </Button>
-
-        {pitchEmail && (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <Label htmlFor="pitchEmail">Generated Pitch Email</Label>
+            <Label htmlFor="founderBio">Your Bio Boilerplate</Label>
             <Textarea
-              id="pitchEmail"
-              value={pitchEmail}
-              onChange={(e) => setPitchEmail(e.target.value)}
-              rows={12}
-              className="font-mono text-sm"
+              id="founderBio"
+              placeholder="Write a 2-3 sentence bio about yourself that you can reuse in pitches..."
+              value={founderBio}
+              onChange={(e) => setFounderBio(e.target.value)}
+              rows={3}
             />
           </div>
-        )}
+          <div>
+            <Label htmlFor="businessDescription">Business Description</Label>
+            <Textarea
+              id="businessDescription"
+              placeholder="Quick description of your business for email signatures..."
+              value={businessDescription}
+              onChange={(e) => setBusinessDescription(e.target.value)}
+              rows={3}
+            />
+          </div>
+        </div>
 
-        <Button onClick={handleSave} className="self-start" disabled={isSaving}>
+        <div className="space-y-6">
+          <div className="flex items-center justify-between">
+            <h4 className="text-md font-medium">PR Pitches</h4>
+            <Button onClick={addPitch} variant="outline" size="sm">
+              <Plus className="w-4 h-4 mr-2" />
+              Add Pitch
+            </Button>
+          </div>
+
+          {pitches.map((pitch, index) => (
+            <Card key={index}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm">Pitch #{index + 1}</CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyEmailTemplate(pitch)}
+                      title="Copy email template"
+                    >
+                      <Copy className="w-4 h-4" />
+                    </Button>
+                    {pitches.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removePitch(index)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label>Media Outlet</Label>
+                    <Input
+                      placeholder="e.g., Entrepreneur, Forbes, TechCrunch"
+                      value={pitch.outlet}
+                      onChange={(e) => updatePitch(index, 'outlet', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Contact Name</Label>
+                    <Input
+                      placeholder="e.g., Jane Smith"
+                      value={pitch.contactName}
+                      onChange={(e) => updatePitch(index, 'contactName', e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <Label>Contact Email</Label>
+                    <Input
+                      placeholder="editor@publication.com"
+                      value={pitch.contactEmail}
+                      onChange={(e) => updatePitch(index, 'contactEmail', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Story Angle</Label>
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {storyAngles.map((angle) => (
+                      <Badge
+                        key={angle}
+                        variant={pitch.storyAngle === angle ? "default" : "outline"}
+                        className="cursor-pointer"
+                        onClick={() => updatePitch(index, 'storyAngle', angle)}
+                      >
+                        {angle}
+                      </Badge>
+                    ))}
+                  </div>
+                  <Input
+                    placeholder="Or write your own angle..."
+                    value={pitch.storyAngle}
+                    onChange={(e) => updatePitch(index, 'storyAngle', e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <Label>Headline/Hook</Label>
+                  <Input
+                    placeholder="e.g., How I Built a 6-Figure Business While Traveling the World"
+                    value={pitch.headline}
+                    onChange={(e) => updatePitch(index, 'headline', e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <Label>Personal Story</Label>
+                  <Textarea
+                    placeholder="Tell your compelling story in 2-3 sentences. What's your journey?"
+                    value={pitch.personalStory}
+                    onChange={(e) => updatePitch(index, 'personalStory', e.target.value)}
+                    rows={3}
+                  />
+                </div>
+
+                <div>
+                  <Label>Credentials/Proof</Label>
+                  <Textarea
+                    placeholder="Why should they listen to you? Awards, results, unique experiences..."
+                    value={pitch.credentials}
+                    onChange={(e) => updatePitch(index, 'credentials', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label>Why Now?</Label>
+                  <Textarea
+                    placeholder="Why is this story relevant right now? Tie to current events, trends, seasons..."
+                    value={pitch.whyNow}
+                    onChange={(e) => updatePitch(index, 'whyNow', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label>Call to Action</Label>
+                  <Textarea
+                    placeholder="What do you want them to do? Interview, feature, quote you?"
+                    value={pitch.callToAction}
+                    onChange={(e) => updatePitch(index, 'callToAction', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+
+                {pitch.outlet && (
+                  <div className="pt-4 border-t">
+                    <div className="bg-gray-50 p-3 rounded text-sm">
+                      <strong>Email Preview:</strong>
+                      <div className="mt-2 whitespace-pre-line">
+                        {generateEmailTemplate(pitch)}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex gap-4">
+        <Button>Find Media Contacts</Button>
+        <Button variant="outline" onClick={handleSave} disabled={isSaving}>
           <Save className="w-4 h-4 mr-2" />
           Save to Briefcase
         </Button>

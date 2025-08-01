@@ -40,7 +40,7 @@ export function IHateThisTracker() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-orange-500" />
+          <AlertTriangle className="w-5 h-5 text-chart-5" />
           <h3 className="text-lg font-semibold">"I Hate This" Tracker</h3>
         </div>
         <div className="flex gap-2">
@@ -72,13 +72,13 @@ export function IHateThisTracker() {
           <p className="text-muted-foreground text-center py-8">No energy drainers tracked yet. Add your first one above!</p>
         ) : (
           items.map((item, index) => (
-            <div key={index} className="flex items-center space-x-2 p-2 border rounded bg-orange-50">
+            <div key={index} className="flex items-center space-x-2 p-2 border rounded bg-chart-5/10">
               <span className="flex-1">{item}</span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => removeItem(index)}
-                className="text-orange-600 hover:text-orange-800"
+                className="text-chart-5 hover:text-chart-5/80"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>

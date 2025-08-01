@@ -1,3 +1,5 @@
+'use client';
+
 import { getTemplateBySlug } from '@/lib/templates-client';
 import { notFound } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
@@ -22,7 +24,31 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
   try {
     // Await the params in Next.js 15+
     const { templateSlug } = await params;
-    
+
+    // Check if required environment variables are available
+    const hasRequiredEnv = checkRequiredEnvVars([
+      'NEXT_PUBLIC_SUPABASE_URL',
+      'NEXT_PUBLIC_SUPABASE_ANON_KEY'
+    ]);
+
+    // In development mode, allow templates to work without database
+    const isDev = process.env.NODE_ENV === 'development';
+
+    if (!hasRequiredEnv && !isDev) {
+      return (
+        <div className="container mx-auto py-8">
+          <Card>
+            <CardContent className="p-6">
+              <h1 className="text-2xl font-bold text-red-600 mb-4">Configuration Error</h1>
+              <p className="text-muted-foreground">
+                This template requires database connectivity. Please ensure all environment variables are properly configured.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
+
     // Get template information (will fallback to JSON if database not available)
     const template = await getTemplateBySlug(templateSlug);
 
@@ -30,7 +56,14 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
       notFound();
     }
 
-    const TemplateComponent = templateComponents[templateSlug];
+    // Map kebab-case slug to PascalCase component name if needed
+    // If your templateComponents map uses PascalCase keys, use this:
+    // const getComponentName = (slug: string): string =>
+    //   slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+    // const componentName = getComponentName(template.slug);
+    // const TemplateComponent = templateComponents[componentName as keyof typeof templateComponents];
+    // Otherwise, if using slug as key directly (recommended):
+    const TemplateComponent = templateComponents[template.slug];
 
     return (
       <div className="container mx-auto py-8">
@@ -46,7 +79,7 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
         </div>
 
         {/* Show environment warning if database features unavailable */}
-        {!checkRequiredEnvVars(['NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_ANON_KEY']) && (
+        {!hasRequiredEnv && (
           <Card className="mb-6 border-yellow-200 bg-yellow-50">
             <CardContent className="p-4">
               <div className="flex items-center gap-2">
@@ -90,4 +123,4 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
       </div>
     );
   }
-} 
+}

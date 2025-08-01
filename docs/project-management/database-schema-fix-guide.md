@@ -15,7 +15,7 @@ You have two options to create the missing tables:
 #### Option A: Use Supabase Dashboard (Recommended)
 
 1. **Go to your Supabase Dashboard**
-   - Visit: https://supabase.com/dashboard
+   - Visit: <https://supabase.com/dashboard>
    - Select your SoloBoss project
 
 2. **Navigate to SQL Editor**
@@ -47,6 +47,7 @@ npm run setup-templates
 ```
 
 This will:
+
 - Insert template categories (Founder Systems, Lead Gen & Sales, etc.)
 - Insert individual templates (Decision Dashboard, Vision Board, etc.)
 - Set up proper relationships between categories and templates
@@ -54,9 +55,11 @@ This will:
 ### Step 3: Verify the Fix
 
 1. **Check the build:**
+
    ```bash
    npm run build
    ```
+
    - The templates error should be gone
 
 2. **Test the templates feature:**
@@ -65,12 +68,14 @@ This will:
 
 ## 📋 What Gets Created
 
-### Tables Created:
+### Tables Created
+
 - `template_categories` - Template categories (Founder Systems, Lead Gen & Sales, etc.)
 - `templates` - Individual templates with metadata
 - `user_templates` - User's saved template data
 
-### Data Seeded:
+### Data Seeded
+
 - **3 Categories:**
   - Founder Systems & Self-Mgmt
   - Lead Gen & Sales  
@@ -88,7 +93,8 @@ This will:
   - Live Launch Tracker
   - Upsell Flow Builder
 
-### Security Policies:
+### Security Policies
+
 - Public read access for template categories and templates
 - User-specific access for saved template data
 - Proper Row Level Security (RLS) enabled
@@ -186,13 +192,16 @@ npm run build
 
 ## 🆘 Troubleshooting
 
-### If tables already exist:
+### If tables already exist
+
 The script will skip seeding if data already exists.
 
-### If you get permission errors:
+### If you get permission errors
+
 Make sure you're using the service role key for admin operations.
 
-### If the relationship error persists:
+### If the relationship error persists
+
 1. Check that both tables exist
 2. Verify the foreign key relationship is correct
 3. Ensure the migration ran successfully
@@ -200,10 +209,11 @@ Make sure you're using the service role key for admin operations.
 ## 📞 Need Help?
 
 If you're still having issues:
+
 1. Check the Supabase logs for detailed error messages
 2. Verify your environment variables are correct
 3. Ensure you have the necessary permissions in Supabase
 
 ---
 
-**After completing these steps, the templates feature should work properly!** 🎉 
+**After completing these steps, the templates feature should work properly!** 🎉

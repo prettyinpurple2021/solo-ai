@@ -4,76 +4,102 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Slider } from '@/components/ui/slider';
 import { useState } from 'react';
 import { useTemplateSave } from '@/hooks/use-template-save';
-import { Save, Scale, CheckCircle, XCircle } from 'lucide-react';
+import { Save, Heart, Shield, AlertTriangle } from 'lucide-react';
 
-interface Criterion {
-  id: string;
-  name: string;
-  weight: number;
-  score: number;
+interface Opportunity {
+  description: string;
+  alignment: number;
+  pros: string;
+  cons: string;
+  decision: string;
 }
 
 export function ValuesAlignedBizFilter() {
-  const [opportunityName, setOpportunityName] = useState('');
-  const [description, setDescription] = useState('');
-  const [coreValues, setCoreValues] = useState('');
-  const [criteria, setCriteria] = useState<Criterion[]>([
-    { id: '1', name: 'Aligns with personal values', weight: 10, score: 5 },
-    { id: '2', name: 'Supports long-term vision', weight: 9, score: 5 },
-    { id: '3', name: 'Financial viability', weight: 8, score: 5 },
-    { id: '4', name: 'Time commitment manageable', weight: 7, score: 5 },
-    { id: '5', name: 'Excites and energizes me', weight: 8, score: 5 },
+  const [coreValues, setCoreValues] = useState<string[]>(['']);
+  const [longTermVision, setLongTermVision] = useState('');
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([
+    {
+      description: '',
+      alignment: 5,
+      pros: '',
+      cons: '',
+      decision: ''
+    }
   ]);
-  const [notes, setNotes] = useState('');
   const [title, setTitle] = useState('');
   
   const { saveTemplate, isSaving } = useTemplateSave();
 
-  const updateCriterionScore = (id: string, score: number) => {
-    setCriteria(criteria.map(c => c.id === id ? { ...c, score } : c));
+  const addValue = () => {
+    setCoreValues([...coreValues, '']);
   };
 
-  const calculateTotalScore = () => {
-    const totalWeightedScore = criteria.reduce((sum, c) => sum + (c.weight * c.score), 0);
-    const maxPossibleScore = criteria.reduce((sum, c) => sum + (c.weight * 10), 0);
-    return Math.round((totalWeightedScore / maxPossibleScore) * 100);
+  const updateValue = (index: number, value: string) => {
+    const newValues = [...coreValues];
+    newValues[index] = value;
+    setCoreValues(newValues);
   };
 
-  const getRecommendation = () => {
-    const score = calculateTotalScore();
-    if (score >= 80) return { text: 'Strong Alignment - Highly Recommended', color: 'text-green-600', icon: CheckCircle };
-    if (score >= 60) return { text: 'Moderate Alignment - Consider Carefully', color: 'text-yellow-600', icon: Scale };
-    return { text: 'Poor Alignment - Not Recommended', color: 'text-red-600', icon: XCircle };
+  const removeValue = (index: number) => {
+    setCoreValues(coreValues.filter((_, i) => i !== index));
   };
 
-  const recommendation = getRecommendation();
-  const RecommendationIcon = recommendation.icon;
+  const addOpportunity = () => {
+    setOpportunities([...opportunities, {
+      description: '',
+      alignment: 5,
+      pros: '',
+      cons: '',
+      decision: ''
+    }]);
+  };
+
+  const updateOpportunity = (index: number, field: keyof Opportunity, value: string | number) => {
+    const newOpportunities = [...opportunities];
+    newOpportunities[index] = { ...newOpportunities[index], [field]: value };
+    setOpportunities(newOpportunities);
+  };
+
+  const removeOpportunity = (index: number) => {
+    setOpportunities(opportunities.filter((_, i) => i !== index));
+  };
+
+  const getAlignmentColor = (score: number) => {
+    if (score >= 8) return 'text-chart-2';
+    if (score >= 6) return 'text-chart-4';
+    return 'text-destructive';
+  };
+
+  const getAlignmentLabel = (score: number) => {
+    if (score >= 8) return 'Strong Alignment';
+    if (score >= 6) return 'Moderate Alignment';
+    return 'Poor Alignment';
+  };
 
   const handleSave = async () => {
     const templateData = {
-      opportunityName,
-      description,
-      coreValues,
-      criteria,
-      notes,
-      totalScore: calculateTotalScore(),
-      recommendation: recommendation.text,
+      coreValues: coreValues.filter(v => v.trim()),
+      longTermVision,
+      opportunities,
+      totalOpportunities: opportunities.length,
+      averageAlignment: opportunities.length > 0 
+        ? Math.round(opportunities.reduce((sum, opp) => sum + opp.alignment, 0) / opportunities.length) 
+        : 0,
     };
 
-    const saveTitle = title || `Values Filter: ${opportunityName || 'Untitled Opportunity'}`;
+    const saveTitle = title || `Values Filter (${opportunities.length} opportunities)`;
     
-    await saveTemplate('values-aligned-biz-filter', templateData, saveTitle, `Score: ${calculateTotalScore()}% - ${recommendation.text}`);
+    await saveTemplate('values-aligned-biz-filter', templateData, saveTitle, `${opportunities.filter(o => o.alignment >= 7).length} well-aligned opportunities`);
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Scale className="w-5 h-5 text-blue-500" />
-          <h3 className="text-lg font-semibold">Values-Aligned Biz Filter</h3>
-        </div>
+        <h3 className="text-lg font-semibold">Values-Aligned Biz Filter</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -83,92 +109,211 @@ export function ValuesAlignedBizFilter() {
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
-            Save
+            {isSaving ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-4">
-        <div>
-          <Label htmlFor="opportunityName">Opportunity/Decision Name</Label>
-          <Input
-            id="opportunityName"
-            placeholder="What opportunity or decision are you evaluating?"
-            value={opportunityName}
-            onChange={(e) => setOpportunityName(e.target.value)}
-          />
-        </div>
+      <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
+        <p className="text-sm text-primary">
+          <Heart className="w-4 h-4 inline mr-2" />
+          Filter business opportunities through your values and long-term vision. Build a business that feels authentic and sustainable.
+        </p>
+      </div>
 
-        <div>
-          <Label htmlFor="description">Description</Label>
-          <Textarea
-            id="description"
-            placeholder="Briefly describe the opportunity, partnership, or business decision..."
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-          />
-        </div>
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-md flex items-center">
+              <Shield className="w-5 h-5 mr-2" />
+              Your Foundation
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label>Core Values</Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                What principles guide your decisions? What matters most to you?
+              </p>
+              {coreValues.map((value, index) => (
+                <div key={index} className="flex gap-2 mb-2">
+                  <Input
+                    placeholder={`Value ${index + 1}`}
+                    value={value}
+                    onChange={(e) => updateValue(index, e.target.value)}
+                  />
+                  {coreValues.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeValue(index)}
+                    >
+                      ×
+                    </Button>
+                  )}
+                </div>
+              ))}
+              <Button onClick={addValue} variant="outline" size="sm">
+                Add Value
+              </Button>
+            </div>
 
-        <div>
-          <Label htmlFor="coreValues">Your Core Values</Label>
-          <Textarea
-            id="coreValues"
-            placeholder="List your core values and what matters most to you in business..."
-            value={coreValues}
-            onChange={(e) => setCoreValues(e.target.value)}
-            rows={2}
-          />
-        </div>
+            <div>
+              <Label htmlFor="longTermVision">Long-term Vision</Label>
+              <Textarea
+                id="longTermVision"
+                placeholder="Where do you see yourself and your business in 5-10 years? What legacy do you want to create?"
+                value={longTermVision}
+                onChange={(e) => setLongTermVision(e.target.value)}
+                rows={3}
+              />
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="space-y-4">
-          <h4 className="font-semibold">Evaluation Criteria (1-10 scale):</h4>
-          {criteria.map((criterion) => (
-            <div key={criterion.id} className="p-3 border rounded-lg bg-gray-50">
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-medium">{criterion.name}</span>
-                <span className="text-sm text-gray-500">Weight: {criterion.weight}/10</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <span className="text-sm">Score:</span>
-                <input
-                  type="range"
-                  min="1"
-                  max="10"
-                  value={criterion.score}
-                  onChange={(e) => updateCriterionScore(criterion.id, parseInt(e.target.value))}
-                  className="flex-1"
-                />
-                <span className="font-medium w-8">{criterion.score}/10</span>
-              </div>
-            </div>
+          <div className="flex items-center justify-between">
+            <h4 className="text-md font-medium">Opportunity Evaluation</h4>
+            <Button onClick={addOpportunity} variant="outline" size="sm">
+              <AlertTriangle className="w-4 h-4 mr-2" />
+              Add Opportunity
+            </Button>
+          </div>
+
+          {opportunities.map((opportunity, index) => (
+            <Card key={index}>
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm">Opportunity #{index + 1}</CardTitle>
+                  {opportunities.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeOpportunity(index)}
+                    >
+                      ×
+                    </Button>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label>Opportunity Description</Label>
+                  <Textarea
+                    placeholder="Describe the business opportunity, partnership, or decision you're considering..."
+                    value={opportunity.description}
+                    onChange={(e) => updateOpportunity(index, 'description', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+
+                <div>
+                  <Label>Values Alignment (1-10)</Label>
+                  <Slider
+                    value={[opportunity.alignment]}
+                    onValueChange={(value) => updateOpportunity(index, 'alignment', value[0])}
+                    max={10}
+                    step={1}
+                    className="mt-2"
+                  />
+                  <div className={`text-sm mt-1 font-medium ${getAlignmentColor(opportunity.alignment)}`}>
+                    {opportunity.alignment}/10 - {getAlignmentLabel(opportunity.alignment)}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label>Pros</Label>
+                    <Textarea
+                      placeholder="What are the benefits? How does this serve your goals and values?"
+                      value={opportunity.pros}
+                      onChange={(e) => updateOpportunity(index, 'pros', e.target.value)}
+                      rows={3}
+                    />
+                  </div>
+                  <div>
+                    <Label>Cons</Label>
+                    <Textarea
+                      placeholder="What concerns you? Where might this conflict with your values?"
+                      value={opportunity.cons}
+                      onChange={(e) => updateOpportunity(index, 'cons', e.target.value)}
+                      rows={3}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <Label>Decision</Label>
+                  <Textarea
+                    placeholder="Based on your values analysis, what's your decision? Any conditions or modifications needed?"
+                    value={opportunity.decision}
+                    onChange={(e) => updateOpportunity(index, 'decision', e.target.value)}
+                    rows={2}
+                  />
+                </div>
+
+                {opportunity.alignment >= 8 && (
+                  <div className="bg-chart-2/10 p-3 rounded border border-chart-2/20">
+                    <div className="flex items-center text-chart-2">
+                      <Shield className="w-4 h-4 mr-2" />
+                      <strong>Strong Values Match!</strong>
+                    </div>
+                    <p className="text-sm text-chart-2/80 mt-1">
+                      This opportunity aligns well with your core values and vision.
+                    </p>
+                  </div>
+                )}
+
+                {opportunity.alignment <= 4 && (
+                  <div className="bg-destructive/10 p-3 rounded border border-destructive/20">
+                    <div className="flex items-center text-destructive">
+                      <AlertTriangle className="w-4 h-4 mr-2" />
+                      <strong>Values Conflict Alert</strong>
+                    </div>
+                    <p className="text-sm text-destructive/80 mt-1">
+                      Consider if the benefits outweigh the misalignment with your values.
+                    </p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           ))}
         </div>
 
-        <div className="p-4 border rounded-lg bg-blue-50">
-          <div className="flex items-center gap-3">
-            <RecommendationIcon className={`w-6 h-6 ${recommendation.color}`} />
-            <div>
-              <div className="text-2xl font-bold">{calculateTotalScore()}%</div>
-              <div className={`font-medium ${recommendation.color}`}>
-                {recommendation.text}
+        {opportunities.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-sm">Summary</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <div className="text-2xl font-bold">{opportunities.length}</div>
+                  <div className="text-sm text-muted-foreground">Total Opportunities</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold text-chart-2">
+                    {opportunities.filter(o => o.alignment >= 7).length}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Well Aligned</div>
+                </div>
+                <div>
+                  <div className="text-2xl font-bold">
+                    {opportunities.length > 0 
+                      ? Math.round(opportunities.reduce((sum, opp) => sum + opp.alignment, 0) / opportunities.length) 
+                      : 0}
+                  </div>
+                  <div className="text-sm text-muted-foreground">Avg Alignment</div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
 
-        <div>
-          <Label htmlFor="notes">Additional Notes & Reflections</Label>
-          <Textarea
-            id="notes"
-            placeholder="Any additional thoughts, concerns, or considerations?"
-            value={notes}
-            onChange={(e) => setNotes(e.target.value)}
-            rows={3}
-          />
-        </div>
-
-        <Button onClick={handleSave} className="self-start" disabled={isSaving}>
+      <div className="flex gap-4">
+        <Button>Generate Values Statement</Button>
+        <Button variant="outline" onClick={handleSave} disabled={isSaving}>
           <Save className="w-4 h-4 mr-2" />
           Save to Briefcase
         </Button>
