@@ -223,7 +223,7 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
             <div className="flex flex-col items-center space-y-4">
               <div className="relative">
                 <Avatar className="h-32 w-32 border-4 border-gradient-to-r from-purple-400 to-pink-400">
-                  <AvatarImage src={formData.avatar_url || "/placeholder.svg"} className="object-cover" />
+                  <AvatarImage src={formData.avatar_url || "/default-user.svg"} className="object-cover" />
                   <AvatarFallback className="text-4xl bg-gradient-to-r from-purple-400 to-pink-400 text-white">
                     {formData.full_name?.charAt(0) || user?.email?.charAt(0) || "B"}
                   </AvatarFallback>

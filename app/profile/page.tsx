@@ -128,7 +128,7 @@ export default function ProfilePage() {
               {/* Profile Image & Basic Info */}
               <div className="flex flex-col items-center md:items-start">
                 <Avatar className="h-32 w-32 border-4 border-gradient-to-r from-purple-400 to-pink-400 mb-4">
-                  <AvatarImage src={profile?.avatar_url || "/placeholder.svg"} className="object-cover" />
+                  <AvatarImage src={profile?.avatar_url || "/default-user.svg"} className="object-cover" />
                   <AvatarFallback className="text-4xl bg-gradient-to-r from-purple-400 to-pink-400 text-white">
                     {profile?.full_name?.charAt(0) || profile?.email?.charAt(0) || "B"}
                   </AvatarFallback>

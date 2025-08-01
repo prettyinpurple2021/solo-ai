@@ -169,7 +169,7 @@ export const testimonials: Testimonial[] = [
     role: "Startup Founder",
     company: "TechVenture Inc.",
     content: "SoloBoss AI transformed how I manage my startup. The AI team feels like having a full executive staff at my fingertips.",
-    avatar: "/placeholder-user.jpg",
+    avatar: "/default-user.svg",
     rating: 5,
   },
   {
@@ -177,7 +177,7 @@ export const testimonials: Testimonial[] = [
     role: "Freelance Designer",
     company: "MR Creative Studio",
     content: "The focus sessions and project management features doubled my productivity. I can't imagine working without it now.",
-    avatar: "/placeholder-user.jpg",
+    avatar: "/default-user.svg",
     rating: 5,
   },
   {
@@ -185,7 +185,7 @@ export const testimonials: Testimonial[] = [
     role: "Consultant",
     company: "Strategic Solutions",
     content: "Having specialized AI agents for different aspects of my business is a game-changer. It's like having a dream team available 24/7.",
-    avatar: "/placeholder-user.jpg",
+    avatar: "/default-user.svg",
     rating: 5,
   },
 ]

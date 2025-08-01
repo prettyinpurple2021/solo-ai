@@ -29,7 +29,7 @@ const data = {
   user: {
     name: "Boss Builder",
     email: "boss@soloboss.ai",
-    avatar: "/placeholder-user.jpg",
+    avatar: "/default-user.svg",
   },
   teams: [
     {

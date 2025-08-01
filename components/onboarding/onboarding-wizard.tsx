@@ -385,7 +385,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                   <CardContent className="p-4">
                     <div className="flex items-start gap-3">
                       <img
-                        src={agent.avatar || "/placeholder.svg"}
+                        src={agent.avatar || "/default-user.svg"}
                         alt={agent.name}
                         className="w-12 h-12 rounded-full object-cover border-2 border-purple-200"
                       />
@@ -484,7 +484,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                       return (
                         <div key={agentId} className="flex items-center gap-2">
                           <img
-                            src={agent?.avatar || "/placeholder.svg"}
+                            src={agent?.avatar || "/default-user.svg"}
                             alt={agent?.name}
                             className="w-8 h-8 rounded-full object-cover"
                           />

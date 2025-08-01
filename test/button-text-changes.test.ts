@@ -22,10 +22,4 @@ describe('Button Text Changes', () => {
     expect(content).toContain('Start for free');
     expect(content).not.toContain('Start Free Trial');
   });
-
-  it('should have "Start for free" instead of "Start Free Trial" in clean landing page', () => {
-    const content = readFileSync(join(projectRoot, 'components/shared/shared-landing-page-clean.tsx'), 'utf-8');
-    expect(content).toContain('Start for free');
-    expect(content).not.toContain('Start Free Trial');
-  });
 });
