@@ -825,6 +825,7 @@ export function SharedLandingPage({
             </div>
           </div>
           <Separator className="my-8 bg-gray-800" />
+          <Separator className="my-8 bg-gray-800" />
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400">© 2024 SoloBoss AI. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
