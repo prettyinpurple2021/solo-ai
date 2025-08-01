@@ -27,7 +27,10 @@ export function ReverseEngineerRoleModels() {
   const { saveTemplate, isSaving } = useTemplateSave();
 
   const addRoleModel = () => {
-    setRoleModels([...roleModels, { name: '', industry: '', keyStrength: '', strategy: '', lessons: '', actionItem: '' }]);
+    setRoleModels([
+      ...roleModels,
+      { name: '', industry: '', keyStrength: '', strategy: '', lessons: '', actionItem: '' }
+    ]);
   };
 
   const removeRoleModel = (index: number) => {
@@ -48,7 +51,12 @@ export function ReverseEngineerRoleModels() {
 
     const saveTitle = title || `Role Model Analysis (${roleModels.length} models)`;
     
-    await saveTemplate('reverse-engineer-role-models', templateData, saveTitle, `${roleModels.filter(rm => rm.name).length} role models analyzed`);
+    await saveTemplate(
+      'reverse-engineer-role-models',
+      templateData,
+      saveTitle,
+      `${roleModels.filter(rm => rm.name).length} role models analyzed`
+    );
   };
 
   return (

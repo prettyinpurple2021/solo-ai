@@ -8,6 +8,7 @@
     "lint": "next lint",
     "start": "next start",
     "setup-db": "node scripts/setup-database.js",
+    "setup-templates": "node scripts/setup-templates-database.mjs",
     "vercel-check": "node scripts/vercel-deploy-check.js"
   },
   "pnpm": {

@@ -1,8 +1,10 @@
+'use client';
+
 import { getTemplateBySlug } from '@/lib/templates-client';
 import { notFound } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import * as TemplateComponents from '@/components/templates';
+import { templateComponents } from '@/components/templates';
 import { checkRequiredEnvVars } from '@/lib/env-validation';
 
 // Make this page dynamic to avoid static generation issues
@@ -22,7 +24,7 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
   try {
     // Await the params in Next.js 15+
     const { templateSlug } = await params;
-    
+
     // Check if required environment variables are available
     const hasRequiredEnv = checkRequiredEnvVars([
       'NEXT_PUBLIC_SUPABASE_URL',
@@ -47,22 +49,21 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
       );
     }
 
+    // Get template information (will fallback to JSON if database not available)
     const template = await getTemplateBySlug(templateSlug);
 
     if (!template) {
       notFound();
     }
 
-    // Convert slug to component name (kebab-case to PascalCase)
-    const getComponentName = (slug: string): string => {
-      return slug
-        .split('-')
-        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-        .join('');
-    };
-
-    const componentName = getComponentName(template.slug);
-    const TemplateComponent = TemplateComponents[componentName as keyof typeof TemplateComponents];
+    // Map kebab-case slug to PascalCase component name if needed
+    // If your templateComponents map uses PascalCase keys, use this:
+    // const getComponentName = (slug: string): string =>
+    //   slug.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('');
+    // const componentName = getComponentName(template.slug);
+    // const TemplateComponent = templateComponents[componentName as keyof typeof templateComponents];
+    // Otherwise, if using slug as key directly (recommended):
+    const TemplateComponent = templateComponents[template.slug];
 
     return (
       <div className="container mx-auto py-8">
@@ -76,6 +77,20 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
             </Badge>
           </div>
         </div>
+
+        {/* Show environment warning if database features unavailable */}
+        {!hasRequiredEnv && (
+          <Card className="mb-6 border-yellow-200 bg-yellow-50">
+            <CardContent className="p-4">
+              <div className="flex items-center gap-2">
+                <span className="text-yellow-600">⚠️</span>
+                <p className="text-yellow-800">
+                  Template save functionality is currently unavailable. You can still use the template, but changes won't be saved.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         <Card>
           <CardContent className="p-6">
@@ -108,4 +123,4 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
       </div>
     );
   }
-} 
+}
