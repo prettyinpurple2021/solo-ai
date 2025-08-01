@@ -4,72 +4,114 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { useState } from 'react';
 import { useTemplateSave } from '@/hooks/use-template-save';
-import { Save, Users, Plus, Trash2 } from 'lucide-react';
+import { Save, Zap, Copy, Plus, Trash2 } from 'lucide-react';
 
-interface Hook {
-  id: string;
-  text: string;
-  format: 'text' | 'video';
-  vibe: string;
+interface HookOption {
+  hook: string;
+  platform: string;
+  contentType: string;
+  reasoning: string;
 }
 
 export function ViralHookGenerator() {
   const [contentIdea, setContentIdea] = useState('');
-  const [targetVibe, setTargetVibe] = useState('');
-  const [format, setFormat] = useState<'text' | 'video'>('text');
-  const [hooks, setHooks] = useState<Hook[]>([]);
+  const [targetAudience, setTargetAudience] = useState('');
+  const [desiredVibe, setDesiredVibe] = useState('');
+  const [platform, setPlatform] = useState('Instagram');
+  const [contentType, setContentType] = useState('Post');
+  const [generatedHooks, setGeneratedHooks] = useState<HookOption[]>([]);
   const [title, setTitle] = useState('');
   
   const { saveTemplate, isSaving } = useTemplateSave();
 
+  const platforms = ['Instagram', 'TikTok', 'LinkedIn', 'Twitter/X', 'YouTube', 'Facebook'];
+  const contentTypes = ['Post', 'Video', 'Story', 'Reel', 'Thread', 'Carousel'];
+  const vibes = ['Educational', 'Inspirational', 'Controversial', 'Behind-the-scenes', 'Personal', 'Trending'];
+
   const generateHooks = () => {
-    const hookTemplates = [
-      `What nobody tells you about ${contentIdea}`,
-      `The ${targetVibe} truth about ${contentIdea}`,
-      `I wish I knew this about ${contentIdea} before starting`,
-      `Stop doing ${contentIdea} wrong (here's how)`,
-      `The ${contentIdea} mistake that's costing you money`,
-      `Why everyone gets ${contentIdea} backwards`,
-      `The ${contentIdea} secret that changed everything`,
-      `${contentIdea}: expectation vs reality`,
+    // Simulate AI-generated hooks
+    const sampleHooks: HookOption[] = [
+      {
+        hook: "What nobody tells you about starting a business...",
+        platform: platform,
+        contentType: contentType,
+        reasoning: "Curiosity gap + insider knowledge positioning creates strong engagement"
+      },
+      {
+        hook: "I made every beginner mistake so you don't have to",
+        platform: platform,
+        contentType: contentType,
+        reasoning: "Vulnerability + value promise builds trust and saves time for audience"
+      },
+      {
+        hook: "Here's the truth about [your topic] that influencers won't tell you:",
+        platform: platform,
+        contentType: contentType,
+        reasoning: "Contrarian angle + authority positioning cuts through noise"
+      },
+      {
+        hook: "Plot twist: Everything you think you know about [topic] is wrong",
+        platform: platform,
+        contentType: contentType,
+        reasoning: "Pattern interrupt + bold claim stops scroll and demands attention"
+      },
+      {
+        hook: "3 signs you're ready to [achieve goal] (most people ignore #2)",
+        platform: platform,
+        contentType: contentType,
+        reasoning: "Specificity + curiosity about the 'missed' point drives engagement"
+      }
     ];
-
-    const generatedHooks = hookTemplates.map((template, index) => ({
-      id: (Date.now() + index).toString(),
-      text: template,
-      format,
-      vibe: targetVibe,
-    }));
-
-    setHooks(generatedHooks);
+    setGeneratedHooks(sampleHooks);
   };
 
-  const removeHook = (id: string) => {
-    setHooks(hooks.filter(hook => hook.id !== id));
+  const addCustomHook = () => {
+    setGeneratedHooks([...generatedHooks, { 
+      hook: '', 
+      platform: platform, 
+      contentType: contentType, 
+      reasoning: '' 
+    }]);
+  };
+
+  const updateHook = (index: number, field: keyof HookOption, value: string) => {
+    const newHooks = [...generatedHooks];
+    newHooks[index][field] = value;
+    setGeneratedHooks(newHooks);
+  };
+
+  const removeHook = (index: number) => {
+    setGeneratedHooks(generatedHooks.filter((_, i) => i !== index));
+  };
+
+  const copyHook = (hook: string) => {
+    navigator.clipboard.writeText(hook);
   };
 
   const handleSave = async () => {
     const templateData = {
       contentIdea,
-      targetVibe,
-      format,
-      hooks,
+      targetAudience,
+      desiredVibe,
+      platform,
+      contentType,
+      generatedHooks,
+      totalHooks: generatedHooks.length,
     };
 
-    const saveTitle = title || `Viral Hooks: ${contentIdea || 'Untitled Content'}`;
+    const saveTitle = title || `Viral Hooks (${generatedHooks.length} options)`;
     
-    await saveTemplate('viral-hook-generator', templateData, saveTitle, `${hooks.length} hook ideas generated`);
+    await saveTemplate('viral-hook-generator', templateData, saveTitle, `${generatedHooks.length} hooks for ${platform} ${contentType.toLowerCase()}`);
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-green-500" />
-          <h3 className="text-lg font-semibold">Viral Hook Generator</h3>
-        </div>
+        <h3 className="text-lg font-semibold">Viral Hook Generator</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -79,77 +121,192 @@ export function ViralHookGenerator() {
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
-            Save
+            {isSaving ? 'Saving...' : 'Save'}
           </Button>
         </div>
       </div>
 
-      <div className="grid gap-4">
-        <div>
-          <Label htmlFor="contentIdea">Content Idea/Topic</Label>
-          <Input
-            id="contentIdea"
-            placeholder="What's your content about? (e.g., email marketing, productivity, etc.)"
-            value={contentIdea}
-            onChange={(e) => setContentIdea(e.target.value)}
-          />
+      <div className="bg-accent/10 p-4 rounded-lg border border-accent/20">
+        <p className="text-sm text-accent-foreground">
+          <Zap className="w-4 h-4 inline mr-2" />
+          Create scroll-stopping hooks that grab attention and drive engagement. Perfect for breaking through the noise!
+        </p>
+      </div>
+
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label htmlFor="contentIdea">Content Idea</Label>
+            <Textarea
+              id="contentIdea"
+              placeholder="What's your content about? What main point or story are you sharing?"
+              value={contentIdea}
+              onChange={(e) => setContentIdea(e.target.value)}
+              rows={3}
+            />
+          </div>
+          <div>
+            <Label htmlFor="targetAudience">Target Audience</Label>
+            <Textarea
+              id="targetAudience"
+              placeholder="Who are you trying to reach? Entrepreneurs, parents, students, etc."
+              value={targetAudience}
+              onChange={(e) => setTargetAudience(e.target.value)}
+              rows={3}
+            />
+          </div>
         </div>
 
-        <div>
-          <Label htmlFor="targetVibe">Target Vibe</Label>
-          <Input
-            id="targetVibe"
-            placeholder="What vibe are you going for? (e.g., controversial, helpful, surprising)"
-            value={targetVibe}
-            onChange={(e) => setTargetVibe(e.target.value)}
-          />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <Label>Platform</Label>
+            <select
+              className="w-full p-2 border rounded-md"
+              value={platform}
+              onChange={(e) => setPlatform(e.target.value)}
+            >
+              {platforms.map((p) => (
+                <option key={p} value={p}>{p}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <Label>Content Type</Label>
+            <select
+              className="w-full p-2 border rounded-md"
+              value={contentType}
+              onChange={(e) => setContentType(e.target.value)}
+            >
+              {contentTypes.map((type) => (
+                <option key={type} value={type}>{type}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <Label>Desired Vibe</Label>
+            <select
+              className="w-full p-2 border rounded-md"
+              value={desiredVibe}
+              onChange={(e) => setDesiredVibe(e.target.value)}
+            >
+              <option value="">Select vibe...</option>
+              {vibes.map((vibe) => (
+                <option key={vibe} value={vibe}>{vibe}</option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        <div>
-          <Label htmlFor="format">Content Format</Label>
-          <select 
-            id="format"
-            value={format}
-            onChange={(e) => setFormat(e.target.value as 'text' | 'video')}
-            className="w-full px-3 py-2 border rounded-md"
-          >
-            <option value="text">📝 Text Post</option>
-            <option value="video">🎥 Video Content</option>
-          </select>
+        <div className="flex gap-4">
+          <Button onClick={generateHooks}>
+            <Zap className="w-4 h-4 mr-2" />
+            Generate Viral Hooks
+          </Button>
+          <Button onClick={addCustomHook} variant="outline">
+            <Plus className="w-4 h-4 mr-2" />
+            Add Custom Hook
+          </Button>
         </div>
 
-        <Button onClick={generateHooks} disabled={!contentIdea || !targetVibe}>
-          <Plus className="w-4 h-4 mr-2" />
-          Generate Hook Ideas
-        </Button>
+        {generatedHooks.length > 0 && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="text-md font-medium">Generated Hooks</h4>
+              <Badge variant="secondary">{generatedHooks.length} options</Badge>
+            </div>
 
-        {hooks.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="font-semibold">Generated Hooks:</h4>
-            {hooks.map((hook) => (
-              <div key={hook.id} className="p-3 border rounded-lg bg-gray-50">
-                <div className="flex justify-between items-start">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span>{hook.format === 'video' ? '🎥' : '📝'}</span>
-                      <span className="text-sm text-gray-500">{hook.vibe} vibe</span>
+            {generatedHooks.map((hookOption, index) => (
+              <Card key={index}>
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-sm">Hook #{index + 1}</CardTitle>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyHook(hookOption.hook)}
+                        title="Copy hook"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeHook(index)}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
                     </div>
-                    <p className="font-medium">{hook.text}</p>
                   </div>
-                  <Button 
-                    variant="ghost" 
-                    size="sm"
-                    onClick={() => removeHook(hook.id)}
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Hook</Label>
+                    <Textarea
+                      placeholder="Enter your hook text..."
+                      value={hookOption.hook}
+                      onChange={(e) => updateHook(index, 'hook', e.target.value)}
+                      rows={2}
+                      className="font-medium"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label>Platform</Label>
+                      <select
+                        className="w-full p-2 border rounded-md"
+                        value={hookOption.platform}
+                        onChange={(e) => updateHook(index, 'platform', e.target.value)}
+                      >
+                        {platforms.map((p) => (
+                          <option key={p} value={p}>{p}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <Label>Content Type</Label>
+                      <select
+                        className="w-full p-2 border rounded-md"
+                        value={hookOption.contentType}
+                        onChange={(e) => updateHook(index, 'contentType', e.target.value)}
+                      >
+                        {contentTypes.map((type) => (
+                          <option key={type} value={type}>{type}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label>Why This Works</Label>
+                    <Textarea
+                      placeholder="Explain the psychology behind this hook..."
+                      value={hookOption.reasoning}
+                      onChange={(e) => updateHook(index, 'reasoning', e.target.value)}
+                      rows={2}
+                    />
+                  </div>
+
+                  {hookOption.hook && (
+                    <div className="bg-gray-50 p-3 rounded text-sm">
+                      <strong>Preview:</strong>
+                      <div className="mt-1 font-medium text-lg">{hookOption.hook}</div>
+                      <div className="mt-2 text-xs text-gray-600">
+                        {hookOption.platform} • {hookOption.contentType}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             ))}
           </div>
         )}
+      </div>
 
-        <Button onClick={handleSave} className="self-start" disabled={isSaving}>
+      <div className="flex gap-4">
+        <Button>Analyze Engagement Potential</Button>
+        <Button variant="outline" onClick={handleSave} disabled={isSaving}>
           <Save className="w-4 h-4 mr-2" />
           Save to Briefcase
         </Button>
