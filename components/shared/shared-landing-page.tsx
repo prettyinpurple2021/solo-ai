@@ -72,7 +72,7 @@ const testimonials = [
     role: "CEO, TechStart",
     content: "SoloBoss AI transformed how I manage my business. I've increased productivity by 250% in just 3 months.",
     rating: 5,
-    avatar: "/placeholder-user.jpg",
+    avatar: "/default-user.svg",
   },
   {
     name: "Marcus Rodriguez",
@@ -80,14 +80,14 @@ const testimonials = [
     content:
       "The AI agents are like having a full team. I can focus on creative work while they handle everything else.",
     rating: 5,
-    avatar: "/placeholder-user.jpg",
+    avatar: "/default-user.svg",
   },
   {
     name: "Emily Watson",
     role: "Marketing Director",
     content: "Game-changer for our agency. Client satisfaction up 40%, team stress down 60%. Incredible ROI.",
     rating: 5,
-    avatar: "/placeholder-user.jpg",
+    avatar: "/default-user.svg",
   },
 ]
 
@@ -570,7 +570,7 @@ export function SharedLandingPage({
                     </blockquote>
                     <div className="flex items-center justify-center space-x-4">
                       <Image
-                        src={testimonials[currentTestimonial].avatar || "/placeholder.svg"}
+                        src={testimonials[currentTestimonial].avatar || "/default-user.svg"}
                         alt={testimonials[currentTestimonial].name}
                         width={60}
                         height={60}

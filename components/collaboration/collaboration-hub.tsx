@@ -47,7 +47,7 @@ const getAgentAvatar = (agent: string) => {
     nova: "/images/agents/nova.png",
     glitch: "/images/agents/glitch.png",
   }
-  return avatars[agent] || "/placeholder.svg?height=32&width=32"
+  return avatars[agent] || "/default-user.svg"
 }
 
 export function CollaborationHub() {
@@ -292,7 +292,7 @@ export function CollaborationHub() {
                           {task.requiredAgents.map((agent) => (
                             <img
                               key={agent}
-                              src={getAgentAvatar(agent) || "/placeholder.svg"}
+                              src={getAgentAvatar(agent) || "/default-user.svg"}
                               alt={agent}
                               className="w-6 h-6 rounded-full object-cover border border-white shadow-sm"
                               title={agent.charAt(0).toUpperCase() + agent.slice(1)}
@@ -396,7 +396,7 @@ function TaskDetails({
                     <h4 className="font-medium">{phase.name}</h4>
                     {/* Update the phase timeline agent displays: */}
                     <img
-                      src={getAgentAvatar(phase.assignedAgent) || "/placeholder.svg"}
+                      src={getAgentAvatar(phase.assignedAgent) || "/default-user.svg"}
                       alt={phase.assignedAgent}
                       className="w-6 h-6 rounded-full object-cover border border-white shadow-sm"
                     />
@@ -456,13 +456,13 @@ function TaskDetails({
                     <div className="flex items-center gap-2 mb-2">
                       {/* Update the handoff displays: */}
                       <img
-                        src={getAgentAvatar(handoff.fromAgent) || "/placeholder.svg"}
+                        src={getAgentAvatar(handoff.fromAgent) || "/default-user.svg"}
                         alt={handoff.fromAgent}
                         className="w-5 h-5 rounded-full object-cover border border-white"
                       />
                       <ArrowRight className="h-4 w-4 text-muted-foreground" />
                       <img
-                        src={getAgentAvatar(handoff.toAgent) || "/placeholder.svg"}
+                        src={getAgentAvatar(handoff.toAgent) || "/default-user.svg"}
                         alt={handoff.toAgent}
                         className="w-5 h-5 rounded-full object-cover border border-white"
                       />

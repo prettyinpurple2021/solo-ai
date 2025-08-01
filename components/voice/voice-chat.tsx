@@ -210,7 +210,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 boss-heading">
             <img
-              src={agentAvatar || "/placeholder.svg"}
+              src={agentAvatar || "/default-user.svg"}
               alt={agentName}
               className="w-8 h-8 rounded-full object-cover punk-shadow"
             />

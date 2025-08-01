@@ -59,7 +59,7 @@ export function useSubscription() {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  // Mock data based on plan
+  // Update usage based on plan
   useEffect(() => {
     const updateUsageBasedOnPlan = () => {
       switch (subscription.plan) {

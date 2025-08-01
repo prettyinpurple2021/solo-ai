@@ -71,13 +71,13 @@ export function BossCommunity() {
   const [newPostContent, setNewPostContent] = useState("")
   const [showNewPost, setShowNewPost] = useState(false)
 
-  // Mock data - in real app, this would come from your backend
+  // Community data - this will be connected to real backend
   const [posts, setPosts] = useState<BossPost[]>([
     {
       id: "1",
       author: {
         name: "Sarah Boss",
-        avatar: "/placeholder.svg?height=40&width=40",
+        avatar: "/default-user.svg",
         level: 15,
         title: "Empire Builder",
         verified: true,
@@ -100,7 +100,7 @@ export function BossCommunity() {
       id: "2",
       author: {
         name: "Maya Fierce",
-        avatar: "/placeholder.svg?height=40&width=40",
+        avatar: "/default-user.svg",
         level: 12,
         title: "Digital Nomad Boss",
         verified: true,
@@ -118,14 +118,14 @@ export function BossCommunity() {
       id: "3",
       author: {
         name: "Alex Power",
-        avatar: "/placeholder.svg?height=40&width=40",
+        avatar: "/default-user.svg",
         level: 18,
         title: "Tech Empress",
         verified: true,
       },
       content:
         "Built my first AI agent today using SoloBoss! 🤖 It's handling customer support while I focus on product development. The future is here and it's FEMALE! Who's ready to scale with AI?",
-      image: "/placeholder.svg?height=200&width=400",
+      image: "/default-post.svg",
       timestamp: "6 hours ago",
       likes: 156,
       comments: 34,
@@ -188,7 +188,7 @@ export function BossCommunity() {
   const topBosses = [
     {
       name: "Victoria Crown",
-      avatar: "/placeholder.svg?height=32&width=32",
+      avatar: "/default-user.svg",
       level: 25,
       points: 15420,
       title: "Legendary Boss",
@@ -196,7 +196,7 @@ export function BossCommunity() {
     },
     {
       name: "Diana Empire",
-      avatar: "/placeholder.svg?height=32&width=32",
+      avatar: "/default-user.svg",
       level: 23,
       points: 14230,
       title: "Empire Architect",
@@ -204,7 +204,7 @@ export function BossCommunity() {
     },
     {
       name: "Luna Success",
-      avatar: "/placeholder.svg?height=32&width=32",
+      avatar: "/default-user.svg",
       level: 21,
       points: 13890,
       title: "Success Strategist",
@@ -229,7 +229,7 @@ export function BossCommunity() {
       id: Date.now().toString(),
       author: {
         name: "You",
-        avatar: "/placeholder.svg?height=40&width=40",
+        avatar: "/default-user.svg",
         level: 12,
         title: "Rising Boss",
         verified: false,
@@ -309,7 +309,7 @@ export function BossCommunity() {
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src="/placeholder.svg?height=40&width=40" />
+                  <AvatarImage src="/default-user.svg" />
                   <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold">
                     B
                   </AvatarFallback>
@@ -359,7 +359,7 @@ export function BossCommunity() {
                   {/* Post Header */}
                   <div className="flex items-start gap-3 mb-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={post.author.avatar || "/placeholder.svg"} />
+                      <AvatarImage src={post.author.avatar || "/default-user.svg"} />
                       <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold">
                         {post.author.name.charAt(0)}
                       </AvatarFallback>
@@ -399,7 +399,7 @@ export function BossCommunity() {
 
                     {post.image && (
                       <img
-                        src={post.image || "/placeholder.svg"}
+                        src={post.image || "/default-post.svg"}
                         alt="Post content"
                         className="w-full rounded-lg object-cover max-h-64"
                       />
@@ -536,7 +536,7 @@ export function BossCommunity() {
                         {index + 1}
                       </div>
                       <Avatar className="h-12 w-12">
-                        <AvatarImage src={boss.avatar || "/placeholder.svg"} />
+                        <AvatarImage src={boss.avatar || "/default-user.svg"} />
                         <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold">
                           {boss.name.charAt(0)}
                         </AvatarFallback>

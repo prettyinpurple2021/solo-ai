@@ -84,7 +84,7 @@ CREATE TABLE user_templates (
 2. Click the "Templates" tab
 3. View your saved templates in card format
 4. Click "View" to see the detailed data
-5. Use "Export" to download the data (coming soon)
+5. Use "Export" to download the data
 
 ## Technical Implementation
 
