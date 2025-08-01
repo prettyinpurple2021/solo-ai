@@ -4,12 +4,9 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-// If Badge exists elsewhere, update the path accordingly, for example:
 import { Badge } from "../ui/badge"
-// Or, if you need to create it, create a file at components/ui/badge.tsx with a Badge component.
-// import { ThemeToggle } from "@/components/theme-toggle"
-import { ThemeToggle } from "../theme-toggle"
 import { Separator } from "../ui/separator"
+import { ThemeToggle } from "../theme-toggle"
 
 import {
   ArrowRight,
@@ -75,21 +72,21 @@ const testimonials = [
     role: "Solo E-commerce Founder",
     content: "Finally, a platform that gets the solo entrepreneur struggle! My AI squad handles customer service while I focus on product development. Revenue up 180% this quarter.",
     rating: 5,
-    avatar: "",
+    avatar: "/placeholder.svg",
   },
   {
     name: "Jordan Kim",
     role: "Digital Marketing Consultant", 
     content: "The anti-burnout approach is genius. I'm working 30% fewer hours but serving twice as many clients. The AI agents literally feel like having a virtual team.",
     rating: 5,
-    avatar: "",
+    avatar: "/placeholder.svg",
   },
   {
     name: "Sam Thompson",
     role: "SaaS Startup Founder",
     content: "From idea to launch in 6 weeks with SoloBoss AI. The Brand Studio and AI agents helped me build what used to take a full team. This is the future of solo entrepreneurship.",
     rating: 5,
-    avatar: "",
+    avatar: "/placeholder.svg",
   },
 ]
 
@@ -169,15 +166,14 @@ export function SharedLandingPage({
       {/* Custom Banner */}
       <div className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 py-3">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-evenly">
-            <Image
-              src="/images/soloboss-banner.png"
-              alt="SoloBoss AI Banner"
-              width={800}
-              height={120}
-              className="max-w-full h-auto"
-              priority
-            />
+          <div className="flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">
+                🚀 SoloBoss AI Platform
+              </h1>
+              <p className="text-white/90 text-sm md:text-base">
+                Transform your productivity with AI agents that work 24/7
+              </p>
           </div>
         </div>
       </div>
@@ -187,7 +183,9 @@ export function SharedLandingPage({
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Image src="/images/soloboss-logo.png" alt="SoloBoss AI" width={40} height={40} className="rounded-lg" />
+              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                <span className="text-white font-bold text-lg">S</span>
+              </div>
               <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
                 SoloBoss AI
               </span>
@@ -459,14 +457,14 @@ export function SharedLandingPage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             {[
-              { name: "Roxy", role: "Creative Strategist", specialty: "Brand & Content Creation", color: "from-pink-500 to-purple-500", image: "/images/agents/roxy.svg" },
-              { name: "Blaze", role: "Performance Coach", specialty: "Productivity & Goal Achievement", color: "from-orange-500 to-red-500", image: "/images/agents/blaze.svg" },
-              { name: "Echo", role: "Communication Expert", specialty: "Networking & Relationships", color: "from-blue-500 to-teal-500", image: "/images/agents/echo.svg" },
-              { name: "Glitch", role: "QA & Debug Agent", specialty: "Quality Assurance & Testing", color: "from-red-500 to-orange-500", image: "/images/agents/glitch.svg" },
-              { name: "Lumi", role: "Legal & Docs Agent", specialty: "Legal Compliance & Documentation", color: "from-indigo-500 to-purple-500", image: "/images/agents/lumi.svg" },
-              { name: "Vex", role: "Tech & Automation", specialty: "Technical Solutions & Workflows", color: "from-cyan-500 to-blue-500", image: "/images/agents/vex.svg" },
-              { name: "Lexi", role: "Data & Analytics", specialty: "Business Intelligence & Insights", color: "from-emerald-500 to-teal-500", image: "/images/agents/lexi.svg" },
-              { name: "Nova", role: "Innovation & Growth", specialty: "Strategy & Market Expansion", color: "from-violet-500 to-purple-500", image: "/images/agents/nova.svg" }
+              { name: "Roxy", role: "Creative Strategist", specialty: "Brand & Content Creation", color: "from-pink-500 to-purple-500" },
+              { name: "Blaze", role: "Performance Coach", specialty: "Productivity & Goal Achievement", color: "from-orange-500 to-red-500" },
+              { name: "Echo", role: "Communication Expert", specialty: "Networking & Relationships", color: "from-blue-500 to-teal-500" },
+              { name: "Glitch", role: "QA & Debug Agent", specialty: "Quality Assurance & Testing", color: "from-red-500 to-orange-500" },
+              { name: "Lumi", role: "Legal & Docs Agent", specialty: "Legal Compliance & Documentation", color: "from-indigo-500 to-purple-500" },
+              { name: "Vex", role: "Tech & Automation", specialty: "Technical Solutions & Workflows", color: "from-cyan-500 to-blue-500" },
+              { name: "Lexi", role: "Data & Analytics", specialty: "Business Intelligence & Insights", color: "from-emerald-500 to-teal-500" },
+              { name: "Nova", role: "Innovation & Growth", specialty: "Strategy & Market Expansion", color: "from-violet-500 to-purple-500" }
             ].map((agent, index) => (
               <motion.div
                 key={index}
@@ -477,23 +475,8 @@ export function SharedLandingPage({
               >
                 <Card className="h-full hover:shadow-xl transition-all duration-300 border-pink-200 dark:border-purple-800 hover:border-pink-300 dark:hover:border-purple-600 text-center">
                   <CardHeader>
-                    <div className={`w-20 h-20 bg-gradient-to-r ${agent.color} rounded-full flex items-center justify-center mx-auto mb-4 relative overflow-hidden`}>
-                      <Image
-                        src={agent.image}
-                        alt={agent.name}
-                        width={60}
-                        height={60}
-                        className="rounded-full object-cover"
-                        onError={(e) => {
-                          // Fallback to initials if image fails to load
-                          e.currentTarget.style.display = 'none';
-                          const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
-                          if (nextSibling) {
-                            nextSibling.style.display = 'flex';
-                          }
-                        }}
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white" style={{ display: 'none' }}>
+                    <div className={`w-20 h-20 bg-gradient-to-r ${agent.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
+                      <div className="text-2xl font-bold text-white">
                         {agent.name.charAt(0)}
                       </div>
                     </div>
@@ -571,13 +554,11 @@ export function SharedLandingPage({
                       "{testimonials[currentTestimonial].content}"
                     </blockquote>
                     <div className="flex items-center justify-center space-x-4">
-                      <Image
-                        src={testimonials[currentTestimonial].avatar || "/placeholder.svg"}
-                        alt={testimonials[currentTestimonial].name}
-                        width={60}
-                        height={60}
-                        className="rounded-full"
-                      />
+                      <div className="w-15 h-15 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
+                        <span className="text-white font-bold text-lg">
+                          {testimonials[currentTestimonial].name.charAt(0)}
+                        </span>
+                      </div>
                       <div>
                         <div className="font-bold text-gray-900 dark:text-white">
                           {testimonials[currentTestimonial].name}
@@ -697,7 +678,6 @@ export function SharedLandingPage({
               productivity.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-
               <Button
                 size="lg"
                 onClick={onShowAuthModal}
@@ -726,13 +706,9 @@ export function SharedLandingPage({
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <Image
-                  src="/images/soloboss-logo.png"
-                  alt="SoloBoss AI"
-                  width={32}
-                  height={32}
-                  className="rounded-lg"
-                />
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
+                  <span className="text-white font-bold">S</span>
+                </div>
                 <span className="text-xl font-bold">SoloBoss AI</span>
               </div>
               <p className="text-gray-400">Empowering entrepreneurs with AI-powered productivity tools.</p>
@@ -828,8 +804,31 @@ export function SharedLandingPage({
             </div>
           </div>
           <Separator className="my-8 bg-gray-800" />
-          <div className="my-8 h-px w-full bg-gray-800" />
+          <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400">© 2024 SoloBoss AI. All rights reserved.</p>
+            <div className="flex space-x-6 mt-4 md:mt-0">
+              <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
+                Privacy
+              </Link>
+              <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
+                Terms
+              </Link>
+              <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors">
+                Cookies
+              </Link>
+            </div>
+          </div>
+        </div>
+      </footer>
+
+      {/* Schedule Demo Modal */}
+      <ScheduleDemoModal
+        isOpen={showScheduleModal}
+        onClose={() => setShowScheduleModal(false)}
+      />
+    </div>
+  )
+}
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
                 Privacy
