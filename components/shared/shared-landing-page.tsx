@@ -156,9 +156,20 @@ export function SharedLandingPage({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
-      <div className="container mx-auto py-8">
-        <h1 className="text-4xl font-bold text-center">SoloBoss AI Platform</h1>
-        <p className="text-center mt-4 text-gray-600">Loading full landing page...</p>
+      {/* Custom Banner */}
+      <div className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 py-3">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center">
+            <Image
+              src="/images/soloboss-banner.png"
+              alt="SoloBoss AI Banner"
+              width={800}
+              height={120}
+              className="max-w-full h-auto"
+              priority
+            />
+          </div>
+        </div>
       </div>
 
       {/* Navigation */}
