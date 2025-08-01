@@ -143,7 +143,6 @@ export function SharedLandingPage({
   styleVariant: _styleVariant = "default",
   Separator,
 }: SharedLandingPageProps) {
-}: SharedLandingPageProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showScheduleModal, setShowScheduleModal] = useState(false)
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
