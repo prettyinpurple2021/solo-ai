@@ -8,6 +8,18 @@ import { useState } from 'react';
 import { useTemplateSave } from '@/hooks/use-template-save';
 import { Save, Users, Calendar, Target } from 'lucide-react';
 
+// Interface for collaboration ideas as mentioned in the merge requirements
+interface CollabIdea {
+  collaborationType: string;
+  targetOutlet: string;
+  audienceOverlap: string;
+  proposedTopics: string;
+  uniqueAngle: string;
+  valueProposition: string;
+  timeline: string;
+  deliverables: string;
+}
+
 export function AiCollabPlanner() {
   const [collaborationType, setCollaborationType] = useState('');
   const [targetOutlet, setTargetOutlet] = useState('');
@@ -22,7 +34,7 @@ export function AiCollabPlanner() {
   const { saveTemplate, isSaving } = useTemplateSave();
 
   const handleSave = async () => {
-    const templateData = {
+    const templateData: CollabIdea = {
       collaborationType,
       targetOutlet,
       audienceOverlap,
