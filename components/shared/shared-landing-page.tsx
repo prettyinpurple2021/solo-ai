@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -145,6 +146,7 @@ export function SharedLandingPage({
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showScheduleModal, setShowScheduleModal] = useState(false)
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
+  const router = useRouter()
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -648,6 +650,13 @@ export function SharedLandingPage({
                           : "border-pink-300 dark:border-purple-600 text-pink-600 dark:text-purple-400 hover:bg-pink-50 dark:hover:bg-purple-900/20"
                       }`}
                       variant={plan.popular ? "default" : "outline"}
+                      onClick={() => {
+                        if (plan.cta === "Contact Sales") {
+                          router.push("/contact")
+                        } else {
+                          router.push("/dashboard")
+                        }
+                      }}
                     >
                       {plan.cta}
                     </Button>
@@ -743,12 +752,12 @@ export function SharedLandingPage({
                   </a>
                 </li>
                 <li>
-                  <Link href="/api-docs" className="hover:text-white transition-colors">
+                  <Link href="/help" className="hover:text-white transition-colors">
                     API
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/features" className="hover:text-white transition-colors">
                     Integrations
                   </Link>
                 </li>
@@ -758,22 +767,22 @@ export function SharedLandingPage({
               <h3 className="font-bold mb-4">Company</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/about" className="hover:text-white transition-colors">
                     About
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/blog" className="hover:text-white transition-colors">
                     Blog
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/contact" className="hover:text-white transition-colors">
                     Careers
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/contact" className="hover:text-white transition-colors">
                     Contact
                   </Link>
                 </li>
@@ -783,22 +792,22 @@ export function SharedLandingPage({
               <h3 className="font-bold mb-4">Support</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/help" className="hover:text-white transition-colors">
                     Help Center
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/help" className="hover:text-white transition-colors">
                     Documentation
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/community" className="hover:text-white transition-colors">
                     Community
                   </Link>
                 </li>
                 <li>
-                  <Link href="#" className="hover:text-white transition-colors">
+                  <Link href="/status" className="hover:text-white transition-colors">
                     Status
                   </Link>
                 </li>
