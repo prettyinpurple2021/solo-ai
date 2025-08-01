@@ -193,5 +193,3 @@ export function getTeamMemberConfig(memberId: string) {
   const memberKey = memberId.toLowerCase()
   return teamMemberModels[memberKey as keyof typeof teamMemberModels] || teamMemberModels.roxy
 }
-  return teamMemberModels[memberKey as keyof typeof teamMemberModels] || teamMemberModels.roxy
-}

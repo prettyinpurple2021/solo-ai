@@ -6,8 +6,7 @@ console.log('Verifying button text changes...\n');
 const files = [
   'app/pricing/page.tsx',
   'app/features/page.tsx',
-  'components/shared/shared-landing-page.tsx',
-  'components/shared/shared-landing-page-clean.tsx'
+  'components/shared/shared-landing-page.tsx'
 ];
 
 let allTestsPassed = true;

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-// Separator will be injected as a prop
+import { Separator } from "@/components/ui/separator"
 import { ThemeToggle } from "@/components/theme-toggle"
 
 import {
@@ -20,7 +20,8 @@ import {
   CheckCircle,
   X,
   Menu,
-  Play
+  Play,
+  Brain
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -30,7 +31,6 @@ interface SharedLandingPageProps {
   showAuthModal?: boolean
   onShowAuthModal?: () => void
   styleVariant?: string
-  Separator: React.ComponentType<any>
 }
 
 const features = [
@@ -137,11 +137,11 @@ const pricingPlans = [
     cta: "Contact Sales",
   },
 ]
+
 export function SharedLandingPage({
-  showAuthModal: _showAuthModal = false,
+  showAuthModal = false,
   onShowAuthModal = () => {},
-  styleVariant: _styleVariant = "default",
-  Separator,
+  styleVariant = "default",
 }: SharedLandingPageProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showScheduleModal, setShowScheduleModal] = useState(false)
@@ -545,7 +545,7 @@ export function SharedLandingPage({
               Success Stories
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Join thousands of entrepreneurs who&apos;ve transformed their businesses with SoloBoss AI.
+              Join thousands of entrepreneurs who've transformed their businesses with SoloBoss AI.
             </p>
           </motion.div>
 
@@ -566,7 +566,7 @@ export function SharedLandingPage({
                       ))}
                     </div>
                     <blockquote className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-6 italic">
-                      &ldquo;{testimonials[currentTestimonial].content}&rdquo;
+                      "{testimonials[currentTestimonial].content}"
                     </blockquote>
                     <div className="flex items-center justify-center space-x-4">
                       <Image
