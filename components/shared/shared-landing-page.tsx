@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Button } from "../ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
-import { Badge } from "../ui/badge"
-import { Separator } from "../ui/separator"
-import { ThemeToggle } from "../theme-toggle"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+// Separator will be injected as a prop
+import { ThemeToggle } from "@/components/theme-toggle"
 
 import {
   ArrowRight,
@@ -20,8 +20,7 @@ import {
   CheckCircle,
   X,
   Menu,
-  Play,
-  Brain
+  Play
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -31,116 +30,119 @@ interface SharedLandingPageProps {
   showAuthModal?: boolean
   onShowAuthModal?: () => void
   styleVariant?: string
+  Separator: React.ComponentType<any>
 }
 
 const features = [
   {
-    icon: Brain,
-    title: "8-Member AI Squad",
-    description: "Meet your virtual dream team: from Roxy (Executive Assistant extraordinaire) to Glitch (QA & Debug specialist). Each agent brings punk rock personality with professional precision to different aspects of your empire.",
+    icon: Sparkles,
+    title: "AI-Powered Productivity",
+    description: "Leverage cutting-edge AI to automate tasks, generate insights, and boost your efficiency by 300%.",
   },
   {
     icon: Target,
-    title: "SlayList Goal System",
-    description: "Set audacious goals, break them into conquerable tasks, and let AI help you prioritize like the strategic boss you are. Built specifically for solo entrepreneurs who refuse to settle for ordinary.",
-  },
-  {
-    icon: Sparkles,
-    title: "BrandStyler Studio",
-    description: "Create consistent brand assets, magnetic marketing materials, and content that converts with AI-powered design tools that understand your unique boss energy and aesthetic vision.",
+    title: "Goal Achievement System",
+    description: "Set, track, and crush your goals with our intelligent goal-setting framework and progress analytics.",
   },
   {
     icon: Zap,
-    title: "Burnout Shield Focus Mode",
-    description: "Work smarter, not harder, like the strategic genius you are. Our AI prevents overwhelm by optimizing your schedule and protecting your mental energy because self-care is the ultimate punk rock move.",
+    title: "Instant Automation",
+    description: "Automate repetitive tasks and workflows with our no-code automation engine.",
   },
   {
     icon: TrendingUp,
-    title: "Empire Analytics Dashboard",
-    description: "Track your business growth, productivity patterns, and goal achievement with insights designed specifically for solo entrepreneurs building empires one strategic move at a time.",
+    title: "Performance Analytics",
+    description: "Get detailed insights into your productivity patterns and optimize your workflow.",
+  },
+  {
+    icon: Users,
+    title: "Team Collaboration",
+    description: "Seamlessly collaborate with your team using our advanced collaboration tools.",
   },
   {
     icon: Shield,
-    title: "Briefcase Security Vault",
-    description: "Your business data is protected with bank-level encryption because your empire deserves fortress-level security. Store files, documents, and sensitive information with confidence.",
+    title: "Enterprise Security",
+    description: "Bank-level security with end-to-end encryption and compliance certifications.",
   },
 ]
 
 const testimonials = [
   {
-    name: "Alex Rivera",
-    role: "Solo E-commerce Founder",
-    content: "Finally, a platform that gets the solo entrepreneur struggle! My AI squad handles customer service while I focus on product development. Revenue up 180% this quarter.",
+    name: "Sarah Chen",
+    role: "CEO, TechStart",
+    content: "SoloBoss AI transformed how I manage my business. I've increased productivity by 250% in just 3 months.",
     rating: 5,
-    avatar: "/placeholder.svg",
+    avatar: "/placeholder-user.jpg",
   },
   {
-    name: "Jordan Kim",
-    role: "Digital Marketing Consultant", 
-    content: "The anti-burnout approach is genius. I'm working 30% fewer hours but serving twice as many clients. The AI agents literally feel like having a virtual team.",
+    name: "Marcus Rodriguez",
+    role: "Freelance Designer",
+    content:
+      "The AI agents are like having a full team. I can focus on creative work while they handle everything else.",
     rating: 5,
-    avatar: "/placeholder.svg",
+    avatar: "/placeholder-user.jpg",
   },
   {
-    name: "Sam Thompson",
-    role: "SaaS Startup Founder",
-    content: "From idea to launch in 6 weeks with SoloBoss AI. The Brand Studio and AI agents helped me build what used to take a full team. This is the future of solo entrepreneurship.",
+    name: "Emily Watson",
+    role: "Marketing Director",
+    content: "Game-changer for our agency. Client satisfaction up 40%, team stress down 60%. Incredible ROI.",
     rating: 5,
-    avatar: "/placeholder.svg",
+    avatar: "/placeholder-user.jpg",
   },
 ]
 
 const pricingPlans = [
   {
-    name: "Launchpad",
-    price: "Free",
-    period: "",
-    description: "Perfect for testing the boss life",
-    features: ["2 AI Agents (Nova & Echo)", "5 AI Conversations/day", "Basic Task Automation", "Email Support", "Mobile App Access", "Community Access"],
+    name: "Starter",
+    price: "$29",
+    period: "/month",
+    description: "Perfect for solopreneurs getting started",
+    features: ["3 AI Agents", "Basic Automation", "5GB Storage", "Email Support", "Mobile App Access"],
     popular: false,
-    cta: "Start Free",
+    cta: "Start for free",
   },
   {
-    name: "Accelerator",
-    price: "$19",
+    name: "Professional",
+    price: "$79",
     period: "/month",
-    description: "For ambitious solo entrepreneurs",
+    description: "For growing businesses and teams",
     features: [
-      "All 8 AI Squad Members",
-      "Unlimited AI Conversations", 
-      "Full BrandStyler Studio",
-      "10GB Briefcase Storage",
-      "Priority Support",
+      "8 AI Agents",
       "Advanced Automation",
-      "Goal Tracking & Analytics",
+      "50GB Storage",
+      "Priority Support",
+      "Team Collaboration",
+      "Custom Integrations",
+      "Analytics Dashboard",
     ],
     popular: true,
-    cta: "Upgrade to Pro",
+    cta: "Start for free",
   },
   {
-    name: "Dominator",
-    price: "$39",
+    name: "Enterprise",
+    price: "$199",
     period: "/month",
-    description: "For empire-building bosses",
+    description: "For large organizations",
     features: [
-      "Everything in Accelerator",
-      "Unlimited Briefcase Storage",
-      "White-label Capabilities",
-      "Custom AI Agent Training",
-      "24/7 Priority Support",
-      "Advanced Integrations",
-      "Personal Success Manager",
-      "Early Access to New Features",
+      "Unlimited AI Agents",
+      "Enterprise Automation",
+      "500GB Storage",
+      "24/7 Phone Support",
+      "Advanced Security",
+      "Custom Development",
+      "Dedicated Account Manager",
+      "SLA Guarantee",
     ],
     popular: false,
-    cta: "Build Empire",
+    cta: "Contact Sales",
   },
 ]
-
 export function SharedLandingPage({
-  showAuthModal = false,
+  showAuthModal: _showAuthModal = false,
   onShowAuthModal = () => {},
-  styleVariant = "default",
+  styleVariant: _styleVariant = "default",
+  Separator,
+}: SharedLandingPageProps) {
 }: SharedLandingPageProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showScheduleModal, setShowScheduleModal] = useState(false)
@@ -166,14 +168,15 @@ export function SharedLandingPage({
       {/* Custom Banner */}
       <div className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 py-3">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center">
-            <div className="text-center">
-              <h1 className="text-2xl md:text-4xl font-bold text-white mb-2">
-                🚀 SoloBoss AI Platform
-              </h1>
-              <p className="text-white/90 text-sm md:text-base">
-                Transform your productivity with AI agents that work 24/7
-              </p>
+          <div className="flex items-center justify-evenly">
+            <Image
+              src="/images/soloboss-banner.png"
+              alt="SoloBoss AI Banner"
+              width={800}
+              height={120}
+              className="max-w-full h-auto"
+              priority
+            />
           </div>
         </div>
       </div>
@@ -183,9 +186,7 @@ export function SharedLandingPage({
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <div className="w-10 h-10 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
-                <span className="text-white font-bold text-lg">S</span>
-              </div>
+              <Image src="/images/soloboss-logo.png" alt="SoloBoss AI" width={40} height={40} className="rounded-lg" />
               <span className="text-2xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
                 SoloBoss AI
               </span>
@@ -234,13 +235,12 @@ export function SharedLandingPage({
                 Pricing
               </a>
               <ThemeToggle />
-              <Button 
-                onClick={onShowAuthModal}
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
-              >
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              <Link href="/dashboard">
+                <Button className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white">
+                  Get Started
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -326,7 +326,7 @@ export function SharedLandingPage({
             <Badge className="mb-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white">
               🚀 AI-Powered Productivity Revolution
             </Badge>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
               Become the Ultimate
               <br />
               <span className="text-6xl md:text-8xl">SoloBoss</span>
@@ -336,14 +336,15 @@ export function SharedLandingPage({
               your industry like never before.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Button
-                size="lg"
-                onClick={onShowAuthModal}
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
-              >
-                Start Your Empire
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href="/dashboard">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+                >
+                  Start Your Empire
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <Button
                 size="lg"
                 variant="outline"
@@ -457,14 +458,14 @@ export function SharedLandingPage({
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
             {[
-              { name: "Roxy", role: "Creative Strategist", specialty: "Brand & Content Creation", color: "from-pink-500 to-purple-500" },
-              { name: "Blaze", role: "Performance Coach", specialty: "Productivity & Goal Achievement", color: "from-orange-500 to-red-500" },
-              { name: "Echo", role: "Communication Expert", specialty: "Networking & Relationships", color: "from-blue-500 to-teal-500" },
-              { name: "Glitch", role: "QA & Debug Agent", specialty: "Quality Assurance & Testing", color: "from-red-500 to-orange-500" },
-              { name: "Lumi", role: "Legal & Docs Agent", specialty: "Legal Compliance & Documentation", color: "from-indigo-500 to-purple-500" },
-              { name: "Vex", role: "Tech & Automation", specialty: "Technical Solutions & Workflows", color: "from-cyan-500 to-blue-500" },
-              { name: "Lexi", role: "Data & Analytics", specialty: "Business Intelligence & Insights", color: "from-emerald-500 to-teal-500" },
-              { name: "Nova", role: "Innovation & Growth", specialty: "Strategy & Market Expansion", color: "from-violet-500 to-purple-500" }
+              { name: "Roxy", role: "Creative Strategist", specialty: "Brand & Content Creation", color: "from-pink-500 to-purple-500", image: "/images/agents/roxy.png" },
+              { name: "Blaze", role: "Performance Coach", specialty: "Productivity & Goal Achievement", color: "from-orange-500 to-red-500", image: "/images/agents/blaze.png" },
+              { name: "Echo", role: "Communication Expert", specialty: "Networking & Relationships", color: "from-blue-500 to-teal-500", image: "/images/agents/echo.png" },
+              { name: "Glitch", role: "QA & Debug Agent", specialty: "Quality Assurance & Testing", color: "from-red-500 to-orange-500", image: "/images/agents/glitch.png" },
+              { name: "Lumi", role: "Legal & Docs Agent", specialty: "Legal Compliance & Documentation", color: "from-indigo-500 to-purple-500", image: "/images/agents/lumi.png" },
+              { name: "Vex", role: "Tech & Automation", specialty: "Technical Solutions & Workflows", color: "from-cyan-500 to-blue-500", image: "/images/agents/vex.png" },
+              { name: "Lexi", role: "Data & Analytics", specialty: "Business Intelligence & Insights", color: "from-emerald-500 to-teal-500", image: "/images/agents/lexi.png" },
+              { name: "Nova", role: "Innovation & Growth", specialty: "Strategy & Market Expansion", color: "from-violet-500 to-purple-500", image: "/images/agents/nova.png" }
             ].map((agent, index) => (
               <motion.div
                 key={index}
@@ -475,8 +476,23 @@ export function SharedLandingPage({
               >
                 <Card className="h-full hover:shadow-xl transition-all duration-300 border-pink-200 dark:border-purple-800 hover:border-pink-300 dark:hover:border-purple-600 text-center">
                   <CardHeader>
-                    <div className={`w-20 h-20 bg-gradient-to-r ${agent.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                      <div className="text-2xl font-bold text-white">
+                    <div className={`w-20 h-20 bg-gradient-to-r ${agent.color} rounded-full flex items-center justify-center mx-auto mb-4 relative overflow-hidden`}>
+                      <Image
+                        src={agent.image}
+                        alt={agent.name}
+                        width={60}
+                        height={60}
+                        className="rounded-full object-cover"
+                        onError={(e) => {
+                          // Fallback to initials if image fails to load
+                          e.currentTarget.style.display = 'none';
+                          const nextSibling = e.currentTarget.nextElementSibling as HTMLElement;
+                          if (nextSibling) {
+                            nextSibling.style.display = 'flex';
+                          }
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white" style={{ display: 'none' }}>
                         {agent.name.charAt(0)}
                       </div>
                     </div>
@@ -530,7 +546,7 @@ export function SharedLandingPage({
               Success Stories
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Join thousands of entrepreneurs who've transformed their businesses with SoloBoss AI.
+              Join thousands of entrepreneurs who&apos;ve transformed their businesses with SoloBoss AI.
             </p>
           </motion.div>
 
@@ -551,14 +567,16 @@ export function SharedLandingPage({
                       ))}
                     </div>
                     <blockquote className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-6 italic">
-                      "{testimonials[currentTestimonial].content}"
+                      &ldquo;{testimonials[currentTestimonial].content}&rdquo;
                     </blockquote>
                     <div className="flex items-center justify-center space-x-4">
-                      <div className="w-15 h-15 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-                        <span className="text-white font-bold text-lg">
-                          {testimonials[currentTestimonial].name.charAt(0)}
-                        </span>
-                      </div>
+                      <Image
+                        src={testimonials[currentTestimonial].avatar || "/placeholder.svg"}
+                        alt={testimonials[currentTestimonial].name}
+                        width={60}
+                        height={60}
+                        className="rounded-full"
+                      />
                       <div>
                         <div className="font-bold text-gray-900 dark:text-white">
                           {testimonials[currentTestimonial].name}
@@ -678,15 +696,15 @@ export function SharedLandingPage({
               productivity.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                size="lg"
-                onClick={onShowAuthModal}
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
-              >
-                Start for free
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-
+              <Link href="/dashboard">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+                >
+                  Start for free
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <Button
                 size="lg"
                 variant="outline"
@@ -706,9 +724,13 @@ export function SharedLandingPage({
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-pink-500 to-purple-600 flex items-center justify-center">
-                  <span className="text-white font-bold">S</span>
-                </div>
+                <Image
+                  src="/images/soloboss-logo.png"
+                  alt="SoloBoss AI"
+                  width={32}
+                  height={32}
+                  className="rounded-lg"
+                />
                 <span className="text-xl font-bold">SoloBoss AI</span>
               </div>
               <p className="text-gray-400">Empowering entrepreneurs with AI-powered productivity tools.</p>
@@ -806,29 +828,6 @@ export function SharedLandingPage({
           <Separator className="my-8 bg-gray-800" />
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400">© 2024 SoloBoss AI. All rights reserved.</p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
-                Privacy
-              </Link>
-              <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
-                Terms
-              </Link>
-              <Link href="/cookies" className="text-gray-400 hover:text-white transition-colors">
-                Cookies
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
-
-      {/* Schedule Demo Modal */}
-      <ScheduleDemoModal
-        isOpen={showScheduleModal}
-        onClose={() => setShowScheduleModal(false)}
-      />
-    </div>
-  )
-}
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">
                 Privacy
