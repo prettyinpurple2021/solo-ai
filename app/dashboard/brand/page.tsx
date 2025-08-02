@@ -10,7 +10,8 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Palette, Type, ImageIcon, Download, Save, Sparkles, Crown, Lightbulb, Loader2 } from "lucide-react"
+import { Palette, Type, ImageIcon, Download, Save, Sparkles, Crown, Lightbulb, Loader2, CheckCircle, AlertCircle } from "lucide-react"
+import { createClient } from "@/lib/supabase/client"
 
 // Simple color picker component
 const ColorPicker = ({ label, value, onChange }: { label: string; value: string; onChange: (color: string) => void }) => (
@@ -159,6 +160,12 @@ export default function BrandStylerStudio() {
   const [generatedLogos, setGeneratedLogos] = useState<string[]>([])
   const [selectedGeneratedLogo, setSelectedGeneratedLogo] = useState<string | null>(null)
 
+  // Save and export states
+  const [isSaving, setIsSaving] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
+  const [saveMessage, setSaveMessage] = useState<string | null>(null)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
   // Load Google Fonts dynamically
   useEffect(() => {
     const loadGoogleFonts = () => {
@@ -244,6 +251,133 @@ export default function BrandStylerStudio() {
       name: "Custom",
       style: "Custom font selection"
     } : selectedTypography
+  }
+
+  const saveBrandKit = async () => {
+    if (!brandName.trim()) {
+      setSaveError("Please enter a brand name before saving")
+      setTimeout(() => setSaveError(null), 3000)
+      return
+    }
+
+    setIsSaving(true)
+    setSaveError(null)
+    setSaveMessage(null)
+
+    try {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      
+      if (!user) {
+        setSaveError("You must be logged in to save brand kits")
+        setTimeout(() => setSaveError(null), 3000)
+        return
+      }
+
+      const brandData = {
+        brandName,
+        tagline: brandTagline,
+        description: brandDescription,
+        industry,
+        colors: getActiveColors(),
+        typography: getActiveTypography(),
+        logoData: selectedGeneratedLogo,
+        logoStyle: selectedLogo.name
+      }
+
+      const response = await fetch('/api/brand/save', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(brandData)
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to save brand kit')
+      }
+
+      setSaveMessage(result.message)
+      setTimeout(() => setSaveMessage(null), 5000)
+
+    } catch (error) {
+      console.error('Save error:', error)
+      setSaveError(error instanceof Error ? error.message : 'Failed to save brand kit')
+      setTimeout(() => setSaveError(null), 5000)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const exportBrandKit = async () => {
+    if (!brandName.trim()) {
+      setSaveError("Please enter a brand name before exporting")
+      setTimeout(() => setSaveError(null), 3000)
+      return
+    }
+
+    setIsExporting(true)
+    setSaveError(null)
+
+    try {
+      const brandData = {
+        brandName,
+        tagline: brandTagline,
+        description: brandDescription,
+        industry,
+        colors: getActiveColors(),
+        typography: getActiveTypography(),
+        logoData: selectedGeneratedLogo,
+        logoStyle: selectedLogo.name
+      }
+
+      const response = await fetch('/api/brand/export', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(brandData)
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to export brand kit')
+      }
+
+      // Create and download multiple files
+      const files = result.exportData.files
+      const brandKitName = brandName.toLowerCase().replace(/\s+/g, '-')
+
+      // Download each file
+      Object.entries(files).forEach(([filename, content]) => {
+        const blob = new Blob([content as string], { 
+          type: filename.endsWith('.json') ? 'application/json' : 
+                filename.endsWith('.css') ? 'text/css' : 
+                'text/plain' 
+        })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${brandKitName}-${filename}`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      })
+
+      setSaveMessage("Brand kit exported successfully! Check your downloads.")
+      setTimeout(() => setSaveMessage(null), 5000)
+
+    } catch (error) {
+      console.error('Export error:', error)
+      setSaveError(error instanceof Error ? error.message : 'Failed to export brand kit')
+      setTimeout(() => setSaveError(null), 5000)
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   return (
@@ -729,13 +863,54 @@ export default function BrandStylerStudio() {
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Brand Kit
+                  {/* Status Messages */}
+                  {saveMessage && (
+                    <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <p className="text-sm text-green-700">{saveMessage}</p>
+                    </div>
+                  )}
+                  {saveError && (
+                    <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <AlertCircle className="w-4 h-4 text-red-600" />
+                      <p className="text-sm text-red-700">{saveError}</p>
+                    </div>
+                  )}
+
+                  <Button 
+                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white"
+                    onClick={saveBrandKit}
+                    disabled={isSaving || !brandName.trim()}
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        Save Brand Kit
+                      </>
+                    )}
                   </Button>
-                  <Button variant="outline" className="w-full bg-transparent">
-                    <Download className="w-4 h-4 mr-2" />
-                    Export Assets
+                  <Button 
+                    variant="outline" 
+                    className="w-full bg-transparent"
+                    onClick={exportBrandKit}
+                    disabled={isExporting || !brandName.trim()}
+                  >
+                    {isExporting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Exporting...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4 mr-2" />
+                        Export Assets
+                      </>
+                    )}
                   </Button>
                   <Button 
                     variant="outline" 

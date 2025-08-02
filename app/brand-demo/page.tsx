@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
-import { Palette, Type, ImageIcon, Download, Save, Sparkles, Crown, Lightbulb, Loader2, ArrowLeft } from "lucide-react"
+import { Palette, Type, ImageIcon, Download, Save, Sparkles, Crown, Lightbulb, Loader2, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react"
 import Link from "next/link"
 
 // Simple color picker component
@@ -160,6 +160,12 @@ export default function BrandStylerStudioDemo() {
   const [generatedLogos, setGeneratedLogos] = useState<string[]>([])
   const [selectedGeneratedLogo, setSelectedGeneratedLogo] = useState<string | null>(null)
 
+  // Save and export states (demo functionality)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isExporting, setIsExporting] = useState(false)
+  const [saveMessage, setSaveMessage] = useState<string | null>(null)
+  const [saveError, setSaveError] = useState<string | null>(null)
+
   // Load Google Fonts dynamically
   useEffect(() => {
     const loadGoogleFonts = () => {
@@ -238,6 +244,158 @@ export default function BrandStylerStudioDemo() {
       name: "Custom",
       style: "Custom font selection"
     } : selectedTypography
+  }
+
+  const saveBrandKitDemo = async () => {
+    if (!brandName.trim()) {
+      setSaveError("Please enter a brand name before saving")
+      setTimeout(() => setSaveError(null), 3000)
+      return
+    }
+
+    setIsSaving(true)
+    setSaveError(null)
+    setSaveMessage(null)
+
+    try {
+      // Simulate save operation for demo
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      const brandData = {
+        brandName,
+        tagline: brandTagline,
+        description: brandDescription,
+        industry,
+        colors: getActiveColors(),
+        typography: getActiveTypography(),
+        logoData: selectedGeneratedLogo,
+        logoStyle: selectedLogo.name
+      }
+
+      // In a real app, this would save to database
+      console.log('Demo: Brand kit saved:', brandData)
+      
+      setSaveMessage("Brand kit saved successfully! (Demo mode - data not persisted)")
+      setTimeout(() => setSaveMessage(null), 5000)
+
+    } catch (error) {
+      console.error('Demo save error:', error)
+      setSaveError("Failed to save brand kit (demo mode)")
+      setTimeout(() => setSaveError(null), 5000)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const exportBrandKitDemo = async () => {
+    if (!brandName.trim()) {
+      setSaveError("Please enter a brand name before exporting")
+      setTimeout(() => setSaveError(null), 3000)
+      return
+    }
+
+    setIsExporting(true)
+    setSaveError(null)
+
+    try {
+      // Simulate export operation for demo
+      await new Promise(resolve => setTimeout(resolve, 1500))
+
+      const brandData = {
+        brandName,
+        tagline: brandTagline,
+        description: brandDescription,
+        industry,
+        colors: getActiveColors(),
+        typography: getActiveTypography(),
+        logoData: selectedGeneratedLogo,
+        logoStyle: selectedLogo.name
+      }
+
+      // Create export files
+      const exportData = {
+        brandKit: {
+          metadata: {
+            brandName,
+            exportDate: new Date().toISOString(),
+            version: "1.0",
+            generatedBy: "SoloBoss AI - BrandStyler Studio (Demo)"
+          },
+          brandIdentity: {
+            name: brandName,
+            tagline: brandTagline || "",
+            description: brandDescription || "",
+            industry: industry || ""
+          },
+          colorPalette: getActiveColors(),
+          typography: getActiveTypography(),
+          logo: {
+            url: selectedGeneratedLogo || null,
+            style: selectedLogo.name,
+            description: `Logo design for ${brandName}`
+          }
+        }
+      }
+
+      // Create and download files
+      const files = {
+        "brand-kit.json": JSON.stringify(exportData, null, 2),
+        "brand-colors.css": `:root {
+  --brand-primary: ${getActiveColors().primary};
+  --brand-secondary: ${getActiveColors().secondary};
+  --brand-accent: ${getActiveColors().accent};
+  --font-heading: "${getActiveTypography().heading}", sans-serif;
+  --font-body: "${getActiveTypography().body}", sans-serif;
+}`,
+        "brand-guidelines.md": `# ${brandName} Brand Guidelines
+
+## Brand Identity
+- **Name:** ${brandName}
+- **Tagline:** ${brandTagline}
+- **Industry:** ${industry}
+- **Description:** ${brandDescription}
+
+## Color Palette
+- **Primary:** ${getActiveColors().primary}
+- **Secondary:** ${getActiveColors().secondary}
+- **Accent:** ${getActiveColors().accent}
+
+## Typography
+- **Heading Font:** ${getActiveTypography().heading}
+- **Body Font:** ${getActiveTypography().body}
+
+---
+*Generated by SoloBoss AI BrandStyler Studio (Demo) on ${new Date().toLocaleDateString()}*`
+      }
+
+      // Download each file
+      const brandKitName = brandName.toLowerCase().replace(/\s+/g, '-')
+      Object.entries(files).forEach(([filename, content]) => {
+        const blob = new Blob([content], { 
+          type: filename.endsWith('.json') ? 'application/json' : 
+                filename.endsWith('.css') ? 'text/css' : 
+                'text/plain' 
+        })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${brandKitName}-${filename}`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      })
+
+      setSaveMessage("Brand kit exported successfully! Check your downloads.")
+      setTimeout(() => setSaveMessage(null), 5000)
+
+    } catch (error) {
+      console.error('Demo export error:', error)
+      setSaveError("Failed to export brand kit (demo mode)")
+      setTimeout(() => setSaveError(null), 5000)
+    } finally {
+      setIsExporting(false)
+    }
   }
 
   return (
@@ -732,13 +890,54 @@ export default function BrandStylerStudioDemo() {
                   <CardTitle className="text-lg">Quick Actions</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3">
-                  <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white">
-                    <Save className="w-4 h-4 mr-2" />
-                    Save Brand Kit
+                  {/* Status Messages */}
+                  {saveMessage && (
+                    <div className="flex items-center space-x-2 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <CheckCircle className="w-4 h-4 text-green-600" />
+                      <p className="text-sm text-green-700">{saveMessage}</p>
+                    </div>
+                  )}
+                  {saveError && (
+                    <div className="flex items-center space-x-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <AlertCircle className="w-4 h-4 text-red-600" />
+                      <p className="text-sm text-red-700">{saveError}</p>
+                    </div>
+                  )}
+
+                  <Button 
+                    className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white"
+                    onClick={saveBrandKitDemo}
+                    disabled={isSaving || !brandName.trim()}
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        Save Brand Kit
+                      </>
+                    )}
                   </Button>
-                  <Button variant="outline" className="w-full bg-transparent">
-                    <Download className="w-4 h-4 mr-2" />
-                    Export Assets
+                  <Button 
+                    variant="outline" 
+                    className="w-full bg-transparent"
+                    onClick={exportBrandKitDemo}
+                    disabled={isExporting || !brandName.trim()}
+                  >
+                    {isExporting ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Exporting...
+                      </>
+                    ) : (
+                      <>
+                        <Download className="w-4 h-4 mr-2" />
+                        Export Assets
+                      </>
+                    )}
                   </Button>
                   <Button 
                     variant="outline" 
