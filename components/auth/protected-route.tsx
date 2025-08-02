@@ -1,41 +1,34 @@
 "use client"
 
-import { useEffect } from "react"
+import { useAuth } from "@clerk/nextjs"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/hooks/use-auth"
+import { useEffect } from "react"
 
 interface ProtectedRouteProps {
   children: React.ReactNode
   fallback?: React.ReactNode
+  redirectTo?: string
 }
 
-export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
-  const { user, loading } = useAuth()
+export function ProtectedRoute({ 
+  children, 
+  fallback = <div>Loading...</div>,
+  redirectTo = "/"
+}: ProtectedRouteProps) {
+  const { isLoaded, isSignedIn } = useAuth()
   const router = useRouter()
 
-  // Redirect to landing page if not authenticated
   useEffect(() => {
-    if (!loading && !user) {
-      router.push('/')
+    if (isLoaded && !isSignedIn) {
+      router.push(redirectTo)
     }
-  }, [user, loading, router])
+  }, [isLoaded, isSignedIn, router, redirectTo])
 
-  // Show loading state while checking authentication
-  if (loading) {
-    return (
-      fallback || (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
-            <p className="mt-4 text-lg font-medium">Loading your SoloBoss empire...</p>
-          </div>
-        </div>
-      )
-    )
+  if (!isLoaded) {
+    return <>{fallback}</>
   }
 
-  // Don't render content if not authenticated
-  if (!user) {
+  if (!isSignedIn) {
     return null
   }
 
