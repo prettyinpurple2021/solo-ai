@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -23,13 +23,40 @@ interface ComplianceMetrics {
 export function GuardianAiDashboard() {
   const [activeTab, setActiveTab] = useState("overview")
   const [metrics, setMetrics] = useState<ComplianceMetrics>({
-    trustScore: 78,
-    totalScans: 12,
-    issuesResolved: 8,
-    policiesGenerated: 5,
-    activeConsents: 234,
-    pendingRequests: 2
+    trustScore: 0,
+    totalScans: 0,
+    issuesResolved: 0,
+    policiesGenerated: 0,
+    activeConsents: 0,
+    pendingRequests: 0
   })
+  const [loading, setLoading] = useState(true)
+
+  // Fetch compliance data on component mount
+  useEffect(() => {
+    const fetchComplianceData = async () => {
+      try {
+        const response = await fetch('/api/compliance/history')
+        if (response.ok) {
+          const data = await response.json()
+          setMetrics({
+            trustScore: Math.round(data.summary.average_trust_score || 0),
+            totalScans: data.summary.total_scans || 0,
+            issuesResolved: data.summary.resolved_issues || 0,
+            policiesGenerated: data.summary.active_policies || 0,
+            activeConsents: data.scans.filter((scan: any) => scan.has_cookie_banner).length || 0,
+            pendingRequests: (data.summary.total_issues || 0) - (data.summary.resolved_issues || 0)
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching compliance data:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchComplianceData()
+  }, [])
 
   const getTrustScoreColor = (score: number) => {
     if (score >= 80) return "text-green-600"

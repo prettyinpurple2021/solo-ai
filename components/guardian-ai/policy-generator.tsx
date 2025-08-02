@@ -29,6 +29,8 @@ interface GeneratedPolicy {
   content: string
   lastGenerated: Date
   version: string
+  complianceLevel?: "basic" | "standard" | "comprehensive"
+  jurisdictions?: string[]
 }
 
 export function PolicyGenerator() {
@@ -99,135 +101,30 @@ export function PolicyGenerator() {
   const generatePolicies = async () => {
     setIsGenerating(true)
 
-    // Simulate policy generation
-    setTimeout(() => {
-      const newPolicies: GeneratedPolicy[] = [
-        {
-          type: "privacy",
-          content: generatePrivacyPolicy(),
-          lastGenerated: new Date(),
-          version: "1.0"
+    try {
+      const response = await fetch('/api/compliance/policies', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        {
-          type: "terms",
-          content: generateTermsOfService(),
-          lastGenerated: new Date(),
-          version: "1.0"
-        },
-        {
-          type: "cookies",
-          content: generateCookiePolicy(),
-          lastGenerated: new Date(),
-          version: "1.0"
-        }
-      ]
+        body: JSON.stringify(policyData)
+      })
 
-      setGeneratedPolicies(newPolicies)
+      if (!response.ok) {
+        throw new Error('Failed to generate policies')
+      }
+
+      const result = await response.json()
+      setGeneratedPolicies(result.policies)
+    } catch (error) {
+      console.error('Policy generation error:', error)
+      // Handle error - could show a toast notification here
+    } finally {
       setIsGenerating(false)
-    }, 3000)
+    }
   }
 
-  const generatePrivacyPolicy = () => {
-    return `Privacy Policy for ${policyData.businessName}
 
-Last updated: ${new Date().toLocaleDateString()}
-
-1. Information We Collect
-We collect the following types of information:
-${policyData.dataCollected.map(item => `- ${item}`).join('\n')}
-
-2. How We Use Your Information
-We use the collected information to:
-- Provide and maintain our services
-- Process transactions and payments
-- Send marketing communications (with your consent)
-- Improve our services and user experience
-- Comply with legal obligations
-
-3. Third-Party Services
-We use the following third-party services:
-${policyData.thirdPartyServices.map(service => `- ${service}`).join('\n')}
-
-4. Data Retention
-We retain your personal data for ${policyData.dataRetentionPeriod} unless a longer retention period is required by law.
-
-5. Your Rights
-You have the following rights regarding your personal data:
-${policyData.userRights.map(right => `- ${right}`).join('\n')}
-
-6. Contact Us
-For any questions about this Privacy Policy, please contact us at:
-${policyData.contactEmail}
-
-7. Changes to This Policy
-We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page.
-
-This policy complies with GDPR and CCPA requirements.`
-  }
-
-  const generateTermsOfService = () => {
-    return `Terms of Service for ${policyData.businessName}
-
-Last updated: ${new Date().toLocaleDateString()}
-
-1. Acceptance of Terms
-By accessing and using ${policyData.websiteUrl}, you accept and agree to be bound by the terms and provision of this agreement.
-
-2. Use License
-Permission is granted to temporarily download one copy of the materials on ${policyData.businessName}'s website for personal, non-commercial transitory viewing only.
-
-3. Disclaimer
-The materials on ${policyData.businessName}'s website are provided on an 'as is' basis. ${policyData.businessName} makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.
-
-4. Limitations
-In no event shall ${policyData.businessName} or its suppliers be liable for any damages (including, without limitation, damages for loss of data or profit, or due to business interruption) arising out of the use or inability to use the materials on ${policyData.businessName}'s website.
-
-5. Accuracy of Materials
-The materials appearing on ${policyData.businessName}'s website could include technical, typographical, or photographic errors. ${policyData.businessName} does not warrant that any of the materials on its website are accurate, complete or current.
-
-6. Links
-${policyData.businessName} has not reviewed all of the sites linked to its website and is not responsible for the contents of any such linked site.
-
-7. Modifications
-${policyData.businessName} may revise these terms of service for its website at any time without notice.
-
-8. Governing Law
-These terms and conditions are governed by and construed in accordance with the laws of ${policyData.jurisdiction}.`
-  }
-
-  const generateCookiePolicy = () => {
-    return `Cookie Policy for ${policyData.businessName}
-
-Last updated: ${new Date().toLocaleDateString()}
-
-1. What Are Cookies
-Cookies are small text files that are placed on your device when you visit our website. They help us provide you with a better experience and understand how you use our site.
-
-2. How We Use Cookies
-We use cookies for the following purposes:
-- Essential cookies: Required for the website to function properly
-- Analytics cookies: Help us understand how visitors interact with our website
-- Marketing cookies: Used to deliver relevant advertisements
-- Preference cookies: Remember your settings and preferences
-
-3. Third-Party Cookies
-We use the following third-party services that may set cookies:
-${policyData.thirdPartyServices.map(service => `- ${service}`).join('\n')}
-
-4. Managing Cookies
-You can control and/or delete cookies as you wish. You can delete all cookies that are already on your computer and you can set most browsers to prevent them from being placed.
-
-5. Your Choices
-You have the following choices regarding cookies:
-- Accept all cookies
-- Reject non-essential cookies
-- Modify your browser settings to control cookies
-
-6. Updates to This Policy
-We may update this Cookie Policy from time to time. We will notify you of any changes by posting the new Cookie Policy on this page.
-
-For more information about our use of cookies, please contact us at ${policyData.contactEmail}.`
-  }
 
   const copyToClipboard = (content: string) => {
     navigator.clipboard.writeText(content)

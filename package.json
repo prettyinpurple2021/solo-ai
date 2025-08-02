@@ -9,9 +9,9 @@
     "start": "next start",
     "setup-db": "node scripts/setup-database.js",
     "setup-templates": "node scripts/setup-templates-database.mjs",
+    "setup-compliance": "node scripts/setup-compliance-database.mjs",
     "vercel-check": "node scripts/vercel-deploy-check.js"
   },
-
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
     "@ai-sdk/google": "^0.0.54",
@@ -70,6 +70,7 @@
     "lucide-react": "^0.454.0",
     "next": "15.2.4",
     "next-themes": "^0.4.6",
+    "puppeteer": "^24.15.0",
     "react": "^19",
     "react-day-picker": "^9.8.1",
     "react-dom": "^19",

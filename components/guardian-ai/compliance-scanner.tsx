@@ -29,6 +29,12 @@ interface ComplianceScan {
   dataCollectionPoints: string[]
   cookieTypes: string[]
   consentMechanisms: string[]
+  pageTitle?: string
+  hasPrivacyPolicy?: boolean
+  hasCookieBanner?: boolean
+  hasContactForm?: boolean
+  hasNewsletterSignup?: boolean
+  hasAnalytics?: boolean
 }
 
 export function ComplianceScanner() {
@@ -43,61 +49,43 @@ export function ComplianceScanner() {
     setIsScanning(true)
     setScanProgress(0)
 
-    // Simulate scanning process
-    const progressInterval = setInterval(() => {
-      setScanProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(progressInterval)
-          return 100
-        }
-        return prev + 10
-      })
-    }, 500)
-
-    // Simulate scan completion
-    setTimeout(() => {
-      const mockResults: ComplianceScan = {
-        url,
-        scanDate: new Date(),
-        trustScore: 65,
-        issues: [
-          {
-            id: "1",
-            type: "critical",
-            category: "consent",
-            title: "Missing Cookie Consent Banner",
-            description: "No cookie consent mechanism detected on the website",
-            recommendation: "Implement a GDPR-compliant cookie consent banner that appears before any cookies are set",
-            gdpr_article: "Article 7",
-            ccpa_section: "Section 1798.135"
-          },
-          {
-            id: "2",
-            type: "warning",
-            category: "data_collection",
-            title: "Contact Form Without Privacy Notice",
-            description: "Contact form collects personal data without clear privacy notice",
-            recommendation: "Add a privacy notice link near the form explaining how data will be used",
-            gdpr_article: "Article 13"
-          },
-          {
-            id: "3",
-            type: "info",
-            category: "privacy_policy",
-            title: "Privacy Policy Needs Updates",
-            description: "Privacy policy may not cover all data processing activities",
-            recommendation: "Review and update privacy policy to include all data collection and processing activities"
+    try {
+      // Start progress simulation
+      const progressInterval = setInterval(() => {
+        setScanProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval)
+            return 90
           }
-        ],
-        dataCollectionPoints: ["Contact Form", "Newsletter Signup", "Analytics Tracking"],
-        cookieTypes: ["Analytics", "Marketing", "Necessary"],
-        consentMechanisms: []
+          return prev + 10
+        })
+      }, 500)
+
+      // Call the real compliance scanner API
+      const response = await fetch('/api/compliance/scan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url })
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to scan website')
       }
 
-      setScanResults(mockResults)
-      setIsScanning(false)
+      const scanResults = await response.json()
+      
+      setScanProgress(100)
+      setScanResults(scanResults)
+      
       clearInterval(progressInterval)
-    }, 5000)
+    } catch (error) {
+      console.error('Scan error:', error)
+      // Handle error - could show a toast notification here
+    } finally {
+      setIsScanning(false)
+    }
   }
 
   const getTrustScoreColor = (score: number) => {
