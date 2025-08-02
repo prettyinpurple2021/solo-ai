@@ -190,33 +190,40 @@ export default function BrandStylerStudio() {
     
     setIsGeneratingLogo(true)
     try {
-      // Simulate AI logo generation with placeholder logic
-      // In a real implementation, this would call an AI service
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Call the AI logo generation API
+      const response = await fetch('/api/generate-logo', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          brandName,
+          industry,
+          style: selectedLogo.style,
+          colors: getActiveColors(),
+          typography: getActiveTypography(),
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Failed to generate logos')
+      }
+
+      const data = await response.json()
       
-      const logoPrompts = [
-        `Modern minimalist logo for "${brandName}" in ${getActiveColors().primary}`,
-        `Creative wordmark for "${brandName}" using ${getActiveTypography().heading} font`,
-        `Elegant symbol + text logo for "${brandName}" brand`,
-        `Bold geometric logo for "${brandName}" company`
-      ]
+      // Extract logo URLs from the response
+      const logoUrls = data.logos.map((logo: any) => logo.url)
+      setGeneratedLogos(logoUrls)
+
+      // Show fallback notice if applicable
+      if (data.isFallback) {
+        console.warn('Using fallback logo generation:', data.fallbackReason)
+      }
       
-      // For now, we'll use placeholder SVGs - in real implementation, these would come from AI
-      const placeholderLogos = logoPrompts.map((prompt, index) => 
-        `data:image/svg+xml,${encodeURIComponent(`
-          <svg width="200" height="100" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="100" fill="${getActiveColors().secondary}"/>
-            <circle cx="50" cy="50" r="20" fill="${getActiveColors().primary}"/>
-            <text x="80" y="55" font-family="${getActiveTypography().heading}" font-size="16" fill="${getActiveColors().primary}">${brandName}</text>
-            <text x="10" y="85" font-family="Arial" font-size="8" fill="#666">Style ${index + 1}</text>
-          </svg>
-        `)}`
-      )
-      
-      setGeneratedLogos(placeholderLogos)
     } catch (error) {
       console.error("Logo generation failed:", error)
-      alert("Logo generation failed. Please try again.")
+      alert(`Logo generation failed: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`)
     } finally {
       setIsGeneratingLogo(false)
     }
