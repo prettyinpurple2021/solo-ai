@@ -24,22 +24,46 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { brandName, industry, style, colors, typography } = logoRequestSchema.parse(body)
 
-    // Initialize Supabase client for authentication
-    const supabase = await createClient()
-
-    // Get current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    if (authError || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // Initialize Supabase client for authentication (skip in development)
+    const isDevelopment = process.env.NODE_ENV === 'development' && !process.env.NEXT_PUBLIC_SUPABASE_URL
+    let user = null
+    
+    if (!isDevelopment) {
+      const supabase = await createClient()
+      const { data: { user: authUser }, error: authError } = await supabase.auth.getUser()
+      if (authError || !authUser) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+      user = authUser
     }
 
     // Check if OpenAI API key is available
     const openaiApiKey = process.env.OPENAI_API_KEY
     if (!openaiApiKey) {
-      console.error('OPENAI_API_KEY not configured')
-      return NextResponse.json({ 
-        error: 'AI service not configured' 
-      }, { status: 500 })
+      console.error('OPENAI_API_KEY not configured, using fallback generation')
+      
+      // Generate enhanced fallback logos
+      const prompts = [
+        `Minimalist design for "${brandName}" in ${colors?.primary || '#8E24AA'}`,
+        `Bold and impactful for "${brandName}" using ${typography?.heading || 'Inter'} font`,
+        `Elegant and sophisticated for "${brandName}" brand`,
+        `Creative and innovative for "${brandName}" company`
+      ]
+      
+      const fallbackLogos = prompts.map((prompt, index) => ({
+        url: generateFallbackLogo(brandName, colors, typography, index + 1),
+        prompt: prompt,
+        index: index + 1,
+        isFallback: true
+      }))
+
+      return NextResponse.json({
+        logos: fallbackLogos,
+        brandName,
+        totalGenerated: fallbackLogos.length,
+        isFallback: true,
+        fallbackReason: 'OPENAI_API_KEY not configured - using enhanced preview mode'
+      })
     }
 
     // Prepare logo generation prompts
@@ -98,16 +122,19 @@ export async function POST(request: NextRequest) {
         throw new Error('All logo generations failed')
       }
 
-      // Update daily stats
-      try {
-        await supabase.rpc('update_daily_stats', {
-          p_user_id: user.id,
-          p_stat_type: 'ai_interactions',
-          p_increment: successfulLogos.length
-        })
-      } catch (error) {
-        console.error('Failed to update daily stats:', error)
-        // Don't fail the request if stats update fails
+      // Update daily stats (skip in development mode)
+      if (!isDevelopment && user) {
+        const supabase = await createClient()
+        try {
+          await supabase.rpc('update_daily_stats', {
+            p_user_id: user.id,
+            p_stat_type: 'ai_interactions',
+            p_increment: successfulLogos.length
+          })
+        } catch (error) {
+          console.error('Failed to update daily stats:', error)
+          // Don't fail the request if stats update fails
+        }
       }
 
       return NextResponse.json({
