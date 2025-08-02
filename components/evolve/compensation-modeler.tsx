@@ -30,6 +30,7 @@ interface CompensationPackage {
 
 interface EquityValuation {
   companyValuation: number
+  equityPercentage: number
   equityValue: number
   vestingSchedule: string
   cliffPeriod: number
@@ -64,6 +65,7 @@ export function CompensationModeler() {
 
   const [equityValuation, setEquityValuation] = useState<EquityValuation>({
     companyValuation: 1000000,
+    equityPercentage: 1.0,
     equityValue: 10000,
     vestingSchedule: "4 years with 1-year cliff",
     cliffPeriod: 12,
