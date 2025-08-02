@@ -1,4 +1,5 @@
 # User Flows
+
 ## SoloBoss AI User Journey Mapping
 
 ## 📋 Overview
@@ -9,10 +10,12 @@ This document illustrates the step-by-step paths that users will take to accompl
 
 ## 🔄 Flow 1: Onboarding and First Task Creation
 
-### Trigger
+### Flow 1 Trigger
+
 New user (Sam, the Overwhelmed Freelancer) discovers SoloBoss AI and wants to create their first project.
 
 ### User Goal
+
 Sign up, create a goal for a new client project, and add the first task to get started with task management.
 
 ### Steps
@@ -50,12 +53,14 @@ Sign up, create a goal for a new client project, and add the first task to get s
    - **System Response:** Task appears under the goal with success notification; option to add due date or description available
 
 ### Success Criteria
+
 - User successfully creates account and completes email verification
 - First goal is created and visible in SlayList
 - First task is added to the goal
 - User understands basic navigation and task creation process
 
 ### Alternative Paths
+
 - **Email already registered:** Display error message with login option
 - **Password validation fails:** Show password requirements and retry
 - **User abandons onboarding:** Save progress and offer to resume later
@@ -64,10 +69,12 @@ Sign up, create a goal for a new client project, and add the first task to get s
 
 ## 🔄 Flow 2: Generating Marketing Content with AI Agent
 
-### Trigger
+### Flow 2 Trigger
+
 Maya (Creative Side-Hustler) needs social media captions for a new art print she's launching.
 
 ### User Goal
+
 Use Echo (Marketing Maven) AI agent to generate social media captions for a new art print.
 
 ### Steps
@@ -112,12 +119,14 @@ Use Echo (Marketing Maven) AI agent to generate social media captions for a new 
    - **System Response:** Caption saved as new text file in Briefcase with confirmation
 
 ### Success Criteria
+
 - AI agent generates relevant, on-brand social media captions
 - User can easily copy content to clipboard
 - Content can be saved to Briefcase for future use
 - Process feels intuitive and efficient
 
 ### Alternative Paths
+
 - **AI service temporarily unavailable:** Display error message with retry option
 - **Insufficient context provided:** Prompt user for more details
 - **User wants different tone:** Allow easy modification and regeneration
@@ -126,10 +135,12 @@ Use Echo (Marketing Maven) AI agent to generate social media captions for a new 
 
 ## 🔄 Flow 3: Uploading and Organizing Client Documents
 
-### Trigger
+### Flow 3 Trigger
+
 David (Experienced Consultant) receives a new client contract that needs secure storage and organization.
 
 ### User Goal
+
 Upload a new client contract to a secure, organized folder in the Briefcase.
 
 ### Steps
@@ -166,12 +177,14 @@ Upload a new client contract to a secure, organized folder in the Briefcase.
    - **System Response:** List instantly filters to show only "Contract-ClientX.pdf" file
 
 ### Success Criteria
+
 - File uploads successfully without corruption
 - Metadata (categories, tags) is properly assigned and searchable
 - Search and filter functionality works accurately
 - File is accessible and properly organized
 
 ### Alternative Paths
+
 - **File too large:** Display size limit error with compression suggestions
 - **Unsupported file type:** Show supported formats and conversion options
 - **Upload fails:** Provide retry mechanism and error details
@@ -181,10 +194,12 @@ Upload a new client contract to a secure, organized folder in the Briefcase.
 
 ## 🔄 Flow 4: Upgrading a Subscription
 
-### Trigger
+### Flow 4 Trigger
+
 Alex (Aspiring Innovator) tries to access a premium AI agent but is on the free plan.
 
 ### User Goal
+
 Upgrade from the free plan to the "Accelerator" tier to access all AI agents.
 
 ### Steps
@@ -222,12 +237,14 @@ Upgrade from the free plan to the "Accelerator" tier to access all AI agents.
    - **System Response:** Blaze AI agent interface loads successfully
 
 ### Success Criteria
+
 - Payment processing is secure and seamless
 - Subscription upgrade is immediately reflected in account
 - Previously restricted features become accessible
 - User receives clear confirmation of upgrade
 
 ### Alternative Paths
+
 - **Payment fails:** Display specific error message with retry options
 - **Card declined:** Suggest alternative payment methods
 - **User cancels checkout:** Return to pricing page with progress saved
@@ -237,10 +254,12 @@ Upgrade from the free plan to the "Accelerator" tier to access all AI agents.
 
 ## 🔄 Flow 5: Using Focus Mode to Complete a Task
 
-### Trigger
+### Flow 5 Trigger
+
 Sam (Overwhelmed Freelancer) has a blog post to write and wants to use focused work session to avoid distractions.
 
 ### User Goal
+
 Start a focused work session to complete a blog post without distractions.
 
 ### Steps
@@ -278,12 +297,14 @@ Start a focused work session to complete a blog post without distractions.
    - **System Response:** Task status updated in SlayList; 5-minute break suggestion appears
 
 ### Success Criteria
+
 - Focus mode successfully minimizes distractions
 - Timer functions accurately and provides clear feedback
 - Task progress can be updated seamlessly
 - User feels more productive and focused
 
 ### Alternative Paths
+
 - **User needs to exit early:** Provide "End Session" option with progress save
 - **Distractions occur:** Offer pause/resume functionality
 - **Browser crashes:** Restore session state when user returns
@@ -293,10 +314,12 @@ Start a focused work session to complete a blog post without distractions.
 
 ## 🔄 Flow 6: Validating a Business Idea with AI Strategist
 
-### Trigger
+### Flow 6 Trigger
+
 Alex (Aspiring Innovator) has developed a new SaaS product idea and wants strategic feedback before proceeding.
 
 ### User Goal
+
 Get strategic feedback from Blaze AI agent on a new SaaS product idea.
 
 ### Steps
@@ -333,12 +356,14 @@ Get strategic feedback from Blaze AI agent on a new SaaS product idea.
    - **System Response:** Entire analysis saved as "Idea Validation - SaaS Product" document in Briefcase with confirmation
 
 ### Success Criteria
+
 - AI provides comprehensive, actionable business analysis
 - Analysis is well-structured and easy to understand
 - Feedback can be saved for future reference
 - User gains clear next steps for idea development
 
 ### Alternative Paths
+
 - **Insufficient idea description:** AI requests more details before analysis
 - **AI analysis is unclear:** User can request clarification or examples
 - **User wants follow-up questions:** Interface allows continued conversation
@@ -351,26 +376,31 @@ Get strategic feedback from Blaze AI agent on a new SaaS product idea.
 ### 🎯 Key User Journey Patterns
 
 #### **Onboarding Flow (Flow 1)**
+
 - **Focus:** Simplicity and quick value demonstration
 - **Key Elements:** Progressive disclosure, clear CTAs, immediate success feedback
 - **Success Metrics:** Completion rate, time to first task creation
 
 #### **AI Agent Interactions (Flows 2, 6)**
+
 - **Focus:** Natural conversation flow with clear input/output
 - **Key Elements:** Context gathering, loading states, actionable results
 - **Success Metrics:** User satisfaction with AI output, repeat usage
 
 #### **Document Management (Flow 3)**
+
 - **Focus:** Security, organization, and searchability
 - **Key Elements:** Drag-and-drop uploads, metadata assignment, powerful search
 - **Success Metrics:** Upload success rate, file retrieval efficiency
 
 #### **Subscription Management (Flow 4)**
+
 - **Focus:** Transparent pricing, secure payment, immediate access
 - **Key Elements:** Clear feature comparison, trusted payment processing, instant upgrade
 - **Success Metrics:** Conversion rate, payment completion rate
 
 #### **Productivity Features (Flow 5)**
+
 - **Focus:** Distraction elimination and progress tracking
 - **Key Elements:** Timer functionality, UI simplification, progress updates
 - **Success Metrics:** Session completion rate, task completion improvement
@@ -378,16 +408,19 @@ Get strategic feedback from Blaze AI agent on a new SaaS product idea.
 ### 🔄 Common Flow Elements
 
 #### **Navigation Patterns**
+
 - Consistent sidebar navigation across all flows
 - Breadcrumb navigation for deep features
 - Quick access to primary functions from dashboard
 
 #### **Feedback Mechanisms**
+
 - Loading states for AI processing
 - Success notifications for completed actions
 - Error handling with clear recovery paths
 
 #### **Data Persistence**
+
 - Auto-save functionality where appropriate
 - Session restoration after interruptions
 - Cross-device synchronization
@@ -395,16 +428,19 @@ Get strategic feedback from Blaze AI agent on a new SaaS product idea.
 ### 🛠️ Technical Implementation Notes
 
 #### **Next.js App Router Considerations**
+
 - Server Components for initial page loads
 - Client Components for interactive elements
 - API routes for AI agent communications
 
 #### **Supabase Integration Points**
+
 - Real-time subscriptions for live updates
 - Row Level Security for document access
 - File storage for uploads and generated content
 
 #### **AI SDK Implementation**
+
 - Streaming responses for better UX
 - Error handling for AI service failures
 - Token management for cost optimization

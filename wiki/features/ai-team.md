@@ -10,7 +10,9 @@ The AI Team feature provides you with a specialized team of AI agents, each with
 **"Let's turn your vision into visual magic!"**
 
 **Personality**: Energetic, artistic, trend-aware, and visually-minded
+
 **Expertise**: 
+
 - Brand strategy and visual identity
 - Content creation and marketing
 - Creative problem-solving
@@ -52,7 +54,9 @@ interface RoxyCapabilities {
 **"Ready to ignite your productivity and smash those goals?"**
 
 **Personality**: Motivating, disciplined, results-oriented, and high-energy
+
 **Expertise**:
+
 - Productivity optimization
 - Goal setting and achievement
 - Performance tracking
@@ -94,7 +98,9 @@ interface BlazeCapabilities {
 **"Let's connect authentically and build meaningful relationships!"**
 
 **Personality**: Empathetic, socially aware, diplomatic, and relationship-focused
+
 **Expertise**:
+
 - Communication strategies
 - Networking and relationship building
 - Conflict resolution
@@ -136,7 +142,9 @@ interface EchoCapabilities {
 **"Let's think several moves ahead and build your empire strategically."**
 
 **Personality**: Analytical, wise, forward-thinking, and methodical
+
 **Expertise**:
+
 - Business strategy and planning
 - Market analysis and research
 - Financial planning and analysis

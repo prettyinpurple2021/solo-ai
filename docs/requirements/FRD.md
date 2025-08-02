@@ -17,7 +17,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 3.1. User Management & Authentication
 
-**FR-UM-001: User Registration**
+### FR-UM-001: User Registration
 
 - **Description**: The system SHALL allow new users to register for a SoloBoss AI account.
 - **Preconditions**: User is not logged in.
@@ -35,7 +35,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
   - Email already registered: Display "Email already in use."
   - Password not meeting criteria: Display "Password too weak. Must contain X, Y, Z."
 
-**FR-UM-002: User Login**
+### FR-UM-002: User Login
 
 - **Description**: The system SHALL allow registered users to log in to their SoloBoss AI account.
 - **Preconditions**: User has a registered account.
@@ -47,7 +47,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 - **Error Handling**:
   - Invalid credentials: Display "Invalid email or password."
 
-**FR-UM-003: Password Reset**
+### FR-UM-003: Password Reset
 
 - **Description**: The system SHALL allow users to reset their forgotten password.
 - **Preconditions**: User is not logged in.
@@ -63,7 +63,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
   - Email not found: Display "Email address not found."
   - Expired or invalid token: Display "Password reset link is invalid or expired."
 
-**FR-UM-004: Profile Management - View Profile**
+### FR-UM-004: Profile Management - View Profile
 
 - **Description**: The system SHALL allow a logged-in user to view their profile information.
 - **Preconditions**: User is logged in.
@@ -75,7 +75,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 - **Error Handling**:
   - Profile data retrieval failed: Display "Unable to retrieve profile data. Please try again."
 
-**FR-UM-005: Profile Management - Edit Basic Information**
+### FR-UM-005: Profile Management - Edit Basic Information
 
 - **Description**: The system SHALL allow a logged-in user to edit their basic profile information.
 - **Preconditions**: User is logged in.
@@ -88,7 +88,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
   - Update failed: Display "Failed to update profile. Please try again."
   - Invalid input: Display specific validation messages (e.g., "Name cannot be empty").
 
-**FR-UM-006: Logout**
+### FR-UM-006: Logout
 
 - **Description**: The system SHALL allow a logged-in user to securely log out of their SoloBoss AI account.
 - **Preconditions**: User is logged in.
@@ -102,7 +102,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 3.2. BossRoom (Dashboard)
 
-**FR-BR-001: Dashboard Display**
+### FR-BR-001: Dashboard Display
 
 - **Description**: The system SHALL display a personalized BossRoom dashboard upon successful user login.
 - **Preconditions**: User is logged in.
@@ -118,7 +118,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
   - Dashboard data retrieval failed: Display "Unable to load all dashboard data at this time. Please try refreshing."
   - Specific widget data retrieval failed: Display "Data unavailable" within the widget component.
 
-**FR-BR-002: Quick AI Agent Access**
+### FR-BR-002: Quick AI Agent Access
 
 - **Description**: The system SHALL provide clickable elements on the BossRoom dashboard to directly launch each available AI agent's interface.
 - **Preconditions**: User is logged in and has access to the specific AI agent based on their subscription tier.
@@ -135,7 +135,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 3.3. SlayList Generator
 
-**FR-SL-001: Goal Creation**
+### FR-SL-001: Goal Creation
 
 - **Description**: The system SHALL allow users to define new long-term goals within the SlayList.
 - **Preconditions**: User is logged in.
@@ -148,7 +148,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 - **Error Handling**:
   - Empty goal title: Display "Goal title cannot be empty."
 
-**FR-SL-002: Task Creation (Under a Goal)**
+### FR-SL-002: Task Creation (Under a Goal)
 
 - **Description**: The system SHALL allow users to create individual, actionable tasks linked to an existing goal.
 - **Preconditions**: User is logged in, an active goal exists.
@@ -162,7 +162,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
   - Empty task title: Display "Task title cannot be empty."
   - Invalid goal selection: Display "Please select a valid goal."
 
-**FR-SL-003: Task Status Update**
+### FR-SL-003: Task Status Update
 
 - **Description**: The system SHALL allow users to update the status of an individual task.
 - **Preconditions**: User is logged in, task exists.
