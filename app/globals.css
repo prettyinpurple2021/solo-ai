@@ -247,6 +247,11 @@ nav,
   transform: translateZ(0);
 }
 
+.soloboss-gradient {
+  background: var(--gradient-primary);
+  transform: translateZ(0);
+}
+
 .boss-text-gradient {
   background: var(--gradient-primary);
   -webkit-background-clip: text;
@@ -262,6 +267,15 @@ nav,
   background-clip: text;
   -webkit-text-fill-color: transparent;
   font-weight: 600;
+  transform: translateZ(0);
+}
+
+.soloboss-text-gradient {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
   transform: translateZ(0);
 }
 
