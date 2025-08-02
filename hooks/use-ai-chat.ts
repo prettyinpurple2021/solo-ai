@@ -97,8 +97,9 @@ export function useAiChat(options: UseAiChatOptions = {}): UseAiChatReturn {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            messages: [...state.messages, newMessage],
-            agentId: agentId || "general",
+            message: newMessage.content,
+            agentName: agentId || "general",
+            stream: true,
           }),
           signal: abortControllerRef.current.signal,
         })
