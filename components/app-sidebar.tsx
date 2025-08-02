@@ -93,23 +93,6 @@ const data = {
       icon: Shield,
     },
   ],
-  projects: [
-    {
-      name: "Empire Builder Pro",
-      url: "/dashboard/brand",
-      icon: Frame,
-    },
-    {
-      name: "Boss Automation",
-      url: "/dashboard/focus",
-      icon: PieChart,
-    },
-    {
-      name: "Success Tracker",
-      url: "/dashboard/slaylist",
-      icon: Map,
-    },
-  ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -120,7 +103,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
+        <NavProjects />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />
