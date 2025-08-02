@@ -158,18 +158,23 @@ export function SharedLandingPage({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
-      {/* Custom Banner */}
-      <div className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 py-3">
+      {/* Welcome Banner */}
+      <div className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 py-4">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center">
-            <Image
-              src="/images/soloboss-banner.png"
-              alt="SoloBoss AI Banner"
-              width={800}
-              height={120}
-              className="max-w-full h-auto"
-              priority
-            />
+          <div className="flex flex-col items-center justify-center text-center">
+            <div className="mb-2">
+              <Image
+                src="/images/soloboss-banner.png"
+                alt="SoloBoss AI - Confident. Creative. In control. That's the SoloBoss way"
+                width={800}
+                height={120}
+                className="max-w-full h-auto"
+                priority
+              />
+            </div>
+            <p className="text-white text-sm font-medium opacity-90 max-w-2xl">
+              Welcome to SoloBoss AI - Your empowering tagline and brand identity banner showcasing our core values
+            </p>
           </div>
         </div>
       </div>
