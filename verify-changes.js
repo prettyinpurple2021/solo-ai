@@ -1,5 +1,4 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
 
 console.log('Verifying button text changes...\n');
 

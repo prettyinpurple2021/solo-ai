@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from './use-toast';
 
 interface TemplateData {
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 interface SavedTemplate {
@@ -47,7 +47,7 @@ export function useTemplateSave() {
         throw new Error(error.error || 'Failed to save template');
       }
 
-      const result = await response.json();
+      await response.json();
       
       toast({
         title: "Template Saved!",

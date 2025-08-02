@@ -37,7 +37,7 @@ async function setupTemplatesDatabase() {
   try {
     // Check if tables exist
     console.log('🔍 Checking if template tables exist...');
-    const { data: categories, error: categoriesError } = await supabase
+    const { data: _categories, error: categoriesError } = await supabase
       .from('template_categories')
       .select('count')
       .limit(1);

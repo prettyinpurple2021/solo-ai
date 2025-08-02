@@ -1,0 +1,155 @@
+[33m23836d9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Merge pull request #93 from prettyinpurple2021/copilot/fix-85
+[33m1cc10ae[m Merge pull request #86 from prettyinpurple2021/copilot/fix-78
+[33m44ec4e8[m Merge pull request #87 from prettyinpurple2021/copilot/fix-80
+[33m9c729a4[m Merge pull request #88 from prettyinpurple2021/copilot/fix-82
+[33mf564ae1[m Merge pull request #89 from prettyinpurple2021/copilot/fix-79
+[33mb5c0471[m Fix dashboard text visibility by adding missing soloboss-gradient CSS classes
+M	app/globals.css
+M	components/shared/shared-landing-page.tsx
+[33m984825e[m Merge pull request #90 from prettyinpurple2021/copilot/fix-81
+[33mf22b1bd[m Merge pull request #92 from prettyinpurple2021/copilot/fix-83
+[33md18bb75[m Merge pull request #91 from prettyinpurple2021/copilot/fix-84
+[33m6867223[m Add functional Save and Export buttons to brand demo page
+M	app/brand-demo/page.tsx
+[33mfb02911[m Fix linting issue in projects API route
+M	app/api/projects/route.ts
+[33m00753aa[m Complete AI logo generation implementation with fallback system
+M	app/api/generate-logo/route.ts
+[33ma6e9032[m Implement save functionality for all missing templates
+M	components/templates/dm-sales-script-generator.tsx
+M	components/templates/freebie-funnel-builder.tsx
+M	components/templates/live-launch-tracker.tsx
+M	components/templates/offer-comparison-matrix.tsx
+M	components/templates/upsell-flow-builder.tsx
+M	components/templates/vision-board-generator.tsx
+[33m6ca5a96[m Fix unknown banner issue by adding descriptive text and improving accessibility
+M	components/shared/shared-landing-page.tsx
+[33me18ef89[m Implement complete user projects feature with database, API, and UI
+A	app/api/projects/route.ts
+A	app/dashboard/projects/page.tsx
+M	components/app-sidebar.tsx
+M	components/nav-projects.tsx
+A	hooks/use-projects.ts
+A	supabase/migrations/003_add_projects_table.sql
+[33m0e78316[m Fix navigation buttons to use auth modal instead of direct dashboard links
+M	components/shared/shared-landing-page.tsx
+[33mf01b08c[m Add brand kit save and export functionality with API endpoints
+A	app/api/brand/export/route.ts
+A	app/api/brand/save/route.ts
+M	app/dashboard/brand/page.tsx
+[33m66c2e89[m Implement AI logo generation API and update frontend
+A	app/api/generate-logo/route.ts
+M	app/dashboard/brand/page.tsx
+[33m1132f76[m Add missing 4 AI agents (lumi, vex, lexi, nova) to complete 8-agent team
+M	lib/landing-data.ts
+[33m8045740[m Implement dynamic user management system to replace hardcoded data
+M	components/app-sidebar.tsx
+M	components/nav-user.tsx
+A	test/user-management.test.ts
+[33mb5729ab[m Initial plan
+[33mc89abef[m Initial plan
+[33mace0845[m Merge pull request #77 from prettyinpurple2021/copilot/fix-76
+[33m33cff56[m Merge pull request #75 from prettyinpurple2021/copilot/fix-74
+[33m6f7469d[m Fix button navigation issues on landing page
+M	components/shared/shared-landing-page.tsx
+[33me24e092[m Restore missing banner - spans full width with gradient background
+M	components/shared/shared-landing-page.tsx
+[33mb2f1624[m Initial plan
+[33mf6cc147[m Initial plan
+[33m93cb4ee[m Merge pull request #73 from prettyinpurple2021/copilot/fix-72
+[33maf01391[m Fix: Complete truncated founder-feelings-tracker.tsx file to resolve deployment build error
+M	components/templates/founder-feelings-tracker.tsx
+[33m3edeb14[m Initial plan
+[33me03ea2b[m Merge pull request #71 from prettyinpurple2021/codespace-cautious-space-happiness-j6pg4gqxxwxh5vrr
+[33m176ab3b[m Merge branch 'main' into codespace-cautious-space-happiness-j6pg4gqxxwxh5vrr
+[33m852da08[m Update components/shared/shared-landing-page.tsx
+M	components/shared/shared-landing-page.tsx
+[33mf132914[m removal of all placeholder and mock items. reviewed and updated assets for consistency.
+A	.vscode/settings.json
+M	TEMPLATES_SAVE_FEATURE.md
+M	app/profile/page.tsx
+M	app/team/page.tsx
+M	components/app-sidebar.tsx
+M	components/collaboration/collaboration-hub.tsx
+M	components/nav-user.tsx
+M	components/onboarding/onboarding-wizard.tsx
+M	components/profile/enhanced-profile-modal.tsx
+M	components/shared/shared-landing-page.tsx
+M	components/social/boss-community.tsx
+M	components/voice/voice-chat.tsx
+M	hooks/use-subscription.ts
+M	lib/landing-data.ts
+A	public/default-post.svg
+A	public/default-user.svg
+D	public/placeholder-logo.png
+D	public/placeholder-logo.svg
+D	public/placeholder-user.jpg
+D	public/placeholder.jpg
+D	public/placeholder.svg
+[33m76125ba[m Refactor SharedLandingPage component: remove unused clean version, update button text verification, and clean up imports
+D	components/shared/shared-landing-page-clean.tsx
+M	components/shared/shared-landing-page.tsx
+M	lib/ai-config.ts
+M	test/button-text-changes.test.ts
+M	verify-changes.js
+[33m4abbd26[m Fix prop destructuring in SharedLandingPage component
+M	components/shared/shared-landing-page.tsx
+[33mc2dc5b0[m Refactor SharedLandingPage component for improved structure and updated feature descriptions
+M	components/shared/shared-landing-page.tsx
+[33m9a56d20[m Refactor code structure for improved readability and maintainability
+M	components/shared/shared-landing-page.tsx
+A	public/images/agents/blaze.png
+D	public/images/agents/blaze.svg
+A	public/images/agents/echo.png
+D	public/images/agents/echo.svg
+A	public/images/agents/glitch.png
+D	public/images/agents/glitch.svg
+A	public/images/agents/lexi.png
+D	public/images/agents/lexi.svg
+A	public/images/agents/lumi.png
+D	public/images/agents/lumi.svg
+A	public/images/agents/nova.png
+D	public/images/agents/nova.svg
+A	public/images/agents/roxy.png
+D	public/images/agents/roxy.svg
+A	public/images/agents/vex.png
+D	public/images/agents/vex.svg
+[33m857bf3f[m Merge pull request #65 from prettyinpurple2021/copilot/fix-60
+[33mb7f7e29[m Merge branch 'main' into copilot/fix-60
+[33m77bf42c[m Merge pull request #70 from prettyinpurple2021/copilot/fix-5edaf69e-5272-446d-8e9e-edce5f08a0cb
+[33m1e7f549[m Complete merge conflict resolution: fix shared-landing-page syntax issue and enhance AiCollabPlanner with CollabIdea interface
+M	components/shared/shared-landing-page.tsx
+A	components/shared/shared-landing-page.tsx.backup2
+M	components/templates/ai-collab-planner.tsx
+[33me27ee38[m Fix syntax error in ai-config.ts and verify basic build functionality
+M	lib/ai-config.ts
+[33mfde70b4[m Initial plan
+[33m6947254[m Update database schema fix guide: improve formatting, clarify steps, and enhance troubleshooting section
+M	docs/project-management/database-schema-fix-guide.md
+[33m4470a7b[m Merge branch 'main' of https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform
+[33m6970dca[m staged
+M	docs/project-management/todo-list.md
+[33mc4e7b35[m Merge branch 'main' of https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform
+[33m49cccfa[m Enhance SoloBoss AI features and design system with punk rock personality; update landing page descriptions, refine theme guide, and improve project management roadmap for a more empowering user experience.
+M	README.md
+M	app/globals.css
+M	components/shared/shared-landing-page.tsx
+M	docs/design/theme-system.md
+M	docs/project-management/todo-list.md
+M	lib/ai-config.ts
+[33m2e8a458[m Merge pull request #69 from prettyinpurple2021/copilot/fix-68
+[33maf18fa6[m[33m ([m[1;31morigin/copilot/fix-68[m[33m)[m Initial plan
+[33m1b03ce5[m Merge pull request #64 from prettyinpurple2021/copilot/fix-58
+[33m6cff7e3[m[33m ([m[1;31morigin/copilot/fix-60[m[33m)[m ✅ Update all template styling to use semantic CSS custom properties
+M	components/templates/ai-collab-planner.tsx
+M	components/templates/big-leap-planner.tsx
+M	components/templates/brag-bank-template.tsx
+M	components/templates/founder-feelings-tracker.tsx
+M	components/templates/i-hate-this-tracker.tsx
+M	components/templates/offer-naming-generator.tsx
+M	components/templates/pr-pitch-template.tsx
+M	components/templates/quarterly-biz-review.tsx
+M	components/templates/reverse-engineer-role-models.tsx
+M	components/templates/saved-templates-list.tsx
+M	components/templates/values-aligned-biz-filter.tsx
+M	components/templates/viral-h
