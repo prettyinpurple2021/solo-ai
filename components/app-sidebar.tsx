@@ -23,14 +23,10 @@ import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
+import { useAuth } from "@/hooks/use-auth"
 
 // This is sample data.
 const data = {
-  user: {
-    name: "Boss Builder",
-    email: "boss@soloboss.ai",
-    avatar: "/default-user.svg",
-  },
   teams: [
     {
       name: "SoloBoss AI",
@@ -96,6 +92,15 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const { user } = useAuth()
+  
+  // Create user data with fallbacks for missing information
+  const userData = {
+    name: user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || "SoloBoss User",
+    email: user?.email || "user@soloboss.ai",
+    avatar: user?.user_metadata?.avatar_url || user?.user_metadata?.picture || "/default-user.svg",
+  }
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -106,7 +111,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NavProjects />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={userData} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
