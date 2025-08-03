@@ -12,5 +12,5 @@
     "github.copilot.chat.codesearch.enabled": true,
     "github.copilot.chat.agent.thinkingTool": true,
     "githubPullRequests.experimental.useQuickChat": true,
-    "npm.packageManager": "npm"
+    "npm.packageManager": "auto"
 }

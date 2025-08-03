@@ -12,6 +12,17 @@ This document outlines the high-level mission to build and launch the SoloBoss A
 
 ## 🚨 STRATEGIC MARKET VALIDATION IMPROVEMENTS (HIGH PRIORITY)
 
+### 🎯 0. Package Manager Configuration Fix
+
+**The Issue:** Mixed package manager state causing npm warnings - project had both `package-lock.json` (npm) and pnpm-style `node_modules` structure.
+
+**The Fix:** 
+- [x] **COMPLETED:** Updated VS Code settings to use "auto" package manager detection ✅
+- [x] **COMPLETED:** Added `packageManager: "npm@10.0.0"` specification to package.json ✅
+- [x] **COMPLETED:** Documented the fix in the todo list ✅
+
+**Value:** Resolves npm package manager conflict warnings and ensures consistent dependency management.
+
 ### 🎯 1. Evolve "Lumi" into a Proactive Compliance & Ethics Co-Pilot
 
 **The Gap:** The current legal agent, Lumi, is positioned as a basic document generator and navigator. This functionality is useful but fails to address one of the most acute and high-stakes anxieties for modern solo founders: the crushing burden of data privacy and AI ethics compliance. Founders are now inadvertently acting as Chief Ethics and Privacy Officers, facing significant legal and reputational risks from regulations like GDPR and CCPA without adequate tools.
