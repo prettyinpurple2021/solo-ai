@@ -1,6 +1,10 @@
-import { clerkMiddleware } from "@clerk/nextjs/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export default clerkMiddleware();
+export default function middleware(request: NextRequest) {
+  // For now, just pass through all requests
+  // TODO: Re-enable Clerk middleware once environment variables are properly configured
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
