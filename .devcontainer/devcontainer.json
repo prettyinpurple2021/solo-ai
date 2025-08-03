@@ -1,0 +1,39 @@
+{
+  "name": "SoloBoss AI Platform",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:1-20-bullseye",
+  
+  // Configure Codespace settings
+  "customizations": {
+    "codespaces": {
+      // Set idle timeout (in minutes)
+      "idleTimeoutMinutes": 240
+    },
+    "vscode": {
+      "extensions": [
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-typescript.vscode-typescript-next"
+      ]
+    }
+  },
+
+  // Forward ports
+  "forwardPorts": [3000],
+  "portsAttributes": {
+    "3000": {
+      "label": "Next.js App",
+      "onAutoForward": "notify"
+    }
+  },
+
+  // Post-create commands
+  "postCreateCommand": "npm install",
+
+  // Features to add
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  }
+}
