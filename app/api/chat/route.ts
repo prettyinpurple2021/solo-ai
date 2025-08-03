@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Prepare conversation history for AI
-    const conversationHistory = messages.map(msg => ({
+    const conversationHistory = (messages || []).map((msg: any) => ({
       role: msg.role as 'user' | 'assistant' | 'system',
       content: msg.content,
     }))
