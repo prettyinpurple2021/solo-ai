@@ -8,8 +8,7 @@ import { AuthProvider } from "@/hooks/use-auth"
 import { Toaster } from "@/components/ui/toaster"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { statsigAdapter } from "@flags-sdk/statsig"
-import { DynamicStatsigProvider } from "@/components/dynamic-statsig-provider"
+
 import { ClerkProvider } from "@clerk/nextjs"
 
 const inter = Inter({ subsets: ["latin"] })
@@ -24,20 +23,6 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Initialize Statsig with fallback for build time
-  let Statsig: any = null;
-  let datafile: any = null;
-
-  try {
-    // Only initialize Statsig if we have proper environment setup
-    if (process.env.NODE_ENV === 'production' || process.env.STATSIG_SERVER_SECRET_KEY) {
-      Statsig = await statsigAdapter.initialize();
-      datafile = await Statsig.getClientInitializeResponse({userID: "1234"}, {hash: "djb2"});
-    }
-  } catch (error) {
-    console.warn('Statsig initialization failed, continuing without feature flags:', error);
-  }
-
   // Check if Clerk environment variables are available
   const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
 
@@ -76,17 +61,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           {clerkPublishableKey ? (
             <ClerkProvider publishableKey={clerkPublishableKey}>
               <AuthProvider>
-                <DynamicStatsigProvider datafile={datafile}>
-                  {children}
-                </DynamicStatsigProvider>
+                {children}
                 <Toaster />
               </AuthProvider>
             </ClerkProvider>
           ) : (
             <AuthProvider>
-              <DynamicStatsigProvider datafile={datafile}>
-                {children}
-              </DynamicStatsigProvider>
+              {children}
               <Toaster />
             </AuthProvider>
           )}
