@@ -60,6 +60,26 @@ const config: Config = {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+        // SoloBoss Brand Colors
+        soloboss: {
+          purple: '#8B5CF6',
+          pink: '#EC4899',
+          'purple-light': '#A855F7',
+          'pink-light': '#F472B6',
+          'purple-dark': '#7C3AED',
+          'pink-dark': '#DB2777',
+        },
+        // AI Agent Colors
+        agent: {
+          roxy: '#6366F1',      // Executive Assistant
+          blaze: '#F59E0B',     // Growth Strategist
+          echo: '#EC4899',      // Marketing Maven
+          lumi: '#3B82F6',      // Legal & Docs
+          vex: '#10B981',       // Technical Architect
+          lexi: '#8B5CF6',      // Strategy Analyst
+          nova: '#06B6D4',      // Product Designer
+          glitch: '#EF4444',    // QA & Debug
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -100,6 +120,18 @@ const config: Config = {
           "0%": { transform: "translateX(-100%)" },
           "100%": { transform: "translateX(0)" },
         },
+        "boss-bounce": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-8px)" },
+        },
+        "empowerment-pulse": {
+          "0%, 100%": { opacity: "1", transform: "scale(1)" },
+          "50%": { opacity: "0.8", transform: "scale(1.05)" },
+        },
+        "success-celebration": {
+          "0%": { transform: "scale(1)", opacity: "1" },
+          "75%, 100%": { transform: "scale(1.2)", opacity: "0" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -110,10 +142,28 @@ const config: Config = {
         "fade-in": "fade-in 0.5s ease-out",
         "slide-in-right": "slide-in-right 0.3s ease-out",
         "slide-in-left": "slide-in-left 0.3s ease-out",
+        "boss-bounce": "boss-bounce 2s ease-in-out infinite",
+        "empowerment-pulse": "empowerment-pulse 3s ease-in-out infinite",
+        "success-celebration": "success-celebration 1s ease-out",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        // SoloBoss Gradients
+        'gradient-soloboss': 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+        'gradient-soloboss-light': 'linear-gradient(135deg, #A855F7 0%, #F472B6 100%)',
+        'gradient-empowerment': 'linear-gradient(135deg, #6366F1 0%, #EC4899 50%, #F59E0B 100%)',
+        'gradient-boss': 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+        'gradient-boss-secondary': 'linear-gradient(135deg, #A855F7 0%, #F472B6 100%)',
+        // AI Agent Gradients
+        'gradient-roxy': 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%)',
+        'gradient-blaze': 'linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)',
+        'gradient-echo': 'linear-gradient(135deg, #EC4899 0%, #F472B6 100%)',
+        'gradient-lumi': 'linear-gradient(135deg, #3B82F6 0%, #60A5FA 100%)',
+        'gradient-vex': 'linear-gradient(135deg, #10B981 0%, #34D399 100%)',
+        'gradient-lexi': 'linear-gradient(135deg, #8B5CF6 0%, #A855F7 100%)',
+        'gradient-nova': 'linear-gradient(135deg, #06B6D4 0%, #34D399 100%)',
+        'gradient-glitch': 'linear-gradient(135deg, #EF4444 0%, #F87171 100%)',
       },
       fontFamily: {
         sans: ["Inter", "system-ui", "sans-serif"],
