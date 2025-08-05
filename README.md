@@ -115,7 +115,7 @@ Your command center for world domination:
 
 #### **Additional Services & Integrations**
 
-- **Stripe** - Payment processing and subscriptions
+- **Clerk Billing** - Subscription billing and feature gating
 - **Resend** - Transactional email delivery
 - **Vercel Blob** - File storage and CDN
 - **Environment Validation** - Zod-based config validation
@@ -214,9 +214,9 @@ Visit [http://localhost:3000](http://localhost:3000) to see your SoloBoss AI pla
 2. **OpenAI** - AI conversations
    - Get API key at [platform.openai.com](https://platform.openai.com)
 
-3. **Stripe** (Optional) - Payments
-   - Create account at [stripe.com](https://stripe.com)
-   - Set up products and pricing
+3. **Clerk Billing** (Optional) - Subscriptions
+   - Enable billing in Clerk dashboard
+   - Configure subscription plans
 
 4. **Resend** (Optional) - Emails
    - Create account at [resend.com](https://resend.com)
@@ -280,7 +280,7 @@ The platform is architected for easy expansion:
 
 ### 💳 **Subscription System**
 
-- Stripe integration configured
+- Clerk Billing integration configured
 - Tier-based access control ready
 - Usage tracking implemented
 
@@ -356,7 +356,7 @@ Ready to deploy to production:
 2. **Environment Variables**
    - Set all production URLs
    - Use production API keys
-   - Enable Stripe live mode
+   - Enable Clerk Billing live mode
 
 3. **Database**
    - Run all migrations on production Supabase
