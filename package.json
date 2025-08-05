@@ -11,6 +11,7 @@
     "setup-db": "node scripts/setup-database.js",
     "setup-templates": "node scripts/setup-templates-database.mjs",
     "setup-compliance": "node scripts/setup-compliance-database.mjs",
+    "setup-migration": "node scripts/setup-migration-database.mjs",
     "vercel-check": "node scripts/vercel-deploy-check.js"
   },
   "dependencies": {
