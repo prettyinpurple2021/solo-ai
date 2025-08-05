@@ -97,7 +97,7 @@ export default function PrivacyPolicyPage() {
                         User Account and Profile Data:
                       </h3>
                       <p className="text-gray-600 text-sm">
-                        When you register for an account, we collect your email address and a password. We also create a user profile that stores a unique user ID, your name, subscription tier, Stripe customer ID, and the timestamp of your last update. You can view and edit basic profile information within your account settings.
+                        When you register for an account, we collect your email address and a password. We also create a user profile that stores a unique user ID, your name, subscription tier, Clerk customer ID, and the timestamp of your last update. You can view and edit basic profile information within your account settings.
                       </p>
                     </div>
 
@@ -107,7 +107,7 @@ export default function PrivacyPolicyPage() {
                         Subscription and Payment Data:
                       </h3>
                       <p className="text-gray-600 text-sm">
-                        We collect information related to your subscription plan, including your current tier (Launchpad, Accelerator, Dominator) and whether you have a paid subscription. Payment processing is handled securely by Stripe. We receive webhooks from Stripe to update your subscription status. We store subscription-related data such as subscription_tier_id, tier_name, features_included, ai_agent_access_levels, and price. User-specific subscription data, including user_subscription_id, user_id, subscription_tier_id, start_date, end_date, payment_status, and stripe_customer_id, are also stored.
+                        We collect information related to your subscription plan, including your current tier (Launchpad, Accelerator, Dominator) and whether you have a paid subscription. Payment processing is handled securely by Clerk Billing. We receive webhooks from Clerk to update your subscription status. We store subscription-related data such as subscription_tier_id, tier_name, features_included, ai_agent_access_levels, and price. User-specific subscription data, including user_subscription_id, user_id, subscription_tier_id, start_date, end_date, payment_status, and clerk_customer_id, are also stored.
                       </p>
                     </div>
 
@@ -295,10 +295,10 @@ export default function PrivacyPolicyPage() {
                     </div>
 
                     <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
-                      <h3 className="font-semibold text-gray-800 mb-2">Stripe:</h3>
-                      <p className="text-gray-600 text-sm">
-                        We utilize Stripe for secure payment processing for subscriptions, including customer creation, subscription management, creating checkout sessions, and handling webhooks. Your payment information is subject to Stripe's privacy policy.
-                      </p>
+                                              <h3 className="font-semibold text-gray-800 mb-2">Clerk Billing:</h3>
+                        <p className="text-gray-600 text-sm">
+                          We utilize Clerk Billing for secure payment processing for subscriptions, including customer creation, subscription management, creating checkout sessions, and handling webhooks. Your payment information is subject to Clerk's privacy policy.
+                        </p>
                     </div>
 
                     <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-400">

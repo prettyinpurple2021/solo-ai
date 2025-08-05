@@ -11,6 +11,8 @@
     "setup-db": "node scripts/setup-database.js",
     "setup-templates": "node scripts/setup-templates-database.mjs",
     "setup-compliance": "node scripts/setup-compliance-database.mjs",
+
+    "setup-migration": "node scripts/setup-migration-database.mjs",
     "verify-triggers": "node scripts/verify-updated-at-triggers.js",
     "vercel-check": "node scripts/vercel-deploy-check.js"
   },
@@ -48,7 +50,6 @@
     "@radix-ui/react-toggle": "^1.1.9",
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
-    "@stripe/stripe-js": "^7.6.1",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.52.1",
     "@types/node": "^20",
@@ -79,7 +80,6 @@
     "recharts": "^3.1.0",
     "resend": "^4.7.0",
     "sonner": "^2.0.6",
-    "stripe": "^18.3.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5",

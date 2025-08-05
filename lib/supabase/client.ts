@@ -5,23 +5,7 @@ export const createClient = () => {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   
   if (!url || !key) {
-    // Return a mock client for build-time or when env vars are missing
-    return {
-      from: () => ({
-        select: () => ({
-          eq: () => ({
-            single: () => Promise.resolve({ data: null, error: { code: 'NO_ENV' } })
-          }),
-          order: () => Promise.resolve({ data: [], error: { code: 'NO_ENV' } })
-        })
-      }),
-      auth: {
-        getUser: () => Promise.resolve({ data: { user: null }, error: null }),
-        getSession: () => Promise.resolve({ data: { session: null }, error: null }),
-        onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
-        signOut: () => Promise.resolve({ error: null })
-      }
-    } as any
+    throw new Error('Missing Supabase environment variables. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY')
   }
   
   return createBrowserClient(url, key)

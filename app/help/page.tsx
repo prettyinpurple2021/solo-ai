@@ -95,7 +95,7 @@ export default function HelpPage() {
     {
       id: "technical-2",
       question: "Can I integrate SoloBoss AI with other tools?",
-      answer: "Yes! We support integrations with popular tools like Google Calendar, Slack, Stripe, and many more. Check out our integrations page to see the full list and set up connections to streamline your workflow.",
+      answer: "Yes! We support integrations with popular tools like Google Calendar, Slack, Clerk Billing, and many more. Check out our integrations page to see the full list and set up connections to streamline your workflow.",
       category: "Technical"
     }
   ]

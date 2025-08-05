@@ -14,22 +14,9 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().min(1, "OpenAI API key is required").optional(),
   GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1, "Google Gemini API key is required").optional(),
 
-  // Stripe - Required for payments
-  STRIPE_SECRET_KEY: z.string().min(1, "Stripe secret key is required").optional(),
-  STRIPE_PUBLISHABLE_KEY: z.string().min(1, "Stripe publishable key is required").optional(),
-  STRIPE_WEBHOOK_SECRET: z.string().min(1, "Stripe webhook secret is required").optional(),
-
-  // Stripe Products
-  STRIPE_LAUNCHPAD_PRODUCT_ID: z.string().min(1, "Launchpad product ID is required").optional(),
-  STRIPE_ACCELERATOR_PRODUCT_ID: z.string().min(1, "Accelerator product ID is required").optional(),
-  STRIPE_DOMINATOR_PRODUCT_ID: z.string().min(1, "Dominator product ID is required").optional(),
-
-  // Stripe Prices
-  STRIPE_LAUNCHPAD_PRICE_ID_MONTHLY: z.string().min(1, "Launchpad monthly price ID is required").optional(),
-  STRIPE_ACCELERATOR_PRICE_ID_MONTHLY: z.string().min(1, "Accelerator monthly price ID is required").optional(),
-  STRIPE_ACCELERATOR_PRICE_ID_YEARLY: z.string().min(1, "Accelerator yearly price ID is required").optional(),
-  STRIPE_DOMINATOR_PRICE_ID_MONTHLY: z.string().min(1, "Dominator monthly price ID is required").optional(),
-  STRIPE_DOMINATOR_PRICE_ID_YEARLY: z.string().min(1, "Dominator yearly price ID is required").optional(),
+  // Clerk Billing - Required for subscriptions
+CLERK_SECRET_KEY: z.string().min(1, "Clerk secret key is required"),
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1, "Clerk publishable key is required"),
 
   // Email
   RESEND_API_KEY: z.string().min(1, "Resend API key is required").optional(),

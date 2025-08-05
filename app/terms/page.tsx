@@ -168,10 +168,10 @@ export default function TermsOfServicePage() {
                   <div className="bg-gray-50 p-4 rounded-lg mb-4">
                     <h3 className="font-semibold text-gray-800 mb-2">Billing and Payments:</h3>
                     <p className="text-gray-600 text-sm mb-2">
-                      The system includes a process to initiate a checkout flow when a user selects a plan, directing them to a secure payment gateway (Stripe) to complete their subscription.
+                      The system includes a process to initiate a checkout flow when a user selects a plan, directing them to a secure payment gateway (Clerk Billing) to complete their subscription.
                     </p>
                     <p className="text-gray-600 text-sm">
-                      Users will have access to a dedicated billing portal where they can manage their subscriptions, update payment information, and view billing history. A dedicated Next.js API route will interact with the Stripe API to manage subscriptions and process payments securely.
+                      Users will have access to a dedicated billing portal where they can manage their subscriptions, update payment information, and view billing history. A dedicated Next.js API route will interact with the Clerk Billing API to manage subscriptions and process payments securely.
                     </p>
                   </div>
 
