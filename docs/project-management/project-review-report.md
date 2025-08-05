@@ -112,7 +112,7 @@ NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, "Supabase service role 
 
 ### 6. Missing React Imports
 
-**Severity: 🟡 HIGH**
+### Severity: 🟡 HIGH
 
 **Affected Files:**
 
