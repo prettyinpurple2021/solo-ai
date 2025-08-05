@@ -69,7 +69,7 @@ Your application requires specific database tables. You'll need to create them i
 
 ```sql
 -- Enable RLS (Row Level Security)
-ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-jwt-secret';
+ALTER DATABASE postgres SET "app.jwt_secret" TO 'your-secure-jwt-secret-here'; -- IMPORTANT: Replace with a securely generated secret
 
 -- Create AI Agents table
 CREATE TABLE ai_agents (
