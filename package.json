@@ -11,7 +11,6 @@
     "setup-db": "node scripts/setup-database.js",
     "setup-templates": "node scripts/setup-templates-database.mjs",
     "setup-compliance": "node scripts/setup-compliance-database.mjs",
-
     "setup-migration": "node scripts/setup-migration-database.mjs",
     "verify-triggers": "node scripts/verify-updated-at-triggers.js",
     "vercel-check": "node scripts/vercel-deploy-check.js"
@@ -82,13 +81,12 @@
     "sonner": "^2.0.6",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5",
     "vaul": "^1.1.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.1",
-    "@jest/globals": "latest",
+    "@jest/globals": "^30.0.5",
     "@types/eslint": "^9",
     "@types/node": "^22",
     "@types/react": "^19",
@@ -102,6 +100,7 @@
     "jest": "^30.0.5",
     "postcss": "^8.5",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5"
+    "ts-jest": "^29.4.1",
+    "typescript": "^5.9.2"
   }
 }

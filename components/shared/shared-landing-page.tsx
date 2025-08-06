@@ -228,13 +228,14 @@ export function SharedLandingPage({
                 Pricing
               </a>
               <ThemeToggle />
-              <Button 
-                onClick={onShowAuthModal}
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
-              >
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              <Link href="/signup">
+                <Button 
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
+                >
+                  Get Started
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -300,12 +301,13 @@ export function SharedLandingPage({
                   >
                     Pricing
                   </a>
-                  <Button
-                    onClick={onShowAuthModal}
-                    className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white w-full"
-                  >
-                    Get Started
-                  </Button>
+                  <Link href="/signup">
+                    <Button
+                      className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white w-full"
+                    >
+                      Get Started
+                    </Button>
+                  </Link>
                 </div>
               </motion.div>
             )}
@@ -330,14 +332,15 @@ export function SharedLandingPage({
               your industry like never before.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Button
-                onClick={onShowAuthModal}
-                size="lg"
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
-              >
-                Start Your Empire
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href="/signup">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+                >
+                  Start Your Empire
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <Button
                 size="lg"
                 variant="outline"
@@ -511,14 +514,15 @@ export function SharedLandingPage({
               transition={{ duration: 0.8 }}
               viewport={{ once: true }}
             >
-              <Button
-                onClick={onShowAuthModal}
-                size="lg"
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
-              >
-                Meet Your Full AI Team
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href="/signup">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+                >
+                  Meet Your Full AI Team
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
             </motion.div>
           </div>
         </div>
@@ -664,7 +668,7 @@ export function SharedLandingPage({
                         if (plan.cta === "Contact Sales") {
                           router.push("/contact")
                         } else {
-                          onShowAuthModal()
+                          router.push("/signup")
                         }
                       }}
                     >
@@ -695,14 +699,15 @@ export function SharedLandingPage({
               productivity.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button
-                onClick={onShowAuthModal}
-                size="lg"
-                className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
-              >
-                Start for free
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
+              <Link href="/signup">
+                <Button
+                  size="lg"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+                >
+                  Start for free
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
               <Button
                 size="lg"
                 variant="outline"
