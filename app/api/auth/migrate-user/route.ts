@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { migrateUserData, updateMigrationStatus } from "@/lib/auth-migration"
-import { auth } from "@clerk/nextjs/server"
+import { auth, currentUser } from "@clerk/nextjs/server"
 import { createClient } from "@/lib/supabase/server"
 
 export async function POST(request: NextRequest) {
@@ -26,10 +26,10 @@ export async function POST(request: NextRequest) {
     await updateMigrationStatus(clerkUserId, 'in_progress')
 
     // Get Clerk user data
-    const clerkUser = await auth()
+    const clerkUser = await currentUser()
     
     // Try to find matching Supabase user by email
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { users }, error } = await supabase.auth.admin.listUsers()
     
     if (error) {
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
 
     // Find user by email
     const supabaseUser = users?.find(user => 
-      user.email === clerkUser.user?.emailAddresses?.[0]?.emailAddress
+      user.email === clerkUser?.emailAddresses?.[0]?.emailAddress
     )
 
     if (!supabaseUser) {

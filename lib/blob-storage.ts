@@ -1,5 +1,4 @@
-import { put, del, list } from "@vercel/blob"
-
+// Generic file storage interface - can be implemented with various providers
 export interface FileUploadResult {
   url: string
   pathname: string
@@ -7,18 +6,70 @@ export interface FileUploadResult {
   contentDisposition: string
 }
 
+export interface FileStorageProvider {
+  upload(file: File, pathname: string): Promise<FileUploadResult>
+  delete(pathname: string): Promise<void>
+  list(prefix: string): Promise<Array<{
+    url: string
+    pathname: string
+    size: number
+    uploadedAt: Date
+  }>>
+}
+
+// Default implementation using local storage (for development)
+class LocalFileStorage implements FileStorageProvider {
+  async upload(file: File, pathname: string): Promise<FileUploadResult> {
+    // For development, we'll create a data URL
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        resolve({
+          url: reader.result as string,
+          pathname,
+          contentType: file.type,
+          contentDisposition: `attachment; filename="${file.name}"`,
+        })
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+  }
+
+  async delete(pathname: string): Promise<void> {
+    // No-op for local storage
+    console.log(`Would delete file: ${pathname}`)
+  }
+
+  async list(prefix: string): Promise<Array<{
+    url: string
+    pathname: string
+    size: number
+    uploadedAt: Date
+  }>> {
+    // Return empty array for local storage
+    return []
+  }
+}
+
+// Initialize storage provider based on environment
+const getStorageProvider = (): FileStorageProvider => {
+  // You can implement different providers here based on your needs
+  // For example: AWS S3, Cloudinary, etc.
+  return new LocalFileStorage()
+}
+
+const storageProvider = getStorageProvider()
+
 export const uploadFile = async (file: File, filename: string, userId: string): Promise<FileUploadResult> => {
   try {
     const pathname = `users/${userId}/${Date.now()}-${filename}`
 
-    const blob = await put(pathname, file, {
-      access: "public",
-      contentType: file.type,
-    })
+    const result = await storageProvider.upload(file, pathname)
 
     return {
-      url: blob.url,
-      pathname: blob.pathname,
+      url: result.url,
+      pathname: result.pathname,
       contentType: file.type,
       contentDisposition: `attachment; filename="${filename}"`,
     }
@@ -30,7 +81,7 @@ export const uploadFile = async (file: File, filename: string, userId: string): 
 
 export const deleteFile = async (pathname: string): Promise<void> => {
   try {
-    await del(pathname)
+    await storageProvider.delete(pathname)
   } catch (error) {
     console.error("Error deleting file:", error)
     throw new Error("Failed to delete file")
@@ -39,15 +90,13 @@ export const deleteFile = async (pathname: string): Promise<void> => {
 
 export const listUserFiles = async (userId: string) => {
   try {
-    const { blobs } = await list({
-      prefix: `users/${userId}/`,
-    })
+    const files = await storageProvider.list(`users/${userId}/`)
 
-    return blobs.map((blob) => ({
-      url: blob.url,
-      pathname: blob.pathname,
-      size: blob.size,
-      uploadedAt: blob.uploadedAt,
+    return files.map((file) => ({
+      url: file.url,
+      pathname: file.pathname,
+      size: file.size,
+      uploadedAt: file.uploadedAt,
     }))
   } catch (error) {
     console.error("Error listing files:", error)

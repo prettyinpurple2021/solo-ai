@@ -10,7 +10,7 @@ export async function getAllTemplates(): Promise<TemplateCategory[]> {
       return templateData as TemplateCategory[];
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase
       .from('template_categories')
       .select(`
@@ -62,7 +62,7 @@ export async function getTemplateBySlug(slug: string): Promise<Template | null> 
       return findTemplateInJson(slug);
     }
 
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data, error } = await supabase
       .from('templates')
       .select('*')

@@ -13,7 +13,7 @@
     "setup-compliance": "node scripts/setup-compliance-database.mjs",
     "setup-migration": "node scripts/setup-migration-database.mjs",
     "verify-triggers": "node scripts/verify-updated-at-triggers.js",
-    "vercel-check": "node scripts/vercel-deploy-check.js",
+    "netlify-check": "node scripts/netlify-deploy-check.js",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
@@ -60,9 +60,6 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "@vercel/analytics": "^1.5.0",
-    "@vercel/blob": "^1.1.1",
-    "@vercel/speed-insights": "^1.2.0",
     "ai": "^4.3.19",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

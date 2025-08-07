@@ -32,7 +32,7 @@ export async function getCurrentUser() {
 
   try {
     // Fallback to Supabase
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (user) {
       return { provider: 'supabase', userId: user.id }
@@ -49,7 +49,7 @@ export async function getCurrentUser() {
  */
 export async function migrateUserData(clerkUserId: string, supabaseUser: any) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     
     // Get user profile data from Supabase
     const { data: profile } = await supabase
@@ -113,7 +113,7 @@ export async function migrateUserData(clerkUserId: string, supabaseUser: any) {
  */
 export async function checkMigrationStatus(clerkUserId: string) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { data } = await supabase
       .from('user_migrations')
       .select('*')
@@ -136,7 +136,7 @@ export async function getUserData(userId: string, provider: 'clerk' | 'supabase'
   } else {
     // Use Supabase user data
     try {
-      const supabase = createClient()
+      const supabase = await createClient()
       const { data: { user } } = await supabase.auth.getUser()
       const { data: profile } = await supabase
         .from('profiles')
@@ -161,7 +161,7 @@ export async function getUserData(userId: string, provider: 'clerk' | 'supabase'
  * Create migration database table
  */
 export async function createMigrationTable() {
-  const supabase = createClient()
+  const supabase = await createClient()
   
   const { error } = await supabase.rpc('create_migration_table', {
     sql: `
@@ -202,7 +202,7 @@ export async function updateMigrationStatus(
   error?: string
 ) {
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
     const { error: updateError } = await supabase
       .from('user_migrations')
       .update({ 
