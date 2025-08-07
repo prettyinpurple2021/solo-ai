@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
+  // Removed static export to support server actions
   trailingSlash: true,
   images: {
     unoptimized: true,
