@@ -1,0 +1,19 @@
+# Ignore development files
+node_modules/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignore build artifacts that aren't needed
+.next/
+coverage/
+*.log
+
+# Ignore development scripts
+scripts/
+test/
+docs/
+
+# Keep only the static export output
+!out/

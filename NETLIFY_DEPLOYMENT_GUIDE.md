@@ -62,6 +62,16 @@ Netlify should automatically detect the settings from `netlify.toml`, but verify
 - **Publish directory**: `out`
 - **Node version**: 18 (or higher)
 
+#### Important: Disable Next.js Plugin
+
+If you encounter build errors related to the `@netlify/plugin-nextjs`, you need to disable it:
+
+1. Go to Site settings → Build & deploy → Build plugins
+2. Find the "Next.js" plugin and click "Remove" or disable it
+3. This is necessary because we're using static export, not server-side rendering
+
+The project is configured for static export, so the Next.js plugin is not needed and will cause conflicts.
+
 ### Step 3: Set Environment Variables
 
 In your Netlify dashboard, go to Site settings → Environment variables and add:
