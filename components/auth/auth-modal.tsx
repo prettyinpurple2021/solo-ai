@@ -26,7 +26,15 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const [password, setPassword] = useState("")
   const [fullName, setFullName] = useState("")
   const { toast } = useToast()
-  const supabase = createClient()
+
+  const getSupabaseClient = () => {
+    try {
+      return createClient()
+    } catch (error) {
+      console.error('Supabase client creation failed:', error)
+      return null
+    }
+  }
 
   const handleEmailSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -34,6 +42,16 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
     try {
       console.log("Starting email sign-up process...")
+      
+      const supabase = getSupabaseClient()
+      if (!supabase) {
+        toast({
+          title: "Configuration Required",
+          description: "Please configure Supabase to enable authentication.",
+          variant: "destructive",
+        })
+        return
+      }
       
       // Check if Supabase is properly configured
       if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
@@ -96,6 +114,16 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
     try {
       console.log("Starting email sign-in process...")
       
+      const supabase = getSupabaseClient()
+      if (!supabase) {
+        toast({
+          title: "Configuration Required",
+          description: "Please configure Supabase to enable authentication.",
+          variant: "destructive",
+        })
+        return
+      }
+      
       // Check if Supabase is properly configured
       if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
         toast({
@@ -147,6 +175,16 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
 
     try {
       console.log("Starting Google OAuth process...")
+      
+      const supabase = getSupabaseClient()
+      if (!supabase) {
+        toast({
+          title: "Configuration Required",
+          description: "Please configure Supabase to enable authentication.",
+          variant: "destructive",
+        })
+        return
+      }
       
       // Check if Supabase is properly configured
       if (!process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL === 'https://placeholder.supabase.co') {
