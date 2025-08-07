@@ -1,8 +1,6 @@
 import { notFound } from 'next/navigation';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { templateComponents } from '@/components/templates';
-import { checkRequiredEnvVars } from '@/lib/env-validation';
 import templateData from '@/data/templates.json';
 
 // Helper function to find template in JSON data
@@ -22,7 +20,7 @@ function findTemplateInJson(slug: string) {
 }
 
 // Static params for all available templates
-export async function generateStaticParams() {
+export function generateStaticParams() {
   const templateSlugs = [
     'decision-dashboard',
     'vision-board-generator',
@@ -62,14 +60,7 @@ type TemplatePageProps = {
  * Includes proper error handling and environment validation
  */
 export default async function TemplatePage({ params }: TemplatePageProps) {
-  // Await the params in Next.js 15+
   const { templateSlug } = await params;
-
-  // Check if required environment variables are available
-  const hasRequiredEnv = checkRequiredEnvVars([
-    'NEXT_PUBLIC_SUPABASE_URL',
-    'NEXT_PUBLIC_SUPABASE_ANON_KEY'
-  ]);
 
   // Get template information from JSON data
   const template = findTemplateInJson(templateSlug);
@@ -77,8 +68,6 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
   if (!template) {
     notFound();
   }
-
-  const TemplateComponent = templateComponents[template.slug];
 
   return (
     <div className="container mx-auto py-8">
@@ -93,32 +82,23 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
         </div>
       </div>
 
-      {/* Show environment warning if database features unavailable */}
-      {!hasRequiredEnv && (
-        <Card className="mb-6 border-yellow-200 bg-yellow-50">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <span className="text-yellow-600">⚠️</span>
-              <p className="text-yellow-800">
-                Template save functionality is currently unavailable. You can still use the template, but changes won't be saved.
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
       <Card>
         <CardContent className="p-6">
-          {TemplateComponent ? (
-            <TemplateComponent />
-          ) : (
-            <div>
-              <h3 className="text-lg font-semibold mb-2">Template Preview</h3>
-              <p className="text-muted-foreground">
-                This template is currently in development. The interactive component will be available soon.
-              </p>
+          <div>
+            <h3 className="text-lg font-semibold mb-2">Template Preview</h3>
+            <p className="text-muted-foreground">
+              This template is currently in development. The interactive component will be available soon.
+            </p>
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <h4 className="font-medium mb-2">Template Details:</h4>
+              <ul className="text-sm text-gray-600 space-y-1">
+                <li><strong>Title:</strong> {template.title}</li>
+                <li><strong>Category:</strong> {template.category}</li>
+                <li><strong>Required Role:</strong> {template.requiredRole}</li>
+                <li><strong>Interactive:</strong> {template.isInteractive ? 'Yes' : 'No'}</li>
+              </ul>
             </div>
-          )}
+          </div>
         </CardContent>
       </Card>
     </div>
