@@ -5,15 +5,10 @@
 [build.environment]
   NODE_VERSION = "18"
 
+# Handle SPA routing for client-side routes
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
-
-# Handle Next.js API routes
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/api/:splat"
   status = 200
 
 # Handle static assets
@@ -38,10 +33,3 @@
   from = "/robots.txt"
   to = "/robots.txt"
   status = 200
-
-# Handle SPA routing for client-side routes
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-  conditions = {Role = ["admin"]}

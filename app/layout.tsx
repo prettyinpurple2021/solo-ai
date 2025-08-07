@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: "Build, grow, and scale your business with your personal AI-powered team of experts.",
 }
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode

@@ -1,27 +1,31 @@
-import { getAllTemplates } from '@/lib/templates-client';
-import { TemplateCategory } from '@/lib/templates-types';
-import templateData from '@/data/templates.json';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Icon } from '@/components/ui/icon';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft } from 'lucide-react';
-import Link from 'next/link';
+'use client';
 
-// Make this page dynamic to avoid static generation issues
-export const dynamic = 'force-dynamic';
+import Link from "next/link"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { ArrowLeft } from "lucide-react"
+import templateData from "@/data/templates.json"
+import { Icon } from "@/components/ui/icon"
 
-export default async function TemplatesPage() {
-  // During build time, use fallback data to avoid database connection issues
-  const isBuildTime = process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build';
-  
-  let categories;
-  if (isBuildTime) {
-    // Use fallback data during build
-    categories = templateData as TemplateCategory[];
-  } else {
-    categories = await getAllTemplates();
-  }
+type TemplateCategory = {
+  id: string
+  category: string
+  icon: string
+  description: string
+  templates: Array<{
+    id: string
+    title: string
+    description: string
+    slug: string
+    isInteractive: boolean
+    requiredRole: string
+  }>
+}
+
+export default function TemplatesPage() {
+  // Use static data for static export
+  const categories = templateData as TemplateCategory[];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">
@@ -71,16 +75,16 @@ export default async function TemplatesPage() {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="space-y-8">
-          {categories.map((category) => (
-            <div key={category.id}>
+          {categories.map((category, index) => (
+            <div key={index}>
               <div className="flex items-center space-x-2 mb-4">
                 <Icon name={category.icon as any} className="w-6 h-6" />
                 <h2 className="text-2xl font-bold">{category.category}</h2>
               </div>
               <p className="text-muted-foreground mb-6">{category.description}</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {category.templates.map((template) => (
-                  <Link href={`/templates/${template.slug}`} key={template.id}>
+                {category.templates.map((template, templateIndex) => (
+                  <Link href={`/templates/${template.slug}`} key={templateIndex}>
                     <Card className="hover:shadow-lg transition-shadow">
                       <CardHeader>
                         <CardTitle>{template.title}</CardTitle>
@@ -107,10 +111,10 @@ export default async function TemplatesPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild>
-              <Link href="/contact">Request a Template</Link>
+              <Link href="/contact">Request Template</Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/community">Join Community</Link>
+              <Link href="/dashboard">Go to Dashboard</Link>
             </Button>
           </div>
         </div>
