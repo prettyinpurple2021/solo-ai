@@ -4,6 +4,18 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { templateComponents } from '@/components/templates';
 import { checkRequiredEnvVars } from '@/lib/env-validation';
+import templateData from '@/data/templates.json';
+
+// Helper function to find template in JSON data
+function findTemplateInJson(slug: string) {
+  for (const category of templateData) {
+    const template = category.templates.find(t => t.slug === slug);
+    if (template) {
+      return template;
+    }
+  }
+  return null;
+}
 
 // Static params for all available templates
 export async function generateStaticParams() {
@@ -56,8 +68,49 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
       'NEXT_PUBLIC_SUPABASE_ANON_KEY'
     ]);
 
-    // In development mode, allow templates to work without database
+    // In development mode or build time, use fallback data to avoid database issues
     const isDev = process.env.NODE_ENV === 'development';
+    const isBuildTime = process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build';
+
+    // During build time, always use fallback data to avoid database connection issues
+    if (isBuildTime) {
+      const template = findTemplateInJson(templateSlug);
+      if (!template) {
+        notFound();
+      }
+      
+      const TemplateComponent = templateComponents[template.slug];
+      
+      return (
+        <div className="container mx-auto py-8">
+          <div className="mb-6">
+            <h1 className="text-4xl font-bold">{template.title}</h1>
+            <p className="text-lg text-muted-foreground mt-2">{template.description}</p>
+            <div className="mt-4 flex space-x-2">
+              <Badge variant="outline">Role: {template.requiredRole}</Badge>
+              <Badge variant={template.isInteractive ? 'default' : 'secondary'}>
+                {template.isInteractive ? 'Interactive' : 'Static'}
+              </Badge>
+            </div>
+          </div>
+
+          <Card>
+            <CardContent className="p-6">
+              {TemplateComponent ? (
+                <TemplateComponent />
+              ) : (
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">Template Preview</h3>
+                  <p className="text-muted-foreground">
+                    This template is currently in development. The interactive component will be available soon.
+                  </p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      );
+    }
 
     if (!hasRequiredEnv && !isDev) {
       return (

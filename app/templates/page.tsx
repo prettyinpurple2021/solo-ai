@@ -1,5 +1,6 @@
 import { getAllTemplates } from '@/lib/templates-client';
 import { TemplateCategory } from '@/lib/templates-types';
+import templateData from '@/data/templates.json';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Icon } from '@/components/ui/icon';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +12,16 @@ import Link from 'next/link';
 export const dynamic = 'force-dynamic';
 
 export default async function TemplatesPage() {
-  const categories = await getAllTemplates();
+  // During build time, use fallback data to avoid database connection issues
+  const isBuildTime = process.env.NODE_ENV === 'production' && process.env.NEXT_PHASE === 'phase-production-build';
+  
+  let categories;
+  if (isBuildTime) {
+    // Use fallback data during build
+    categories = templateData as TemplateCategory[];
+  } else {
+    categories = await getAllTemplates();
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50">

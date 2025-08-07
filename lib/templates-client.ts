@@ -29,7 +29,13 @@ export async function getAllTemplates(): Promise<TemplateCategory[]> {
         )
       `);
 
+    // Handle specific error codes that indicate table doesn't exist
     if (error) {
+      if (error.code === 'PGRST205') {
+        // Table doesn't exist, fallback to JSON
+        console.log('Template categories table not found, using fallback data');
+        return templateData as TemplateCategory[];
+      }
       console.error('Error fetching templates from database:', error);
       // Fallback to JSON data
       return templateData as TemplateCategory[];
@@ -69,9 +75,15 @@ export async function getTemplateBySlug(slug: string): Promise<Template | null> 
       .eq('slug', slug)
       .single();
 
-    if (error && error.code !== 'PGRST116') { // Ignore 'exact one row not found'
+    // Handle specific error codes that indicate table doesn't exist or other issues
+    if (error) {
+      if (error.code === 'PGRST205' || error.code === 'PGRST116') {
+        // Table doesn't exist or row not found, fallback to JSON
+        console.log('Template table not found or template not in database, using fallback data');
+        return findTemplateInJson(slug);
+      }
       console.error('Error fetching template by slug from database:', error);
-      // Fallback to JSON data
+      // Fallback to JSON data for any other errors
       return findTemplateInJson(slug);
     }
 
