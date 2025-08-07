@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useAuth } from "@/hooks/use-auth"
-import { uploadProfileImage, deleteProfileImage } from "@/lib/image-upload"
+import { uploadImage, deleteImage } from "@/lib/image-upload"
 import { useToast } from "@/hooks/use-toast"
 import { User, Camera, Upload, X, Settings, Bell, Shield, Crown, Sparkles, Save, Trash2 } from "lucide-react"
 
@@ -112,20 +112,12 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
 
     setIsUploading(true)
     try {
-      const result = await uploadProfileImage(file, user.id)
-      if (result.error) {
-        toast({
-          title: "Upload Failed",
-          description: result.error,
-          variant: "destructive",
-        })
-      } else if (result.url) {
-        setFormData((prev) => ({ ...prev, avatar_url: result.url }))
-        toast({
-          title: "Image Uploaded! 📸",
-          description: "Your boss profile photo has been updated!",
-        })
-      }
+      const result = await uploadImage(file, file.name, user.id)
+      setFormData((prev) => ({ ...prev, avatar_url: result.url }))
+      toast({
+        title: "Image Uploaded! 📸",
+        description: "Your boss profile photo has been updated!",
+      })
     } catch (error) {
       toast({
         title: "Upload Error",
@@ -140,7 +132,10 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
   const handleRemoveImage = async () => {
     if (formData.avatar_url) {
       try {
-        await deleteProfileImage(formData.avatar_url)
+        // Extract pathname from URL for deletion
+        const urlParts = formData.avatar_url.split('/')
+        const pathname = urlParts.slice(-2).join('/') // Get the last two parts as pathname
+        await deleteImage(pathname)
         setFormData((prev) => ({ ...prev, avatar_url: "" }))
         toast({
           title: "Image Removed",

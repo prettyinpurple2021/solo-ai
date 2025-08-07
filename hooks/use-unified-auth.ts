@@ -44,7 +44,7 @@ export function useUnifiedAuth(): UnifiedAuth {
         setUnifiedUser({
           id: clerkUser.id,
           email: clerkUser.emailAddresses?.[0]?.emailAddress,
-          fullName: clerkUser.fullName,
+          fullName: clerkUser.fullName || undefined,
           imageUrl: clerkUser.imageUrl,
           provider: 'clerk',
           isLoaded: clerkLoaded,
