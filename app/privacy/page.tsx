@@ -302,9 +302,9 @@ export default function PrivacyPolicyPage() {
                     </div>
 
                     <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-400">
-                      <h3 className="font-semibold text-gray-800 mb-2">Vercel:</h3>
+                      <h3 className="font-semibold text-gray-800 mb-2">Netlify:</h3>
                       <p className="text-gray-600 text-sm">
-                        Our application is deployed on Vercel, which handles automatic and optimized deployments and environment management.
+                        Our application is deployed on Netlify, which handles secure hosting, automated deployments, and environment management.
                       </p>
                     </div>
 

@@ -72,7 +72,7 @@ export const listUserImages = async (userId: string) => {
       throw new Error('Failed to list images')
     }
 
-    return data.map((file) => ({
+    return data.map((file: any) => ({
       name: file.name,
       pathname: `users/${userId}/images/${file.name}`,
       size: file.metadata?.size || 0,

@@ -187,7 +187,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 - **Process**:
   - System SHALL validate file type and size against predefined limits using TypeScript.
   - System SHALL check user's remaining storage quota via Supabase query.
-  - System SHALL securely upload the file to Vercel Blob storage.
+  - System SHALL securely upload the file to Supabase Storage.
   - System SHALL store file metadata in Supabase database with automatic user association.
 - **Postconditions**: Uploaded file is displayed in the Briefcase interface with real-time updates.
 - **Error Handling**:
@@ -279,7 +279,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 - **Input**: Generated assets, request to save, optional file name and tags.
 - **Process**:
   - System SHALL format assets as downloadable files (JSON, PDF, or image).
-  - System SHALL upload formatted assets to Vercel Blob storage.
+  - System SHALL upload formatted assets to Supabase Storage.
   - System SHALL save file metadata to Supabase database.
 - **Postconditions**: Generated brand assets are saved in the user's Briefcase.
 - **Error Handling**:
@@ -294,7 +294,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 - **Preconditions**: User is on the Burnout Shield interface, user has access based on subscription tier.
 - **Input**: Selection of a mindfulness exercise.
 - **Process**:
-  - System SHALL load exercise content from Vercel Blob storage.
+  - System SHALL load exercise content from Supabase Storage.
   - System SHALL play audio/video content using React media components.
 - **Postconditions**: User is guided through a mindfulness exercise.
 - **Error Handling**:
@@ -378,11 +378,11 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 **NFR-SCAL-001: User Load**
 
-- The system SHALL support at least 10,000 concurrent users using Vercel's serverless infrastructure and Supabase's auto-scaling database.
+- The system SHALL support at least 10,000 concurrent users using Netlify's serverless infrastructure and Supabase's auto-scaling database.
 
 **NFR-SCAL-002: Data Volume**
 
-- The system SHALL handle growing data volumes using Supabase's PostgreSQL with automatic scaling and Vercel Blob for file storage.
+- The system SHALL handle growing data volumes using Supabase's PostgreSQL with automatic scaling and Supabase Storage for file storage.
 
 ### 4.3. Security
 
@@ -392,7 +392,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 **NFR-SEC-002: Data Protection**
 
-- All data SHALL be encrypted at rest and in transit using Supabase's built-in encryption and Vercel's HTTPS-only deployment.
+- All data SHALL be encrypted at rest and in transit using Supabase's built-in encryption and Netlify's HTTPS-only deployment.
 
 **NFR-SEC-003: Input Validation**
 
@@ -402,7 +402,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 **NFR-REL-001: System Uptime**
 
-- The system SHALL maintain 99.9% uptime using Vercel's global edge network and Supabase's high-availability infrastructure.
+- The system SHALL maintain 99.9% uptime using Netlify's global CDN and Supabase's high-availability infrastructure.
 
 **NFR-REL-002: Error Handling**
 
@@ -450,7 +450,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 **AI & Machine Learning**
 
-- **AI SDK (Vercel AI SDK)**: Provider-agnostic AI integration with streaming support
+- **AI SDK**: Provider-agnostic AI integration with streaming support
 - **OpenAI GPT Models**: GPT-4 for advanced reasoning, GPT-3.5-turbo for fast responses
 - **Anthropic Claude**: Claude-3 for advanced analysis and constitutional AI
 - **Google AI (Gemini)**: Gemini Pro for multimodal capabilities
@@ -465,7 +465,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 **File Storage**
 
-- **Vercel Blob**: Secure file storage with CDN distribution and image processing
+- **Supabase Storage**: Secure file storage with CDN distribution and image processing
 
 **Development Tools**
 
@@ -475,31 +475,31 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 **Deployment & Infrastructure**
 
-- **Vercel Platform**: Serverless deployment, edge network, preview deployments, analytics
+- **Netlify Platform**: Serverless deployment, edge network, preview deployments, analytics
 
 ### 🔐 Security & Performance Features
 
 **Authentication**: Supabase Auth with JWT tokens and secure session management
 **Data Security**: Row Level Security, encryption at rest/transit, input validation with Zod
 **Performance**: Server-side rendering, edge functions, automatic code splitting, image optimization
-**Monitoring**: Vercel Analytics, Core Web Vitals tracking, real-time error monitoring
+**Monitoring**: Netlify Analytics, Core Web Vitals tracking, real-time error monitoring
 
 ## 6. Glossary
 
 - **AI Agent**: A specialized AI-powered virtual team member using OpenAI, Claude, or Gemini models.
 - **BossRoom**: The main dashboard interface built with Next.js and React.
-- **Briefcase**: File storage feature using Vercel Blob and Supabase metadata.
+- **Briefcase**: File storage feature using Supabase Storage and Supabase metadata.
 - **SlayList**: Goal and task management with real-time updates via Supabase subscriptions.
 - **Server Components**: React components that render on the server for better performance.
 - **RLS (Row Level Security)**: Database-level access control in Supabase.
-- **AI SDK**: Vercel's AI SDK for streaming AI responses with multiple providers.
+- **AI SDK**: Provider-agnostic AI SDK for streaming AI responses with multiple providers.
 
 ## 7. Assumptions
 
 - Users will have modern browsers supporting ES2022 and CSS Grid/Flexbox.
 - The system will integrate with multiple AI providers (OpenAI, Anthropic, Google) via the AI SDK.
 - Real-time features will use Supabase subscriptions with fallback to polling.
-- File storage will use Vercel Blob with automatic CDN distribution.
+- File storage will use Supabase Storage with automatic CDN distribution.
 
 ## 8. Open Issues
 

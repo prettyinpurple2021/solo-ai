@@ -1,9 +1,13 @@
 [build]
-  command = "npm run build"
-  publish = "out"
+  command = "NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder-key npm run build"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "18"
+
+# Enable the Netlify Next.js plugin
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
 # Handle SPA routing for client-side routes
 [[redirects]]

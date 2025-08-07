@@ -107,7 +107,7 @@ Your command center for world domination:
 
 #### **AI & Machine Learning Squad**
 
-- **Vercel AI SDK** - Provider-agnostic AI integration
+- **AI SDK** - Provider-agnostic AI integration
 - **OpenAI GPT-4** - Primary conversational AI
 - **Anthropic Claude** - Alternative AI model
 - **Google Gemini** - Additional AI capabilities
@@ -117,7 +117,7 @@ Your command center for world domination:
 
 - **Clerk Billing** - Subscription billing and feature gating
 - **Resend** - Transactional email delivery
-- **Vercel Blob** - File storage and CDN
+- **Supabase Storage** - File storage and CDN
 - **Environment Validation** - Zod-based config validation
 
 ### 📊 Database Schema
@@ -220,9 +220,6 @@ Visit [http://localhost:3000](http://localhost:3000) to see your SoloBoss AI pla
 
 4. **Resend** (Optional) - Emails
    - Create account at [resend.com](https://resend.com)
-
-5. **Vercel Blob** (Optional) - File storage
-   - Set up at [vercel.com](https://vercel.com)
 
 ## 🎯 What Works Right Now
 
@@ -347,10 +344,11 @@ Your SoloBoss AI platform is **production-ready** with advanced features:
 
 Ready to deploy to production:
 
-1. **Vercel** (Recommended)
+1. **Netlify** (Recommended)
 
    ```bash
-   vercel --prod
+   npm run build
+   # Deploy the `out` directory to Netlify
    ```
 
 2. **Environment Variables**

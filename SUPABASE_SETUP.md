@@ -37,15 +37,6 @@ NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 ```
 
-#### For Vercel:
-1. Go to your Vercel project dashboard
-2. Click **Settings** → **Environment Variables**
-3. Add both variables:
-   - Name: `NEXT_PUBLIC_SUPABASE_URL`, Value: your project URL
-   - Name: `NEXT_PUBLIC_SUPABASE_ANON_KEY`, Value: your anon key
-4. Make sure to set them for **Production**, **Preview**, and **Development** environments
-5. Redeploy your application
-
 #### For Netlify:
 1. Go to your Netlify site dashboard
 2. Click **Site settings** → **Environment variables**

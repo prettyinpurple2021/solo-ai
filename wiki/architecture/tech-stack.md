@@ -19,7 +19,7 @@ SoloBoss AI Platform is built using modern, production-ready technologies that p
 - Industry-leading React framework with excellent DX
 - Built-in performance optimizations
 - Seamless full-stack development
-- Excellent deployment story with Vercel
+- Excellent deployment story with Netlify
 
 ### **React 19**
 
@@ -140,7 +140,7 @@ CREATE PUBLICATION supabase_realtime FOR ALL TABLES;
 
 ## 🤖 AI & Machine Learning
 
-### **AI SDK (Vercel AI SDK)**
+### **AI SDK**
 
 - **Provider Agnostic**: Support for multiple AI providers
 - **Streaming Responses**: Real-time AI response streaming
@@ -186,11 +186,11 @@ CREATE PUBLICATION supabase_realtime FOR ALL TABLES;
 
 ## 📁 File Storage & Assets
 
-### **Vercel Blob**
+### **Supabase Storage**
 
 - **File Upload**: Secure file upload and storage
 - **CDN Distribution**: Global content delivery
-- **Image Processing**: Automatic image optimization
+- **Image Processing**: Automatic image optimization  
 - **Direct Uploads**: Client-side direct uploads
 
 ## 🛠️ Development Tools
@@ -226,7 +226,7 @@ CREATE PUBLICATION supabase_realtime FOR ALL TABLES;
 
 ## 🚀 Deployment & Infrastructure
 
-### **Vercel Platform**
+### **Netlify Platform**
 
 - **Serverless Deployment**: Automatic scaling and performance
 - **Edge Network**: Global CDN for fast content delivery
@@ -245,14 +245,14 @@ CREATE PUBLICATION supabase_realtime FOR ALL TABLES;
 
 ```yaml
 # Automatic deployment workflow
-GitHub Push → Vercel Build → 
+GitHub Push → Netlify Build → 
 Type Check → Lint → Test → 
 Deploy to Preview → Deploy to Production
 ```
 
 ## 📊 Monitoring & Analytics
 
-### **Vercel Analytics**
+### **Netlify Analytics**
 
 - **Core Web Vitals**: Performance monitoring
 - **Real User Monitoring**: Actual user performance data

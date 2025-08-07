@@ -88,8 +88,7 @@ STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 # Email Configuration
 RESEND_API_KEY=your_resend_api_key
 
-# File Storage
-BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
+# File Storage (using Supabase Storage)
 
 # Application Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000

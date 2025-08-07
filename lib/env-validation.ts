@@ -22,8 +22,7 @@ NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1, "Clerk publishable key is r
   RESEND_API_KEY: z.string().min(1, "Resend API key is required").optional(),
   FROM_EMAIL: z.string().email("Invalid from email address").optional(),
 
-  // File Storage
-  BLOB_READ_WRITE_TOKEN: z.string().min(1, "Blob storage token is required").optional(),
+  // File Storage (using Supabase Storage)
 
   // App Configuration
   NEXTAUTH_URL: z.string().url("Invalid NextAuth URL").optional(),

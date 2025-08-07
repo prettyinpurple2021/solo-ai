@@ -18,7 +18,7 @@ SoloBoss AI Platform is built as a modern, scalable web application using a soph
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │                 │    │                 │    │                 │
-│   Vercel CDN    │    │   PostgreSQL    │    │   External APIs │
+│   Netlify CDN   │    │   PostgreSQL    │    │   External APIs │
 │   (Hosting)     │    │   (Database)    │    │   (Stripe, etc) │
 │                 │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
@@ -96,7 +96,7 @@ lib/
 - **AI Services**: OpenAI, Anthropic, Google AI
 - **Authentication**: Supabase Auth with SSR support
 - **Payment Processing**: Stripe integration
-- **File Storage**: Vercel Blob for file uploads
+- **File Storage**: Supabase Storage for file uploads
 - **Email**: Resend for transactional emails
 
 ## 🔄 Data Flow
@@ -157,7 +157,7 @@ User Input → Context Building → AI Service → Response Processing → UI Di
 - **Database Indexing**: Optimized database queries
 - **Connection Pooling**: Efficient database connections
 - **Caching Layers**: Redis for session and data caching
-- **Edge Functions**: Vercel Edge Functions for global performance
+- **Edge Functions**: Netlify Edge Functions for global performance
 
 ## 🔧 Development Architecture
 
@@ -176,14 +176,14 @@ User Input → Context Building → AI Service → Response Processing → UI Di
 ## 🌐 Deployment Architecture
 
 ### Production Infrastructure
-- **Vercel Platform**: Serverless deployment and hosting
+- **Netlify Platform**: Serverless deployment and hosting
 - **CDN**: Global content delivery network
 - **Edge Computing**: Edge functions for performance
 - **Automatic Scaling**: Serverless auto-scaling
 
 ### CI/CD Pipeline
 ```
-GitHub Push → Vercel Build → Type Check → Lint → Deploy → Live
+GitHub Push → Netlify Build → Type Check → Lint → Deploy → Live
 ```
 
 ## 📈 Monitoring & Observability
