@@ -21,11 +21,11 @@ Clerk has been integrated following the current best practices for Next.js App R
 
 ### Utility Files
 
-4. **`lib/clerk-auth.ts`** - Server-side authentication utilities
-5. **`hooks/use-clerk-auth.ts`** - Client-side authentication hook
-6. **`components/auth/clerk-auth-demo.tsx`** - Example authentication UI
-7. **`components/auth/protected-route.tsx`** - Protected route wrapper
-8. **`app/api/clerk-example/route.ts`** - Example authenticated API route
+1. **`lib/clerk-auth.ts`** - Server-side authentication utilities
+2. **`hooks/use-clerk-auth.ts`** - Client-side authentication hook
+3. **`components/auth/clerk-auth-demo.tsx`** - Example authentication UI
+4. **`components/auth/protected-route.tsx`** - Protected route wrapper
+5. **`app/api/clerk-example/route.ts`** - Example authenticated API route
 
 ## Environment Variables
 
@@ -165,4 +165,4 @@ NEXT_PUBLIC_CLERK_DEBUG=true
 
 - [Clerk Documentation](https://clerk.com/docs)
 - [Next.js App Router Guide](https://nextjs.org/docs/app)
-- [Clerk Next.js Quickstart](https://clerk.com/docs/quickstarts/nextjs) 
+- [Clerk Next.js Quickstart](https://clerk.com/docs/quickstarts/nextjs)
