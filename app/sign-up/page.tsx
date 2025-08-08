@@ -1,20 +1,12 @@
 "use client"
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { SupabaseAuth } from "@/components/auth/supabase-auth"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 export default function SignUpPage() {
-  const router = useRouter()
-
-  const handleClerkSignUp = () => {
-    // Redirect to Clerk's hosted sign-up page
-    window.location.href = "https://accounts.solobossai.fun/sign-up"
-  }
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
@@ -27,19 +19,7 @@ export default function SignUpPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Button 
-            onClick={handleClerkSignUp}
-            className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
-          >
-            ✨ Sign Up with Clerk
-          </Button>
-          
-          <div className="text-center text-sm text-gray-600">
-            Already have an account?{" "}
-            <Link href="/sign-in" className="text-pink-600 hover:text-pink-700 font-medium">
-              Sign in here
-            </Link>
-          </div>
+          <SupabaseAuth />
           
           <div className="pt-4">
             <Link href="/">

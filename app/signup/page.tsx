@@ -7,7 +7,7 @@ export default function SignupPage() {
   const router = useRouter()
 
   useEffect(() => {
-    // Redirect to the new Clerk-based sign-up page
+    // Redirect to the updated sign-up page using Supabase authentication
     router.replace('/sign-up')
   }, [router])
 
