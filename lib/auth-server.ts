@@ -97,3 +97,4 @@ export function withAuth<T>(
     return handler(req, user!)
   }
 }
+
