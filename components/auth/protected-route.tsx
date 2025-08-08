@@ -1,8 +1,8 @@
 "use client"
 
-// Removed Clerk imports - using Supabase auth only
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
+import { useAuth } from "@/hooks/use-auth"
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -15,20 +15,20 @@ export function ProtectedRoute({
   fallback = <div>Loading...</div>,
   redirectTo = "/"
 }: ProtectedRouteProps) {
-  const { isLoaded, isSignedIn } = useAuth()
+  const { user, loading } = useAuth()
   const router = useRouter()
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
+    if (!loading && !user) {
       router.push(redirectTo)
     }
-  }, [isLoaded, isSignedIn, router, redirectTo])
+  }, [user, loading, router, redirectTo])
 
-  if (!isLoaded) {
+  if (loading) {
     return <>{fallback}</>
   }
 
-  if (!isSignedIn) {
+  if (!user) {
     return null
   }
 

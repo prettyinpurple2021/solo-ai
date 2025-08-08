@@ -1,7 +1,6 @@
 'use client'
 
-// Removed Clerk component import
-// Removed migration components
+import { SupabaseAuth } from "@/components/auth/supabase-auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useEffect, useState } from "react"
 
@@ -40,10 +39,7 @@ export default function AuthExamplePage() {
 
         {/* Main Authentication Component */}
         <div className="max-w-md mx-auto mb-8">
-          <div className="text-center p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">Authentication Example</h2>
-          <p className="text-gray-600">Clerk authentication has been removed from this project.</p>
-        </div>
+          <SupabaseAuth />
         </div>
 
         {/* Feature Cards */}
