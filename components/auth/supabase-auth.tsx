@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,6 +14,7 @@ import { format, subYears } from "date-fns"
 
 export function SupabaseAuth() {
   const { signIn, signUp, user, signOut } = useAuth()
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -30,6 +32,13 @@ export function SupabaseAuth() {
   })
   const [signUpErrors, setSignUpErrors] = useState<Record<string, string>>({})
   const [signUpLoading, setSignUpLoading] = useState(false)
+
+  // Redirect to dashboard when user is authenticated
+  useEffect(() => {
+    if (user) {
+      router.push("/dashboard")
+    }
+  }, [user, router])
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -162,34 +171,9 @@ export function SupabaseAuth() {
     }
   }
 
+  // Don't render anything if user is authenticated (will redirect)
   if (user) {
-    return (
-      <Card className="boss-card border-2 border-purple-200 hover:border-purple-300 transition-all duration-300">
-        <CardHeader className="pb-4">
-          <CardTitle className="boss-text-gradient text-xl font-bold">
-            Welcome, Boss! 👑
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-soloboss flex items-center justify-center">
-              <span className="text-white font-bold text-sm">👑</span>
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-gray-900">{user.email}</p>
-              <p className="text-xs text-gray-600">Ready to dominate?</p>
-            </div>
-          </div>
-          <Button 
-            onClick={signOut}
-            variant="outline" 
-            className="w-full border-2 border-purple-300 text-purple-700 hover:bg-purple-50"
-          >
-            Sign Out
-          </Button>
-        </CardContent>
-      </Card>
-    )
+    return null
   }
 
   return (

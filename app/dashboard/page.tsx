@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
 import { useDashboardData } from "@/hooks/use-dashboard-data"
+import { ProtectedRoute } from "@/components/auth/protected-route"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -30,53 +30,43 @@ import {
 } from "lucide-react"
 
 export default function DashboardPage() {
-  const { user, loading: authLoading } = useAuth()
   const { data: dashboardData, loading: dataLoading, error, refetch, lastUpdated } = useDashboardData()
-  const router = useRouter()
   const [currentTime, setCurrentTime] = useState(new Date())
-
-  // Redirect to landing page if not authenticated
-  useEffect(() => {
-    if (!authLoading && !user) {
-      router.push('/')
-    }
-  }, [user, authLoading, router])
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000)
     return () => clearInterval(timer)
   }, [])
 
-  // Show loading state while checking authentication or loading data
-  if (authLoading || dataLoading) {
+  // Show loading state while loading data
+  if (dataLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
-          <p className="mt-4 text-lg font-medium">Loading your SoloBoss empire...</p>
+      <ProtectedRoute>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600"></div>
+            <p className="mt-4 text-lg font-medium">Loading your SoloBoss empire...</p>
+          </div>
         </div>
-      </div>
+      </ProtectedRoute>
     )
-  }
-
-  // Don't render dashboard if not authenticated
-  if (!user) {
-    return null
   }
 
   // Show error state if data failed to load
   if (error) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold mb-2">Failed to load dashboard</h2>
-          <p className="text-muted-foreground mb-4">{error}</p>
-          <Button onClick={refetch} variant="outline">
-            Try Again
-          </Button>
+      <ProtectedRoute>
+        <div className="flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+            <h2 className="text-xl font-semibold mb-2">Failed to load dashboard</h2>
+            <p className="text-muted-foreground mb-4">{error}</p>
+            <Button onClick={refetch} variant="outline">
+              Try Again
+            </Button>
+          </div>
         </div>
-      </div>
+      </ProtectedRoute>
     )
   }
 
@@ -166,7 +156,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <SidebarInset>
+    <ProtectedRoute>
+      <SidebarInset>
       <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 bg-gradient-to-r from-purple-50 to-teal-50">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
@@ -468,5 +459,6 @@ export default function DashboardPage() {
         </Card>
       </div>
     </SidebarInset>
+    </ProtectedRoute>
   )
 }
