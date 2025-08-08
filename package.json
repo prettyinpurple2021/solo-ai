@@ -14,6 +14,7 @@
     "setup-migration": "node scripts/setup-migration-database.mjs",
     "verify-triggers": "node scripts/verify-updated-at-triggers.js",
     "netlify-check": "node scripts/netlify-deploy-check.js",
+    "migrate-profile-fields": "node scripts/run-profile-fields-migration.mjs",
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
