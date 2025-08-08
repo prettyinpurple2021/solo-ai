@@ -39,14 +39,14 @@ export default function ProfilePage() {
   // Mock profile for now since it's not in the auth context
   const profile = user ? {
     full_name: user.displayName || "Boss Babe",
-    email: user.email,
+    email: "user@example.com", // Stack Auth user object structure may differ
     company_name: "Building My Empire",
     industry: null,
     business_type: null,
     phone: null,
     website: null,
     bio: null,
-    avatar_url: user.avatarUrl,
+    avatar_url: null, // Stack Auth user object structure may differ
     timezone: null
   } : null
 

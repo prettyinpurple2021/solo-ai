@@ -3,7 +3,7 @@
 import type React from "react"
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/hooks/use-auth"
+import { useUser } from "@stackframe/stack"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 
@@ -12,7 +12,8 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode
 }) {
-  const { user, loading } = useAuth()
+  const user = useUser()
+  const loading = !user
   const router = useRouter()
 
   // Redirect to landing page if not authenticated

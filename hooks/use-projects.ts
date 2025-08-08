@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useUser } from '@stackframe/stack'
 
 interface Project {
   id: string
@@ -23,7 +23,7 @@ interface UseProjectsResult {
 }
 
 export function useProjects(): UseProjectsResult {
-  const { user } = useAuth()
+  const user = useUser()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

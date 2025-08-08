@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useAuth } from './use-auth'
+import { useUser } from '@stackframe/stack'
 
 export interface DashboardData {
   user: {
@@ -81,7 +81,7 @@ export interface DashboardData {
 }
 
 export function useDashboardData() {
-  const { user } = useAuth()
+  const user = useUser()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)

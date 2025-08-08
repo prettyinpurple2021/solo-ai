@@ -13,10 +13,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar"
-import { useAuth } from "@/hooks/use-auth"
+import { useUser, useStackApp } from "@stackframe/stack"
 
 export function NavUser({
-  user,
+  user: userProp,
 }: {
   user: {
     name: string
@@ -25,14 +25,19 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
-  const { signOut } = useAuth()
+  const user = useUser()
+  const stackApp = useStackApp()
+  
+  const signOut = async () => {
+    await stackApp.signOut()
+  }
 
   const handleSignOut = async () => {
     await signOut()
   }
 
   // Generate initials from name for fallback
-  const initials = user.name
+  const initials = userProp.name
     .split(" ")
     .map((n) => n[0])
     .join("")
@@ -49,12 +54,12 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar || "/default-user.svg"} alt={user.name} />
+                <AvatarImage src={userProp.avatar || "/default-user.svg"} alt={userProp.name} />
                 <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-semibold">{userProp.name}</span>
+                <span className="truncate text-xs">{userProp.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -68,12 +73,12 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar || "/default-user.svg"} alt={user.name} />
+                  <AvatarImage src={userProp.avatar || "/default-user.svg"} alt={userProp.name} />
                   <AvatarFallback className="rounded-lg">{initials}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-semibold">{userProp.name}</span>
+                  <span className="truncate text-xs">{userProp.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

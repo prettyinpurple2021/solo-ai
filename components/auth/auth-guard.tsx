@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useEffect, useState } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { useAuth } from "@/hooks/use-auth"
+import { useUser } from "@stackframe/stack"
 import { Loader2 } from "lucide-react"
 
 interface AuthGuardProps {
@@ -12,7 +12,8 @@ interface AuthGuardProps {
 }
 
 export function AuthGuard({ children }: AuthGuardProps) {
-  const { user, loading } = useAuth()
+  const user = useUser()
+  const loading = !user
   const router = useRouter()
   const pathname = usePathname()
   const [isChecking, setIsChecking] = useState(true)

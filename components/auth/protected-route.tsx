@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { useAuth } from "@/hooks/use-auth"
+import { useUser } from "@stackframe/stack"
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -15,7 +15,8 @@ export function ProtectedRoute({
   fallback = <div>Loading...</div>,
   redirectTo = "/"
 }: ProtectedRouteProps) {
-  const { user, loading } = useAuth()
+  const user = useUser()
+  const loading = !user
   const router = useRouter()
 
   useEffect(() => {

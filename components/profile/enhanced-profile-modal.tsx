@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useAuth } from "@/hooks/use-auth"
+import { useUser } from "@stackframe/stack"
 import { uploadImage, deleteImage } from "@/lib/image-upload"
 import { useToast } from "@/hooks/use-toast"
 import { User, Camera, Upload, X, Settings, Bell, Shield, Crown, Sparkles, Save, Trash2 } from "lucide-react"
@@ -24,7 +24,7 @@ interface EnhancedProfileModalProps {
 }
 
 export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModalProps) {
-  const { user } = useAuth()
+  const user = useUser()
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
 

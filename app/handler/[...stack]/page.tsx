@@ -6,6 +6,5 @@ export default function Handler(props: unknown) {
     fullPage 
     app={stackServerApp} 
     routeProps={props}
-    excludeRoutes={['/signin', '/signup']}
   />;
 }

@@ -2,15 +2,16 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/hooks/use-auth"
-import { NeonAuth } from "@/components/auth/neon-auth"
+import { useUser } from "@stackframe/stack"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 
 export default function SignInPage() {
-  const { user, loading } = useAuth()
+  const user = useUser()
+  const loading = !user
   const router = useRouter()
 
   useEffect(() => {
@@ -52,7 +53,10 @@ export default function SignInPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <NeonAuth />
+          <div className="text-center">
+            <p className="text-gray-600">This page has been replaced with Stack Auth.</p>
+            <p className="text-gray-600">Please use the new sign-in page at /signin</p>
+          </div>
           
           <div className="pt-4">
             <Link href="/">
