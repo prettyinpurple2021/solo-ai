@@ -138,23 +138,23 @@ export default function TermsOfServicePage() {
                   
                   <div className="grid gap-4 mb-6">
                     <div className="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-400">
-                      <h4 className="font-semibold text-gray-800 mb-2">Launchpad (Free):</h4>
+                      <h4 className="font-semibold text-gray-800 mb-2">Launch (Free):</h4>
                       <p className="text-gray-600 text-sm">
-                        This tier provides a basic entry point with limited access to core AI agent functionalities. It is available monthly at no cost.
+                        This tier provides a basic entry point with access to 2 AI agents and 5 daily conversations. It is available at no cost monthly or yearly.
                       </p>
                     </div>
                     
                     <div className="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-400">
                       <h4 className="font-semibold text-gray-800 mb-2">Accelerator (Pro):</h4>
                       <p className="text-gray-600 text-sm">
-                        This tier offers enhanced capabilities, including access to all 8 AI Agents, the full BrandStyler Studio, and 10GB of Briefcase storage. It is priced at $19 per month, with yearly pricing to be determined based on a discount.
+                        This tier offers enhanced capabilities, including access to 5 AI Agents, advanced automation workflows, and priority support. It is priced at $19 per month or $190 per year.
                       </p>
                     </div>
                     
                     <div className="bg-pink-50 p-4 rounded-lg border-l-4 border-pink-400">
                       <h4 className="font-semibold text-gray-800 mb-2">Dominator (Empire):</h4>
                       <p className="text-gray-600 text-sm">
-                        This tier provides the most comprehensive features for advanced users, with unrestricted access to all current and future premium functionalities. Pricing for this tier is $39 per month, with yearly pricing to be determined based on a discount.
+                        This tier provides the most comprehensive features for advanced users, with unrestricted access to all current and future premium functionalities. Pricing for this tier is $29 per month or $290 per year.
                       </p>
                     </div>
                   </div>
