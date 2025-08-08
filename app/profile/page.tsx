@@ -1,6 +1,8 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { useUser } from "@stackframe/stack"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -8,7 +10,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { EnhancedProfileModal } from "@/components/profile/enhanced-profile-modal"
-import { useAuth } from "@/hooks/use-auth"
 import {
   User,
   Settings,
@@ -32,13 +33,12 @@ export const dynamic = 'force-dynamic'
 export default function ProfilePage() {
   const [mounted, setMounted] = useState(false)
   const [showProfileModal, setShowProfileModal] = useState(false)
+  const router = useRouter()
+  const user = useUser()
   
-  // Only access useAuth after component mounts
-  const auth = mounted ? useAuth() : null
-  const user = auth?.user || null
   // Mock profile for now since it's not in the auth context
   const profile = user ? {
-    full_name: user.user_metadata?.full_name || "Boss Babe",
+    full_name: user.displayName || "Boss Babe",
     email: user.email,
     company_name: "Building My Empire",
     industry: null,
@@ -46,7 +46,7 @@ export default function ProfilePage() {
     phone: null,
     website: null,
     bio: null,
-    avatar_url: user.user_metadata?.avatar_url,
+    avatar_url: user.avatarUrl,
     timezone: null
   } : null
 
@@ -62,6 +62,12 @@ export default function ProfilePage() {
         <p className="mt-4 text-gray-600">Loading your boss profile...</p>
       </div>
     </div>
+  }
+
+  // Redirect to signin if not authenticated
+  if (!user) {
+    router.push("/signin")
+    return null
   }
 
   const profileCompletion = () => {

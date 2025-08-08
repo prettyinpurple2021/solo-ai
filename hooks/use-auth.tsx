@@ -3,7 +3,7 @@
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
 import type { User, Session } from "@/lib/neon/types"
-import { createToken, verifyToken } from "@/lib/auth-utils"
+import { verifyToken } from "@/lib/auth-utils"
 
 interface AuthContextType {
   user: User | null

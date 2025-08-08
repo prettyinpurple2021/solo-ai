@@ -1,46 +1,41 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@/lib/neon/server"
-import { cookies } from "next/headers"
 import { sign, verify } from "jsonwebtoken"
 
 export interface AuthenticatedUser {
   id: string
-  email?: string
+  email: string
+  full_name?: string
+  avatar_url?: string
+  subscription_tier?: string
+  subscription_status?: string
 }
 
 export interface AuthResult {
   user: AuthenticatedUser | null
-  error: NextResponse | null
+  error: string | null
 }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
-/**
- * Create a JWT token for a user
- */
 export function createToken(userId: string, email: string): string {
   return sign({ userId, email }, JWT_SECRET, { expiresIn: '7d' })
 }
 
-/**
- * Verify a JWT token
- */
 export function verifyToken(token: string): { userId: string; email: string } | null {
   try {
-    return verify(token, JWT_SECRET) as { userId: string; email: string }
-  } catch {
+    const decoded = verify(token, JWT_SECRET) as { userId: string; email: string }
+    return decoded
+  } catch (error) {
     return null
   }
 }
 
-/**
- * Get user from database by ID
- */
 async function getUserById(userId: string) {
   try {
     const client = await createClient()
     const { rows } = await client.query(
-      'SELECT id, email, full_name FROM users WHERE id = $1',
+      'SELECT id, email, full_name, avatar_url, subscription_tier, subscription_status FROM users WHERE id = $1',
       [userId]
     )
     return rows[0] || null
@@ -50,67 +45,16 @@ async function getUserById(userId: string) {
   }
 }
 
-/**
- * Shared authentication utility for API routes
- * Returns the authenticated user or an error response
- */
+// This function is for server-side use only (API routes, Server Components)
 export async function authenticateRequest(): Promise<AuthResult> {
   try {
-    const cookieStore = await cookies()
-    const token = cookieStore.get('auth-token')?.value
-
-    if (!token) {
-      return {
-        user: null,
-        error: NextResponse.json({ error: "No authentication token" }, { status: 401 })
-      }
-    }
-
-    const decoded = verifyToken(token)
-    if (!decoded) {
-      return {
-        user: null,
-        error: NextResponse.json({ error: "Invalid authentication token" }, { status: 401 })
-      }
-    }
-
-    const user = await getUserById(decoded.userId)
-    if (!user) {
-      return {
-        user: null,
-        error: NextResponse.json({ error: "User not found" }, { status: 401 })
-      }
-    }
-
-    return {
-      user: {
-        id: user.id,
-        email: user.email,
-      },
-      error: null
-    }
-  } catch (authError) {
-    console.error("Authentication error:", authError)
+    // This function should only be called from server-side code
+    // For client-side authentication, use the useAuth hook
+    throw new Error('authenticateRequest should only be called from server-side code')
+  } catch (error) {
     return {
       user: null,
-      error: NextResponse.json({ error: "Authentication failed" }, { status: 500 })
+      error: error instanceof Error ? error.message : 'Authentication failed'
     }
-  }
-}
-
-/**
- * Middleware-style authentication wrapper for API route handlers
- */
-export function withAuth<T>(
-  handler: (_req: NextRequest, _user: AuthenticatedUser) => Promise<T>
-) {
-  return async (req: NextRequest): Promise<T | NextResponse> => {
-    const { user, error } = await authenticateRequest()
-    
-    if (error) {
-      return error
-    }
-    
-    return handler(req, user!)
   }
 }
