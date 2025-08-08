@@ -179,7 +179,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 3.4. Briefcase
 
-**FR-BC-001: Document Upload**
+*FR-BC-001: Document Upload**
 
 - **Description**: The system SHALL allow users to upload various document and file types to their Briefcase.
 - **Preconditions**: User is logged in, user has available storage quota based on subscription tier.
@@ -195,7 +195,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
   - Storage quota exceeded: Display "Storage limit reached. Please upgrade your plan."
   - Upload failed: Display "File upload failed. Please try again."
 
-**FR-BC-002: Document Listing and Display**
+*FR-BC-002: Document Listing and Display**
 
 - **Description**: The system SHALL display a list of all documents and files stored in the user's Briefcase.
 - **Preconditions**: User is logged in.
@@ -223,7 +223,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 - **Nova (The Product Designer)**: Helps you brainstorm UI/UX, create wireframes, and prepare for design handoff.
 - **Glitch (The QA & Debug Agent)**: Identifies UX friction, detects system flaws, and suggests usability improvements.
 
-**FR-AI-001: AI Agent Access and Interface Display**
+*FR-AI-001: AI Agent Access and Interface Display**
 
 - **Description**: The system SHALL provide access to the available AI Agents based on the user's subscription tier and display a dedicated interface for each agent.
 - **Preconditions**: User is logged in, user has access to the specific AI Agent.
@@ -238,7 +238,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
   - AI Agent interface unavailable: Display "The selected AI Agent is currently unavailable. Please try again later."
   - Navigation failed: Display "An error occurred while loading the AI Agent interface."
 
-**FR-AI-002: AI Agent Request Processing**
+*FR-AI-002: AI Agent Request Processing**
 
 - **Description**: The system SHALL process user requests submitted through an AI Agent's interface using the AI SDK with multiple providers.
 - **Preconditions**: User is on an AI Agent's interface, user submits a valid request.
@@ -257,7 +257,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 3.6. BrandStyler
 
-**FR-BS-001: Brand Asset Generation Request**
+*FR-BS-001: Brand Asset Generation Request**
 
 - **Description**: The system SHALL allow users to request the BrandStyler to generate basic brand assets like color palettes and font combinations.
 - **Preconditions**: User is on the BrandStyler interface, user has access based on subscription tier.
@@ -272,7 +272,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
   - Generation failed: Display "Failed to generate brand assets. Please try again."
   - Insufficient parameters: Display "Please provide a desired mood or style."
 
-**FR-BS-002: Generated Asset Saving to Briefcase**
+*FR-BS-002: Generated Asset Saving to Briefcase**
 
 - **Description**: The system SHALL allow users to save generated brand assets directly to their Briefcase.
 - **Preconditions**: User is on the BrandStyler interface, assets have been generated.
@@ -288,7 +288,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 3.7. Burnout Shield & Focus Mode
 
-**FR-BSFM-001: Mindfulness Exercise Access**
+*FR-BSFM-001: Mindfulness Exercise Access**
 
 - **Description**: The system SHALL provide access to guided mindfulness exercises within the Burnout Shield feature.
 - **Preconditions**: User is on the Burnout Shield interface, user has access based on subscription tier.
@@ -300,7 +300,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 - **Error Handling**:
   - Exercise content unavailable: Display "Mindfulness exercise content is temporarily unavailable."
 
-**FR-BSFM-002: Focus Mode Activation**
+*FR-BSFM-002: Focus Mode Activation**
 
 - **Description**: The system SHALL allow users to activate a distraction-free Focus Mode with a timer.
 - **Preconditions**: User is on the Focus Mode interface.
@@ -316,7 +316,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 3.8. Subscription Management & Payment
 
-**FR-SMP-001: Subscription Tier Display**
+*FR-SMP-001: Subscription Tier Display**
 
 - **Description**: The system SHALL display available subscription tiers and their features.
 - **Preconditions**: User is logged in or browsing the application.
@@ -328,7 +328,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 - **Error Handling**:
   - Retrieval failed: Display "Unable to retrieve subscription information. Please try again later."
 
-**FR-SMP-002: Subscription Purchase/Upgrade**
+*FR-SMP-002: Subscription Purchase/Upgrade**
 
 - **Description**: The system SHALL allow users to purchase or upgrade subscriptions.
 - **Preconditions**: User is logged in.
@@ -344,7 +344,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 3.9. Notifications
 
-**FR-NOT-001: In-App Notification Display**
+*FR-NOT-001: In-App Notification Display**
 
 - **Description**: The system SHALL display real-time notifications within the application.
 - **Preconditions**: User is logged in, notification event is triggered.
@@ -362,67 +362,67 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 4.1. Performance
 
-**NFR-PERF-001: Page Load Time**
+*NFR-PERF-001: Page Load Time**
 
 - The BossRoom dashboard and core features SHALL load within 3 seconds for 90% of users using Next.js optimizations including Server Components, Image optimization, and automatic code splitting.
 
-**NFR-PERF-002: AI Agent Response Time**
+*NFR-PERF-002: AI Agent Response Time**
 
 - AI responses SHALL be streamed in real-time using the AI SDK, with initial tokens appearing within 2 seconds for 85% of requests under normal load.
 
-**NFR-PERF-003: Data Retrieval Time**
+*NFR-PERF-003: Data Retrieval Time**
 
 - SlayList and Briefcase data SHALL load within 2 seconds for 95% of requests using Supabase edge functions and CDN caching.
 
 ### 4.2. Scalability
 
-**NFR-SCAL-001: User Load**
+*NFR-SCAL-001: User Load**
 
 - The system SHALL support at least 10,000 concurrent users using Netlify's serverless infrastructure and Supabase's auto-scaling database.
 
-**NFR-SCAL-002: Data Volume**
+*NFR-SCAL-002: Data Volume**
 
 - The system SHALL handle growing data volumes using Supabase's PostgreSQL with automatic scaling and Supabase Storage for file storage.
 
 ### 4.3. Security
 
-**NFR-SEC-001: Authentication & Authorization**
+*NFR-SEC-001: Authentication & Authorization**
 
 - The system SHALL use Supabase Auth with Row Level Security for secure data access and Next.js middleware for route protection.
 
-**NFR-SEC-002: Data Protection**
+*NFR-SEC-002: Data Protection**
 
 - All data SHALL be encrypted at rest and in transit using Supabase's built-in encryption and Netlify's HTTPS-only deployment.
 
-**NFR-SEC-003: Input Validation**
+*NFR-SEC-003: Input Validation**
 
 - All user inputs SHALL be validated using TypeScript types and Zod schemas for runtime validation.
 
 ### 4.4. Reliability
 
-**NFR-REL-001: System Uptime**
+*NFR-REL-001: System Uptime**
 
 - The system SHALL maintain 99.9% uptime using Netlify's global CDN and Supabase's high-availability infrastructure.
 
-**NFR-REL-002: Error Handling**
+*NFR-REL-002: Error Handling**
 
 - The system SHALL implement comprehensive error boundaries in React and graceful degradation for failed services.
 
-**NFR-REL-003: Real-time Resilience**
+*NFR-REL-003: Real-time Resilience**
 
 - The system SHALL gracefully handle Supabase real-time connection failures with automatic reconnection and fallback polling.
 
 ### 4.5. Usability
 
-**NFR-USAB-001: Responsive Design**
+*NFR-USAB-001: Responsive Design**
 
 - The interface SHALL be fully responsive using Tailwind CSS mobile-first approach with touch-optimized interactions.
 
-**NFR-USAB-002: Accessibility**
+*NFR-USAB-002: Accessibility**
 
 - The system SHALL meet WCAG 2.1 AA standards using Radix UI primitives and semantic HTML.
 
-**NFR-USAB-003: Progressive Enhancement**
+*NFR-USAB-003: Progressive Enhancement**
 
 - The system SHALL work as a Progressive Web App with offline capabilities via service workers.
 
@@ -430,50 +430,50 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 ### 🚀 Core Technologies
 
-**Frontend Framework**
+*Frontend Framework**
 
 - **Next.js 15.2.4**: App Router, Server Components, API Routes, Image/Font optimization
 - **React 19**: Functional components, hooks, Server Components, concurrent features
 - **TypeScript 5+**: Strict type checking, enhanced IDE support, compile-time error prevention
 
-**Styling & UI**
+*Styling & UI**
 
 - **Tailwind CSS 3.4+**: Utility-first styling, responsive design, custom theme, dark mode
 - **Radix UI Primitives**: Accessible, unstyled UI components with full keyboard navigation
 - **Framer Motion 12+**: Smooth animations, gesture support, layout transitions
 
-**Backend & Database**
+*Backend & Database**
 
 - **Supabase**: PostgreSQL database, real-time subscriptions, authentication, Row Level Security
 - **Supabase Auth**: Secure authentication with social providers and magic links
 - **Supabase Storage**: File upload and management
 
-**AI & Machine Learning**
+*AI & Machine Learning**
 
 - **AI SDK**: Provider-agnostic AI integration with streaming support
 - **OpenAI GPT Models**: GPT-4 for advanced reasoning, GPT-3.5-turbo for fast responses
 - **Anthropic Claude**: Claude-3 for advanced analysis and constitutional AI
 - **Google AI (Gemini)**: Gemini Pro for multimodal capabilities
 
-**Payment & Billing**
+*Payment & Billing**
 
 - **Stripe**: Secure payment processing, subscription management, webhook integration
 
-**Communication**
+*Communication**
 
 - **Resend**: Transactional emails with React Email templates
 
-**File Storage**
+*File Storage**
 
 - **Supabase Storage**: Secure file storage with CDN distribution and image processing
 
-**Development Tools**
+*Development Tools**
 
 - **pnpm**: Fast package management with disk efficiency
 - **ESLint 9+**: Code linting with TypeScript and Next.js integration
 - **Prettier**: Consistent code formatting
 
-**Deployment & Infrastructure**
+*Deployment & Infrastructure**
 
 - **Netlify Platform**: Serverless deployment, edge network, preview deployments, analytics
 
