@@ -166,14 +166,13 @@ CREATE PUBLICATION supabase_realtime FOR ALL TABLES;
 - **Multimodal**: Text and image understanding capabilities
 - **Integration**: Through AI SDK for consistent interface
 
-## 💰 Payment & Billing
+## 💰 Subscription & Pricing
 
-### **Stripe**
+### **Display-Only Pricing Tiers**
 
-- **Payment Processing**: Secure payment handling
-- **Subscription Management**: Recurring billing for plans
-- **Webhook Integration**: Real-time payment event handling
-- **Tax Calculation**: Automatic tax calculation and compliance
+- **Marketing Presentation**: Three-tier pricing structure
+- **Feature Comparison**: Launch, Accelerator, and Dominator plans
+- **No Payment Processing**: Payment system removed from codebase
 
 ## 📧 Communication & Email
 

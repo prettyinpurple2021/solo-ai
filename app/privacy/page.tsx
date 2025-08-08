@@ -107,7 +107,7 @@ export default function PrivacyPolicyPage() {
                         Subscription and Payment Data:
                       </h3>
                       <p className="text-gray-600 text-sm">
-                        We collect information related to your subscription plan, including your current tier (Launchpad, Accelerator, Dominator) and whether you have a paid subscription. Payment processing is handled securely by Clerk Billing. We receive webhooks from Clerk to update your subscription status. We store subscription-related data such as subscription_tier_id, tier_name, features_included, ai_agent_access_levels, and price. User-specific subscription data, including user_subscription_id, user_id, subscription_tier_id, start_date, end_date, payment_status, and clerk_customer_id, are also stored.
+                        We display subscription plan information for marketing purposes, including tier details (Launch, Accelerator, Dominator) and their respective features. No payment processing occurs on this platform. All users currently have access to Launch tier features, with higher tier information displayed for demonstration purposes only.
                       </p>
                     </div>
 
@@ -258,9 +258,9 @@ export default function PrivacyPolicyPage() {
                     </div>
 
                     <div className="bg-pink-50 p-4 rounded-lg">
-                      <h3 className="font-semibold text-gray-800 mb-2">Secure Payments:</h3>
+                      <h3 className="font-semibold text-gray-800 mb-2">No Payment Processing:</h3>
                       <p className="text-gray-600 text-sm">
-                        We integrate with Stripe for secure payment processing. Stripe handles all payment information securely via Stripe Elements or Checkout. We do not directly store your full payment card details on our servers.
+                        This platform does not process payments or collect financial information. All pricing information is displayed for marketing and demonstration purposes only.
                       </p>
                     </div>
 
@@ -295,9 +295,9 @@ export default function PrivacyPolicyPage() {
                     </div>
 
                     <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
-                                              <h3 className="font-semibold text-gray-800 mb-2">Clerk Billing:</h3>
+                                              <h3 className="font-semibold text-gray-800 mb-2">Subscription Display:</h3>
                         <p className="text-gray-600 text-sm">
-                          We utilize Clerk Billing for secure payment processing for subscriptions, including customer creation, subscription management, creating checkout sessions, and handling webhooks. Your payment information is subject to Clerk's privacy policy.
+                          We display subscription tier information (Launch, Accelerator, Dominator) for marketing purposes. No actual billing or payment processing occurs on this platform.
                         </p>
                     </div>
 

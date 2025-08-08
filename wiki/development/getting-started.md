@@ -80,10 +80,9 @@ OPENAI_API_KEY=your_openai_api_key
 ANTHROPIC_API_KEY=your_anthropic_api_key
 GOOGLE_GENERATIVE_AI_API_KEY=your_google_ai_api_key
 
-# Payment Configuration (Development)
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-STRIPE_SECRET_KEY=your_stripe_secret_key
-STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
+# Subscription Configuration (Development)
+# Note: Payment processing has been removed from this project
+# Pricing tiers are display-only for marketing purposes
 
 # Email Configuration
 RESEND_API_KEY=your_resend_api_key

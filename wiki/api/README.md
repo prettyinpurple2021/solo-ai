@@ -582,25 +582,18 @@ Authorization: Bearer <token>
 }
 ```
 
-## 🔄 Webhooks API
+## 💰 Subscription Information
 
-### Stripe Webhooks
+### Pricing Tiers (Display Only)
 
-```typescript
-POST /api/webhooks/stripe
-Content-Type: application/json
-Stripe-Signature: [signature]
+Payment processing has been removed from this project. Subscription tiers are now display-only for marketing purposes.
 
-// Handles subscription events
-{
-  "type": "customer.subscription.updated",
-  "data": {
-    "object": {
-      // Stripe subscription object
-    }
-  }
-}
-```
+Available tiers:
+- **Launch**: $0/month or $0/year (free tier)
+- **Accelerator**: $19/month or $190/year  
+- **Dominator**: $29/month or $290/year
+
+Access the pricing page at `/pricing` to view the complete feature comparison.
 
 ### Custom Webhooks
 

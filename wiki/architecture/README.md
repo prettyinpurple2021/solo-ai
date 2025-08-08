@@ -95,7 +95,7 @@ lib/
 ### 4. External Integrations
 - **AI Services**: OpenAI, Anthropic, Google AI
 - **Authentication**: Supabase Auth with SSR support
-- **Payment Processing**: Stripe integration
+- **Pricing Display**: Marketing-focused pricing tiers
 - **File Storage**: Supabase Storage for file uploads
 - **Email**: Resend for transactional emails
 

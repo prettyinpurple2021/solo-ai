@@ -115,7 +115,7 @@ Your command center for world domination:
 
 #### **Additional Services & Integrations**
 
-- **Clerk Billing** - Subscription billing and feature gating
+- **Subscription Tiers** - Feature access and plan management
 - **Resend** - Transactional email delivery
 - **Supabase Storage** - File storage and CDN
 - **Environment Validation** - Zod-based config validation
@@ -214,8 +214,10 @@ Visit [http://localhost:3000](http://localhost:3000) to see your SoloBoss AI pla
 2. **OpenAI** - AI conversations
    - Get API key at [platform.openai.com](https://platform.openai.com)
 
-3. **Clerk Billing** (Optional) - Subscriptions
-   - Enable billing in Clerk dashboard
+3. **Subscription Management** - Three pricing tiers available
+   - Launch: $0/month or $0/year (free tier)
+   - Accelerator: $19/month or $190/year
+   - Dominator: $29/month or $290/year
    - Configure subscription plans
 
 4. **Resend** (Optional) - Emails
@@ -277,7 +279,7 @@ The platform is architected for easy expansion:
 
 ### 💳 **Subscription System**
 
-- Clerk Billing integration configured
+- Pricing page with tier comparison available
 - Tier-based access control ready
 - Usage tracking implemented
 
@@ -354,7 +356,7 @@ Ready to deploy to production:
 2. **Environment Variables**
    - Set all production URLs
    - Use production API keys
-   - Enable Clerk Billing live mode
+   - Review and update pricing as needed
 
 3. **Database**
    - Run all migrations on production Supabase
@@ -420,4 +422,4 @@ Your SoloBoss AI platform is now a **comprehensive productivity suite** that use
 
 ---
 
-*Last updated: January 2025 - Guardian AI & Decision Frameworks Complete*
+Last updated: January 2025 - Guardian AI & Decision Frameworks Complete*

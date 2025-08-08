@@ -16,10 +16,10 @@ import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
 
 const PRICING_PLANS = [
   {
-    name: "Launchpad",
+    name: "Launch",
     description: "Perfect for ambitious beginners ready to start their empire",
-    monthlyPrice: "Free",
-    yearlyPrice: "Free",
+    monthlyPrice: "$0",
+    yearlyPrice: "$0",
     popular: false,
     icon: Rocket,
     color: "from-blue-500 to-cyan-500",
@@ -39,11 +39,11 @@ const PRICING_PLANS = [
     name: "Accelerator",
     description: "For growing boss babes scaling their operations",
     monthlyPrice: "$19",
-    yearlyPrice: "$15",
+    yearlyPrice: "$190",
     popular: true,
     icon: Zap,
     color: "from-purple-500 to-pink-500",
-    cta: "Start Building",
+    cta: "Get Started",
     ctaType: "signup",
     features: [
       "Access to 5 AI agents",
@@ -60,8 +60,8 @@ const PRICING_PLANS = [
   {
     name: "Dominator",
     description: "For empire builders who demand unlimited power",
-    monthlyPrice: "$49",
-    yearlyPrice: "$39",
+    monthlyPrice: "$29",
+    yearlyPrice: "$290",
     popular: false,
     icon: Crown,
     color: "from-yellow-500 to-orange-500",
@@ -309,7 +309,7 @@ export default function PricingPage() {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="text-left p-4 font-bold text-gray-800">Features</th>
-                    <th className="text-center p-4 font-bold text-gray-800">Launchpad</th>
+                    <th className="text-center p-4 font-bold text-gray-800">Launch</th>
                     <th className="text-center p-4 font-bold text-gray-800">Accelerator</th>
                     <th className="text-center p-4 font-bold text-gray-800">Dominator</th>
                   </tr>

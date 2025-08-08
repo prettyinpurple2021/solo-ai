@@ -160,19 +160,19 @@ export default function TermsOfServicePage() {
                   </div>
 
                   <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                    <h3 className="font-semibold text-gray-800 mb-2">Billing and Payments:</h3>
+                    <h3 className="font-semibold text-gray-800 mb-2">Subscription Plans:</h3>
                     <p className="text-gray-600 text-sm mb-2">
-                      The system includes a process to initiate a checkout flow when a user selects a plan, directing them to a secure payment gateway (Clerk Billing) to complete their subscription.
+                      The system displays subscription tiers for marketing purposes: Launch ($0), Accelerator ($19/$190), and Dominator ($29/$290) plans with different feature sets.
                     </p>
                     <p className="text-gray-600 text-sm">
-                      Users will have access to a dedicated billing portal where they can manage their subscriptions, update payment information, and view billing history. A dedicated Next.js API route will interact with the Clerk Billing API to manage subscriptions and process payments securely.
+                      Payment processing has been removed from this platform. The pricing page serves as a marketing tool to display available service tiers and their respective features.
                     </p>
                   </div>
 
                   <div className="bg-gray-50 p-4 rounded-lg">
-                    <h3 className="font-semibold text-gray-800 mb-2">Subscription Management:</h3>
+                    <h3 className="font-semibold text-gray-800 mb-2">Feature Access:</h3>
                     <p className="text-gray-600 text-sm">
-                      The system processes events related to subscription changes, such as creation, updates, and deletion, adjusting the user's role and access (e.g., reverting to the free tier upon deletion). Features within the application are conditionally displayed or made accessible based on the user's current subscription tier. Users on lower tiers are informed of feature requirements (e.g., via a "Locked Feature" message).
+                      The system displays features available at different subscription tiers for informational purposes. All users currently have access to the Launch tier features. Feature gating serves as a demonstration of potential premium functionalities.
                     </p>
                   </div>
                 </div>
