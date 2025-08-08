@@ -32,7 +32,9 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   const stackApp = useStackApp()
   
   const signOut = async () => {
-    await stackApp.signOut()
+    if (user) {
+      await user.signOut()
+    }
   }
   const [loading, setLoading] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState(false)
@@ -54,14 +56,14 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   useEffect(() => {
     if (user) {
       setFormData({
-        full_name: user.user_metadata?.full_name || "",
-        company_name: user.user_metadata?.company_name || "",
-        industry: user.user_metadata?.industry || "",
-        business_type: user.user_metadata?.business_type || "",
-        phone: user.user_metadata?.phone || "",
-        website: user.user_metadata?.website || "",
-        bio: user.user_metadata?.bio || "",
-        timezone: user.user_metadata?.timezone || "",
+        full_name: user.displayName || "",
+        company_name: "",
+        industry: "",
+        business_type: "",
+        phone: "",
+        website: "",
+        bio: "",
+        timezone: "",
       })
     }
   }, [user])
@@ -164,9 +166,9 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
               {/* Avatar Section */}
               <div className="flex items-center gap-4">
                 <Avatar className="h-20 w-20">
-                  <AvatarImage src={user?.user_metadata?.avatar_url || ""} />
+                  <AvatarImage src="/default-user.svg" />
                   <AvatarFallback className="text-lg">
-                    {user?.user_metadata?.full_name?.charAt(0) || user?.email?.charAt(0) || "U"}
+                    {user?.displayName?.charAt(0) || user?.primaryEmail?.charAt(0) || "U"}
                   </AvatarFallback>
                 </Avatar>
                 <div>
@@ -191,7 +193,7 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
-                  <Input id="email" value={user?.email || ""} disabled className="bg-muted" />
+                  <Input id="email" value={user?.primaryEmail || ""} disabled className="bg-muted" />
                 </div>
               </div>
 
@@ -321,7 +323,7 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
                   <div className="flex justify-between items-center p-3 border rounded-lg">
                     <div>
                       <p className="font-medium">Email Address</p>
-                      <p className="text-sm text-muted-foreground">{user?.email}</p>
+                      <p className="text-sm text-muted-foreground">{user?.primaryEmail}</p>
                     </div>
                     <Button variant="outline" size="sm">
                       Change Email

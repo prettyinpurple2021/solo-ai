@@ -43,7 +43,6 @@ export default function SignUpPage() {
       const result = await stackApp.signUpWithCredential({
         email,
         password,
-        displayName,
       })
 
       if (result.status === "error") {
@@ -84,11 +83,10 @@ export default function SignUpPage() {
                 <Input
                   id="displayName"
                   type="text"
-                  placeholder="Enter your display name"
+                  placeholder="Enter your display name (optional)"
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
                   className="pl-10"
-                  required
                 />
               </div>
             </div>

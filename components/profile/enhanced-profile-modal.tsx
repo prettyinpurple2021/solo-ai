@@ -29,7 +29,7 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [formData, setFormData] = useState({
-    full_name: user?.user_metadata?.full_name || "",
+    full_name: user?.displayName || "",
     company_name: "",
     industry: "",
     business_type: "",
@@ -37,7 +37,7 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
     website: "",
     bio: "",
     timezone: "",
-    avatar_url: user?.user_metadata?.avatar_url || "",
+    avatar_url: "",
   })
 
   const [notifications, setNotifications] = useState({
@@ -220,7 +220,7 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
                 <Avatar className="h-32 w-32 border-4 border-gradient-to-r from-purple-400 to-pink-400">
                   <AvatarImage src={formData.avatar_url || "/default-user.svg"} className="object-cover" />
                   <AvatarFallback className="text-4xl bg-gradient-to-r from-purple-400 to-pink-400 text-white">
-                    {formData.full_name?.charAt(0) || user?.email?.charAt(0) || "B"}
+                    {formData.full_name?.charAt(0) || user?.primaryEmail?.charAt(0) || "B"}
                   </AvatarFallback>
                 </Avatar>
                 {formData.avatar_url && (
@@ -559,12 +559,12 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
                 <div className="space-y-3">
                   <div className="flex justify-between items-center">
                     <span className="font-medium">Email:</span>
-                    <span className="text-gray-600">{user?.email}</span>
+                    <span className="text-gray-600">{user?.primaryEmail}</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="font-medium">Account Created:</span>
                     <span className="text-gray-600">
-                      {user?.created_at ? new Date(user.created_at).toLocaleDateString() : "Unknown"}
+                      {"Unknown"}
                     </span>
                   </div>
                   <div className="flex justify-between items-center">

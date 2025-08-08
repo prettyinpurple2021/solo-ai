@@ -29,7 +29,9 @@ export function NavUser({
   const stackApp = useStackApp()
   
   const signOut = async () => {
-    await stackApp.signOut()
+    if (user) {
+      await user.signOut()
+    }
   }
 
   const handleSignOut = async () => {
