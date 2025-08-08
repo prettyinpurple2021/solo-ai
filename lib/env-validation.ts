@@ -9,6 +9,11 @@ const envSchema = z.object({
   DATABASE_URL: z.string().min(1, "Neon database URL is required").optional(),
   JWT_SECRET: z.string().min(1, "JWT secret is required").optional(),
 
+  // Chargebee
+  CHARGEBEE_API_KEY: z.string().min(1, "Chargebee API key is required").optional(),
+  CHARGEBEE_SITE: z.string().min(1, "Chargebee site subdomain is required").optional(),
+  CHARGEBEE_WEBHOOK_SIGNING_KEY: z.string().optional(),
+
   // AI Services - Required for agent functionality
   OPENAI_API_KEY: z.string().min(1, "OpenAI API key is required").optional(),
   GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1, "Google Gemini API key is required").optional(),
