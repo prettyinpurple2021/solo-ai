@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { Palette, Type, ImageIcon, Download, Save, Sparkles, Crown, Lightbulb, Loader2, CheckCircle, AlertCircle } from "lucide-react"
-import { createClient } from "@/lib/supabase/client"
+import { useUser } from "@stackframe/stack"
 
 // Simple color picker component
 const ColorPicker = ({ label, value, onChange }: { label: string; value: string; onChange: (color: string) => void }) => (
@@ -133,6 +133,7 @@ const BOSS_TIPS = [
 ]
 
 export default function BrandStylerStudio() {
+  const user = useUser()
   const [selectedPalette, setSelectedPalette] = useState(COLOR_PALETTES[0])
   const [selectedTypography, setSelectedTypography] = useState(TYPOGRAPHY_OPTIONS[0])
   const [selectedLogo, setSelectedLogo] = useState(LOGO_STYLES[0])
@@ -265,9 +266,6 @@ export default function BrandStylerStudio() {
     setSaveMessage(null)
 
     try {
-      const supabase = createClient()
-      const { data: { user } } = await supabase.auth.getUser()
-      
       if (!user) {
         setSaveError("You must be logged in to save brand kits")
         setTimeout(() => setSaveError(null), 3000)
