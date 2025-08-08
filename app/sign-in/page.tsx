@@ -3,7 +3,7 @@
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
-import { SupabaseAuth } from "@/components/auth/supabase-auth"
+import { NeonAuth } from "@/components/auth/neon-auth"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
@@ -52,7 +52,7 @@ export default function SignInPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          <SupabaseAuth />
+          <NeonAuth />
           
           <div className="pt-4">
             <Link href="/">

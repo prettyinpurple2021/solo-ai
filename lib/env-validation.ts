@@ -6,9 +6,8 @@ import { z } from "zod"
  */
 const envSchema = z.object({
   // Database - Required for core functionality
-  NEXT_PUBLIC_SUPABASE_URL: z.string().url("Invalid Supabase URL").optional(),
-  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1, "Supabase anon key is required").optional(),
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, "Supabase service role key is required").optional(),
+  DATABASE_URL: z.string().min(1, "Neon database URL is required").optional(),
+  JWT_SECRET: z.string().min(1, "JWT secret is required").optional(),
 
   // AI Services - Required for agent functionality
   OPENAI_API_KEY: z.string().min(1, "OpenAI API key is required").optional(),
@@ -20,7 +19,7 @@ const envSchema = z.object({
   RESEND_API_KEY: z.string().min(1, "Resend API key is required").optional(),
   FROM_EMAIL: z.string().email("Invalid from email address").optional(),
 
-  // File Storage (using Supabase Storage)
+      // File Storage (using external storage service)
 
   // App Configuration
   NEXTAUTH_URL: z.string().url("Invalid NextAuth URL").optional(),

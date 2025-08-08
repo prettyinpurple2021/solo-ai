@@ -11,36 +11,36 @@
  * Run with: npm run setup-db
  */
 
-import { createClient } from '@supabase/supabase-js'
+import { Pool } from 'pg'
 import * as dotenv from 'dotenv'
 
 // Load environment variables
 dotenv.config({ path: '.env.local' })
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+const databaseUrl = process.env.DATABASE_URL!
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('❌ Missing required environment variables:')
-  console.error('   - NEXT_PUBLIC_SUPABASE_URL')
-  console.error('   - SUPABASE_SERVICE_ROLE_KEY')
+if (!databaseUrl) {
+  console.error('❌ Missing required environment variable:')
+  console.error('   - DATABASE_URL')
   console.error('\nPlease check your .env.local file.')
   process.exit(1)
 }
 
-const supabase = createClient(supabaseUrl, supabaseServiceKey)
+const pool = new Pool({
+  connectionString: databaseUrl,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+})
 
 async function setupDatabase() {
   console.log('🚀 Setting up SoloBoss AI database...\n')
 
   try {
     // 1. Check if AI agents already exist
-    const { data: existingAgents } = await supabase
-      .from('ai_agents')
-      .select('count')
-      .single()
+    const { rows: existingAgents } = await pool.query(
+      'SELECT COUNT(*) as count FROM ai_agents'
+    )
 
-    if (existingAgents) {
+    if (existingAgents[0].count > 0) {
       console.log('ℹ️  AI agents already exist, skipping agent setup...')
     } else {
       // Insert AI agents
@@ -193,25 +193,32 @@ When helping with problem-solving, always guide users through the Five Whys tech
         },
       ]
 
-      const { error: agentsError } = await supabase
-        .from('ai_agents')
-        .insert(aiAgents)
-
-      if (agentsError) {
-        console.error('❌ Error inserting AI agents:', agentsError)
-        return false
+      for (const agent of aiAgents) {
+        await pool.query(
+          `INSERT INTO ai_agents (name, display_name, description, personality, capabilities, accent_color, system_prompt, model_preference, created_at, updated_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())`,
+          [
+            agent.name,
+            agent.display_name,
+            agent.description,
+            agent.personality,
+            agent.capabilities,
+            agent.accent_color,
+            agent.system_prompt,
+            agent.model_preference
+          ]
+        )
       }
 
       console.log('✅ AI agents created successfully!')
     }
 
     // 2. Check if achievements already exist
-    const { data: existingAchievements } = await supabase
-      .from('achievements')
-      .select('count')
-      .single()
+    const { rows: existingAchievements } = await pool.query(
+      'SELECT COUNT(*) as count FROM achievements'
+    )
 
-    if (existingAchievements) {
+    if (existingAchievements[0].count > 0) {
       console.log('ℹ️  Achievements already exist, skipping achievement setup...')
     } else {
       // Insert achievements
@@ -310,30 +317,31 @@ When helping with problem-solving, always guide users through the Five Whys tech
         },
       ]
 
-      const { error: achievementsError } = await supabase
-        .from('achievements')
-        .insert(achievements)
-
-      if (achievementsError) {
-        console.error('❌ Error inserting achievements:', achievementsError)
-        return false
+      for (const achievement of achievements) {
+        await pool.query(
+          `INSERT INTO achievements (name, title, description, icon, category, points, criteria, created_at, updated_at)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())`,
+          [
+            achievement.name,
+            achievement.title,
+            achievement.description,
+            achievement.icon,
+            achievement.category,
+            achievement.points,
+            JSON.stringify(achievement.criteria)
+          ]
+        )
       }
 
       console.log('✅ Achievements created successfully!')
     }
 
-    // 3. Test database connection and RLS
-    console.log('🔒 Testing Row Level Security...')
+    // 3. Test database connection
+    console.log('🔒 Testing database connection...')
     
-    const { data: agents, error: testError } = await supabase
-      .from('ai_agents')
-      .select('name, display_name')
-      .limit(3)
-
-    if (testError) {
-      console.error('❌ Error testing database:', testError)
-      return false
-    }
+    const { rows: agents } = await pool.query(
+      'SELECT name, display_name FROM ai_agents LIMIT 3'
+    )
 
     console.log('✅ Database connection successful!')
     console.log(`   Found ${agents?.length || 0} AI agents`)
@@ -351,6 +359,8 @@ When helping with problem-solving, always guide users through the Five Whys tech
   } catch (error) {
     console.error('❌ Database setup failed:', error)
     return false
+  } finally {
+    await pool.end()
   }
 }
 

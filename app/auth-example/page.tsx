@@ -1,6 +1,6 @@
 'use client'
 
-import { SupabaseAuth } from "@/components/auth/supabase-auth"
+import { NeonAuth } from "@/components/auth/neon-auth"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useEffect, useState } from "react"
 
@@ -39,7 +39,7 @@ export default function AuthExamplePage() {
 
         {/* Main Authentication Component */}
         <div className="max-w-md mx-auto mb-8">
-          <SupabaseAuth />
+          <NeonAuth />
         </div>
 
         {/* Feature Cards */}

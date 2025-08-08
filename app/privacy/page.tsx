@@ -231,14 +231,14 @@ export default function PrivacyPolicyPage() {
                     <div className="bg-blue-50 p-4 rounded-lg">
                       <h3 className="font-semibold text-gray-800 mb-2">Technology Stack:</h3>
                       <p className="text-gray-600 text-sm">
-                        Our primary backend and database are powered by Supabase (PostgreSQL, Auth, Storage), chosen for its scalability, reliability, and security features. Supabase Auth handles user registration, login, authentication, and authorization using JWTs with SSR support. Supabase Storage is used for file management in the Briefcase.
+                        Our primary backend and database are powered by Neon (PostgreSQL), chosen for its scalability, reliability, and security features. We handle user registration, login, authentication, and authorization using JWTs with SSR support. File storage is managed through our secure database system.
                       </p>
                     </div>
 
                     <div className="bg-green-50 p-4 rounded-lg">
                       <h3 className="font-semibold text-gray-800 mb-2">Data Encryption:</h3>
                       <p className="text-gray-600 text-sm">
-                        Data is encrypted in transit using HTTPS (TLS 1.2 or higher). Data at rest is also encrypted, as Supabase PostgreSQL provides encryption at rest.
+                        Data is encrypted in transit using HTTPS (TLS 1.2 or higher). Data at rest is also encrypted, as Neon PostgreSQL provides encryption at rest.
                       </p>
                     </div>
 

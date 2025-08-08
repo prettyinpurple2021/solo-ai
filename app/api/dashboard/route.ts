@@ -1,26 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createClient } from '@/lib/neon/server'
+import { authenticateRequest } from '@/lib/auth-utils'
 
 export async function GET(request: NextRequest) {
   try {
-    // Create Supabase client
-    const supabase = await createClient()
+    // Authenticate the request
+    const { user, error } = await authenticateRequest()
     
-    // Get the current user
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-    
-    if (authError || !user) {
+    if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    // Get user data from database
+    const client = await createClient()
+    const { rows: userData } = await client.query(
+      'SELECT id, email, full_name, avatar_url, subscription_tier FROM users WHERE id = $1',
+      [user.id]
+    )
+
+    const dbUser = userData[0] || user
 
     // For now, return mock data until we have the full database setup
     const mockDashboardData = {
       user: {
-        id: user.id,
-        email: user.email,
-        full_name: user.user_metadata?.full_name || null,
-        avatar_url: user.user_metadata?.avatar_url || null,
-        subscription_tier: 'free',
+        id: dbUser.id,
+        email: dbUser.email,
+        full_name: dbUser.full_name || null,
+        avatar_url: dbUser.avatar_url || null,
+        subscription_tier: dbUser.subscription_tier || 'free',
         level: 1,
         total_points: 0,
         current_streak: 0,

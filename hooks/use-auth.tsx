@@ -2,8 +2,8 @@
 
 import type React from "react"
 import { createContext, useContext, useEffect, useState } from "react"
-import { createClient } from "@supabase/supabase-js"
-import type { User, Session } from "@supabase/supabase-js"
+import type { User, Session } from "@/lib/neon/types"
+import { createToken, verifyToken } from "@/lib/auth-utils"
 
 interface AuthContextType {
   user: User | null
@@ -16,57 +16,129 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-      setUser(session?.user ?? null)
+    // Check for existing token in localStorage
+    const token = localStorage.getItem('auth-token')
+    if (token) {
+      const decoded = verifyToken(token)
+      if (decoded) {
+        // Fetch user data from database
+        fetchUserData(decoded.userId, token)
+      } else {
+        localStorage.removeItem('auth-token')
+        setLoading(false)
+      }
+    } else {
       setLoading(false)
-    })
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
+    }
   }, [])
 
+  const fetchUserData = async (userId: string, token: string) => {
+    try {
+      const response = await fetch('/api/auth/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (response.ok) {
+        const userData = await response.json()
+        const sessionData: Session = {
+          user: userData,
+          access_token: token,
+          refresh_token: token,
+          expires_at: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days
+        }
+        setUser(userData)
+        setSession(sessionData)
+      } else {
+        localStorage.removeItem('auth-token')
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error)
+      localStorage.removeItem('auth-token')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const signIn = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-    return { error }
+    try {
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        const { user, token } = data
+        localStorage.setItem('auth-token', token)
+        
+        const sessionData: Session = {
+          user,
+          access_token: token,
+          refresh_token: token,
+          expires_at: Date.now() + (7 * 24 * 60 * 60 * 1000)
+        }
+        
+        setUser(user)
+        setSession(sessionData)
+        return { error: null }
+      } else {
+        return { error: data.error }
+      }
+    } catch (error) {
+      return { error: 'Network error' }
+    }
   }
 
   const signUp = async (email: string, password: string, metadata?: Record<string, any>) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: metadata
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, metadata }),
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        const { user, token } = data
+        localStorage.setItem('auth-token', token)
+        
+        const sessionData: Session = {
+          user,
+          access_token: token,
+          refresh_token: token,
+          expires_at: Date.now() + (7 * 24 * 60 * 60 * 1000)
+        }
+        
+        setUser(user)
+        setSession(sessionData)
+        return { error: null }
+      } else {
+        return { error: data.error }
       }
-    })
-    return { error }
+    } catch (error) {
+      return { error: 'Network error' }
+    }
   }
 
   const signOut = async () => {
-    await supabase.auth.signOut()
+    localStorage.removeItem('auth-token')
+    setUser(null)
+    setSession(null)
   }
 
   const value = {
