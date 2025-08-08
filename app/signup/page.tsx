@@ -46,7 +46,7 @@ export default function SignUpPage() {
         displayName,
       })
 
-      if (result.error) {
+      if (result.status === "error") {
         setError(result.error.message || "Sign up failed")
       } else {
         router.push("/profile")

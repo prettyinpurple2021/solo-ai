@@ -31,7 +31,7 @@ export default function SignInPage() {
         password,
       })
 
-      if (result.error) {
+      if (result.status === "error") {
         setError(result.error.message || "Sign in failed")
       } else {
         router.push("/profile")
