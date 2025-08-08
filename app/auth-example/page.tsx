@@ -1,8 +1,7 @@
 'use client'
 
-import { ClerkAuthSoloboss } from "@/components/auth/clerk-auth-soloboss"
-import { MigrationBanner } from "@/components/auth/migration-banner"
-import { MigrationStatus } from "@/components/auth/migration-banner"
+// Removed Clerk component import
+// Removed migration components
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useEffect, useState } from "react"
 
@@ -37,19 +36,14 @@ export default function AuthExamplePage() {
           </p>
         </div>
 
-        {/* Migration Banner */}
-        <div className="mb-8">
-          <MigrationBanner />
-        </div>
-
-        {/* Migration Status */}
-        <div className="mb-8">
-          <MigrationStatus />
-        </div>
+        {/* Migration components removed */}
 
         {/* Main Authentication Component */}
         <div className="max-w-md mx-auto mb-8">
-          <ClerkAuthSoloboss />
+          <div className="text-center p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Authentication Example</h2>
+          <p className="text-gray-600">Clerk authentication has been removed from this project.</p>
+        </div>
         </div>
 
         {/* Feature Cards */}

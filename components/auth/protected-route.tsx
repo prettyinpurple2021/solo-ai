@@ -1,6 +1,6 @@
 "use client"
 
-import { useAuth } from "@clerk/nextjs"
+// Removed Clerk imports - using Supabase auth only
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 

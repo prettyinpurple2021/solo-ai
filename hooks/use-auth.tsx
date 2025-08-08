@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { createContext, useContext } from "react"
-import { useUser, useAuth as useClerkAuth } from "@clerk/nextjs"
+// Removed Clerk imports - using Supabase auth only
 
 interface AuthContextType {
   user: any | null
@@ -14,7 +14,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const { user, isLoaded } = useUser()
-  const { signOut } = useClerkAuth()
+  // Removed Clerk signOut - using Supabase auth only
 
   const value = {
     user: user ? {

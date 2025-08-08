@@ -14,9 +14,7 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().min(1, "OpenAI API key is required").optional(),
   GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1, "Google Gemini API key is required").optional(),
 
-  // Clerk Billing - Required for subscriptions
-CLERK_SECRET_KEY: z.string().min(1, "Clerk secret key is required"),
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1, "Clerk publishable key is required"),
+    // Clerk Billing - Removed from project
 
   // Email
   RESEND_API_KEY: z.string().min(1, "Resend API key is required").optional(),

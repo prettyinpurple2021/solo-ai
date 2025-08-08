@@ -7,8 +7,6 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/hooks/use-auth"
 import { Toaster } from "@/components/ui/toaster"
 
-import { ClerkProvider } from "@clerk/nextjs"
-
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
@@ -21,9 +19,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // Check if Clerk environment variables are available
-  const clerkPublishableKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -56,19 +51,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           enableSystem
           disableTransitionOnChange
         >
-          {clerkPublishableKey ? (
-            <ClerkProvider publishableKey={clerkPublishableKey}>
-              <AuthProvider>
-                {children}
-                <Toaster />
-              </AuthProvider>
-            </ClerkProvider>
-          ) : (
-            <AuthProvider>
-              {children}
-              <Toaster />
-            </AuthProvider>
-          )}
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
