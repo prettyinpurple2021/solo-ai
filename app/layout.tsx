@@ -1,4 +1,6 @@
 import type React from "react"
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack";
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import Script from "next/script"
@@ -21,7 +23,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={inter.className}><StackProvider app={stackServerApp}><StackTheme>
         {/* Google Tag Manager */}
         <Script
           id="gtm-script"
@@ -56,7 +58,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <Toaster />
           </AuthProvider>
         </ThemeProvider>
-      </body>
+      </StackTheme></StackProvider></body>
     </html>
   )
 }
