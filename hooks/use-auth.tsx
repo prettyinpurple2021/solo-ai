@@ -1,12 +1,11 @@
 "use client"
 
 import type React from "react"
-import { createContext, useContext, useEffect, useState } from "react"
-import type { User } from "@supabase/supabase-js"
-import { createClient } from "@/lib/supabase/client"
+import { createContext, useContext } from "react"
+import { useUser, useAuth as useClerkAuth } from "@clerk/nextjs"
 
 interface AuthContextType {
-  user: User | null
+  user: any | null
   loading: boolean
   signOut: () => Promise<void>
 }
@@ -14,38 +13,20 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const supabase = createClient()
-    
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }: any) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event: any, session: any) => {
-      setUser(session?.user ?? null)
-      setLoading(false)
-    })
-
-    return () => subscription.unsubscribe()
-  }, [])
-
-  const signOut = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-  }
+  const { user, isLoaded } = useUser()
+  const { signOut } = useClerkAuth()
 
   const value = {
-    user,
-    loading,
-    signOut,
+    user: user ? {
+      id: user.id,
+      email: user.emailAddresses?.[0]?.emailAddress,
+      full_name: user.fullName,
+      avatar_url: user.imageUrl,
+    } : null,
+    loading: !isLoaded,
+    signOut: async () => {
+      await signOut()
+    },
   }
 
   return (

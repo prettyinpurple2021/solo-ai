@@ -1,14 +1,13 @@
 "use client"
 
 import {
-  SignInButton,
-  SignUpButton,
   SignedIn,
   SignedOut,
   UserButton,
 } from "@clerk/nextjs"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link"
 
 export function ClerkAuthSoloboss() {
   return (
@@ -21,16 +20,16 @@ export function ClerkAuthSoloboss() {
       <CardContent className="space-y-4">
         <SignedOut>
           <div className="space-y-3">
-            <SignInButton mode="modal">
+            <Link href="/sign-in">
               <Button className="w-full boss-button bg-gradient-soloboss hover:bg-gradient-soloboss-light text-white font-semibold py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
                 🔥 Sign In & Conquer
               </Button>
-            </SignInButton>
-            <SignUpButton mode="modal">
+            </Link>
+            <Link href="/sign-up">
               <Button variant="outline" className="w-full border-2 border-purple-300 text-purple-700 hover:bg-purple-50 font-semibold py-3 px-6 rounded-full transition-all duration-300 hover:border-purple-400 hover:scale-105 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
                 ✨ Start Your Empire
               </Button>
-            </SignUpButton>
+            </Link>
           </div>
         </SignedOut>
         <SignedIn>
@@ -69,20 +68,21 @@ export function ClerkAuthHeader() {
       </div>
       <div className="flex items-center space-x-3">
         <SignedOut>
-          <SignInButton mode="modal">
+          <Link href="/sign-in">
             <Button className="boss-button bg-gradient-soloboss hover:bg-gradient-soloboss-light text-white font-semibold py-2 px-4 rounded-full transition-all duration-300 transform hover:scale-105 hover:shadow-lg focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
               Sign In
             </Button>
-          </SignInButton>
-          <SignUpButton mode="modal">
+          </Link>
+          <Link href="/sign-up">
             <Button variant="outline" className="border-2 border-purple-300 text-purple-700 hover:bg-purple-50 font-semibold py-2 px-4 rounded-full transition-all duration-300 hover:border-purple-400 hover:scale-105 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">
               Sign Up
             </Button>
-          </SignUpButton>
+          </Link>
         </SignedOut>
         <SignedIn>
           <UserButton 
             afterSignOutUrl="/"
+            userProfileUrl="/user"
             appearance={{
               elements: {
                 avatarBox: "w-8 h-8 rounded-full bg-gradient-soloboss",

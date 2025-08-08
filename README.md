@@ -376,7 +376,7 @@ Your SoloBoss AI platform is now a **comprehensive productivity suite** that use
 
 ---
 
-*Built with ❤️, rebellion, and the power of AI by a girlboss who refused to settle for mediocre tools*
+> Built with ❤️, rebellion, and the power of AI by a girlboss who refused to settle for mediocre tools
 
 ---
 

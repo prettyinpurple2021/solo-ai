@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { CheckCircle, X, ArrowLeft, Crown, Rocket, Zap, MessageCircle } from "lucide-react"
 import Link from "next/link"
 
-import { AuthModal } from "@/components/auth/auth-modal"
+// AuthModal removed - using Clerk authentication instead
 import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
 
 
@@ -120,7 +120,6 @@ export default function PricingPage() {
   const [selectedPlan, setSelectedPlan] = useState("Accelerator")
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
   const [showScheduleModal, setShowScheduleModal] = useState(false)
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
   const router = useRouter()
 
 
@@ -133,18 +132,13 @@ export default function PricingPage() {
 
   const handleCTAClick = (plan: typeof PRICING_PLANS[0]) => {
     if (plan.ctaType === "signup") {
-      setIsAuthModalOpen(true)
+      router.push('/sign-up')
     } else if (plan.ctaType === "contact") {
       // For now, we'll scroll to the contact section or show a simple alert
       // In a real app, this could open a contact modal or navigate to a contact page
       window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
       // You could also implement: router.push('/contact') if a contact page exists
     }
-  }
-
-  const handleAuthSuccess = () => {
-    setIsAuthModalOpen(false)
-    router.push('/dashboard')
   }
 
   return (
@@ -408,7 +402,7 @@ export default function PricingPage() {
             <Button
               size="lg"
               className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
-              onClick={() => setIsAuthModalOpen(true)}
+              onClick={() => router.push('/sign-up')}
             >
               Start for free
             </Button>
@@ -432,12 +426,7 @@ export default function PricingPage() {
 
       />
 
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-        onSuccess={handleAuthSuccess}
-      />
+      {/* Auth Modal removed - using Clerk authentication */}
     </div>
   )
 }

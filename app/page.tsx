@@ -1,32 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import { AuthModal } from "@/components/auth/auth-modal"
 import { SharedLandingPage } from "@/components/shared/shared-landing-page"
 import { useRouter } from "next/navigation"
 
 export default function LandingPage() {
-  const [showAuthModal, setShowAuthModal] = useState(false)
   const router = useRouter()
 
-  const handleAuthSuccess = () => {
-    setShowAuthModal(false)
-    router.push('/dashboard')
+  const handleAuthRequest = () => {
+    // Redirect to Clerk sign-in page
+    router.push('/sign-in')
   }
 
   return (
     <>
       <SharedLandingPage 
-        showAuthModal={showAuthModal}
-        onShowAuthModal={() => setShowAuthModal(true)}
+        showAuthModal={false}
+        onShowAuthModal={handleAuthRequest}
         styleVariant="gradient"
-      />
-      
-      {/* Auth Modal */}
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)}
-        onSuccess={handleAuthSuccess}
       />
     </>
   )

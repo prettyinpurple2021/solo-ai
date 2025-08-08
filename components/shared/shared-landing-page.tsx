@@ -228,7 +228,12 @@ export function SharedLandingPage({
                 Pricing
               </a>
               <ThemeToggle />
-              <Link href="/signup">
+              <Link href="/sign-in">
+                <Button variant="ghost" className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400">
+                  Sign In
+                </Button>
+              </Link>
+              <Link href="/sign-up">
                 <Button 
                   className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
                 >
@@ -301,7 +306,12 @@ export function SharedLandingPage({
                   >
                     Pricing
                   </a>
-                  <Link href="/signup">
+                  <Link href="/sign-in">
+                    <Button variant="ghost" className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 w-full">
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link href="/sign-up">
                     <Button
                       className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white w-full"
                     >
@@ -332,7 +342,7 @@ export function SharedLandingPage({
               your industry like never before.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-              <Link href="/signup">
+              <Link href="/sign-up">
                 <Button
                   size="lg"
                   className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"

@@ -1,10 +1,38 @@
-import { NextRequest, NextResponse } from "next/server";
+import { authMiddleware } from "@clerk/nextjs"
 
-export default function middleware(request: NextRequest) {
-  // For now, just pass through all requests
-  // Clerk middleware would be added here when environment variables are properly configured
-  return NextResponse.next();
-}
+export default authMiddleware({
+  // Public routes that don't require authentication
+  publicRoutes: [
+    "/",
+    "/landing",
+    "/sign-in",
+    "/sign-up", 
+    "/unauthorized-sign-in",
+    "/user",
+    "/about",
+    "/features",
+    "/pricing",
+    "/contact",
+    "/blog",
+    "/help",
+    "/privacy",
+    "/terms",
+    "/cookies",
+    "/gdpr",
+    "/security",
+    "/status",
+    "/team",
+    "/community",
+    "/brand-demo",
+    "/auth-example",
+    "/feature-test",
+    "/api/webhooks(.*)",
+  ],
+  // Routes that can be accessed while signed out, but also show user content when signed in
+  ignoredRoutes: [
+    "/api/webhooks(.*)",
+  ],
+})
 
 export const config = {
   matcher: [
@@ -13,4 +41,4 @@ export const config = {
     // Always run for API routes
     "/(api|trpc)(.*)",
   ],
-}; 
+} 

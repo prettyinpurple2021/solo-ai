@@ -8,16 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { AuthModal } from "@/components/auth/auth-modal"
+// AuthModal removed - using Clerk authentication instead
 
 export default function TermsOfServicePage() {
-  const [showAuthModal, setShowAuthModal] = useState(false)
   const router = useRouter()
-
-  const handleAuthSuccess = () => {
-    setShowAuthModal(false)
-    router.push('/dashboard')
-  }
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -35,7 +29,7 @@ export default function TermsOfServicePage() {
             </div>
             <div className="flex items-center space-x-4">
               <Button 
-                onClick={() => setShowAuthModal(true)}
+                onClick={() => router.push('/sign-up')}
                 className="bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white font-semibold px-6 py-2 rounded-full"
               >
                 Start Building Empire
@@ -394,7 +388,7 @@ export default function TermsOfServicePage() {
           </p>
           <div className="space-y-4 md:space-y-0 md:space-x-4 md:flex md:justify-center">
             <Button
-              onClick={() => setShowAuthModal(true)}
+              onClick={() => router.push('/sign-up')}
               size="lg"
               className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
             >
@@ -413,12 +407,7 @@ export default function TermsOfServicePage() {
         </div>
       </section>
 
-      {/* Auth Modal */}
-      <AuthModal 
-        isOpen={showAuthModal} 
-        onClose={() => setShowAuthModal(false)}
-        onSuccess={handleAuthSuccess}
-      />
+      {/* Auth Modal removed - using Clerk authentication */}
     </div>
   )
 } 
