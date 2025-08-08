@@ -19,6 +19,9 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const stackApp = useStackApp()
+  
+  console.log("StackApp initialized:", !!stackApp)
+  console.log("StackApp methods:", stackApp ? Object.keys(stackApp) : "No stackApp")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,17 +29,23 @@ export default function SignInPage() {
     setLoading(true)
 
     try {
+      console.log("Attempting signin with:", { email })
       const result = await stackApp.signInWithCredential({
         email,
         password,
       })
+      
+      console.log("Signin result:", result)
 
-      if (result.status === "error") {
+      if (result.error) {
+        console.log("Signin error:", result.error)
         setError(result.error.message || "Sign in failed")
       } else {
+        console.log("Signin successful, redirecting to profile")
         router.push("/profile")
       }
     } catch (err) {
+      console.error("Signin exception:", err)
       setError("An unexpected error occurred")
     } finally {
       setLoading(false)

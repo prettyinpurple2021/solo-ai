@@ -22,6 +22,9 @@ export default function SignUpPage() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const stackApp = useStackApp()
+  
+  console.log("StackApp initialized:", !!stackApp)
+  console.log("StackApp methods:", stackApp ? Object.keys(stackApp) : "No stackApp")
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,17 +43,23 @@ export default function SignUpPage() {
     setLoading(true)
 
     try {
+      console.log("Attempting signup with:", { email })
       const result = await stackApp.signUpWithCredential({
         email,
         password,
       })
+      
+      console.log("Signup result:", result)
 
-      if (result.status === "error") {
+      if (result.error) {
+        console.log("Signup error:", result.error)
         setError(result.error.message || "Sign up failed")
       } else {
+        console.log("Signup successful, redirecting to profile")
         router.push("/profile")
       }
     } catch (err) {
+      console.error("Signup exception:", err)
       setError("An unexpected error occurred")
     } finally {
       setLoading(false)
