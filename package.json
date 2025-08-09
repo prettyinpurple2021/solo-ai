@@ -9,6 +9,7 @@
     "lint": "next lint",
     "start": "set NODE_OPTIONS=-r newrelic && next start",
     "setup-db": "node scripts/setup-database.js",
+    "setup-neon-db": "node scripts/setup-neon-database.mjs",
     "setup-templates": "node scripts/setup-templates-database.mjs",
     "setup-compliance": "node scripts/setup-compliance-database.mjs",
     "setup-migration": "node scripts/setup-migration-database.mjs",
