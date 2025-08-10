@@ -51,9 +51,9 @@ export default function SignUpPage() {
       
       console.log("Signup result:", result)
 
-      if (result.error) {
-        console.log("Signup error:", result.error)
-        setError(result.error.message || "Sign up failed")
+      if (!result || result.status !== "ok") {
+        console.log("Signup error:", result)
+        setError("Sign up failed")
       } else {
         console.log("Signup successful, redirecting to profile")
         router.push("/profile")

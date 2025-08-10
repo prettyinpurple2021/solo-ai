@@ -37,9 +37,9 @@ export default function SignInPage() {
       
       console.log("Signin result:", result)
 
-      if (result.error) {
-        console.log("Signin error:", result.error)
-        setError(result.error.message || "Sign in failed")
+      if (!result || result.status !== "ok") {
+        console.log("Signin error:", result)
+        setError("Sign in failed")
       } else {
         console.log("Signin successful, redirecting to profile")
         router.push("/profile")
