@@ -1,12 +1,14 @@
 import type React from "react"
 import { StackProvider, StackTheme } from "@stackframe/stack";
-import { stackServerApp } from "../stack";
+import { getStackServerApp } from "../stack";
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import Script from "next/script"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
+
+export const dynamic = 'force-dynamic'
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -20,20 +22,20 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
+  const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || "ca-pub-9458819180463481"
+  const stackServerApp = getStackServerApp()
   return (
     <html lang="en">
-      <head>
+      <body className={inter.className}>{stackServerApp ? (<StackProvider app={stackServerApp}><StackTheme>
         {/* Google AdSense */}
         <Script
           id="adsense-script"
           async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9458819180463481"
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
           crossOrigin="anonymous"
           strategy="beforeInteractive"
         />
         {/* End Google AdSense */}
-      </head>
-      <body className={inter.className}><StackProvider app={stackServerApp}><StackTheme>
         {/* Google Tag Manager */}
         <Script
           id="gtm-script"
@@ -66,7 +68,13 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           {children}
           <Toaster />
         </ThemeProvider>
-      </StackTheme></StackProvider></body>
+      </StackTheme></StackProvider>) : (
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          {children}
+          <Toaster />
+        </ThemeProvider>
+      )}
+      </body>
     </html>
   )
 }

@@ -1,10 +1,14 @@
 import { StackHandler } from "@stackframe/stack";
-import { stackServerApp } from "../../../stack";
+import { getStackServerApp } from "../../../stack";
 
 export default function Handler(props: unknown) {
+  const app = getStackServerApp()
+  if (!app) {
+    return null
+  }
   return <StackHandler 
     fullPage 
-    app={stackServerApp} 
+    app={app} 
     routeProps={props}
   />;
 }
