@@ -22,6 +22,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        {/* Google AdSense */}
+        <Script
+          id="adsense-script"
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9458819180463481"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
+        {/* End Google AdSense */}
+      </head>
       <body className={inter.className}><StackProvider app={stackServerApp}><StackTheme>
         {/* Google Tag Manager */}
         <Script
