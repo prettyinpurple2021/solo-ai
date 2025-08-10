@@ -7,6 +7,7 @@ import Script from "next/script"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { AdSense } from "@/components/adsense"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -45,6 +46,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }}
         />
         {/* End Google Tag Manager */}
+        {/* Google AdSense */}
+        <AdSense clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID} />
+        {/* End Google AdSense */}
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
