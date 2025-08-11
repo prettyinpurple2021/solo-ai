@@ -6,7 +6,6 @@ import { ArrowLeft, Crown, CheckCircle, AlertTriangle, XCircle, Clock, Zap, Shie
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
 
 interface ServiceStatus {
   name: string

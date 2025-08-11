@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         return { error: data.error }
       }
-    } catch (error) {
+    } catch {
       return { error: 'Network error' }
     }
   }
@@ -130,7 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         return { error: data.error }
       }
-    } catch (error) {
+    } catch {
       return { error: 'Network error' }
     }
   }

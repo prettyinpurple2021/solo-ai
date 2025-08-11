@@ -8,7 +8,7 @@ export interface FileUploadResult {
 
 export interface FileStorageProvider {
   upload(_file: File, _pathname: string): Promise<FileUploadResult>
-  delete(pathname: string): Promise<void>
+  delete(_pathname: string): Promise<void>
   list(_prefix: string): Promise<Array<{
     url: string
     pathname: string
@@ -36,12 +36,12 @@ class LocalFileStorage implements FileStorageProvider {
     })
   }
 
-  async delete(pathname: string): Promise<void> {
+  async delete(_pathname: string): Promise<void> {
     // No-op for local storage
-    console.log(`Would delete file: ${pathname}`)
+    console.log(`Would delete file: ${_pathname}`)
   }
 
-  async list(prefix: string): Promise<Array<{
+  async list(_prefix: string): Promise<Array<{
     url: string
     pathname: string
     size: number

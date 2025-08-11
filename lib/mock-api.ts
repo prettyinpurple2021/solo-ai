@@ -48,7 +48,7 @@ export const mockApiResponses = {
   }
 }
 
-export const mockFetch = async (url: string, options?: RequestInit) => {
+export const mockFetch = async (url: string, _options?: RequestInit) => {
   // Simulate network delay
   await new Promise(resolve => setTimeout(resolve, 500))
   

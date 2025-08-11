@@ -33,8 +33,8 @@ export default function TeamPage() {
     messages,
     isLoading,
     append,
-    setInput,
-    input,
+    setInput: _setInput,
+    input: _input,
   } = useAiChat({ agentId: selectedAgent.id })
 
   const handleSendMessage = async () => {
@@ -43,8 +43,8 @@ export default function TeamPage() {
     setMessage("")
   }
 
-  const sendMessage = async (text: string) => {
-    await append({ role: "user", content: text })
+  const _sendMessage = async (_text: string) => {
+    await append({ role: "user", content: _text })
   }
 
   const clearMessages = () => {
@@ -60,7 +60,7 @@ export default function TeamPage() {
     setIsListening(false)
   }
 
-  const speak = (text: string) => {
+  const speak = (_text: string) => {
     setIsSpeaking(true)
     // Text-to-speech would be implemented here
     setTimeout(() => setIsSpeaking(false), 2000) // Mock duration

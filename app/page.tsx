@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { SharedLandingPage } from "@/components/shared/shared-landing-page"
 import { useRouter } from "next/navigation"
 

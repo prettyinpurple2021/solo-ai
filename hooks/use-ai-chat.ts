@@ -154,7 +154,7 @@ export function useAiChat(options: UseAiChatOptions = {}): UseAiChatReturn {
                     ),
                   }))
                 }
-              } catch (_e) {
+              } catch {
                 // Ignore parsing errors for streaming data
               }
             }
