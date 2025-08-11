@@ -24,7 +24,7 @@ function verifyToken(token: string): { userId: string; email: string } | null {
   try {
     const decoded = verify(token, JWT_SECRET) as { userId: string; email: string }
     return decoded
-  } catch (error) {
+  } catch {
     return null
   }
 }

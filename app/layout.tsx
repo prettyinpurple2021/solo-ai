@@ -23,11 +23,9 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const adsenseClientId = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || "ca-pub-9458819180463481"
   const stackServerApp = getStackServerApp()
   return (
     <html lang="en">
-      {/* Google AdSense */}
       <Script
         id="adsense-script"
         async
@@ -35,33 +33,18 @@ export default function RootLayout({
         crossOrigin="anonymous"
         strategy="beforeInteractive"
       />
-      {/* End Google AdSense */}
-      <body className={inter.className}>
-        {stackServerApp ? (
-          <StackProvider app={stackServerApp}>
-            <StackTheme>
-              {/* ...rest of your content... */}
-            </StackTheme>
-          </StackProvider>
-        ) : null}
-      </body>
-        {/* Google Tag Manager */}
-        <Script
-          id="gtm-script"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      <Script
+        id="gtm-script"
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5MKXFX2T');`,
-          }}
-        />
-        {/* End Google Tag Manager */}
-        {/* Google AdSense */}
-        <AdSense clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID} />
-        {/* End Google AdSense */}
-        {/* Google Tag Manager (noscript) */}
+        }}
+      />
+      <body className={inter.className}>
         <noscript>
           <iframe
             src="https://www.googletagmanager.com/ns.html?id=GTM-5MKXFX2T"
@@ -70,22 +53,27 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
-        {/* End Google Tag Manager (noscript) */}
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-          <Toaster />
-        </ThemeProvider>
-      </StackTheme></StackProvider>) : (
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          {children}
-          <Toaster />
-        </ThemeProvider>
-      )}
+        {stackServerApp ? (
+          <StackProvider app={stackServerApp}>
+            <StackTheme>
+              <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+              >
+                {children}
+                <Toaster />
+              </ThemeProvider>
+            </StackTheme>
+          </StackProvider>
+        ) : (
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            {children}
+            <Toaster />
+          </ThemeProvider>
+        )}
+        <AdSense clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID} />
       </body>
     </html>
   )

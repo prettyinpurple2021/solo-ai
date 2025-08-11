@@ -117,7 +117,7 @@ const FAQ_ITEMS = [
 ]
 
 export default function PricingPage() {
-  const [selectedPlan, setSelectedPlan] = useState("Accelerator")
+  const [_selectedPlan, _setSelectedPlan] = useState("Accelerator")
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly")
   const [showScheduleModal, setShowScheduleModal] = useState(false)
   const router = useRouter()

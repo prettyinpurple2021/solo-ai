@@ -22,8 +22,8 @@ export interface ChatState {
 export interface UseAiChatOptions {
   agentId?: string
   initialMessages?: Message[]
-  onError?: (error: Error) => void
-  onFinish?: (message: Message) => void
+  onError?: (_error: Error) => void
+  onFinish?: (_message: Message) => void
 }
 
 export interface UseAiChatReturn {
@@ -31,13 +31,13 @@ export interface UseAiChatReturn {
   input: string
   isLoading: boolean
   error: string | null
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
-  handleSubmit: (e: React.FormEvent) => Promise<void>
-  append: (message: Omit<Message, "id" | "timestamp">) => Promise<void>
+  handleInputChange: (_e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  handleSubmit: (_e: React.FormEvent) => Promise<void>
+  append: (_message: Omit<Message, "id" | "timestamp">) => Promise<void>
   reload: () => Promise<void>
   stop: () => void
-  setInput: (input: string) => void
-  setMessages: (messages: Message[]) => void
+  setInput: (_input: string) => void
+  setMessages: (_messages: Message[]) => void
 }
 
 export function useAiChat(options: UseAiChatOptions = {}): UseAiChatReturn {
@@ -154,7 +154,7 @@ export function useAiChat(options: UseAiChatOptions = {}): UseAiChatReturn {
                     ),
                   }))
                 }
-              } catch (e) {
+              } catch {
                 // Ignore parsing errors for streaming data
               }
             }
@@ -188,7 +188,7 @@ export function useAiChat(options: UseAiChatOptions = {}): UseAiChatReturn {
         onError?.(error instanceof Error ? error : new Error(errorMessage))
       }
     },
-    [state.messages, agentId, generateId, onError, onFinish],
+    [agentId, generateId, onError, onFinish],
   )
 
   const handleSubmit = useCallback(

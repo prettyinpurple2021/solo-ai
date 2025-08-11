@@ -22,7 +22,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Textarea } from "@/components/ui/textarea"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Plus, Target, CheckSquare, Calendar, Clock, TrendingUp, Crown, Flame, Star, Zap, Brain, Lightbulb, AlertTriangle } from "lucide-react"
+import { Plus, Target, CheckSquare, Calendar, TrendingUp, Star, Zap, Brain, Lightbulb, AlertTriangle } from "lucide-react"
 import { useTaskIntelligence } from "@/hooks/use-task-intelligence"
 import { TaskIntelligenceData } from "@/lib/ai-task-intelligence"
 
@@ -200,7 +200,7 @@ export default function SlayList() {
   // Get AI insights
   const workloadAnalysis = getWorkloadAnalysis()
   const productivityTips = getProductivityTips()
-  const optimizedOrder = getOptimizedOrder()
+  const _optimizedOrder = getOptimizedOrder()
   const optimizationStatus = getOptimizationStatus()
 
   // Get filtered task lists

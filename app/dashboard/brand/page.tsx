@@ -14,7 +14,7 @@ import { Palette, Type, ImageIcon, Download, Save, Sparkles, Crown, Lightbulb, L
 import { useUser } from "@stackframe/stack"
 
 // Simple color picker component
-const ColorPicker = ({ label, value, onChange }: { label: string; value: string; onChange: (color: string) => void }) => (
+const ColorPicker = ({ label, value, onChange }: { label: string; value: string; onChange: (_color: string) => void }) => (
   <div className="space-y-2">
     <Label>{label}</Label>
     <div className="flex items-center space-x-2">

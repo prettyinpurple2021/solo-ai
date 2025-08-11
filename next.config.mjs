@@ -24,7 +24,7 @@ const nextConfig = {
   eslint: {
     // Only run ESLint on specific directories during production builds
     dirs: ['app', 'components', 'lib', 'hooks'],
-    ignoreDuringBuilds: true, // Do not fail production builds on ESLint errors
+    ignoreDuringBuilds: true, // Temporarily disable ESLint during builds
   },
 
   // Enable compression for better performance

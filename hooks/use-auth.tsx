@@ -9,8 +9,8 @@ interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
-  signIn: (email: string, password: string) => Promise<{ error: any }>
-  signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<{ error: any }>
+  signIn: (_email: string, _password: string) => Promise<{ error: unknown }>
+  signUp: (_email: string, _password: string, _metadata?: Record<string, unknown>) => Promise<{ error: unknown }>
   signOut: () => Promise<void>
 }
 
@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         return { error: data.error }
       }
-    } catch (error) {
+    } catch {
       return { error: 'Network error' }
     }
   }
@@ -130,7 +130,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         return { error: data.error }
       }
-    } catch (error) {
+    } catch {
       return { error: 'Network error' }
     }
   }

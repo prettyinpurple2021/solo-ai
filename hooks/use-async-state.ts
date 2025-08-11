@@ -7,9 +7,9 @@ export interface AsyncState<T> {
 }
 
 export interface AsyncActions<T> {
-  setData: (data: T) => void
-  setLoading: (loading: boolean) => void
-  setError: (error: string | null) => void
+  setData: (_data: T) => void
+  setLoading: (_loading: boolean) => void
+  setError: (_error: string | null) => void
   reset: () => void
 }
 
@@ -52,8 +52,13 @@ export function useAsyncOperation<T>() {
       const result = await operation()
       state.setData(result)
       return result
-    } catch (err: any) {
-      const errorMessage = err.message || "An unexpected error occurred"
+    } catch (err: unknown) {
+      let errorMessage = "An unexpected error occurred";
+      if (err instanceof Error) {
+        errorMessage = err.message || errorMessage;
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      }
       state.setError(errorMessage)
       throw err
     } finally {

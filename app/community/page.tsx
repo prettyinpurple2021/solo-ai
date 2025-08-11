@@ -1,9 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowLeft, Crown, Calendar, Users, Sparkles, Bell, Mail, MessageCircle, Network, Rocket } from "lucide-react"
+import { ArrowLeft, Crown, Calendar, Users, Bell, Mail, MessageCircle, Network, Rocket } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 
 export default function CommunityComingSoonPage() {

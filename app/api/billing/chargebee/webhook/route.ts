@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
   const client = await getClient()
   
   try {
-    const type: string = event.event_type
+    const _type: string = event.event_type
     const subscription = event.content?.subscription
     const customer = event.content?.customer
     

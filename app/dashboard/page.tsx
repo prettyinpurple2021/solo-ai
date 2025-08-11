@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useUser } from "@stackframe/stack"
 import { useDashboardData } from "@/hooks/use-dashboard-data"
 import { ProtectedRoute } from "@/components/auth/protected-route"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -89,7 +88,7 @@ export default function DashboardPage() {
   }
 
   const todaysTasks = dashboardData?.todaysTasks || []
-  const activeGoals = dashboardData?.activeGoals || []
+  const _activeGoals = dashboardData?.activeGoals || []
   const recentConversations = dashboardData?.recentConversations || []
   const recentAchievements = dashboardData?.recentAchievements || []
   const weeklyFocus = dashboardData?.weeklyFocus || {
