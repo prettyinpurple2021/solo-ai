@@ -36,6 +36,7 @@ const nextConfig = {
   // Environment variable configuration
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
+    NEXT_PUBLIC_ADSENSE_CLIENT_ID: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID,
   },
 }
 

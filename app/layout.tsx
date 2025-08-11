@@ -7,6 +7,7 @@ import Script from "next/script"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
+import { AdSense } from "@/components/adsense"
 
 export const dynamic = 'force-dynamic'
 
@@ -26,16 +27,24 @@ export default function RootLayout({
   const stackServerApp = getStackServerApp()
   return (
     <html lang="en">
-      <body className={inter.className}>{stackServerApp ? (<StackProvider app={stackServerApp}><StackTheme>
-        {/* Google AdSense */}
-        <Script
-          id="adsense-script"
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClientId}`}
-          crossOrigin="anonymous"
-          strategy="beforeInteractive"
-        />
-        {/* End Google AdSense */}
+      {/* Google AdSense */}
+      <Script
+        id="adsense-script"
+        async
+        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || 'ca-pub-9458819180463481'}`}
+        crossOrigin="anonymous"
+        strategy="beforeInteractive"
+      />
+      {/* End Google AdSense */}
+      <body className={inter.className}>
+        {stackServerApp ? (
+          <StackProvider app={stackServerApp}>
+            <StackTheme>
+              {/* ...rest of your content... */}
+            </StackTheme>
+          </StackProvider>
+        ) : null}
+      </body>
         {/* Google Tag Manager */}
         <Script
           id="gtm-script"
@@ -49,6 +58,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }}
         />
         {/* End Google Tag Manager */}
+        {/* Google AdSense */}
+        <AdSense clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID} />
+        {/* End Google AdSense */}
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
