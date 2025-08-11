@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
 import { z } from 'zod'
@@ -7,11 +7,11 @@ import { z } from 'zod'
 const IdParamSchema = z.object({ id: z.string().regex(/^\d+$/) })
 
 export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: Request,
+  context: any
 ) {
   try {
-    const parsed = IdParamSchema.safeParse(params)
+    const parsed = IdParamSchema.safeParse({ id: context?.params?.id })
     if (!parsed.success) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
     }
