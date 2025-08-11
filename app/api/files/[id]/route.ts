@@ -1,11 +1,10 @@
-import { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/neon/server'
 import { authenticateRequest } from '@/lib/auth-server'
 
 // GET /api/files/:id → returns the binary file content with proper headers
 export async function GET(
-  _request: NextRequest,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -43,7 +42,7 @@ export async function GET(
 
 // DELETE /api/files/:id → deletes a file owned by the authenticated user
 export async function DELETE(
-  _request: NextRequest,
+  _request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
