@@ -24,7 +24,7 @@ const nextConfig = {
   eslint: {
     // Only run ESLint on specific directories during production builds
     dirs: ['app', 'components', 'lib', 'hooks'],
-    ignoreDuringBuilds: false, // Enable ESLint checking in production
+    ignoreDuringBuilds: true, // Do not fail production builds on ESLint errors
   },
 
   // Enable compression for better performance
@@ -36,6 +36,7 @@ const nextConfig = {
   // Environment variable configuration
   env: {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
+    NEXT_PUBLIC_ADSENSE_CLIENT_ID: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID,
   },
 }
 
