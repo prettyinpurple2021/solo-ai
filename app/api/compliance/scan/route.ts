@@ -1,6 +1,9 @@
+import '@/lib/server-polyfills'
 import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
 import * as cheerio from 'cheerio'
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,

@@ -21,6 +21,11 @@ const nextConfig = {
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
 
+  // Ensure server polyfills are loaded in the Node runtime during build and SSR
+  serverRuntimeConfig: {
+    requireServerPolyfills: true,
+  },
+
   eslint: {
     // Only run ESLint on specific directories during production builds
     dirs: ['app', 'components', 'lib', 'hooks'],
