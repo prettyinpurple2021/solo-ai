@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
+import { z } from 'zod'
 
 export async function GET(_request: NextRequest) {
   try {
@@ -55,6 +56,13 @@ export async function GET(_request: NextRequest) {
   }
 }
 
+const SaveTemplateSchema = z.object({
+  templateSlug: z.string().min(1),
+  templateData: z.record(z.any()),
+  title: z.string().optional(),
+  description: z.string().optional(),
+})
+
 export async function POST(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
@@ -63,15 +71,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { templateSlug, templateData, title, description } = body
-
-    if (!templateSlug || !templateData) {
-      return NextResponse.json(
-        { error: 'templateSlug and templateData are required' },
-        { status: 400 }
-      )
+    const parse = SaveTemplateSchema.safeParse(await request.json())
+    if (!parse.success) {
+      return NextResponse.json({ error: 'Invalid payload', details: parse.error.flatten() }, { status: 400 })
     }
+    const { templateSlug, templateData, title, description } = parse.data
 
     const client = await createClient()
     await client.query(

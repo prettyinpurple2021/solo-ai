@@ -1,19 +1,12 @@
 import { useState } from 'react';
 import { useToast } from './use-toast';
+import type { SavedTemplate } from '@/lib/types'
 
 interface TemplateData {
   [key: string]: unknown;
 }
 
-export interface SavedTemplate {
-  id: number;
-  template_slug: string;
-  template_data: TemplateData;
-  title: string;
-  description?: string;
-  created_at: string;
-  updated_at: string;
-}
+export type { SavedTemplate }
 
 export function useTemplateSave() {
   const [isSaving, setIsSaving] = useState(false);
