@@ -51,7 +51,7 @@ export default function SignUpPage() {
       
       console.log("Signup result:", result)
 
-      if (result.error) {
+      if (result.status === "error") {
         console.log("Signup error:", result.error)
         setError(result.error.message || "Sign up failed")
       } else {

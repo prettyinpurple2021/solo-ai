@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
       customer: { id: userId, email },
       redirect_url: successUrl || `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
       cancel_url: cancelUrl || `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
-    }).requestPromise()
+    }).request()
 
     return NextResponse.json({ hosted_page_url: hosted.hosted_page.url })
   } catch (err: any) {

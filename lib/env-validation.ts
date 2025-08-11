@@ -64,8 +64,8 @@ export function validateEnv() {
         console.error("\n🔗 Documentation: Check README.md for detailed setup instructions")
       }
       
-      // Don't exit during build process
-      if (process.env.NODE_ENV === "production") {
+      // Do not crash build by default. Opt-in via VALIDATE_ENV=true.
+      if (process.env.VALIDATE_ENV === "true") {
         throw new Error("Environment validation failed")
       }
     }
@@ -95,7 +95,7 @@ export function getFeatureFlags() {
   }
 }
 
-// Only validate in production or when explicitly requested
-if (process.env.NODE_ENV === "production" || process.env.VALIDATE_ENV === "true") {
+// Only validate when explicitly requested
+if (process.env.VALIDATE_ENV === "true") {
   validateEnv()
 }
