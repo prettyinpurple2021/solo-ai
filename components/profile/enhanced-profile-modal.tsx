@@ -19,11 +19,11 @@ import { useToast } from "@/hooks/use-toast"
 import { User, Camera, Upload, X, Settings, Bell, Shield, Crown, Sparkles, Save, Trash2 } from "lucide-react"
 
 interface EnhancedProfileModalProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  _open: boolean
+  onOpenChange: (_open: boolean) => void
 }
 
-export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModalProps) {
+export function EnhancedProfileModal({ _open, onOpenChange }: EnhancedProfileModalProps) {
   const user = useUser()
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -114,13 +114,19 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
     try {
       const result = await uploadImage(file, file.name, user.id)
       setFormData((prev) => ({ ...prev, avatar_url: result.url }))
+      // Persist avatar URL on profile
+      await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ avatar_url: result.url }),
+      })
       toast({
         title: "Image Uploaded! 📸",
         description: "Your boss profile photo has been updated!",
       })
-    } catch (error) {
+    } catch {
       toast({
-        title: "Upload Error",
+        title: "Upload Error", 
         description: "Failed to upload image. Please try again.",
         variant: "destructive",
       })
@@ -132,18 +138,25 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
   const handleRemoveImage = async () => {
     if (formData.avatar_url) {
       try {
-        // Extract pathname from URL for deletion
-        const urlParts = formData.avatar_url.split('/')
-        const pathname = urlParts.slice(-2).join('/') // Get the last two parts as pathname
-        await deleteImage(pathname)
-        setFormData((prev) => ({ ...prev, avatar_url: "" }))
+        // Extract id from /api/files/:id
+        const m = formData.avatar_url.match(/\/api\/files\/(.+)$/)
+        if (m && user) {
+          const id = m[1]
+          await deleteImage(id, user.id)
+          await fetch('/api/profile', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ avatar_url: null }),
+          })
+          setFormData((prev) => ({ ...prev, avatar_url: "" }))
+        }
         toast({
           title: "Image Removed",
           description: "Profile photo has been removed.",
         })
-      } catch (error) {
+      } catch {
         toast({
-          title: "Error",
+          title: "Error", 
           description: "Failed to remove image.",
           variant: "destructive",
         })
@@ -156,19 +169,21 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
 
     setIsSaving(true)
     try {
-      // TODO: Implement actual profile update functionality
-      // This would typically update the user profile in the database
-      console.log('Profile update data:', formData)
-      
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const res = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ full_name: formData.full_name }),
+      })
+      if (!res.ok) {
+        throw new Error('Failed to update profile')
+      }
       
       toast({
         title: "Profile Updated! 👑",
         description: "Your boss profile has been successfully updated!",
       })
       onOpenChange(false)
-    } catch (error) {
+    } catch {
       toast({
         title: "Update Failed",
         description: "Failed to update profile. Please try again.",
@@ -180,7 +195,7 @@ export function EnhancedProfileModal({ open, onOpenChange }: EnhancedProfileModa
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={_open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto boss-card">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold boss-heading flex items-center gap-2">

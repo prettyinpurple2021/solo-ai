@@ -5,7 +5,7 @@ interface TemplateData {
   [key: string]: unknown;
 }
 
-interface SavedTemplate {
+export interface SavedTemplate {
   id: number;
   template_slug: string;
   template_data: TemplateData;

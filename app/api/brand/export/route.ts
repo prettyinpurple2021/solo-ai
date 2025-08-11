@@ -42,12 +42,14 @@ export async function POST(request: NextRequest) {
       version: '1.0'
     }
 
-    // For now, return the brand kit data
-    // In a full implementation, this would generate downloadable files
+    // Create a zip file dynamically and return as attachment
+    // To keep it serverless-friendly, return a JSON payload for now with embedded data URL for simple downloads
+    const payload = Buffer.from(JSON.stringify(brandKit, null, 2)).toString('base64')
+    const dataUrl = `data:application/json;base64,${payload}`
     return NextResponse.json({ 
       message: 'Brand kit exported successfully',
       brandKit,
-      downloadUrl: null // Would be a URL to download the brand kit files
+      downloadUrl: dataUrl
     }, { status: 200 })
   } catch (error) {
     console.error('Error exporting brand kit:', error)

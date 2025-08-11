@@ -111,8 +111,13 @@ export async function checkUsageLimit(
 
   switch (limitType) {
     case 'agents':
-      // This would typically check how many AI agents the user has accessed today
-      current = 0 // Placeholder - implement based on your tracking
+      // Count distinct agents chatted with today
+      const agentsResult = await query(
+        `SELECT COUNT(DISTINCT agent_id) AS count FROM conversations 
+         WHERE user_id = $1 AND created_at >= CURRENT_DATE`,
+        [userId]
+      )
+      current = parseInt(agentsResult.rows[0]?.count || '0')
       limit = subscription.features.maxAgents
       break
     case 'conversations':
@@ -126,7 +131,11 @@ export async function checkUsageLimit(
       limit = subscription.features.maxConversationsPerDay
       break
     case 'teamMembers':
-      current = 1 // Placeholder - implement team member counting
+      const teamResult = await query(
+        `SELECT COUNT(*) AS count FROM team_members WHERE user_id = $1`,
+        [userId]
+      )
+      current = parseInt(teamResult.rows[0]?.count || '0')
       limit = subscription.features.maxTeamMembers
       break
   }

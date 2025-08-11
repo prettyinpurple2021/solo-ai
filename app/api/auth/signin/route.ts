@@ -3,8 +3,31 @@ import { createClient } from '@/lib/neon/server'
 import { createToken } from '@/lib/auth-utils'
 import bcrypt from 'bcryptjs'
 
+// Typed global cache for simple in-memory rate limiting
+declare global {
+  // eslint-disable-next-line no-var
+  var __signinRateLimit: Map<string, { count: number; ts: number }> | undefined
+}
+
 export async function POST(request: NextRequest) {
   try {
+    // Basic in-memory rate limiting per IP (best-effort)
+    const ip = request.headers.get('x-forwarded-for') || 'unknown'
+    if (!globalThis.__signinRateLimit) {
+      globalThis.__signinRateLimit = new Map<string, { count: number; ts: number }>()
+    }
+    const map = globalThis.__signinRateLimit
+    const now = Date.now()
+    const entry = map.get(ip)
+    if (!entry || now - entry.ts > 60_000) {
+      map.set(ip, { count: 1, ts: now })
+    } else {
+      entry.count += 1
+      if (entry.count > 20) {
+        return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+      }
+    }
+
     const { email, password } = await request.json()
 
     if (!email || !password) {

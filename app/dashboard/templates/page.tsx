@@ -9,11 +9,15 @@ import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Badge } from "@/components/ui/badge"
-import { SavedTemplatesList } from "@/components/templates/saved-templates-list"
+import dynamic from "next/dynamic"
 import { Search, Plus, Grid, List, Filter } from "lucide-react"
 import Link from "next/link"
 
 export default function TemplatesPage() {
+  const SavedTemplatesList = dynamic(
+    () => import("@/components/templates/saved-templates-list").then(m => m.SavedTemplatesList),
+    { ssr: false, loading: () => <div className="text-muted-foreground">Loading saved templates…</div> }
+  )
   const [searchTerm, setSearchTerm] = useState("")
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
   

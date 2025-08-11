@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useTemplateSave } from '@/hooks/use-template-save';
+import { useTemplateSave, SavedTemplate } from '@/hooks/use-template-save';
 import { FileText, Calendar, Download, Trash2, Eye } from 'lucide-react';
 import {
   Dialog,
@@ -15,15 +15,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-interface SavedTemplate {
-  id: number;
-  template_slug: string;
-  template_data: any;
-  title: string;
-  description?: string;
-  created_at: string;
-  updated_at: string;
-}
+// Uses SavedTemplate from hook to avoid duplicate/conflicting types
 
 export function SavedTemplatesList() {
   const [savedTemplates, setSavedTemplates] = useState<SavedTemplate[]>([]);
@@ -63,8 +55,16 @@ export function SavedTemplatesList() {
   };
 
   const handleDeleteTemplate = async (templateId: number) => {
-    // TODO: Implement delete functionality
-    console.log('Delete template:', templateId);
+    try {
+      const res = await fetch(`/api/templates/${templateId}`, { method: 'DELETE' })
+      if (!res.ok) {
+        throw new Error('Failed to delete template')
+      }
+      setSavedTemplates((prev) => prev.filter((t) => t.id !== templateId))
+    } catch (err) {
+      console.error(err)
+      // Optionally surface a toast here if available
+    }
   };
 
   if (isLoading) {

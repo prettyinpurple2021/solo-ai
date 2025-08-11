@@ -6,6 +6,26 @@ import { v4 as uuidv4 } from 'uuid'
 
 export async function POST(request: NextRequest) {
   try {
+    // Basic in-memory rate limiting per IP (best-effort)
+    const ip = request.headers.get('x-forwarded-for') || 'unknown'
+    // Move this to a separate types.d.ts file if needed
+    type RateLimitEntry = { count: number; ts: number };
+    const rateLimit = globalThis as { __signupRateLimit?: Map<string, RateLimitEntry> };
+    if (!rateLimit.__signupRateLimit) {
+      rateLimit.__signupRateLimit = new Map<string, RateLimitEntry>()
+    }
+    const map = rateLimit.__signupRateLimit
+    const currentTime = Date.now()
+    const entry = map.get(ip)
+    if (!entry || currentTime - entry.ts > 60_000) {
+      map.set(ip, { count: 1, ts: currentTime })
+    } else {
+      entry.count += 1
+      if (entry.count > 20) {
+        return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+      }
+    }
+
     const { email, password, metadata } = await request.json()
 
     if (!email || !password) {

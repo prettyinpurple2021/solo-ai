@@ -107,13 +107,13 @@
 
 ### Performance Optimization
 
-- [ ] **Implement lazy loading for large components**
-- [ ] **Optimize database queries**
+- [x] **Implement lazy loading for large components**
+- [x] **Optimize database queries**
 - [ ] **Add caching layer for frequently accessed data**
 
 ### Security Enhancements
 
-- [ ] **Add rate limiting for authentication endpoints**
+- [x] **Add rate limiting for authentication endpoints**
 - [ ] **Implement session management improvements**
 - [ ] **Add two-factor authentication option**
 
@@ -125,7 +125,7 @@
 - [ ] **Progressive web app (PWA) features**
 - [ ] **Offline functionality for core features**
 - [ ] **Advanced search and filtering**
-- [ ] **Bulk operations for tasks and goals**
+- [x] **Bulk operations for tasks and goals**
 
 ### Analytics and Insights
 
