@@ -13,7 +13,7 @@ async function fetchHtml(url: string): Promise<string> {
   return await res.text()
 }
 
-function analyze(html: string, url: string) {
+function analyze(html: string, _url: string) {
   const $ = cheerio.load(html)
   const title = $('title').first().text().trim()
   const text = $('body').text().toLowerCase()
@@ -111,8 +111,9 @@ export async function POST(req: NextRequest) {
     } finally {
       client.release()
     }
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Scan failed' }, { status: 500 })
+  } catch (err: unknown) {
+    const error = err as Error;
+    return NextResponse.json({ error: error.message || 'Scan failed' }, { status: 500 })
   }
 }
 

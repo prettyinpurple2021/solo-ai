@@ -27,12 +27,12 @@ export const deleteImage = async (pathname: string): Promise<void> => {
   console.log('Delete image:', pathname)
 }
 
-export const listUserImages = async (userId: string) => {
+export const listUserImages = async (_userId: string) => {
   // Placeholder implementation
   return []
 }
 
-export const getImage = async (pathname: string): Promise<string | null> => {
+export const getImage = async (_pathname: string): Promise<string | null> => {
   // Placeholder implementation
   return null
 }

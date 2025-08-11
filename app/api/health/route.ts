@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getFeatureFlags } from '@/lib/env-validation'
 import { query } from '@/lib/neon/client'
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: NextRequest) {
   const checks = {
     timestamp: new Date().toISOString(),
     status: 'ok',
@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
       ai: false,
       email: false,
     },
-    details: {} as any
+    details: {} as Record<string, unknown>
   }
 
   try {

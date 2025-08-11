@@ -9,8 +9,8 @@ interface AuthContextType {
   user: User | null
   session: Session | null
   loading: boolean
-  signIn: (email: string, password: string) => Promise<{ error: any }>
-  signUp: (email: string, password: string, metadata?: Record<string, any>) => Promise<{ error: any }>
+  signIn: (_email: string, _password: string) => Promise<{ error: unknown }>
+  signUp: (_email: string, _password: string, _metadata?: Record<string, unknown>) => Promise<{ error: unknown }>
   signOut: () => Promise<void>
 }
 

@@ -7,9 +7,9 @@ export interface FileUploadResult {
 }
 
 export interface FileStorageProvider {
-  upload(file: File, pathname: string): Promise<FileUploadResult>
+  upload(_file: File, _pathname: string): Promise<FileUploadResult>
   delete(pathname: string): Promise<void>
-  list(prefix: string): Promise<Array<{
+  list(_prefix: string): Promise<Array<{
     url: string
     pathname: string
     size: number
