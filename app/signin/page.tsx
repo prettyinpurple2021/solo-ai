@@ -28,6 +28,12 @@ export default function SignInPage() {
     setError("")
     setLoading(true)
 
+    if (!stackApp) {
+      setLoading(false)
+      setError("Authentication is initializing. Please try again in a moment.")
+      return
+    }
+
     try {
       console.log("Attempting signin with:", { email })
       const result = await stackApp.signInWithCredential({
@@ -46,7 +52,10 @@ export default function SignInPage() {
       }
     } catch (err) {
       console.error("Signin exception:", err)
-      setError("An unexpected error occurred")
+      const message =
+        (err as any)?.message ||
+        (typeof err === "string" ? (err as string) : "An unexpected error occurred. Please try again.")
+      setError(message)
     } finally {
       setLoading(false)
     }

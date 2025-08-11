@@ -30,19 +30,24 @@ export default function SignUpPage() {
     e.preventDefault()
     setError("")
 
+    if (!stackApp) {
+      setError("Authentication is initializing. Please try again in a moment.")
+      return
+    }
+
     if (password !== confirmPassword) {
       setError("Passwords do not match")
       return
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long")
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long")
       return
     }
 
     setLoading(true)
 
-    try {
+      try {
       console.log("Attempting signup with:", { email })
       const result = await stackApp.signUpWithCredential({
         email,
@@ -60,7 +65,10 @@ export default function SignUpPage() {
       }
     } catch (err) {
       console.error("Signup exception:", err)
-      setError("An unexpected error occurred")
+      const message =
+        (err as any)?.message ||
+        (typeof err === "string" ? (err as string) : "An unexpected error occurred. Please try again.")
+      setError(message)
     } finally {
       setLoading(false)
     }

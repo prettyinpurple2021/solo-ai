@@ -402,7 +402,7 @@ export default function PricingPage() {
             <Button
               size="lg"
               className="bg-white text-purple-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-full transform hover:scale-105 transition-all duration-200"
-              onClick={() => router.push('/sign-up')}
+              onClick={() => router.push('/signup')}
             >
               Start for free
             </Button>
