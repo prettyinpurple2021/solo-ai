@@ -47,7 +47,7 @@ export function NeonAuth() {
     
     const { error } = await signIn(email, password)
     if (error) {
-      setError(error)
+      setError(typeof error === 'string' ? error : 'Sign in failed')
     }
     setLoading(false)
   }
@@ -141,7 +141,7 @@ export function NeonAuth() {
       })
       
       if (error) {
-        setError(error)
+        setError(typeof error === 'string' ? error : 'Sign up failed')
       } else {
         setError("Account created successfully! You can now sign in.")
         // Reset form

@@ -2,9 +2,9 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { ArrowLeft, Crown, Search, Book, MessageCircle, Video, FileText, Mail, ExternalLink, ChevronDown, ChevronRight, HelpCircle, Lightbulb, Zap, Users, Settings } from "lucide-react"
+import { ArrowLeft, Search, MessageCircle, Video, Mail, ExternalLink, ChevronDown, ChevronRight, HelpCircle, Lightbulb, Zap, Users, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"

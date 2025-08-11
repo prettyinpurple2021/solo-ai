@@ -56,7 +56,7 @@ export default function SignUpPage() {
       
       console.log("Signup result:", result)
 
-      if (result.error) {
+      if (result.status === "error") {
         console.log("Signup error:", result.error)
         setError(result.error.message || "Sign up failed")
       } else {
@@ -131,9 +131,9 @@ export default function SignUpPage() {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Create a secure password"
                   className="pl-10 pr-10"
                   required
                 />
@@ -154,9 +154,9 @@ export default function SignUpPage() {
                 <Input
                   id="confirmPassword"
                   type={showConfirmPassword ? "text" : "password"}
-                  placeholder="Confirm your password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm your password"
                   className="pl-10 pr-10"
                   required
                 />
@@ -175,7 +175,7 @@ export default function SignUpPage() {
               className="w-full bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700"
               disabled={loading}
             >
-              {loading ? "Creating account..." : "Sign Up"}
+              {loading ? "Creating Account..." : "Create Account"}
             </Button>
           </form>
 
@@ -187,11 +187,9 @@ export default function SignUpPage() {
           </div>
           
           <div className="pt-4">
-            <Link href="/">
-              <Button variant="ghost" className="w-full">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Home
-              </Button>
+            <Link href="/" className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-800 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+              Back to Home
             </Link>
           </div>
         </CardContent>

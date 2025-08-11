@@ -105,7 +105,7 @@ export default function AboutPage() {
             </span>
           </h1>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
-            We're not just another productivity platform. We're a rebellion against burnout culture, 
+            We&apos;re not just another productivity platform. We&apos;re a rebellion against burnout culture, 
             a movement for authentic entrepreneurship, and your AI-powered squad for building an empire 
             without losing yourself.
           </p>
@@ -118,8 +118,8 @@ export default function AboutPage() {
           <h2 className="text-4xl font-bold text-gray-800 mb-6">Our Mission</h2>
           <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-8 rounded-2xl text-white">
             <p className="text-2xl font-semibold leading-relaxed">
-              "To empower solo entrepreneurs with AI-driven tools that amplify their natural brilliance, 
-              eliminate busywork, and create sustainable success without sacrificing their sanity or soul."
+              &quot;To empower solo entrepreneurs with AI-driven tools that amplify their natural brilliance, 
+              eliminate busywork, and create sustainable success without sacrificing their sanity or soul.&quot;
             </p>
           </div>
         </div>

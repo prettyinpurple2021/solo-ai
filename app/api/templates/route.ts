@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
     

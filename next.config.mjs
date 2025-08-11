@@ -1,16 +1,42 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Removed static export to support server actions
-  trailingSlash: true,
+  // Remove static export to support server actions and API routes
+  trailingSlash: false, // Netlify works better without trailing slashes
   images: {
-    unoptimized: true,
+    unoptimized: true, // Required for Netlify static deployment
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+      {
+        protocol: 'https', 
+        hostname: '*.supabase.co',
+      },
+    ],
+  },
+  
+  // Enable experimental features for better performance
+  experimental: {
+    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
   },
 
   eslint: {
-    // Only run ESLint on the 'pages' and 'components' directories during production builds
-    // This allows for faster builds while still maintaining code quality in development
-    dirs: ['app', 'components', 'lib'],
-    ignoreDuringBuilds: true,
+    // Only run ESLint on specific directories during production builds
+    dirs: ['app', 'components', 'lib', 'hooks'],
+    ignoreDuringBuilds: true, // Temporarily disable ESLint during builds
+  },
+
+  // Enable compression for better performance
+  compress: true,
+  
+  // Optimize for serverless functions
+  poweredByHeader: false,
+  
+  // Environment variable configuration
+  env: {
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    NEXT_PUBLIC_ADSENSE_CLIENT_ID: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID,
   },
 }
 

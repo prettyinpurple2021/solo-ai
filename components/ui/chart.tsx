@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils"
 const THEMES = { light: "", dark: ".dark" } as const
 
 export type ChartConfig = {
-  [k in string]: {
+  [_k in string]: {
     label?: React.ReactNode
     icon?: React.ComponentType
   } & (
@@ -111,10 +111,10 @@ interface ChartTooltipContentProps {
   indicator?: "line" | "dot" | "dashed";
   nameKey?: string;
   labelKey?: string;
-  labelFormatter?: (value: any, payload: any) => React.ReactNode;
+  labelFormatter?: (_value: any, _payload: any) => React.ReactNode;
   labelClassName?: string;
   color?: string;
-  formatter?: (value: any, name: any, item: any, index: any, payload: any) => React.ReactNode;
+  formatter?: (_value: any, _name: any, _item: any, _index: any, _payload: any) => React.ReactNode;
   nestLabel?: boolean;
 }
 

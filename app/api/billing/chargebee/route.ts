@@ -19,11 +19,17 @@ export async function POST(req: NextRequest) {
       customer: { id: userId, email },
       redirect_url: successUrl || `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
       cancel_url: cancelUrl || `${process.env.NEXT_PUBLIC_APP_URL}/pricing`,
-    }).requestPromise()
+    }).request()
 
     return NextResponse.json({ hosted_page_url: hosted.hosted_page.url })
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message || 'Chargebee checkout init failed' }, { status: 500 })
+  } catch (err: unknown) {
+    const errorMessage =
+      err instanceof Error
+        ? err.message
+        : typeof err === 'string'
+          ? err
+          : 'Chargebee checkout init failed';
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }
 

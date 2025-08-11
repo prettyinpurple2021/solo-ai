@@ -43,7 +43,7 @@ export default function SignInPage() {
       
       console.log("Signin result:", result)
 
-      if (result.error) {
+      if (result.status === "error") {
         console.log("Signin error:", result.error)
         setError(result.error.message || "Sign in failed")
       } else {

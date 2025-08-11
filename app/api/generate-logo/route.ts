@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { brandName, industry, style, colors, typography } = body
+    const { brandName, _industry, style, _colors, _typography } = body
 
     if (!brandName) {
       return NextResponse.json(

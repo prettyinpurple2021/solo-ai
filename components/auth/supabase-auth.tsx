@@ -47,7 +47,7 @@ export function SupabaseAuth() {
     
     const { error } = await signIn(email, password)
     if (error) {
-      setError(error.message)
+      setError(typeof error === 'object' && error && 'message' in error ? error.message as string : 'Sign in failed')
     }
     setLoading(false)
   }
@@ -142,7 +142,7 @@ export function SupabaseAuth() {
       })
       
       if (error) {
-        setError(error.message)
+        setError(typeof error === 'object' && error && 'message' in error ? error.message as string : 'Sign up failed')
       } else {
         setError("Check your email for a confirmation link!")
         // Reset form

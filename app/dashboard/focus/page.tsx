@@ -13,7 +13,7 @@ export default function FocusMode() {
   const [isActive, setIsActive] = useState(false)
   const [timeLeft, setTimeLeft] = useState(25 * 60) // 25 minutes in seconds
   const [sessionType, setSessionType] = useState<keyof typeof sessionTypes>("work") // work, short-break, long-break
-  const [sessionDuration, setSessionDuration] = useState(25)
+  const [_sessionDuration, _setSessionDuration] = useState(25)
   const [completedSessions, setCompletedSessions] = useState(0)
   const [weeklyGoal] = useState(20)
 

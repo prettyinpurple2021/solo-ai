@@ -33,7 +33,7 @@ export function useCollaboration() {
         setError(data.error)
         return null
       }
-    } catch (err) {
+    } catch {
       setError("Failed to create collaboration task")
       return null
     } finally {
@@ -70,7 +70,7 @@ export function useCollaboration() {
         setError(data.error)
         return null
       }
-    } catch (err) {
+    } catch {
       setError("Failed to execute phase")
       return null
     } finally {
@@ -99,7 +99,7 @@ export function useCollaboration() {
         setError(data.error)
         return null
       }
-    } catch (err) {
+    } catch {
       setError("Failed to analyze collaboration needs")
       return null
     } finally {
@@ -117,7 +117,7 @@ export function useCollaboration() {
 
       const data = await response.json()
       return data.success ? data.workflows : {}
-    } catch (err) {
+    } catch {
       setError("Failed to fetch workflows")
       return {}
     }
