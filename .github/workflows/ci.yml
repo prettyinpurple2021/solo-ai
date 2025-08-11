@@ -1,4 +1,4 @@
-name: Run Jest Coverage
+name: CI
 
 on:
   push:
@@ -7,12 +7,47 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+
+  e2e:
+    needs: build
+    if: ${{ github.secrets.DATABASE_URL && github.secrets.JWT_SECRET && github.secrets.E2E_EMAIL && github.secrets.E2E_PASSWORD }}
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ github.secrets.DATABASE_URL }}
+      JWT_SECRET: ${{ github.secrets.JWT_SECRET }}
+      NEXT_PUBLIC_OPENAI_API_KEY: ''
+      NEXT_PUBLIC_STACK_PROJECT_ID: ''
+      NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY: ''
+      STACK_SECRET_SERVER_KEY: ''
+      E2E_BASE_URL: http://localhost:3000
+      E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - name: Prepare database test user
+        run: node scripts/e2e-setup.mjs
+      - name: Build
+        run: npm run build
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Run E2E tests
+        run: npm run e2e
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

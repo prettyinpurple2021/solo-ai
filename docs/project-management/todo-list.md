@@ -231,29 +231,29 @@
 
 ### **SHORT TERM (Next 2 Weeks)**
 
-4. **User Onboarding Experience**
+1. **User Onboarding Experience**
    - Create guided tour for new users
    - Implement progressive disclosure
    - Add helpful tooltips and explanations
 
-5. **Performance Optimization**
+2. **Performance Optimization**
    - Implement code splitting
    - Optimize bundle size
    - Add service worker for caching
 
-6. **Advanced Validation and Security**
+3. **Advanced Validation and Security**
    - Add username uniqueness checking
    - Implement proper error handling
    - Add rate limiting for forms
 
 ### **MEDIUM TERM (Next Month)**
 
-7. **Analytics and Monitoring**
+1. **Analytics and Monitoring**
    - Implement user behavior tracking
    - Add performance monitoring
    - Set up error tracking
 
-8. **Advanced Features**
+2. **Advanced Features**
    - Voice-to-text functionality
    - Advanced AI features
    - Integration capabilities
@@ -261,6 +261,7 @@
 ## 💅 Girlboaa Boss-Level Improvements (Actionable, In Order)
 
 1) Templates DELETE API — make the trash button lethal (and safe)
+
 - [x] Create `app/api/templates/[id]/route.ts` with `DELETE`
   - [x] Require auth via `authenticateRequest()` and 401 on missing
   - [x] Verify ownership: `DELETE FROM user_templates WHERE id = $1 AND user_id = $2`
@@ -269,16 +270,19 @@
 - [ ] Add a test to ensure non-owners can’t delete
 
 2) Templates Export — let the boss download her brilliance
+
 - [x] In `SavedTemplatesList`, implement client-side JSON export for each template
   - [x] Filename: `${template.template_slug}-${template.id}.json`
   - [x] Use `URL.createObjectURL(new Blob([json], { type: 'application/json' }))` + hidden link click
 
 3) Centralize shared types — one source of truth, zero drama
+
 - [x] Add `lib/types.ts` and export: `SavedTemplate`
 - [ ] Add `UserProfile`, `SubscriptionStatus`, etc.
 - [x] Replace duplicate interfaces for templates in hooks/components
 
 4) Zod validation on every API — no messy inputs in this house
+
 - [ ] Add `zod` and create schemas for:
   - [ ] `POST /api/auth/signin` and `POST /api/auth/signup`
   - [ ] `GET/POST /api/templates` and `DELETE /api/templates/[id]`
@@ -286,35 +290,42 @@
 - [ ] Validate `request.json()` and return typed, consistent errors/responses
 
 5) Auth flow consistency — same glam, every route
+
 - [ ] Standardize user retrieval with a single helper (use `lib/auth-server.ts`)
 - [ ] Ensure JWT cookie options are consistent across sign-in/sign-out
 - [ ] Add `/api/auth/logout` to clear the cookie cleanly
 
 6) Rate limiting + Idempotency — unshakeable under pressure
+
 - [ ] Create `lib/rate-limit.ts` utility and use it in `signin`, `signup`, `chat`
 - [ ] Implement idempotency keys for write endpoints and webhooks
   - [ ] Add Neon table: `idempotency_keys(key text primary key, created_at timestamptz default now())`
   - [ ] Respect `Idempotency-Key` header and skip duplicates
 
 7) Database indexes + updated_at triggers — faster, fresher, fiercer
+
 - [ ] Add index: `CREATE INDEX IF NOT EXISTS idx_user_templates_user_created ON user_templates(user_id, created_at)`
 - [ ] Verify `updated_at` triggers on all tables (align with `docs/migrations/005-*`)
 - [ ] Add SQL migration and run via `scripts/run-neon-migration.mjs`
 
 8) Observability — see everything, fix anything
+
 - [ ] Add Sentry (`@sentry/nextjs`) setup (client + server)
 - [ ] Use structured logs in API routes with context (user_id, route, status)
 - [ ] Keep `/api/health` as liveness; consider `/api/health/deps` for dependency checks
 
 9) Data fetching & cache — silky smooth UX
+
 - [ ] Introduce SWR for `/api/templates` and `/api/profile`
 - [ ] Hook `useTemplateSave()` into SWR (mutate after save/delete)
 
 10) Edge-friendly reads — speed where it sparkles
+
 - [ ] Mark read-only list endpoints with `export const runtime = 'edge'` where compatible (e.g., `GET /api/templates`)
 - [ ] Keep writes (POST/DELETE) on Node runtime
 
 11) Accessibility & QA — inclusive and bulletproof
+
 - [ ] Sweep critical components for labels/aria/contrast
 - [ ] Add Playwright smoke tests for:
   - [ ] Sign in
@@ -322,20 +333,24 @@
   - [ ] Update profile (avatar + name)
 
 12) CI/CD gates — only fab commits make it to main
+
 - [ ] Add GitHub Actions workflow: install, typecheck, lint, test, build on PR
 - [ ] Require green checks before merge
 
 13) Testing strategy — receipts or it didn’t happen
+
 - [ ] Add `vitest` (or `jest`) for API unit tests
 - [ ] Unit tests for Zod schemas and API handler happy/edge paths
 - [ ] Playwright E2E covering auth → templates → profile
 
 14) Webhook glow-up — Chargebee, but make it safe
+
 - [ ] Verify Chargebee webhook signatures using signing secret
 - [ ] Store and enforce idempotency for events
 - [ ] Reconcile subscription states with feature gates used in UI
 
 15) Privacy controls — user data, user rules
+
 - [ ] Add `GET /api/account/export` to deliver a full JSON export of user data
 - [ ] Add `DELETE /api/account/delete` to purge user data across tables (with auth + confirmation safeguards)
 - [ ] Update GDPR pages to link to these endpoints

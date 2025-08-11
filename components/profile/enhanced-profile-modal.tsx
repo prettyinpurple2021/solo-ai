@@ -19,10 +19,10 @@ import { User, Camera, Upload, X, Settings, Bell, Shield, Crown, Sparkles, Save,
 
 interface EnhancedProfileModalProps {
   _open: boolean
-  onOpenChange: (_open: boolean) => void
+  onOpenChangeAction: (_open: boolean) => void
 }
 
-export function EnhancedProfileModal({ _open, onOpenChange }: EnhancedProfileModalProps) {
+export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProfileModalProps) {
   const user = useUser()
   const { toast } = useToast()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -187,7 +187,7 @@ export function EnhancedProfileModal({ _open, onOpenChange }: EnhancedProfileMod
         title: "Profile Updated! 👑",
         description: "Your boss profile has been successfully updated!",
       })
-      onOpenChange(false)
+      onOpenChangeAction(false)
     } catch {
       toast({
         title: "Update Failed",
@@ -200,7 +200,7 @@ export function EnhancedProfileModal({ _open, onOpenChange }: EnhancedProfileMod
   }
 
   return (
-    <Dialog open={_open} onOpenChange={onOpenChange}>
+    <Dialog open={_open} onOpenChange={onOpenChangeAction}>
       <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto boss-card">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold boss-heading flex items-center gap-2">
@@ -618,7 +618,7 @@ export function EnhancedProfileModal({ _open, onOpenChange }: EnhancedProfileMod
 
         {/* Action Buttons */}
         <div className="flex justify-end gap-3 pt-6 border-t">
-          <Button variant="outline" onClick={() => onOpenChange(false)} className="bg-transparent">
+          <Button variant="outline" onClick={() => onOpenChangeAction(false)} className="bg-transparent">
             Cancel
           </Button>
           <Button
