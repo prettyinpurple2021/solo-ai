@@ -53,8 +53,12 @@ export function useAsyncOperation<T>() {
       state.setData(result)
       return result
     } catch (err: unknown) {
-      const error = err as Error;
-      const errorMessage = error.message || "An unexpected error occurred"
+      let errorMessage = "An unexpected error occurred";
+      if (err instanceof Error) {
+        errorMessage = err.message || errorMessage;
+      } else if (typeof err === "string") {
+        errorMessage = err;
+      }
       state.setError(errorMessage)
       throw err
     } finally {
