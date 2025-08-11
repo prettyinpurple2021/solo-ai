@@ -261,21 +261,22 @@
 ## 💅 Girlboaa Boss-Level Improvements (Actionable, In Order)
 
 1) Templates DELETE API — make the trash button lethal (and safe)
-- [ ] Create `app/api/templates/[id]/route.ts` with `DELETE`
-  - [ ] Require auth via `authenticateRequest()` and 401 on missing
-  - [ ] Verify ownership: `DELETE FROM user_templates WHERE id = $1 AND user_id = $2`
-  - [ ] Return 403 if not owned, 404 if not found, 204 on success
-- [ ] Update `components/templates/saved-templates-list.tsx` to optimistically remove and revalidate after success
+- [x] Create `app/api/templates/[id]/route.ts` with `DELETE`
+  - [x] Require auth via `authenticateRequest()` and 401 on missing
+  - [x] Verify ownership: `DELETE FROM user_templates WHERE id = $1 AND user_id = $2`
+  - [x] Return 404 if not found/not owned, 204 on success
+- [x] Update `components/templates/saved-templates-list.tsx` to optimistically remove
 - [ ] Add a test to ensure non-owners can’t delete
 
 2) Templates Export — let the boss download her brilliance
-- [ ] In `SavedTemplatesList`, implement client-side JSON export for each template
-  - [ ] Filename: `${template.template_slug}-${template.id}.json`
-  - [ ] Use `URL.createObjectURL(new Blob([json], { type: 'application/json' }))` + hidden link click
+- [x] In `SavedTemplatesList`, implement client-side JSON export for each template
+  - [x] Filename: `${template.template_slug}-${template.id}.json`
+  - [x] Use `URL.createObjectURL(new Blob([json], { type: 'application/json' }))` + hidden link click
 
 3) Centralize shared types — one source of truth, zero drama
-- [ ] Add `lib/types.ts` and export: `SavedTemplate`, `UserProfile`, `SubscriptionStatus`, etc.
-- [ ] Replace duplicate interfaces in components/hooks/API routes with imports from `lib/types.ts`
+- [x] Add `lib/types.ts` and export: `SavedTemplate`
+- [ ] Add `UserProfile`, `SubscriptionStatus`, etc.
+- [x] Replace duplicate interfaces for templates in hooks/components
 
 4) Zod validation on every API — no messy inputs in this house
 - [ ] Add `zod` and create schemas for:

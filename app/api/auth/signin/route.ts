@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/neon/server'
 import { createToken } from '@/lib/auth-utils'
 import bcrypt from 'bcryptjs'
+import { z } from 'zod'
 
 // Typed global cache for simple in-memory rate limiting
 declare global {
@@ -28,14 +29,15 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const { email, password } = await request.json()
-
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      )
+    const BodySchema = z.object({
+      email: z.string().email(),
+      password: z.string().min(8),
+    })
+    const parsed = BodySchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
+    const { email, password } = parsed.data
 
     const client = await createClient()
     

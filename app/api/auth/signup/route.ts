@@ -3,6 +3,7 @@ import { createClient } from '@/lib/neon/server'
 import { createToken } from '@/lib/auth-utils'
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
+import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,14 +27,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const { email, password, metadata } = await request.json()
-
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      )
+    const BodySchema = z.object({
+      email: z.string().email(),
+      password: z.string().min(8),
+      metadata: z.object({ full_name: z.string().min(1).optional() }).optional(),
+    })
+    const parsed = BodySchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
+    const { email, password, metadata } = parsed.data
 
     const client = await createClient()
     

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
+import { z } from 'zod'
 
 // GET current user's profile
 export async function GET(_request: NextRequest) {
@@ -37,8 +38,15 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { full_name, avatar_url } = body
+    const BodySchema = z.object({
+      full_name: z.string().min(1).max(200).nullable().optional(),
+      avatar_url: z.string().url().nullable().optional(),
+    })
+    const parsed = BodySchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
+    }
+    const { full_name, avatar_url } = parsed.data
 
     const client = await createClient()
     const { rows } = await client.query(
