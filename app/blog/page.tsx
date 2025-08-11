@@ -132,8 +132,8 @@ export default function BlogComingSoonPage() {
               
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-200">
                 <p className="text-gray-600 mb-4">
-                  You'll automatically get notified about the Boss Blog launch when you subscribe to our newsletter below! 
-                  Plus, you'll get exclusive early access to our best content.
+                  You&apos;ll automatically get notified about the Boss Blog launch when you subscribe to our newsletter below! 
+                  Plus, you&apos;ll get exclusive early access to our best content.
                 </p>
                 <div className="flex items-center justify-center gap-2 text-purple-600 font-semibold">
                   <Mail className="w-5 h-5" />
@@ -151,14 +151,14 @@ export default function BlogComingSoonPage() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-800 mb-4">Sneak Peek: Upcoming Topics</h2>
             <p className="text-xl text-gray-600">
-              Here's what we're already working on for you, boss! 📝
+              Here&apos;s what we&apos;re already working on for you, boss! 📝
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-200">
               <h3 className="text-lg font-bold text-gray-800 mb-2">
-                "From Solo to Squad: Building Your First AI Team"
+                "                &quot;From Solo to Squad: Building Your First AI Team&quot;"
               </h3>
               <p className="text-gray-600 text-sm">
                 A complete guide to getting started with AI agents and building your virtual team from scratch.
@@ -167,16 +167,16 @@ export default function BlogComingSoonPage() {
 
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-200">
               <h3 className="text-lg font-bold text-gray-800 mb-2">
-                "The Anti-Hustle Manifesto: Building Without Burning Out"
+                "                &quot;The Anti-Hustle Manifesto: Building Without Burning Out&quot;"
               </h3>
               <p className="text-gray-600 text-sm">
-                Why the "hustle till you die" mentality is killing entrepreneurs and how to build sustainably.
+                                Why the &quot;hustle till you die&quot; mentality is killing entrepreneurs and how to build sustainably.
               </p>
             </div>
 
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-200">
               <h3 className="text-lg font-bold text-gray-800 mb-2">
-                "Revenue Automation: 5 AI Systems That Made Me $100K"
+                "                &quot;Revenue Automation: 5 AI Systems That Made Me $100K&quot;"
               </h3>
               <p className="text-gray-600 text-sm">
                 Real case study of revenue-generating automation systems you can implement today.
@@ -185,7 +185,7 @@ export default function BlogComingSoonPage() {
 
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-200">
               <h3 className="text-lg font-bold text-gray-800 mb-2">
-                "The Solo Entrepreneur's Guide to Mental Health"
+                "                &quot;The Solo Entrepreneur&apos;s Guide to Mental Health&quot;"
               </h3>
               <p className="text-gray-600 text-sm">
                 Practical strategies for maintaining mental wellness while building your empire.

@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { ProtectedRoute } from "@/components/auth/protected-route"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Badge } from "@/components/ui/badge"
 import { SavedTemplatesList } from "@/components/templates/saved-templates-list"
-import { Search, FileText, Plus, Grid, List, Filter } from "lucide-react"
+import { Search, Plus, Grid, List, Filter } from "lucide-react"
 import Link from "next/link"
 
 export default function TemplatesPage() {
