@@ -112,8 +112,13 @@ export async function POST(req: NextRequest) {
       client.release()
     }
   } catch (err: unknown) {
-    const error = err as Error;
-    return NextResponse.json({ error: error.message || 'Scan failed' }, { status: 500 })
+    let message = 'Scan failed';
+    if (err instanceof Error) {
+      message = err.message;
+    } else if (typeof err === 'string') {
+      message = err;
+    }
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }
 
