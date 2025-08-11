@@ -23,8 +23,13 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ hosted_page_url: hosted.hosted_page.url })
   } catch (err: unknown) {
-    const error = err as Error;
-    return NextResponse.json({ error: error.message || 'Chargebee checkout init failed' }, { status: 500 })
+    const errorMessage =
+      err instanceof Error
+        ? err.message
+        : typeof err === 'string'
+          ? err
+          : 'Chargebee checkout init failed';
+    return NextResponse.json({ error: errorMessage }, { status: 500 })
   }
 }
 
