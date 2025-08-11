@@ -174,7 +174,12 @@ export function SavedTemplatesList() {
                   </DialogContent>
                 </Dialog>
                 
-                <Button variant="outline" size="sm" onClick={() => handleExportTemplate(template)}>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  data-testid={`template-export-${template.id}`}
+                  onClick={() => handleExportTemplate(template)}
+                >
                   <Download className="w-4 h-4 mr-1" />
                   Export
                 </Button>
@@ -182,6 +187,7 @@ export function SavedTemplatesList() {
                 <Button 
                   variant="ghost" 
                   size="sm"
+                  data-testid={`template-delete-${template.id}`}
                   onClick={() => handleDeleteTemplate(template.id)}
                   className="text-destructive hover:text-destructive/80"
                 >

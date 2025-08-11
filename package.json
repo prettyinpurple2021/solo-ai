@@ -8,6 +8,7 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "set NODE_OPTIONS=-r newrelic && next start",
+    "e2e": "playwright test",
     "setup-db": "node scripts/setup-database.js",
     "setup-neon-db": "node scripts/setup-neon-database.mjs",
     "setup-templates": "node scripts/setup-templates-database.mjs",
@@ -102,6 +103,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.46.1",
     "@eslint/eslintrc": "^3.3.1",
     "@jest/globals": "latest",
     "@types/eslint": "^9",
