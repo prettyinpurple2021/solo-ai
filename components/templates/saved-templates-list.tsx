@@ -67,6 +67,24 @@ export function SavedTemplatesList() {
     }
   };
 
+  const handleExportTemplate = (template: SavedTemplate) => {
+    try {
+      const json = JSON.stringify(template.template_data, null, 2)
+      const blob = new Blob([json], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      const safeSlug = template.template_slug || 'template'
+      a.href = url
+      a.download = `${safeSlug}-${template.id}.json`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error('Export failed', err)
+    }
+  }
+
   if (isLoading) {
     return (
       <div className="space-y-4">
@@ -156,7 +174,7 @@ export function SavedTemplatesList() {
                   </DialogContent>
                 </Dialog>
                 
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => handleExportTemplate(template)}>
                   <Download className="w-4 h-4 mr-1" />
                   Export
                 </Button>

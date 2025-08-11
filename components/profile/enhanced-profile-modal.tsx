@@ -14,7 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useUser } from "@stackframe/stack"
-import { uploadImage, deleteImage } from "@/lib/image-upload"
 import { useToast } from "@/hooks/use-toast"
 import { User, Camera, Upload, X, Settings, Bell, Shield, Crown, Sparkles, Save, Trash2 } from "lucide-react"
 
@@ -112,13 +111,19 @@ export function EnhancedProfileModal({ _open, onOpenChange }: EnhancedProfileMod
 
     setIsUploading(true)
     try {
-      const result = await uploadImage(file, file.name, user.id)
-      setFormData((prev) => ({ ...prev, avatar_url: result.url }))
+      const form = new FormData()
+      form.append('file', file)
+      form.append('category', 'profile')
+      const res = await fetch('/api/upload', { method: 'POST', body: form })
+      if (!res.ok) throw new Error('Upload failed')
+      const { file: uploaded } = await res.json()
+      const imageUrl = `/api/files/${uploaded.id}`
+      setFormData((prev) => ({ ...prev, avatar_url: imageUrl }))
       // Persist avatar URL on profile
       await fetch('/api/profile', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ avatar_url: result.url }),
+        body: JSON.stringify({ avatar_url: imageUrl }),
       })
       toast({
         title: "Image Uploaded! 📸",
@@ -142,7 +147,7 @@ export function EnhancedProfileModal({ _open, onOpenChange }: EnhancedProfileMod
         const m = formData.avatar_url.match(/\/api\/files\/(.+)$/)
         if (m && user) {
           const id = m[1]
-          await deleteImage(id, user.id)
+          await fetch(`/api/files/${id}`, { method: 'DELETE' })
           await fetch('/api/profile', {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },

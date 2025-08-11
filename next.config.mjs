@@ -43,6 +43,22 @@ const nextConfig = {
     CUSTOM_KEY: process.env.CUSTOM_KEY,
     NEXT_PUBLIC_ADSENSE_CLIENT_ID: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID,
   },
+
+  // Ensure client bundles don't try to polyfill Node.js core modules
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve = config.resolve || {}
+      config.resolve.fallback = {
+        ...(config.resolve.fallback || {}),
+        fs: false,
+        tls: false,
+        net: false,
+        child_process: false,
+        dns: false,
+      }
+    }
+    return config
+  },
 }
 
 export default nextConfig
