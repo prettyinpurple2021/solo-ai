@@ -158,7 +158,7 @@ export default function BlogComingSoonPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border border-purple-200">
               <h3 className="text-lg font-bold text-gray-800 mb-2">
-                "                &quot;From Solo to Squad: Building Your First AI Team&quot;"
+                "From Solo to Squad: Building Your First AI Team"
               </h3>
               <p className="text-gray-600 text-sm">
                 A complete guide to getting started with AI agents and building your virtual team from scratch.
