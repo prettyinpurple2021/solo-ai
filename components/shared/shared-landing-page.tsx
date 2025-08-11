@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -20,8 +20,7 @@ import {
   CheckCircle,
   X,
   Menu,
-  Play,
-  Brain
+  Play
 } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
@@ -140,12 +139,7 @@ const pricingPlans = [
     cta: "Contact Sales",
   },
 ]
-
-export function SharedLandingPage({
-  showAuthModal = false,
-  onShowAuthModal = () => {},
-  styleVariant = "default",
-}: SharedLandingPageProps) {
+export function SharedLandingPage(_props: SharedLandingPageProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [showScheduleModal, setShowScheduleModal] = useState(false)
   const [currentTestimonial, setCurrentTestimonial] = useState(0)
@@ -555,7 +549,7 @@ export function SharedLandingPage({
               Success Stories
             </h2>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
-              Join thousands of entrepreneurs who've transformed their businesses with SoloBoss AI.
+              Join thousands of entrepreneurs who&apos;ve transformed their businesses with SoloBoss AI.
             </p>
           </motion.div>
 
@@ -576,7 +570,7 @@ export function SharedLandingPage({
                       ))}
                     </div>
                     <blockquote className="text-xl md:text-2xl text-gray-700 dark:text-gray-300 mb-6 italic">
-                      "{testimonials[currentTestimonial].content}"
+                      &ldquo;{testimonials[currentTestimonial].content}&quot;
                     </blockquote>
                     <div className="flex items-center justify-center space-x-4">
                       <Image

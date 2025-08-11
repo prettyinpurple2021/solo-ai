@@ -372,7 +372,7 @@ export default function PricingPage() {
               Boss Babe FAQ
             </h2>
             <p className="text-xl text-gray-600">
-              Got questions? We've got answers. Here are the most common questions from ambitious entrepreneurs like
+              Got questions? We&apos;ve got answers. Here are the most common questions from ambitious entrepreneurs like
               you.
             </p>
           </div>
