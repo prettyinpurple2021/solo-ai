@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     const BodySchema = z.object({
       email: z.string().email(),
       password: z.string().min(8),
-      metadata: z.object({ full_name: z.string().min(1).optional() }).optional(),
+      metadata: z.object({ full_name: z.string().min(1).max(200).optional() }).optional(),
     })
     const parsed = BodySchema.safeParse(await request.json())
     if (!parsed.success) {

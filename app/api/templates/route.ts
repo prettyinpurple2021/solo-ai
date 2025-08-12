@@ -59,8 +59,8 @@ export async function GET(_request: NextRequest) {
 const SaveTemplateSchema = z.object({
   templateSlug: z.string().min(1),
   templateData: z.record(z.any()),
-  title: z.string().optional(),
-  description: z.string().optional(),
+  title: z.string().min(1).optional(),
+  description: z.string().max(1000).optional(),
 })
 
 export async function POST(request: NextRequest) {

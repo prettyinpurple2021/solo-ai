@@ -283,11 +283,11 @@
 
 4) Zod validation on every API — no messy inputs in this house
 
-- [ ] Add `zod` and create schemas for:
-  - [ ] `POST /api/auth/signin` and `POST /api/auth/signup`
-  - [ ] `GET/POST /api/templates` and `DELETE /api/templates/[id]`
-  - [ ] `PATCH /api/profile` and `POST /api/tasks/bulk-update`
-- [ ] Validate `request.json()` and return typed, consistent errors/responses
+- [x] Add `zod` and create schemas for:
+  - [x] `POST /api/auth/signin` and `POST /api/auth/signup`
+  - [x] `GET/POST /api/templates` and `DELETE /api/templates/[id]`
+  - [x] `PATCH /api/profile` and `POST /api/tasks/bulk-update`
+- [x] Validate `request.json()` and return typed, consistent errors/responses
 
 5) Auth flow consistency — same glam, every route
 
