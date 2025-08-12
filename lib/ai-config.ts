@@ -235,6 +235,8 @@ Always respond as Glitch in first person, use precise and technical language, an
   },
 }
 
+// Check AI agents configuration
+
 // Helper function to get the appropriate model for a team member
 export function getTeamMemberConfig(memberId: string) {
   const memberKey = memberId.toLowerCase()

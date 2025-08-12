@@ -61,4 +61,6 @@ const nextConfig = {
   },
 }
 
+// Check next config for lint settings
+
 export default nextConfig

@@ -1,0 +1,1 @@
+// Check authentication provider and database structure
