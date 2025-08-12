@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
 import { z } from 'zod'
 import { rateLimitByIp } from '@/lib/rate-limit'
+import { getIdempotencyKeyFromRequest, reserveIdempotencyKey } from '@/lib/idempotency'
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,6 +25,15 @@ export async function POST(request: NextRequest) {
     const { email, password, metadata } = parsed.data
 
     const client = await createClient()
+
+    // Idempotency support (avoid duplicate signups)
+    const key = getIdempotencyKeyFromRequest(request)
+    if (key) {
+      const reserved = await reserveIdempotencyKey(client, key)
+      if (!reserved) {
+        return NextResponse.json({ error: 'Duplicate request' }, { status: 409 })
+      }
+    }
     
     // Check if user already exists
     const { rows: existingUsers } = await client.query(

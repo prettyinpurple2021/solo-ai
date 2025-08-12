@@ -297,10 +297,10 @@
 
 6) Rate limiting + Idempotency — unshakeable under pressure
 
-- [ ] Create `lib/rate-limit.ts` utility and use it in `signin`, `signup`, `chat`
-- [ ] Implement idempotency keys for write endpoints and webhooks
-  - [ ] Add Neon table: `idempotency_keys(key text primary key, created_at timestamptz default now())`
-  - [ ] Respect `Idempotency-Key` header and skip duplicates
+- [x] Create `lib/rate-limit.ts` utility and use it in `signin`, `signup`, `chat`
+- [x] Implement idempotency keys for write endpoints and webhooks
+  - [x] Add Neon table: `idempotency_keys(key text primary key, created_at timestamptz default now())`
+  - [x] Respect `Idempotency-Key` header and skip duplicates
 
 7) Database indexes + updated_at triggers — faster, fresher, fiercer
 

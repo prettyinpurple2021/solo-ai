@@ -2,9 +2,14 @@ import '@/lib/server-polyfills'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { getIdempotencyKeyFromRequest, reserveIdempotencyKey } from '@/lib/idempotency'
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for') || 'unknown'
+    const { allowed } = rateLimitByIp('upload', ip, 60_000, 30)
+    if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     const { user, error } = await authenticateRequest()
     
     if (error || !user) {
@@ -56,6 +61,15 @@ export async function POST(request: NextRequest) {
 
     // Save file metadata to database
     const client = await createClient()
+
+    // Idempotency support: use provided key
+    const key = getIdempotencyKeyFromRequest(request)
+    if (key) {
+      const reserved = await reserveIdempotencyKey(client, key)
+      if (!reserved) {
+        return NextResponse.json({ error: 'Duplicate request' }, { status: 409 })
+      }
+    }
     const { rows } = await client.query(
       `INSERT INTO documents (user_id, filename, content_type, file_size, content, category)
        VALUES ($1, $2, $3, $4, $5, $6)

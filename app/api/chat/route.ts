@@ -3,24 +3,31 @@ import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
 import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
   try {
+    // Basic rate limiting per IP for chat
+    const ip = request.headers.get('x-forwarded-for') || 'unknown'
+    const { allowed } = rateLimitByIp('chat', ip, 10_000, 10)
+    if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+
     const { user, error } = await authenticateRequest()
     
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { message, agentId } = body
-
-    if (!message) {
-      return NextResponse.json(
-        { error: 'Message is required' },
-        { status: 400 }
-      )
+    const BodySchema = z.object({
+      message: z.string().min(1),
+      agentId: z.string().optional(),
+    })
+    const parsed = BodySchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
+    const { message, agentId } = parsed.data
 
     // Get agent personality based on agentId
     const agentPersonalities = {

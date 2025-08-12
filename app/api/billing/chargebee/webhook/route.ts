@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import crypto from 'crypto'
 import { getClient } from '@/lib/neon/client'
+import { getIdempotencyKeyFromRequest, reserveIdempotencyKey } from '@/lib/idempotency'
 
 function verifySignature(payload: string, signature: string) {
   const secret = process.env.CHARGEBEE_WEBHOOK_SIGNING_KEY
@@ -20,6 +21,15 @@ export async function POST(req: NextRequest) {
   const client = await getClient()
   
   try {
+    // Idempotency using Chargebee Event ID or provided key
+    const incomingKey = getIdempotencyKeyFromRequest(req) || event.id
+    if (incomingKey) {
+      const reserved = await reserveIdempotencyKey(client as any, `chargebee:${incomingKey}`)
+      if (!reserved) {
+        return NextResponse.json({ error: 'Duplicate event' }, { status: 409 })
+      }
+    }
+
     const _type: string = event.event_type
     const subscription = event.content?.subscription
     const customer = event.content?.customer

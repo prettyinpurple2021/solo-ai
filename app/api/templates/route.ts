@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
 import { z } from 'zod'
+import { getIdempotencyKeyFromRequest, reserveIdempotencyKey } from '@/lib/idempotency'
 
 export async function GET(_request: NextRequest) {
   try {
@@ -78,6 +79,15 @@ export async function POST(request: NextRequest) {
     const { templateSlug, templateData, title, description } = parse.data
 
     const client = await createClient()
+
+    // Idempotency support
+    const key = getIdempotencyKeyFromRequest(request)
+    if (key) {
+      const reserved = await reserveIdempotencyKey(client, key)
+      if (!reserved) {
+        return NextResponse.json({ error: 'Duplicate request' }, { status: 409 })
+      }
+    }
     await client.query(
       `INSERT INTO user_templates (user_id, name, content, description)
        VALUES ($1, $2, $3, $4)`,
