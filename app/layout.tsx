@@ -1,6 +1,4 @@
 import type React from "react"
-// import { StackProvider, StackTheme } from "@stackframe/stack";
-import { getStackServerApp } from "../stack";
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import Script from "next/script"
@@ -23,7 +21,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const stackServerApp = getStackServerApp()
   return (
     <html lang="en">
       <Script
@@ -53,26 +50,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             style={{ display: 'none', visibility: 'hidden' }}
           />
         </noscript>
-        {/* Remove StackProvider/StackTheme logic */}
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
           <Toaster />
         </ThemeProvider>
-        <AdSense clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID} />
-      </body>
-    </html>
-  )
-}
-                <Toaster />
-              </ThemeProvider>
-            </StackTheme>
-          </StackProvider>
-        ) : (
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            {children}
-            <Toaster />
-          </ThemeProvider>
-        )}
         <AdSense clientId={process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID} />
       </body>
     </html>

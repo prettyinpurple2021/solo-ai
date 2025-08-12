@@ -267,7 +267,7 @@
   - [x] Verify ownership: `DELETE FROM user_templates WHERE id = $1 AND user_id = $2`
   - [x] Return 404 if not found/not owned, 204 on success
 - [x] Update `components/templates/saved-templates-list.tsx` to optimistically remove
-- [ ] Add a test to ensure non-owners can’t delete
+- [x] Add a test to ensure non-owners can’t delete
 
 2) Templates Export — let the boss download her brilliance
 

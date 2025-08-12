@@ -3,15 +3,11 @@ const nextConfig = {
   // Remove static export to support server actions and API routes
   trailingSlash: false, // Netlify works better without trailing slashes
   images: {
-    unoptimized: true, // Required for Netlify static deployment
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https', 
-        hostname: '*.supabase.co',
       },
     ],
   },

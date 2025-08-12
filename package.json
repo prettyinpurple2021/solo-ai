@@ -23,10 +23,6 @@
     "test": "jest",
     "test:coverage": "jest --coverage"
   },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node"
-  },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
     "@ai-sdk/google": "^0.0.54",

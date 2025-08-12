@@ -1,1 +1,2 @@
-// Check deployment config
+// This project deploys to Netlify. This file is intentionally a stub to avoid Vercel auto-detection.
+{}

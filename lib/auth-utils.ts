@@ -29,18 +29,3 @@ export function verifyToken(token: string): { userId: string; email: string } | 
   }
 }
 
-
-
-            // This function is for server-side use only (API routes, Server Components)
-            export async function authenticateRequest(): Promise<AuthResult> {
-              try {
-                // This function should only be called from server-side code
-                // For client-side authentication, use the useAuth hook
-                throw new Error('authenticateRequest should only be called from server-side code');
-              } catch (error) {
-                return {
-                  user: null,
-                  error: error instanceof Error ? error.message : 'Authentication failed'
-                }
-              }
-            }
