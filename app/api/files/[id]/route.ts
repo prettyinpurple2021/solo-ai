@@ -5,7 +5,7 @@ import { authenticateRequest } from '@/lib/auth-server'
 // GET /api/files/:id → returns the binary file content with proper headers
 export async function GET(
   _request: Request,
-  context: any
+  context: { params: { id: string } }
 ) {
   try {
     const id = context?.params?.id as string | undefined
