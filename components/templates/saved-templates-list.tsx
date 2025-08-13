@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -61,9 +62,10 @@ export function SavedTemplatesList() {
         throw new Error('Failed to delete template')
       }
       setSavedTemplates((prev) => prev.filter((t) => t.id !== templateId))
+      toast.success('Template deleted', { description: 'She gone. Clean, safe, and instant.' })
     } catch (err) {
       console.error(err)
-      // Optionally surface a toast here if available
+      toast.error('Delete failed', { description: 'Could not delete this template. Try again.' })
     }
   };
 
@@ -80,8 +82,10 @@ export function SavedTemplatesList() {
       a.click()
       a.remove()
       URL.revokeObjectURL(url)
+      toast.success('Template exported', { description: `${template.title} downloaded.` })
     } catch (err) {
       console.error('Export failed', err)
+      toast.error('Export failed', { description: 'Could not export this template.' })
     }
   }
 
@@ -120,19 +124,19 @@ export function SavedTemplatesList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Saved Templates</h3>
-        <Badge variant="secondary">{savedTemplates.length} templates</Badge>
+        <h3 className="text-lg font-semibold boss-text-gradient">Saved Templates</h3>
+        <Badge variant="default">{savedTemplates.length} templates</Badge>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {savedTemplates.map((template) => (
-          <Card key={template.id} className="hover:shadow-md transition-shadow">
+          <Card key={template.id} className="boss-card">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">{getTemplateIcon(template.template_slug)}</span>
                   <div>
-                    <CardTitle className="text-base">{template.title}</CardTitle>
+                    <CardTitle className="text-base gradient-text-secondary">{template.title}</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       {formatDate(template.created_at)}
                     </p>
@@ -161,7 +165,7 @@ export function SavedTemplatesList() {
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
-                      <DialogTitle>{template.title}</DialogTitle>
+                      <DialogTitle className="boss-text-gradient">{template.title}</DialogTitle>
                       <DialogDescription>
                         Template data from {formatDate(template.created_at)}
                       </DialogDescription>
