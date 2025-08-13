@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     if (!parsed.success) {
       return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
-    const { title, description, priority, due_date, category } = parsed.data as any
+    const { title, description, priority, due_date, category } = parsed.data
 
     const client = await createClient()
     const { rows } = await client.query(
