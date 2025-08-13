@@ -16,7 +16,9 @@ export async function GET(
     access_type: 'offline', // Required to get a refresh token
     scope: GOOGLE_CALENDAR_SCOPES,
     // A 'prompt' is not strictly necessary but can be useful for development
-    // to ensure the consent screen is shown every time.
+    // Uncomment the line below and set `prompt: 'consent'` if you need to force the consent screen
+    // to appear every time (e.g., during development or when you need a new refresh token).
+    // In production, leaving this commented out is usually preferred to avoid unnecessary prompts.
     // prompt: 'consent',
   });
 
