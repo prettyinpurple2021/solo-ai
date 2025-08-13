@@ -8,7 +8,8 @@ if (!GOOGLE_CLIENT_ID || !GOOGLE_CLIENT_SECRET) {
   // perhaps by disabling the Google integration feature if keys are missing.
   // For now, we'll throw an error during startup if the keys are not configured.
   throw new Error('GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be set in environment variables.');
-}
+// If credentials are missing, we do not throw at module load time.
+// Instead, we check when the OAuth2 client is actually needed.
 
 // This is the URL that Google will redirect the user back to after they have
 // authenticated. It must match one of the authorized redirect URIs in your
