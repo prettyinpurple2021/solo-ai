@@ -10,6 +10,7 @@ import { Progress } from "@/components/ui/progress"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
+import { GoogleCalendarWidget } from "@/components/dashboard/google-calendar-widget"
 import {
   Crown,
   Target,
@@ -364,6 +365,8 @@ export default function DashboardPage() {
               </div>
             </CardContent>
           </Card>
+
+          <GoogleCalendarWidget />
 
           {/* Recent Achievements */}
           <Card className="boss-card">
