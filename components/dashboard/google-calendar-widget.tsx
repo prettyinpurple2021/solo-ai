@@ -35,7 +35,7 @@ export function GoogleCalendarWidget() {
   const [events, setEvents] = useState<CalendarEvent[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isConnected, setIsConnected] = useState(true); // Assume connected until proven otherwise
+  const [isConnected, setIsConnected] = useState(false); // Start as not connected, set to true after check
 
   useEffect(() => {
     const fetchEvents = async () => {
