@@ -16,7 +16,18 @@ const key = Buffer.from(encryptionKey, 'base64');
 if (key.length !== 32) {
   throw new Error('Invalid ENCRYPTION_KEY. Must be a 32-byte, base64-encoded string.');
 }
-
+// Lazy-load and validate the encryption key when needed
+function getKey(): Buffer {
+  const encryptionKey = process.env.ENCRYPTION_KEY;
+  if (!encryptionKey) {
+    throw new Error('ENCRYPTION_KEY is not set in the environment variables.');
+  }
+  const key = Buffer.from(encryptionKey, 'base64');
+  if (key.length !== 32) {
+    throw new Error('Invalid ENCRYPTION_KEY. Must be a 32-byte, base64-encoded string.');
+  }
+  return key;
+}
 /**
  * Encrypts a string using AES-256-GCM.
  * The IV and auth tag are prepended to the encrypted text for storage.
