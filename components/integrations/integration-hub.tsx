@@ -66,7 +66,7 @@ export function IntegrationHub() {
         const response = await fetch('/api/integrations/status');
         if (!response.ok) throw new Error('Failed to fetch status');
         const data = await response.json();
-        setConnectedProviders(data.connectedProviders || []);
+        setConnectedProviders(data.connectedProviders);
       } catch (error) {
         console.error(error);
         toast.error("Could not load integration statuses.");
