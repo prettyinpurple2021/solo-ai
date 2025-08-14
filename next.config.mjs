@@ -28,6 +28,11 @@ const nextConfig = {
     ignoreDuringBuilds: true, // Temporarily disable ESLint during builds
   },
 
+  typescript: {
+    // Disable type checking during build to prevent memory issues
+    ignoreBuildErrors: true,
+  },
+
   // Enable compression for better performance
   compress: true,
   

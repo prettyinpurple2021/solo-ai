@@ -5,6 +5,7 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--production=false"
+  NODE_OPTIONS = "--max-old-space-size=4096"
 
 # Enable the Netlify Next.js plugin
 [[plugins]]
