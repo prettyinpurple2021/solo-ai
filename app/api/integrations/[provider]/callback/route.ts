@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
-import { oauth2Client } from '@/lib/google-auth';
+import { getGoogleOAuth2Client } from '@/lib/google-auth';
 import { encrypt } from '@/lib/encryption';
 import { authenticateRequest } from '@/lib/auth-server';
 import { createClient } from '@/lib/neon/server';
+
+export const runtime = 'nodejs';
 
 export async function GET(
   request: Request,
@@ -28,6 +30,7 @@ export async function GET(
     }
 
     // 2. Exchange the authorization code for tokens
+    const oauth2Client = getGoogleOAuth2Client();
     const { tokens } = await oauth2Client.getToken(code);
     const { access_token, refresh_token, expiry_date, scope } = tokens;
 

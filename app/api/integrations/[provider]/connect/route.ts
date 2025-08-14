@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { oauth2Client, GOOGLE_CALENDAR_SCOPES } from '@/lib/google-auth';
+import { getGoogleOAuth2Client, GOOGLE_CALENDAR_SCOPES } from '@/lib/google-auth';
+
+export const runtime = 'nodejs';
 
 export async function GET(
   request: Request,
@@ -12,6 +14,7 @@ export async function GET(
   }
 
   // Generate the URL that will be used for the user to give consent.
+  const oauth2Client = getGoogleOAuth2Client();
   const authUrl = oauth2Client.generateAuthUrl({
     access_type: 'offline', // Required to get a refresh token
     scope: GOOGLE_CALENDAR_SCOPES,

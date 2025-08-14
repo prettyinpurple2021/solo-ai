@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
+import { getGoogleOAuth2Client } from '@/lib/google-auth';
 import { authenticateRequest } from '@/lib/auth-server';
 import { createClient } from '@/lib/neon/server';
 import { decrypt, encrypt } from '@/lib/encryption';
+
+export const runtime = 'nodejs';
 
 export async function GET() {
   try {
@@ -31,10 +34,7 @@ export async function GET() {
         return NextResponse.json({ error: 'Missing refresh token. Please reconnect your account.' }, { status: 400 });
     }
 
-    const requestOauth2Client = new google.auth.OAuth2(
-      process.env.GOOGLE_CLIENT_ID,
-      process.env.GOOGLE_CLIENT_SECRET
-    );
+    const requestOauth2Client = getGoogleOAuth2Client();
 
     requestOauth2Client.setCredentials({
       access_token: accessToken,
