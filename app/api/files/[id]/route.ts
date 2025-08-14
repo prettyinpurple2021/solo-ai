@@ -7,10 +7,10 @@ export const runtime = 'nodejs'
 // GET /api/files/:id → returns the binary file content with proper headers
 export async function GET(
 	_request: Request,
-	context: any
+	context: unknown
 ) {
   try {
-    const id = context?.params?.id as string | undefined
+    const id = (context as { params?: { id?: string } })?.params?.id
     if (!id) return new NextResponse('Not found', { status: 404 })
     const client = await createClient()
     const { rows } = await client.query(
@@ -47,7 +47,7 @@ export async function GET(
 // DELETE /api/files/:id → deletes a file owned by the authenticated user
 export async function DELETE(
   _request: Request,
-  context: any
+  context: unknown
 ) {
   try {
     const { user, error } = await authenticateRequest()
@@ -55,7 +55,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const id = context?.params?.id as string | undefined
+    const id = (context as { params?: { id?: string } })?.params?.id
     if (!id) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     const client = await createClient()
     const { rowCount } = await client.query(

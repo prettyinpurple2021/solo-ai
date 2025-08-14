@@ -5,9 +5,9 @@ import { createClient } from '@/lib/neon/server';
 
 export async function POST(
   request: Request,
-  context: any
+  context: unknown
 ) {
-  const { provider } = context?.params || {};
+  const provider = (context as { params?: { provider?: string } })?.params?.provider;
 
   try {
     const { user, error: authError } = await authenticateRequest();

@@ -10,14 +10,14 @@ const IdParamSchema = z.object({ id: z.string().regex(/^\d+$/) })
 
 export async function DELETE(
   _request: Request,
-  context: any
+  context: unknown
 ) {
   try {
     const req = _request as Request
     const ip = req.headers.get('x-forwarded-for') || 'unknown'
     const { allowed } = rateLimitByIp('templates:delete', ip, 60_000, 60)
     if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
-    const parsed = IdParamSchema.safeParse({ id: context?.params?.id })
+    const parsed = IdParamSchema.safeParse({ id: (context as { params?: { id?: string } })?.params?.id })
     if (!parsed.success) {
       return NextResponse.json({ error: 'Invalid id' }, { status: 400 })
     }
