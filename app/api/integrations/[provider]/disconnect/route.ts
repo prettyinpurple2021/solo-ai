@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
+export const runtime = 'nodejs';
 import { authenticateRequest } from '@/lib/auth-server';
 import { createClient } from '@/lib/neon/server';
 
 export async function POST(
   request: Request,
-  { params }: { params: { provider: string } }
+  context: any
 ) {
-  const { provider } = params;
+  const { provider } = context?.params || {};
 
   try {
     const { user, error: authError } = await authenticateRequest();

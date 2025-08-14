@@ -8,9 +8,9 @@ export const runtime = 'nodejs';
 
 export async function GET(
   request: Request,
-  { params }: { params: { provider: string } }
+  context: any
 ) {
-  const { provider } = params;
+  const { provider } = context?.params || {};
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
 

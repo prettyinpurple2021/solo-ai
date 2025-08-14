@@ -17,11 +17,13 @@
     "verify-triggers": "node scripts/verify-updated-at-triggers.js",
     "netlify-check": "node scripts/netlify-deploy-check.js",
     "migrate-profile-fields": "node scripts/run-profile-fields-migration.mjs",
-    "db:migrate": "node scripts/run-neon-migration.mjs",
+    "db:migrate": "netlify dev:exec drizzle-kit migrate",
     "db:verify": "node scripts/verify-database.mjs",
     "test:api": "node scripts/test-api-routes.mjs",
     "test": "jest",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "db:generate": "drizzle-kit generate",
+    "db:studio": "netlify dev:exec drizzle-kit studio"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
@@ -73,6 +75,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.44.4",
     "embla-carousel-react": "^8.6.0",
     "flags": "^4.0.1",
     "framer-motion": "^12.23.9",
@@ -109,6 +112,7 @@
     "@types/react-dom": "^19",
     "@typescript-eslint/parser": "^8.38.0",
     "autoprefixer": "^10.4.20",
+    "drizzle-kit": "^0.31.4",
     "eslint": "^9.32.0",
     "eslint-config-next": "^15.4.4",
     "eslint-import-resolver-typescript": "^4.4.4",

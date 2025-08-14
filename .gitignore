@@ -35,3 +35,6 @@ next-env.d.ts
 
 # migration and template features (exclude from build)
 /Templates feature/
+
+# Local Netlify folder
+.netlify

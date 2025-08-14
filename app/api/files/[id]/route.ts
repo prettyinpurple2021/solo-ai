@@ -2,10 +2,12 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/neon/server'
 import { authenticateRequest } from '@/lib/auth-server'
 
+export const runtime = 'nodejs'
+
 // GET /api/files/:id → returns the binary file content with proper headers
 export async function GET(
-  _request: Request,
-  context: { params: { id: string } }
+	_request: Request,
+	context: any
 ) {
   try {
     const id = context?.params?.id as string | undefined

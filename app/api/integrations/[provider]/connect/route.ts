@@ -5,9 +5,9 @@ export const runtime = 'nodejs';
 
 export async function GET(
   request: Request,
-  { params }: { params: { provider: string } }
+  context: any
 ) {
-  const { provider } = params;
+  const { provider } = context?.params || {};
 
   if (provider !== 'google') {
     return NextResponse.json({ message: `Provider '${provider}' is not supported.` }, { status: 400 });
