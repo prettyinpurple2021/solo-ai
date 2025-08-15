@@ -1,10 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useTemplateSave, SavedTemplate } from '@/hooks/use-template-save';
+import { useTemplates } from '@/hooks/use-templates-swr';
+import { SavedTemplate } from '@/lib/types';
 import { FileText, Calendar, Download, Trash2, Eye } from 'lucide-react';
 import {
   Dialog,
@@ -18,18 +20,8 @@ import {
 // Uses SavedTemplate from hook to avoid duplicate/conflicting types
 
 export function SavedTemplatesList() {
-  const [savedTemplates, setSavedTemplates] = useState<SavedTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<SavedTemplate | null>(null);
-  const { loadSavedTemplates, isLoading } = useTemplateSave();
-
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
-  const loadTemplates = async () => {
-    const templates = await loadSavedTemplates();
-    setSavedTemplates(templates);
-  };
+  const { templates: savedTemplates, isLoading, deleteTemplate, exportTemplate } = useTemplates();
 
   const getTemplateIcon = (slug: string) => {
     switch (slug) {
@@ -54,18 +46,13 @@ export function SavedTemplatesList() {
     setSelectedTemplate(template);
   };
 
-  const handleDeleteTemplate = async (templateId: number) => {
-    try {
-      const res = await fetch(`/api/templates/${templateId}`, { method: 'DELETE' })
-      if (!res.ok) {
-        throw new Error('Failed to delete template')
-      }
-      setSavedTemplates((prev) => prev.filter((t) => t.id !== templateId))
-    } catch (err) {
-      console.error(err)
-      // Optionally surface a toast here if available
-    }
+  const handleDeleteTemplate = (templateId: number) => {
+    deleteTemplate(templateId);
   };
+
+  const handleExportTemplate = (template: SavedTemplate) => {
+    exportTemplate(template);
+  }
 
   if (isLoading) {
     return (
@@ -102,19 +89,19 @@ export function SavedTemplatesList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Saved Templates</h3>
-        <Badge variant="secondary">{savedTemplates.length} templates</Badge>
+        <h3 className="text-lg font-semibold boss-text-gradient">Saved Templates</h3>
+        <Badge variant="default">{savedTemplates.length} templates</Badge>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {savedTemplates.map((template) => (
-          <Card key={template.id} className="hover:shadow-md transition-shadow">
+          <Card key={template.id} className="boss-card">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">{getTemplateIcon(template.template_slug)}</span>
                   <div>
-                    <CardTitle className="text-base">{template.title}</CardTitle>
+                    <CardTitle className="text-base gradient-text-secondary">{template.title}</CardTitle>
                     <p className="text-sm text-muted-foreground">
                       {formatDate(template.created_at)}
                     </p>
@@ -143,7 +130,7 @@ export function SavedTemplatesList() {
                   </DialogTrigger>
                   <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
                     <DialogHeader>
-                      <DialogTitle>{template.title}</DialogTitle>
+                      <DialogTitle className="boss-text-gradient">{template.title}</DialogTitle>
                       <DialogDescription>
                         Template data from {formatDate(template.created_at)}
                       </DialogDescription>
@@ -156,7 +143,12 @@ export function SavedTemplatesList() {
                   </DialogContent>
                 </Dialog>
                 
-                <Button variant="outline" size="sm">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  data-testid={`template-export-${template.id}`}
+                  onClick={() => handleExportTemplate(template)}
+                >
                   <Download className="w-4 h-4 mr-1" />
                   Export
                 </Button>
@@ -164,6 +156,7 @@ export function SavedTemplatesList() {
                 <Button 
                   variant="ghost" 
                   size="sm"
+                  data-testid={`template-delete-${template.id}`}
                   onClick={() => handleDeleteTemplate(template.id)}
                   className="text-destructive hover:text-destructive/80"
                 >

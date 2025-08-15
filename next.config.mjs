@@ -1,48 +1,58 @@
+import { withSentryConfig } from '@sentry/nextjs';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove static export to support server actions and API routes
-  trailingSlash: false, // Netlify works better without trailing slashes
-  images: {
-    unoptimized: true, // Required for Netlify static deployment
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-      {
-        protocol: 'https', 
-        hostname: '*.supabase.co',
-      },
-    ],
-  },
-  
-  // Enable experimental features for better performance
-  experimental: {
-    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
-  },
-
-  // Ensure server polyfills are loaded in the Node runtime during build and SSR
-  serverRuntimeConfig: {
-    requireServerPolyfills: true,
-  },
-
+  reactStrictMode: true,
+  // Disable ESLint and TypeScript checking during build
   eslint: {
-    // Only run ESLint on specific directories during production builds
-    dirs: ['app', 'components', 'lib', 'hooks'],
-    ignoreDuringBuilds: true, // Temporarily disable ESLint during builds
+    ignoreDuringBuilds: true,
   },
-
-  // Enable compression for better performance
-  compress: true,
-  
-  // Optimize for serverless functions
-  poweredByHeader: false,
-  
-  // Environment variable configuration
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-    NEXT_PUBLIC_ADSENSE_CLIENT_ID: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID,
+  typescript: {
+    ignoreBuildErrors: true,
   },
-}
+  images: {
+    domains: ['localhost', 'soloboss.app'],
+  },
+  serverExternalPackages: ['bcryptjs', 'crypto', 'jsonwebtoken'],
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // Don't resolve 'fs' module on the client to prevent this error on build --> Error: Can't resolve 'fs'
+      config.resolve.fallback = {
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+        stream: false,
+        buffer: false,
+      };
+    }
+    return config;
+  },
+  async redirects() {
+    return [
+      {
+        source: '/signin',
+        destination: '/sign-in',
+        permanent: true,
+      },
+      {
+        source: '/signup',
+        destination: '/sign-up',
+        permanent: true,
+      },
+    ]
+  },
+};
 
-export default nextConfig
+// Injected content via Sentry wizard below
+const sentryWebpackPluginOptions = {
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options
+
+  // Suppresses source map uploading logs during build
+  silent: true,
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+};
+
+export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);

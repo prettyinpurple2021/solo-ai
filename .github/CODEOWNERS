@@ -1,0 +1,26 @@
+# These owners will be the default owners for everything in the repo
+* @soloboss-admin
+
+# API routes
+/app/api/ @soloboss-api-team
+
+# Authentication related files
+/app/api/auth/ @soloboss-security-team
+/lib/auth* @soloboss-security-team
+/middleware.ts @soloboss-security-team
+/stack.tsx @soloboss-security-team
+
+# Database related files
+/lib/db/ @soloboss-db-team
+/lib/neon/ @soloboss-db-team
+/scripts/setup-*.mjs @soloboss-db-team
+/supabase/migrations/ @soloboss-db-team
+
+# UI components
+/components/ @soloboss-ui-team
+
+# Documentation
+/docs/ @soloboss-docs-team
+
+# CI/CD configuration
+/.github/ @soloboss-devops-team

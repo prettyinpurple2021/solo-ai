@@ -98,12 +98,12 @@
 
 ### Production Deployment
 
-- [ ] **Set up environment variables in Netlify** - IN PROGRESS
+- [x] **Set up environment variables in Netlify** - COMPLETED
   - [x] Created comprehensive setup guide
-  - [ ] Configure Stack Auth environment variables
-  - [ ] Configure Neon database connection
-  - [ ] Configure OpenAI API key
-  - [ ] Test authentication flow in production
+  - [x] Configure Stack Auth environment variables
+  - [x] Configure Neon database connection
+  - [x] Configure OpenAI API key
+  - [x] Test authentication flow in production
 
 ### Performance Optimization
 
@@ -159,11 +159,15 @@
 
 ### Critical
 
-- [ ] **Complete production authentication setup** - IN PROGRESS
+- [x] **Complete production authentication setup** - COMPLETED
   - [x] Removed placeholder values from netlify.toml
   - [x] Created comprehensive setup guide
-  - [ ] Set up proper environment variables in Netlify dashboard
-  - [ ] Test authentication flow in production
+  - [x] Set up proper environment variables in Netlify dashboard
+  - [x] Test authentication flow in production
+- [x] **Fix Netlify build failures** - COMPLETED
+  - [x] Fixed Edge runtime incompatibility with jsonwebtoken
+  - [x] Fixed Sentry configuration warnings
+  - [x] Updated Next.js config to use serverExternalPackages instead of deprecated option
 
 ### Medium Priority
 
@@ -181,7 +185,7 @@
 ### Production Setup
 
 - [x] **Netlify deployment configuration** - COMPLETED
-- [ ] **Environment variables setup in Netlify** - IN PROGRESS
+- [x] **Environment variables setup in Netlify** - COMPLETED
 - [x] **Database migration scripts** - COMPLETED
 - [x] **Monitoring and error tracking** - COMPLETED
 
@@ -211,12 +215,12 @@
 
 ### **IMMEDIATE (This Week)**
 
-1. **Complete Production Authentication Setup** 🔴 CRITICAL
-   - Set up Stack Auth environment variables in Netlify
-   - Configure Neon database connection
-   - Add OpenAI API key
-   - Test complete authentication flow
-   - Verify all API routes work in production
+1. **Complete Production Authentication Setup** ✅ COMPLETED
+   - ✅ Set up Stack Auth environment variables in Netlify
+   - ✅ Configure Neon database connection
+   - ✅ Add OpenAI API key
+   - ✅ Test complete authentication flow
+   - ✅ Verify all API routes work in production
 
 2. **Database Schema Verification** 🟡 HIGH
    - Verify all required tables exist
@@ -231,29 +235,29 @@
 
 ### **SHORT TERM (Next 2 Weeks)**
 
-4. **User Onboarding Experience**
+1. **User Onboarding Experience**
    - Create guided tour for new users
    - Implement progressive disclosure
    - Add helpful tooltips and explanations
 
-5. **Performance Optimization**
+2. **Performance Optimization**
    - Implement code splitting
    - Optimize bundle size
    - Add service worker for caching
 
-6. **Advanced Validation and Security**
+3. **Advanced Validation and Security**
    - Add username uniqueness checking
    - Implement proper error handling
    - Add rate limiting for forms
 
 ### **MEDIUM TERM (Next Month)**
 
-7. **Analytics and Monitoring**
+1. **Analytics and Monitoring**
    - Implement user behavior tracking
    - Add performance monitoring
    - Set up error tracking
 
-8. **Advanced Features**
+2. **Advanced Features**
    - Voice-to-text functionality
    - Advanced AI features
    - Integration capabilities
@@ -261,80 +265,98 @@
 ## 💅 Girlboaa Boss-Level Improvements (Actionable, In Order)
 
 1) Templates DELETE API — make the trash button lethal (and safe)
-- [ ] Create `app/api/templates/[id]/route.ts` with `DELETE`
-  - [ ] Require auth via `authenticateRequest()` and 401 on missing
-  - [ ] Verify ownership: `DELETE FROM user_templates WHERE id = $1 AND user_id = $2`
-  - [ ] Return 403 if not owned, 404 if not found, 204 on success
-- [ ] Update `components/templates/saved-templates-list.tsx` to optimistically remove and revalidate after success
-- [ ] Add a test to ensure non-owners can’t delete
+
+- [x] Create `app/api/templates/[id]/route.ts` with `DELETE`
+  - [x] Require auth via `authenticateRequest()` and 401 on missing
+  - [x] Verify ownership: `DELETE FROM user_templates WHERE id = $1 AND user_id = $2`
+  - [x] Return 404 if not found/not owned, 204 on success
+- [x] Update `components/templates/saved-templates-list.tsx` to optimistically remove
+- [x] Add a test to ensure non-owners can’t delete
 
 2) Templates Export — let the boss download her brilliance
-- [ ] In `SavedTemplatesList`, implement client-side JSON export for each template
-  - [ ] Filename: `${template.template_slug}-${template.id}.json`
-  - [ ] Use `URL.createObjectURL(new Blob([json], { type: 'application/json' }))` + hidden link click
+
+- [x] In `SavedTemplatesList`, implement client-side JSON export for each template
+  - [x] Filename: `${template.template_slug}-${template.id}.json`
+  - [x] Use `URL.createObjectURL(new Blob([json], { type: 'application/json' }))` + hidden link click
 
 3) Centralize shared types — one source of truth, zero drama
-- [ ] Add `lib/types.ts` and export: `SavedTemplate`, `UserProfile`, `SubscriptionStatus`, etc.
-- [ ] Replace duplicate interfaces in components/hooks/API routes with imports from `lib/types.ts`
+
+- [x] Add `lib/types.ts` and export: `SavedTemplate`
+- [ ] Add `UserProfile`, `SubscriptionStatus`, etc.
+- [x] Replace duplicate interfaces for templates in hooks/components
 
 4) Zod validation on every API — no messy inputs in this house
-- [ ] Add `zod` and create schemas for:
-  - [ ] `POST /api/auth/signin` and `POST /api/auth/signup`
-  - [ ] `GET/POST /api/templates` and `DELETE /api/templates/[id]`
-  - [ ] `PATCH /api/profile` and `POST /api/tasks/bulk-update`
-- [ ] Validate `request.json()` and return typed, consistent errors/responses
+
+- [x] Add `zod` and create schemas for:
+  - [x] `POST /api/auth/signin` and `POST /api/auth/signup`
+  - [x] `GET/POST /api/templates` and `DELETE /api/templates/[id]`
+  - [x] `PATCH /api/profile` and `POST /api/tasks/bulk-update`
+- [x] Validate `request.json()` and return typed, consistent errors/responses
 
 5) Auth flow consistency — same glam, every route
-- [ ] Standardize user retrieval with a single helper (use `lib/auth-server.ts`)
-- [ ] Ensure JWT cookie options are consistent across sign-in/sign-out
-- [ ] Add `/api/auth/logout` to clear the cookie cleanly
+
+- [x] Standardize user retrieval with a single helper (use `lib/auth-server.ts`)
+- [x] Ensure JWT cookie options are consistent across sign-in/sign-out
+- [x] Add `/api/auth/logout` to clear the cookie cleanly
 
 6) Rate limiting + Idempotency — unshakeable under pressure
-- [ ] Create `lib/rate-limit.ts` utility and use it in `signin`, `signup`, `chat`
-- [ ] Implement idempotency keys for write endpoints and webhooks
-  - [ ] Add Neon table: `idempotency_keys(key text primary key, created_at timestamptz default now())`
-  - [ ] Respect `Idempotency-Key` header and skip duplicates
+
+- [x] Create `lib/rate-limit.ts` utility and use it in `signin`, `signup`, `chat`
+- [x] Implement idempotency keys for write endpoints and webhooks
+  - [x] Add Neon table: `idempotency_keys(key text primary key, created_at timestamptz default now())`
+  - [x] Respect `Idempotency-Key` header and skip duplicates
 
 7) Database indexes + updated_at triggers — faster, fresher, fiercer
-- [ ] Add index: `CREATE INDEX IF NOT EXISTS idx_user_templates_user_created ON user_templates(user_id, created_at)`
-- [ ] Verify `updated_at` triggers on all tables (align with `docs/migrations/005-*`)
-- [ ] Add SQL migration and run via `scripts/run-neon-migration.mjs`
+
+- [x] Add index: `CREATE INDEX IF NOT EXISTS idx_user_templates_user_created ON user_templates(user_id, created_at)`
+- [x] Verify `updated_at` triggers on all tables (align with `docs/migrations/005-*`)
+- [x] Add SQL migration and run via `scripts/run-user-templates-index-migration.mjs`
 
 8) Observability — see everything, fix anything
-- [ ] Add Sentry (`@sentry/nextjs`) setup (client + server)
-- [ ] Use structured logs in API routes with context (user_id, route, status)
-- [ ] Keep `/api/health` as liveness; consider `/api/health/deps` for dependency checks
+
+- [x] Add Sentry (`@sentry/nextjs`) setup (client + server)
+- [x] Use structured logs in API routes with context (user_id, route, status)
+- [x] Keep `/api/health` as liveness; add `/api/health/deps` for dependency checks
+- [x] Create proper Next.js instrumentation files for Sentry
 
 9) Data fetching & cache — silky smooth UX
-- [ ] Introduce SWR for `/api/templates` and `/api/profile`
-- [ ] Hook `useTemplateSave()` into SWR (mutate after save/delete)
+
+- [x] Introduce SWR for `/api/templates` and `/api/profile`
+- [x] Hook `useTemplateSave()` into SWR (mutate after save/delete)
 
 10) Edge-friendly reads — speed where it sparkles
-- [ ] Mark read-only list endpoints with `export const runtime = 'edge'` where compatible (e.g., `GET /api/templates`)
-- [ ] Keep writes (POST/DELETE) on Node runtime
+
+- [x] Mark read-only list endpoints with `export const runtime = 'edge'` where compatible (e.g., `GET /api/templates`)
+- [x] Keep writes (POST/DELETE) on Node runtime
+- [x] Disable Edge runtime for routes that use jsonwebtoken (not Edge compatible)
 
 11) Accessibility & QA — inclusive and bulletproof
-- [ ] Sweep critical components for labels/aria/contrast
-- [ ] Add Playwright smoke tests for:
-  - [ ] Sign in
-  - [ ] Templates list load/export/delete
-  - [ ] Update profile (avatar + name)
+
+- [x] Sweep critical components for labels/aria/contrast
+- [x] Add Playwright smoke tests for:
+  - [x] Sign in
+  - [x] Templates list load/export/delete
+  - [x] Update profile (avatar + name)
 
 12) CI/CD gates — only fab commits make it to main
-- [ ] Add GitHub Actions workflow: install, typecheck, lint, test, build on PR
-- [ ] Require green checks before merge
+
+- [x] Add GitHub Actions workflow: install, typecheck, lint, test, build on PR
+- [x] Require green checks before merge
 
 13) Testing strategy — receipts or it didn’t happen
-- [ ] Add `vitest` (or `jest`) for API unit tests
-- [ ] Unit tests for Zod schemas and API handler happy/edge paths
-- [ ] Playwright E2E covering auth → templates → profile
+
+- [x] Add `jest` for API unit tests
+- [x] Unit tests for Zod schemas and API handler happy/edge paths
+- [x] Playwright E2E covering auth → templates → profile
 
 14) Webhook glow-up — Chargebee, but make it safe
-- [ ] Verify Chargebee webhook signatures using signing secret
-- [ ] Store and enforce idempotency for events
+
+- [x] Verify Chargebee webhook signatures using signing secret
+- [x] Store and enforce idempotency for events
 - [ ] Reconcile subscription states with feature gates used in UI
 
 15) Privacy controls — user data, user rules
+
 - [ ] Add `GET /api/account/export` to deliver a full JSON export of user data
 - [ ] Add `DELETE /api/account/delete` to purge user data across tables (with auth + confirmation safeguards)
 - [ ] Update GDPR pages to link to these endpoints
@@ -349,6 +371,11 @@
 - ✅ **Implemented critical API routes (tasks, goals, chat, templates, upload)**
 - ✅ **Fixed authentication system integration**
 - ✅ **Updated to-do list with current priorities**
+- ✅ **Added Sentry integration and structured logging**
+- ✅ **Implemented SWR for data fetching with caching**
+- ✅ **Added Edge runtime support for read-only API routes**
+- ✅ **Created Playwright smoke tests for core flows**
+- ✅ **Added GitHub Actions CI/CD workflow**
 
 ### **Current Status:**
 
@@ -366,6 +393,6 @@
 
 ---
 
-**Last Updated:** January 2025
+**Last Updated:** August 2025
 **Project Status:** Production Ready (Pending Environment Setup)
 **Next Review:** After Production Deployment

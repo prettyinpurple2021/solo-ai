@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
+import { z } from 'zod'
 
 // POST /api/tasks/bulk-update
 // Body: { ids: string[], status?: string, priority?: string }
@@ -11,14 +12,20 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const { ids, status, priority } = await request.json()
-    if (!Array.isArray(ids) || ids.length === 0) {
-      return NextResponse.json({ error: 'ids array is required' }, { status: 400 })
-    }
+    const BodySchema = z.object({
+      ids: z.array(z.union([z.string(), z.number()])).min(1),
+      status: z.string().min(1).optional(),
+      priority: z.string().min(1).optional(),
+    }).refine((data) => !!(data.status || data.priority), {
+      message: 'Nothing to update',
+      path: ['status'],
+    })
 
-    if (!status && !priority) {
-      return NextResponse.json({ error: 'Nothing to update' }, { status: 400 })
+    const parsed = BodySchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
+    const { ids, status, priority } = parsed.data
 
     const client = await createClient()
     const fields: string[] = []

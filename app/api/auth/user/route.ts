@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/neon/server'
 import { verifyToken } from '@/lib/auth-utils'
+// Import zod if needed later
+// import { z } from 'zod'
 
 export async function GET(request: NextRequest) {
   try {

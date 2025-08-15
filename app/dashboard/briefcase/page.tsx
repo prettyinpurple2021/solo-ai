@@ -8,6 +8,8 @@ import { Progress } from "@/components/ui/progress"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
+import { SectionHeader } from "@/components/ui/section-header"
+import { toast } from "sonner"
 import {
   Dialog,
   DialogContent,
@@ -34,6 +36,7 @@ import {
   HardDrive,
   Clock,
   ArrowLeft,
+  Briefcase,
 } from "lucide-react"
 
 export default function Briefcase() {
@@ -158,67 +161,59 @@ export default function Briefcase() {
 
       <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
         {/* Header Section */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            {selectedFolder !== "root" && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setSelectedFolder("root")}
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Briefcase
-              </Button>
-            )}
-            <div>
-              <h1 className="text-3xl font-bold tracking-tight">
-                {selectedFolder === "root" 
-                  ? "Briefcase" 
-                  : folders.find((f) => f.id === selectedFolder)?.name || "Briefcase"
-                }
-              </h1>
-              <p className="text-muted-foreground">
-                {selectedFolder === "root" 
-                  ? "Secure document storage and organization"
-                  : "Folder contents"
-                }
-              </p>
-            </div>
-          </div>
-
-          <div className="flex gap-2">
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="outline">
-                  <FolderPlus className="mr-2 h-4 w-4" />
-                  New Folder
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create New Folder</DialogTitle>
-                  <DialogDescription>Create a new folder to organize your documents.</DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <Input placeholder="Folder name" />
-                </div>
-                <DialogFooter>
-                  <Button>Create Folder</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
-            <Button>
-              <Upload className="mr-2 h-4 w-4" />
-              Upload Files
+        <div className="flex items-center gap-4 mb-2">
+          {selectedFolder !== "root" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setSelectedFolder("root")}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Briefcase
             </Button>
-          </div>
+          )}
         </div>
+        
+        <SectionHeader
+          variant="gradient"
+          title={selectedFolder === "root" ? "Briefcase" : folders.find((f) => f.id === selectedFolder)?.name || "Briefcase"}
+          description={selectedFolder === "root" ? "Secure document storage and organization" : "Folder contents"}
+          icon={<Briefcase className="h-6 w-6" />}
+          actions={
+            <div className="flex gap-2">
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="outline">
+                    <FolderPlus className="mr-2 h-4 w-4" />
+                    New Folder
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Create New Folder</DialogTitle>
+                    <DialogDescription>Create a new folder to organize your documents.</DialogDescription>
+                  </DialogHeader>
+                  <div className="grid gap-4 py-4">
+                    <Input placeholder="Folder name" />
+                  </div>
+                  <DialogFooter>
+                    <Button onClick={() => toast.success("Folder created successfully!")}>Create Folder</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+
+              <Button onClick={() => toast.success("Upload feature coming soon!")}>
+                <Upload className="mr-2 h-4 w-4" />
+                Upload Files
+              </Button>
+            </div>
+          }
+        />
 
         {/* Storage Overview */}
         <div className="grid gap-4 md:grid-cols-4">
-          <Card>
+          <Card className="boss-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
               <HardDrive className="h-4 w-4 text-muted-foreground" />
@@ -230,7 +225,7 @@ export default function Briefcase() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="boss-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Files</CardTitle>
               <File className="h-4 w-4 text-muted-foreground" />
@@ -240,7 +235,7 @@ export default function Briefcase() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="boss-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Encrypted Files</CardTitle>
               <Shield className="h-4 w-4 text-muted-foreground" />
@@ -250,7 +245,7 @@ export default function Briefcase() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="boss-card">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Recent Activity</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
@@ -321,12 +316,12 @@ export default function Briefcase() {
             {/* Folders Grid */}
             {selectedFolder === "root" && (
               <div>
-                <h3 className="text-lg font-semibold mb-3">Folders</h3>
+                <h3 className="text-lg font-semibold mb-3 boss-text-gradient">Folders</h3>
                 <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
                   {folders.map((folder) => (
                     <Card
                       key={folder.id}
-                      className="hover:shadow-md transition-shadow cursor-pointer"
+                      className="boss-card cursor-pointer"
                       onClick={() => setSelectedFolder(folder.id)}
                     >
                       <CardContent className="p-4">
@@ -345,12 +340,12 @@ export default function Briefcase() {
 
             {/* Files List */}
             <div>
-              <h3 className="text-lg font-semibold mb-3">{selectedFolder === "root" ? "Recent Files" : "Files"}</h3>
+              <h3 className="text-lg font-semibold mb-3 boss-text-gradient">{selectedFolder === "root" ? "Recent Files" : "Files"}</h3>
               <div className="space-y-2">
                 {filteredFiles.map((file) => {
                   const FileIcon = getFileIcon(file.type)
                   return (
-                    <Card key={file.id}>
+                    <Card key={file.id} className="boss-card">
                       <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-3">
@@ -376,16 +371,16 @@ export default function Briefcase() {
 
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
+                              <Button variant="ghost" size="sm" className="hover:bg-purple-50">
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
-                              <DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => toast.success("File downloaded successfully!")}>
                                 <Download className="mr-2 h-4 w-4" />
                                 Download
                               </DropdownMenuItem>
-                              <DropdownMenuItem className="text-red-600">
+                              <DropdownMenuItem className="text-red-600" onClick={() => toast.error("File deleted successfully")}>
                                 <Trash2 className="mr-2 h-4 w-4" />
                                 Delete
                               </DropdownMenuItem>

@@ -1,12 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
+import { z } from 'zod'
+import { info, error as logError } from '@/lib/log'
+
+// Edge runtime disabled because jsonwebtoken is not compatible with Edge
+// export const runtime = 'edge'
 
 // GET current user's profile
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
+  const route = '/api/profile'
   try {
     const { user, error } = await authenticateRequest()
     if (error || !user) {
+      info('Unauthorized profile request', { 
+        route, 
+        status: 401,
+        meta: { ip: request.headers.get('x-forwarded-for') || 'unknown' }
+      })
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -19,26 +30,69 @@ export async function GET(_request: NextRequest) {
     )
 
     if (rows.length === 0) {
+      info('Profile not found', { 
+        route, 
+        userId: user.id,
+        status: 404,
+        meta: { ip: request.headers.get('x-forwarded-for') || 'unknown' }
+      })
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
 
+    info('Profile fetched successfully', { 
+      route, 
+      userId: user.id,
+      status: 200,
+      meta: { ip: request.headers.get('x-forwarded-for') || 'unknown' }
+    })
+
     return NextResponse.json(rows[0])
-  } catch (error) {
-    console.error('Profile GET error:', error)
+  } catch (err) {
+    logError('Error fetching profile', {
+      route,
+      status: 500,
+      error: err,
+      meta: { 
+        errorMessage: err instanceof Error ? err.message : String(err),
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      }
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
 // Update current user's profile
 export async function PATCH(request: NextRequest) {
+  const route = '/api/profile'
   try {
     const { user, error } = await authenticateRequest()
     if (error || !user) {
+      info('Unauthorized profile update attempt', { 
+        route, 
+        status: 401,
+        meta: { ip: request.headers.get('x-forwarded-for') || 'unknown' }
+      })
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const body = await request.json()
-    const { full_name, avatar_url } = body
+    const BodySchema = z.object({
+      full_name: z.string().min(1).max(200).nullable().optional(),
+      avatar_url: z.string().url().nullable().optional(),
+    })
+    const parsed = BodySchema.safeParse(await request.json())
+    if (!parsed.success) {
+      info('Invalid profile update payload', { 
+        route, 
+        userId: user.id,
+        status: 400,
+        meta: { 
+          validationErrors: parsed.error.flatten(),
+          ip: request.headers.get('x-forwarded-for') || 'unknown'
+        }
+      })
+      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
+    }
+    const { full_name, avatar_url } = parsed.data
 
     const client = await createClient()
     const { rows } = await client.query(
@@ -51,11 +105,30 @@ export async function PATCH(request: NextRequest) {
       [full_name ?? null, avatar_url ?? null, user.id]
     )
 
+    info('Profile updated successfully', { 
+      route, 
+      userId: user.id,
+      status: 200,
+      meta: { 
+        updatedFields: {
+          full_name: full_name !== undefined,
+          avatar_url: avatar_url !== undefined
+        },
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      }
+    })
+
     return NextResponse.json(rows[0])
-  } catch (error) {
-    console.error('Profile PATCH error:', error)
+  } catch (err) {
+    logError('Error updating profile', {
+      route,
+      status: 500,
+      error: err,
+      meta: { 
+        errorMessage: err instanceof Error ? err.message : String(err),
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      }
+    })
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-
-

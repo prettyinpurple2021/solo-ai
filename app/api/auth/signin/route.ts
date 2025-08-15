@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/neon/server'
-import { createToken } from '@/lib/auth-utils'
+import { createToken, AUTH_COOKIE_OPTIONS } from '@/lib/auth-utils'
 import bcrypt from 'bcryptjs'
+import { z } from 'zod'
+import { rateLimitByIp } from '@/lib/rate-limit'
 
 // Typed global cache for simple in-memory rate limiting
 declare global {
@@ -11,31 +13,19 @@ declare global {
 
 export async function POST(request: NextRequest) {
   try {
-    // Basic in-memory rate limiting per IP (best-effort)
     const ip = request.headers.get('x-forwarded-for') || 'unknown'
-    if (!globalThis.__signinRateLimit) {
-      globalThis.__signinRateLimit = new Map<string, { count: number; ts: number }>()
-    }
-    const map = globalThis.__signinRateLimit
-    const now = Date.now()
-    const entry = map.get(ip)
-    if (!entry || now - entry.ts > 60_000) {
-      map.set(ip, { count: 1, ts: now })
-    } else {
-      entry.count += 1
-      if (entry.count > 20) {
-        return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
-      }
-    }
+    const { allowed } = rateLimitByIp('signin', ip, 60_000, 20)
+    if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
 
-    const { email, password } = await request.json()
-
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      )
+    const BodySchema = z.object({
+      email: z.string().email(),
+      password: z.string().min(8),
+    })
+    const parsed = BodySchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
+    const { email, password } = parsed.data
 
     const client = await createClient()
     
@@ -77,12 +67,7 @@ export async function POST(request: NextRequest) {
       token
     })
 
-    response.cookies.set('auth-token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 // 7 days
-    })
+    response.cookies.set('auth-token', token, AUTH_COOKIE_OPTIONS)
 
     return response
   } catch (error) {

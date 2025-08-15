@@ -1,18 +1,21 @@
-import { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/neon/server'
 import { authenticateRequest } from '@/lib/auth-server'
 
+export const runtime = 'nodejs'
+
 // GET /api/files/:id → returns the binary file content with proper headers
 export async function GET(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
+	_request: Request,
+	context: unknown
 ) {
   try {
+    const id = (context as { params?: { id?: string } })?.params?.id
+    if (!id) return new NextResponse('Not found', { status: 404 })
     const client = await createClient()
     const { rows } = await client.query(
       'SELECT id, content_type, content, filename FROM documents WHERE id = $1',
-      [params.id]
+      [id]
     )
 
     if (rows.length === 0) {
@@ -43,8 +46,8 @@ export async function GET(
 
 // DELETE /api/files/:id → deletes a file owned by the authenticated user
 export async function DELETE(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
+  _request: Request,
+  context: unknown
 ) {
   try {
     const { user, error } = await authenticateRequest()
@@ -52,10 +55,12 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const id = (context as { params?: { id?: string } })?.params?.id
+    if (!id) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     const client = await createClient()
     const { rowCount } = await client.query(
       'DELETE FROM documents WHERE id = $1 AND user_id = $2',
-      [params.id, user.id]
+      [id, user.id]
     )
 
     if (rowCount === 0) {

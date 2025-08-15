@@ -359,7 +359,7 @@ export default function ProfilePage() {
         </Tabs>
 
         {/* Enhanced Profile Modal */}
-        <EnhancedProfileModal open={showProfileModal} onOpenChange={setShowProfileModal} />
+        <EnhancedProfileModal _open={showProfileModal} onOpenChangeAction={setShowProfileModal} />
       </div>
     </div>
   )

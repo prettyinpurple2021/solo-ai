@@ -43,7 +43,17 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      {children}
+      <div className="w-full">
+        <div className="rounded-xl p-[2px] soloboss-gradient animate-gradient mb-6">
+          <div className="rounded-xl bg-background/70 backdrop-blur border-2 border-purple-200 px-4 py-6">
+            <h2 className="text-2xl font-bold boss-text-gradient">Dashboard</h2>
+            <p className="text-sm text-muted-foreground mt-1">Own your day. Build your empire.</p>
+          </div>
+        </div>
+        <div className="space-y-6">
+          {children}
+        </div>
+      </div>
     </SidebarProvider>
   )
 }

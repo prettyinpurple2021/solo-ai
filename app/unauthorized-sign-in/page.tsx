@@ -1,18 +1,17 @@
 "use client"
 
-import { useEffect } from "react"
-import { useRouter } from "next/navigation"
+// No React hooks needed for this component
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ArrowLeft, Shield } from "lucide-react"
 import Link from "next/link"
 
 export default function UnauthorizedSignInPage() {
-  const router = useRouter()
 
-  const handleClerkUnauthorizedSignIn = () => {
-    // Redirect to Clerk's hosted unauthorized sign-in page
-    window.location.href = "https://accounts.solobossai.fun/unauthorized-sign-in"
+
+  const handleUnauthorizedSignIn = () => {
+    // Redirect to sign-in page
+    window.location.href = "/sign-in"
   }
 
   return (
@@ -31,7 +30,7 @@ export default function UnauthorizedSignInPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <Button 
-            onClick={handleClerkUnauthorizedSignIn}
+            onClick={handleUnauthorizedSignIn}
             className="w-full bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white"
           >
             🔐 Sign In to Continue

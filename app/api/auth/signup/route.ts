@@ -1,41 +1,39 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/neon/server'
-import { createToken } from '@/lib/auth-utils'
+import { createToken, AUTH_COOKIE_OPTIONS } from '@/lib/auth-utils'
 import bcrypt from 'bcryptjs'
 import { v4 as uuidv4 } from 'uuid'
+import { z } from 'zod'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { getIdempotencyKeyFromRequest, reserveIdempotencyKey } from '@/lib/idempotency'
 
 export async function POST(request: NextRequest) {
   try {
-    // Basic in-memory rate limiting per IP (best-effort)
     const ip = request.headers.get('x-forwarded-for') || 'unknown'
-    // Move this to a separate types.d.ts file if needed
-    type RateLimitEntry = { count: number; ts: number };
-    const rateLimit = globalThis as { __signupRateLimit?: Map<string, RateLimitEntry> };
-    if (!rateLimit.__signupRateLimit) {
-      rateLimit.__signupRateLimit = new Map<string, RateLimitEntry>()
-    }
-    const map = rateLimit.__signupRateLimit
-    const currentTime = Date.now()
-    const entry = map.get(ip)
-    if (!entry || currentTime - entry.ts > 60_000) {
-      map.set(ip, { count: 1, ts: currentTime })
-    } else {
-      entry.count += 1
-      if (entry.count > 20) {
-        return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
-      }
-    }
+    const { allowed } = rateLimitByIp('signup', ip, 60_000, 20)
+    if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
 
-    const { email, password, metadata } = await request.json()
-
-    if (!email || !password) {
-      return NextResponse.json(
-        { error: 'Email and password are required' },
-        { status: 400 }
-      )
+    const BodySchema = z.object({
+      email: z.string().email(),
+      password: z.string().min(8),
+      metadata: z.object({ full_name: z.string().min(1).max(200).optional() }).optional(),
+    })
+    const parsed = BodySchema.safeParse(await request.json())
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
+    const { email, password, metadata } = parsed.data
 
     const client = await createClient()
+
+    // Idempotency support (avoid duplicate signups)
+    const key = getIdempotencyKeyFromRequest(request)
+    if (key) {
+      const reserved = await reserveIdempotencyKey(client, key)
+      if (!reserved) {
+        return NextResponse.json({ error: 'Duplicate request' }, { status: 409 })
+      }
+    }
     
     // Check if user already exists
     const { rows: existingUsers } = await client.query(
@@ -87,12 +85,7 @@ export async function POST(request: NextRequest) {
       token
     })
 
-    response.cookies.set('auth-token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 // 7 days
-    })
+    response.cookies.set('auth-token', token, AUTH_COOKIE_OPTIONS)
 
     return response
   } catch (error) {

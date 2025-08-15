@@ -3,6 +3,7 @@ import { createClient } from "@/lib/neon/server"
 import { cookies } from "next/headers"
 import { verify } from "jsonwebtoken"
 import type { AuthenticatedUser, AuthResult } from "./auth-utils"
+import { getStackServerApp } from "@/stack"
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key'
 
@@ -29,36 +30,56 @@ function verifyToken(token: string): { userId: string; email: string } | null {
   }
 }
 
+async function getStackAuthenticatedUser(): Promise<AuthenticatedUser | null> {
+  try {
+    const app = getStackServerApp()
+    if (!app) return null
+    const stackUser = await app.getUser()
+    if (!stackUser) return null
+
+    // Map Stack user to our AuthenticatedUser shape
+    return {
+      id: stackUser.id,
+      email: (stackUser as any).primaryEmail || (stackUser as any).email || "",
+      full_name: (stackUser as any).displayName,
+      avatar_url: (stackUser as any).avatarUrl,
+      subscription_tier: undefined,
+      subscription_status: undefined,
+    }
+  } catch (err) {
+    console.error('Stack authentication error:', err)
+    return null
+  }
+}
+
 /**
  * Server-side authentication utility for API routes
- * Returns the authenticated user or an error response
+ * Tries Stack Auth first, then falls back to legacy JWT cookie.
  */
 export async function authenticateRequest(): Promise<AuthResult> {
   try {
+    // 1) Try Stack Auth cookie/session
+    const stackUser = await getStackAuthenticatedUser()
+    if (stackUser) {
+      return { user: stackUser, error: null }
+    }
+
+    // 2) Fallback to legacy JWT cookie
     const cookieStore = await cookies()
     const token = cookieStore.get('auth-token')?.value
 
     if (!token) {
-      return {
-        user: null,
-        error: "No authentication token"
-      }
+      return { user: null, error: "No authentication token" }
     }
 
     const decoded = verifyToken(token)
     if (!decoded) {
-      return {
-        user: null,
-        error: "Invalid authentication token"
-      }
+      return { user: null, error: "Invalid authentication token" }
     }
 
     const user = await getUserById(decoded.userId)
     if (!user) {
-      return {
-        user: null,
-        error: "User not found"
-      }
+      return { user: null, error: "User not found" }
     }
 
     return {
@@ -70,14 +91,11 @@ export async function authenticateRequest(): Promise<AuthResult> {
         subscription_tier: user.subscription_tier,
         subscription_status: user.subscription_status,
       },
-      error: null
+      error: null,
     }
   } catch (authError) {
     console.error("Authentication error:", authError)
-    return {
-      user: null,
-      error: "Authentication failed"
-    }
+    return { user: null, error: "Authentication failed" }
   }
 }
 
@@ -89,11 +107,9 @@ export function withAuth<T>(
 ) {
   return async (req: NextRequest): Promise<T | NextResponse> => {
     const { user, error } = await authenticateRequest()
-    
     if (error) {
       return NextResponse.json({ error }, { status: 401 })
     }
-    
     return handler(req, user!)
   }
 }

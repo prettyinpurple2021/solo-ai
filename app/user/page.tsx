@@ -10,9 +10,9 @@ import Link from "next/link"
 export default function UserProfilePage() {
   const router = useRouter()
 
-  const handleClerkUserProfile = () => {
-    // Redirect to Clerk's hosted user profile page
-    window.location.href = "https://accounts.solobossai.fun/user"
+  const handleUserProfile = () => {
+    // Redirect to our profile page
+    window.location.href = "/profile"
   }
 
   return (
@@ -31,7 +31,7 @@ export default function UserProfilePage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <Button 
-            onClick={handleClerkUserProfile}
+            onClick={handleUserProfile}
             className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white"
           >
             👤 Manage Profile
