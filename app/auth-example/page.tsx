@@ -42,13 +42,13 @@ export default function AuthExamplePage() {
           <Card className="boss-card border-2 border-purple-200 hover:border-purple-300 transition-all duration-300">
             <CardHeader>
               <CardTitle className="boss-text-gradient text-xl font-bold">
-                🔥 Stack Auth Integration
+                🔥 Custom Auth Integration
               </CardTitle>
             </CardHeader>
             <CardContent>
               <p className="text-gray-600 mb-4">
-                This project now uses Stack Auth for authentication. 
-                The old authentication components have been replaced.
+                This project uses a custom authentication system with JWT tokens and Neon PostgreSQL.
+                The system provides secure login, registration and session management.
               </p>
               <div className="space-y-2">
                 <p className="text-sm text-gray-500">• Custom sign-in page at /signin</p>
@@ -69,7 +69,7 @@ export default function AuthExamplePage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600">
-                Your existing data is automatically migrated from Supabase to Clerk. 
+                Your existing data is automatically migrated from Supabase to Neon PostgreSQL.
                 No data loss, no interruption to your workflow.
               </p>
             </CardContent>

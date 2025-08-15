@@ -10,7 +10,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { CheckCircle, X, ArrowLeft, Crown, Rocket, Zap, MessageCircle } from "lucide-react"
 import Link from "next/link"
 
-// AuthModal removed - using Clerk authentication instead
+// Using custom JWT authentication
 import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
 
 
@@ -426,7 +426,7 @@ export default function PricingPage() {
 
       />
 
-      {/* Auth Modal removed - using Clerk authentication */}
+      {/* Using custom JWT authentication */}
     </div>
   )
 }
