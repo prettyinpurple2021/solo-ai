@@ -1,23 +1,6 @@
-"use client"
+import { redirect } from 'next/navigation'
 
-import { SharedLandingPage } from "@/components/shared/shared-landing-page"
-import { useRouter } from "next/navigation"
-
-export default function LandingPage() {
-  const router = useRouter()
-
-  const handleAuthRequest = () => {
-    // Redirect to Stack Auth sign-in page
-    router.push('/signin')
-  }
-
-  return (
-    <>
-      <SharedLandingPage 
-        showAuthModal={false}
-        onShowAuthModal={handleAuthRequest}
-        styleVariant="gradient"
-      />
-    </>
-  )
+export default function HomePage() {
+  // Redirect to the simplified landing page
+  redirect('/landing')
 }
