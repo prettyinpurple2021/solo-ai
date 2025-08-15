@@ -155,22 +155,6 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-indigo-50">
-      {/* Custom Banner */}
-      <div className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 py-3">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-center">
-            <Image
-              src="/images/soloboss-banner.png"
-              alt="SoloBoss AI Banner"
-              width={800}
-              height={120}
-              className="max-w-full h-auto"
-              priority
-            />
-          </div>
-        </div>
-      </div>
-
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-pink-200 dark:border-purple-800">
         <div className="container mx-auto px-4 py-4">
@@ -225,12 +209,12 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
                 Pricing
               </a>
               <ThemeToggle />
-              <Link href="/sign-in">
+              <Link href="/signin">
                 <Button variant="ghost" className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400">
                   Sign In
                 </Button>
               </Link>
-              <Link href="/sign-up">
+              <Link href="/signup">
                 <Button 
                   className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white"
                 >
@@ -303,12 +287,12 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
                   >
                     Pricing
                   </a>
-                  <Link href="/sign-in">
+                  <Link href="/signin">
                     <Button variant="ghost" className="text-gray-700 dark:text-gray-300 hover:text-pink-600 dark:hover:text-pink-400 w-full">
                       Sign In
                     </Button>
                   </Link>
-                  <Link href="/sign-up">
+                  <Link href="/signup">
                     <Button
                       className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white w-full"
                     >
@@ -323,39 +307,39 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
       </nav>
 
       {/* Hero Section */}
-      <section className="py-20 px-4">
+      <section className="py-16 px-4">
         <div className="container mx-auto text-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
             <Badge className="mb-6 bg-gradient-to-r from-pink-500 to-purple-600 text-white">
               🚀 AI-Powered Productivity Revolution
             </Badge>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
+            <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-pink-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent">
               Become the Ultimate
               <br />
-              <span className="text-6xl md:text-8xl">SoloBoss</span>
+              <span className="text-5xl md:text-7xl">SoloBoss</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Transform your productivity with AI agents that work 24/7. Automate everything, achieve more, and dominate
               your industry like never before.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-10">
               <Link href="/signup">
                 <Button
                   size="lg"
-                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white text-lg px-8 py-4"
+                  className="bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white px-8 py-3"
                 >
                   Start Your Empire
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Button
                 size="lg"
                 variant="outline"
-                className="text-lg px-8 py-4 border-pink-300 dark:border-purple-600 bg-transparent"
+                className="px-8 py-3 border-pink-300 dark:border-purple-600 bg-transparent"
                 onClick={() => setShowScheduleModal(true)}
               >
                 Watch Demo
-                <Play className="ml-2 h-5 w-5" />
+                <Play className="ml-2 h-4 w-4" />
               </Button>
             </div>
 

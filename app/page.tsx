@@ -7,8 +7,8 @@ export default function LandingPage() {
   const router = useRouter()
 
   const handleAuthRequest = () => {
-    // Redirect to Clerk sign-in page
-    router.push('/sign-in')
+    // Redirect to Stack Auth sign-in page
+    router.push('/signin')
   }
 
   return (
