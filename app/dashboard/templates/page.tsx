@@ -9,8 +9,10 @@ import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
 import { Badge } from "@/components/ui/badge"
+import { SectionHeader } from "@/components/ui/section-header"
+import { toast } from "sonner"
 import dynamic from "next/dynamic"
-import { Search, Plus, Grid, List, Filter } from "lucide-react"
+import { Search, Plus, Grid, List, Filter, FileText, Sparkles } from "lucide-react"
 import Link from "next/link"
 
 export default function TemplatesPage() {
@@ -92,32 +94,33 @@ export default function TemplatesPage() {
 
       <div className="flex flex-1 flex-col gap-6 p-4 pt-0">
         {/* Header Section */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Templates</h1>
-            <p className="text-muted-foreground">Manage your saved templates and discover new ones</p>
-          </div>
-
-          <div className="flex gap-2">
-            <Button variant="outline" asChild>
-              <Link href="/templates">
-                <Grid className="mr-2 h-4 w-4" />
-                Browse All
-              </Link>
-            </Button>
-            <Button asChild>
-              <Link href="/templates/create">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Template
-              </Link>
-            </Button>
-          </div>
-        </div>
+        <SectionHeader
+          variant="gradient"
+          title="Templates"
+          description="Manage your saved templates and discover new ones"
+          icon={<FileText className="h-6 w-6" />}
+          actions={
+            <div className="flex gap-2">
+              <Button variant="outline" asChild>
+                <Link href="/templates">
+                  <Grid className="mr-2 h-4 w-4" />
+                  Browse All
+                </Link>
+              </Button>
+              <Button asChild>
+                <Link href="/templates/create">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create Template
+                </Link>
+              </Button>
+            </div>
+          }
+        />
 
         {/* Quick Actions */}
         <div className="grid gap-4 md:grid-cols-2">
           {quickActions.map((action) => (
-            <Card key={action.title} className="hover:shadow-md transition-shadow">
+            <Card key={action.title} className="boss-card">
               <CardContent className="p-6">
                 <Link href={action.href} className="block">
                   <div className="flex items-center gap-4">
@@ -137,17 +140,20 @@ export default function TemplatesPage() {
 
         {/* Template Categories */}
         <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Template Categories</h2>
-            <Badge variant="secondary">{templateCategories.reduce((acc, cat) => acc + cat.count, 0)} templates available</Badge>
-          </div>
+          <SectionHeader
+            variant="subtle"
+            title="Template Categories"
+            icon={<Sparkles className="h-5 w-5" />}
+            badge={<Badge variant="default">{templateCategories.reduce((acc, cat) => acc + cat.count, 0)} templates available</Badge>}
+          />
           
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {templateCategories.map((category) => (
-              <Card key={category.id} className="hover:shadow-md transition-shadow cursor-pointer">
+              <Card key={category.id} className="boss-card cursor-pointer" 
+                onClick={() => toast.success(`${category.name} templates coming soon!`)}>
                 <CardContent className="p-6 text-center">
                   <div className="text-3xl mb-3">{category.icon}</div>
-                  <h3 className="font-semibold mb-2">{category.name}</h3>
+                  <h3 className="font-semibold mb-2 gradient-text-secondary">{category.name}</h3>
                   <p className="text-sm text-muted-foreground mb-3">{category.description}</p>
                   <Badge className={category.color}>{category.count} templates</Badge>
                 </CardContent>
@@ -183,7 +189,7 @@ export default function TemplatesPage() {
             >
               <List className="h-4 w-4" />
             </Button>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => toast.info("Filters coming soon!")}>
               <Filter className="mr-2 h-4 w-4" />
               Filter
             </Button>

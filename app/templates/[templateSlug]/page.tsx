@@ -71,25 +71,27 @@ export default async function TemplatePage({ params }: TemplatePageProps) {
 
   return (
     <div className="container mx-auto py-8">
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold">{template.title}</h1>
-        <p className="text-lg text-muted-foreground mt-2">{template.description}</p>
-        <div className="mt-4 flex space-x-2">
-          <Badge variant="outline">Role: {template.requiredRole}</Badge>
-          <Badge variant={template.isInteractive ? 'default' : 'secondary'}>
-            {template.isInteractive ? 'Interactive' : 'Static'}
-          </Badge>
+      <div className="rounded-xl p-[2px] soloboss-gradient animate-gradient mb-6">
+        <div className="rounded-xl bg-background/70 backdrop-blur-md border-2 border-purple-200 px-6 py-4">
+          <h1 className="text-4xl font-bold boss-text-gradient">{template.title}</h1>
+          <p className="text-lg text-muted-foreground mt-2">{template.description}</p>
+          <div className="mt-4 flex space-x-2">
+            <Badge variant="outline">Role: {template.requiredRole}</Badge>
+            <Badge variant={template.isInteractive ? 'default' : 'secondary'}>
+              {template.isInteractive ? 'Interactive' : 'Static'}
+            </Badge>
+          </div>
         </div>
       </div>
 
-      <Card>
+      <Card className="boss-card">
         <CardContent className="p-6">
           <div>
-            <h3 className="text-lg font-semibold mb-2">Template Preview</h3>
+            <h3 className="text-lg font-semibold mb-2 gradient-text-secondary">Template Preview</h3>
             <p className="text-muted-foreground">
               This template is currently in development. The interactive component will be available soon.
             </p>
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+            <div className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
               <h4 className="font-medium mb-2">Template Details:</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 <li><strong>Title:</strong> {template.title}</li>
