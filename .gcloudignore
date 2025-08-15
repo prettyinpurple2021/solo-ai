@@ -1,0 +1,36 @@
+# Ignore node_modules
+node_modules/
+
+# Ignore build output
+.next/
+
+# Ignore development files
+.git/
+.github/
+.vscode/
+*.log
+.env
+.env.*
+!.env.example
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore test files
+__tests__/
+coverage/
+
+# Ignore documentation
+README.md
+CONTRIBUTING.md
+LICENSE
+
+# Ignore temporary files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Ignore Netlify files
+netlify.toml
+.netlify/
