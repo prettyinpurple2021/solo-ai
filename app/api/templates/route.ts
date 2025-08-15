@@ -39,12 +39,13 @@ export async function GET(request: NextRequest) {
         parsed = { value: r.content }
       }
       const slug: string = r.name
-      const title: string = slug?.replace(/[-_]/g, ' ').replace(/\b\w/g, (m: string) => m.toUpperCase()) || 'Template'
+      // Generate title from slug but don't store it separately as we don't use it
+      const displayTitle = slug?.replace(/[-_]/g, ' ').replace(/\b\w/g, (m: string) => m.toUpperCase()) || 'Template'
       return {
         id: r.id,
         template_slug: slug,
         template_data: parsed,
-        title,
+        title: displayTitle,
         description: r.description || undefined,
         created_at: r.created_at,
         updated_at: r.updated_at,
