@@ -14,9 +14,9 @@ const nextConfig = {
         fs: false,
         net: false,
         tls: false,
-        crypto: require.resolve('crypto-browserify'),
-        stream: require.resolve('stream-browserify'),
-        buffer: require.resolve('buffer'),
+        crypto: false,
+        stream: false,
+        buffer: false,
       };
     }
     return config;
