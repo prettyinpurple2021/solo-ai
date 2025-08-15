@@ -1,98 +1,69 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/neon/server'
-import { info, error } from '@/lib/log'
+import { NextResponse } from 'next/server';
+import { createClient } from '@/lib/neon/server';
 
-/**
- * Dependency health check endpoint
- * Checks database connection and other critical services
- * @route GET /api/health/deps
- */
-export async function GET(request: NextRequest) {
-  const logger = {
-    route: '/api/health/deps',
-    meta: {
-      ip: request.headers.get('x-forwarded-for') || 'unknown',
-    }
-  }
-  
+// Use Node runtime for database access
+export const runtime = 'nodejs';
+
+export async function GET() {
   const checks = {
     database: { status: 'pending' },
-    environment: { status: 'pending' },
-  }
+    auth: { status: 'pending' },
+    env: { status: 'pending' },
+  };
   
-  // Check database connection
   try {
-    const client = await createClient()
-    const { rows } = await client.query('SELECT NOW()')
-    
-    if (rows.length > 0) {
+    // Check database connection
+    try {
+      const client = await createClient();
+      const { rows } = await client.query('SELECT NOW() as time');
       checks.database = { 
         status: 'ok',
-        timestamp: rows[0].now
-      }
-    } else {
+        message: `Connected to database, server time: ${rows[0]?.time}` 
+      };
+    } catch (dbError) {
+      console.error('Database check error:', dbError);
       checks.database = { 
         status: 'error',
-        message: 'No response from database'
-      }
+        message: dbError instanceof Error ? dbError.message : 'Unknown database error'
+      };
     }
-  } catch (err) {
-    error('Database health check failed', {
-      ...logger,
-      status: 500,
-      error: err,
-      meta: {
-        ...logger.meta,
-        errorMessage: err instanceof Error ? err.message : String(err)
-      }
-    })
     
-    checks.database = { 
-      status: 'error',
-      message: err instanceof Error ? err.message : 'Unknown database error'
-    }
+    // Check auth environment variables
+    const authEnvVars = ['JWT_SECRET', 'ENCRYPTION_KEY'];
+    const missingAuthVars = authEnvVars.filter(varName => !process.env[varName]);
+    
+    checks.auth = missingAuthVars.length === 0
+      ? { status: 'ok', message: 'All auth environment variables are set' }
+      : { status: 'error', message: `Missing auth environment variables: ${missingAuthVars.join(', ')}` };
+    
+    // Check other critical environment variables
+    const criticalEnvVars = ['DATABASE_URL', 'OPENAI_API_KEY'];
+    const missingEnvVars = criticalEnvVars.filter(varName => !process.env[varName]);
+    
+    checks.env = missingEnvVars.length === 0
+      ? { status: 'ok', message: 'All critical environment variables are set' }
+      : { status: 'error', message: `Missing critical environment variables: ${missingEnvVars.join(', ')}` };
+    
+    // Overall status
+    const overallStatus = Object.values(checks).some(check => check.status === 'error') 
+      ? 'error' 
+      : 'ok';
+    
+    return NextResponse.json({
+      status: overallStatus,
+      timestamp: new Date().toISOString(),
+      checks,
+      environment: process.env.NODE_ENV,
+    });
+  } catch (error) {
+    console.error('Health check error:', error);
+    return NextResponse.json(
+      { 
+        status: 'error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+        timestamp: new Date().toISOString()
+      },
+      { status: 500 }
+    );
   }
-  
-  // Check required environment variables
-  const requiredEnvVars = [
-    'DATABASE_URL',
-    'JWT_SECRET',
-    'NEXT_PUBLIC_STACK_PROJECT_ID',
-    'NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY',
-    'STACK_SECRET_SERVER_KEY',
-  ]
-  
-  const missingEnvVars = requiredEnvVars.filter(varName => !process.env[varName])
-  
-  if (missingEnvVars.length === 0) {
-    checks.environment = { status: 'ok' }
-  } else {
-    checks.environment = {
-      status: 'warning',
-      message: 'Missing environment variables',
-      missing: missingEnvVars
-    }
-  }
-  
-  // Determine overall status
-  const hasError = Object.values(checks).some(check => check.status === 'error')
-  const hasWarning = Object.values(checks).some(check => check.status === 'warning')
-  
-  const status = hasError ? 'error' : hasWarning ? 'warning' : 'ok'
-  const httpStatus = hasError ? 500 : 200
-  
-  info('Dependencies health check', {
-    ...logger,
-    status: httpStatus,
-    meta: {
-      ...logger.meta,
-      checkStatus: status
-    }
-  })
-  
-  return NextResponse.json({
-    status,
-    timestamp: new Date().toISOString(),
-    checks
-  }, { status: httpStatus })
 }

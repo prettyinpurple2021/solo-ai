@@ -11,7 +11,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    domains: ['localhost', 'soloboss.app'],
+    domains: ['localhost', 'soloboss.app', 'solobossai.fun', 'www.solobossai.fun'],
   },
   serverExternalPackages: ['bcryptjs', 'crypto', 'jsonwebtoken'],
   webpack: (config, { isServer }) => {
