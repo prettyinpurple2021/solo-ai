@@ -4,8 +4,8 @@ import { createClient } from '@/lib/neon/server'
 import { z } from 'zod'
 import { info, error as logError } from '@/lib/log'
 
-// Enable edge runtime for GET requests
-export const runtime = 'edge'
+// Edge runtime disabled because jsonwebtoken is not compatible with Edge
+// export const runtime = 'edge'
 
 // GET current user's profile
 export async function GET(request: NextRequest) {

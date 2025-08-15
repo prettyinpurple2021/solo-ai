@@ -164,6 +164,10 @@
   - [x] Created comprehensive setup guide
   - [ ] Set up proper environment variables in Netlify dashboard
   - [ ] Test authentication flow in production
+- [x] **Fix Netlify build failures** - COMPLETED
+  - [x] Fixed Edge runtime incompatibility with jsonwebtoken
+  - [x] Fixed Sentry configuration warnings
+  - [x] Updated Next.js config to use serverExternalPackages instead of deprecated option
 
 ### Medium Priority
 
@@ -313,6 +317,7 @@
 - [x] Add Sentry (`@sentry/nextjs`) setup (client + server)
 - [x] Use structured logs in API routes with context (user_id, route, status)
 - [x] Keep `/api/health` as liveness; add `/api/health/deps` for dependency checks
+- [x] Create proper Next.js instrumentation files for Sentry
 
 9) Data fetching & cache — silky smooth UX
 
@@ -323,6 +328,7 @@
 
 - [x] Mark read-only list endpoints with `export const runtime = 'edge'` where compatible (e.g., `GET /api/templates`)
 - [x] Keep writes (POST/DELETE) on Node runtime
+- [x] Disable Edge runtime for routes that use jsonwebtoken (not Edge compatible)
 
 11) Accessibility & QA — inclusive and bulletproof
 

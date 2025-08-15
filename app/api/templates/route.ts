@@ -5,8 +5,8 @@ import { z } from 'zod'
 import { getIdempotencyKeyFromRequest, reserveIdempotencyKey } from '@/lib/idempotency'
 import { info, error as logError } from '@/lib/log'
 
-// Enable edge runtime for improved performance on read operations
-export const runtime = 'edge'
+// Edge runtime disabled because jsonwebtoken is not compatible with Edge
+// export const runtime = 'edge'
 
 export async function GET(request: NextRequest) {
   const route = '/api/templates'

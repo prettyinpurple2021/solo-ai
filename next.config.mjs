@@ -6,9 +6,7 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'soloboss.app'],
   },
-  experimental: {
-    serverComponentsExternalPackages: ['bcryptjs'],
-  },
+  serverExternalPackages: ['bcryptjs'],
   async redirects() {
     return [
       {
