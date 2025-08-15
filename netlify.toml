@@ -8,20 +8,5 @@
   NODE_OPTIONS = "--max-old-space-size=4096"
   NEXT_WEBPACK_USEPOLLING = "1"
 
-# Enable the Netlify Next.js plugin
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Netlify Next.js plugin handles all routing automatically
-# No additional redirects needed for Next.js apps
-
-# Optional: Handle API rate limiting
-[[headers]]
-  for = "/api/*"
-  [headers.values]
-    X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "DENY"
-    X-XSS-Protection = "1; mode=block"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-
-# Check deployment config

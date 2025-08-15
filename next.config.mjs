@@ -11,10 +11,14 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  // Top-level config options for Next.js 15
+  skipTrailingSlashRedirect: true,
+  skipMiddlewareUrlNormalize: true,
+  serverExternalPackages: ['bcryptjs', 'crypto', 'jsonwebtoken', '@stackframe/stack'],
   images: {
     domains: ['localhost', 'soloboss.app', 'solobossai.fun', 'www.solobossai.fun'],
   },
-  serverExternalPackages: ['bcryptjs', 'crypto', 'jsonwebtoken'],
+
   webpack: (config, { isServer }) => {
     if (!isServer) {
       // Don't resolve 'fs' module on the client to prevent this error on build --> Error: Can't resolve 'fs'
