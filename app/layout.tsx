@@ -7,8 +7,9 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as SonnerToaster } from "@/components/ui/sonner"
 import { AdSense } from "@/components/adsense"
-import { StackProvider, StackTheme } from "@stackframe/stack"
+import { StackProvider } from "@stackframe/stack"
 import { AuthWarning } from "@/components/auth/auth-warning"
+import { ErrorBoundary } from "@/components/ui/error-boundary"
 
 export const dynamic = 'force-dynamic'
 
@@ -78,7 +79,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   </div>
                 </header>
                 <main className="mx-auto max-w-7xl px-4 py-6">
-                  {children}
+                  <ErrorBoundary>
+                    {children}
+                  </ErrorBoundary>
                 </main>
                 <footer className="mx-auto max-w-7xl px-4 py-10">
                   <div className="text-center text-sm text-muted-foreground">
@@ -104,7 +107,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
               </header>
               <AuthWarning />
               <main className="mx-auto max-w-7xl px-4 py-6">
-                {children}
+                <ErrorBoundary>
+                  {children}
+                </ErrorBoundary>
               </main>
               <footer className="mx-auto max-w-7xl px-4 py-10">
                 <div className="text-center text-sm text-muted-foreground">
