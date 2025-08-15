@@ -1,67 +1,39 @@
+import { withSentryConfig } from '@sentry/nextjs';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Remove static export to support server actions and API routes
-  trailingSlash: false, // Netlify works better without trailing slashes
+  reactStrictMode: true,
   images: {
-    unoptimized: true,
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-      },
-    ],
+    domains: ['localhost', 'soloboss.app'],
   },
-  
-  // Enable experimental features for better performance
   experimental: {
-    optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
+    serverComponentsExternalPackages: ['bcryptjs'],
   },
-
-  // Ensure server polyfills are loaded in the Node runtime during build and SSR
-  serverRuntimeConfig: {
-    requireServerPolyfills: true,
+  async redirects() {
+    return [
+      {
+        source: '/signin',
+        destination: '/sign-in',
+        permanent: true,
+      },
+      {
+        source: '/signup',
+        destination: '/sign-up',
+        permanent: true,
+      },
+    ]
   },
+};
 
-  eslint: {
-    // Only run ESLint on specific directories during production builds
-    dirs: ['app', 'components', 'lib', 'hooks'],
-    ignoreDuringBuilds: true, // Temporarily disable ESLint during builds
-  },
+// Injected content via Sentry wizard below
+const sentryWebpackPluginOptions = {
+  // For all available options, see:
+  // https://github.com/getsentry/sentry-webpack-plugin#options
 
-  typescript: {
-    // Disable type checking during build to prevent memory issues
-    ignoreBuildErrors: true,
-  },
+  // Suppresses source map uploading logs during build
+  silent: true,
+  org: process.env.SENTRY_ORG,
+  project: process.env.SENTRY_PROJECT,
+};
 
-  // Enable compression for better performance
-  compress: true,
-  
-  // Optimize for serverless functions
-  poweredByHeader: false,
-  
-  // Environment variable configuration
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-    NEXT_PUBLIC_ADSENSE_CLIENT_ID: process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID,
-  },
-
-  // Ensure client bundles don't try to polyfill Node.js core modules
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve = config.resolve || {}
-      config.resolve.fallback = {
-        ...(config.resolve.fallback || {}),
-        fs: false,
-        tls: false,
-        net: false,
-        child_process: false,
-        dns: false,
-      }
-    }
-    return config
-  },
-}
-
-// Check next config for lint settings
-
-export default nextConfig
+export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);

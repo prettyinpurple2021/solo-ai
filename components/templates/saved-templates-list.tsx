@@ -5,7 +5,8 @@ import { toast } from 'sonner'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { useTemplateSave, SavedTemplate } from '@/hooks/use-template-save';
+import { useTemplates } from '@/hooks/use-templates-swr';
+import { SavedTemplate } from '@/lib/types';
 import { FileText, Calendar, Download, Trash2, Eye } from 'lucide-react';
 import {
   Dialog,
@@ -19,18 +20,8 @@ import {
 // Uses SavedTemplate from hook to avoid duplicate/conflicting types
 
 export function SavedTemplatesList() {
-  const [savedTemplates, setSavedTemplates] = useState<SavedTemplate[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<SavedTemplate | null>(null);
-  const { loadSavedTemplates, isLoading } = useTemplateSave();
-
-  useEffect(() => {
-    loadTemplates();
-  }, []);
-
-  const loadTemplates = async () => {
-    const templates = await loadSavedTemplates();
-    setSavedTemplates(templates);
-  };
+  const { templates: savedTemplates, isLoading, deleteTemplate, exportTemplate } = useTemplates();
 
   const getTemplateIcon = (slug: string) => {
     switch (slug) {
@@ -55,38 +46,12 @@ export function SavedTemplatesList() {
     setSelectedTemplate(template);
   };
 
-  const handleDeleteTemplate = async (templateId: number) => {
-    try {
-      const res = await fetch(`/api/templates/${templateId}`, { method: 'DELETE' })
-      if (!res.ok) {
-        throw new Error('Failed to delete template')
-      }
-      setSavedTemplates((prev) => prev.filter((t) => t.id !== templateId))
-      toast.success('Template deleted', { description: 'She gone. Clean, safe, and instant.' })
-    } catch (err) {
-      console.error(err)
-      toast.error('Delete failed', { description: 'Could not delete this template. Try again.' })
-    }
+  const handleDeleteTemplate = (templateId: number) => {
+    deleteTemplate(templateId);
   };
 
   const handleExportTemplate = (template: SavedTemplate) => {
-    try {
-      const json = JSON.stringify(template.template_data, null, 2)
-      const blob = new Blob([json], { type: 'application/json' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      const safeSlug = template.template_slug || 'template'
-      a.href = url
-      a.download = `${safeSlug}-${template.id}.json`
-      document.body.appendChild(a)
-      a.click()
-      a.remove()
-      URL.revokeObjectURL(url)
-      toast.success('Template exported', { description: `${template.title} downloaded.` })
-    } catch (err) {
-      console.error('Export failed', err)
-      toast.error('Export failed', { description: 'Could not export this template.' })
-    }
+    exportTemplate(template);
   }
 
   if (isLoading) {

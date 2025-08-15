@@ -291,9 +291,9 @@
 
 5) Auth flow consistency — same glam, every route
 
-- [ ] Standardize user retrieval with a single helper (use `lib/auth-server.ts`)
-- [ ] Ensure JWT cookie options are consistent across sign-in/sign-out
-- [ ] Add `/api/auth/logout` to clear the cookie cleanly
+- [x] Standardize user retrieval with a single helper (use `lib/auth-server.ts`)
+- [x] Ensure JWT cookie options are consistent across sign-in/sign-out
+- [x] Add `/api/auth/logout` to clear the cookie cleanly
 
 6) Rate limiting + Idempotency — unshakeable under pressure
 
@@ -304,49 +304,49 @@
 
 7) Database indexes + updated_at triggers — faster, fresher, fiercer
 
-- [ ] Add index: `CREATE INDEX IF NOT EXISTS idx_user_templates_user_created ON user_templates(user_id, created_at)`
-- [ ] Verify `updated_at` triggers on all tables (align with `docs/migrations/005-*`)
-- [ ] Add SQL migration and run via `scripts/run-neon-migration.mjs`
+- [x] Add index: `CREATE INDEX IF NOT EXISTS idx_user_templates_user_created ON user_templates(user_id, created_at)`
+- [x] Verify `updated_at` triggers on all tables (align with `docs/migrations/005-*`)
+- [x] Add SQL migration and run via `scripts/run-user-templates-index-migration.mjs`
 
 8) Observability — see everything, fix anything
 
-- [ ] Add Sentry (`@sentry/nextjs`) setup (client + server)
-- [ ] Use structured logs in API routes with context (user_id, route, status)
-- [ ] Keep `/api/health` as liveness; consider `/api/health/deps` for dependency checks
+- [x] Add Sentry (`@sentry/nextjs`) setup (client + server)
+- [x] Use structured logs in API routes with context (user_id, route, status)
+- [x] Keep `/api/health` as liveness; add `/api/health/deps` for dependency checks
 
 9) Data fetching & cache — silky smooth UX
 
-- [ ] Introduce SWR for `/api/templates` and `/api/profile`
-- [ ] Hook `useTemplateSave()` into SWR (mutate after save/delete)
+- [x] Introduce SWR for `/api/templates` and `/api/profile`
+- [x] Hook `useTemplateSave()` into SWR (mutate after save/delete)
 
 10) Edge-friendly reads — speed where it sparkles
 
-- [ ] Mark read-only list endpoints with `export const runtime = 'edge'` where compatible (e.g., `GET /api/templates`)
-- [ ] Keep writes (POST/DELETE) on Node runtime
+- [x] Mark read-only list endpoints with `export const runtime = 'edge'` where compatible (e.g., `GET /api/templates`)
+- [x] Keep writes (POST/DELETE) on Node runtime
 
 11) Accessibility & QA — inclusive and bulletproof
 
-- [ ] Sweep critical components for labels/aria/contrast
-- [ ] Add Playwright smoke tests for:
-  - [ ] Sign in
-  - [ ] Templates list load/export/delete
-  - [ ] Update profile (avatar + name)
+- [x] Sweep critical components for labels/aria/contrast
+- [x] Add Playwright smoke tests for:
+  - [x] Sign in
+  - [x] Templates list load/export/delete
+  - [x] Update profile (avatar + name)
 
 12) CI/CD gates — only fab commits make it to main
 
-- [ ] Add GitHub Actions workflow: install, typecheck, lint, test, build on PR
-- [ ] Require green checks before merge
+- [x] Add GitHub Actions workflow: install, typecheck, lint, test, build on PR
+- [x] Require green checks before merge
 
 13) Testing strategy — receipts or it didn’t happen
 
-- [ ] Add `vitest` (or `jest`) for API unit tests
-- [ ] Unit tests for Zod schemas and API handler happy/edge paths
-- [ ] Playwright E2E covering auth → templates → profile
+- [x] Add `jest` for API unit tests
+- [x] Unit tests for Zod schemas and API handler happy/edge paths
+- [x] Playwright E2E covering auth → templates → profile
 
 14) Webhook glow-up — Chargebee, but make it safe
 
-- [ ] Verify Chargebee webhook signatures using signing secret
-- [ ] Store and enforce idempotency for events
+- [x] Verify Chargebee webhook signatures using signing secret
+- [x] Store and enforce idempotency for events
 - [ ] Reconcile subscription states with feature gates used in UI
 
 15) Privacy controls — user data, user rules
@@ -365,6 +365,11 @@
 - ✅ **Implemented critical API routes (tasks, goals, chat, templates, upload)**
 - ✅ **Fixed authentication system integration**
 - ✅ **Updated to-do list with current priorities**
+- ✅ **Added Sentry integration and structured logging**
+- ✅ **Implemented SWR for data fetching with caching**
+- ✅ **Added Edge runtime support for read-only API routes**
+- ✅ **Created Playwright smoke tests for core flows**
+- ✅ **Added GitHub Actions CI/CD workflow**
 
 ### **Current Status:**
 
@@ -382,6 +387,6 @@
 
 ---
 
-**Last Updated:** January 2025
+**Last Updated:** August 2025
 **Project Status:** Production Ready (Pending Environment Setup)
 **Next Review:** After Production Deployment

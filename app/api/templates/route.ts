@@ -3,12 +3,22 @@ import { authenticateRequest } from '@/lib/auth-server'
 import { createClient } from '@/lib/neon/server'
 import { z } from 'zod'
 import { getIdempotencyKeyFromRequest, reserveIdempotencyKey } from '@/lib/idempotency'
+import { info, error as logError } from '@/lib/log'
 
-export async function GET(_request: NextRequest) {
+// Enable edge runtime for improved performance on read operations
+export const runtime = 'edge'
+
+export async function GET(request: NextRequest) {
+  const route = '/api/templates'
   try {
     const { user, error } = await authenticateRequest()
     
     if (error || !user) {
+      info('Unauthorized templates request', { 
+        route, 
+        status: 401,
+        meta: { ip: request.headers.get('x-forwarded-for') || 'unknown' }
+      })
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
@@ -44,12 +54,30 @@ export async function GET(_request: NextRequest) {
     // Get system templates (from JSON data)
     const systemTemplates = await import('@/data/templates.json').then(m => m.default)
 
+    info('Templates fetched successfully', { 
+      route, 
+      userId: user.id,
+      status: 200,
+      meta: { 
+        templateCount: userTemplates.length,
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      }
+    })
+
     return NextResponse.json({ 
       templates: userTemplates,
       systemTemplates 
     })
-  } catch (error) {
-    console.error('Error fetching templates:', error)
+  } catch (err) {
+    logError('Error fetching templates', {
+      route,
+      status: 500,
+      error: err,
+      meta: { 
+        errorMessage: err instanceof Error ? err.message : String(err),
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      }
+    })
     return NextResponse.json(
       { error: 'Failed to fetch templates' },
       { status: 500 }
@@ -65,15 +93,30 @@ const SaveTemplateSchema = z.object({
 })
 
 export async function POST(request: NextRequest) {
+  const route = '/api/templates'
   try {
     const { user, error } = await authenticateRequest()
     
     if (error || !user) {
+      info('Unauthorized template save attempt', { 
+        route, 
+        status: 401,
+        meta: { ip: request.headers.get('x-forwarded-for') || 'unknown' }
+      })
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const parse = SaveTemplateSchema.safeParse(await request.json())
     if (!parse.success) {
+      info('Invalid template payload', { 
+        route, 
+        userId: user.id,
+        status: 400,
+        meta: { 
+          validationErrors: parse.error.flatten(),
+          ip: request.headers.get('x-forwarded-for') || 'unknown'
+        }
+      })
       return NextResponse.json({ error: 'Invalid payload', details: parse.error.flatten() }, { status: 400 })
     }
     const { templateSlug, templateData, title, description } = parse.data
@@ -85,6 +128,15 @@ export async function POST(request: NextRequest) {
     if (key) {
       const reserved = await reserveIdempotencyKey(client, key)
       if (!reserved) {
+        info('Duplicate template save request', { 
+          route, 
+          userId: user.id,
+          status: 409,
+          meta: { 
+            idempotencyKey: key,
+            ip: request.headers.get('x-forwarded-for') || 'unknown'
+          }
+        })
         return NextResponse.json({ error: 'Duplicate request' }, { status: 409 })
       }
     }
@@ -94,9 +146,27 @@ export async function POST(request: NextRequest) {
       [user.id, templateSlug, JSON.stringify(templateData), description || '']
     )
 
+    info('Template saved successfully', { 
+      route, 
+      userId: user.id,
+      status: 201,
+      meta: { 
+        templateSlug,
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      }
+    })
+
     return NextResponse.json({ ok: true }, { status: 201 })
-  } catch (error) {
-    console.error('Error creating template:', error)
+  } catch (err) {
+    logError('Error creating template', {
+      route,
+      status: 500,
+      error: err,
+      meta: { 
+        errorMessage: err instanceof Error ? err.message : String(err),
+        ip: request.headers.get('x-forwarded-for') || 'unknown'
+      }
+    })
     return NextResponse.json(
       { error: 'Failed to create template' },
       { status: 500 }

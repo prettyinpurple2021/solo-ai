@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/neon/server'
-import { createToken } from '@/lib/auth-utils'
+import { createToken, AUTH_COOKIE_OPTIONS } from '@/lib/auth-utils'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -67,12 +67,7 @@ export async function POST(request: NextRequest) {
       token
     })
 
-    response.cookies.set('auth-token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 // 7 days
-    })
+    response.cookies.set('auth-token', token, AUTH_COOKIE_OPTIONS)
 
     return response
   } catch (error) {

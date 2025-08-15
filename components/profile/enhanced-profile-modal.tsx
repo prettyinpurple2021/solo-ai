@@ -14,7 +14,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useUser } from "@stackframe/stack"
-import { useToast } from "@/hooks/use-toast"
+import { toast } from "sonner"
+import { useProfile } from "@/hooks/use-profile-swr"
 import { User, Camera, Upload, X, Settings, Bell, Shield, Crown, Sparkles, Save, Trash2 } from "lucide-react"
 
 interface EnhancedProfileModalProps {
@@ -24,11 +25,11 @@ interface EnhancedProfileModalProps {
 
 export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProfileModalProps) {
   const user = useUser()
-  const { toast } = useToast()
+  const { profile, isLoading, updateProfile, uploadAvatar, removeAvatar } = useProfile()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [formData, setFormData] = useState({
-    full_name: user?.displayName || "",
+    full_name: user?.displayName || profile?.full_name || "",
     company_name: "",
     industry: "",
     business_type: "",
@@ -36,7 +37,7 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
     website: "",
     bio: "",
     timezone: "",
-    avatar_url: "",
+    avatar_url: profile?.avatar_url || "",
   })
 
   const [notifications, setNotifications] = useState({
@@ -111,30 +112,12 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
 
     setIsUploading(true)
     try {
-      const form = new FormData()
-      form.append('file', file)
-      form.append('category', 'profile')
-      const res = await fetch('/api/upload', { method: 'POST', body: form })
-      if (!res.ok) throw new Error('Upload failed')
-      const { file: uploaded } = await res.json()
-      const imageUrl = `/api/files/${uploaded.id}`
-      setFormData((prev) => ({ ...prev, avatar_url: imageUrl }))
-      // Persist avatar URL on profile
-      await fetch('/api/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ avatar_url: imageUrl }),
-      })
-      toast({
-        title: "Image Uploaded! 📸",
-        description: "Your boss profile photo has been updated!",
-      })
-    } catch {
-      toast({
-        title: "Upload Error", 
-        description: "Failed to upload image. Please try again.",
-        variant: "destructive",
-      })
+      const avatarUrl = await uploadAvatar(file)
+      if (avatarUrl) {
+        setFormData((prev) => ({ ...prev, avatar_url: avatarUrl }))
+      }
+    } catch (err) {
+      console.error(err)
     } finally {
       setIsUploading(false)
     }
@@ -143,28 +126,10 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
   const handleRemoveImage = async () => {
     if (formData.avatar_url) {
       try {
-        // Extract id from /api/files/:id
-        const m = formData.avatar_url.match(/\/api\/files\/(.+)$/)
-        if (m && user) {
-          const id = m[1]
-          await fetch(`/api/files/${id}`, { method: 'DELETE' })
-          await fetch('/api/profile', {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ avatar_url: null }),
-          })
-          setFormData((prev) => ({ ...prev, avatar_url: "" }))
-        }
-        toast({
-          title: "Image Removed",
-          description: "Profile photo has been removed.",
-        })
-      } catch {
-        toast({
-          title: "Error", 
-          description: "Failed to remove image.",
-          variant: "destructive",
-        })
+        await removeAvatar()
+        setFormData((prev) => ({ ...prev, avatar_url: "" }))
+      } catch (err) {
+        console.error(err)
       }
     }
   }
@@ -174,26 +139,10 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
 
     setIsSaving(true)
     try {
-      const res = await fetch('/api/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ full_name: formData.full_name }),
-      })
-      if (!res.ok) {
-        throw new Error('Failed to update profile')
-      }
-      
-      toast({
-        title: "Profile Updated! 👑",
-        description: "Your boss profile has been successfully updated!",
-      })
+      await updateProfile({ full_name: formData.full_name })
       onOpenChangeAction(false)
-    } catch {
-      toast({
-        title: "Update Failed",
-        description: "Failed to update profile. Please try again.",
-        variant: "destructive",
-      })
+    } catch (err) {
+      console.error(err)
     } finally {
       setIsSaving(false)
     }
