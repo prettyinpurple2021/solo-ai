@@ -1,33 +1,11 @@
-"use client"
-
-import { ProtectedRoute } from "@/components/auth/protected-route"
-import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
-import { Separator } from "@/components/ui/separator"
-import { Breadcrumb, BreadcrumbItem, BreadcrumbList, BreadcrumbPage } from "@/components/ui/breadcrumb"
-import { CollaborationHub } from "@/components/collaboration/collaboration-hub"
-
 export default function CollaborationPage() {
   return (
-    <ProtectedRoute>
-      <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
-          <div className="flex items-center gap-2 px-4">
-            <SidebarTrigger className="-ml-1" />
-            <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumb>
-              <BreadcrumbList>
-                <BreadcrumbItem>
-                  <BreadcrumbPage>Agent Collaboration</BreadcrumbPage>
-                </BreadcrumbItem>
-              </BreadcrumbList>
-            </Breadcrumb>
-          </div>
-        </header>
-
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-          <CollaborationHub />
-        </div>
-      </SidebarInset>
-    </ProtectedRoute>
+    <div style={{ 
+      padding: '20px',
+      fontFamily: 'system-ui, sans-serif'
+    }}>
+      <h1 style={{ color: '#6d28d9' }}>Maintenance</h1>
+      <p>This page is currently under maintenance.</p>
+    </div>
   )
 }
