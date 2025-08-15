@@ -6,7 +6,3 @@
   NODE_VERSION = "20"
   NPM_FLAGS = "--production=false --legacy-peer-deps"
   NODE_OPTIONS = "--max-old-space-size=4096"
-  NEXT_WEBPACK_USEPOLLING = "1"
-
-[[plugins]]
-  package = "@netlify/plugin-nextjs"
