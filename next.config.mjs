@@ -1,4 +1,5 @@
-import { withSentryConfig } from '@sentry/nextjs';
+// Temporarily disable Sentry to fix deployment issues
+// import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -55,4 +56,6 @@ const sentryWebpackPluginOptions = {
   project: process.env.SENTRY_PROJECT,
 };
 
-export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);
+// Temporarily disable Sentry to fix deployment issues
+// export default withSentryConfig(nextConfig, sentryWebpackPluginOptions);
+export default nextConfig;

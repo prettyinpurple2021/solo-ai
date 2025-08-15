@@ -15,37 +15,33 @@ export async function GET() {
     // Check database connection
     try {
       const client = await createClient();
-      const { rows } = await client.query('SELECT NOW() as time');
+      const { rows: _rows } = await client.query('SELECT NOW() as time');
       checks.database = { 
-        status: 'ok',
-        message: `Connected to database, server time: ${rows[0]?.time}` 
+        status: 'ok'
       };
     } catch (dbError) {
       console.error('Database check error:', dbError);
-      checks.database = { 
-        status: 'error',
-        message: dbError instanceof Error ? dbError.message : 'Unknown database error'
+      checks.database = {
+        status: 'error'
       };
     }
     
     // Check auth environment variables
     const authEnvVars = ['JWT_SECRET', 'ENCRYPTION_KEY'];
     const missingAuthVars = authEnvVars.filter(varName => !process.env[varName]);
-    
     checks.auth = missingAuthVars.length === 0
-      ? { status: 'ok', message: 'All auth environment variables are set' }
-      : { status: 'error', message: `Missing auth environment variables: ${missingAuthVars.join(', ')}` };
+      ? { status: 'ok' }
+      : { status: 'error' };
     
     // Check other critical environment variables
     const criticalEnvVars = ['DATABASE_URL', 'OPENAI_API_KEY'];
     const missingEnvVars = criticalEnvVars.filter(varName => !process.env[varName]);
-    
     checks.env = missingEnvVars.length === 0
-      ? { status: 'ok', message: 'All critical environment variables are set' }
-      : { status: 'error', message: `Missing critical environment variables: ${missingEnvVars.join(', ')}` };
+      ? { status: 'ok' }
+      : { status: 'error' };
     
     // Overall status
-    const overallStatus = Object.values(checks).some(check => check.status === 'error') 
+    const overallStatus = Object.values(checks).some(check => check.status === 'error')
       ? 'error' 
       : 'ok';
     

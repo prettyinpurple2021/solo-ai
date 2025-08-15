@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// This function can be marked `async` if using `await` inside
+// Simple middleware that doesn't use any instrumentation hooks
 export function middleware(request: NextRequest) {
-  // Return the request as-is for now - no modifications
+  // Simply pass through all requests
   return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
+// Limit middleware to specific paths to avoid running on all routes
 export const config = {
   matcher: [
-    // Skip all internal paths (_next, api)
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    // Skip all internal paths and static files
+    '/((?!_next/static|_next/image|favicon.ico|api).*)',
   ],
 };

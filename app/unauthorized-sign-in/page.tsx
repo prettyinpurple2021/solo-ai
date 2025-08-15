@@ -37,7 +37,7 @@ export default function UnauthorizedSignInPage() {
           </Button>
           
           <div className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/sign-up" className="text-pink-600 hover:text-pink-700 font-medium">
               Sign up here
             </Link>
