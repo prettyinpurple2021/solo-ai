@@ -16,7 +16,7 @@ This guide will walk you through setting up your Next.js application on Google C
 
 ```bash
 # Set your project ID
-PROJECT_ID="your-project-id"
+PROJECT_ID=soloboss-ai-v3
 
 # Set the active project
 gcloud config set project $PROJECT_ID
@@ -42,7 +42,7 @@ gcloud services enable cloudbuild.googleapis.com
 ```bash
 # Create a service account for deployment
 gcloud iam service-accounts create soloboss-deployer
-
+#this is where i left off. going to take a break now
 # Grant the necessary permissions
 gcloud projects add-iam-policy-binding $PROJECT_ID \
   --member="serviceAccount:soloboss-deployer@$PROJECT_ID.iam.gserviceaccount.com" \
