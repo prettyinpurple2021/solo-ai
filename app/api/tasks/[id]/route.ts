@@ -91,20 +91,15 @@ export async function DELETE(
 
     const client = await createClient()
     
-    // First verify the task belongs to the user
-    const { rows: existingTask } = await client.query(
-      'SELECT * FROM tasks WHERE id = $1 AND user_id = $2',
-      [params.id, user.id]
-    )
-
-    if (existingTask.length === 0) {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 })
-    }
-
-    await client.query(
+    // Verify the task belongs to the user and delete it in one step
+    const { rowCount } = await client.query(
       'DELETE FROM tasks WHERE id = $1 AND user_id = $2',
       [params.id, user.id]
     )
+
+    if (rowCount === 0) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 })
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
