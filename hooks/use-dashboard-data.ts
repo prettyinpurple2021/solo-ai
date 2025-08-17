@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useUser } from '@stackframe/stack'
 
 export interface DashboardData {
   user: {
@@ -81,18 +80,12 @@ export interface DashboardData {
 }
 
 export function useDashboardData() {
-  const user = useUser()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
   const fetchDashboardData = useCallback(async () => {
-    if (!user) {
-      setLoading(false)
-      return
-    }
-
     try {
       setLoading(true)
       setError(null)
@@ -119,7 +112,7 @@ export function useDashboardData() {
     } finally {
       setLoading(false)
     }
-  }, [user])
+  }, [])
 
   // Initial fetch
   useEffect(() => {
@@ -128,14 +121,12 @@ export function useDashboardData() {
 
   // Auto-refresh every 30 seconds
   useEffect(() => {
-    if (!user) return
-
     const interval = setInterval(() => {
       fetchDashboardData()
     }, 30000) // 30 seconds
 
     return () => clearInterval(interval)
-  }, [user, fetchDashboardData])
+  }, [fetchDashboardData])
 
   // Manual refetch function
   const refetch = useCallback(() => {
@@ -183,9 +174,9 @@ export function useDashboardData() {
     data,
     loading,
     error,
-    refetch,
     lastUpdated,
+    refetch,
     updateTaskStatus,
-    updateGoalProgress
+    updateGoalProgress,
   }
 } 

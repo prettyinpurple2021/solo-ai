@@ -5,10 +5,7 @@ import {
   AudioWaveform,
   Bot,
   Command,
-  Frame,
   GalleryVerticalEnd,
-  Map,
-  PieChart,
   SquareTerminal,
   Briefcase,
   Palette,
@@ -23,7 +20,6 @@ import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from "@/components/ui/sidebar"
-import { useUser } from "@stackframe/stack"
 
 // This is sample data.
 const data = {
@@ -58,7 +54,7 @@ const data = {
     },
     {
       title: "AI Squad",
-      url: "/team",
+      url: "/dashboard/agents",
       icon: Bot,
     },
     {
@@ -68,9 +64,7 @@ const data = {
     },
     {
       title: "Templates",
-
       url: "/templates",
-
       icon: FileText,
     },
     {
@@ -92,12 +86,10 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const user = useUser()
-  
   // Create user data with fallbacks for missing information
   const userData = {
-    name: user?.displayName || user?.primaryEmail?.split('@')[0] || "SoloBoss User",
-    email: user?.primaryEmail || "user@soloboss.ai",
+    name: "SoloBoss User",
+    email: "user@soloboss.ai",
     avatar: "/default-user.svg",
   }
 

@@ -1,8 +1,7 @@
 "use client";
 
 import { Inter } from "next/font/google";
-import { Button } from "@/components/ui/button";
-import { AlertCircle, Home, RefreshCw } from "lucide-react";
+import { AlertCircle } from "lucide-react";
 
 const inter = Inter({ subsets: ["latin"] });
 
