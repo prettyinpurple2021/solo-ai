@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
       })
       return NextResponse.json({ error: 'Invalid payload', details: parse.error.flatten() }, { status: 400 })
     }
-    const { templateSlug, templateData, title, description } = parse.data
+    const { templateSlug, templateData, description } = parse.data
 
     const client = await createClient()
 
