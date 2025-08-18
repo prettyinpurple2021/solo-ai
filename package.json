@@ -4,11 +4,10 @@
   "private": true,
   "packageManager": "npm@10.0.0",
   "scripts": {
-    "prebuild": "node scripts/netlify-deploy-check.js",
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "set NODE_OPTIONS=-r newrelic && next start",
+    "start": "NODE_OPTIONS='-r newrelic' next start",
     "e2e": "playwright test",
     "setup-db": "node scripts/setup-database.js",
     "setup-neon-db": "node scripts/setup-neon-database.mjs",
@@ -16,15 +15,12 @@
     "setup-compliance": "node scripts/setup-compliance-database.mjs",
     "setup-migration": "node scripts/setup-migration-database.mjs",
     "verify-triggers": "node scripts/verify-updated-at-triggers.js",
-    "netlify-check": "node scripts/netlify-deploy-check.js",
     "migrate-profile-fields": "node scripts/run-profile-fields-migration.mjs",
-    "db:migrate": "netlify dev:exec drizzle-kit migrate",
     "db:verify": "node scripts/verify-database.mjs",
     "test:api": "node scripts/test-api-routes.mjs",
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "db:generate": "drizzle-kit generate",
-    "db:studio": "netlify dev:exec drizzle-kit studio"
+    "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
