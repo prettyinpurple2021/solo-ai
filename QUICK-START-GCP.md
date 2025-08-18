@@ -1,6 +1,6 @@
-# 🚀 Quick Start: Migrate to Google Cloud NOW
+# 🚀 Quick Start: Deploy to Google Cloud
 
-This is your **immediate action plan** to migrate your SoloBoss AI Platform from Netlify to Google Cloud and get it running today.
+This is your **immediate action plan** to deploy your SoloBoss AI Platform to Google Cloud.
 
 ## ⚡ Prerequisites (5 minutes)
 
@@ -8,7 +8,7 @@ This is your **immediate action plan** to migrate your SoloBoss AI Platform from
 2. **Docker installed** and running
 3. **Your AI Startup Program credits** applied to your Google account
 
-## 🏃‍♂️ Step-by-Step Migration (30 minutes)
+## 🏃‍♂️ Step-by-Step Deployment (30 minutes)
 
 ### 1. Set Up Google Cloud (5 minutes)
 
@@ -57,12 +57,9 @@ gcloud run deploy soloboss-ai-platform --image gcr.io/soloboss-ai-platform/solob
 
 ### 3. Set Up Environment Variables (10 minutes)
 
-Export your Netlify environment variables:
+Create a `.env` file in your project root with all your environment variables.
 
-1. **Go to Netlify Dashboard** → Your Site → Site Settings → Environment Variables
-2. **Copy ALL environment variables** to a file called `.env.netlify` in your project root
-
-Example `.env.netlify`:
+Example `.env`:
 ```env
 DATABASE_URL=postgresql://your-neon-connection-string
 NEXT_PUBLIC_STACK_PROJECT_ID=your-stack-project-id
@@ -73,16 +70,7 @@ RESEND_API_KEY=re_your-resend-key
 # ... add all your other env vars
 ```
 
-3. **Run the migration script:**
-```bash
-chmod +x migrate-env-vars.sh
-./migrate-env-vars.sh
-```
-
-This will:
-- Create secrets in Google Cloud Secret Manager
-- Configure your Cloud Run service to use them
-- Clean up the temporary file
+3. **Run a script to create secrets in Google Cloud Secret Manager and configure your Cloud Run service to use them.**
 
 ### 4. Test Your Deployment (5 minutes)
 
@@ -98,16 +86,15 @@ curl $SERVICE_URL/api/health
 echo "Visit: $SERVICE_URL"
 ```
 
-## ✅ What This Migration Gives You
+## ✅ What This Deployment Gives You
 
 ### 💰 **Cost Savings**
 - **Google Cloud Run scales to zero** - you only pay for requests
 - **Your AI Startup credits** cover significant usage
-- **No build minute limits** like Netlify
 
 ### 🚀 **Performance Benefits**
-- **Faster cold starts** than Netlify Functions
-- **2GB memory, 2 CPU** allocation (vs Netlify's 1GB/1CPU limit)
+- **Fast cold starts**
+- **2GB memory, 2 CPU** allocation
 - **Global edge network** with Google's infrastructure
 
 ### 🔧 **Better Developer Experience**
@@ -183,6 +170,6 @@ gcloud run services describe soloboss-ai-platform --region us-central1
 
 **Your SoloBoss AI Platform is now running on Google Cloud!** 🎉
 
-The migration should fix any issues you were having with Netlify and give you a more robust, scalable deployment using your AI Startup Program credits.
+This deployment will give you a robust, scalable application.
 
 Need help? Check the full `GCP-MIGRATION-GUIDE.md` for detailed instructions.

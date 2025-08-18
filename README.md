@@ -72,8 +72,7 @@ Your command center for world domination:
 
 #### ✅ **Authentication & User Management**
 
-- Supabase Auth integration
-- Row Level Security (RLS) for data protection
+- Secure authentication integration
 - User profiles with gamification data
 - Subscription tier management
 - Secure API endpoints
@@ -99,11 +98,9 @@ Your command center for world domination:
 
 #### **Backend & Database Power**
 
-- **Supabase** - PostgreSQL with real-time subscriptions
-- **Row Level Security** - Database-level security policies
+- **PostgreSQL** - Robust and scalable relational database
 - **Comprehensive Schema** - 15+ tables with relationships including compliance tables
 - **Database Functions** - Analytics and gamification automation
-- **Real-time Updates** - Live data synchronization
 
 #### **AI & Machine Learning Squad**
 
@@ -117,7 +114,6 @@ Your command center for world domination:
 
 - **Subscription Tiers** - Feature access and plan management
 - **Resend** - Transactional email delivery
-- **Supabase Storage** - File storage and CDN
 - **Environment Validation** - Zod-based config validation
 
 ### 📊 Database Schema
@@ -183,13 +179,7 @@ cp .env.example .env.local
 
 ### 3. **Database Setup**
 
-```bash
-# Run the database migrations in your Supabase project
-# Then initialize with AI agents and achievements
-npm run setup-db
-npm run setup-templates
-npm run setup-compliance
-```
+Run the database migrations to set up your database schema.
 
 ### 4. **Start Development**
 
@@ -203,14 +193,7 @@ Visit [http://localhost:3000](http://localhost:3000) to see your SoloBoss AI pla
 
 ### **Required Services**
 
-1. **Supabase** - Database and authentication
-   - Create project at [supabase.com](https://supabase.com)
-   - Run migrations:
-     - `supabase/migrations/001_create_complete_schema.sql`
-     - `supabase/migrations/002_add_templates_schema.sql`
-     - `supabase/migrations/003_add_projects_table.sql`
-     - `supabase/migrations/004_add_compliance_schema.sql`
-
+1. **PostgreSQL Database** - for data storage and management.
 2. **OpenAI** - AI conversations
    - Get API key at [platform.openai.com](https://platform.openai.com)
 
@@ -301,7 +284,6 @@ The platform is architected for easy expansion:
 
 ### **🔒 Security Like a Fortress**
 
-- Row Level Security on all data
 - Secure API endpoints with authentication
 - Input validation with Zod schemas
 - Environment variable validation
@@ -318,7 +300,6 @@ The platform is architected for easy expansion:
 - Server-side rendering
 - Streaming AI responses
 - Optimized database queries
-- Real-time subscriptions
 
 ### **🛡️ Compliance That Protects**
 
@@ -346,20 +327,21 @@ Your SoloBoss AI platform is **production-ready** with advanced features:
 
 Ready to deploy to production:
 
-1. **Netlify** (Recommended)
+1. **Build your application**
 
    ```bash
    npm run build
-   # Deploy the `out` directory to Netlify
    ```
 
-2. **Environment Variables**
+2. **Deploy to your preferred hosting provider** (e.g., Google Cloud Run, Vercel)
+
+3. **Environment Variables**
    - Set all production URLs
    - Use production API keys
    - Review and update pricing as needed
 
-3. **Database**
-   - Run all migrations on production Supabase
+4. **Database**
+   - Run all migrations on your production database
    - Set up proper backup schedules
 
 ## 📞 What's Next?

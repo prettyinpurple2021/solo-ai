@@ -19,7 +19,7 @@ SoloBoss AI Platform is built using modern, production-ready technologies that p
 - Industry-leading React framework with excellent DX
 - Built-in performance optimizations
 - Seamless full-stack development
-- Excellent deployment story with Netlify
+- Excellent deployment story
 
 ### **React 19**
 
@@ -40,7 +40,7 @@ export function useAuth() {
 // Server components for data fetching
 export default async function DashboardPage() {
   const data = await fetchDashboardData()
-  return <DashboardView data={data} />                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+  return <DashboardView data={data} />
 }
 ```
 
@@ -112,31 +112,16 @@ export default {
 
 ## 🗄️ Backend & Database
 
-### **Supabase**
+### **PostgreSQL Database**
 
-- **PostgreSQL Database**: Robust relational database with ACID compliance
-- **Real-time Subscriptions**: Live data updates across clients
-- **Authentication**: Built-in auth with social providers and magic links
-- **Row Level Security**: Database-level access control
-- **Edge Functions**: Serverless functions at the edge
-- **Storage**: File upload and management
+- **Robust Relational Database**: ACID compliance
+- **Scalable**: Can handle large amounts of data and users
+- **Extensible**: Supports a wide range of extensions
 
-**Database Features:**
+### **Authentication**
 
-```sql
--- Row Level Security example
-CREATE POLICY "Users can only see their own data" ON profiles
-FOR SELECT USING (auth.uid() = user_id);
-
--- Real-time subscription
-CREATE PUBLICATION supabase_realtime FOR ALL TABLES;
-```
-
-### **Supabase SSR**
-
-- **Server-Side Auth**: Secure authentication on the server
-- **Cookie Management**: Secure cookie handling for sessions
-- **Middleware Integration**: Next.js middleware for auth protection
+- **Secure Authentication**: Built-in auth with social providers and magic links
+- **Session Management**: Secure cookie handling for sessions
 
 ## 🤖 AI & Machine Learning
 
@@ -183,15 +168,6 @@ CREATE PUBLICATION supabase_realtime FOR ALL TABLES;
 - **Analytics**: Email delivery and engagement tracking
 - **API Integration**: Simple API for sending emails
 
-## 📁 File Storage & Assets
-
-### **Supabase Storage**
-
-- **File Upload**: Secure file upload and storage
-- **CDN Distribution**: Global content delivery
-- **Image Processing**: Automatic image optimization  
-- **Direct Uploads**: Client-side direct uploads
-
 ## 🛠️ Development Tools
 
 ### **Package Management: pnpm**
@@ -225,37 +201,29 @@ CREATE PUBLICATION supabase_realtime FOR ALL TABLES;
 
 ## 🚀 Deployment & Infrastructure
 
-### **Netlify Platform**
+### **Google Cloud Run**
 
 - **Serverless Deployment**: Automatic scaling and performance
 - **Edge Network**: Global CDN for fast content delivery
-- **Preview Deployments**: Automatic preview for every PR
-- **Analytics**: Built-in performance and usage analytics
-- **Environment Management**: Secure environment variable handling
-
-**Deployment Features:**
-
-- Zero-config deployment from Git
-- Automatic HTTPS with custom domains
-- Edge Functions for global performance
-- Built-in monitoring and logging
+- **Containerized**: Deploy with Docker for consistency
+- **Monitoring**: Built-in logging and monitoring
 
 ### **CI/CD Pipeline**
 
 ```yaml
 # Automatic deployment workflow
-GitHub Push → Netlify Build → 
-Type Check → Lint → Test → 
-Deploy to Preview → Deploy to Production
+GitHub Push → Google Cloud Build →
+Type Check → Lint → Test →
+Deploy to Cloud Run
 ```
 
 ## 📊 Monitoring & Analytics
 
-### **Netlify Analytics**
+### **Google Cloud Operations Suite**
 
-- **Core Web Vitals**: Performance monitoring
-- **Real User Monitoring**: Actual user performance data
-- **Page Load Analytics**: Detailed page performance metrics
+- **Logging**: Centralized logging for your application
+- **Monitoring**: Performance and health monitoring
+- **Alerting**: Set up alerts for errors and performance issues
 
 ### **Error Monitoring (Future)**
 
@@ -267,8 +235,7 @@ Deploy to Preview → Deploy to Production
 
 ### **Authentication & Authorization**
 
-- **Supabase Auth**: Secure authentication with JWT
-- **Row Level Security**: Database-level access control
+- **Secure Authentication**: Secure authentication with JWT
 - **Session Management**: Secure session handling
 - **Social Auth**: GitHub, Google, Discord integration
 

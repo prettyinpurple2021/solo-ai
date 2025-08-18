@@ -55,7 +55,7 @@ For proper URL handling:
 
 ```bash
 # Your production app URL
-NEXT_PUBLIC_APP_URL=https://your-app.netlify.app
+NEXT_PUBLIC_APP_URL=https://your-app.com
 ```
 
 ## 🔧 Setup Instructions
@@ -91,11 +91,11 @@ NEXT_PUBLIC_APP_URL=https://your-app.netlify.app
    - Create an API key
    - Ensure you have sufficient credits
 
-### **Step 4: Netlify Environment Variables**
+### **Step 4: Environment Variables**
 
-1. **Access Netlify Dashboard**
-   - Go to your Netlify project dashboard
-   - Navigate to Site Settings > Environment Variables
+1. **Access Your Hosting Dashboard**
+   - Go to your hosting provider's dashboard (e.g., Google Cloud Run)
+   - Navigate to the environment variables section for your service.
 
 2. **Add All Required Variables**
    - Add each environment variable listed above
@@ -145,8 +145,8 @@ NEXT_PUBLIC_APP_URL=https://your-app.netlify.app
 ### **Debug Steps**
 
 1. **Check Environment Variables**
-   ```bash
-   # In Netlify Functions, you can log env vars (be careful with secrets)
+   - In your hosting environment's logs, you can log env vars (be careful with secrets)
+   ```javascript
    console.log('Environment check:', {
      hasStackProjectId: !!process.env.NEXT_PUBLIC_STACK_PROJECT_ID,
      hasDatabaseUrl: !!process.env.DATABASE_URL,
@@ -155,7 +155,7 @@ NEXT_PUBLIC_APP_URL=https://your-app.netlify.app
    ```
 
 2. **Monitor Build Logs**
-   - Check Netlify build logs for environment variable errors
+   - Check your hosting provider's build logs for environment variable errors
    - Look for missing dependency errors
 
 3. **Test Locally with Production Variables**

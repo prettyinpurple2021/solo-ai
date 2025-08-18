@@ -71,9 +71,7 @@ Configure your `.env.local` file:
 
 ```env
 # Database Configuration
-NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+DATABASE_URL=your_database_connection_string
 
 # AI Service Configuration
 OPENAI_API_KEY=your_openai_api_key
@@ -87,8 +85,6 @@ GOOGLE_GENERATIVE_AI_API_KEY=your_google_ai_api_key
 # Email Configuration
 RESEND_API_KEY=your_resend_api_key
 
-# File Storage (using Supabase Storage)
-
 # Application Configuration
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NODE_ENV=development
@@ -96,27 +92,8 @@ NODE_ENV=development
 
 ### 4. Database Setup
 
-#### Supabase Local Development (Recommended)
-
-```bash
-# Install Supabase CLI
-npm install -g supabase
-
-# Initialize Supabase
-supabase init
-
-# Start local Supabase services
-supabase start
-
-# Run database migrations
-supabase db reset
-```
-
-#### Using Hosted Supabase
-
-1. Create a new project at [supabase.com](https://supabase.com)
-2. Copy your project URL and anon key to `.env.local`
-3. Run the SQL schema from `/database/schema.sql` in the Supabase SQL editor
+1. **Set up a PostgreSQL database.** You can use a local PostgreSQL instance or a managed service like Neon.
+2. **Run the database migrations.** This will create the necessary tables and seed the database with initial data.
 
 ## 🏃‍♂️ Running the Development Server
 
@@ -133,7 +110,6 @@ pnpm dev -- --port 3001
 ### Development URLs
 
 - **Application**: [http://localhost:3000](http://localhost:3000)
-- **Supabase Studio**: [http://localhost:54323](http://localhost:54323) (if using local)
 - **API Routes**: [http://localhost:3000/api](http://localhost:3000/api)
 
 ## 🧪 Testing Your Setup
@@ -148,10 +124,7 @@ Navigate to [http://localhost:3000](http://localhost:3000) and verify:
 
 ### 2. Test Database Connection
 
-```bash
-# Run database health check
-pnpm db:check
-```
+Ensure that the application can connect to your database and that data is being read and written correctly.
 
 ### 3. Test AI Integration
 
@@ -342,19 +315,11 @@ pnpm dev
 pnpm type-check
 ```
 
-### Issue: Supabase Connection Failed
+### Issue: Database Connection Failed
 
 ```bash
-# Check Supabase status
-supabase status
-
-# Restart Supabase services
-supabase stop
-supabase start
-
 # Verify environment variables
-echo $NEXT_PUBLIC_SUPABASE_URL
-echo $NEXT_PUBLIC_SUPABASE_ANON_KEY
+echo $DATABASE_URL
 ```
 
 ## 🎯 Development Best Practices
@@ -426,7 +391,6 @@ Once your development environment is set up:
 ## 📚 Additional Resources
 
 - [Next.js Documentation](https://nextjs.org/docs)
-- [Supabase Documentation](https://supabase.com/docs)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 - [TypeScript Handbook](https://www.typescriptlang.org/docs/)
 - [React Documentation](https://react.dev/)

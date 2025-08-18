@@ -1,12 +1,11 @@
 # 🚀 SoloBoss AI Platform - Complete Setup Guide
 
-This guide will help you set up your SoloBoss AI platform with Netlify, Neon, and Chargebee integration.
+This guide will help you set up your SoloBoss AI platform with a Neon database and Chargebee integration.
 
 ## 📋 Prerequisites
 
 Before you begin, ensure you have:
 - Node.js 18+ installed
-- A Netlify account
 - A Neon PostgreSQL database
 - A Stack Auth account
 - (Optional) Chargebee account for billing
@@ -63,29 +62,13 @@ This will:
 ### 3.2 Configure Stack Auth URLs
 
 In your Stack Auth dashboard, set these URLs:
-- **Sign In URL**: `https://your-domain.netlify.app/signin`
-- **Sign Up URL**: `https://your-domain.netlify.app/signup`
-- **After Sign In**: `https://your-domain.netlify.app/dashboard`
+- **Sign In URL**: `https://your-domain.com/signin`
+- **Sign Up URL**: `https://your-domain.com/signup`
+- **After Sign In**: `https://your-domain.com/dashboard`
 
-## 🌐 Step 4: Netlify Deployment
+## 🌐 Step 4: Deployment
 
-### 4.1 Connect Repository
-
-1. Go to [Netlify Dashboard](https://app.netlify.com)
-2. Click "New site from Git"
-3. Connect your repository
-4. Netlify will auto-detect Next.js settings
-
-### 4.2 Environment Variables
-
-In Netlify, go to Site Settings > Environment Variables and add all variables from your `.env.local` file.
-
-### 4.3 Build Settings
-
-Your `netlify.toml` is already configured. Build settings:
-- **Build Command**: `npm run build`
-- **Publish Directory**: `.next`
-- **Node Version**: 18
+Deploy the application to your preferred cloud provider (e.g., Google Cloud Run, Vercel). Ensure you set up all the environment variables from your `.env.local` file in your provider's dashboard.
 
 ## 💳 Step 5: Billing Setup (Optional - Chargebee)
 
@@ -104,7 +87,7 @@ Your `netlify.toml` is already configured. Build settings:
 ### 5.2 Configure Webhooks
 
 Set up webhook endpoint in Chargebee:
-- **URL**: `https://your-domain.netlify.app/api/billing/chargebee/webhook`
+- **URL**: `https://your-domain.com/api/billing/chargebee/webhook`
 - **Events**: subscription_created, subscription_changed, subscription_cancelled
 
 ## 🤖 Step 6: AI Services Setup (Optional)
@@ -152,7 +135,7 @@ npm run dev
 
 ### 8.2 Production Testing
 
-After deploying to Netlify:
+After deploying:
 1. Test authentication flows
 2. Test database operations
 3. Test AI agent interactions
@@ -164,9 +147,9 @@ After deploying to Netlify:
 
 Monitor your Neon database usage and performance in the Neon console.
 
-### 9.2 Netlify Monitoring
+### 9.2 Application Monitoring
 
-Check Netlify functions logs and build logs for any issues.
+Check your cloud provider's logs for any issues.
 
 ### 9.3 Error Tracking
 
@@ -176,21 +159,20 @@ Consider adding error tracking (like Sentry) for production monitoring.
 
 ### Common Issues
 
-1. **Build Failures**: Check environment variables are set in Netlify
-2. **Database Connection**: Verify DATABASE_URL is correct
-3. **Auth Issues**: Check Stack Auth configuration
-4. **AI Not Working**: Verify API keys are valid
+1. **Build Failures**: Check environment variables are set in your hosting environment.
+2. **Database Connection**: Verify DATABASE_URL is correct.
+3. **Auth Issues**: Check Stack Auth configuration.
+4. **AI Not Working**: Verify API keys are valid.
 
 ### Getting Help
 
-- Check the logs in Netlify Functions tab
-- Verify environment variables in Netlify site settings
-- Test locally first before deploying
+- Check the logs in your cloud provider's dashboard.
+- Verify environment variables in your deployment settings.
+- Test locally first before deploying.
 
 ## 📚 Additional Resources
 
 - [Next.js Documentation](https://nextjs.org/docs)
-- [Netlify Next.js Guide](https://docs.netlify.com/frameworks/next-js/)
 - [Neon Documentation](https://neon.tech/docs)
 - [Stack Auth Documentation](https://docs.stack-auth.com)
 - [Chargebee API Documentation](https://apidocs.chargebee.com)

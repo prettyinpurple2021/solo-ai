@@ -195,16 +195,6 @@ export default function CookiePolicyPage() {
                         </a>
                       </p>
                     </div>
-
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      <h3 className="font-semibold text-gray-800 mb-2">Supabase</h3>
-                      <p className="text-gray-600 text-sm">
-                        Backend infrastructure for authentication and data storage. 
-                        <a href="https://supabase.com/privacy" className="text-purple-600 hover:underline ml-1" target="_blank" rel="noopener noreferrer">
-                          Supabase Privacy Policy
-                        </a>
-                      </p>
-                    </div>
                   </div>
                 </div>
 
@@ -372,4 +362,4 @@ export default function CookiePolicyPage() {
       </section>
     </div>
   )
-} 
+}
