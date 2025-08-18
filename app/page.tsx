@@ -1,6 +1,5 @@
-import { redirect } from 'next/navigation'
+import { SharedLandingPage } from "@/components/shared/shared-landing-page"
 
 export default function HomePage() {
-  // Redirect to the landing page
-  redirect('/landing')
+  return <SharedLandingPage />
 }
