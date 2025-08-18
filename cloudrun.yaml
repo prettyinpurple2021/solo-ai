@@ -55,6 +55,11 @@ spec:
             secretKeyRef:
               name: JWT_SECRET
               key: latest
+        - name: ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ENCRYPTION_KEY
+              key: latest
         # AI Services
         - name: OPENAI_API_KEY
           valueFrom:
