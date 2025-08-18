@@ -24,11 +24,61 @@ spec:
         ports:
         - containerPort: 3000
         env:
-        # Environment variables will be set via Secret Manager
+        # Node.js environment
         - name: NODE_ENV
           value: "production"
         - name: PORT
           value: "3000"
+        # Stack Auth Configuration
+        - name: NEXT_PUBLIC_STACK_PROJECT_ID
+          valueFrom:
+            secretKeyRef:
+              name: NEXT_PUBLIC_STACK_PROJECT_ID
+              key: latest
+        - name: NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY
+          valueFrom:
+            secretKeyRef:
+              name: NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY
+              key: latest
+        - name: STACK_SECRET_SERVER_KEY
+          valueFrom:
+            secretKeyRef:
+              name: STACK_SECRET_SERVER_KEY
+              key: latest
+        # Database Configuration
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: DATABASE_URL
+              key: latest
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: JWT_SECRET
+              key: latest
+        # AI Services
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: OPENAI_API_KEY
+              key: latest
+        # Email Services
+        - name: RESEND_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: RESEND_API_KEY
+              key: latest
+        - name: FROM_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: FROM_EMAIL
+              key: latest
+        # App Configuration
+        - name: NEXT_PUBLIC_APP_URL
+          valueFrom:
+            secretKeyRef:
+              name: NEXT_PUBLIC_APP_URL
+              key: latest
         resources:
           limits:
             cpu: "2"
