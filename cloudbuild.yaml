@@ -1,11 +1,11 @@
 steps:
   # Build the container image
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/soloboss-ai-platform:$COMMIT_SHA', '.']
+    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/soloboss-ai-platform/soloboss-ai-platform:$COMMIT_SHA', '.']
   
-  # Push the container image to Container Registry
+  # Push the container image to Artifact Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/soloboss-ai-platform:$COMMIT_SHA']
+    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/soloboss-ai-platform/soloboss-ai-platform:$COMMIT_SHA']
   
   # Deploy container image to Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
@@ -14,19 +14,19 @@ steps:
       - 'run'
       - 'deploy'
       - 'soloboss-ai-platform'
-      - '--image=gcr.io/$PROJECT_ID/soloboss-ai-platform:$COMMIT_SHA'
+      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/soloboss-ai-platform/soloboss-ai-platform:$COMMIT_SHA'
       - '--region=us-central1'
       - '--platform=managed'
       - '--allow-unauthenticated'
-      - '--memory=1Gi'
-      - '--cpu=1'
+      - '--memory=2Gi'
+      - '--cpu=2'
       - '--min-instances=0'
       - '--max-instances=10'
       - '--set-env-vars=NODE_ENV=production'
 
-# Store images in Google Container Registry
+# Store images in Google Artifact Registry
 images:
-  - 'gcr.io/$PROJECT_ID/soloboss-ai-platform:$COMMIT_SHA'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/soloboss-ai-platform/soloboss-ai-platform:$COMMIT_SHA'
 
 # Set timeout for build (15 minutes)
 timeout: '900s'

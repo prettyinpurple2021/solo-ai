@@ -20,7 +20,7 @@ spec:
       containerConcurrency: 80
       timeoutSeconds: 300
       containers:
-      - image: gcr.io/PROJECT_ID/soloboss-ai-platform
+      - image: us-central1-docker.pkg.dev/PROJECT_ID/soloboss-ai-platform/soloboss-ai-platform
         ports:
         - containerPort: 3000
         env:
