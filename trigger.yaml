@@ -1,0 +1,11 @@
+name: deploy-soloboss-ai
+description: Deploy SoloBoss AI Platform to Cloud Run on main branch push
+github:
+  owner: prettyinpurple2021
+  name: v0-solo-boss-ai-platform
+  push:
+    branch: ^main$
+filename: cloudbuild.yaml
+substitutions:
+  _DEPLOY_REGION: us-central1
+  _SERVICE_NAME: soloboss-ai-platform
