@@ -1,32 +1,29 @@
 steps:
-  # Build the container image
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/soloboss-ai-platform/soloboss-ai-platform:$COMMIT_SHA', '.']
-  
-  # Push the container image to Artifact Registry
-  - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/soloboss-ai-platform/soloboss-ai-platform:$COMMIT_SHA']
-  
-  # Deploy container image to Cloud Run
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: gcloud
-    args:
-      - 'run'
-      - 'deploy'
-      - 'soloboss-ai-platform'
-      - '--image=us-central1-docker.pkg.dev/$PROJECT_ID/soloboss-ai-platform/soloboss-ai-platform:$COMMIT_SHA'
-      - '--region=us-central1'
-      - '--platform=managed'
-      - '--allow-unauthenticated'
-      - '--memory=2Gi'
-      - '--cpu=2'
-      - '--min-instances=0'
-      - '--max-instances=10'
-      - '--set-env-vars=NODE_ENV=production'
+# Build the container image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/soloboss-ai-v3/idx-soloboss-v3-25083662/idx-soloboss-v3-25083662', '.']
 
-# Store images in Google Artifact Registry
-images:
-  - 'us-central1-docker.pkg.dev/$PROJECT_ID/soloboss-ai-platform/soloboss-ai-platform:$COMMIT_SHA'
+# Push the container image to Artifact Registry
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/soloboss-ai-v3/idx-soloboss-v3-25083662/idx-soloboss-v3-25083662']
 
-# Set timeout for build (15 minutes)
-timeout: '900s'
+# Deploy the container image to Cloud Run
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  entrypoint: 'gcloud'
+  args:
+  - 'run'
+  - 'deploy'
+  - 'idx-soloboss-v3-25083662'
+  - '--image'
+  - 'us-central1-docker.pkg.dev/soloboss-ai-v3/idx-soloboss-v3-25083662/idx-soloboss-v3-25083662'
+  - '--region'
+  - 'us-central1'
+  - '--platform'
+  - 'managed'
+  - '--allow-unauthenticated'
+  - '--service-account'
+  - 'soloboss-deployer@soloboss-ai-v3.iam.gserviceaccount.com'
+
+# Specify the logging option
+options:
+  logging: CLOUD_LOGGING_ONLY
