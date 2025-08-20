@@ -41,6 +41,10 @@ jobs:
     - name: Configure Docker for GCP
       run: gcloud auth configure-docker $REGION-docker.pkg.dev
 
+    - name: Authenticate Docker to Google Cloud Artifact Registry
+      run: gcloud auth configure-docker us-central1-docker.pkg.dev
+
+
     - name: Build Docker image
       run: |
         docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:$GITHUB_SHA .
