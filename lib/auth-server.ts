@@ -4,19 +4,28 @@ import { NextRequest, NextResponse } from "next/server"
 import type { AuthenticatedUser, AuthResult } from "./auth-utils"
 import { getStackServerApp } from "@/stack"
 
+// Define Stack Auth user interface
+interface StackUser {
+  id: string
+  primaryEmail?: string
+  email?: string
+  displayName?: string
+  avatarUrl?: string
+}
+
 async function getStackAuthenticatedUser(): Promise<AuthenticatedUser | null> {
   try {
     const app = getStackServerApp()
     if (!app) return null
-    const stackUser = await app.getUser()
+    const stackUser = await app.getUser() as StackUser | null
     if (!stackUser) return null
 
     // Map Stack user to our AuthenticatedUser shape
     return {
       id: stackUser.id,
-      email: (stackUser as any).primaryEmail || (stackUser as any).email || "",
-      full_name: (stackUser as any).displayName,
-      avatar_url: (stackUser as any).avatarUrl,
+      email: stackUser.primaryEmail || stackUser.email || "",
+      full_name: stackUser.displayName,
+      avatar_url: stackUser.avatarUrl,
       subscription_tier: undefined,
       subscription_status: undefined,
     }
