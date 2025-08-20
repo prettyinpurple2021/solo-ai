@@ -34,18 +34,24 @@ jobs:
     - name: Run tests (if any exist)
       run: npm test --passWithNoTests
 
-    - name: Setup Google Cloud CLI and Authenticate
+    - name: Setup Google Cloud CLI
       uses: google-github-actions/setup-gcloud@v2
       with:
-        # Using service_account_key for authentication.
-        # Ensure ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} is correctly set in GitHub Secrets.
-        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: ${{ env.PROJECT_ID }}
-        export_default_credentials: true # This makes the authenticated gcloud available to other commands
+        # Remove service_account_key and export_default_credentials from here.
+        # These are now handled by the 'auth' action.
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        # This is where your service account key or Workload Identity config goes.
+        # Since you're using a service_account_key, pass it here:
+        credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        # If you were using Workload Identity Federation, it would look like this:
+        # service_account: soloboss-deployer@soloboss-ai-v3.iam.gserviceaccount.com
+        # workload_identity_provider: projects/YOUR_PROJECT_NUMBER/locations/global/workloadIdentityPools/YOUR_POOL_NAME/providers/YOUR_PROVIDER_NAME
 
     - name: Configure Docker for Google Cloud Artifact Registry
-      # This step configures Docker to use your authenticated gcloud credentials
-      # for pushing to Artifact Registry.
       run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
     - name: Build Docker image
@@ -59,18 +65,14 @@ jobs:
         docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
 
     - name: Update cloudrun.yaml with new image
-      # This assumes you have a 'cloudrun.yaml' file in your repository root
-      # that defines your Cloud Run service and contains an 'image:' line.
       run: |
         sed -i "s|image: us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform:.*|image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}|" cloudrun.yaml
 
     - name: Deploy to Cloud Run using cloudrun.yaml
-      # This command deploys or updates your Cloud Run service based on the cloudrun.yaml file.
       run: |
         gcloud run services replace cloudrun.yaml --region=${{ env.REGION }}
 
     - name: Update traffic
-      # This ensures all traffic is routed to the newly deployed revision.
       run: |
         gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
           --to-latest \
