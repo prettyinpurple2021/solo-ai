@@ -17,8 +17,6 @@ jobs:
     permissions:
       contents: 'read'
       id-token: 'write' # Required for Workload Identity Federation, if using.
-                        # If using service_account_key, this might not be strictly needed,
-                        # but good practice for future flexibility.
 
     steps:
     - name: Checkout code
@@ -39,24 +37,16 @@ jobs:
     - name: Setup Google Cloud CLI and Authenticate
       uses: google-github-actions/setup-gcloud@v2
       with:
-        # It's generally recommended to use Workload Identity Federation with 'google-github-actions/auth@v2'
-        # for better security practices rather than raw service_account_key.
-        # If you must use service_account_key, ensure it's in GitHub Secrets.
+        # Using service_account_key for authentication.
+        # Ensure ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }} is correctly set in GitHub Secrets.
         service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: ${{ env.PROJECT_ID }}
         export_default_credentials: true # This makes the authenticated gcloud available to other commands
 
-    # --- Redundancy #1: Only one of these is needed. ---
-    # The setup-gcloud action with service_account_key and export_default_credentials: true
-    # usually sets up default gcloud authentication.
-    # The 'gcloud auth configure-docker' command uses these default credentials.
-
     - name: Configure Docker for Google Cloud Artifact Registry
-      # Only one gcloud auth configure-docker step is needed.
-      # This step should come AFTER setup-gcloud and BEFORE docker build/push.
+      # This step configures Docker to use your authenticated gcloud credentials
+      # for pushing to Artifact Registry.
       run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
-      # Using ${{ env.REGION }} makes it more robust if REGION changes.
-      # You had this duplicated twice below, remove those.
 
     - name: Build Docker image
       run: |
@@ -69,21 +59,18 @@ jobs:
         docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
 
     - name: Update cloudrun.yaml with new image
-      # Ensure cloudrun.yaml exists in your repository at the root or specify its path.
-      # The sed command looks good assuming the format `image: ...` is consistent.
+      # This assumes you have a 'cloudrun.yaml' file in your repository root
+      # that defines your Cloud Run service and contains an 'image:' line.
       run: |
         sed -i "s|image: us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform:.*|image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}|" cloudrun.yaml
 
     - name: Deploy to Cloud Run using cloudrun.yaml
-      # This replaces the service definition, which includes the image update.
+      # This command deploys or updates your Cloud Run service based on the cloudrun.yaml file.
       run: |
         gcloud run services replace cloudrun.yaml --region=${{ env.REGION }}
 
     - name: Update traffic
-      # This step is often redundant if `gcloud run services replace` successfully deploys
-      # a new revision and you want to route all traffic to it.
-      # If your cloudrun.yaml already defines traffic routing (e.g., to latest),
-      # this step might not be strictly necessary, but it doesn't hurt.
+      # This ensures all traffic is routed to the newly deployed revision.
       run: |
         gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
           --to-latest \
