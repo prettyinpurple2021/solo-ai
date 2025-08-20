@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 
 import { Pool } from 'pg'
+import * as dotenv from 'dotenv'
+
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' })
 
 const DATABASE_URL = process.env.DATABASE_URL
 

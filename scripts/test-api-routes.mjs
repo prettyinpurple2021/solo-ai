@@ -3,6 +3,10 @@
 import { Pool } from 'pg'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
+import * as dotenv from 'dotenv'
+
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' })
 
 const DATABASE_URL = process.env.DATABASE_URL
 const JWT_SECRET = process.env.JWT_SECRET
@@ -35,10 +39,10 @@ async function testAPIRoutes() {
     
     if (userResult.rows.length === 0) {
       const insertResult = await client.query(`
-        INSERT INTO users (email, password_hash, full_name, subscription_tier)
-        VALUES ($1, $2, $3, $4)
+        INSERT INTO users (id, email, full_name)
+        VALUES (gen_random_uuid(), $1, $2)
         RETURNING id
-      `, [testEmail, hashedPassword, 'Test User', 'free'])
+      `, [testEmail, 'Test User'])
       userId = insertResult.rows[0].id
       console.log('   ✅ Test user created')
     } else {
@@ -54,10 +58,10 @@ async function testAPIRoutes() {
     try {
       // Create a task
       const taskResult = await client.query(`
-        INSERT INTO tasks (user_id, title, description, priority, category)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO tasks (user_id, title, description, priority)
+        VALUES ($1, $2, $3, $4)
         RETURNING id, title, status
-      `, [userId, 'Test Task', 'This is a test task', 'medium', 'testing'])
+      `, [userId, 'Test Task', 'This is a test task', 'medium'])
       
       console.log(`   ✅ Task created: ${taskResult.rows[0].title}`)
       
@@ -74,10 +78,10 @@ async function testAPIRoutes() {
     try {
       // Create a goal
       const goalResult = await client.query(`
-        INSERT INTO goals (user_id, title, description, priority, category)
-        VALUES ($1, $2, $3, $4, $5)
+        INSERT INTO goals (user_id, title, description, priority)
+        VALUES ($1, $2, $3, $4)
         RETURNING id, title, status
-      `, [userId, 'Test Goal', 'This is a test goal', 'high', 'testing'])
+      `, [userId, 'Test Goal', 'This is a test goal', 'high'])
       
       console.log(`   ✅ Goal created: ${goalResult.rows[0].title}`)
       
@@ -94,12 +98,15 @@ async function testAPIRoutes() {
     try {
       // Create a conversation
       const chatResult = await client.query(`
-        INSERT INTO conversations (user_id, agent_id, message, response)
+        INSERT INTO conversations (user_id, agent_name, title, messages)
         VALUES ($1, $2, $3, $4)
-        RETURNING id, agent_id
-      `, [userId, 'roxy', 'Hello, this is a test message', 'Hello! I am Roxy, your strategic business advisor. How can I help you today?'])
+        RETURNING id, agent_name
+      `, [userId, 'roxy', 'Test Conversation', JSON.stringify([
+        { role: 'user', content: 'Hello, this is a test message' },
+        { role: 'assistant', content: 'Hello! I am Roxy, your strategic business advisor. How can I help you today?' }
+      ])])
       
-      console.log(`   ✅ Chat conversation created with agent: ${chatResult.rows[0].agent_id}`)
+      console.log(`   ✅ Chat conversation created with agent: ${chatResult.rows[0].agent_name}`)
       
       // Fetch conversations
       const conversationsResult = await client.query('SELECT COUNT(*) as count FROM conversations WHERE user_id = $1', [userId])
@@ -114,12 +121,12 @@ async function testAPIRoutes() {
     try {
       // Create a user template
       const templateResult = await client.query(`
-        INSERT INTO user_templates (user_id, name, content, category, description)
+        INSERT INTO user_templates (user_id, template_slug, template_data, title, description)
         VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, name
-      `, [userId, 'Test Template', 'This is a test template content', 'testing', 'A test template for API testing'])
+        RETURNING id, title
+      `, [userId, 'test-template', JSON.stringify({ test: 'data' }), 'Test Template', 'A test template for API testing'])
       
-      console.log(`   ✅ User template created: ${templateResult.rows[0].name}`)
+      console.log(`   ✅ User template created: ${templateResult.rows[0].title}`)
       
       // Fetch user templates
       const templatesResult = await client.query('SELECT COUNT(*) as count FROM user_templates WHERE user_id = $1', [userId])
@@ -134,10 +141,10 @@ async function testAPIRoutes() {
     try {
       // Create a test document
       const documentResult = await client.query(`
-        INSERT INTO documents (user_id, filename, content_type, file_size, content, category)
+        INSERT INTO documents (user_id, filename, original_filename, file_size, mime_type, file_data)
         VALUES ($1, $2, $3, $4, $5, $6)
         RETURNING id, filename
-      `, [userId, 'test-document.txt', 'text/plain', 1024, 'dGVzdCBjb250ZW50', 'testing'])
+      `, [userId, 'test-document.txt', 'test-document.txt', 1024, 'text/plain', Buffer.from('test content')])
       
       console.log(`   ✅ Document uploaded: ${documentResult.rows[0].filename}`)
       
@@ -155,7 +162,7 @@ async function testAPIRoutes() {
       // Simulate dashboard data query
       const dashboardResult = await client.query(`
         SELECT 
-          u.id, u.email, u.full_name, u.subscription_tier,
+          u.id, u.email, u.full_name,
           COUNT(t.id) as task_count,
           COUNT(g.id) as goal_count,
           COUNT(c.id) as conversation_count
@@ -164,7 +171,7 @@ async function testAPIRoutes() {
         LEFT JOIN goals g ON u.id = g.user_id
         LEFT JOIN conversations c ON u.id = c.user_id
         WHERE u.id = $1
-        GROUP BY u.id, u.email, u.full_name, u.subscription_tier
+        GROUP BY u.id, u.email, u.full_name
       `, [userId])
       
       if (dashboardResult.rows.length > 0) {

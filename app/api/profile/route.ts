@@ -78,6 +78,8 @@ export async function PATCH(request: NextRequest) {
     const BodySchema = z.object({
       full_name: z.string().min(1).max(200).nullable().optional(),
       avatar_url: z.string().url().nullable().optional(),
+      onboarding_completed: z.boolean().optional(),
+      onboarding_data: z.any().optional(),
     })
     const parsed = BodySchema.safeParse(await request.json())
     if (!parsed.success) {
@@ -92,17 +94,22 @@ export async function PATCH(request: NextRequest) {
       })
       return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
-    const { full_name, avatar_url } = parsed.data
+    const { full_name, avatar_url, onboarding_completed, onboarding_data } = parsed.data
 
     const client = await createClient()
     const { rows } = await client.query(
       `UPDATE users
           SET full_name = COALESCE($1, full_name),
               avatar_url = COALESCE($2, avatar_url),
+              onboarding_completed = COALESCE($3, onboarding_completed),
+              notification_preferences = CASE 
+                WHEN $4 IS NOT NULL THEN $4::jsonb 
+                ELSE notification_preferences 
+              END,
               updated_at = NOW()
-        WHERE id = $3
-        RETURNING id, email, full_name, avatar_url, subscription_tier, subscription_status`,
-      [full_name ?? null, avatar_url ?? null, user.id]
+        WHERE id = $5
+        RETURNING id, email, full_name, avatar_url, subscription_tier, subscription_status, onboarding_completed`,
+      [full_name ?? null, avatar_url ?? null, onboarding_completed ?? null, onboarding_data ? JSON.stringify(onboarding_data) : null, user.id]
     )
 
     info('Profile updated successfully', { 

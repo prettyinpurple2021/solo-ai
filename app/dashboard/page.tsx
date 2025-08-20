@@ -1,6 +1,8 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useDashboardData } from "@/hooks/use-dashboard-data"
+import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -19,9 +21,52 @@ import Link from "next/link"
 
 export default function DashboardPage() {
   const { data, loading, error } = useDashboardData()
+  const [showOnboarding, setShowOnboarding] = useState(false)
+
+  // Check if onboarding should be shown
+  useEffect(() => {
+    if (data && !data.user.onboarding_completed) {
+      setShowOnboarding(true)
+    }
+  }, [data])
+
+  const handleOnboardingComplete = async (onboardingData: any) => {
+    try {
+      // Save onboarding data to user profile
+      const response = await fetch('/api/profile', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          onboarding_completed: true,
+          onboarding_data: onboardingData,
+        }),
+      })
+
+      if (response.ok) {
+        setShowOnboarding(false)
+        // Refresh dashboard data
+        window.location.reload()
+      }
+    } catch (error) {
+      console.error('Error saving onboarding data:', error)
+    }
+  }
+
+  const handleOnboardingSkip = () => {
+    setShowOnboarding(false)
+  }
 
   if (loading) {
-    return (
+      return (
+    <>
+      <OnboardingWizard 
+        open={showOnboarding} 
+        onComplete={handleOnboardingComplete}
+        onSkip={handleOnboardingSkip}
+      />
+      
       <div className="p-6 space-y-6">
         <div className="animate-pulse">
           <div className="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
@@ -30,49 +75,66 @@ export default function DashboardPage() {
               <div key={i} className="h-32 bg-gray-200 rounded"></div>
             ))}
           </div>
-        </div>
-      </div>
-    )
-  }
+              </div>
+    </div>
+    </>
+  )
+}
 
   if (error) {
     return (
-      <div className="p-6">
-        <Card className="border-red-200 bg-red-50">
-          <CardContent className="p-6">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold text-red-800 mb-2">Error Loading Dashboard</h2>
-              <p className="text-red-600 mb-4">{error}</p>
-              <Button onClick={() => window.location.reload()}>
-                Try Again
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <>
+        <OnboardingWizard 
+          open={showOnboarding} 
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+        
+        <div className="p-6">
+          <Card className="border-red-200 bg-red-50">
+            <CardContent className="p-6">
+              <div className="text-center">
+                <h2 className="text-xl font-semibold text-red-800 mb-2">Error Loading Dashboard</h2>
+                <p className="text-red-600 mb-4">{error}</p>
+                <Button onClick={() => window.location.reload()}>
+                  Try Again
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </>
     )
   }
 
   if (!data) {
     return (
-      <div className="p-6">
-        <Card>
-          <CardContent className="p-6">
-            <div className="text-center">
-              <h2 className="text-xl font-semibold mb-2">Welcome to SoloBoss AI</h2>
-              <p className="text-gray-600 mb-4">Get started by creating your first goal or task.</p>
-              <div className="space-x-4">
-                <Link href="/dashboard/slaylist">
-                  <Button>Create Goal</Button>
-                </Link>
-                <Link href="/dashboard/agents">
-                  <Button variant="outline">Chat with AI</Button>
-                </Link>
+      <>
+        <OnboardingWizard 
+          open={showOnboarding} 
+          onComplete={handleOnboardingComplete}
+          onSkip={handleOnboardingSkip}
+        />
+        
+        <div className="p-6">
+          <Card>
+            <CardContent className="p-6">
+              <div className="text-center">
+                <h2 className="text-xl font-semibold mb-2">Welcome to SoloBoss AI</h2>
+                <p className="text-gray-600 mb-4">Get started by creating your first goal or task.</p>
+                <div className="space-x-4">
+                  <Link href="/dashboard/slaylist">
+                    <Button>Create Goal</Button>
+                  </Link>
+                  <Link href="/dashboard/agents">
+                    <Button variant="outline">Chat with AI</Button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+            </CardContent>
+          </Card>
+        </div>
+      </>
     )
   }
 
