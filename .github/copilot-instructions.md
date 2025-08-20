@@ -1,52 +1,23 @@
 # SoloBoss AI Platform - GitHub Copilot Instructions
 
-**Always reference these instructions first and fallback to additional search or context gathering only when the information here is incomplete or foun### Common Commands Reference:
-```bash
-# Development
-npm run dev                    # Start development server
-npm run build                 # Production build
-npm run lint                  # Run ESLint (runs cleanly)
-
-# Database
-npm run setup-neon-db        # Initialize Neon database
-npm run verify-triggers      # Verify database triggers
-npm run db:migrate           # Run database migrations
-
-# Testing
-npm test                     # Run Jest tests (limited tests exist)
-npm run test:coverage        # Jest with coverage
-npm run test:api             # Test API routes with database
-```**
+**Always reference these instructions first and fallback to additional search or context gathering only when the information here is incomplete or found to be in error.**
 
 ## Working Effectively
 
 ### Bootstrap, Build, and Test the Repository:
-- Install Node.js 18+ (check with `node --version`)
-- `npm install` -- takes 30-40 seconds. **NEVER CANCEL**. Peer dependency warnings are safe to ignore.
-- **ENVIRONMENT SETUP REQUIRED**: Copy `.env.local.example` to `.env.local` and configure required environment variables (see Environment Variables section below)
-- **BUILD STATUS**: ✅ Builds successfully! Previous ESLint issues have been resolved.
-- Build: ~45 seconds. **NEVER CANCEL**. Set timeout to 90+ seconds.
-- `npm run lint` -- runs cleanly with minor warnings only
-- `npm test` -- Jest is configured. Limited test coverage currently exists.
 
-### Run the Application:
-- **ALWAYS run the bootstrapping steps and environment setup first**
-- Development server: `npm run dev` -- starts in ~2 seconds
-- Production build: `npm run build && npm run start`
-- Access at: `http://localhost:3000`
-- API health check: `http://localhost:3000/api/health`
+**Node.js Requirements:**
+- Install Node.js 18+ (verified working with Node.js 20.19.4)
+- Check version: `node --version`
+- npm version: 10.8.2+ (verified working)
 
-### Database Setup:
-- **Database**: Neon PostgreSQL with Drizzle ORM
-- **Setup command**: `npm run setup-neon-db` (requires DATABASE_URL in .env.local)
-- **Schema files**: Located in `lib/db/schema.ts` with Drizzle definitions
-- **Migration commands**: `npm run db:migrate`, `npm run db:push`, `npm run db:generate`
-- **Schema**: 15+ tables including users, goals, tasks, ai_agents, conversations, documents, compliance tables
+**Installation Process:**
+- `npm install` -- takes 41 seconds. **NEVER CANCEL**. Timeout: 90+ seconds.
+- Peer dependency warnings for React versions are safe to ignore
+- 6 security vulnerabilities (2 low, 4 moderate) are acceptable for development
 
-## Environment Variables (Required for Build)
-
-**Critical**: The build WILL FAIL without these environment variables set:
-
+**Environment Setup (REQUIRED):**
+Create `.env.local` file with these REQUIRED variables:
 ```env
 # Required for successful build
 NEXT_PUBLIC_APP_URL=http://localhost:3000
@@ -57,7 +28,7 @@ NEXT_PUBLIC_STACK_PROJECT_ID=your-stack-project-id
 NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=your-publishable-key
 STACK_SECRET_SERVER_KEY=your-secret-key
 
-# AI Providers (Required for AI functionality)
+# AI Providers (Optional for build, required for AI functionality)
 OPENAI_API_KEY=sk-your-openai-key
 GOOGLE_GENERATIVE_AI_API_KEY=your-google-key
 
@@ -69,197 +40,277 @@ FROM_EMAIL=noreply@yourdomain.com
 CHARGEBEE_API_KEY=your-chargebee-key
 CHARGEBEE_SITE=your-chargebee-site
 
-# Feature Flags (Optional)
-NEXT_PUBLIC_STATSIG_CLIENT_KEY=your-statsig-key
-STATSIG_SERVER_SECRET_KEY=your-statsig-secret
+# JWT Secret (Optional, min 32 characters)
+JWT_SECRET=your-32-character-or-longer-jwt-secret
+```
+
+**Build Process:**
+- `npm run build` -- takes 72 seconds. **NEVER CANCEL**. Timeout: 120+ seconds.
+- Build produces 83 static pages with warnings (acceptable)
+- ✅ **BUILDS SUCCESSFULLY** with environment variables configured
+
+**Testing:**
+- `npm test` -- takes 2.25 seconds. **NEVER CANCEL**. Timeout: 60+ seconds.
+- `npm run test:coverage` -- takes 2.7 seconds. Provides code coverage reports.
+- All existing tests pass (2 test suites, 5 tests total)
+
+### Run the Application:
+
+**Development Server:**
+- `npm run dev` -- starts in 1.8 seconds. **NEVER CANCEL**. Timeout: 30+ seconds.
+- Access at: `http://localhost:3000`
+- Hot reload enabled with Next.js 15.2.4
+
+**Production Server:**
+- Build first: `npm run build`
+- Start: `npm run start` (Note: includes New Relic integration)
+- Requires build artifacts in `.next` directory
+
+**API Health Check:**
+- Endpoint: `http://localhost:3000/api/health`
+- Expected response: `{"status":"ok","timestamp":"...","environment":"development","nextVersion":"edge"}`
+
+### Database Setup:
+
+**Database Type:** Neon PostgreSQL with Drizzle ORM
+
+**Setup Commands:**
+- `npm run setup-neon-db` -- requires valid DATABASE_URL. **NEVER CANCEL**. Timeout: 60+ seconds.
+- `npm run db:generate` -- generates TypeScript types from schema
+- `npm run db:verify` -- verifies database connection and schema
+
+**Database Scripts Available:**
+- `npm run setup-templates` -- sets up template tables
+- `npm run setup-compliance` -- sets up compliance tables
+- `npm run verify-triggers` -- verifies database triggers
+- `npm run migrate-profile-fields` -- runs profile field migration
+
+### Linting and Code Quality:
+
+**Linting Status:**
+- `npm run lint` -- takes 8.2 seconds. **Exits with code 1** due to 2 unused variable errors.
+- 200+ warnings (mostly React unescaped entities and TypeScript 'any' types)
+- **Known Issues:** 2 unused variables in `lib/idempotency.ts` and `app/account-recovery/page.tsx`
+- **Action Required:** Fix unused variables before production deployment
+
+## Environment Variables (Required for Build)
+
+**Critical for Build Success:**
+The build WILL FAIL without these minimum environment variables:
+
+```env
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+DATABASE_URL=postgresql://user:pass@host:5432/database
+NEXT_PUBLIC_STACK_PROJECT_ID=test-project-id
+NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY=test-publishable-key
+STACK_SECRET_SERVER_KEY=test-secret-key
+```
+
+**Optional but Recommended:**
+```env
+OPENAI_API_KEY=sk-your-openai-key
+GOOGLE_GENERATIVE_AI_API_KEY=your-google-key
+RESEND_API_KEY=re_your-resend-key
+FROM_EMAIL=noreply@yourdomain.com
+CHARGEBEE_API_KEY=your-chargebee-key
+CHARGEBEE_SITE=your-chargebee-site
+JWT_SECRET=your-32-character-or-longer-jwt-secret
 ```
 
 ## Build Times and Validation
 
 **CRITICAL - NEVER CANCEL these commands. Always set appropriate timeouts:**
 
-- `npm install`: 30-40 seconds. **NEVER CANCEL**. Timeout: 60+ seconds.
-- `npm run build`: ✅ **BUILDS SUCCESSFULLY** - Takes ~45 seconds. **NEVER CANCEL**. Timeout: 90+ seconds.
-- `npm run dev`: ~2 seconds startup. Timeout: 30+ seconds.
-- Database setup (`npm run setup-neon-db`): 10-30 seconds depending on data size.
-- `npm run lint`: Runs cleanly with only minor warnings.
-- All placeholder content has been removed and the codebase is production-ready.
+- `npm install`: 41 seconds. **NEVER CANCEL**. Timeout: 90+ seconds.
+- `npm run build`: 72 seconds. **NEVER CANCEL**. Timeout: 120+ seconds.
+- `npm run dev`: 1.8 seconds startup. **NEVER CANCEL**. Timeout: 30+ seconds.
+- `npm test`: 2.25 seconds. **NEVER CANCEL**. Timeout: 60+ seconds.
+- `npm run lint`: 8.2 seconds. **NEVER CANCEL**. Timeout: 30+ seconds.
+- Database setup commands: 5-30 seconds (requires valid DATABASE_URL). **NEVER CANCEL**. Timeout: 60+ seconds.
 
 ## Validation Scenarios
 
 **After making changes, ALWAYS test these complete user scenarios:**
 
-1. **Development Server Validation**:
-   - Start `npm run dev`
-   - Visit `http://localhost:3000` and verify homepage loads
-   - Check `/api/health` endpoint returns valid JSON with service status
-   - Verify no console errors on homepage load
+### 1. Development Server Validation
+```bash
+npm run dev
+# Wait for "Ready in" message
+curl -s http://localhost:3000/api/health
+# Should return: {"status":"ok","timestamp":"...","environment":"development","nextVersion":"edge"}
+curl -s -I http://localhost:3000/
+# Should return: HTTP/1.1 200 OK
+```
 
-2. **Build Validation**:
-   - Run `npm run build` to test production build
-   - Verify core TypeScript compilation succeeds
-   - Check for any new ESLint warnings (should be minimal)
-   - Ensure build completes within 90 seconds
+### 2. Build Validation
+```bash
+npm run build
+# Should complete with "Finalizing page optimization ✓"
+# Should show 83 static pages generated
+# Warnings are acceptable, errors are not
+```
 
-3. **Authentication Flow** (if auth env vars are configured):
-   - Visit `/sign-up` and verify Stack Auth form renders
-   - Visit `/sign-in` and verify Stack Auth form renders  
-   - Test form submissions (should handle gracefully even with dummy auth config)
+### 3. Authentication Flow Testing
+- Visit `/signin` and verify auth form renders (uses NeonAuth component)
+- Visit `/signup` and verify auth form renders
+- Visit `/sign-in` and `/sign-up` for alternative auth pages
+- All auth pages use `dynamic = 'force-dynamic'` to prevent static generation issues
 
-4. **API Routes Validation**:
-   - Check `/api/health` returns proper JSON
-   - Verify API routes compile without TypeScript errors
-   - Test basic CRUD operations if database is configured
+### 4. API Routes Validation
+```bash
+# Health check
+curl -s http://localhost:3000/api/health
 
-5. **UI Component Validation**:
-   - Navigate to `/dashboard` and verify UI components render
-   - Check `/features` page for marketing components
-   - Verify responsive design on different screen sizes
+# Auth endpoint (should return error without token)
+curl -s http://localhost:3000/api/auth/user
+# Expected: {"error":"No authorization token provided"}
+
+# Test other API routes
+curl -s -I http://localhost:3000/api/goals
+curl -s -I http://localhost:3000/api/tasks
+```
+
+### 5. Core Pages Validation
+- Homepage: `http://localhost:3000`
+- Dashboard: `http://localhost:3000/dashboard`
+- Features: `http://localhost:3000/features`
+- Pricing: `http://localhost:3000/pricing`
 
 ## Repository Structure
 
 ### Key Directories:
-- `app/` - Next.js 15 app router pages and API routes
-- `components/` - Reusable React components with TypeScript
-- `lib/` - Utility functions, database clients, and shared logic
+- `app/` - Next.js 15 App Router with 33 main routes
+- `components/` - React components with TypeScript (22 subdirectories)
+- `lib/` - Utilities, database clients, validation schemas
 - `hooks/` - Custom React hooks
-- `styles/` - Tailwind CSS styles and global CSS
+- `styles/` - Tailwind CSS and global styles
 - `scripts/` - Database setup and maintenance scripts
-- `drizzle/` - Database migration files (Drizzle ORM)
-- `public/` - Static assets including agent avatars and branding
+- `public/` - Static assets
+- `tests/` - Jest test files (2 test suites currently)
 
 ### Important Files:
-- `package.json` - Dependencies and scripts (25+ npm scripts available)
-- `next.config.mjs` - Next.js configuration with Netlify optimization
-- `tsconfig.json` - TypeScript configuration with strict mode
-- `tailwind.config.ts` - Tailwind CSS configuration with custom design system
-- `eslint.config.mjs` - ESLint configuration (runs cleanly)
-- `drizzle.config.ts` - Database configuration for Drizzle ORM
-- `middleware.ts` - Simple passthrough middleware (Stack Auth disabled for now)
+- `package.json` - 23 npm scripts available
+- `next.config.mjs` - Disables TypeScript/ESLint errors during build
+- `tsconfig.json` - TypeScript configuration
+- `eslint.config.mjs` - ESLint with Next.js and TypeScript rules
+- `jest.config.js` - Jest testing configuration
+- `drizzle.config.ts` - Database ORM configuration
+- `middleware.ts` - Route middleware (authentication handling)
+
+### Build Configuration:
+- **Output:** Standalone (for Docker deployment)
+- **TypeScript:** Build errors ignored (`ignoreBuildErrors: true`)
+- **ESLint:** Build errors ignored (`ignoreDuringBuilds: true`)
+- **Static Generation:** Disabled for auth pages (`dynamic = 'force-dynamic'`)
 
 ## Common Tasks and Known Issues
 
-### Linting:
-- **STATUS**: ✅ ESLint runs cleanly with only minor warnings
-- **Previous Issues**: All major ESLint errors have been resolved
-- **Current State**: Production builds work without linting issues
-- **Best Practice**: Continue to maintain clean code standards
-- **Before Committing**: Run `npm run lint` to check for any new issues
+### Linting Status:
+- **Current State:** 2 critical errors (unused variables), 200+ warnings
+- **Before Committing:** Fix unused variables in:
+  - `lib/idempotency.ts` (line 2: 'text', 'params')
+  - `app/account-recovery/page.tsx` (line 38: 'err')
+- **Acceptable Warnings:** React unescaped entities, TypeScript 'any' types
 
-### TypeScript Issues:
-- **Fixed Issues**: Chargebee API calls and Stack Auth error handling
-- **Pattern**: Use proper type checking for API responses
-- **Stack Auth**: Use `result.status === "ok"` instead of `result.error` pattern
+### Database Issues:
+- **Connection Required:** All database commands require valid DATABASE_URL
+- **Setup Command:** `npm run setup-neon-db` (fails without real database)
+- **ORM:** Drizzle with PostgreSQL
+- **Schema:** 15+ tables including compliance, AI agents, goals, tasks
 
-### Database:
-- **Client**: Uses Neon PostgreSQL with connection pooling
-- **ORM**: Drizzle ORM with TypeScript schema definitions
-- **Setup**: Run `npm run setup-neon-db` after setting DATABASE_URL
-- **Migrations**: Located in `drizzle/` directory, managed by Drizzle Kit
-- **Tables**: 15+ tables for full functionality (users, goals, tasks, ai_agents, etc.)
-- **Storage**: Pure Neon database - no Supabase dependencies
-
-### AI Integration:
-- **Providers**: OpenAI GPT-4, Google Gemini (Anthropic Claude removed)
-- **Framework**: Uses AI SDK for provider-agnostic implementation
-- **Agents**: 8 specialized AI agents with unique personalities
-- **Testing**: AI features require valid OpenAI and Google API keys
+### Build Issues:
+- **Auth Pages:** Fixed with `dynamic = 'force-dynamic'` exports
+- **New Relic:** Production start requires NEW_RELIC_APP_NAME environment variable
+- **Static Generation:** Some pages require runtime environment
 
 ## Key Features and Architecture
 
 ### SoloBoss AI Platform Overview:
-- **8 Specialized AI Agents**: Nova (General Assistant), Echo (Communication Expert), Sage (Strategic Planning), Phoenix (Transformation Specialist), Guardian (Compliance & Security), Catalyst (Innovation & Creativity), Harmony (Team Collaboration), Quantum (Advanced Analytics)
-- **Goal Management System**: Comprehensive SMART goals with progress tracking and analytics
-- **Task Automation**: Advanced task creation, assignment, and completion tracking
-- **Gamification**: Achievement system, progress tracking, and user engagement features
-- **Brand Toolkit**: Logo generation, brand guidelines, and asset management
-- **Compliance Scanner**: Document analysis and regulatory compliance checking
-- **Social Features**: Community posts, team collaboration, and social sharing
-- **Voice Chat**: Real-time voice communication with AI agents
-- **Projects Dashboard**: Comprehensive project management and tracking
+- **8 Specialized AI Agents:** Nova, Echo, Sage, Phoenix, Guardian, Catalyst, Harmony, Quantum
+- **Goal Management:** SMART goals with progress tracking
+- **Task Automation:** Advanced task creation and completion
+- **Gamification:** Achievement system and progress tracking
+- **Compliance Scanner:** GDPR/CCPA compliance automation
+- **Brand Toolkit:** Logo generation and brand management
+- **Authentication:** Stack Auth integration
+- **Database:** Neon PostgreSQL with Drizzle ORM
 
-### Authentication & User Management:
-- **Primary Provider**: Stack Auth (modern, developer-friendly auth)
-- **Features**: Email/password, social logins, user profiles, session management
-- **Protection**: Middleware handles route protection (currently disabled for development)
-- **Profile System**: Comprehensive user profiles with preferences and settings
+### Technical Stack:
+- **Frontend:** Next.js 15.2.4, React 19, TypeScript 5+, Tailwind CSS
+- **Backend:** Next.js API routes, Neon PostgreSQL
+- **AI Integration:** OpenAI GPT-4, Google Gemini
+- **Testing:** Jest with 63.7% code coverage
+- **Deployment:** Standalone build for Docker/Cloud Run
 
-## Architecture Notes
+## Available Scripts Reference
 
-### Frontend:
-- **Framework**: Next.js 15.2.4 with App Router
-- **React**: Version 19 with concurrent features
-- **Styling**: Tailwind CSS with custom design system
-- **Components**: Radix UI primitives with custom styling
-- **State Management**: React hooks and context
-
-### Backend:
-- **API Routes**: Next.js API routes with TypeScript
-- **Database**: Neon PostgreSQL with connection pooling
-- **Authentication**: Stack Auth for user management
-- **File Storage**: No external storage - using Neon database
-
-### Deployment:
-- **Platform**: Netlify (configured with netlify.toml)
-- **Build**: Static site generation where possible
-- **Environment**: Production environment variables required
-- **CI/CD**: GitHub Actions workflow for Jest coverage (`.github/workflows/ci.yml`)
-
-## Performance Considerations
-
-### Build Optimization:
-- **Images**: Unoptimized for static deployment
-- **Bundle**: Optimized package imports for Radix UI and Lucide React
-- **Compression**: Enabled in Next.js config
-- **Caching**: Appropriate cache headers for static assets
-
-### Database:
-- **Connection Pooling**: Uses pg Pool for efficient connections
-- **Queries**: Optimized queries with proper indexing
-- **Migrations**: Incremental migration system
-
-## Security Notes
-
-### Authentication:
-- **Provider**: Stack Auth with JWT tokens
-- **Session Management**: Secure token storage and validation
-- **API Protection**: Protected routes require authentication
-
-### Database:
-- **Connection**: SSL required in production
-- **Queries**: Parameterized queries prevent SQL injection
-- **Access**: Row-level security where applicable
-
-### Environment Variables:
-- **Never commit**: .env.local files are gitignored
-- **Validation**: Zod schemas validate environment variables
-- **Secrets**: API keys and sensitive data properly secured
-
-## Getting Help
-
-### Common Commands Reference:
 ```bash
 # Development
-npm run dev                    # Start development server
-npm run build                 # Production build
-npm run lint                  # Run ESLint (expect many errors)
+npm run dev                    # Start development server (1.8s)
+npm run build                 # Production build (72s)
+npm run start                 # Start production server
+npm run lint                  # Run ESLint (8.2s, has errors)
 
 # Database
 npm run setup-neon-db        # Initialize Neon database
-npm run verify-triggers      # Verify database triggers
-npm run db:migrate           # Run database migrations
+npm run setup-templates      # Set up template tables
+npm run setup-compliance     # Set up compliance tables
+npm run db:generate          # Generate TypeScript types
+npm run db:verify            # Verify database connection
 
 # Testing
-npm test                     # Run Jest tests (no tests exist yet)
-npm run test:coverage        # Jest with coverage
-npm run test:api             # Test API routes with database
+npm test                     # Run Jest tests (2.25s)
+npm run test:coverage        # Jest with coverage (2.7s)
+npm run test:api             # Test API routes (requires DATABASE_URL)
+npm run e2e                  # Run Playwright end-to-end tests
+
+# Build Tools
+npm run verify-triggers      # Verify database triggers
+npm run migrate-profile-fields # Run profile field migration
 ```
 
-### Troubleshooting:
-1. **Build Fails**: Check all required environment variables are set
-2. **TypeScript Errors**: Focus on new errors, many existing errors are ignored
-3. **Database Issues**: Verify DATABASE_URL format and network access
-4. **Auth Issues**: Confirm Stack Auth environment variables are valid
-5. **Development Server**: Ensure port 3000 is available
+## Troubleshooting Guide
 
-**Remember: This is a production-ready AI platform with 8 specialized agents, comprehensive goal/task management, compliance tools, and a complete gamification system. Always test thoroughly after making changes.**
+### Build Failures:
+1. **Environment Variables:** Ensure `.env.local` has required variables
+2. **Node.js Version:** Must be 18+ (tested with 20.19.4)
+3. **Memory:** Build requires significant memory (set timeout to 120+ seconds)
+
+### Development Server Issues:
+1. **Port 3000:** Ensure port is available
+2. **Environment:** Check `.env.local` file exists and is readable
+3. **Dependencies:** Run `npm install` if node_modules is missing
+
+### Database Connection:
+1. **DATABASE_URL:** Must be valid Neon PostgreSQL connection string
+2. **Network Access:** Ensure firewall allows database connections
+3. **SSL:** Production databases require SSL connections
+
+### Authentication Issues:
+1. **Stack Auth:** Verify NEXT_PUBLIC_STACK_PROJECT_ID and keys are valid
+2. **JWT Secret:** Must be 32+ characters for security
+3. **Redirects:** Check NEXT_PUBLIC_APP_URL matches your domain
+
+### Performance Issues:
+1. **Build Time:** 72 seconds is normal, do not cancel
+2. **Memory Usage:** Build can use 2.5GB+ RAM
+3. **Hot Reload:** Development server supports fast refresh
+
+## Production Deployment
+
+### Docker Deployment:
+- Build uses `output: 'standalone'` configuration
+- Dockerfile provided for containerization
+- Google Cloud Run deployment scripts available
+
+### Environment Variables for Production:
+- Set all required variables in production environment
+- Use secrets management for sensitive values
+- Validate environment variables before deployment
+
+### Monitoring:
+- New Relic integration available (requires NEW_RELIC_APP_NAME)
+- Sentry error tracking configured
+- Health check endpoint: `/api/health`
+
+**Remember: This is a production-ready AI platform with 8 specialized agents, comprehensive goal/task management, compliance tools, and gamification system. Always test thoroughly after making changes and fix linting errors before committing.**
