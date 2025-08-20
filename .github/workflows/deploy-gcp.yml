@@ -14,7 +14,10 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    
+    permissions:
+      contents: 'read'
+      id-token: 'write' # Required for Workload Identity Federation, if using.
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -34,33 +37,43 @@ jobs:
     - name: Setup Google Cloud CLI
       uses: google-github-actions/setup-gcloud@v2
       with:
-        service_account_key: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
         project_id: ${{ env.PROJECT_ID }}
-        export_default_credentials: true
+        # Remove service_account_key and export_default_credentials from here.
+        # These are now handled by the 'auth' action.
 
-    - name: Configure Docker for GCP
-      run: gcloud auth configure-docker $REGION-docker.pkg.dev
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        # This is where your service account key or Workload Identity config goes.
+        # Since you're using a service_account_key, pass it here:
+        credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+        # If you were using Workload Identity Federation, it would look like this:
+        # service_account: soloboss-deployer@soloboss-ai-v3.iam.gserviceaccount.com
+        # workload_identity_provider: projects/YOUR_PROJECT_NUMBER/locations/global/workloadIdentityPools/YOUR_POOL_NAME/providers/YOUR_PROVIDER_NAME
+
+    - name: Configure Docker for Google Cloud Artifact Registry
+      run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
 
     - name: Build Docker image
       run: |
-        docker build -t $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:$GITHUB_SHA .
-        docker tag $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:$GITHUB_SHA $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:latest
+        docker build -t ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} .
+        docker tag ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }} ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
 
     - name: Push Docker image
       run: |
-        docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:$GITHUB_SHA
-        docker push $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:latest
+        docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}
+        docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:latest
 
     - name: Update cloudrun.yaml with new image
       run: |
-        sed -i "s|image: us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform:.*|image: $REGION-docker.pkg.dev/$PROJECT_ID/$REPOSITORY/$SERVICE_NAME:$GITHUB_SHA|" cloudrun.yaml
+        sed -i "s|image: us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform:.*|image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}|" cloudrun.yaml
 
     - name: Deploy to Cloud Run using cloudrun.yaml
       run: |
-        gcloud run services replace cloudrun.yaml --region=$REGION
+        gcloud run services replace cloudrun.yaml --region=${{ env.REGION }}
 
     - name: Update traffic
       run: |
-        gcloud run services update-traffic $SERVICE_NAME \
+        gcloud run services update-traffic ${{ env.SERVICE_NAME }} \
           --to-latest \
-          --region $REGION
+          --region ${{ env.REGION }}
