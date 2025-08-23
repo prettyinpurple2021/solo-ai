@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from 'react'
-import { RECAPTCHA_CONFIG, RECAPTCHA_ACTIONS, type RecaptchaAction } from '@/lib/recaptcha'
+import { RECAPTCHA_CONFIG, RECAPTCHA_ACTIONS, type RecaptchaAction } from '@/lib/recaptcha-client'
 
 declare global {
   interface Window {

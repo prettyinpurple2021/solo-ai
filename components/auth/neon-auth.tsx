@@ -168,7 +168,6 @@ export function NeonAuth() {
     } finally {
       setSignUpLoading(false)
     }
-    }
   }
 
   const handleSignUpInputChange = (field: string, value: string) => {

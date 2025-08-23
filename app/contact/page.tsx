@@ -374,7 +374,7 @@ export default function ContactPage() {
               </BossCard>
 
               {/* Community */}
-              <PremiumCard>
+              <BossCard variant="premium">
                 <h3 className="text-xl font-bold mb-3 text-gradient">Join the Boss Community! 👑</h3>
                 <p className="mb-4 text-gray-600 dark:text-gray-400">
                   Connect with other ambitious entrepreneurs building their empires. Share wins, get support, and level up together!
@@ -385,7 +385,7 @@ export default function ContactPage() {
                 >
                   Join Community
                 </EmpowermentButton>
-              </PremiumCard>
+              </BossCard>
             </motion.div>
           </div>
         </div>

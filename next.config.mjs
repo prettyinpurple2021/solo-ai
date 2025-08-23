@@ -51,6 +51,46 @@ const nextConfig = {
       }
     }
     
+    // Handle Node.js modules for Google Cloud libraries
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        crypto: false,
+        stream: false,
+        url: false,
+        zlib: false,
+        http: false,
+        https: false,
+        http2: false,
+        dns: false,
+        assert: false,
+        os: false,
+        path: false,
+        util: false,
+        buffer: false,
+        events: false,
+        querystring: false,
+        punycode: false,
+        string_decoder: false,
+        timers: false,
+        constants: false,
+        domain: false,
+        cluster: false,
+        child_process: false,
+        worker_threads: false,
+        perf_hooks: false,
+        v8: false,
+        vm: false,
+        inspector: false,
+        async_hooks: false,
+        module: false,
+        process: false,
+      }
+    }
+    
     return config
   },
   
