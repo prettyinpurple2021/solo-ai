@@ -138,7 +138,7 @@ export default function DashboardPage() {
     )
   }
 
-  const { user, todaysStats, todaysTasks, activeGoals, recentConversations, insights } = data
+  const { user, todaysStats, todaysTasks, activeGoals, recentConversations, insights: userInsights } = data
 
   return (
     <div className="p-6 space-y-6">
