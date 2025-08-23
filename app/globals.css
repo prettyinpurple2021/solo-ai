@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
 @layer base {
   :root {
+    /* Bad Ass Girl Boss Color Palette */
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -30,14 +34,24 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
 
-    /* Enhanced custom gradient variables for light mode */
-    --gradient-primary: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%);
-    --gradient-secondary: linear-gradient(135deg, #A855F7 0%, #F472B6 100%);
-    --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-    --gradient-background: linear-gradient(135deg, #fdf2f8 0%, #f3e8ff 50%, #e0e7ff 100%);
-    --gradient-empowerment: linear-gradient(135deg, #6366F1 0%, #EC4899 50%, #F59E0B 100%);
-    --gradient-success: linear-gradient(135deg, #10B981 0%, #059669 100%);
-    --gradient-warning: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    /* Epic Gradient Variables */
+    --gradient-primary: linear-gradient(135deg, #8B5CF6 0%, #06B6D4 50%, #EC4899 100%);
+    --gradient-secondary: linear-gradient(135deg, #A855F7 0%, #0891B2 50%, #F472B6 100%);
+    --gradient-accent: linear-gradient(135deg, #06B6D4 0%, #3B82F6 50%, #8B5CF6 100%);
+    --gradient-background: linear-gradient(135deg, #fdf2f8 0%, #e0f2fe 25%, #f3e8ff 50%, #e0e7ff 75%, #fef3c7 100%);
+    --gradient-empowerment: linear-gradient(135deg, #6366F1 0%, #06B6D4 25%, #EC4899 50%, #F59E0B 75%, #8B5CF6 100%);
+    --gradient-success: linear-gradient(135deg, #10B981 0%, #06B6D4 50%, #059669 100%);
+    --gradient-warning: linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #D97706 100%);
+    --gradient-danger: linear-gradient(135deg, #EF4444 0%, #EC4899 50%, #DC2626 100%);
+    
+    /* Skull & Crown Gradients */
+    --gradient-skull: linear-gradient(135deg, #1F2937 0%, #374151 50%, #4B5563 100%);
+    --gradient-crown: linear-gradient(135deg, #F59E0B 0%, #FCD34D 50%, #FBBF24 100%);
+    --gradient-boss: linear-gradient(135deg, #8B5CF6 0%, #EC4899 25%, #06B6D4 50%, #F59E0B 75%, #10B981 100%);
+    
+    /* Shimmer Effects */
+    --shimmer-light: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    --shimmer-dark: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
   }
 
   .dark {
@@ -66,12 +80,15 @@
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
 
-    /* Enhanced custom gradient variables for dark mode */
-    --gradient-primary: linear-gradient(135deg, #6366F1 0%, #EC4899 100%);
-    --gradient-secondary: linear-gradient(135deg, #8B5CF6 0%, #F472B6 100%);
-    --gradient-accent: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-    --gradient-background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #065f46 100%);
-    --gradient-empowerment: linear-gradient(135deg, #4F46E5 0%, #DB2777 50%, #EA580C 100%);
+    /* Dark Mode Epic Gradients */
+    --gradient-primary: linear-gradient(135deg, #6366F1 0%, #0891B2 50%, #EC4899 100%);
+    --gradient-secondary: linear-gradient(135deg, #8B5CF6 0%, #0E7490 50%, #F472B6 100%);
+    --gradient-accent: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #1E40AF 100%);
+    --gradient-background: linear-gradient(135deg, #0f172a 0%, #0c4a6e 25%, #1e3a8a 50%, #581c87 75%, #7c2d12 100%);
+    --gradient-empowerment: linear-gradient(135deg, #4F46E5 0%, #0891B2 25%, #DB2777 50%, #EA580C 75%, #7C3AED 100%);
+    --gradient-skull: linear-gradient(135deg, #111827 0%, #1F2937 50%, #374151 100%);
+    --gradient-crown: linear-gradient(135deg, #D97706 0%, #F59E0B 50%, #FCD34D 100%);
+    --gradient-boss: linear-gradient(135deg, #7C3AED 0%, #DB2777 25%, #0891B2 50%, #D97706 75%, #059669 100%);
   }
 }
 
@@ -79,281 +96,344 @@
   * {
     @apply border-border;
   }
+  
   body {
     @apply bg-background text-foreground;
+    background: var(--gradient-background);
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: rgba(139, 92, 246, 0.1);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: var(--gradient-primary);
+    border-radius: 10px;
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--gradient-secondary);
   }
 }
 
-/* Custom gradient utilities */
+/* Epic Gradient Utilities */
 @layer utilities {
   .gradient-primary {
     background: var(--gradient-primary);
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
   }
 
   .gradient-secondary {
     background: var(--gradient-secondary);
+    background-size: 200% 200%;
+    animation: gradient-shift 4s ease infinite;
   }
 
   .gradient-accent {
     background: var(--gradient-accent);
+    background-size: 200% 200%;
+    animation: gradient-shift 5s ease infinite;
   }
 
-  .gradient-background {
-    background: var(--gradient-background);
+  .gradient-empowerment {
+    background: var(--gradient-empowerment);
+    background-size: 300% 300%;
+    animation: gradient-shift 8s ease infinite;
   }
 
-  .gradient-text-primary {
-    background: var(--gradient-primary);
+  .gradient-boss {
+    background: var(--gradient-boss);
+    background-size: 400% 400%;
+    animation: gradient-shift 10s ease infinite;
+  }
+
+  .gradient-skull {
+    background: var(--gradient-skull);
+  }
+
+  .gradient-crown {
+    background: var(--gradient-crown);
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  /* Shimmer Effects */
+  .shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--shimmer-light);
+    animation: shimmer 2s infinite;
+  }
+
+  .shimmer-dark::before {
+    background: var(--shimmer-dark);
+  }
+
+  /* Glass Morphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .glass-dark {
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* Boss Typography */
+  .font-boss {
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+  }
+
+  .text-gradient {
+    background: var(--gradient-empowerment);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
-    background-clip: text;
     -webkit-text-fill-color: transparent;
-  }
-
-  .gradient-text-secondary {
-    background: var(--gradient-secondary);
-    -webkit-background-clip: text;
     background-clip: text;
-    -webkit-text-fill-color: transparent;
+    animation: gradient-shift 4s ease infinite;
+  }
+
+  /* Hover Effects */
+  .hover-lift {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .hover-lift:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.3);
+  }
+
+  .hover-glow {
+    transition: all 0.3s ease;
+  }
+
+  .hover-glow:hover {
+    box-shadow: 0 0 30px rgba(236, 72, 153, 0.5);
+  }
+
+  /* Skull Loading Animation */
+  .skull-loading {
+    position: relative;
+    width: 60px;
+    height: 60px;
+  }
+
+  .skull-loading::before {
+    content: '💀';
+    font-size: 40px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    animation: skull-bounce 2s ease-in-out infinite;
+  }
+
+  /* Crown Badge */
+  .crown-badge {
+    position: relative;
+    background: var(--gradient-crown);
+    color: #1F2937;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .crown-badge::before {
+    content: '👑';
+    margin-right: 4px;
+  }
+
+  /* Boss Button Styles */
+  .btn-boss {
+    background: var(--gradient-boss);
+    background-size: 200% 200%;
+    color: white;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    animation: gradient-shift 4s ease infinite;
+  }
+
+  .btn-boss:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+  }
+
+  .btn-boss::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: var(--shimmer-light);
+    animation: shimmer 2s infinite;
+  }
+
+  /* Card Boss Styles */
+  .card-boss {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-boss:hover {
+    transform: translateY(-5px);
+    border-color: rgba(236, 72, 153, 0.4);
+    box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
+  }
+
+  .card-boss::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-empowerment);
+    background-size: 200% 200%;
+    animation: gradient-shift 3s ease infinite;
+  }
+
+  /* Dark mode card adjustments */
+  .dark .card-boss {
+    background: rgba(0, 0, 0, 0.2);
+    border-color: rgba(139, 92, 246, 0.3);
+  }
+
+  .dark .card-boss:hover {
+    border-color: rgba(236, 72, 153, 0.5);
   }
 }
 
-/* Smooth transitions for theme changes - Applied selectively for better performance */
-.theme-transition {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-/* Apply transitions only to specific elements that need them */
-body, 
-[data-theme], 
-.card, 
-.button, 
-nav,
-.sidebar {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  @apply bg-gray-100 dark:bg-gray-800;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 dark:bg-gray-600 rounded-full;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400 dark:bg-gray-500;
-}
-
-/* Enhanced animation utilities with personality */
-@keyframes boss-bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-8px);
-  }
-}
-
-@keyframes empowerment-pulse {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
-}
-
-@keyframes success-celebration {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  75%, 100% {
-    transform: scale(1.2);
-    opacity: 0;
-  }
-}
-
+/* Keyframe Animations */
 @keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+@keyframes skull-bounce {
+  0%, 100% { 
+    transform: translate(-50%, -50%) scale(1);
+    filter: brightness(1);
   }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+  50% { 
+    transform: translate(-50%, -50%) scale(1.1);
+    filter: brightness(1.2);
   }
 }
 
-.animate-boss-bounce {
-  animation: boss-bounce 2s ease-in-out infinite;
-  transform: translateZ(0);
-  will-change: transform;
+@keyframes crown-sparkle {
+  0%, 100% { 
+    transform: rotate(0deg) scale(1);
+    filter: brightness(1);
+  }
+  25% { 
+    transform: rotate(5deg) scale(1.05);
+    filter: brightness(1.3);
+  }
+  75% { 
+    transform: rotate(-5deg) scale(1.05);
+    filter: brightness(1.3);
+  }
 }
 
-.animate-empowerment-pulse {
-  animation: empowerment-pulse 3s ease-in-out infinite;
-  transform: translateZ(0);
-  will-change: opacity, transform;
+@keyframes boss-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7);
+  }
+  50% { 
+    transform: scale(1.05);
+    box-shadow: 0 0 0 20px rgba(139, 92, 246, 0);
+  }
 }
 
-.animate-success-celebration {
-  animation: success-celebration 1s ease-out;
-  transform: translateZ(0);
-  will-change: transform, opacity;
+@keyframes empowerment-glow {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+  }
 }
 
-.animate-gradient {
-  background-size: 200% 200%;
-  animation: gradient-shift 4s ease infinite;
-  transform: translateZ(0);
-  will-change: background-position;
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card-boss {
+    padding: 16px;
+    border-radius: 12px;
+  }
+  
+  .btn-boss {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .skull-loading {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .skull-loading::before {
+    font-size: 30px;
+  }
 }
 
-/* Enhanced component styles with boss-level personality */
-.boss-card {
-  @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-2;
-  @apply border-2 border-purple-100 hover:border-purple-300;
-  transform: translateZ(0);
-  contain: layout style;
-}
-
-.boss-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: var(--gradient-primary);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.boss-card:hover::before {
-  opacity: 1;
-}
-
-.empowerment-gradient {
-  background: var(--gradient-empowerment);
-  transform: translateZ(0);
-}
-
-.soloboss-gradient {
-  background: var(--gradient-primary);
-  transform: translateZ(0);
-}
-
-.boss-text-gradient {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 700;
-  transform: translateZ(0);
-}
-
-.empowerment-text-gradient {
-  background: var(--gradient-empowerment);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 600;
-  transform: translateZ(0);
-}
-
-.soloboss-text-gradient {
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: 700;
-  transform: translateZ(0);
-}
-
-/* Enhanced progress bars with personality */
-.boss-progress {
-  @apply w-full bg-purple-100 rounded-full h-3 overflow-hidden;
-  transform: translateZ(0);
-}
-
-.boss-progress > div {
-  @apply bg-gradient-to-r from-purple-500 to-pink-500 h-full rounded-full;
-  @apply transition-all duration-500 ease-out;
-  transform: translateZ(0);
-}
-
-.empowerment-progress {
-  @apply w-full bg-gray-200 rounded-full h-4 overflow-hidden;
-  transform: translateZ(0);
-}
-
-.empowerment-progress > div {
-  background: var(--gradient-empowerment);
-  @apply h-full rounded-full transition-all duration-700 ease-out;
-  transform: translateZ(0);
-}
-
-/* Enhanced button styles with boss energy */
-.boss-button {
-  @apply bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700;
-  @apply text-white font-semibold py-3 px-6 rounded-full;
-  @apply transition-all duration-300 transform hover:scale-105 hover:shadow-lg;
-  @apply focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
-  transform: translateZ(0);
-}
-
-.empowerment-button {
-  background: var(--gradient-empowerment);
-  @apply text-white font-bold py-4 px-8 rounded-full;
-  @apply transition-all duration-300 transform hover:scale-110 hover:shadow-xl;
-  @apply focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
-  transform: translateZ(0);
-}
-
-/* Enhanced focus styles with accessibility */
-.boss-focus-ring {
-  @apply focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-pink-400;
-  @apply focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900;
-  @apply transition-all duration-200;
-}
-
-/* Enhanced card hover effects with personality */
-.boss-card-interactive {
-  @apply transition-all duration-300 cursor-pointer;
-  @apply hover:shadow-xl hover:-translate-y-2 hover:border-purple-300;
-  transform: translateZ(0);
-}
-
-.empowerment-card {
-  @apply bg-white border-2 border-purple-200 rounded-xl p-6;
-  @apply shadow-sm hover:shadow-lg transition-all duration-300;
-  @apply hover:border-purple-400 hover:-translate-y-1;
-  position: relative;
-  overflow: hidden;
-  transform: translateZ(0);
-}
-
-.empowerment-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: var(--gradient-empowerment);
-  opacity: 0.05;
-  transition: opacity 0.3s ease;
-}
-
-.empowerment-card:hover::before {
-  opacity: 0.1;
+/* Print styles */
+@media print {
+  .gradient-primary,
+  .gradient-secondary,
+  .gradient-accent,
+  .gradient-empowerment,
+  .gradient-boss {
+    background: #8B5CF6 !important;
+    animation: none !important;
+  }
+  
+  .shimmer::before {
+    display: none;
+  }
 }
