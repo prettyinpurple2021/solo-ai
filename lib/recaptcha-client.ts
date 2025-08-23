@@ -1,9 +1,10 @@
 // Client-side reCAPTCHA configuration (no server-side imports)
 
 // reCAPTCHA configuration
+// Set NEXT_PUBLIC_RECAPTCHA_SITE_KEY and NEXT_PUBLIC_RECAPTCHA_PROJECT_ID in your environment variables
 export const RECAPTCHA_CONFIG = {
-  siteKey: '6Lc6OKnHtTiKjk8rE9MhP10Kb8Pj',
-  projectId: 'soloboss-ai-v3',
+  siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '',
+  projectId: process.env.NEXT_PUBLIC_RECAPTCHA_PROJECT_ID || '',
   actions: {
     signup: 'signup',
     signin: 'signin',
