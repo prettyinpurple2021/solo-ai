@@ -15,7 +15,7 @@ import { format, subYears } from "date-fns"
 import { motion } from "framer-motion"
 
 export function NeonAuth() {
-  const { signIn, signUp, user, signOut } = useAuth()
+  const { signIn, signUp, user, signOut: _signOut } = useAuth()
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -167,6 +167,7 @@ export function NeonAuth() {
       return { success: false, error: errorMsg }
     } finally {
       setSignUpLoading(false)
+    }
     }
   }
 

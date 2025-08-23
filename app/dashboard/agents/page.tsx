@@ -4,22 +4,13 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { 
   Bot, 
-  MessageCircle, 
   Send, 
   Sparkles,
-  Crown,
-  Zap,
-  Shield,
-  Target,
-  Palette,
-  Brain,
-  Users,
-  TrendingUp
+  Users
 } from "lucide-react"
 
 interface Message {

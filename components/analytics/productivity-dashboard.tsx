@@ -7,17 +7,14 @@ import { Progress } from '@/components/ui/progress'
 import { Button } from '@/components/ui/button'
 import { 
   TrendingUp, 
-  TrendingDown, 
   Target, 
   CheckCircle, 
   Clock, 
-  Calendar,
   BarChart3,
   Activity,
   Zap,
   Award,
   Users,
-  DollarSign,
   ArrowUpRight,
   ArrowDownRight
 } from 'lucide-react'

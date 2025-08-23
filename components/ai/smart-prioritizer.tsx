@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,7 +10,6 @@ import {
   Clock, 
   TrendingUp, 
   Target, 
-  Zap, 
   CheckCircle, 
   AlertTriangle,
   ArrowUpDown,
@@ -38,7 +37,7 @@ interface PrioritizedTask extends Task {
 
 interface SmartPrioritizerProps {
   tasks: Task[]
-  onPrioritize: (prioritizedTasks: PrioritizedTask[]) => void
+  onPrioritize: (_prioritizedTasks: PrioritizedTask[]) => void
   className?: string
 }
 
@@ -267,7 +266,7 @@ export function SmartPrioritizer({ tasks, onPrioritize, className = "" }: SmartP
             </div>
 
             <div className="space-y-3 max-h-64 overflow-y-auto">
-              {prioritizedTasks.map((task, index) => (
+              {prioritizedTasks.map((task, _index) => (
                 <div 
                   key={task.id} 
                   className="border rounded-lg p-3 bg-white/50"
