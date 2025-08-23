@@ -13,7 +13,7 @@ import { CalendarIcon, AlertCircle, CheckCircle } from "lucide-react"
 import { format, subYears } from "date-fns"
 
 export function NeonAuth() {
-  const { signIn, signUp, user, signOut } = useAuth()
+  const { signIn, signUp, user, signOut: _signOut } = useAuth()
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -155,7 +155,7 @@ export function NeonAuth() {
           confirmPassword: ""
         })
       }
-    } catch (err) {
+    } catch {
       setError("An unexpected error occurred. Please try again.")
     }
     
