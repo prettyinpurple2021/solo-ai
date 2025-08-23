@@ -76,7 +76,7 @@ export default function ResetPasswordPage() {
         router.push("/signin");
       }, 3000);
 
-    } catch (err) {
+    } catch {
       setError("Failed to reset password. The link may have expired. Please try again.");
     }
 

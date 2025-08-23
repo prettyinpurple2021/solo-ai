@@ -17,9 +17,7 @@ import {
   Calendar,
   Flag,
   Clock,
-  TrendingUp,
-  Edit,
-  Trash2
+  TrendingUp
 } from "lucide-react"
 
 interface Goal {
@@ -52,7 +50,7 @@ export default function SlaylistPage() {
   const [loading, setLoading] = useState(true)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
   const [showTaskDialog, setShowTaskDialog] = useState(false)
-  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null)
+  const [_selectedGoal, _setSelectedGoal] = useState<Goal | null>(null)
   
   // Form states
   const [goalForm, setGoalForm] = useState({
