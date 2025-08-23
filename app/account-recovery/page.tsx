@@ -35,7 +35,7 @@ export default function AccountRecoveryPage() {
 
       setMessage("If an account with this email exists, a password reset link has been sent.");
       setEmail(""); // Clear the input field
-    } catch (err) {
+    } catch (_err) {
       setError("An unexpected error occurred. Please try again.");
     }
 

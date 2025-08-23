@@ -4,16 +4,16 @@ import { useState, useRef, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Mic, MicOff, Volume2, Loader2, CheckCircle, XCircle } from 'lucide-react'
+import { Mic, MicOff, Loader2, XCircle } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
 interface VoiceInputProps {
-  onTranscript: (text: string) => void
+  onTranscript: (_text: string) => void
   placeholder?: string
   className?: string
 }
 
-export function VoiceInput({ onTranscript, placeholder = "Click to start recording...", className = "" }: VoiceInputProps) {
+export function VoiceInput({ onTranscript, placeholder: _placeholder = "Click to start recording...", className = "" }: VoiceInputProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [isSupported, setIsSupported] = useState(false)
   const [transcript, setTranscript] = useState('')
