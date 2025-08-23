@@ -10,13 +10,9 @@ import { Badge } from "@/components/ui/badge"
 import { 
   Palette, 
   Upload, 
-  Download, 
   Eye,
   Save,
-  Sparkles,
-  Target,
-  Users,
-  MessageSquare
+  Sparkles
 } from "lucide-react"
 
 export default function BrandPage() {

@@ -182,7 +182,7 @@ export default function DashboardPage() {
     )
   }
 
-  const { user, todaysStats, todaysTasks, activeGoals, recentConversations, insights } = data
+  const { user, todaysStats, todaysTasks, activeGoals, recentConversations, insights: _insights } = data
 
   const containerVariants = {
     hidden: { opacity: 0 },

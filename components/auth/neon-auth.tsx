@@ -161,6 +161,7 @@ export function NeonAuth() {
         })
         return { success: true }
       }
+
     } catch (err) {
       const errorMsg = "An unexpected error occurred. Please try again."
       setError(errorMsg)

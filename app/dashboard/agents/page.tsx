@@ -112,7 +112,7 @@ export default function AgentsPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [conversations, setConversations] = useState<any[]>([])
+  const [_conversations, setConversations] = useState<any[]>([])
 
   useEffect(() => {
     fetchConversations()
