@@ -6,7 +6,7 @@
 set -e
 
 # Configuration
-PROJECT_ID="soloboss-ai-platform"
+PROJECT_ID="soloboss-ai-v3"
 SERVICE_NAME="soloboss-ai-platform"
 REGION="us-central1"
 IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
