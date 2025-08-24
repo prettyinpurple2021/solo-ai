@@ -39,7 +39,16 @@ import {
   MoreHorizontal,
   Crown,
   Sparkles,
-  Eye
+  Eye,
+  SlidersHorizontal,
+  X,
+  ChevronDown,
+  ChevronUp,
+  BookmarkPlus,
+  TrendingUp,
+  Clock,
+  HardDrive,
+  Tag
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useToast } from "@/hooks/use-toast"
@@ -92,6 +101,26 @@ export default function BriefcasePage() {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [lastTouchY, setLastTouchY] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
+  
+  // Advanced search state
+  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
+  const [sortBy, setSortBy] = useState<'name' | 'size' | 'date' | 'type' | 'modified'>('date')
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [searchFilters, setSearchFilters] = useState({
+    fileSize: { min: '', max: '' },
+    dateRange: { start: '', end: '' },
+    tags: [],
+    showFavorites: false,
+    fileTypes: [],
+    folders: []
+  })
+  const [savedSearches, setSavedSearches] = useState<Array<{
+    id: string
+    name: string
+    query: string
+    filters: typeof searchFilters
+    createdAt: Date
+  }>>([])
   
   // Form states
   const [uploadForm, setUploadForm] = useState({
@@ -375,17 +404,78 @@ export default function BriefcasePage() {
     }
   }
 
-  // Filter files
-  const filteredFiles = files.filter(file => {
-    const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         file.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         file.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+  // Filter and sort files
+  const filteredFiles = (() => {
+    let filtered = files.filter(file => {
+      // Basic search
+      const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           file.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           file.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      
+      // Category filter
+      const matchesCategory = selectedCategory === "all" || file.category === selectedCategory
+      
+      // Folder filter
+      const matchesFolder = selectedFolder === null || file.folder_id === selectedFolder
+      
+      // Favorites filter
+      const matchesFavorites = !searchFilters.showFavorites || file.is_favorite
+      
+      // File size filter
+      let matchesFileSize = true
+      if (searchFilters.fileSize.min || searchFilters.fileSize.max) {
+        const fileSizeMB = file.size / (1024 * 1024)
+        const minSize = searchFilters.fileSize.min ? parseFloat(searchFilters.fileSize.min) : 0
+        const maxSize = searchFilters.fileSize.max ? parseFloat(searchFilters.fileSize.max) : Infinity
+        matchesFileSize = fileSizeMB >= minSize && fileSizeMB <= maxSize
+      }
+      
+      // Date range filter
+      let matchesDateRange = true
+      if (searchFilters.dateRange.start || searchFilters.dateRange.end) {
+        const fileDate = new Date(file.upload_date)
+        const startDate = searchFilters.dateRange.start ? new Date(searchFilters.dateRange.start) : new Date(0)
+        const endDate = searchFilters.dateRange.end ? new Date(searchFilters.dateRange.end) : new Date()
+        matchesDateRange = fileDate >= startDate && fileDate <= endDate
+      }
+      
+      // Tags filter
+      const matchesTags = searchFilters.tags.length === 0 || 
+                         searchFilters.tags.some(tag => file.tags.includes(tag))
+      
+      return matchesSearch && matchesCategory && matchesFolder && 
+             matchesFavorites && matchesFileSize && matchesDateRange && matchesTags
+    })
     
-    const matchesCategory = selectedCategory === "all" || file.category === selectedCategory
-    const matchesFolder = selectedFolder === null || file.folder_id === selectedFolder
+    // Sort the filtered results
+    filtered.sort((a, b) => {
+      let comparison = 0
+      
+      switch (sortBy) {
+        case 'name':
+          comparison = a.name.localeCompare(b.name)
+          break
+        case 'size':
+          comparison = a.size - b.size
+          break
+        case 'date':
+          comparison = new Date(a.upload_date).getTime() - new Date(b.upload_date).getTime()
+          break
+        case 'modified':
+          comparison = new Date(a.last_modified).getTime() - new Date(b.last_modified).getTime()
+          break
+        case 'type':
+          comparison = a.category.localeCompare(b.category)
+          break
+        default:
+          comparison = new Date(a.upload_date).getTime() - new Date(b.upload_date).getTime()
+      }
+      
+      return sortOrder === 'desc' ? -comparison : comparison
+    })
     
-    return matchesSearch && matchesCategory && matchesFolder
-  })
+    return filtered
+  })()
 
   // Get file icon
   const getFileIcon = (mimeType: string) => {
@@ -633,58 +723,244 @@ export default function BriefcasePage() {
         </CardContent>
       </Card>
 
-      {/* Search and Filters */}
-      <div className="space-y-3">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-          <Input
-            placeholder="Search files, descriptions, and tags..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 h-10 sm:h-9"
-          />
-        </div>
-        
-        <div className="flex flex-col sm:flex-row gap-3">
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-            <SelectTrigger className="flex-1 sm:w-48 h-10 sm:h-9">
-              <Filter className="w-4 h-4 mr-2" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All Categories</SelectItem>
-              <SelectItem value="document">Documents</SelectItem>
-              <SelectItem value="image">Images</SelectItem>
-              <SelectItem value="video">Videos</SelectItem>
-              <SelectItem value="audio">Audio</SelectItem>
-              <SelectItem value="presentation">Presentations</SelectItem>
-              <SelectItem value="spreadsheet">Spreadsheets</SelectItem>
-              <SelectItem value="other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-          
-          <div className="flex items-center gap-2 justify-center sm:justify-start">
+      {/* Advanced Search and Filters */}
+      <Card className="border-purple-200">
+        <CardContent className="p-4 space-y-4">
+          {/* Main Search Bar */}
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <Input
+                placeholder="Search files, descriptions, and tags..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-12 h-10"
+              />
+              {searchTerm && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100"
+                >
+                  <X className="w-3 h-3" />
+                </Button>
+              )}
+            </div>
             <Button
-              variant={viewMode === 'grid' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('grid')}
-              className="flex-1 sm:flex-none"
+              variant={showAdvancedSearch ? 'default' : 'outline'}
+              onClick={() => setShowAdvancedSearch(!showAdvancedSearch)}
+              className="whitespace-nowrap"
             >
-              <Grid3x3 className="w-4 h-4 mr-2 sm:mr-0" />
-              <span className="sm:hidden">Grid</span>
-            </Button>
-            <Button
-              variant={viewMode === 'list' ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => setViewMode('list')}
-              className="flex-1 sm:flex-none"
-            >
-              <List className="w-4 h-4 mr-2 sm:mr-0" />
-              <span className="sm:hidden">List</span>
+              <SlidersHorizontal className="w-4 h-4 mr-2" />
+              <span className="hidden sm:inline">Advanced</span>
+              {showAdvancedSearch ? <ChevronUp className="w-4 h-4 ml-1" /> : <ChevronDown className="w-4 h-4 ml-1" />}
             </Button>
           </div>
-        </div>
-      </div>
+          
+          {/* Quick Filters */}
+          <div className="flex flex-wrap gap-2">
+            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+              <SelectTrigger className="w-40">
+                <Filter className="w-4 h-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Categories</SelectItem>
+                <SelectItem value="document">📄 Documents</SelectItem>
+                <SelectItem value="image">🖼️ Images</SelectItem>
+                <SelectItem value="video">🎥 Videos</SelectItem>
+                <SelectItem value="audio">🎵 Audio</SelectItem>
+                <SelectItem value="presentation">📊 Presentations</SelectItem>
+                <SelectItem value="spreadsheet">📈 Spreadsheets</SelectItem>
+                <SelectItem value="other">📁 Other</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <Button
+              variant={searchFilters.showFavorites ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setSearchFilters(prev => ({ ...prev, showFavorites: !prev.showFavorites }))}
+            >
+              <Star className="w-4 h-4 mr-2" />
+              Favorites
+            </Button>
+            
+            <Select value={`${sortBy}-${sortOrder}`} onValueChange={(value) => {
+              const [sort, order] = value.split('-') as [typeof sortBy, typeof sortOrder]
+              setSortBy(sort)
+              setSortOrder(order)
+            }}>
+              <SelectTrigger className="w-32">
+                <TrendingUp className="w-4 h-4 mr-2" />
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="date-desc">Newest First</SelectItem>
+                <SelectItem value="date-asc">Oldest First</SelectItem>
+                <SelectItem value="name-asc">Name A-Z</SelectItem>
+                <SelectItem value="name-desc">Name Z-A</SelectItem>
+                <SelectItem value="size-desc">Largest First</SelectItem>
+                <SelectItem value="size-asc">Smallest First</SelectItem>
+                <SelectItem value="type-asc">Type A-Z</SelectItem>
+                <SelectItem value="modified-desc">Recently Modified</SelectItem>
+              </SelectContent>
+            </Select>
+            
+            <div className="flex items-center gap-2 ml-auto">
+              <Button
+                variant={viewMode === 'grid' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('grid')}
+              >
+                <Grid3x3 className="w-4 h-4" />
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => setViewMode('list')}
+              >
+                <List className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+          
+          {/* Advanced Search Panel */}
+          <AnimatePresence>
+            {showAdvancedSearch && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="border-t pt-4 space-y-4"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {/* File Size Filter */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium flex items-center gap-2">
+                      <HardDrive className="w-4 h-4" />
+                      File Size
+                    </Label>
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        placeholder="Min (MB)"
+                        value={searchFilters.fileSize.min}
+                        onChange={(e) => setSearchFilters(prev => ({
+                          ...prev,
+                          fileSize: { ...prev.fileSize, min: e.target.value }
+                        }))}
+                        className="text-xs"
+                      />
+                      <span className="text-xs text-gray-500">to</span>
+                      <Input
+                        placeholder="Max (MB)"
+                        value={searchFilters.fileSize.max}
+                        onChange={(e) => setSearchFilters(prev => ({
+                          ...prev,
+                          fileSize: { ...prev.fileSize, max: e.target.value }
+                        }))}
+                        className="text-xs"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Date Range Filter */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      Date Range
+                    </Label>
+                    <div className="flex gap-2 items-center">
+                      <Input
+                        type="date"
+                        value={searchFilters.dateRange.start}
+                        onChange={(e) => setSearchFilters(prev => ({
+                          ...prev,
+                          dateRange: { ...prev.dateRange, start: e.target.value }
+                        }))}
+                        className="text-xs"
+                      />
+                      <span className="text-xs text-gray-500">to</span>
+                      <Input
+                        type="date"
+                        value={searchFilters.dateRange.end}
+                        onChange={(e) => setSearchFilters(prev => ({
+                          ...prev,
+                          dateRange: { ...prev.dateRange, end: e.target.value }
+                        }))}
+                        className="text-xs"
+                      />
+                    </div>
+                  </div>
+                  
+                  {/* Tags Filter */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium flex items-center gap-2">
+                      <Tag className="w-4 h-4" />
+                      Tags
+                    </Label>
+                    <div className="flex flex-wrap gap-1">
+                      {Array.from(new Set(files.flatMap(f => f.tags))).slice(0, 8).map(tag => (
+                        <Button
+                          key={tag}
+                          variant={searchFilters.tags.includes(tag) ? 'default' : 'outline'}
+                          size="sm"
+                          onClick={() => {
+                            setSearchFilters(prev => ({
+                              ...prev,
+                              tags: prev.tags.includes(tag)
+                                ? prev.tags.filter(t => t !== tag)
+                                : [...prev.tags, tag]
+                            }))
+                          }}
+                          className="text-xs h-7"
+                        >
+                          {tag}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Action Buttons */}
+                <div className="flex items-center justify-between pt-2 border-t">
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setSearchFilters({
+                          fileSize: { min: '', max: '' },
+                          dateRange: { start: '', end: '' },
+                          tags: [],
+                          showFavorites: false,
+                          fileTypes: [],
+                          folders: []
+                        })
+                        setSearchTerm('')
+                        setSelectedCategory('all')
+                      }}
+                    >
+                      Clear All Filters
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Button variant="outline" size="sm">
+                      <BookmarkPlus className="w-4 h-4 mr-2" />
+                      Save Search
+                    </Button>
+                    <span className="text-sm text-gray-500">
+                      {filteredFiles.length} results
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </CardContent>
+      </Card>
 
       {/* Folders */}
       {folders.length > 0 && (
