@@ -118,9 +118,33 @@ export default function BriefcasePage() {
     id: string
     name: string
     query: string
+    category: string
     filters: typeof searchFilters
+    sortBy: typeof sortBy
+    sortOrder: typeof sortOrder
     createdAt: Date
   }>>([])
+  
+  // Search suggestions and autocomplete
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const [searchHistory, setSearchHistory] = useState<string[]>([])
+  const [searchSuggestions, setSearchSuggestions] = useState<Array<{
+    type: 'file' | 'tag' | 'category' | 'history' | 'description' | 'content'
+    value: string
+    count?: number
+    icon?: string
+    fileId?: string
+    snippet?: string
+  }>>([])
+  const searchInputRef = useRef<HTMLInputElement>(null)
+  
+  // Full-text search state
+  const [enableFullTextSearch, setEnableFullTextSearch] = useState(true)
+  const [fileContentIndex, setFileContentIndex] = useState<Record<string, {
+    content: string
+    indexed: boolean
+    lastIndexed: Date
+  }>>({})
   
   // Form states
   const [uploadForm, setUploadForm] = useState({
@@ -137,6 +161,377 @@ export default function BriefcasePage() {
   })
   
   const { toast } = useToast()
+  
+  // Full-text content indexing using real document parsing
+  const indexFileContent = useCallback(async (file: BriefcaseFile): Promise<string | null> => {
+    try {
+      // Check if we already have cached content
+      const cachedContent = fileContentIndex[file.id]
+      if (cachedContent && cachedContent.indexed && 
+          (Date.now() - cachedContent.lastIndexed.getTime()) < 3600000) { // 1 hour cache
+        return cachedContent.content
+      }
+
+      // Call the parsing API
+      const formData = new FormData()
+      formData.append('fileId', file.id)
+      formData.append('filePath', file.storage_path)
+      formData.append('mimeType', file.mime_type)
+      formData.append('fileName', file.name)
+      
+      const response = await fetch('/api/briefcase/parse-content', {
+        method: 'POST',
+        body: formData
+      })
+      
+      if (!response.ok) {
+        console.error(`Failed to parse content for ${file.name}: ${response.statusText}`)
+        return null
+      }
+      
+      const result = await response.json()
+      
+      if (result.success && result.content) {
+        return result.content.toLowerCase()
+      } else {
+        console.warn(`Content parsing failed for ${file.name}: ${result.error}`)
+        return null
+      }
+      
+    } catch (error) {
+      console.error(`Failed to index content for ${file.name}:`, error)
+      return null
+    }
+  }, [fileContentIndex])
+  
+  // Index all files on load and when files change
+  useEffect(() => {
+    if (!enableFullTextSearch) return
+    
+    const indexFiles = async () => {
+      const newIndex = { ...fileContentIndex }
+      let hasChanges = false
+      
+      for (const file of files) {
+        // Skip if already indexed recently (within 1 hour)
+        const existing = fileContentIndex[file.id]
+        if (existing && existing.indexed && 
+            (Date.now() - existing.lastIndexed.getTime()) < 3600000) {
+          continue
+        }
+        
+        const content = await indexFileContent(file)
+        if (content !== null) {
+          newIndex[file.id] = {
+            content,
+            indexed: true,
+            lastIndexed: new Date()
+          }
+          hasChanges = true
+        }
+      }
+      
+      if (hasChanges) {
+        setFileContentIndex(newIndex)
+      }
+    }
+    
+    if (files.length > 0) {
+      indexFiles()
+    }
+  }, [files, enableFullTextSearch, indexFileContent])
+  
+  // Generate search suggestions based on files and search term
+  const generateSearchSuggestions = useCallback((query: string) => {
+    if (!query.trim()) {
+      // Show recent searches when no query
+      const suggestions = searchHistory.slice(0, 5).map(term => ({
+        type: 'history' as const,
+        value: term,
+        icon: '🕐'
+      }))
+      setSearchSuggestions(suggestions)
+      return
+    }
+    
+    const lowerQuery = query.toLowerCase()
+    const suggestions: Array<{
+      type: 'file' | 'tag' | 'category' | 'history' | 'description' | 'content'
+      value: string
+      count?: number
+      icon?: string
+      fileId?: string
+      snippet?: string
+    }> = []
+    
+    // File name suggestions
+    const fileMatches = files
+      .filter(file => file.name.toLowerCase().includes(lowerQuery))
+      .slice(0, 5)
+      .map(file => ({
+        type: 'file' as const,
+        value: file.name,
+        icon: getFileTypeIcon(file.mime_type)
+      }))
+    
+    // Tag suggestions
+    const allTags = Array.from(new Set(files.flatMap(f => f.tags)))
+    const tagMatches = allTags
+      .filter(tag => tag.toLowerCase().includes(lowerQuery))
+      .slice(0, 3)
+      .map(tag => {
+        const count = files.filter(f => f.tags.includes(tag)).length
+        return {
+          type: 'tag' as const,
+          value: tag,
+          count,
+          icon: '🏷️'
+        }
+      })
+    
+    // Category suggestions
+    const categories = Array.from(new Set(files.map(f => f.category)))
+    const categoryMatches = categories
+      .filter(category => category.toLowerCase().includes(lowerQuery))
+      .slice(0, 2)
+      .map(category => {
+        const count = files.filter(f => f.category === category).length
+        return {
+          type: 'category' as const,
+          value: category,
+          count,
+          icon: getCategoryIcon(category)
+        }
+      })
+    
+    // Description suggestions
+    const descriptionMatches = files
+      .filter(file => file.description?.toLowerCase().includes(lowerQuery))
+      .slice(0, 3)
+      .map(file => ({
+        type: 'description' as const,
+        value: file.description || '',
+        icon: '📝'
+      }))
+    
+    // Content suggestions (full-text search matches)
+    const contentMatches = enableFullTextSearch ? files
+      .filter(file => {
+        const content = fileContentIndex[file.id]
+        return content?.indexed && content.content.includes(lowerQuery)
+      })
+      .slice(0, 3)
+      .map(file => {
+        const content = fileContentIndex[file.id].content
+        const matchIndex = content.indexOf(lowerQuery)
+        const start = Math.max(0, matchIndex - 20)
+        const end = Math.min(content.length, matchIndex + lowerQuery.length + 20)
+        const snippet = content.substring(start, end)
+        
+        return {
+          type: 'content' as const,
+          value: file.name,
+          fileId: file.id,
+          snippet: `...${snippet}...`,
+          icon: '🔍'
+        }
+      }) : []
+    
+    // History suggestions that match
+    const historyMatches = searchHistory
+      .filter(term => term.toLowerCase().includes(lowerQuery) && term !== query)
+      .slice(0, 2)
+      .map(term => ({
+        type: 'history' as const,
+        value: term,
+        icon: '🕐'
+      }))
+    
+    // Combine all suggestions with priority: files > content > tags > categories > descriptions > history
+    suggestions.push(...fileMatches, ...contentMatches, ...tagMatches, ...categoryMatches, ...descriptionMatches, ...historyMatches)
+    
+    setSearchSuggestions(suggestions.slice(0, 8))
+  }, [files, searchHistory])
+  
+  // Handle search input changes
+  const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSearchTerm(value)
+    
+    if (value.trim()) {
+      generateSearchSuggestions(value)
+      setShowSuggestions(true)
+    } else {
+      setShowSuggestions(false)
+      setSearchSuggestions([])
+    }
+  }, [generateSearchSuggestions])
+  
+  // Handle search input focus
+  const handleSearchFocus = useCallback(() => {
+    if (searchTerm.trim()) {
+      generateSearchSuggestions(searchTerm)
+      setShowSuggestions(true)
+    } else if (searchHistory.length > 0) {
+      generateSearchSuggestions('')
+      setShowSuggestions(true)
+    }
+  }, [searchTerm, searchHistory, generateSearchSuggestions])
+  
+  // Handle search input blur (with delay to allow clicks)
+  const handleSearchBlur = useCallback(() => {
+    setTimeout(() => setShowSuggestions(false), 150)
+  }, [])
+  
+  // Handle suggestion selection
+  const handleSuggestionSelect = useCallback((suggestion: typeof searchSuggestions[0]) => {
+    if (suggestion.type === 'tag') {
+      // Add to tag filter instead of search term
+      setSearchFilters(prev => ({
+        ...prev,
+        tags: prev.tags.includes(suggestion.value) 
+          ? prev.tags 
+          : [...prev.tags, suggestion.value]
+      }))
+      setSearchTerm('')
+    } else if (suggestion.type === 'category') {
+      // Set category filter
+      setSelectedCategory(suggestion.value)
+      setSearchTerm('')
+    } else {
+      // Set search term
+      setSearchTerm(suggestion.value)
+      
+      // Add to search history if not already there
+      if (!searchHistory.includes(suggestion.value)) {
+        setSearchHistory(prev => [suggestion.value, ...prev.slice(0, 9)]) // Keep last 10
+      }
+    }
+    
+    setShowSuggestions(false)
+    searchInputRef.current?.blur()
+  }, [searchHistory, setSearchFilters, setSelectedCategory])
+  
+  // Save current search
+  const handleSaveSearch = useCallback(() => {
+    const hasFilters = searchTerm.trim() || 
+                      selectedCategory !== 'all' || 
+                      searchFilters.showFavorites ||
+                      searchFilters.fileSize.min || 
+                      searchFilters.fileSize.max ||
+                      searchFilters.dateRange.start ||
+                      searchFilters.dateRange.end ||
+                      searchFilters.tags.length > 0
+    
+    if (!hasFilters) {
+      toast({
+        title: "No Search to Save",
+        description: "Please enter a search term or apply filters before saving.",
+        variant: "destructive"
+      })
+      return
+    }
+    
+    const searchName = prompt('Enter a name for this saved search:')
+    if (!searchName?.trim()) return
+    
+    const newSavedSearch = {
+      id: crypto.randomUUID(),
+      name: searchName.trim(),
+      query: searchTerm,
+      category: selectedCategory,
+      filters: { ...searchFilters },
+      sortBy,
+      sortOrder,
+      createdAt: new Date()
+    }
+    
+    setSavedSearches(prev => [newSavedSearch, ...prev])
+    
+    toast({
+      title: "Search Saved",
+      description: `"${searchName}" has been saved successfully.`
+    })
+  }, [searchTerm, selectedCategory, searchFilters, sortBy, sortOrder, toast])
+  
+  // Apply saved search
+  const handleApplySavedSearch = useCallback((savedSearch: typeof savedSearches[0]) => {
+    setSearchTerm(savedSearch.query)
+    setSelectedCategory(savedSearch.category)
+    setSearchFilters(savedSearch.filters)
+    setSortBy(savedSearch.sortBy)
+    setSortOrder(savedSearch.sortOrder)
+    
+    toast({
+      title: "Search Applied",
+      description: `Applied saved search: "${savedSearch.name}"`
+    })
+  }, [setSearchFilters])
+  
+  // Delete saved search
+  const handleDeleteSavedSearch = useCallback((searchId: string) => {
+    setSavedSearches(prev => prev.filter(s => s.id !== searchId))
+    
+    toast({
+      title: "Search Deleted",
+      description: "Saved search has been removed."
+    })
+  }, [])
+  
+  // Load search history and saved searches from localStorage on mount
+  useEffect(() => {
+    const savedHistory = localStorage.getItem('briefcase-search-history')
+    if (savedHistory) {
+      setSearchHistory(JSON.parse(savedHistory))
+    }
+    
+    const savedSearchesData = localStorage.getItem('briefcase-saved-searches')
+    if (savedSearchesData) {
+      const parsed = JSON.parse(savedSearchesData)
+      // Convert date strings back to Date objects
+      const searches = parsed.map((search: any) => ({
+        ...search,
+        createdAt: new Date(search.createdAt)
+      }))
+      setSavedSearches(searches)
+    }
+  }, [])
+  
+  // Save search history to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('briefcase-search-history', JSON.stringify(searchHistory))
+  }, [searchHistory])
+  
+  // Save saved searches to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('briefcase-saved-searches', JSON.stringify(savedSearches))
+  }, [savedSearches])
+  
+  // Helper functions for suggestion icons
+  const getFileTypeIcon = (mimeType: string): string => {
+    if (mimeType.startsWith('image/')) return '🖼️'
+    if (mimeType.startsWith('video/')) return '🎥'
+    if (mimeType.startsWith('audio/')) return '🎵'
+    if (mimeType.includes('pdf')) return '📄'
+    if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return '📊'
+    if (mimeType.includes('presentation')) return '📈'
+    if (mimeType.includes('document')) return '📝'
+    if (mimeType.includes('archive') || mimeType.includes('zip')) return '🗄️'
+    return '📄'
+  }
+  
+  const getCategoryIcon = (category: string): string => {
+    const icons: Record<string, string> = {
+      'document': '📄',
+      'image': '🖼️',
+      'video': '🎥',
+      'audio': '🎵',
+      'presentation': '📊',
+      'spreadsheet': '📈',
+      'other': '📁'
+    }
+    return icons[category] || '📄'
+  }
   
   // Pull to refresh handler
   const handleTouchStart = useCallback((e: TouchEvent) => {
@@ -328,7 +723,7 @@ export default function BriefcasePage() {
   }
 
   // Preview file
-  const previewFile = (file: BriefcaseFile) => {
+  const handlePreviewFile = (file: BriefcaseFile) => {
     const convertedFile = {
       id: file.id,
       name: file.name,
@@ -407,10 +802,28 @@ export default function BriefcasePage() {
   // Filter and sort files
   const filteredFiles = (() => {
     let filtered = files.filter(file => {
-      // Basic search
-      const matchesSearch = file.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           file.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           file.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+      // Enhanced search with full-text content
+      let matchesSearch = false
+      
+      if (!searchTerm.trim()) {
+        matchesSearch = true
+      } else {
+        const lowerSearchTerm = searchTerm.toLowerCase()
+        
+        // Basic metadata search
+        const basicMatches = file.name.toLowerCase().includes(lowerSearchTerm) ||
+                           file.description?.toLowerCase().includes(lowerSearchTerm) ||
+                           file.tags.some(tag => tag.toLowerCase().includes(lowerSearchTerm))
+        
+        // Full-text content search (if enabled and content is indexed)
+        let contentMatches = false
+        if (enableFullTextSearch && fileContentIndex[file.id]?.indexed) {
+          const fileContent = fileContentIndex[file.id].content
+          contentMatches = fileContent.includes(lowerSearchTerm)
+        }
+        
+        matchesSearch = basicMatches || contentMatches
+      }
       
       // Category filter
       const matchesCategory = selectedCategory === "all" || file.category === selectedCategory
@@ -731,21 +1144,71 @@ export default function BriefcasePage() {
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <Input
+                ref={searchInputRef}
                 placeholder="Search files, descriptions, and tags..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
+                onBlur={handleSearchBlur}
                 className="pl-10 pr-12 h-10"
               />
               {searchTerm && (
                 <Button
                   variant="ghost"
                   size="sm"
-                  onClick={() => setSearchTerm('')}
+                  onClick={() => {
+                    setSearchTerm('')
+                    setShowSuggestions(false)
+                  }}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-gray-100"
                 >
                   <X className="w-3 h-3" />
                 </Button>
               )}
+              
+              {/* Search Suggestions Dropdown */}
+              <AnimatePresence>
+                {showSuggestions && searchSuggestions.length > 0 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.1 }}
+                    className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto"
+                  >
+                    <div className="py-2">
+                      {searchSuggestions.map((suggestion, index) => (
+                        <button
+                          key={`${suggestion.type}-${suggestion.value}-${index}`}
+                          onClick={() => handleSuggestionSelect(suggestion)}
+                          className="w-full px-4 py-2 text-left hover:bg-gray-50 flex items-center gap-3 text-sm"
+                        >
+                          <span className="text-base">{suggestion.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <span className="truncate">{suggestion.value}</span>
+                              {suggestion.count && (
+                                <Badge variant="secondary" className="text-xs">
+                                  {suggestion.count}
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {suggestion.type === 'content' && suggestion.snippet ? (
+                                <span className="truncate italic">{suggestion.snippet}</span>
+                              ) : (
+                                <span className="capitalize">
+                                  {suggestion.type === 'history' ? 'Recent search' : suggestion.type}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
             <Button
               variant={showAdvancedSearch ? 'default' : 'outline'}
@@ -947,7 +1410,7 @@ export default function BriefcasePage() {
                   </div>
                   
                   <div className="flex items-center gap-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={handleSaveSearch}>
                       <BookmarkPlus className="w-4 h-4 mr-2" />
                       Save Search
                     </Button>
@@ -1092,7 +1555,7 @@ export default function BriefcasePage() {
                         <h3 
                           className="font-medium text-sm mb-2 truncate cursor-pointer hover:text-purple-600 transition-colors" 
                           title={file.name}
-                          onClick={() => previewFile(file)}
+                          onClick={() => handlePreviewFile(file)}
                         >
                           {file.name}
                         </h3>
@@ -1130,7 +1593,7 @@ export default function BriefcasePage() {
                           <Button 
                             size="sm" 
                             variant="outline" 
-                            onClick={() => previewFile(file)}
+                            onClick={() => handlePreviewFile(file)}
                             className="flex-1"
                           >
                             <Eye className="w-3 h-3 mr-1" />
