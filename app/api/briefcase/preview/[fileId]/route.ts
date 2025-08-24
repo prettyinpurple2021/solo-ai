@@ -51,7 +51,7 @@ const MIME_TYPES: { [key: string]: string } = {
   // Video
   '.mp4': 'video/mp4',
   '.webm': 'video/webm',
-  '.ogg': 'video/ogg',
+  '.ogv': 'video/ogg',
   '.avi': 'video/x-msvideo',
   '.mov': 'video/quicktime',
   '.wmv': 'video/x-ms-wmv',
@@ -320,7 +320,7 @@ export async function GET(
     headers.set('X-Preview-Type', previewType)
     headers.set('X-Original-Size', file.size.toString())
 
-    return new NextResponse(content, {
+    return new NextResponse(typeof content === 'string' ? content : Buffer.from(content), {
       status: 200,
       headers: headers
     })

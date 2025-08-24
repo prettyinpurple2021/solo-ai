@@ -10,7 +10,6 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Separator } from "@/components/ui/separator"
 import { Progress } from "@/components/ui/progress"
 import { 
   Briefcase, 
@@ -27,14 +26,12 @@ import {
   Download,
   Share2,
   Trash2,
-  Plus,
   Star,
   FolderPlus,
   Folder,
   Calendar,
-  User,
   FileSpreadsheet,
-  FilePdf,
+  FileType,
   FileCode,
   MoreHorizontal,
   Crown,
@@ -895,7 +892,7 @@ export default function BriefcasePage() {
     if (mimeType.startsWith('image/')) return <ImageIcon className="w-5 h-5" />
     if (mimeType.startsWith('video/')) return <Video className="w-5 h-5" />
     if (mimeType.startsWith('audio/')) return <Music className="w-5 h-5" />
-    if (mimeType.includes('pdf')) return <FilePdf className="w-5 h-5" />
+    if (mimeType.includes('pdf')) return <FileType className="w-5 h-5" />
     if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) return <FileSpreadsheet className="w-5 h-5" />
     if (mimeType.includes('code') || mimeType.includes('javascript') || mimeType.includes('json')) return <FileCode className="w-5 h-5" />
     if (mimeType.includes('zip') || mimeType.includes('archive')) return <Archive className="w-5 h-5" />
