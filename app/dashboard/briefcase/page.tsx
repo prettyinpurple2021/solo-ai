@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect, useCallback, useRef, RefObject } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -38,10 +38,12 @@ import {
   FileCode,
   MoreHorizontal,
   Crown,
-  Sparkles
+  Sparkles,
+  Eye
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useToast } from "@/hooks/use-toast"
+import FilePreviewModal from "@/components/file-preview-modal"
 
 interface BriefcaseFile {
   id: string
@@ -81,6 +83,16 @@ export default function BriefcasePage() {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
   
+  // Preview modal state
+  const [showPreviewModal, setShowPreviewModal] = useState(false)
+  const [previewFile, setPreviewFile] = useState<BriefcaseFile | null>(null)
+  const [previewIndex, setPreviewIndex] = useState(0)
+  
+  // Mobile optimization state
+  const [isRefreshing, setIsRefreshing] = useState(false)
+  const [lastTouchY, setLastTouchY] = useState(0)
+  const containerRef = useRef<HTMLDivElement>(null)
+  
   // Form states
   const [uploadForm, setUploadForm] = useState({
     category: "document",
@@ -96,6 +108,56 @@ export default function BriefcasePage() {
   })
   
   const { toast } = useToast()
+  
+  // Pull to refresh handler
+  const handleTouchStart = useCallback((e: TouchEvent) => {
+    setLastTouchY(e.touches[0].clientY)
+  }, [])
+  
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    const currentY = e.touches[0].clientY
+    const containerElement = containerRef.current
+    
+    if (containerElement && containerElement.scrollTop === 0) {
+      const deltaY = currentY - lastTouchY
+      
+      if (deltaY > 100 && !isRefreshing) {
+        // Trigger refresh
+        handlePullToRefresh()
+      }
+    }
+  }, [lastTouchY, isRefreshing])
+  
+  const handlePullToRefresh = useCallback(async () => {
+    if (isRefreshing) return
+    
+    setIsRefreshing(true)
+    try {
+      await Promise.all([fetchFiles(), fetchFolders()])
+      toast({
+        title: "Refreshed",
+        description: "Files and folders updated successfully."
+      })
+    } catch (error) {
+      console.error('Refresh error:', error)
+    } finally {
+      setIsRefreshing(false)
+    }
+  }, [isRefreshing, toast])
+  
+  // Add touch event listeners for pull-to-refresh
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+    
+    container.addEventListener('touchstart', handleTouchStart, { passive: true })
+    container.addEventListener('touchmove', handleTouchMove, { passive: true })
+    
+    return () => {
+      container.removeEventListener('touchstart', handleTouchStart)
+      container.removeEventListener('touchmove', handleTouchMove)
+    }
+  }, [handleTouchStart, handleTouchMove])
 
   // Fetch files and folders
   useEffect(() => {
@@ -236,6 +298,59 @@ export default function BriefcasePage() {
     }
   }
 
+  // Preview file
+  const previewFile = (file: BriefcaseFile) => {
+    const convertedFile = {
+      id: file.id,
+      name: file.name,
+      size: file.size,
+      type: file.mime_type,
+      category: file.category,
+      createdAt: new Date(file.upload_date),
+      modifiedAt: new Date(file.last_modified),
+      tags: file.tags,
+      description: file.description,
+      folderId: file.folder_id,
+      favorite: file.is_favorite
+    }
+    
+    setPreviewFile(convertedFile)
+    setPreviewIndex(filteredFiles.findIndex(f => f.id === file.id))
+    setShowPreviewModal(true)
+  }
+
+  // Navigate preview
+  const navigatePreview = (direction: 'prev' | 'next') => {
+    const currentIndex = previewIndex
+    let newIndex: number
+    
+    if (direction === 'prev') {
+      newIndex = currentIndex > 0 ? currentIndex - 1 : filteredFiles.length - 1
+    } else {
+      newIndex = currentIndex < filteredFiles.length - 1 ? currentIndex + 1 : 0
+    }
+    
+    const newFile = filteredFiles[newIndex]
+    if (newFile) {
+      const convertedFile = {
+        id: newFile.id,
+        name: newFile.name,
+        size: newFile.size,
+        type: newFile.mime_type,
+        category: newFile.category,
+        createdAt: new Date(newFile.upload_date),
+        modifiedAt: new Date(newFile.last_modified),
+        tags: newFile.tags,
+        description: newFile.description,
+        folderId: newFile.folder_id,
+        favorite: newFile.is_favorite
+      }
+      
+      setPreviewFile(convertedFile)
+      setPreviewIndex(newIndex)
+    }
+  }
+
   // Delete file
   const deleteFile = async (fileId: string) => {
     try {
@@ -314,9 +429,9 @@ export default function BriefcasePage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div ref={containerRef} className="p-3 sm:p-6 space-y-4 sm:space-y-6 overflow-y-auto">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <motion.div
@@ -329,25 +444,26 @@ export default function BriefcasePage() {
                 repeat: Infinity, 
                 ease: "easeInOut" 
               }}
-              className="w-10 h-10 bg-gradient-to-r from-purple-500 via-teal-500 to-pink-500 rounded-full flex items-center justify-center"
+              className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 via-teal-500 to-pink-500 rounded-full flex items-center justify-center"
             >
-              <Briefcase className="w-5 h-5 text-white" />
+              <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
             </motion.div>
             <div>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
+              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
                 Briefcase
               </h1>
-              <p className="text-gray-600">Your secure document vault and content library</p>
+              <p className="text-sm sm:text-base text-gray-600 hidden sm:block">Your secure document vault and content library</p>
             </div>
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Dialog open={showFolderDialog} onOpenChange={setShowFolderDialog}>
             <DialogTrigger asChild>
-              <Button variant="outline" className="border-purple-200 hover:border-purple-300">
-                <FolderPlus className="w-4 h-4 mr-2" />
-                New Folder
+              <Button variant="outline" className="border-purple-200 hover:border-purple-300 text-xs sm:text-sm">
+                <FolderPlus className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">New Folder</span>
+                <span className="sm:hidden">Folder</span>
               </Button>
             </DialogTrigger>
             <DialogContent>
@@ -392,82 +508,97 @@ export default function BriefcasePage() {
           
           <Dialog open={showUploadDialog} onOpenChange={setShowUploadDialog}>
             <DialogTrigger asChild>
-              <Button className="bg-gradient-to-r from-purple-500 via-teal-500 to-pink-500 hover:from-purple-600 hover:via-teal-600 hover:to-pink-600 text-white">
-                <Upload className="w-4 h-4 mr-2" />
-                Upload Files
+              <Button className="bg-gradient-to-r from-purple-500 via-teal-500 to-pink-500 hover:from-purple-600 hover:via-teal-600 hover:to-pink-600 text-white text-xs sm:text-sm">
+                <Upload className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+                <span className="hidden sm:inline">Upload Files</span>
+                <span className="sm:hidden">Upload</span>
               </Button>
             </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Upload Files</DialogTitle>
-                <DialogDescription>Upload documents, images, and other files to your briefcase</DialogDescription>
+            <DialogContent className="w-[95vw] max-w-lg sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+              <DialogHeader className="pb-4">
+                <DialogTitle className="text-lg sm:text-xl">Upload Files</DialogTitle>
+                <DialogDescription className="text-sm text-gray-600">Upload documents, images, and other files to your briefcase</DialogDescription>
               </DialogHeader>
-              <div className="space-y-4">
+              <div className="space-y-4 sm:space-y-6">
                 <div>
-                  <Label htmlFor="file-upload">Files</Label>
-                  <Input
-                    id="file-upload"
-                    type="file"
-                    multiple
-                    onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
-                    disabled={isUploading}
-                  />
+                  <Label htmlFor="file-upload" className="text-sm font-medium">Files</Label>
+                  <div className="mt-2">
+                    <Input
+                      id="file-upload"
+                      type="file"
+                      multiple
+                      accept="*/*"
+                      onChange={(e) => e.target.files && handleFileUpload(e.target.files)}
+                      disabled={isUploading}
+                      className="h-12 sm:h-10 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">Select one or more files to upload</p>
+                  </div>
                 </div>
-                <div>
-                  <Label htmlFor="upload-category">Category</Label>
-                  <Select value={uploadForm.category} onValueChange={(value) => setUploadForm({...uploadForm, category: value})}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="document">Document</SelectItem>
-                      <SelectItem value="image">Image</SelectItem>
-                      <SelectItem value="video">Video</SelectItem>
-                      <SelectItem value="audio">Audio</SelectItem>
-                      <SelectItem value="presentation">Presentation</SelectItem>
-                      <SelectItem value="spreadsheet">Spreadsheet</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
-                    </SelectContent>
-                  </Select>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="upload-category" className="text-sm font-medium">Category</Label>
+                    <Select value={uploadForm.category} onValueChange={(value) => setUploadForm({...uploadForm, category: value})}>
+                      <SelectTrigger className="mt-2 h-12 sm:h-10">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="document">📄 Document</SelectItem>
+                        <SelectItem value="image">🖼️ Image</SelectItem>
+                        <SelectItem value="video">🎥 Video</SelectItem>
+                        <SelectItem value="audio">🎵 Audio</SelectItem>
+                        <SelectItem value="presentation">📊 Presentation</SelectItem>
+                        <SelectItem value="spreadsheet">📈 Spreadsheet</SelectItem>
+                        <SelectItem value="other">📁 Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
+                  <div>
+                    <Label htmlFor="upload-folder" className="text-sm font-medium">Folder <span className="text-gray-400">(Optional)</span></Label>
+                    <Select value={uploadForm.folder_id} onValueChange={(value) => setUploadForm({...uploadForm, folder_id: value})}>
+                      <SelectTrigger className="mt-2 h-12 sm:h-10">
+                        <SelectValue placeholder="Select a folder" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {folders.map((folder) => (
+                          <SelectItem key={folder.id} value={folder.id}>📂 {folder.name}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
+                
                 <div>
-                  <Label htmlFor="upload-folder">Folder (Optional)</Label>
-                  <Select value={uploadForm.folder_id} onValueChange={(value) => setUploadForm({...uploadForm, folder_id: value})}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a folder" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {folders.map((folder) => (
-                        <SelectItem key={folder.id} value={folder.id}>{folder.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label htmlFor="upload-description">Description (Optional)</Label>
+                  <Label htmlFor="upload-description" className="text-sm font-medium">Description <span className="text-gray-400">(Optional)</span></Label>
                   <Textarea
                     id="upload-description"
                     value={uploadForm.description}
                     onChange={(e) => setUploadForm({...uploadForm, description: e.target.value})}
-                    placeholder="Describe these files"
+                    placeholder="Describe these files..."
+                    className="mt-2 min-h-[80px] resize-none"
                   />
                 </div>
+                
                 <div>
-                  <Label htmlFor="upload-tags">Tags (Optional)</Label>
+                  <Label htmlFor="upload-tags" className="text-sm font-medium">Tags <span className="text-gray-400">(Optional)</span></Label>
                   <Input
                     id="upload-tags"
                     value={uploadForm.tags}
                     onChange={(e) => setUploadForm({...uploadForm, tags: e.target.value})}
                     placeholder="Enter tags separated by commas"
+                    className="mt-2 h-12 sm:h-10"
                   />
                 </div>
+                
                 {isUploading && (
-                  <div className="space-y-2">
+                  <div className="space-y-3 bg-purple-50 p-4 rounded-lg">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">Uploading...</span>
-                      <span className="text-sm text-gray-500">{uploadProgress}%</span>
+                      <span className="text-sm font-medium text-purple-700">Uploading...</span>
+                      <span className="text-sm text-purple-600 font-semibold">{uploadProgress}%</span>
                     </div>
-                    <Progress value={uploadProgress} className="h-2" />
+                    <Progress value={uploadProgress} className="h-3" />
                   </div>
                 )}
               </div>
@@ -503,49 +634,55 @@ export default function BriefcasePage() {
       </Card>
 
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
+      <div className="space-y-3">
+        <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
           <Input
             placeholder="Search files, descriptions, and tags..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-10 sm:h-9"
           />
         </div>
         
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="w-48">
-            <Filter className="w-4 h-4 mr-2" />
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="document">Documents</SelectItem>
-            <SelectItem value="image">Images</SelectItem>
-            <SelectItem value="video">Videos</SelectItem>
-            <SelectItem value="audio">Audio</SelectItem>
-            <SelectItem value="presentation">Presentations</SelectItem>
-            <SelectItem value="spreadsheet">Spreadsheets</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
-          </SelectContent>
-        </Select>
-        
-        <div className="flex items-center gap-2">
-          <Button
-            variant={viewMode === 'grid' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setViewMode('grid')}
-          >
-            <Grid3x3 className="w-4 h-4" />
-          </Button>
-          <Button
-            variant={viewMode === 'list' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setViewMode('list')}
-          >
-            <List className="w-4 h-4" />
-          </Button>
+        <div className="flex flex-col sm:flex-row gap-3">
+          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <SelectTrigger className="flex-1 sm:w-48 h-10 sm:h-9">
+              <Filter className="w-4 h-4 mr-2" />
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Categories</SelectItem>
+              <SelectItem value="document">Documents</SelectItem>
+              <SelectItem value="image">Images</SelectItem>
+              <SelectItem value="video">Videos</SelectItem>
+              <SelectItem value="audio">Audio</SelectItem>
+              <SelectItem value="presentation">Presentations</SelectItem>
+              <SelectItem value="spreadsheet">Spreadsheets</SelectItem>
+              <SelectItem value="other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+          
+          <div className="flex items-center gap-2 justify-center sm:justify-start">
+            <Button
+              variant={viewMode === 'grid' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+              className="flex-1 sm:flex-none"
+            >
+              <Grid3x3 className="w-4 h-4 mr-2 sm:mr-0" />
+              <span className="sm:hidden">Grid</span>
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+              className="flex-1 sm:flex-none"
+            >
+              <List className="w-4 h-4 mr-2 sm:mr-0" />
+              <span className="sm:hidden">List</span>
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -676,7 +813,11 @@ export default function BriefcasePage() {
                           </div>
                         </div>
                         
-                        <h3 className="font-medium text-sm mb-2 truncate" title={file.name}>
+                        <h3 
+                          className="font-medium text-sm mb-2 truncate cursor-pointer hover:text-purple-600 transition-colors" 
+                          title={file.name}
+                          onClick={() => previewFile(file)}
+                        >
                           {file.name}
                         </h3>
                         
@@ -710,9 +851,17 @@ export default function BriefcasePage() {
                         </div>
                         
                         <div className="flex items-center gap-2 mt-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <Button size="sm" variant="outline" className="flex-1">
-                            <Download className="w-3 h-3 mr-1" />
-                            Download
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            onClick={() => previewFile(file)}
+                            className="flex-1"
+                          >
+                            <Eye className="w-3 h-3 mr-1" />
+                            Preview
+                          </Button>
+                          <Button size="sm" variant="outline">
+                            <Download className="w-3 h-3" />
                           </Button>
                           <Button size="sm" variant="outline">
                             <Share2 className="w-3 h-3" />
@@ -789,6 +938,28 @@ export default function BriefcasePage() {
           </AnimatePresence>
         )}
       </div>
+
+      {/* File Preview Modal */}
+      <FilePreviewModal
+        isOpen={showPreviewModal}
+        onClose={() => setShowPreviewModal(false)}
+        file={previewFile}
+        files={filteredFiles.map(f => ({
+          id: f.id,
+          name: f.name,
+          size: f.size,
+          type: f.mime_type,
+          category: f.category,
+          createdAt: new Date(f.upload_date),
+          modifiedAt: new Date(f.last_modified),
+          tags: f.tags,
+          description: f.description,
+          folderId: f.folder_id,
+          favorite: f.is_favorite
+        }))}
+        currentIndex={previewIndex}
+        onNavigate={navigatePreview}
+      />
     </div>
   )
 }
