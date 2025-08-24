@@ -10,8 +10,21 @@ import {
   Bot, 
   Send, 
   Sparkles,
-  Users
+  Users,
+  Save,
+  FileText,
+  Download,
+  Share2,
+  Copy,
+  CheckCircle,
+  Briefcase
 } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { motion, AnimatePresence } from "framer-motion"
 
 interface Message {
   id: string
@@ -113,6 +126,17 @@ export default function AgentsPage() {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [_conversations, setConversations] = useState<any[]>([])
+  const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [selectedMessageToSave, setSelectedMessageToSave] = useState<Message | null>(null)
+  const [saveForm, setSaveForm] = useState({
+    fileName: "",
+    description: "",
+    category: "document",
+    tags: "",
+    format: "txt"
+  })
+  const [isSaving, setIsSaving] = useState(false)
+  const { toast } = useToast()
 
   useEffect(() => {
     fetchConversations()
@@ -213,6 +237,160 @@ export default function AgentsPage() {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
   }
 
+  // Save message to briefcase
+  const handleSaveMessage = (message: Message) => {
+    setSelectedMessageToSave(message)
+    
+    // Generate smart defaults
+    const agentName = selectedAgent?.display_name || 'AI'
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
+    const defaultFileName = `${agentName}_Response_${timestamp}`
+    
+    // Smart categorization based on content
+    let smartCategory = 'document'
+    const content = message.content.toLowerCase()
+    if (content.includes('strategy') || content.includes('plan')) smartCategory = 'document'
+    if (content.includes('email') || content.includes('message')) smartCategory = 'document'
+    if (content.includes('code') || content.includes('function')) smartCategory = 'document'
+    if (content.includes('image') || content.includes('design')) smartCategory = 'image'
+    
+    // Generate smart tags
+    const smartTags = [
+      selectedAgent?.display_name.toLowerCase() || 'ai',
+      message.role === 'assistant' ? 'ai-generated' : 'user-input',
+      'chat-export'
+    ]
+    
+    setSaveForm({
+      fileName: defaultFileName,
+      description: `Conversation with ${agentName} - ${message.content.substring(0, 100)}...`,
+      category: smartCategory,
+      tags: smartTags.join(', '),
+      format: 'txt'
+    })
+    
+    setShowSaveDialog(true)
+  }
+
+  // Save entire conversation
+  const handleSaveConversation = () => {
+    if (messages.length === 0) return
+    
+    const agentName = selectedAgent?.display_name || 'AI'
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/:/g, '-')
+    const defaultFileName = `${agentName}_Conversation_${timestamp}`
+    
+    // Create conversation content
+    const conversationContent = messages.map(msg => 
+      `[${msg.role.toUpperCase()}] ${formatTime(msg.timestamp)}:\n${msg.content}\n`
+    ).join('\n')
+    
+    const mockConversationMessage: Message = {
+      id: 'conversation-export',
+      role: 'assistant',
+      content: conversationContent,
+      timestamp: new Date(),
+      agentId: selectedAgent?.id
+    }
+    
+    setSelectedMessageToSave(mockConversationMessage)
+    
+    setSaveForm({
+      fileName: defaultFileName,
+      description: `Full conversation with ${agentName} (${messages.length} messages)`,
+      category: 'document',
+      tags: `${agentName.toLowerCase()}, conversation, full-export`,
+      format: 'txt'
+    })
+    
+    setShowSaveDialog(true)
+  }
+
+  // Execute save to briefcase
+  const executeSave = async () => {
+    if (!selectedMessageToSave) return
+    
+    setIsSaving(true)
+    
+    try {
+      // Create file content based on format
+      let fileContent = selectedMessageToSave.content
+      let mimeType = 'text/plain'
+      let fileExtension = saveForm.format
+      
+      if (saveForm.format === 'md') {
+        fileContent = `# ${saveForm.fileName}\n\n${selectedMessageToSave.content}`
+        mimeType = 'text/markdown'
+      } else if (saveForm.format === 'json') {
+        fileContent = JSON.stringify({
+          agent: selectedAgent?.display_name,
+          timestamp: selectedMessageToSave.timestamp,
+          content: selectedMessageToSave.content,
+          metadata: {
+            role: selectedMessageToSave.role,
+            agentId: selectedMessageToSave.agentId
+          }
+        }, null, 2)
+        mimeType = 'application/json'
+      }
+      
+      // Create file blob
+      const blob = new Blob([fileContent], { type: mimeType })
+      const file = new File([blob], `${saveForm.fileName}.${fileExtension}`, { type: mimeType })
+      
+      // Upload to briefcase
+      const formData = new FormData()
+      formData.append('files', file)
+      formData.append('category', saveForm.category)
+      formData.append('description', saveForm.description)
+      formData.append('tags', saveForm.tags)
+      
+      const response = await fetch('/api/briefcase/upload', {
+        method: 'POST',
+        body: formData
+      })
+      
+      if (response.ok) {
+        toast({
+          title: "Saved Successfully!",
+          description: `"${saveForm.fileName}" has been saved to your Briefcase.`,
+          action: {
+            label: "View Briefcase",
+            onClick: () => window.location.href = '/dashboard/briefcase'
+          }
+        })
+        setShowSaveDialog(false)
+        setSaveForm({
+          fileName: "",
+          description: "",
+          category: "document",
+          tags: "",
+          format: "txt"
+        })
+      } else {
+        throw new Error('Failed to save')
+      }
+    } catch (error) {
+      console.error('Save error:', error)
+      toast({
+        title: "Save Failed",
+        description: "Failed to save to Briefcase. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  // Copy message to clipboard
+  const copyToClipboard = (content: string) => {
+    navigator.clipboard.writeText(content)
+    toast({
+      title: "Copied!",
+      description: "Message copied to clipboard."
+    })
+  }
+
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
@@ -292,20 +470,37 @@ export default function AgentsPage() {
               <>
                 {/* Chat Header */}
                 <CardHeader className="border-b">
-                  <div className="flex items-center gap-3">
-                    <div 
-                      className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
-                      style={{ backgroundColor: selectedAgent.accent_color }}
-                    >
-                      {selectedAgent.display_name.charAt(0)}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold"
+                        style={{ backgroundColor: selectedAgent.accent_color }}
+                      >
+                        {selectedAgent.display_name.charAt(0)}
+                      </div>
+                      <div>
+                        <CardTitle className="flex items-center gap-2">
+                          {selectedAgent.display_name}
+                          <Sparkles className="w-4 h-4 text-purple-500" />
+                        </CardTitle>
+                        <CardDescription>{selectedAgent.description}</CardDescription>
+                      </div>
                     </div>
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        {selectedAgent.display_name}
-                        <Sparkles className="w-4 h-4 text-purple-500" />
-                      </CardTitle>
-                      <CardDescription>{selectedAgent.description}</CardDescription>
-                    </div>
+                    
+                    {/* Conversation Actions */}
+                    {messages.length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={handleSaveConversation}
+                          className="flex items-center gap-2"
+                        >
+                          <Briefcase className="w-4 h-4" />
+                          Save Conversation
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </CardHeader>
 
@@ -333,15 +528,17 @@ export default function AgentsPage() {
                     ) : (
                       <div className="space-y-4">
                         {messages.map((message) => (
-                          <div
+                          <motion.div
                             key={message.id}
-                            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'} group`}
                           >
                             <div
-                              className={`max-w-[80%] p-3 rounded-lg ${
+                              className={`max-w-[80%] p-3 rounded-lg relative ${
                                 message.role === 'user'
                                   ? 'bg-purple-600 text-white'
-                                  : 'bg-gray-100 text-gray-900'
+                                  : 'bg-gray-100 text-gray-900 hover:bg-gray-50'
                               }`}
                             >
                               <p className="text-sm">{message.content}</p>
@@ -350,8 +547,34 @@ export default function AgentsPage() {
                               }`}>
                                 {formatTime(message.timestamp)}
                               </p>
+                              
+                              {/* Message Actions - Only show for assistant messages */}
+                              {message.role === 'assistant' && (
+                                <div className="absolute -right-2 top-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                  <div className="flex flex-col gap-1 bg-white rounded-lg shadow-lg border p-1">
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => handleSaveMessage(message)}
+                                      className="w-8 h-8 p-0 hover:bg-purple-100"
+                                      title="Save to Briefcase"
+                                    >
+                                      <Briefcase className="w-3 h-3 text-purple-600" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => copyToClipboard(message.content)}
+                                      className="w-8 h-8 p-0 hover:bg-gray-100"
+                                      title="Copy to Clipboard"
+                                    >
+                                      <Copy className="w-3 h-3 text-gray-600" />
+                                    </Button>
+                                  </div>
+                                </div>
+                              )}
                             </div>
-                          </div>
+                          </motion.div>
                         ))}
                         {isLoading && (
                           <div className="flex justify-start">
@@ -405,6 +628,107 @@ export default function AgentsPage() {
           </Card>
         </div>
       </div>
+
+      {/* Save to Briefcase Dialog */}
+      <Dialog open={showSaveDialog} onOpenChange={setShowSaveDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Briefcase className="w-5 h-5 text-purple-600" />
+              Save to Briefcase
+            </DialogTitle>
+            <DialogDescription>
+              Configure how you want to save this content to your Briefcase.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="fileName">File Name</Label>
+              <Input
+                id="fileName"
+                value={saveForm.fileName}
+                onChange={(e) => setSaveForm(prev => ({ ...prev, fileName: e.target.value }))}
+                placeholder="Enter filename..."
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="description">Description (Optional)</Label>
+              <Input
+                id="description"
+                value={saveForm.description}
+                onChange={(e) => setSaveForm(prev => ({ ...prev, description: e.target.value }))}
+                placeholder="Brief description of the content..."
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label htmlFor="category">Category</Label>
+                <Select value={saveForm.category} onValueChange={(value) => setSaveForm(prev => ({ ...prev, category: value }))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="document">Document</SelectItem>
+                    <SelectItem value="template">Template</SelectItem>
+                    <SelectItem value="note">Note</SelectItem>
+                    <SelectItem value="reference">Reference</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div>
+                <Label htmlFor="format">Format</Label>
+                <Select value={saveForm.format} onValueChange={(value) => setSaveForm(prev => ({ ...prev, format: value }))}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="txt">Text (.txt)</SelectItem>
+                    <SelectItem value="md">Markdown (.md)</SelectItem>
+                    <SelectItem value="json">JSON (.json)</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="tags">Tags (Optional)</Label>
+              <Input
+                id="tags"
+                value={saveForm.tags}
+                onChange={(e) => setSaveForm(prev => ({ ...prev, tags: e.target.value }))}
+                placeholder="comma, separated, tags"
+              />
+            </div>
+          </div>
+          
+          <div className="flex justify-end gap-3 mt-6">
+            <Button variant="outline" onClick={() => setShowSaveDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={executeSave} 
+              disabled={!saveForm.fileName.trim() || isSaving}
+              className="bg-purple-600 hover:bg-purple-700"
+            >
+              {isSaving ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4 mr-2" />
+                  Save to Briefcase
+                </>
+              )}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
