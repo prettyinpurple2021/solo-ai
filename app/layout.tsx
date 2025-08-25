@@ -3,6 +3,7 @@ import { Inter as FontSans } from "next/font/google"
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/hooks/use-auth"
+import { RecaptchaProvider } from "@/components/recaptcha/recaptcha-provider"
 import { PerformanceMonitor } from "@/components/performance/performance-monitor"
 import { ServiceWorkerRegister } from "@/components/performance/service-worker-register"
 
@@ -47,9 +48,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            {children}
-            <PerformanceMonitor />
-            <ServiceWorkerRegister />
+            <RecaptchaProvider>
+              {children}
+              <PerformanceMonitor />
+              <ServiceWorkerRegister />
+            </RecaptchaProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>
