@@ -39,9 +39,9 @@ export async function POST(request: NextRequest) {
 
     // Create user in database
     const newUsers = await sql`
-      INSERT INTO users (email, password_hash, full_name, username, date_of_birth, created_at)
-      VALUES (${email.toLowerCase()}, ${passwordHash}, ${fullName}, ${username}, ${dateOfBirth}, NOW())
-      RETURNING id, email, full_name, username, date_of_birth, created_at
+      INSERT INTO users (id, email, password_hash, "fullName", username, date_of_birth, "createdAt", "updatedAt")
+      VALUES (gen_random_uuid(), ${email.toLowerCase()}, ${passwordHash}, ${fullName}, ${username}, ${dateOfBirth}, NOW(), NOW())
+      RETURNING id, email, "fullName" as full_name, username, date_of_birth, "createdAt" as created_at
     `
 
     if (newUsers.length === 0) {

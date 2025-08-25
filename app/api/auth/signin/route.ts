@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     // Get user from database
     const users = await sql`
-      SELECT id, email, password_hash, full_name, username, date_of_birth, created_at
+      SELECT id, email, password_hash, "fullName" as full_name, username, date_of_birth, "createdAt" as created_at
       FROM users 
       WHERE email = ${email.toLowerCase()}
     `
@@ -31,6 +31,14 @@ export async function POST(request: NextRequest) {
     }
 
     const user = users[0]
+
+    // Check if user has a password hash (for existing users without passwords)
+    if (!user.password_hash) {
+      return NextResponse.json(
+        { error: 'Please set up a password for your account' },
+        { status: 401 }
+      )
+    }
 
     // Verify password
     const isValidPassword = await bcrypt.compare(password, user.password_hash)

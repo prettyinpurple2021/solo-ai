@@ -25,8 +25,13 @@ export async function createAssessment(
   action: string = 'submit'
 ): Promise<number | null> {
   try {
-    // Create the reCAPTCHA client
-    const client = new RecaptchaEnterpriseServiceClient()
+    // Create the reCAPTCHA client with default credentials
+    const client = new RecaptchaEnterpriseServiceClient({
+      // Use default credentials from environment or metadata service
+      keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
+      projectId: RECAPTCHA_CONFIG.projectId,
+    })
+    
     const projectPath = client.projectPath(RECAPTCHA_CONFIG.projectId)
 
     // Build the assessment request
@@ -84,15 +89,12 @@ export async function validateRecaptcha(
   action: string = 'submit',
   minScore: number = 0.5
 ): Promise<boolean> {
-  // Normalize action to lowercase for consistency with Google's expectations
-  const normalizedAction = action.toLowerCase()
-  const score = await createAssessment(token, normalizedAction)
+  const score = await createAssessment(token, action)
   
   if (score === null) {
     return false
   }
 
-  // Score ranges from 0.0 (likely bot) to 1.0 (likely human)
   return score >= minScore
 }
 
@@ -107,19 +109,23 @@ export function getRecaptchaScriptUrl(): string {
  * reCAPTCHA action types for different user interactions
  */
 export const RECAPTCHA_ACTIONS = {
+  LOGIN: 'login',
+  REGISTER: 'register', 
   SIGNUP: 'signup',
   SIGNIN: 'signin',
   CONTACT: 'contact',
   DEMO: 'demo',
   SUBMIT: 'submit',
-  LOGIN: 'login',
-  REGISTER: 'register',
   FORGOT_PASSWORD: 'forgot_password',
   RESET_PASSWORD: 'reset_password',
   UPDATE_PROFILE: 'update_profile',
   CREATE_GOAL: 'create_goal',
   CREATE_TASK: 'create_task',
-  SEND_MESSAGE: 'send_message'
+  SEND_MESSAGE: 'send_message',
+  UPLOAD_FILE: 'upload_file',
+  DELETE_ITEM: 'delete_item',
+  PAYMENT: 'payment',
+  SUBSCRIPTION: 'subscription'
 } as const
 
 export type RecaptchaAction = typeof RECAPTCHA_ACTIONS[keyof typeof RECAPTCHA_ACTIONS]
