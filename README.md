@@ -333,7 +333,13 @@ Ready to deploy to production:
    npm run build
    ```
 
-2. **Deploy to your preferred hosting provider** (e.g., Google Cloud Run, Vercel)
+2. **Deploy to Google Cloud Run**
+
+   ```bash
+   npm run build
+   ```
+
+   Follow the Google Cloud Run deployment guide in the repository.
 
 3. **Environment Variables**
    - Set all production URLs
