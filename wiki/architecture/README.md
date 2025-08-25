@@ -9,7 +9,7 @@ SoloBoss AI Platform is built as a modern, scalable web application using a soph
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │                 │    │                 │    │                 │
-│   Next.js App   │────│   Supabase      │────│   AI Services   │
+│   Next.js App   │────│   Neon DB       │────│   AI Services   │
 │   (Frontend)    │    │   (Backend)     │    │   (OpenAI, etc) │
 │                 │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
@@ -18,7 +18,7 @@ SoloBoss AI Platform is built as a modern, scalable web application using a soph
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │                 │    │                 │    │                 │
-│   Netlify CDN   │    │   PostgreSQL    │    │   External APIs │
+│  Google Cloud   │    │   PostgreSQL    │    │   External APIs │
 │   (Hosting)     │    │   (Database)    │    │   (Stripe, etc) │
 │                 │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
@@ -157,7 +157,7 @@ User Input → Context Building → AI Service → Response Processing → UI Di
 - **Database Indexing**: Optimized database queries
 - **Connection Pooling**: Efficient database connections
 - **Caching Layers**: Redis for session and data caching
-- **Edge Functions**: Netlify Edge Functions for global performance
+- **Edge Functions**: Google Cloud Functions for global performance
 
 ## 🔧 Development Architecture
 
@@ -176,14 +176,14 @@ User Input → Context Building → AI Service → Response Processing → UI Di
 ## 🌐 Deployment Architecture
 
 ### Production Infrastructure
-- **Netlify Platform**: Serverless deployment and hosting
-- **CDN**: Global content delivery network
-- **Edge Computing**: Edge functions for performance
+- **Google Cloud Platform**: Serverless deployment and hosting
+- **CDN**: Global content delivery network  
+- **Edge Computing**: Cloud Functions for performance
 - **Automatic Scaling**: Serverless auto-scaling
 
 ### CI/CD Pipeline
 ```
-GitHub Push → Netlify Build → Type Check → Lint → Deploy → Live
+GitHub Push → Cloud Build → Type Check → Lint → Deploy → Live
 ```
 
 ## 📈 Monitoring & Observability

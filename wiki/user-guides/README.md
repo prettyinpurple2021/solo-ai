@@ -9,7 +9,7 @@ SoloBoss AI Platform is your comprehensive productivity ecosystem designed speci
 ### Creating Your Account
 
 1. **Visit the Platform**
-   - Go to [https://v0-fork-of-solo-boss-ai-platform-17d51ns74.vercel.app](https://v0-fork-of-solo-boss-ai-platform-17d51ns74.vercel.app)
+   - Go to your SoloBoss AI Platform deployment URL
    - Click "Get Started" or "Sign Up"
 
 2. **Choose Your Sign-Up Method**

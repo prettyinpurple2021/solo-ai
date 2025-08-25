@@ -30,7 +30,7 @@ The fastest way to get your app running:
 
 ```bash
 # Navigate to your project directory
-cd "C:\Users\prett\Desktop\ai agent profile images\soloboss vercel production\v0-solo-boss-ai-platform"
+cd "path/to/your/v0-solo-boss-ai-platform"
 
 # Make deployment script executable (if on Linux/Mac)
 chmod +x deploy-gcp.sh
