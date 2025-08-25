@@ -233,7 +233,7 @@ This PRD covers the initial release of the SoloBoss AI web application, includin
 - **UI Components:** Radix UI primitives with custom design system
 - **Animations:** Framer Motion 12+
 - **Build:** Highly interactive and responsive single-page application (SPA)
-- **Deployment:** Netlify with automatic deployments
+- **Deployment:** Google Cloud Run with automatic deployments
 
 ### 🔧 Backend
 
@@ -259,9 +259,9 @@ This PRD covers the initial release of the SoloBoss AI web application, includin
 
 ### 🌐 Hosting and Deployment
 
-- **Deployment:** Netlify with automatic deployments
+- **Deployment:** Google Cloud Run with automatic deployments
 - **CI/CD:** Automatic GitHub integration
-- **Performance:** Built-in edge functions and CDN
+- **Performance:** Built-in CDN and serverless scaling
 
 ## 6. Current Implementation Status
 

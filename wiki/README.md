@@ -92,7 +92,7 @@ This wiki provides in-depth documentation covering all aspects of the SoloBoss A
 
 - **Issues**: [GitHub Issues](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/issues)
 - **Discussions**: [GitHub Discussions](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/discussions)
-- **Live Application**: [https://v0-fork-of-solo-boss-ai-platform-17d51ns74.vercel.app](https://v0-fork-of-solo-boss-ai-platform-17d51ns74.vercel.app)
+- **Live Application**: [SoloBoss AI Platform - Google Cloud Run Deployment]
 
 ## 📝 Contributing to the Wiki
 

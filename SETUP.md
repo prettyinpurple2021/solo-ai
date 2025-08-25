@@ -68,7 +68,7 @@ In your Stack Auth dashboard, set these URLs:
 
 ## 🌐 Step 4: Deployment
 
-Deploy the application to your preferred cloud provider (e.g., Google Cloud Run, Vercel). Ensure you set up all the environment variables from your `.env.local` file in your provider's dashboard.
+Deploy the application to Google Cloud Run. Ensure you set up all the environment variables from your `.env.local` file in Cloud Run's environment configuration.
 
 ## 💳 Step 5: Billing Setup (Optional - Chargebee)
 

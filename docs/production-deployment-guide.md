@@ -2,13 +2,13 @@
 
 ## 🚀 Overview
 
-This guide will walk you through deploying your SoloBoss AI platform to production. The platform is designed to be deployed on Netlify with Neon PostgreSQL database and various third-party integrations.
+This guide will walk you through deploying your SoloBoss AI platform to production on Google Cloud Run with Neon PostgreSQL database and various third-party integrations.
 
 ## 📋 Prerequisites
 
 Before starting deployment, ensure you have:
 
-- [ ] Netlify account
+- [ ] Google Cloud Platform account with billing enabled
 - [ ] Neon PostgreSQL database
 - [ ] OpenAI API key
 - [ ] Stack Auth account
@@ -65,53 +65,79 @@ NEXTAUTH_URL=https://your-domain.com
 GOOGLE_ANALYTICS_ID=your_ga_id
 ```
 
-## 🌐 Step 2: Netlify Deployment
+## 🌐 Step 2: Google Cloud Run Deployment
 
-### 2.1 Connect Repository
+### 2.1 Setup Google Cloud
 
-1. **Connect to GitHub:**
-   - Go to [Netlify Dashboard](https://app.netlify.com)
-   - Click "New site from Git"
-   - Connect your GitHub repository
-   - Select the repository containing your SoloBoss AI platform
+1. **Create Project:**
+   ```bash
+   gcloud projects create your-project-id --name="SoloBoss AI Platform"
+   gcloud config set project your-project-id
+   ```
 
-### 2.2 Build Configuration
+2. **Enable Required APIs:**
+   ```bash
+   gcloud services enable cloudbuild.googleapis.com
+   gcloud services enable run.googleapis.com
+   gcloud services enable secretmanager.googleapis.com
+   ```
 
-Configure the build settings in Netlify:
+### 2.2 Build and Deploy
 
-**Build command:**
-```bash
-npm run build
-```
+1. **Build Docker Image:**
+   ```bash
+   gcloud builds submit --tag gcr.io/your-project-id/soloboss-ai-platform
+   ```
 
-**Publish directory:**
-```
-.next
-```
+2. **Deploy to Cloud Run:**
+   ```bash
+   gcloud run deploy soloboss-ai-platform \
+     --image gcr.io/your-project-id/soloboss-ai-platform \
+     --platform managed \
+     --region us-central1 \
+     --allow-unauthenticated \
+     --memory 512Mi \
+     --cpu 1 \
+     --min-instances 0 \
+     --max-instances 10
+   ```
 
-**Node version:**
-```
-18.x
-```
+### 2.3 Environment Variables in Cloud Run
 
-### 2.3 Environment Variables in Netlify
+Add all environment variables from your `.env.local` file to Cloud Run:
 
-Add all environment variables from your `.env.local` file to Netlify:
+1. **Using Secret Manager (Recommended):**
+   ```bash
+   # Create secrets
+   echo -n "your-database-url" | gcloud secrets create DATABASE_URL --data-file=-
+   echo -n "your-stack-secret" | gcloud secrets create STACK_SECRET_SERVER_KEY --data-file=-
+   
+   # Update service with secrets
+   gcloud run services update soloboss-ai-platform \
+     --region us-central1 \
+     --set-secrets DATABASE_URL=DATABASE_URL:latest,STACK_SECRET_SERVER_KEY=STACK_SECRET_SERVER_KEY:latest
+   ```
 
-1. Go to Site Settings > Environment Variables
-2. Add each variable from your `.env.local` file
-3. Ensure all variables are set for production
+2. **Or using environment variables directly:**
+   ```bash
+   gcloud run services update soloboss-ai-platform \
+     --region us-central1 \
+     --set-env-vars NODE_ENV=production,NEXT_PUBLIC_APP_URL=https://your-domain.com
+   ```
 
 ### 2.4 Domain Configuration
 
 1. **Custom Domain (Optional):**
-   - Go to Domain Management
-   - Add your custom domain
-   - Configure DNS settings as instructed
+   ```bash
+   gcloud run domain-mappings create \
+     --service soloboss-ai-platform \
+     --domain your-domain.com \
+     --region us-central1
+   ```
 
 2. **SSL Certificate:**
-   - Netlify automatically provides SSL certificates
-   - Ensure HTTPS is enforced
+   - Cloud Run automatically provides SSL certificates
+   - HTTPS is enforced by default
 
 ## 🔒 Step 3: Security Configuration
 
@@ -321,8 +347,8 @@ Run these tests after deployment:
    - Database query caching
 
 2. **CDN Configuration:**
-   - Configure Netlify CDN
-   - Optimize asset delivery
+   - Google Cloud CDN is automatically configured
+   - Optimize asset delivery through Cloud Run
    - Enable compression
 
 ## 🔍 Step 9: Monitoring & Maintenance
@@ -372,7 +398,7 @@ Run these tests after deployment:
 
 ### 10.2 Support Resources
 
-- [Netlify Documentation](https://docs.netlify.com)
+- [Google Cloud Run Documentation](https://cloud.google.com/run/docs)
 - [Neon Documentation](https://neon.tech/docs)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Stack Auth Documentation](https://docs.stack-auth.com)

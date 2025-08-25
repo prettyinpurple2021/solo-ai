@@ -20,7 +20,7 @@ Sentry.init({
   enabled: process.env.NODE_ENV === 'production' || process.env.NEXT_PUBLIC_ENABLE_SENTRY === 'true',
   
   // Set serverName to help identify the instance
-  serverName: process.env.VERCEL_URL || process.env.NETLIFY_URL || 'localhost',
+  serverName: process.env.GOOGLE_CLOUD_RUN_SERVICE_URL || 'localhost',
   
   // Add custom tags for better filtering
   initialScope: {
