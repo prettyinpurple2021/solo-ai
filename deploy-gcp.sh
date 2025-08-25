@@ -53,7 +53,7 @@ gcloud run deploy ${SERVICE_NAME} \
   --min-instances 0 \
   --concurrency 80 \
   --timeout 300 \
-  --set-env-vars NODE_ENV=production,PORT=3000
+  --set-env-vars NODE_ENV=production
 
 # Get the service URL
 SERVICE_URL=$(gcloud run services describe ${SERVICE_NAME} \
