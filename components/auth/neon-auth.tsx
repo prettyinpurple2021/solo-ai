@@ -1,13 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { BossButton, EmpowermentButton } from "@/components/ui/boss-button"
 import { BossCard, EmpowermentCard } from "@/components/ui/boss-card"
 import { RecaptchaSignupButton, RecaptchaSigninButton } from "@/components/ui/recaptcha-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { CalendarIcon, AlertCircle, CheckCircle, Crown, Shield } from "lucide-react"
 import { format, subYears } from "date-fns"
@@ -117,6 +116,7 @@ function useCustomAuth() {
 export function NeonAuth() {
   const { signIn, signUp, user, signOut } = useCustomAuth()
   const router = useRouter()
+  const pathname = usePathname()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [loading, setLoading] = useState(false)
@@ -135,6 +135,10 @@ export function NeonAuth() {
   })
   const [signUpErrors, setSignUpErrors] = useState<Record<string, string>>({})
   const [signUpLoading, setSignUpLoading] = useState(false)
+
+  // Determine if we're on signin or signup page
+  const isSignInPage = pathname === '/signin'
+  const isSignUpPage = pathname === '/signup'
 
   // Redirect to dashboard when user is authenticated
   useEffect(() => {
@@ -322,105 +326,128 @@ export function NeonAuth() {
                 </div>
                 <span className="text-2xl font-bold text-gradient font-boss">SoloBoss AI</span>
               </motion.div>
-              <p className="text-gray-600 dark:text-gray-400">Join the empire of bad ass girl bosses</p>
+              <p className="text-gray-600 dark:text-gray-400">
+                {isSignInPage ? "Welcome back, boss!" : "Join the empire of bad ass girl bosses"}
+              </p>
             </div>
 
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 glass">
-                <TabsTrigger value="signin" className="data-[state=active]:gradient-primary data-[state=active]:text-white">
+            {/* Error/Success Messages */}
+            {error && (
+              <Alert className="mb-4 border-red-200 bg-red-50">
+                <AlertCircle className="h-4 w-4 text-red-600" />
+                <AlertDescription className="text-red-800">{error}</AlertDescription>
+              </Alert>
+            )}
+            
+            {success && (
+              <Alert className="mb-4 border-green-200 bg-green-50">
+                <CheckCircle className="h-4 w-4 text-green-600" />
+                <AlertDescription className="text-green-800">{success}</AlertDescription>
+              </Alert>
+            )}
+
+            {/* Sign In Form */}
+            {isSignInPage && (
+              <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="glass"
+                    required
+                    autoComplete="email"
+                  />
+                </div>
+                
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    className="glass"
+                    required
+                    autoComplete="current-password"
+                  />
+                </div>
+                
+                <RecaptchaSigninButton
+                  onSubmit={handleSignIn}
+                  fullWidth
+                  size="lg"
+                  disabled={!email || !password}
+                  type="submit"
+                >
                   Sign In
-                </TabsTrigger>
-                <TabsTrigger value="signup" className="data-[state=active]:gradient-empowerment data-[state=active]:text-white">
-                  Sign Up
-                </TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="signin" className="space-y-4">
-                <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+                </RecaptchaSigninButton>
+
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">
+                    Don't have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => router.push('/signup')}
+                      className="text-purple-600 hover:text-purple-700 font-medium"
+                    >
+                      Sign up here
+                    </button>
+                  </p>
+                </div>
+              </form>
+            )}
+
+            {/* Sign Up Form */}
+            {isSignUpPage && (
+              <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                    <Label htmlFor="firstName" className="text-sm font-medium">First Name</Label>
                     <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
+                      id="firstName"
+                      name="firstName"
+                      type="text"
+                      value={signUpData.firstName}
+                      onChange={(e) => handleSignUpInputChange("firstName", e.target.value)}
+                      placeholder="First name"
                       className="glass"
                       required
-                      autoComplete="email"
+                      autoComplete="given-name"
                     />
+                    {signUpErrors.firstName && (
+                      <p className="text-red-500 text-xs">{signUpErrors.firstName}</p>
+                    )}
                   </div>
                   
                   <div className="space-y-2">
-                    <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                    <Label htmlFor="lastName" className="text-sm font-medium">Last Name</Label>
                     <Input
-                      id="password"
-                      name="password"
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      placeholder="Enter your password"
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      value={signUpData.lastName}
+                      onChange={(e) => handleSignUpInputChange("lastName", e.target.value)}
+                      placeholder="Last name"
                       className="glass"
                       required
-                      autoComplete="current-password"
+                      autoComplete="family-name"
                     />
+                    {signUpErrors.lastName && (
+                      <p className="text-red-500 text-xs">{signUpErrors.lastName}</p>
+                    )}
                   </div>
-                  
-                  <RecaptchaSigninButton
-                    onSubmit={handleSignIn}
-                    fullWidth
-                    size="lg"
-                    disabled={!email || !password}
-                    type="submit"
-                  >
-                    Sign In
-                  </RecaptchaSigninButton>
-                </form>
-              </TabsContent>
-              
-              <TabsContent value="signup" className="space-y-4">
-                <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName" className="text-sm font-medium">First Name</Label>
-                      <Input
-                        id="firstName"
-                        name="firstName"
-                        type="text"
-                        value={signUpData.firstName}
-                        onChange={(e) => handleSignUpInputChange("firstName", e.target.value)}
-                        placeholder="First name"
-                        className="glass"
-                        required
-                        autoComplete="given-name"
-                      />
-                      {signUpErrors.firstName && (
-                        <p className="text-red-500 text-xs">{signUpErrors.firstName}</p>
-                      )}
-                    </div>
-                    
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName" className="text-sm font-medium">Last Name</Label>
-                      <Input
-                        id="lastName"
-                        name="lastName"
-                        type="text"
-                        value={signUpData.lastName}
-                        onChange={(e) => handleSignUpInputChange("lastName", e.target.value)}
-                        placeholder="Last name"
-                        className="glass"
-                        required
-                        autoComplete="family-name"
-                      />
-                      {signUpErrors.lastName && (
-                        <p className="text-red-500 text-xs">{signUpErrors.lastName}</p>
-                      )}
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="dateOfBirth" className="text-sm font-medium">Date of Birth</Label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="dateOfBirth" className="text-sm font-medium">Date of Birth</Label>
+                  <div className="relative">
                     <Input
                       id="dateOfBirth"
                       name="dateOfBirth"
@@ -428,134 +455,112 @@ export function NeonAuth() {
                       value={signUpData.dateOfBirth}
                       onChange={(e) => handleSignUpInputChange("dateOfBirth", e.target.value)}
                       max={format(subYears(new Date(), 18), 'yyyy-MM-dd')}
-                      className="glass"
+                      className="glass pr-10"
                       required
-                      autoComplete="bday"
                     />
-                    {signUpErrors.dateOfBirth && (
-                      <p className="text-red-500 text-xs">{signUpErrors.dateOfBirth}</p>
-                    )}
+                    <CalendarIcon className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signupEmail" className="text-sm font-medium">Email</Label>
-                    <Input
-                      id="signupEmail"
-                      name="email"
-                      type="email"
-                      value={signUpData.email}
-                      onChange={(e) => handleSignUpInputChange("email", e.target.value)}
-                      placeholder="Enter your email"
-                      className="glass"
-                      required
-                      autoComplete="email"
-                    />
-                    {signUpErrors.email && (
-                      <p className="text-red-500 text-xs">{signUpErrors.email}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="username" className="text-sm font-medium">Username</Label>
-                    <Input
-                      id="username"
-                      name="username"
-                      type="text"
-                      value={signUpData.username}
-                      onChange={(e) => handleSignUpInputChange("username", e.target.value)}
-                      placeholder="Choose a username"
-                      className="glass"
-                      required
-                      autoComplete="username"
-                    />
-                    {signUpErrors.username && (
-                      <p className="text-red-500 text-xs">{signUpErrors.username}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signupPassword" className="text-sm font-medium">Password</Label>
-                    <Input
-                      id="signupPassword"
-                      name="password"
-                      type="password"
-                      value={signUpData.password}
-                      onChange={(e) => handleSignUpInputChange("password", e.target.value)}
-                      placeholder="Create a password"
-                      className="glass"
-                      required
-                      autoComplete="new-password"
-                    />
-                    {signUpErrors.password && (
-                      <p className="text-red-500 text-xs">{signUpErrors.password}</p>
-                    )}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password</Label>
-                    <Input
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      type="password"
-                      value={signUpData.confirmPassword}
-                      onChange={(e) => handleSignUpInputChange("confirmPassword", e.target.value)}
-                      placeholder="Confirm your password"
-                      className="glass"
-                      required
-                      autoComplete="new-password"
-                    />
-                    {signUpErrors.confirmPassword && (
-                      <p className="text-red-500 text-xs">{signUpErrors.confirmPassword}</p>
-                    )}
-                  </div>
-                  
-                  <RecaptchaSignupButton
-                    onSubmit={handleSignUp}
-                    fullWidth
-                    size="lg"
-                    disabled={Object.keys(signUpErrors).length > 0 || !signUpData.email || !signUpData.password}
-                    type="submit"
-                  >
-                    Create Account
-                  </RecaptchaSignupButton>
-                </form>
-              </TabsContent>
-            </Tabs>
-            
-            {/* Error and Success Messages */}
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-4"
-              >
-                <Alert className="border-red-200 bg-red-50">
-                  <AlertCircle className="h-4 w-4 text-red-600" />
-                  <AlertDescription className="text-red-800">{error}</AlertDescription>
-                </Alert>
-              </motion.div>
+                  {signUpErrors.dateOfBirth && (
+                    <p className="text-red-500 text-xs">{signUpErrors.dateOfBirth}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={signUpData.email}
+                    onChange={(e) => handleSignUpInputChange("email", e.target.value)}
+                    placeholder="Enter your email"
+                    className="glass"
+                    required
+                    autoComplete="email"
+                  />
+                  {signUpErrors.email && (
+                    <p className="text-red-500 text-xs">{signUpErrors.email}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="username" className="text-sm font-medium">Username</Label>
+                  <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    value={signUpData.username}
+                    onChange={(e) => handleSignUpInputChange("username", e.target.value)}
+                    placeholder="Choose a username"
+                    className="glass"
+                    required
+                    autoComplete="username"
+                  />
+                  {signUpErrors.username && (
+                    <p className="text-red-500 text-xs">{signUpErrors.username}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                  <Input
+                    id="password"
+                    name="password"
+                    type="password"
+                    value={signUpData.password}
+                    onChange={(e) => handleSignUpInputChange("password", e.target.value)}
+                    placeholder="Create a strong password"
+                    className="glass"
+                    required
+                    autoComplete="new-password"
+                  />
+                  {signUpErrors.password && (
+                    <p className="text-red-500 text-xs">{signUpErrors.password}</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    value={signUpData.confirmPassword}
+                    onChange={(e) => handleSignUpInputChange("confirmPassword", e.target.value)}
+                    placeholder="Confirm your password"
+                    className="glass"
+                    required
+                    autoComplete="new-password"
+                  />
+                  {signUpErrors.confirmPassword && (
+                    <p className="text-red-500 text-xs">{signUpErrors.confirmPassword}</p>
+                  )}
+                </div>
+
+                <RecaptchaSignupButton
+                  onSubmit={handleSignUp}
+                  fullWidth
+                  size="lg"
+                  disabled={signUpLoading}
+                  type="submit"
+                >
+                  {signUpLoading ? "Creating Account..." : "Create Account"}
+                </RecaptchaSignupButton>
+
+                <div className="text-center">
+                  <p className="text-sm text-gray-600">
+                    Already have an account?{" "}
+                    <button
+                      type="button"
+                      onClick={() => router.push('/signin')}
+                      className="text-purple-600 hover:text-purple-700 font-medium"
+                    >
+                      Sign in here
+                    </button>
+                  </p>
+                </div>
+              </form>
             )}
-            
-            {success && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-4"
-              >
-                <Alert className="border-green-200 bg-green-50">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                  <AlertDescription className="text-green-800">{success}</AlertDescription>
-                </Alert>
-              </motion.div>
-            )}
-            
-            {/* Security Notice */}
-            <div className="mt-6 p-4 glass rounded-lg">
-              <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                <Shield className="w-4 h-4" />
-                <span>Protected by Google reCAPTCHA Enterprise</span>
-              </div>
-            </div>
           </div>
         </EmpowermentCard>
       </motion.div>
