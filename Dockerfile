@@ -18,17 +18,25 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 
-ENV NODE_ENV production
+# Environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV HOSTNAME="0.0.0.0"
 
-# Copy necessary files from builder
-COPY --from=builder /app/next.config.mjs ./
+# Create nextjs user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+# Copy standalone output from builder
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-# Expose the port Next.js runs on
+# Change to nextjs user
+USER nextjs
+
+# Expose the port
 EXPOSE 3000
 
-# Set the command to run the app
-CMD ["npm", "start"]
+# Start the application using Node.js directly
+CMD ["node", "server.js"]
