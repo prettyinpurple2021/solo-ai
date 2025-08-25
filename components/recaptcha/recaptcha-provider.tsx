@@ -4,7 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react'
 import Script from 'next/script'
 import { useToast } from '@/hooks/use-toast'
 
-const RECAPTCHA_SITE_KEY = '6Lc6OK8rAAAAAPXfc8nHtTiKjk8rE9MhP10Kb8Pj'
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6Lc6OK8rAAAAAPXfc8nHtTiKjk8rE9MhP10Kb8Pj'
 
 interface RecaptchaContextType {
   isReady: boolean
@@ -86,6 +86,7 @@ export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
 
   const handleScriptLoad = () => {
     console.log('reCAPTCHA script loaded successfully')
+    console.log('reCAPTCHA site key:', RECAPTCHA_SITE_KEY)
     setIsLoading(false)
     
     if (window.grecaptcha?.enterprise) {
@@ -93,11 +94,19 @@ export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
         setIsReady(true)
         console.log('reCAPTCHA is ready')
       })
+    } else {
+      console.error('reCAPTCHA enterprise not available after script load')
+      toast({
+        title: "reCAPTCHA Error",
+        description: "Security verification failed to initialize. Please refresh the page.",
+        variant: "destructive"
+      })
     }
   }
 
   const handleScriptError = () => {
     console.error('Failed to load reCAPTCHA script')
+    console.error('reCAPTCHA site key:', RECAPTCHA_SITE_KEY)
     setIsLoading(false)
     toast({
       title: "reCAPTCHA Error",

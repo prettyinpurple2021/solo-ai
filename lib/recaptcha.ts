@@ -2,8 +2,8 @@ import { RecaptchaEnterpriseServiceClient } from '@google-cloud/recaptcha-enterp
 
 // reCAPTCHA configuration
 export const RECAPTCHA_CONFIG = {
-  siteKey: '6Lc6OK8rAAAAAPXfc8nHtTiKjk8rE9MhP10Kb8Pj',
-  projectId: 'soloboss-ai-v3',
+  siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6Lc6OK8rAAAAAPXfc8nHtTiKjk8rE9MhP10Kb8Pj',
+  projectId: process.env.NEXT_PUBLIC_RECAPTCHA_PROJECT_ID || 'soloboss-ai-v3',
   actions: {
     signup: 'signup',
     signin: 'signin',

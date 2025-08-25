@@ -1,3 +1,5 @@
+"use client"
+
 import { NeonAuth } from "@/components/auth/neon-auth";
 
 // Disable static generation for auth pages

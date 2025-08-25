@@ -6,6 +6,7 @@ import { BossButton, BossButtonProps } from "./boss-button"
 import { useRecaptcha } from "@/hooks/use-recaptcha"
 import { RECAPTCHA_ACTIONS, type RecaptchaAction } from "@/lib/recaptcha-client"
 import { Shield, AlertCircle, CheckCircle } from "lucide-react"
+import { RECAPTCHA_CONFIG } from "@/lib/recaptcha-client"
 
 interface RecaptchaButtonProps extends Omit<BossButtonProps, 'onClick'> {
   children: ReactNode
@@ -51,19 +52,27 @@ export function RecaptchaButton({
     resetError()
     
     if (!isReady) {
-      onError?.('reCAPTCHA not ready. Please wait a moment and try again.')
+      const errorMsg = 'reCAPTCHA not ready. Please wait a moment and try again.'
+      console.error('reCAPTCHA not ready. Site key:', RECAPTCHA_CONFIG.siteKey)
+      onError?.(errorMsg)
       return
     }
 
     try {
+      console.log('Executing reCAPTCHA for action:', action)
       const token = await execute()
       
       if (token && onSubmit) {
+        console.log('reCAPTCHA token generated, submitting form')
         const result = await onSubmit(formData)
         return result
+      } else if (!token) {
+        console.error('Failed to generate reCAPTCHA token')
+        onError?.('Failed to generate security verification token')
       }
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'Submission failed'
+      console.error('reCAPTCHA execution error:', err)
       onError?.(errorMsg)
     }
   }

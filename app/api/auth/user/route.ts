@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createClient } from '@/lib/neon/server'
-import { verifyToken } from '@/lib/auth-utils'
-// Import zod if needed later
-// import { z } from 'zod'
+import jwt from 'jsonwebtoken'
+import { neon } from '@neondatabase/serverless'
+
+const sql = neon(process.env.DATABASE_URL!)
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,38 +10,40 @@ export async function GET(request: NextRequest) {
     
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
-        { error: 'No authorization token provided' },
+        { error: 'Authorization header required' },
         { status: 401 }
       )
     }
 
     const token = authHeader.substring(7)
-    const decoded = verifyToken(token)
 
-    if (!decoded) {
+    // Verify JWT token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any
+    if (!decoded || !decoded.userId) {
       return NextResponse.json(
-        { error: 'Invalid authorization token' },
+        { error: 'Invalid token' },
         { status: 401 }
       )
     }
 
-    const client = await createClient()
-    
-    const { rows } = await client.query(
-      'SELECT id, email, full_name, avatar_url, subscription_tier, subscription_status FROM users WHERE id = $1',
-      [decoded.userId]
-    )
+    // Get user from database
+    const users = await sql`
+      SELECT id, email, full_name, username, date_of_birth, created_at
+      FROM users 
+      WHERE id = ${decoded.userId}
+    `
 
-    const user = rows[0]
-
-    if (!user) {
+    if (users.length === 0) {
       return NextResponse.json(
         { error: 'User not found' },
         { status: 404 }
       )
     }
 
+    const user = users[0]
+
     return NextResponse.json(user)
+
   } catch (error) {
     console.error('Get user error:', error)
     return NextResponse.json(

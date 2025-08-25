@@ -35,50 +35,28 @@ export function useRecaptcha(options: UseRecaptchaOptions = {}) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Load reCAPTCHA script
+  // Check if reCAPTCHA is ready (script loaded by RecaptchaProvider)
   useEffect(() => {
-    const scriptId = 'recaptcha-enterprise-script'
-    
-    // Check if script already exists
-    if (document.getElementById(scriptId)) {
-      setIsReady(true)
-      return
-    }
-
-    // Create and load script
-    const script = document.createElement('script')
-    script.id = scriptId
-    script.src = `https://www.google.com/recaptcha/enterprise.js?render=${RECAPTCHA_CONFIG.siteKey}`
-    script.async = true
-    script.defer = true
-
-    script.onload = () => {
-      if (window.grecaptcha?.enterprise?.ready) {
+    const checkRecaptchaReady = () => {
+      if (window.grecaptcha?.enterprise) {
         window.grecaptcha.enterprise.ready(() => {
           setIsReady(true)
+          console.log('reCAPTCHA ready in useRecaptcha hook')
         })
+      } else {
+        // Check again in a moment if not ready
+        setTimeout(checkRecaptchaReady, 100)
       }
     }
 
-    script.onerror = () => {
-      setError('Failed to load reCAPTCHA script')
-      onError?.('Failed to load reCAPTCHA script')
-    }
-
-    document.head.appendChild(script)
-
-    return () => {
-      const existingScript = document.getElementById(scriptId)
-      if (existingScript) {
-        existingScript.remove()
-      }
-    }
-  }, [onError])
+    checkRecaptchaReady()
+  }, [])
 
   // Execute reCAPTCHA
   const execute = useCallback(async (): Promise<string | null> => {
     if (!isReady) {
       const errorMsg = 'reCAPTCHA not ready'
+      console.error('reCAPTCHA not ready. Site key:', RECAPTCHA_CONFIG.siteKey)
       setError(errorMsg)
       onError?.(errorMsg)
       return null
@@ -89,10 +67,13 @@ export function useRecaptcha(options: UseRecaptchaOptions = {}) {
     onLoading?.(true)
 
     try {
+      console.log('Executing reCAPTCHA for action:', action)
       const token = await window.grecaptcha.enterprise.execute(
         RECAPTCHA_CONFIG.siteKey,
         { action }
       )
+
+      console.log('reCAPTCHA token generated, validating with backend')
 
       // Send token to backend for validation
       const response = await fetch('/api/recaptcha/validate', {
@@ -114,16 +95,19 @@ export function useRecaptcha(options: UseRecaptchaOptions = {}) {
       const result = await response.json()
       
       if (result.success) {
+        console.log('reCAPTCHA validation successful')
         onSuccess?.(token, result.score)
         return token
       } else {
         const errorMsg = result.error || 'reCAPTCHA validation failed'
+        console.error('reCAPTCHA validation failed:', errorMsg)
         setError(errorMsg)
         onError?.(errorMsg)
         return null
       }
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : 'reCAPTCHA execution failed'
+      console.error('reCAPTCHA execution error:', err)
       setError(errorMsg)
       onError?.(errorMsg)
       return null
@@ -176,4 +160,5 @@ export function useRecaptchaForm(options: UseRecaptchaOptions = {}) {
     ...recaptcha,
     handleSubmit
   }
+}
 }
