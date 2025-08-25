@@ -84,7 +84,9 @@ export async function validateRecaptcha(
   action: string = 'submit',
   minScore: number = 0.5
 ): Promise<boolean> {
-  const score = await createAssessment(token, action)
+  // Normalize action to lowercase for consistency with Google's expectations
+  const normalizedAction = action.toLowerCase()
+  const score = await createAssessment(token, normalizedAction)
   
   if (score === null) {
     return false

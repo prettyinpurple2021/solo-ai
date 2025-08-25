@@ -103,25 +103,25 @@ export function useRecaptchaValidation(): UseRecaptchaValidationReturn {
 // Helper function to get action-specific minimum scores
 export function getMinScoreForAction(action: string): number {
   const actionScores: Record<string, number> = {
-    LOGIN: 0.3,
-    SIGNIN: 0.3,
-    REGISTER: 0.5,
-    SIGNUP: 0.5,
-    CONTACT: 0.4,
-    FORGOT_PASSWORD: 0.3,
-    RESET_PASSWORD: 0.5,
-    PAYMENT: 0.7,
-    SUBSCRIPTION: 0.7,
-    DELETE_ITEM: 0.6,
-    UPLOAD_FILE: 0.5,
-    CREATE_GOAL: 0.4,
-    CREATE_TASK: 0.4,
-    SEND_MESSAGE: 0.4,
-    DEMO: 0.2,
-    SUBMIT: 0.5
+    login: 0.3,
+    signin: 0.3,
+    register: 0.5,
+    signup: 0.5,
+    contact: 0.4,
+    forgot_password: 0.3,
+    reset_password: 0.5,
+    payment: 0.7,
+    subscription: 0.7,
+    delete_item: 0.6,
+    upload_file: 0.5,
+    create_goal: 0.4,
+    create_task: 0.4,
+    send_message: 0.4,
+    demo: 0.2,
+    submit: 0.5
   }
   
-  return actionScores[action.toUpperCase()] || 0.5
+  return actionScores[action.toLowerCase()] || 0.5
 }
 
 // Helper function to create a reCAPTCHA-protected form submission handler

@@ -141,23 +141,23 @@ export function useRecaptcha() {
 
 // Predefined actions for consistency
 export const RECAPTCHA_ACTIONS = {
-  LOGIN: 'LOGIN',
-  REGISTER: 'REGISTER', 
-  SIGNUP: 'SIGNUP',
-  SIGNIN: 'SIGNIN',
-  CONTACT: 'CONTACT',
-  DEMO: 'DEMO',
-  SUBMIT: 'SUBMIT',
-  FORGOT_PASSWORD: 'FORGOT_PASSWORD',
-  RESET_PASSWORD: 'RESET_PASSWORD',
-  UPDATE_PROFILE: 'UPDATE_PROFILE',
-  CREATE_GOAL: 'CREATE_GOAL',
-  CREATE_TASK: 'CREATE_TASK',
-  SEND_MESSAGE: 'SEND_MESSAGE',
-  UPLOAD_FILE: 'UPLOAD_FILE',
-  DELETE_ITEM: 'DELETE_ITEM',
-  PAYMENT: 'PAYMENT',
-  SUBSCRIPTION: 'SUBSCRIPTION'
+  LOGIN: 'login',
+  REGISTER: 'register', 
+  SIGNUP: 'signup',
+  SIGNIN: 'signin',
+  CONTACT: 'contact',
+  DEMO: 'demo',
+  SUBMIT: 'submit',
+  FORGOT_PASSWORD: 'forgot_password',
+  RESET_PASSWORD: 'reset_password',
+  UPDATE_PROFILE: 'update_profile',
+  CREATE_GOAL: 'create_goal',
+  CREATE_TASK: 'create_task',
+  SEND_MESSAGE: 'send_message',
+  UPLOAD_FILE: 'upload_file',
+  DELETE_ITEM: 'delete_item',
+  PAYMENT: 'payment',
+  SUBSCRIPTION: 'subscription'
 } as const
 
 export type RecaptchaAction = keyof typeof RECAPTCHA_ACTIONS

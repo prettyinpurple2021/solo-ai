@@ -240,17 +240,19 @@ export function NeonAuth() {
               </TabsList>
               
               <TabsContent value="signin" className="space-y-4">
-                <div className="space-y-4">
+                <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                     <Input
                       id="email"
+                      name="email"
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
                       className="glass"
                       required
+                      autoComplete="email"
                     />
                   </div>
                   
@@ -258,12 +260,14 @@ export function NeonAuth() {
                     <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                     <Input
                       id="password"
+                      name="password"
                       type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
                       className="glass"
                       required
+                      autoComplete="current-password"
                     />
                   </div>
                   
@@ -272,25 +276,28 @@ export function NeonAuth() {
                     fullWidth
                     size="lg"
                     disabled={!email || !password}
+                    type="submit"
                   >
                     Sign In
                   </RecaptchaSigninButton>
-                </div>
+                </form>
               </TabsContent>
               
               <TabsContent value="signup" className="space-y-4">
-                <div className="space-y-4">
+                <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="firstName" className="text-sm font-medium">First Name</Label>
                       <Input
                         id="firstName"
+                        name="firstName"
                         type="text"
                         value={signUpData.firstName}
                         onChange={(e) => handleSignUpInputChange("firstName", e.target.value)}
                         placeholder="First name"
                         className="glass"
                         required
+                        autoComplete="given-name"
                       />
                       {signUpErrors.firstName && (
                         <p className="text-red-500 text-xs">{signUpErrors.firstName}</p>
@@ -301,12 +308,14 @@ export function NeonAuth() {
                       <Label htmlFor="lastName" className="text-sm font-medium">Last Name</Label>
                       <Input
                         id="lastName"
+                        name="lastName"
                         type="text"
                         value={signUpData.lastName}
                         onChange={(e) => handleSignUpInputChange("lastName", e.target.value)}
                         placeholder="Last name"
                         className="glass"
                         required
+                        autoComplete="family-name"
                       />
                       {signUpErrors.lastName && (
                         <p className="text-red-500 text-xs">{signUpErrors.lastName}</p>
@@ -318,12 +327,14 @@ export function NeonAuth() {
                     <Label htmlFor="dateOfBirth" className="text-sm font-medium">Date of Birth</Label>
                     <Input
                       id="dateOfBirth"
+                      name="dateOfBirth"
                       type="date"
                       value={signUpData.dateOfBirth}
                       onChange={(e) => handleSignUpInputChange("dateOfBirth", e.target.value)}
                       max={format(subYears(new Date(), 18), 'yyyy-MM-dd')}
                       className="glass"
                       required
+                      autoComplete="bday"
                     />
                     {signUpErrors.dateOfBirth && (
                       <p className="text-red-500 text-xs">{signUpErrors.dateOfBirth}</p>
@@ -334,12 +345,14 @@ export function NeonAuth() {
                     <Label htmlFor="signupEmail" className="text-sm font-medium">Email</Label>
                     <Input
                       id="signupEmail"
+                      name="email"
                       type="email"
                       value={signUpData.email}
                       onChange={(e) => handleSignUpInputChange("email", e.target.value)}
                       placeholder="Enter your email"
                       className="glass"
                       required
+                      autoComplete="email"
                     />
                     {signUpErrors.email && (
                       <p className="text-red-500 text-xs">{signUpErrors.email}</p>
@@ -350,12 +363,14 @@ export function NeonAuth() {
                     <Label htmlFor="username" className="text-sm font-medium">Username</Label>
                     <Input
                       id="username"
+                      name="username"
                       type="text"
                       value={signUpData.username}
                       onChange={(e) => handleSignUpInputChange("username", e.target.value)}
                       placeholder="Choose a username"
                       className="glass"
                       required
+                      autoComplete="username"
                     />
                     {signUpErrors.username && (
                       <p className="text-red-500 text-xs">{signUpErrors.username}</p>
@@ -366,12 +381,14 @@ export function NeonAuth() {
                     <Label htmlFor="signupPassword" className="text-sm font-medium">Password</Label>
                     <Input
                       id="signupPassword"
+                      name="password"
                       type="password"
                       value={signUpData.password}
                       onChange={(e) => handleSignUpInputChange("password", e.target.value)}
                       placeholder="Create a password"
                       className="glass"
                       required
+                      autoComplete="new-password"
                     />
                     {signUpErrors.password && (
                       <p className="text-red-500 text-xs">{signUpErrors.password}</p>
@@ -382,12 +399,14 @@ export function NeonAuth() {
                     <Label htmlFor="confirmPassword" className="text-sm font-medium">Confirm Password</Label>
                     <Input
                       id="confirmPassword"
+                      name="confirmPassword"
                       type="password"
                       value={signUpData.confirmPassword}
                       onChange={(e) => handleSignUpInputChange("confirmPassword", e.target.value)}
                       placeholder="Confirm your password"
                       className="glass"
                       required
+                      autoComplete="new-password"
                     />
                     {signUpErrors.confirmPassword && (
                       <p className="text-red-500 text-xs">{signUpErrors.confirmPassword}</p>
@@ -399,10 +418,11 @@ export function NeonAuth() {
                     fullWidth
                     size="lg"
                     disabled={Object.keys(signUpErrors).length > 0 || !signUpData.email || !signUpData.password}
+                    type="submit"
                   >
                     Create Account
                   </RecaptchaSignupButton>
-                </div>
+                </form>
               </TabsContent>
             </Tabs>
             
