@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from 'react'
-import { RECAPTCHA_CONFIG, RECAPTCHA_ACTIONS, type RecaptchaAction } from '@/lib/recaptcha-client'
+import { RECAPTCHA_CONFIG } from '@/lib/recaptcha-client'
 
 declare global {
   interface Window {
@@ -15,7 +15,7 @@ declare global {
 }
 
 interface UseRecaptchaOptions {
-  action?: RecaptchaAction
+  action?: string
   minScore?: number
   onSuccess?: (token: string, score: number) => void
   onError?: (error: string) => void
@@ -24,7 +24,7 @@ interface UseRecaptchaOptions {
 
 export function useRecaptcha(options: UseRecaptchaOptions = {}) {
   const {
-    action = RECAPTCHA_ACTIONS.SUBMIT,
+    action = 'submit',
     minScore = 0.5,
     onSuccess,
     onError,
@@ -35,7 +35,7 @@ export function useRecaptcha(options: UseRecaptchaOptions = {}) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Check if reCAPTCHA is ready (script loaded by RecaptchaProvider)
+  // Check if reCAPTCHA is ready
   useEffect(() => {
     const checkRecaptchaReady = () => {
       if (window.grecaptcha?.enterprise) {
@@ -44,11 +44,9 @@ export function useRecaptcha(options: UseRecaptchaOptions = {}) {
           console.log('reCAPTCHA ready in useRecaptcha hook')
         })
       } else {
-        // Check again in a moment if not ready
-        setTimeout(checkRecaptchaReady, 100)
+        setTimeout(checkRecaptchaReady, 100) // Retry if not ready
       }
     }
-
     checkRecaptchaReady()
   }, [])
 
@@ -160,5 +158,4 @@ export function useRecaptchaForm(options: UseRecaptchaOptions = {}) {
     ...recaptcha,
     handleSubmit
   }
-}
 }

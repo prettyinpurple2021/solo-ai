@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useAuth } from "@/hooks/use-auth"
 import { BossButton, EmpowermentButton } from "@/components/ui/boss-button"
 import { BossCard, EmpowermentCard } from "@/components/ui/boss-card"
 import { RecaptchaSignupButton, RecaptchaSigninButton } from "@/components/ui/recaptcha-button"
@@ -14,8 +13,109 @@ import { CalendarIcon, AlertCircle, CheckCircle, Crown, Shield } from "lucide-re
 import { format, subYears } from "date-fns"
 import { motion } from "framer-motion"
 
+// Custom authentication hook
+function useCustomAuth() {
+  const [user, setUser] = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+
+  // Check if user is authenticated on mount
+  useEffect(() => {
+    const token = localStorage.getItem('auth_token')
+    if (token) {
+      fetchUser(token)
+    } else {
+      setLoading(false)
+    }
+  }, [])
+
+  const fetchUser = async (token: string) => {
+    try {
+      const response = await fetch('/api/auth/user', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      if (response.ok) {
+        const userData = await response.json()
+        setUser(userData)
+      } else {
+        localStorage.removeItem('auth_token')
+      }
+    } catch (error) {
+      console.error('Error fetching user:', error)
+      localStorage.removeItem('auth_token')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const signIn = async (email: string, password: string) => {
+    try {
+      const response = await fetch('/api/auth/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        localStorage.setItem('auth_token', data.token)
+        setUser(data.user)
+        return { error: null }
+      } else {
+        return { error: data.error || 'Sign in failed' }
+      }
+    } catch (error) {
+      return { error: 'Network error' }
+    }
+  }
+
+  const signUp = async (userData: any) => {
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: userData.email,
+          password: userData.password,
+          metadata: {
+            full_name: `${userData.firstName} ${userData.lastName}`,
+            username: userData.username,
+            date_of_birth: userData.dateOfBirth
+          }
+        })
+      })
+
+      const data = await response.json()
+
+      if (response.ok) {
+        localStorage.setItem('auth_token', data.token)
+        setUser(data.user)
+        return { error: null }
+      } else {
+        return { error: data.error || 'Sign up failed' }
+      }
+    } catch (error) {
+      return { error: 'Network error' }
+    }
+  }
+
+  const signOut = () => {
+    localStorage.removeItem('auth_token')
+    setUser(null)
+  }
+
+  return { user, loading, signIn, signUp, signOut }
+}
+
 export function NeonAuth() {
-  const { signIn, signUp, user, signOut: _signOut } = useAuth()
+  const { signIn, signUp, user, signOut } = useCustomAuth()
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
@@ -138,11 +238,7 @@ export function NeonAuth() {
     setSuccess(null)
     
     try {
-      const { error } = await signUp(signUpData.email, signUpData.password, {
-        full_name: `${signUpData.firstName} ${signUpData.lastName}`,
-        date_of_birth: signUpData.dateOfBirth,
-        username: signUpData.username
-      })
+      const { error } = await signUp(signUpData)
       
       if (error) {
         setError(typeof error === 'string' ? error : 'Sign up failed')
