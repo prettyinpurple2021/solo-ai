@@ -111,7 +111,7 @@ gcloud run deploy soloboss-ai-platform \
 # Set basic environment variables
 gcloud run services update soloboss-ai-platform \
   --region us-central1 \
-  --set-env-vars NODE_ENV=production,PORT=3000
+  --set-env-vars NODE_ENV=production
 
 # Set secrets from Secret Manager
 gcloud run services update soloboss-ai-platform \
