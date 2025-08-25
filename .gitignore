@@ -35,3 +35,14 @@ next-env.d.ts
 
 # Local Netlify folder
 .netlify
+
+# secrets and sensitive files
+/secrets/
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!next.config.mjs
+!tailwind.config.ts
+!drizzle.config.ts
+!components.json
