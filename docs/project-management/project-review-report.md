@@ -207,7 +207,7 @@ NEXT_PUBLIC_SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, "Supabase service role 
 
 ### Production Readiness
 
-- ✅ **Deployment:** Successfully deployed to Vercel
+- ✅ **Deployment:** Successfully deployed to Google Cloud Run
 - ✅ **Domain:** Custom domain configured
 - ✅ **SSL:** HTTPS properly configured
 - ❌ **Functionality:** Core features not working due to API issues

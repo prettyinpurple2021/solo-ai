@@ -98,7 +98,7 @@
 
 ### Production Deployment
 
-- [x] **Set up environment variables in Netlify** - COMPLETED
+- [x] **Set up environment variables in Google Cloud Run** - COMPLETED (Migrated from Netlify)
   - [x] Created comprehensive setup guide
   - [x] Configure Stack Auth environment variables
   - [x] Configure Neon database connection
@@ -160,11 +160,11 @@
 ### Critical
 
 - [x] **Complete production authentication setup** - COMPLETED
-  - [x] Removed placeholder values from netlify.toml
+  - [x] Removed placeholder values from deployment configs
   - [x] Created comprehensive setup guide
-  - [x] Set up proper environment variables in Netlify dashboard
+  - [x] Set up proper environment variables in Google Cloud Run
   - [x] Test authentication flow in production
-- [x] **Fix Netlify build failures** - COMPLETED
+- [x] **Fix deployment build failures** - COMPLETED (Migrated to Google Cloud Run)
   - [x] Fixed Edge runtime incompatibility with jsonwebtoken
   - [x] Fixed Sentry configuration warnings
   - [x] Updated Next.js config to use serverExternalPackages instead of deprecated option
@@ -184,8 +184,8 @@
 
 ### Production Setup
 
-- [x] **Netlify deployment configuration** - COMPLETED
-- [x] **Environment variables setup in Netlify** - COMPLETED
+- [x] **Google Cloud Run deployment configuration** - COMPLETED (Migrated from Netlify)
+- [x] **Environment variables setup in Google Cloud Run** - COMPLETED (Migrated from Netlify)
 - [x] **Database migration scripts** - COMPLETED
 - [x] **Monitoring and error tracking** - COMPLETED
 
@@ -216,7 +216,7 @@
 ### **IMMEDIATE (This Week)**
 
 1. **Complete Production Authentication Setup** ✅ COMPLETED
-   - ✅ Set up Stack Auth environment variables in Netlify
+   - ✅ Set up Stack Auth environment variables in Google Cloud Run
    - ✅ Configure Neon database connection
    - ✅ Add OpenAI API key
    - ✅ Test complete authentication flow

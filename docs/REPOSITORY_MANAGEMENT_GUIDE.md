@@ -64,13 +64,11 @@ git credential-manager-core get
 #### Check Bookmarks and History
 - Search browser bookmarks for "solo-boss" or "v0"
 - Check browser history for GitHub URLs
-- Look for Vercel, Netlify, or other deployment platform URLs
+- Look for Google Cloud, or other deployment platform URLs
 
 #### Common Development URLs to Check
 ```
 http://localhost:3000
-https://vercel.app/dashboard
-https://app.netlify.com/
 https://console.cloud.google.com/
 ```
 

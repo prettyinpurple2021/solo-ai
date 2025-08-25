@@ -378,7 +378,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 *NFR-SCAL-001: User Load**
 
-- The system SHALL support at least 10,000 concurrent users using Netlify's serverless infrastructure and Supabase's auto-scaling database.
+- The system SHALL support at least 10,000 concurrent users using Google Cloud Run's serverless infrastructure and database auto-scaling.
 
 *NFR-SCAL-002: Data Volume**
 
@@ -392,7 +392,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 *NFR-SEC-002: Data Protection**
 
-- All data SHALL be encrypted at rest and in transit using Supabase's built-in encryption and Netlify's HTTPS-only deployment.
+- All data SHALL be encrypted at rest and in transit using database built-in encryption and Google Cloud Run's HTTPS-only deployment.
 
 *NFR-SEC-003: Input Validation**
 
@@ -402,7 +402,7 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 *NFR-REL-001: System Uptime**
 
-- The system SHALL maintain 99.9% uptime using Netlify's global CDN and Supabase's high-availability infrastructure.
+- The system SHALL maintain 99.9% uptime using Google Cloud Run's global infrastructure and high-availability database.
 
 *NFR-REL-002: Error Handling**
 
@@ -475,14 +475,14 @@ This Functional Requirements Document (FRD) specifies the functional requirement
 
 *Deployment & Infrastructure**
 
-- **Netlify Platform**: Serverless deployment, edge network, preview deployments, analytics
+- **Google Cloud Platform**: Serverless deployment, global network, automatic scaling, analytics
 
 ### 🔐 Security & Performance Features
 
 **Authentication**: Supabase Auth with JWT tokens and secure session management
 **Data Security**: Row Level Security, encryption at rest/transit, input validation with Zod
 **Performance**: Server-side rendering, edge functions, automatic code splitting, image optimization
-**Monitoring**: Netlify Analytics, Core Web Vitals tracking, real-time error monitoring
+**Monitoring**: Google Cloud Monitoring, Core Web Vitals tracking, real-time error monitoring
 
 ## 6. Glossary
 

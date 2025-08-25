@@ -5,7 +5,7 @@ This doc captures how to back up and restore the project, including an encrypted
 ## Latest Snapshot
 
 - Encrypted download (temporary host): https://0x0.st/8FRz.zip.enc
-- Local path (on your machine): `C:\Users\prett\Desktop\ai agent profile images\soloboss vercel production\solo-boss-backup-20250811-191254.zip.enc`
+- Local path (on your machine): `C:\Users\prett\Desktop\ai agent profile images\soloboss-backup\solo-boss-backup-20250811-191254.zip.enc`
 - Password: `c5e9730bfdaa470daf8eeefd4528dc9d`
 - SHA256: `0338C8FE5DE019ED33E19DB3B9262A63454EC400663FCE68572B473A1142B6B4`
 
@@ -55,7 +55,7 @@ Expand-Archive -Path "solo-boss-backup-YYYYMMDD-HHMMSS.zip" -DestinationPath "re
 This doc explains how to use the encrypted snapshot backup.
 
 ## Latest backup (example)
-- Encrypted file: `C:\Users\prett\Desktop\ai agent profile images\soloboss vercel production\solo-boss-backup-20250811-191254.zip.enc`
+- Encrypted file: `C:\Users\prett\Desktop\ai agent profile images\soloboss-backup\solo-boss-backup-20250811-191254.zip.enc`
 - SHA256: `0338C8FE5DE019ED33E19DB3B9262A63454EC400663FCE68572B473A1142B6B4`
 - Password: stored securely by you (do not commit passwords)
 - Temporary download (if still valid): `https://0x0.st/8FRz.zip.enc`
