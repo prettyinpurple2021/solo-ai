@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import jwt from 'jsonwebtoken'
 import { neon } from '@neondatabase/serverless'
 
-const sql = neon(process.env.DATABASE_URL!)
+function getSql() {
+  const url = process.env.DATABASE_URL
+  if (!url) {
+    throw new Error('DATABASE_URL is not set')
+  }
+  return neon(url)
+}
 
 // Helper function to verify JWT token
 function verifyToken(authHeader: string | null) {
@@ -21,6 +27,7 @@ function verifyToken(authHeader: string | null) {
 // GET /api/briefcases - Get all briefcases for the authenticated user
 export async function GET(request: NextRequest) {
   try {
+    const sql = getSql()
     const decoded = verifyToken(request.headers.get('authorization'))
     if (!decoded || !decoded.userId) {
       return NextResponse.json(
@@ -50,6 +57,7 @@ export async function GET(request: NextRequest) {
 // POST /api/briefcases - Create a new briefcase
 export async function POST(request: NextRequest) {
   try {
+    const sql = getSql()
     const decoded = verifyToken(request.headers.get('authorization'))
     if (!decoded || !decoded.userId) {
       return NextResponse.json(
