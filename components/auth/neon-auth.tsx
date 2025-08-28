@@ -12,10 +12,11 @@ import { CalendarIcon, AlertCircle, CheckCircle, Crown, Shield, Lock } from "luc
 import { format, subYears } from "date-fns"
 import { motion } from "framer-motion"
 import { useUser, useStackApp } from "@stackframe/stack"
+import { useSafeUser, useSafeStackApp } from "@/hooks/use-safe-stack"
 
 export function NeonAuth() {
-  const user = useUser()
-  const stackApp = useStackApp()
+  const user = useSafeUser()
+  const stackApp = useSafeStackApp()
   const router = useRouter()
   const pathname = usePathname()
   const [email, setEmail] = useState("")

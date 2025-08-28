@@ -4,14 +4,15 @@
 export const dynamic = 'force-dynamic'
 
 import { useUser, useStackApp } from "@stackframe/stack"
+import { useSafeUser, useSafeStackApp } from "@/hooks/use-safe-stack"
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
 export default function TestAuthPage() {
-  const user = useUser()
-  const stackApp = useStackApp()
+  const user = useSafeUser()
+  const stackApp = useSafeStackApp()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

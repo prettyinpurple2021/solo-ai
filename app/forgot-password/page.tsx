@@ -13,9 +13,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle, Crown, Lock, ArrowLeft } from "lucide-react"
 import { motion } from "framer-motion"
 import { useStackApp } from "@stackframe/stack"
+import { useSafeStackApp } from "@/hooks/use-safe-stack"
 
 export default function ForgotPasswordPage() {
-  const stackApp = useStackApp()
+  const stackApp = useSafeStackApp()
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
