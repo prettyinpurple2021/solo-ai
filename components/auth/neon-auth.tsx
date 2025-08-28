@@ -12,11 +12,10 @@ import { CalendarIcon, AlertCircle, CheckCircle, Crown, Shield, Lock } from "luc
 import { format, subYears } from "date-fns"
 import { motion } from "framer-motion"
 import { useUser, useStackApp } from "@stackframe/stack"
-import { useSafeUser, useSafeStackApp } from "@/hooks/use-safe-stack"
 
 export function NeonAuth() {
-  const user = useSafeUser()
-  const stackApp = useSafeStackApp()
+  const user = useUser()
+  const stackApp = useStackApp()
   const router = useRouter()
   const pathname = usePathname()
   const [email, setEmail] = useState("")
@@ -24,18 +23,6 @@ export function NeonAuth() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
-  
-  // If StackAuth is not available (during SSR/build), show loading
-  if (!stackApp) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p>Loading authentication...</p>
-        </div>
-      </div>
-    )
-  }
   
   // Enhanced sign-up form state
   const [signUpData, setSignUpData] = useState({
@@ -157,17 +144,15 @@ export function NeonAuth() {
     setSuccess(null)
     
     try {
-      await stackApp?.signUpWithCredential({ 
-        email: signUpData.email, 
+      await stackApp?.signUpWithCredential({
+        email: signUpData.email,
         password: signUpData.password,
-        options: {
-          displayName: `${signUpData.firstName} ${signUpData.lastName}`,
-          metadata: {
-            firstName: signUpData.firstName,
-            lastName: signUpData.lastName,
-            username: signUpData.username,
-            dateOfBirth: signUpData.dateOfBirth
-          }
+        displayName: `${signUpData.firstName} ${signUpData.lastName}`,
+        metadata: {
+          firstName: signUpData.firstName,
+          lastName: signUpData.lastName,
+          username: signUpData.username,
+          dateOfBirth: signUpData.dateOfBirth
         }
       })
       

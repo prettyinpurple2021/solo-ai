@@ -351,7 +351,7 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
                 <Image
-                  src="/images/soloboss-hero-silhouette.png"
+                  src="/images/soloboss-hero-silhouette.jpg"
                   alt="SoloBoss - Confident entrepreneur working in her office"
                   width={600}
                   height={400}
@@ -395,7 +395,7 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
             className="relative rounded-3xl overflow-hidden shadow-2xl"
           >
             <Image
-              src="/images/soloboss-banner.png"
+              src="/images/soloboss-banner.jpg"
               alt="Confident. Creative. In control. That's the SoloBoss way."
               width={1200}
               height={300}
