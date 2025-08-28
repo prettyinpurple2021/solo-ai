@@ -104,7 +104,7 @@ export default function TermsOfServicePage() {
                   <div className="bg-purple-50 p-4 rounded-lg mb-4">
                     <h3 className="font-semibold text-gray-800 mb-2">Account Creation:</h3>
                     <p className="text-gray-600 text-sm">
-                      The system allows new users to register for a SoloBoss AI account using Supabase Auth, which handles secure password hashing and creates a user record.
+                      The system allows new users to register for a SoloBoss AI account using our custom authentication system, which handles secure password hashing and creates a user record.
                     </p>
                   </div>
                   <div className="bg-pink-50 p-4 rounded-lg mb-4">
@@ -116,7 +116,7 @@ export default function TermsOfServicePage() {
                   <div className="bg-purple-50 p-4 rounded-lg">
                     <h3 className="font-semibold text-gray-800 mb-2">Account Security:</h3>
                     <p className="text-gray-600 text-sm">
-                      You are responsible for maintaining the confidentiality of your account password and for all activities that occur under your account. The system uses Supabase Auth to authenticate credentials and establish a secure user session. You can view and edit your basic profile information, which is retrieved from the profiles table in the Supabase PostgreSQL database.
+                      You are responsible for maintaining the confidentiality of your account password and for all activities that occur under your account. The system uses our custom authentication to authenticate credentials and establish a secure user session. You can view and edit your basic profile information, which is retrieved from the users table in the Neon PostgreSQL database.
                     </p>
                   </div>
                 </div>

@@ -121,7 +121,7 @@ export default function PrivacyPolicyPage() {
                     <div className="bg-green-50 p-4 rounded-lg border-l-4 border-green-400">
                       <h3 className="font-semibold text-gray-800 mb-2">Briefcase Data:</h3>
                       <p className="text-gray-600 text-sm">
-                        When you upload files to your Briefcase, we store metadata about these files, such as storage_object_path, name, file_type, size, upload_date, and last_modified_date. The actual file content is stored securely in Supabase Storage. We also manage sharing permissions (viewer, editor, owner) for your files.
+                        When you upload files to your Briefcase, we store metadata about these files, such as storage_object_path, name, file_type, size, upload_date, and last_modified_date. The actual file content is stored securely in our database. We also manage sharing permissions (viewer, editor, owner) for your files.
                       </p>
                     </div>
 

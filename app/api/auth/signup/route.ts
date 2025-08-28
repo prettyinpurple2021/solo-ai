@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import { neon } from '@neondatabase/serverless'
+import { randomUUID } from 'crypto'
 
 const sql = neon(process.env.DATABASE_URL!)
 
@@ -34,14 +35,17 @@ export async function POST(request: NextRequest) {
 
     // Extract metadata
     const fullName = metadata?.full_name || ''
-    const username = metadata?.username || ''
+    const usernameValue = (metadata?.username && String(metadata.username).trim().length > 0)
+      ? String(metadata.username).trim().toLowerCase()
+      : null
     const dateOfBirth = metadata?.date_of_birth || null
 
     // Create user in database
+    const userId = randomUUID()
     const newUsers = await sql`
-      INSERT INTO users (id, email, password_hash, "fullName", username, date_of_birth, "createdAt", "updatedAt")
-      VALUES (gen_random_uuid(), ${email.toLowerCase()}, ${passwordHash}, ${fullName}, ${username}, ${dateOfBirth}, NOW(), NOW())
-      RETURNING id, email, "fullName" as full_name, username, date_of_birth, "createdAt" as created_at
+      INSERT INTO users (id, email, password_hash, full_name, username, date_of_birth, created_at, updated_at)
+      VALUES (${userId}, ${email.toLowerCase()}, ${passwordHash}, ${fullName}, ${usernameValue}, ${dateOfBirth}, NOW(), NOW())
+      RETURNING id, email, full_name, username, date_of_birth, created_at
     `
 
     if (newUsers.length === 0) {
@@ -81,8 +85,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Signup error:', error)
+    const message = error instanceof Error ? error.message : String(error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Internal server error', message: process.env.NODE_ENV === 'development' ? message : undefined },
       { status: 500 }
     )
   }

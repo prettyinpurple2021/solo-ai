@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
 
     // Get user from database
     const users = await sql`
-      SELECT id, email, "fullName" as full_name, username, date_of_birth, "createdAt" as created_at
+      SELECT id, email, full_name, username, date_of_birth, created_at
       FROM users 
       WHERE id = ${decoded.userId}
     `

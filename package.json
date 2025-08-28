@@ -11,6 +11,7 @@
     "e2e": "playwright test",
     "setup-db": "node scripts/setup-database.js",
     "setup-neon-db": "node scripts/setup-neon-database.mjs",
+    "smoke": "node scripts/smoke-auth.mjs",
     "setup-templates": "node scripts/setup-templates-database.mjs",
     "setup-compliance": "node scripts/setup-compliance-database.mjs",
     "setup-migration": "node scripts/setup-migration-database.mjs",

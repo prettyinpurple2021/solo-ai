@@ -69,7 +69,7 @@ export default function AuthExamplePage() {
             </CardHeader>
             <CardContent>
               <p className="text-gray-600">
-                Your existing data is automatically migrated from Supabase to Neon PostgreSQL.
+                Your existing data is automatically migrated to Neon PostgreSQL.
                 No data loss, no interruption to your workflow.
               </p>
             </CardContent>

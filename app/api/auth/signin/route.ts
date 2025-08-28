@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     // Get user from database
     const users = await sql`
-      SELECT id, email, password_hash, "fullName" as full_name, username, date_of_birth, "createdAt" as created_at
+      SELECT id, email, password_hash, full_name, username, date_of_birth, created_at
       FROM users 
       WHERE email = ${email.toLowerCase()}
     `
