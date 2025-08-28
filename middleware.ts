@@ -1,53 +1,81 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
+import { getStackServerApp } from '@/stack'
 
-// Enhanced middleware with CORS support and security headers
-export function middleware(request: NextRequest) {
-  // Get the origin from the request
-  const origin = request.headers.get('origin');
-  const response = NextResponse.next();
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
 
-  // Add CORS headers for API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
-    // Allow requests from production domains and localhost
-    const allowedOrigins = [
-      'https://soloboss-ai-v3.web.app',
-      'https://soloboss-ai-v3.firebaseapp.com', 
-      'http://localhost:3000',
-      'http://localhost:3001',
-      'https://localhost:3000',
-      'https://localhost:3001',
-      // Add your production domain here
-      process.env.NEXT_PUBLIC_APP_URL,
-    ].filter(Boolean);
+  // Public routes that don't require authentication
+  const publicRoutes = [
+    '/',
+    '/signin',
+    '/signup',
+    '/forgot-password',
+    '/about',
+    '/features',
+    '/pricing',
+    '/contact',
+    '/privacy',
+    '/terms',
+    '/cookies',
+    '/gdpr',
+    '/blog',
+    '/landing',
+    '/api/auth',
+    '/api/health',
+    '/manifest.json',
+    '/sw.js',
+    '/favicon.ico',
+    '/robots.txt'
+  ]
 
-    if (origin && allowedOrigins.includes(origin)) {
-      response.headers.set('Access-Control-Allow-Origin', origin);
-    }
+  // Check if the current path is a public route
+  const isPublicRoute = publicRoutes.some(route => 
+    pathname === route || pathname.startsWith(route + '/')
+  )
 
-    response.headers.set('Access-Control-Allow-Credentials', 'true');
-    response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    response.headers.set(
-      'Access-Control-Allow-Headers',
-      'Content-Type, Authorization, X-Requested-With, Accept, Origin, X-CSRF-Token'
-    );
-
-    // Handle preflight requests
-    if (request.method === 'OPTIONS') {
-      return new Response(null, { status: 200, headers: response.headers });
-    }
+  // If it's a public route, allow access
+  if (isPublicRoute) {
+    return NextResponse.next()
   }
 
-  return response;
+  // For API routes, let them handle their own authentication
+  if (pathname.startsWith('/api/')) {
+    return NextResponse.next()
+  }
+
+  // For all other routes, check authentication
+  try {
+    const app = getStackServerApp()
+    if (!app) {
+      // If Stack Auth is not configured, redirect to signin
+      return NextResponse.redirect(new URL('/signin', request.url))
+    }
+
+    const user = await app.getUser()
+    
+    if (!user) {
+      // User is not authenticated, redirect to signin
+      return NextResponse.redirect(new URL('/signin', request.url))
+    }
+
+    // User is authenticated, allow access
+    return NextResponse.next()
+  } catch (error) {
+    console.error('Middleware authentication error:', error)
+    // On error, redirect to signin
+    return NextResponse.redirect(new URL('/signin', request.url))
+  }
 }
 
-// Limit middleware to specific paths to avoid running on all routes
 export const config = {
   matcher: [
-    // Apply to API routes and auth-related pages
-    '/api/:path*',
-    '/signin',
-    '/signup', 
-    '/dashboard/:path*',
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public folder
+     */
+    '/((?!_next/static|_next/image|favicon.ico|public/).*)',
   ],
-};
+}

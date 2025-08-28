@@ -8,113 +8,13 @@ import { RecaptchaSignupButton, RecaptchaSigninButton } from "@/components/ui/re
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CalendarIcon, AlertCircle, CheckCircle, Crown, Shield } from "lucide-react"
+import { CalendarIcon, AlertCircle, CheckCircle, Crown, Shield, Lock } from "lucide-react"
 import { format, subYears } from "date-fns"
 import { motion } from "framer-motion"
-
-// Custom authentication hook
-function useCustomAuth() {
-  const [user, setUser] = useState<any>(null)
-  const [loading, setLoading] = useState(true)
-
-  // Check if user is authenticated on mount
-  useEffect(() => {
-    const token = localStorage.getItem('auth_token')
-    if (token) {
-      fetchUser(token)
-    } else {
-      setLoading(false)
-    }
-  }, [])
-
-  const fetchUser = async (token: string) => {
-    try {
-      const response = await fetch('/api/auth/user', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      
-      if (response.ok) {
-        const userData = await response.json()
-        setUser(userData)
-      } else {
-        localStorage.removeItem('auth_token')
-      }
-    } catch (error) {
-      console.error('Error fetching user:', error)
-      localStorage.removeItem('auth_token')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const signIn = async (email: string, password: string) => {
-    try {
-      const response = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        localStorage.setItem('auth_token', data.token)
-        setUser(data.user)
-        return { error: null }
-      } else {
-        return { error: data.error || 'Sign in failed' }
-      }
-    } catch (error) {
-      return { error: 'Network error' }
-    }
-  }
-
-  const signUp = async (userData: any) => {
-    try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          email: userData.email,
-          password: userData.password,
-          metadata: {
-            full_name: `${userData.firstName} ${userData.lastName}`,
-            username: userData.username,
-            date_of_birth: userData.dateOfBirth
-          }
-        })
-      })
-
-      const data = await response.json()
-
-      if (response.ok) {
-        localStorage.setItem('auth_token', data.token)
-        setUser(data.user)
-        return { error: null }
-      } else {
-        return { error: data.error || 'Sign up failed' }
-      }
-    } catch (error) {
-      return { error: 'Network error' }
-    }
-  }
-
-  const signOut = () => {
-    localStorage.removeItem('auth_token')
-    setUser(null)
-  }
-
-  return { user, loading, signIn, signUp, signOut }
-}
+import { useStack } from "@stackframe/stack"
 
 export function NeonAuth() {
-  const { signIn, signUp, user, signOut } = useCustomAuth()
+  const { signIn, signUp, user, signOut } = useStack()
   const router = useRouter()
   const pathname = usePathname()
   const [email, setEmail] = useState("")
@@ -152,13 +52,14 @@ export function NeonAuth() {
     setError(null)
     setSuccess(null)
     
-    const { error } = await signIn(email, password)
-    if (error) {
-      setError(typeof error === 'string' ? error : 'Sign in failed')
-    } else {
+    try {
+      await signIn(email, password)
       setSuccess("Sign in successful! Redirecting to dashboard...")
+    } catch (err: any) {
+      setError(err.message || 'Sign in failed')
+    } finally {
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   const validateSignUpForm = () => {
@@ -242,28 +143,31 @@ export function NeonAuth() {
     setSuccess(null)
     
     try {
-      const { error } = await signUp(signUpData)
+      await signUp(signUpData.email, signUpData.password, {
+        displayName: `${signUpData.firstName} ${signUpData.lastName}`,
+        metadata: {
+          firstName: signUpData.firstName,
+          lastName: signUpData.lastName,
+          username: signUpData.username,
+          dateOfBirth: signUpData.dateOfBirth
+        }
+      })
       
-      if (error) {
-        setError(typeof error === 'string' ? error : 'Sign up failed')
-        return { success: false, error: typeof error === 'string' ? error : 'Sign up failed' }
-      } else {
-        setSuccess("Account created successfully! You can now sign in.")
-        // Reset form
-        setSignUpData({
-          firstName: "",
-          lastName: "",
-          dateOfBirth: "",
-          email: "",
-          username: "",
-          password: "",
-          confirmPassword: ""
-        })
-        return { success: true }
-      }
+      setSuccess("Account created successfully! You can now sign in.")
+      // Reset form
+      setSignUpData({
+        firstName: "",
+        lastName: "",
+        dateOfBirth: "",
+        email: "",
+        username: "",
+        password: "",
+        confirmPassword: ""
+      })
+      return { success: true }
 
-    } catch (err) {
-      const errorMsg = "An unexpected error occurred. Please try again."
+    } catch (err: any) {
+      const errorMsg = err.message || "An unexpected error occurred. Please try again."
       setError(errorMsg)
       return { success: false, error: errorMsg }
     } finally {
@@ -388,6 +292,18 @@ export function NeonAuth() {
                 >
                   Sign In
                 </RecaptchaSigninButton>
+
+                {/* Forgot Password Link */}
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={() => router.push('/forgot-password')}
+                    className="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center justify-center gap-1 mx-auto"
+                  >
+                    <Lock className="w-3 h-3" />
+                    Forgot Password?
+                  </button>
+                </div>
 
                 <div className="text-center">
                   <p className="text-sm text-gray-600">

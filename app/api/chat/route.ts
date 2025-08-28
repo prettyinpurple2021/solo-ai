@@ -44,8 +44,35 @@ export async function POST(request: NextRequest) {
     const agentPersonality = agentPersonalities[agentId as keyof typeof agentPersonalities] || 
       'You are a helpful AI assistant for SoloBoss AI platform.'
 
-    // Save conversation to database
+    // Ensure user exists in database
     const client = await createClient()
+    let { rows: userData } = await client.query(
+      'SELECT id FROM users WHERE id = $1',
+      [user.id]
+    )
+
+    if (userData.length === 0) {
+      // Create user if they don't exist
+      await client.query(
+        `INSERT INTO users (id, email, full_name, avatar_url, subscription_tier, level, total_points, current_streak, wellness_score, focus_minutes, onboarding_completed, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW(), NOW())`,
+        [
+          user.id,
+          user.email,
+          user.full_name,
+          user.avatar_url,
+          'free',
+          1,
+          0,
+          0,
+          50,
+          0,
+          false
+        ]
+      )
+    }
+
+    // Save conversation to database
     const { rows: [conversation] } = await client.query(
       `INSERT INTO conversations (user_id, agent_id, message, response, created_at)
        VALUES ($1, $2, $3, '', NOW())

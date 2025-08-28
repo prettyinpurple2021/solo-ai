@@ -11,14 +11,39 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get user data from database
+    // Get user data from database or create if doesn't exist
     const client = await createClient()
-    const { rows: userData } = await client.query(
-      'SELECT id, email, full_name, avatar_url, subscription_tier FROM users WHERE id = $1',
+    
+    // First, try to get existing user data
+    let { rows: userData } = await client.query(
+      'SELECT id, email, full_name, avatar_url, subscription_tier, level, total_points, current_streak, wellness_score, focus_minutes, onboarding_completed FROM users WHERE id = $1',
       [user.id]
     )
 
-    const dbUser = userData[0] || user
+    let dbUser = userData[0]
+
+    // If user doesn't exist in database, create them
+    if (!dbUser) {
+      const { rows: newUser } = await client.query(
+        `INSERT INTO users (id, email, full_name, avatar_url, subscription_tier, level, total_points, current_streak, wellness_score, focus_minutes, onboarding_completed, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW(), NOW())
+         RETURNING id, email, full_name, avatar_url, subscription_tier, level, total_points, current_streak, wellness_score, focus_minutes, onboarding_completed`,
+        [
+          user.id,
+          user.email,
+          user.full_name,
+          user.avatar_url,
+          'free',
+          1,
+          0,
+          0,
+          50,
+          0,
+          false
+        ]
+      )
+      dbUser = newUser[0]
+    }
 
     // Aggregate real dashboard data from Neon
     const [todaysStatsRes, todaysTasksRes, activeGoalsRes, conversationsRes, achievementsRes, weeklyFocusRes] = await Promise.all([
@@ -132,12 +157,22 @@ export async function GET(_request: NextRequest) {
 
     const weeklyFocusRow = weeklyFocusRes.rows[0] || { total_minutes: 0, sessions_count: 0, average_session: 0 }
 
+    // Generate some sample insights for new users
+    const insights = todaysTasks.length === 0 ? [
+      {
+        type: 'welcome',
+        title: 'Welcome to SoloBoss AI!',
+        description: 'Start by creating your first goal or task to get organized.',
+        action: 'Create Goal'
+      }
+    ] : []
+
     const responseData = {
       user: {
         id: dbUser.id,
         email: dbUser.email,
-        full_name: dbUser.full_name || null,
-        avatar_url: dbUser.avatar_url || null,
+        full_name: dbUser.full_name || user.full_name || null,
+        avatar_url: dbUser.avatar_url || user.avatar_url || null,
         subscription_tier: dbUser.subscription_tier || 'free',
         level: dbUser.level ?? 1,
         total_points: dbUser.total_points ?? 0,
@@ -152,7 +187,7 @@ export async function GET(_request: NextRequest) {
       recentConversations,
       recentAchievements,
       weeklyFocus: weeklyFocusRow,
-      insights: [],
+      insights,
     }
 
     return NextResponse.json(responseData)

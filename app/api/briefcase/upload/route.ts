@@ -1,154 +1,86 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { DocumentParser } from '@/lib/documentParser'
-import fs from 'fs'
-import path from 'path'
-import crypto from 'crypto'
+import { authenticateRequest } from '@/lib/auth-server'
+import { createClient } from '@/lib/neon/server'
 
 export async function POST(request: NextRequest) {
   try {
+    const { user, error } = await authenticateRequest()
+    
+    if (error || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Ensure user exists in database
+    const client = await createClient()
+    let { rows: userData } = await client.query(
+      'SELECT id FROM users WHERE id = $1',
+      [user.id]
+    )
+
+    if (userData.length === 0) {
+      // Create user if they don't exist
+      await client.query(
+        `INSERT INTO users (id, email, full_name, avatar_url, subscription_tier, level, total_points, current_streak, wellness_score, focus_minutes, onboarding_completed, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW(), NOW())`,
+        [
+          user.id,
+          user.email,
+          user.full_name,
+          user.avatar_url,
+          'free',
+          1,
+          0,
+          0,
+          50,
+          0,
+          false
+        ]
+      )
+    }
+
     const formData = await request.formData()
     const files = formData.getAll('files') as File[]
-    const category = formData.get('category') as string
-    const description = formData.get('description') as string
-    const tags = formData.get('tags') as string
-    const folderId = formData.get('folder_id') as string
+    const category = formData.get('category') as string || 'document'
+    const description = formData.get('description') as string || ''
+    const tags = formData.get('tags') as string || ''
 
     if (!files || files.length === 0) {
-      return NextResponse.json({
-        success: false,
-        error: 'No files provided'
-      }, { status: 400 })
+      return NextResponse.json({ error: 'No files provided' }, { status: 400 })
     }
 
-    // Validate file sizes (5MB limit per file)
-    const maxFileSize = 5 * 1024 * 1024 // 5MB
-    for (const file of files) {
-      if (file.size > maxFileSize) {
-        return NextResponse.json({
-          success: false,
-          error: `File ${file.name} exceeds 5MB limit`
-        }, { status: 400 })
-      }
-    }
-
-    // Create uploads directory if it doesn't exist
-    const uploadsDir = path.join(process.cwd(), 'uploads')
-    if (!fs.existsSync(uploadsDir)) {
-      fs.mkdirSync(uploadsDir, { recursive: true })
-    }
-
-    // Process each file
     const uploadedFiles = []
-    
+
     for (const file of files) {
-      const fileExtension = file.name.split('.').pop()?.toLowerCase() || 'unknown'
-      const tagsArray = tags ? tags.split(',').map(tag => tag.trim()) : []
-      const fileId = crypto.randomUUID()
-      const timestamp = Date.now()
-      const safeFileName = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`
-      const filePath = path.join(uploadsDir, safeFileName)
+      // Convert file to text content (for now, we'll store as text)
+      const content = await file.text()
       
-      try {
-        // Save file to local storage
-        const fileBuffer = Buffer.from(await file.arrayBuffer())
-        fs.writeFileSync(filePath, fileBuffer)
-        
-        const uploadedFile: any = {
-          id: fileId,
-          name: file.name,
-          file_type: fileExtension,
-          mime_type: file.type || 'application/octet-stream',
-          size: file.size,
-          upload_date: new Date().toISOString(),
-          last_modified: new Date().toISOString(),
-          category: category || 'document',
-          tags: tagsArray,
-          description: description || '',
-          is_favorite: false,
-          folder_id: folderId || null,
-          storage_path: filePath,
-          content_indexed: false, // Will be updated after parsing
-          parsing_status: 'pending',
-          parsing_error: undefined as string | undefined,
-          estimated_parsing_time: undefined as number | undefined,
-          content_preview: undefined as string | undefined,
-          word_count: undefined as number | undefined,
-          page_count: undefined as number | undefined
-        }
-        
-        // Attempt to parse document content if supported
-        let contentData = null
-        if (DocumentParser.isSupportedMimeType(file.type || 'application/octet-stream')) {
-          try {
-            // Check if file is small enough for immediate parsing
-            const estimatedTime = DocumentParser.getEstimatedProcessingTime(file.size, file.type || 'application/octet-stream')
-            
-            if (estimatedTime < 10000) { // Less than 10 seconds - parse immediately
-              const parseResult = await DocumentParser.parseDocument(fileBuffer, file.type || 'application/octet-stream', file.name)
-              
-              if (parseResult.success) {
-                contentData = {
-                  content: parseResult.content,
-                  word_count: parseResult.metadata?.wordCount || 0,
-                  page_count: parseResult.metadata?.pageCount,
-                  author: parseResult.metadata?.author,
-                  title: parseResult.metadata?.title,
-                  created_date: parseResult.metadata?.createdDate,
-                  modified_date: parseResult.metadata?.modifiedDate,
-                  content_hash: crypto.createHash('sha256').update(parseResult.content).digest('hex'),
-                  parsing_status: 'success'
-                }
-                uploadedFile.content_indexed = true
-                uploadedFile.parsing_status = 'success'
-              } else {
-                uploadedFile.parsing_status = 'failed'
-                uploadedFile.parsing_error = parseResult.error
-              }
-            } else {
-              // Large file - mark for background processing
-              uploadedFile.parsing_status = 'pending'
-              uploadedFile.estimated_parsing_time = estimatedTime
-            }
-          } catch (parseError) {
-            console.error(`Content parsing error for ${file.name}:`, parseError)
-            uploadedFile.parsing_status = 'failed'
-            uploadedFile.parsing_error = parseError instanceof Error ? parseError.message : 'Unknown parsing error'
-          }
-        } else {
-          uploadedFile.parsing_status = 'unsupported'
-        }
-        
-        // Add content data to response if available
-        if (contentData) {
-          uploadedFile.content_preview = contentData.content.substring(0, 200) + (contentData.content.length > 200 ? '...' : '')
-          uploadedFile.word_count = contentData.word_count
-          uploadedFile.page_count = contentData.page_count
-        }
-        
-        uploadedFiles.push(uploadedFile)
-        
-      } catch (fileError) {
-        console.error(`Error processing file ${file.name}:`, fileError)
-        // Still add the file record but mark it as failed
-        uploadedFiles.push({
-          id: fileId,
-          name: file.name,
-          file_type: fileExtension,
-          mime_type: file.type || 'application/octet-stream',
-          size: file.size,
-          upload_date: new Date().toISOString(),
-          last_modified: new Date().toISOString(),
-          category: category || 'document',
-          tags: tagsArray,
-          description: description || '',
-          is_favorite: false,
-          folder_id: folderId || null,
-          storage_path: filePath,
-          content_indexed: false,
-          parsing_status: 'failed',
-          parsing_error: fileError instanceof Error ? fileError.message : 'File processing failed'
-        })
-      }
+      // Store file metadata in database
+      const { rows: [uploadedFile] } = await client.query(
+        `INSERT INTO documents (user_id, name, file_type, size, content, category, description, tags, created_at, updated_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+         RETURNING id, name, file_type, size, category, description, tags, created_at`,
+        [
+          user.id,
+          file.name,
+          file.type || 'text/plain',
+          file.size,
+          content,
+          category,
+          description,
+          tags
+        ]
+      )
+
+      uploadedFiles.push({
+        id: uploadedFile.id,
+        name: uploadedFile.name,
+        type: uploadedFile.file_type,
+        size: uploadedFile.size,
+        category: uploadedFile.category,
+        description: uploadedFile.description,
+        tags: uploadedFile.tags,
+        createdAt: uploadedFile.created_at
+      })
     }
 
     return NextResponse.json({
@@ -156,21 +88,12 @@ export async function POST(request: NextRequest) {
       files: uploadedFiles,
       message: `Successfully uploaded ${uploadedFiles.length} file(s)`
     })
-    
-  } catch (error) {
-    console.error('Upload error:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'File upload failed. Please try again.'
-    }, { status: 500 })
-  }
-}
 
-// Handle file size limits and types
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb'
-    }
+  } catch (error) {
+    console.error('Briefcase upload error:', error)
+    return NextResponse.json(
+      { error: 'Failed to upload files' },
+      { status: 500 }
+    )
   }
 }
