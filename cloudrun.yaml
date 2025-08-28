@@ -92,7 +92,7 @@ spec:
           requests:
             cpu: "1"
             memory: "512Mi"
-        # Health check configuration
+        # Health check configuration (readinessProbe not supported in this project)
         livenessProbe:
           httpGet:
             path: /api/health
@@ -100,9 +100,3 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/health
-            port: 3000
-          periodSeconds: 5
-          timeoutSeconds: 5
