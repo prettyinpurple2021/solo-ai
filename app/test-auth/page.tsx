@@ -1,13 +1,17 @@
 "use client"
 
-import { useStack } from "@stackframe/stack"
+// Force dynamic rendering to avoid static generation issues with StackAuth
+export const dynamic = 'force-dynamic'
+
+import { useUser, useStackApp } from "@stackframe/stack"
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 
 export default function TestAuthPage() {
-  const { user, signOut } = useStack()
+  const user = useUser()
+  const stackApp = useStackApp()
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -15,6 +19,18 @@ export default function TestAuthPage() {
     const timer = setTimeout(() => setLoading(false), 1000)
     return () => clearTimeout(timer)
   }, [])
+
+  // If StackAuth is not available (during SSR/build), show loading
+  if (!stackApp) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p>Loading authentication...</p>
+        </div>
+      </div>
+    )
+  }
 
   if (loading) {
     return (
@@ -101,7 +117,7 @@ export default function TestAuthPage() {
               <Button onClick={() => window.location.href = '/dashboard/briefcase'}>
                 Test Briefcase
               </Button>
-              <Button variant="outline" onClick={() => signOut()}>
+              <Button variant="outline" onClick={() => stackApp?.signOut()}>
                 Sign Out
               </Button>
             </div>

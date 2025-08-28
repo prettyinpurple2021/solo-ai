@@ -1,5 +1,8 @@
 "use client"
 
+// Force dynamic rendering to avoid static generation issues with StackAuth
+export const dynamic = 'force-dynamic'
+
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { BossButton, EmpowermentButton } from "@/components/ui/boss-button"
@@ -9,15 +12,27 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle, CheckCircle, Crown, Lock, ArrowLeft } from "lucide-react"
 import { motion } from "framer-motion"
-import { useStack } from "@stackframe/stack"
+import { useStackApp } from "@stackframe/stack"
 
 export default function ForgotPasswordPage() {
-  const { resetPassword } = useStack()
+  const stackApp = useStackApp()
   const router = useRouter()
   const [email, setEmail] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  
+  // If StackAuth is not available (during SSR/build), show loading
+  if (!stackApp) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p>Loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,7 +46,7 @@ export default function ForgotPasswordPage() {
     setSuccess(null)
 
     try {
-      await resetPassword(email)
+      await stackApp?.resetPassword(email)
       setSuccess("Password reset email sent! Check your inbox for instructions.")
     } catch (err: any) {
       setError(err.message || "Failed to send reset email. Please try again.")
