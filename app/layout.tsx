@@ -6,6 +6,8 @@ import { StackAuthProvider } from "@/components/auth/stack-provider"
 import { RecaptchaProvider } from "@/components/recaptcha/recaptcha-provider"
 import { PerformanceMonitor } from "@/components/performance/performance-monitor"
 import { ServiceWorkerRegister } from "@/components/performance/service-worker-register"
+import { AccessibilityProvider } from "@/components/ui/accessibility"
+import { ErrorBoundary } from "@/components/ui/error-handler"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -54,9 +56,13 @@ export default function RootLayout({
         >
           <StackAuthProvider>
             <RecaptchaProvider>
-              {children}
-              <PerformanceMonitor />
-              <ServiceWorkerRegister />
+              <AccessibilityProvider>
+                <ErrorBoundary>
+                  {children}
+                </ErrorBoundary>
+                <PerformanceMonitor />
+                <ServiceWorkerRegister />
+              </AccessibilityProvider>
             </RecaptchaProvider>
           </StackAuthProvider>
         </ThemeProvider>

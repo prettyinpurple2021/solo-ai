@@ -25,6 +25,7 @@
     "db:generate": "drizzle-kit generate",
     "test:user": "node scripts/user-testing-plan.js",
     "test:api": "node scripts/api-testing.js",
+    "test:ux": "node scripts/ux-testing.js",
     "setup:analytics": "node scripts/setup-analytics.js"
   },
   "dependencies": {

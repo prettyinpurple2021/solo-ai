@@ -498,6 +498,10 @@ export function InteractiveTutorial({ open, onComplete, onSkip, tutorialType }: 
     }
   }
 
+  const handleNext = () => {
+    nextStep()
+  }
+
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)

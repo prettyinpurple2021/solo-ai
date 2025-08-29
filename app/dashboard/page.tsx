@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useDashboardData } from "@/hooks/use-dashboard-data"
-import { OnboardingWizard } from "@/components/onboarding/onboarding-wizard"
+import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding"
 import { Loading } from "@/components/ui/loading"
 import { BossCard, EmpowermentCard, StatsCard } from "@/components/ui/boss-card"
 import { BossButton, EmpowermentButton, ZapButton } from "@/components/ui/boss-button"
@@ -72,7 +72,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="min-h-screen gradient-background p-6">
-        <OnboardingWizard 
+        <EnhancedOnboarding 
           open={showOnboarding} 
           onComplete={handleOnboardingComplete}
           onSkip={handleOnboardingSkip}
@@ -92,7 +92,7 @@ export default function DashboardPage() {
   if (error) {
     return (
       <div className="min-h-screen gradient-background p-6">
-        <OnboardingWizard 
+        <EnhancedOnboarding 
           open={showOnboarding} 
           onComplete={handleOnboardingComplete}
           onSkip={handleOnboardingSkip}
@@ -127,7 +127,7 @@ export default function DashboardPage() {
   if (!data) {
     return (
       <div className="min-h-screen gradient-background p-6">
-        <OnboardingWizard 
+        <EnhancedOnboarding 
           open={showOnboarding} 
           onComplete={handleOnboardingComplete}
           onSkip={handleOnboardingSkip}
