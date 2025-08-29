@@ -35,8 +35,8 @@ interface SharedLandingPageProps {
 const features = [
   {
     icon: Sparkles,
-    title: "AI-Powered Productivity",
-    description: "Leverage cutting-edge AI to automate tasks, generate insights, and boost your efficiency by 300%.",
+    title: "8 AI Agents at Your Service",
+    description: "Meet Nova, Echo, Atlas, Luna, Phoenix, Orion, Vega, and Nova - your personal AI team that never sleeps.",
   },
   {
     icon: Target,
@@ -55,8 +55,8 @@ const features = [
   },
   {
     icon: Users,
-    title: "Team Collaboration",
-    description: "Seamlessly collaborate with your team using our advanced collaboration tools.",
+    title: "Smart File Management",
+    description: "Upload, organize, and analyze documents with AI-powered briefcase and content parsing.",
   },
   {
     icon: Shield,
@@ -69,7 +69,7 @@ const testimonials = [
   {
     name: "Sarah Chen",
     role: "CEO, TechStart",
-    content: "SoloBoss AI transformed how I manage my business. I've increased productivity by 250% in just 3 months.",
+    content: "SoloBoss AI transformed how I manage my business. The 8 AI agents work 24/7, and I've increased productivity by 300% in just 3 months.",
     rating: 5,
     avatar: "/default-user.svg",
   },
@@ -77,14 +77,14 @@ const testimonials = [
     name: "Marcus Rodriguez",
     role: "Freelance Designer",
     content:
-      "The AI agents are like having a full team. I can focus on creative work while they handle everything else.",
+      "The AI agents are like having a full team. Nova handles my scheduling, Echo manages my finances, and I can focus on creative work.",
     rating: 5,
     avatar: "/default-user.svg",
   },
   {
     name: "Emily Watson",
     role: "Marketing Director",
-    content: "Game-changer for our agency. Client satisfaction up 40%, team stress down 60%. Incredible ROI.",
+    content: "Game-changer for our agency. The file management and AI insights have increased client satisfaction by 40% while reducing our workload by 60%.",
     rating: 5,
     avatar: "/default-user.svg",
   },
@@ -99,6 +99,7 @@ const pricingPlans = [
     features: ["Access to 2 AI agents (Nova & Echo)", "5 AI conversations per day", "Basic task automation", "Email support", "Community access", "Mobile app access"],
     popular: false,
     cta: "Start Free",
+    badge: "Free Forever",
   },
   {
     name: "Accelerator",
@@ -106,7 +107,7 @@ const pricingPlans = [
     period: "/month",
     description: "For growing boss babes scaling their operations",
     features: [
-      "Access to 5 AI agents",
+      "Access to 5 AI agents (Nova, Echo, Atlas, Luna, Phoenix)",
       "100 AI conversations per day",
       "Advanced automation workflows",
       "Priority email support",
@@ -117,6 +118,7 @@ const pricingPlans = [
     ],
     popular: true,
     cta: "Get Started",
+    badge: "Most Popular",
   },
   {
     name: "Dominator",
@@ -124,7 +126,7 @@ const pricingPlans = [
     period: "/month",
     description: "For empire builders who demand unlimited power",
     features: [
-      "Access to all 8 AI agents",
+      "Access to all 8 AI agents (Nova, Echo, Atlas, Luna, Phoenix, Orion, Vega, Nova)",
       "Unlimited AI conversations",
       "Advanced automation + custom workflows",
       "24/7 priority support + phone support",
@@ -137,6 +139,7 @@ const pricingPlans = [
     ],
     popular: false,
     cta: "Contact Sales",
+    badge: "Unlimited Power",
   },
 ]
 

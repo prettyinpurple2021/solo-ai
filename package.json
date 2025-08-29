@@ -24,7 +24,8 @@
     "coverage:ci": "jest --coverage --runInBand",
     "db:generate": "drizzle-kit generate",
     "test:user": "node scripts/user-testing-plan.js",
-    "test:api": "node scripts/api-testing.js"
+    "test:api": "node scripts/api-testing.js",
+    "setup:analytics": "node scripts/setup-analytics.js"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
