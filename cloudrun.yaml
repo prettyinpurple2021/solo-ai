@@ -16,7 +16,7 @@ spec:
         run.googleapis.com/cpu: "2"
         # Auto-scaling configuration
         autoscaling.knative.dev/minScale: "0"
-        autoscaling.knative.dev/maxScale: "10"
+        autoscaling.knative.dev/maxScale: "5"
     spec:
       containerConcurrency: 80
       timeoutSeconds: 300
