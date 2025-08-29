@@ -1,0 +1,16 @@
+## Problem
+The GitHub Actions workflow [.github/workflows/coverage.yml](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/blob/675d1a087663580f1f3361119b361bf89e18bdbf/.github/workflows/coverage.yml) is failing on the 'Upload coverage to Codecov' step. The error in the logs is:
+
+```
+{"message":"Token required - not valid tokenless upload"}
+```
+
+## Solution
+- Uncomment the `token: ${{ secrets.CODECOV_TOKEN }}` line under the Codecov step in the workflow.
+- Ensure the repository has a secret named `CODECOV_TOKEN` containing the correct Codecov upload token.
+- Commit the updated workflow file to resolve the failure.
+
+For reference, see the [job logs](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/actions/runs/17328622352/job/49201227677?pr=171) and the workflow file at ref 675d1a087663580f1f3361119b361bf89e18bdbf.
+
+---
+Error found in PR #171.
