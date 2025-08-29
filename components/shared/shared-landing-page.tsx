@@ -614,6 +614,7 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
                 <button
                   key={index}
                   onClick={() => setCurrentTestimonial(index)}
+                  aria-label={`View testimonial ${index + 1}`}
                   className={`w-3 h-3 rounded-full transition-colors ${
                     index === currentTestimonial ? "bg-purple-500" : "bg-gray-300 dark:bg-gray-600"
                   }`}
