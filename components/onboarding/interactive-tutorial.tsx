@@ -1,35 +1,29 @@
 "use client"
-
 import { useState, useEffect, useRef } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { 
   Crown, 
   Sparkles, 
-  Target, 
+  Target,
   Users, 
   ArrowRight, 
   ArrowLeft, 
   CheckCircle, 
   Rocket, 
   Brain,
-  HelpCircle,
   X,
-  Play,
-  SkipForward,
   Lightbulb,
   Zap,
   TrendingUp,
   FileText,
   Settings,
-  Bell,
   Search,
   Plus,
-  Star
+  Star,
+  SkipForward
 } from "lucide-react"
 
 interface TutorialStep {
@@ -48,15 +42,14 @@ interface TutorialStep {
 
 interface InteractiveTutorialProps {
   open: boolean
-  onComplete: () => void
-  onSkip: () => void
+  onCompleteAction: () => void
+  onSkipAction: () => void
   tutorialType: "dashboard" | "ai-agents" | "tasks" | "goals" | "files" | "complete"
 }
 
-export function InteractiveTutorial({ open, onComplete, onSkip, tutorialType }: InteractiveTutorialProps) {
+export function InteractiveTutorial({ open, onCompleteAction, onSkipAction, tutorialType }: InteractiveTutorialProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [highlightedElement, setHighlightedElement] = useState<HTMLElement | null>(null)
-  const [showTooltip, setShowTooltip] = useState(false)
   const overlayRef = useRef<HTMLDivElement>(null)
 
   // Tutorial steps for different sections
@@ -494,7 +487,7 @@ export function InteractiveTutorial({ open, onComplete, onSkip, tutorialType }: 
     if (currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1)
     } else {
-      onComplete()
+      onCompleteAction()
     }
   }
 
@@ -509,7 +502,7 @@ export function InteractiveTutorial({ open, onComplete, onSkip, tutorialType }: 
   }
 
   const skipTutorial = () => {
-    onSkip()
+    onSkipAction()
   }
 
   const currentStepData = currentSteps[currentStep]
@@ -538,7 +531,7 @@ export function InteractiveTutorial({ open, onComplete, onSkip, tutorialType }: 
                   <SkipForward className="h-4 w-4 mr-1" />
                   Skip
                 </Button>
-                <Button variant="ghost" size="sm" onClick={onSkip} className="text-sm">
+                                 <Button variant="ghost" size="sm" onClick={onSkipAction} className="text-sm">
                   <X className="h-4 w-4" />
                 </Button>
               </div>

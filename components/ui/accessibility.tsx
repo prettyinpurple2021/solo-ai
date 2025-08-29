@@ -286,11 +286,10 @@ export function LiveRegion({
   priority?: "polite" | "assertive" 
 }) {
   const ariaLiveValue = priority === "polite" ? "polite" : "assertive"
-  
   return (
     <div
-      aria-live={ariaLiveValue}
-      aria-atomic="true"
+      aria-live="polite"
+      aria-atomic="true" 
       className="sr-only"
       role="status"
     >
@@ -351,14 +350,14 @@ export function SrOnly({ children }: { children: React.ReactNode }) {
 // Accessible button with proper ARIA attributes
 export function AccessibleButton({
   children,
-  onClick,
+  onClickAction,
   disabled = false,
   loading = false,
   icon,
   ...props
 }: {
   children: React.ReactNode
-  onClick: () => void
+  onClickAction: () => void
   disabled?: boolean
   loading?: boolean
   icon?: React.ReactNode
@@ -366,7 +365,7 @@ export function AccessibleButton({
 }) {
   return (
     <Button
-      onClick={onClick}
+      onClick={onClickAction}
       disabled={disabled || loading}
       aria-disabled={disabled || loading}
       aria-busy={loading}
