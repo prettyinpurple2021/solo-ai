@@ -22,7 +22,9 @@
     "test": "jest",
     "test:coverage": "jest --coverage",
     "coverage:ci": "jest --coverage --runInBand",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "test:user": "node scripts/user-testing-plan.js",
+    "test:api": "node scripts/api-testing.js"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
@@ -60,7 +62,7 @@
     "@radix-ui/react-toggle-group": "^1.1.10",
     "@radix-ui/react-tooltip": "^1.2.7",
     "@sentry/nextjs": "^10.5.0",
-    "@stackframe/stack": "^2.8.32",
+    "@stackframe/stack": "^2.8.35",
     "@types/bcryptjs": "^2.4.6",
     "@types/exceljs": "^0.5.3",
     "@types/jsonwebtoken": "^9.0.5",
@@ -89,11 +91,12 @@
     "input-otp": "^1.4.2",
     "jose": "^6.0.12",
     "jsonwebtoken": "^9.0.2",
-    "lucide-react": "^0.454.0",
+    "lucide-react": "^0.542.0",
     "mammoth": "^1.10.0",
     "newrelic": "^13.0.0",
     "next": "15.2.4",
     "next-themes": "^0.4.6",
+    "node-fetch": "^3.3.2",
     "node-html-parser": "^7.0.1",
     "pdf-parse": "^1.1.1",
     "pg": "^8.11.3",
@@ -135,5 +138,8 @@
     "ts-jest": "^29.1.2",
     "typescript": "^5",
     "webpack-bundle-analyzer": "^4.10.2"
+  },
+  "overrides": {
+    "lucide-react": "^0.542.0"
   }
 }
