@@ -24,11 +24,13 @@ jobs:
       - name: Run tests with coverage
         run: npm run coverage:ci
 
+      # For public repositories - tokenless upload
+      # For private repositories - add CODECOV_TOKEN secret and uncomment the token line below
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
         with:
           files: ./coverage/lcov.info
           fail_ci_if_error: true
-          token: ${{ secrets.CODECOV_TOKEN }}
+          # token: ${{ secrets.CODECOV_TOKEN }}  # Uncomment for private repos
           verbose: true
 
