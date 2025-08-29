@@ -9,6 +9,9 @@ const customJestConfig = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
   },
+  // Ensure coverage reports are generated in formats that Codecov understands
+  coverageDirectory: 'coverage',
+  coverageReporters: ['lcov', 'json-summary', 'clover', 'text', 'text-summary'],
 }
 
 module.exports = createJestConfig(customJestConfig)

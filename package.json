@@ -21,6 +21,7 @@
     "test:api": "node scripts/test-api-routes.mjs",
     "test": "jest",
     "test:coverage": "jest --coverage",
+    "coverage:ci": "jest --coverage --runInBand",
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {

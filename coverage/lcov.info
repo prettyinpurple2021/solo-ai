@@ -1,5 +1,5 @@
 TN:
-SF:app/api/billing/chargebee/webhook/route.ts
+SF:app\api\billing\chargebee\webhook\route.ts
 FN:7,verifySignature
 FN:30,POST
 FNF:2
@@ -78,7 +78,7 @@ BRF:22
 BRH:12
 end_of_record
 TN:
-SF:app/api/templates/[id]/route.ts
+SF:app\api\templates\[id]\route.ts
 FN:11,DELETE
 FNF:1
 FNH:1
@@ -137,7 +137,7 @@ BRF:16
 BRH:11
 end_of_record
 TN:
-SF:lib/idempotency.ts
+SF:lib\idempotency.ts
 FN:5,reserveIdempotencyKey
 FN:26,getIdempotencyKeyFromRequest
 FNF:2
@@ -163,7 +163,7 @@ BRF:6
 BRH:4
 end_of_record
 TN:
-SF:lib/log.ts
+SF:lib\log.ts
 FN:24,log
 FN:72,debug
 FN:79,info
@@ -273,7 +273,7 @@ BRF:36
 BRH:9
 end_of_record
 TN:
-SF:lib/rate-limit.ts
+SF:lib\rate-limit.ts
 FN:8,getBucket
 FN:20,rateLimitByIp
 FNF:2

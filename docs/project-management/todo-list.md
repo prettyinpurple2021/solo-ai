@@ -2,104 +2,74 @@
 
 ## 🚨 CRITICAL FIXES NEEDED (IMMEDIATE)
 
-### Authentication & Dashboard Issues
+### ✅ COMPLETED ✅
 
-- [x] **Fix Dashboard Loading Error** - COMPLETED ✅
-  - [x] Resolve authentication conflicts between Stack Auth and custom Neon auth
-  - [x] Fix dashboard API route authentication
-  - [x] Ensure consistent user session management
-  - [x] Test dashboard loading after sign-in
+- [x] **Dashboard Loading Error** - Fixed API route to handle user creation and ensure dashboard loads for all authenticated users
+- [x] **Missing Forgot Password** - Created `/forgot-password` page with password reset functionality
+- [x] **AI Agents Not Working** - Fixed API route to ensure user exists in database before saving conversations
+- [x] **Briefcase Not Accessible** - Created API routes for file upload and retrieval, updated briefcase page
+- [x] **Authentication System Overhaul** - Unified authentication under Stack Auth, removed conflicting custom auth
+- [x] **Navigation Consistency** - Updated sidebar and navigation to include briefcase access
+- [x] **Error Handling** - Added proper error handling and loading states throughout the app
+- [x] **API Route Consistency** - Updated all API routes to work with unified Stack Auth
+- [x] **Database Schema Verification** - Ensured all routes create user records if they don't exist
+- [x] **Signin Page Loading Issue** - Fixed SSR handling and removed Stack Auth dependencies during build
+- [x] **Landing Page Images** - Fixed hero image and banner image paths to use correct file extensions
+- [x] **Build Failures** - Resolved Stack Auth SSR issues and environment variable handling during build
 
-- [x] **Add Forgot Password Functionality** - COMPLETED ✅
-  - [x] Create forgot password page at `/forgot-password`
-  - [x] Implement password reset email functionality
-  - [x] Create password reset confirmation page
-  - [x] Add "Forgot Password?" link to sign-in page
-  - [x] Implement secure password reset tokens
+### 🔧 BUILD & DEPLOYMENT FIXES
 
-- [x] **Fix AI Agents Functionality** - COMPLETED ✅
-  - [x] Fix chat API authentication issues
-  - [x] Ensure AI agents respond properly
-  - [x] Test all 8 AI agents (Roxy, Blaze, Echo, Lumi, Vex, Lexi, Nova, Glitch)
-  - [x] Fix streaming responses in chat interface
-
-- [x] **Fix Briefcase Functionality** - COMPLETED ✅
-  - [x] Fix briefcase API routes
-  - [x] Ensure briefcase is accessible from navigation
-  - [x] Fix file upload functionality
-  - [x] Test document storage and retrieval
-  - [x] Fix briefcase dashboard integration
-
-- [x] **Authentication System Overhaul** - COMPLETED ✅
-  - [x] Choose single authentication system (Stack Auth)
-  - [x] Remove conflicting authentication code
-  - [x] Ensure consistent auth across all routes
-  - [x] Fix user session persistence
-  - [x] Test complete auth flow
-
-### User Experience Fixes
-
-- [x] **Navigation Consistency** - COMPLETED ✅
-  - [x] Ensure all navigation links work properly
-  - [x] Fix sidebar navigation highlighting
-  - [x] Add proper loading states
-  - [x] Fix mobile navigation
-
-- [x] **Error Handling** - COMPLETED ✅
-  - [x] Add proper error boundaries
-  - [x] Improve error messages
-  - [x] Add retry mechanisms
-  - [x] Better loading states
-
-### Database & API Fixes
-
-- [x] **API Route Consistency** - COMPLETED ✅
-  - [x] Fix all API route authentication
-  - [x] Ensure proper error responses
-  - [x] Add request validation
-  - [x] Fix CORS issues if any
-
-- [x] **Database Schema Verification** - COMPLETED ✅
-  - [x] Verify all required tables exist
-  - [x] Check foreign key relationships
-  - [x] Ensure proper indexes
-  - [x] Test database connections
+- [x] **Stack Auth SSR Issues** - Added proper client-side only rendering for authentication components
+- [x] **Environment Variable Handling** - Updated components to handle missing env vars gracefully during build
+- [x] **Middleware SSR** - Fixed middleware to dynamically import Stack Auth to avoid build issues
+- [x] **Component SSR** - Added `isClient` state checks to prevent server-side rendering of client-only components
+- [x] **Build Process** - Verified build completes successfully with warnings only (no errors)
 
 ## 🎯 NEXT STEPS FOR TESTING
 
-### Testing Checklist
+### Authentication Testing
 
-- [ ] **Test Authentication Flow**
-  - [ ] Sign up with new account
-  - [ ] Sign in with existing account
-  - [ ] Test forgot password functionality
-  - [ ] Verify session persistence
-  - [ ] Test sign out functionality
+- [ ] Test sign up with new account
+- [ ] Test sign in with existing account  
+- [ ] Test forgot password functionality
+- [ ] Verify session persistence
+- [ ] Test sign out functionality
 
-- [ ] **Test Dashboard**
-  - [ ] Verify dashboard loads after sign-in
-  - [ ] Check all dashboard components render
-  - [ ] Test onboarding wizard for new users
-  - [ ] Verify user data displays correctly
+### Dashboard Testing
 
-- [ ] **Test AI Agents**
-  - [ ] Test all 8 AI agents respond
-  - [ ] Verify chat streaming works
-  - [ ] Test saving conversations to briefcase
-  - [ ] Check agent personalities and responses
+- [ ] Verify dashboard loads after sign-in
+- [ ] Check all dashboard components render
+- [ ] Test onboarding wizard for new users
+- [ ] Verify user data displays correctly
 
-- [ ] **Test Briefcase**
-  - [ ] Upload files successfully
-  - [ ] View uploaded files
-  - [ ] Test file search and filtering
-  - [ ] Verify file categories work
-  - [ ] Test file download functionality
+### AI Agents Testing
 
-- [ ] **Test Navigation**
-  - [ ] All sidebar links work
-  - [ ] Mobile navigation functions
-  - [ ] Proper route protection
-  - [ ] Loading states display correctly
+- [ ] Test all 8 AI agents respond
+- [ ] Verify chat streaming works
+- [ ] Test saving conversations to briefcase
+- [ ] Check agent personalities and responses
+
+### Briefcase Testing
+
+- [ ] Upload files successfully
+- [ ] View uploaded files
+- [ ] Test file search and filtering
+- [ ] Verify file categories work
+- [ ] Test file download functionality
+
+### Navigation Testing
+
+- [ ] All sidebar links work
+- [ ] Mobile navigation functions
+- [ ] Proper route protection
+- [ ] Loading states display correctly
+
+### Build & Deployment Testing
+
+- [ ] Verify build completes without errors
+- [ ] Test deployment to production
+- [ ] Verify all environment variables are set correctly
+- [ ] Test authentication flow in production
 
 ## ✅ COMPLETED TASKS
 
@@ -398,19 +368,19 @@
 - [x] Update `components/templates/saved-templates-list.tsx` to optimistically remove
 - [x] Add a test to ensure non-owners can’t delete
 
-2) Templates Export — let the boss download her brilliance
+2 Templates Export — let the boss download her brilliance
 
 - [x] In `SavedTemplatesList`, implement client-side JSON export for each template
   - [x] Filename: `${template.template_slug}-${template.id}.json`
   - [x] Use `URL.createObjectURL(new Blob([json], { type: 'application/json' }))` + hidden link click
 
-3) Centralize shared types — one source of truth, zero drama
+3 Centralize shared types — one source of truth, zero drama
 
 - [x] Add `lib/types.ts` and export: `SavedTemplate`
 - [ ] Add `UserProfile`, `SubscriptionStatus`, etc.
 - [x] Replace duplicate interfaces for templates in hooks/components
 
-4) Zod validation on every API — no messy inputs in this house
+4 Zod validation on every API — no messy inputs in this house
 
 - [x] Add `zod` and create schemas for:
   - [x] `POST /api/auth/signin` and `POST /api/auth/signup`
@@ -418,44 +388,44 @@
   - [x] `PATCH /api/profile` and `POST /api/tasks/bulk-update`
 - [x] Validate `request.json()` and return typed, consistent errors/responses
 
-5) Auth flow consistency — same glam, every route
+5 Auth flow consistency — same glam, every route
 
 - [x] Standardize user retrieval with a single helper (use `lib/auth-server.ts`)
 - [x] Ensure JWT cookie options are consistent across sign-in/sign-out
 - [x] Add `/api/auth/logout` to clear the cookie cleanly
 
-6) Rate limiting + Idempotency — unshakeable under pressure
+6 Rate limiting + Idempotency — unshakeable under pressure
 
 - [x] Create `lib/rate-limit.ts` utility and use it in `signin`, `signup`, `chat`
 - [x] Implement idempotency keys for write endpoints and webhooks
   - [x] Add Neon table: `idempotency_keys(key text primary key, created_at timestamptz default now())`
   - [x] Respect `Idempotency-Key` header and skip duplicates
 
-7) Database indexes + updated_at triggers — faster, fresher, fiercer
+7 Database indexes + updated_at triggers — faster, fresher, fiercer
 
 - [x] Add index: `CREATE INDEX IF NOT EXISTS idx_user_templates_user_created ON user_templates(user_id, created_at)`
 - [x] Verify `updated_at` triggers on all tables (align with `docs/migrations/005-*`)
 - [x] Add SQL migration and run via `scripts/run-user-templates-index-migration.mjs`
 
-8) Observability — see everything, fix anything
+8 Observability — see everything, fix anything
 
 - [x] Add Sentry (`@sentry/nextjs`) setup (client + server)
 - [x] Use structured logs in API routes with context (user_id, route, status)
 - [x] Keep `/api/health` as liveness; add `/api/health/deps` for dependency checks
 - [x] Create proper Next.js instrumentation files for Sentry
 
-9) Data fetching & cache — silky smooth UX
+9 Data fetching & cache — silky smooth UX
 
 - [x] Introduce SWR for `/api/templates` and `/api/profile`
 - [x] Hook `useTemplateSave()` into SWR (mutate after save/delete)
 
-10) Edge-friendly reads — speed where it sparkles
+10 Edge-friendly reads — speed where it sparkles
 
 - [x] Mark read-only list endpoints with `export const runtime = 'edge'` where compatible (e.g., `GET /api/templates`)
 - [x] Keep writes (POST/DELETE) on Node runtime
 - [x] Disable Edge runtime for routes that use jsonwebtoken (not Edge compatible)
 
-11) Accessibility & QA — inclusive and bulletproof
+11 Accessibility & QA — inclusive and bulletproof
 
 - [x] Sweep critical components for labels/aria/contrast
 - [x] Add Playwright smoke tests for:
@@ -463,24 +433,24 @@
   - [x] Templates list load/export/delete
   - [x] Update profile (avatar + name)
 
-12) CI/CD gates — only fab commits make it to main
+12 CI/CD gates — only fab commits make it to main
 
 - [x] Add GitHub Actions workflow: install, typecheck, lint, test, build on PR
 - [x] Require green checks before merge
 
-13) Testing strategy — receipts or it didn’t happen
+13 Testing strategy — receipts or it didn’t happen
 
 - [x] Add `jest` for API unit tests
 - [x] Unit tests for Zod schemas and API handler happy/edge paths
 - [x] Playwright E2E covering auth → templates → profile
 
-14) Webhook glow-up — Chargebee, but make it safe
+14 Webhook glow-up — Chargebee, but make it safe
 
 - [x] Verify Chargebee webhook signatures using signing secret
 - [x] Store and enforce idempotency for events
 - [ ] Reconcile subscription states with feature gates used in UI
 
-15) Privacy controls — user data, user rules
+15 Privacy controls — user data, user rules
 
 - [ ] Add `GET /api/account/export` to deliver a full JSON export of user data
 - [ ] Add `DELETE /api/account/delete` to purge user data across tables (with auth + confirmation safeguards)

@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getStackServerApp } from '@/stack'
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -45,7 +44,10 @@ export async function middleware(request: NextRequest) {
 
   // For all other routes, check authentication
   try {
+    // Dynamically import Stack Auth to avoid build issues
+    const { getStackServerApp } = await import('@/stack')
     const app = getStackServerApp()
+    
     if (!app) {
       // If Stack Auth is not configured, redirect to signin
       return NextResponse.redirect(new URL('/signin', request.url))
