@@ -79,6 +79,19 @@ describe('Dockerfile configuration', () => {
       expect(npmCiCommand).not.toContain('--production')
     })
   })
+
+  describe('Environment variables configuration', () => {
+    it('should not set PORT environment variable (reserved by Cloud Run)', () => {
+      // Test that PORT is not set in the Dockerfile since it's reserved by Cloud Run
+      expect(dockerfileContent).not.toMatch(/ENV PORT/)
+    })
+
+    it('should set required environment variables', () => {
+      // Test that other required environment variables are still present
+      expect(dockerfileContent).toMatch(/ENV NODE_ENV=production/)
+      expect(dockerfileContent).toMatch(/ENV HOSTNAME="0\.0\.0\.0"/)
+    })
+  })
 })
 
 export {}
