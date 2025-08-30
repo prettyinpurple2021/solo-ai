@@ -4,10 +4,10 @@ FROM node:20-alpine AS base
 # Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies (including devDependencies for build)
 FROM base AS deps
 COPY package.json package-lock.json ./
-RUN npm ci --legacy-peer-deps --only=production
+RUN npm ci --legacy-peer-deps
 
 # Build the application
 FROM deps AS builder
