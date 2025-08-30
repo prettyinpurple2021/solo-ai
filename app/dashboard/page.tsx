@@ -5,27 +5,20 @@ import { useDashboardData } from "@/hooks/use-dashboard-data"
 import { EnhancedOnboarding } from "@/components/onboarding/enhanced-onboarding"
 import { Loading } from "@/components/ui/loading"
 import { BossCard, EmpowermentCard, StatsCard } from "@/components/ui/boss-card"
-import { BossButton, EmpowermentButton, ZapButton } from "@/components/ui/boss-button"
-import { Badge } from "@/components/ui/badge"
+import { BossButton, ZapButton } from "@/components/ui/boss-button"
 import { Progress } from "@/components/ui/progress"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion, easeOut } from "framer-motion"
 import { 
   CheckCircle, 
   Target, 
-  TrendingUp, 
   Clock, 
   MessageCircle, 
   Trophy,
-  Calendar,
-  Zap,
   Crown,
   Sparkles,
   Flame,
-  Star,
   ArrowRight,
-  Users,
   BarChart3,
-  Award,
   Plus
 } from "lucide-react"
 import Link from "next/link"
@@ -166,7 +159,7 @@ export default function DashboardPage() {
                   </Link>
                   <Link href="/dashboard/agents">
                     <BossButton 
-                      variant="accent" 
+                      variant="primary" 
                       fullWidth
                       icon={<MessageCircle className="w-4 h-4" />}
                     >
@@ -182,7 +175,7 @@ export default function DashboardPage() {
     )
   }
 
-  const { user, todaysStats, todaysTasks, activeGoals, recentConversations, insights: _insights } = data
+  const { user, todaysStats, todaysTasks, activeGoals, recentConversations, insights } = data
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -201,14 +194,14 @@ export default function DashboardPage() {
       y: 0,
       transition: {
         duration: 0.5,
-        ease: "easeOut"
+        ease: easeOut
       }
     }
   }
 
   return (
     <div className="min-h-screen gradient-background p-6">
-      <OnboardingWizard 
+      <EnhancedOnboarding 
         open={showOnboarding} 
         onComplete={handleOnboardingComplete}
         onSkip={handleOnboardingSkip}
@@ -355,7 +348,7 @@ export default function DashboardPage() {
                     <Target className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 dark:text-gray-400">No tasks for today</p>
                     <BossButton 
-                      variant="accent" 
+                      variant="primary" 
                       size="sm" 
                       className="mt-4"
                       icon={<Plus className="w-4 h-4" />}
@@ -376,7 +369,7 @@ export default function DashboardPage() {
                   <Trophy className="w-6 h-6" />
                   <span>Active Goals</span>
                 </h2>
-                <BossButton size="sm" variant="accent">
+                <BossButton size="sm" variant="primary">
                   View All
                 </BossButton>
               </div>
@@ -431,7 +424,7 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Recent Conversations */}
           <motion.div variants={itemVariants}>
-            <BossCard variant="accent">
+            <BossCard variant="default">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gradient flex items-center space-x-2">
                   <MessageCircle className="w-6 h-6" />
@@ -472,7 +465,7 @@ export default function DashboardPage() {
                     <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 dark:text-gray-400">No recent conversations</p>
                     <BossButton 
-                      variant="accent" 
+                      variant="primary" 
                       size="sm" 
                       className="mt-4"
                     >
@@ -511,7 +504,7 @@ export default function DashboardPage() {
                       <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                         {insight.description}
                       </p>
-                      <BossButton size="sm" variant="accent">
+                      <BossButton size="sm" variant="primary">
                         {insight.action}
                       </BossButton>
                     </motion.div>

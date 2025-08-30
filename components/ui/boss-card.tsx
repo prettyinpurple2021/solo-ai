@@ -287,7 +287,7 @@ export function StatsCard({
   icon, 
   trend, 
   ...props 
-}: BossCardProps & {
+}: Omit<BossCardProps, 'children'> & {
   title: string
   value: string | number
   icon?: ReactNode
