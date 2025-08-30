@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import Image from "next/image"
+
 
 import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

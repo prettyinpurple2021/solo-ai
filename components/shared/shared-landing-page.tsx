@@ -22,7 +22,7 @@ import {
   Menu,
   Play
 } from "lucide-react"
-import Image from "next/image"
+
 import Link from "next/link"
 import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
 import { ResponsiveImage } from "@/components/ui/responsive-image"
@@ -507,7 +507,7 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
                 <Card className="h-full hover:shadow-xl transition-all duration-300 border-purple-200 dark:border-teal-800 hover:border-purple-300 dark:hover:border-teal-600 text-center">
                   <CardHeader>
                     <div className={`w-20 h-20 bg-gradient-to-r ${agent.color} rounded-full flex items-center justify-center mx-auto mb-4 relative overflow-hidden`}>
-                      <Image
+                      <img
                         src={agent.image}
                         alt={agent.name}
                         width={60}
