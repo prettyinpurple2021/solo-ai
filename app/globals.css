@@ -191,12 +191,14 @@
   /* Glass Morphism */
   .glass {
     background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
   }
 
   .glass-dark {
     background: rgba(0, 0, 0, 0.2);
+    -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -304,6 +306,7 @@
   /* Card Boss Styles */
   .card-boss {
     background: rgba(255, 255, 255, 0.1);
+    -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(139, 92, 246, 0.2);
     border-radius: 16px;
@@ -397,6 +400,37 @@
   }
   50% { 
     box-shadow: 0 0 40px rgba(236, 72, 153, 0.6);
+  }
+}
+
+/* Tutorial overlay styles */
+.tutorial-overlay {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.tutorial-highlight {
+  box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.5);
+}
+
+.tutorial-highlight-position {
+  top: var(--highlight-top, 0);
+  left: var(--highlight-left, 0);
+  width: var(--highlight-width, 100px);
+  height: var(--highlight-height, 100px);
+}
+
+.agent-initial {
+  display: none;
+}
+
+.audio-bar {
+  transform: scaleY(1);
+  transition: transform 0.15s ease;
+}
+
+.audio-bar-active {
+  transform: scaleY(1.5);
+}
   }
 }
 

@@ -51,6 +51,7 @@ export function InteractiveTutorial({ open, onCompleteAction, onSkipAction, tuto
   const [currentStep, setCurrentStep] = useState(0)
   const [highlightedElement, setHighlightedElement] = useState<HTMLElement | null>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
+  const highlightRef = useRef<HTMLDivElement>(null)
 
   // Tutorial steps for different sections
   const tutorialSteps: Record<string, TutorialStep[]> = {
@@ -69,7 +70,7 @@ export function InteractiveTutorial({ open, onCompleteAction, onSkipAction, tuto
               </div>
               <h3 className="text-xl font-bold boss-heading mb-2">Your Command Center</h3>
               <p className="text-muted-foreground">
-                This is where you'll manage your entire business empire. Everything you need is just a click away!
+                This is where you&apos;ll manage your entire business empire. Everything you need is just a click away!
               </p>
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
@@ -244,11 +245,11 @@ export function InteractiveTutorial({ open, onCompleteAction, onSkipAction, tuto
             <div className="space-y-3">
               <div className="p-3 bg-purple-50 rounded-lg">
                 <p className="text-sm font-medium">Try asking:</p>
-                <p className="text-sm text-muted-foreground">"Help me plan my week"</p>
+                <p className="text-sm text-muted-foreground">&quot;Help me plan my week&quot;</p>
               </div>
               <div className="p-3 bg-pink-50 rounded-lg">
                 <p className="text-sm font-medium">Or:</p>
-                <p className="text-sm text-muted-foreground">"What should I focus on today?"</p>
+                <p className="text-sm text-muted-foreground">&quot;What should I focus on today?&quot;</p>
               </div>
             </div>
             <p className="text-sm text-muted-foreground">
@@ -430,7 +431,7 @@ export function InteractiveTutorial({ open, onCompleteAction, onSkipAction, tuto
             <div>
               <h3 className="text-2xl font-bold boss-heading mb-2">Welcome to Your Empire!</h3>
               <p className="text-muted-foreground mb-4">
-                You've completed the tutorial and are ready to start building your business empire with AI-powered productivity tools.
+                You&apos;ve completed the tutorial and are ready to start building your business empire with AI-powered productivity tools.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -466,22 +467,26 @@ export function InteractiveTutorial({ open, onCompleteAction, onSkipAction, tuto
   const totalSteps = currentSteps.length
   const progress = totalSteps > 0 ? ((currentStep + 1) / totalSteps) * 100 : 0
 
+
+
   useEffect(() => {
     if (open && currentSteps.length > 0) {
-      highlightCurrentElement()
+      const currentStepData = currentSteps[currentStep]
+      if (!currentStepData) return
+
+      const element = document.querySelector(currentStepData.target) as HTMLElement
+      if (element && highlightRef.current) {
+        setHighlightedElement(element)
+        element.scrollIntoView({ behavior: "smooth", block: "center" })
+        
+        // Set position using CSS custom properties
+        highlightRef.current.style.setProperty('--highlight-top', `${element.offsetTop - 4}px`)
+        highlightRef.current.style.setProperty('--highlight-left', `${element.offsetLeft - 4}px`)
+        highlightRef.current.style.setProperty('--highlight-width', `${element.offsetWidth + 8}px`)
+        highlightRef.current.style.setProperty('--highlight-height', `${element.offsetHeight + 8}px`)
+      }
     }
   }, [open, currentStep, currentSteps])
-
-  const highlightCurrentElement = () => {
-    const currentStepData = currentSteps[currentStep]
-    if (!currentStepData) return
-
-    const element = document.querySelector(currentStepData.target) as HTMLElement
-    if (element) {
-      setHighlightedElement(element)
-      element.scrollIntoView({ behavior: "smooth", block: "center" })
-    }
-  }
 
   const nextStep = () => {
     if (currentStep < totalSteps - 1) {
@@ -489,10 +494,6 @@ export function InteractiveTutorial({ open, onCompleteAction, onSkipAction, tuto
     } else {
       onCompleteAction()
     }
-  }
-
-  const handleNext = () => {
-    nextStep()
   }
 
   const prevStep = () => {
@@ -590,21 +591,12 @@ export function InteractiveTutorial({ open, onCompleteAction, onSkipAction, tuto
       {highlightedElement && (
         <div
           ref={overlayRef}
-          className="fixed inset-0 z-40 pointer-events-none"
-          style={{
-            background: 'rgba(0, 0, 0, 0.5)',
-          }}
+          className="fixed inset-0 z-40 pointer-events-none tutorial-overlay"
         >
-          <div
-            className="absolute border-2 border-purple-500 rounded-lg shadow-lg"
-            style={{
-              top: highlightedElement.offsetTop - 4,
-              left: highlightedElement.offsetLeft - 4,
-              width: highlightedElement.offsetWidth + 8,
-              height: highlightedElement.offsetHeight + 8,
-              boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)',
-            }}
-          />
+                     <div
+             ref={highlightRef}
+             className="absolute border-2 border-purple-500 rounded-lg shadow-lg tutorial-highlight tutorial-highlight-position"
+           />
         </div>
       )}
     </TooltipProvider>

@@ -512,7 +512,7 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
                           }
                         }}
                       />
-                      <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white" style={{ display: 'none' }}>
+                      <div className="absolute inset-0 flex items-center justify-center text-2xl font-bold text-white agent-initial">
                         {agent.name.charAt(0)}
                       </div>
                     </div>
