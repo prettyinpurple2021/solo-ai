@@ -21,7 +21,7 @@ spec:
       containerConcurrency: 80
       timeoutSeconds: 900
       containers:
-      - image: us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform:cache-bust-20250818-041321
+      - image: us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform
         ports:
         - containerPort: 3000
         env:
