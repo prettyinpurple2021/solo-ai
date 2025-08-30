@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Shield, Settings, Users, Clock, CheckCircle, AlertTriangle, Download, Eye } from "lucide-react"
+import { Shield, Settings, Clock, CheckCircle, AlertTriangle, Download, Eye } from "lucide-react"
 
 interface DataRequest {
   id: string
@@ -49,7 +49,7 @@ interface CookieBanner {
 
 export function ConsentManagement() {
   const [activeTab, setActiveTab] = useState("banner")
-  const [dataRequests, setDataRequests] = useState<DataRequest[]>([
+  const [dataRequests] = useState<DataRequest[]>([
     {
       id: "1",
       userId: "user123",
@@ -71,7 +71,7 @@ export function ConsentManagement() {
     }
   ])
 
-  const [consentLogs, setConsentLogs] = useState<ConsentLog[]>([
+  const [consentLogs] = useState<ConsentLog[]>([
     {
       id: "1",
       userId: "user123",

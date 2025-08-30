@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Brain, Users, Target, CheckCircle, Save, AlertTriangle } from "lucide-react"
@@ -116,14 +116,7 @@ export function SpadeFramework() {
     updateSpadeData("alternatives", "feasibility", { ...spadeData.alternatives.feasibility, [newOption]: "medium" })
   }
 
-  const getFeasibilityColor = (feasibility: string) => {
-    switch (feasibility) {
-      case "high": return "bg-green-100 text-green-800"
-      case "medium": return "bg-yellow-100 text-yellow-800"
-      case "low": return "bg-red-100 text-red-800"
-      default: return "bg-gray-100 text-gray-800"
-    }
-  }
+
 
   const saveSpadeAnalysis = () => {
     const analysisData = {
@@ -387,8 +380,8 @@ export function SpadeFramework() {
                 </Button>
               </div>
 
-              {spadeData.alternatives.options.map((option, index) => (
-                <Card key={index}>
+              {spadeData.alternatives.options.map((option) => (
+                <Card key={option}>
                   <CardHeader>
                     <CardTitle className="text-lg">{option}</CardTitle>
                   </CardHeader>
@@ -403,6 +396,7 @@ export function SpadeFramework() {
                           newFeasibility[option] = e.target.value as "high" | "medium" | "low"
                           updateSpadeData("alternatives", "feasibility", newFeasibility)
                         }}
+                        aria-label={`Feasibility for ${option}`}
                       >
                         <option value="high">High</option>
                         <option value="medium">Medium</option>

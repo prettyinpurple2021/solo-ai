@@ -26,7 +26,7 @@ export function NavUser({
 }) {
   const { isMobile } = useSidebar()
   const user = useUser()
-  const stackApp = useStackApp()
+  const _stackApp = useStackApp()
   
   const signOut = async () => {
     if (user) {

@@ -34,7 +34,7 @@ export function PerformanceMonitor() {
           } else if (entry.entryType === 'first-input') {
             setMetrics(prev => ({ ...prev, fid: entry.processingStart - entry.startTime }))
           } else if (entry.entryType === 'layout-shift') {
-            const clsEntry = entry as any
+            const clsEntry = entry as PerformanceEntry & { value: number }
             setMetrics(prev => ({ ...prev, cls: (prev?.cls || 0) + clsEntry.value }))
           }
         }

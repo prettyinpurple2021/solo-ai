@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -13,8 +13,7 @@ import {
   RefreshCw,
   ExternalLink,
   Settings,
-  Plus,
-  Trash2
+  Plus
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
@@ -41,15 +40,15 @@ export function CalendarIntegration({ className = "" }: CalendarIntegrationProps
   const [syncEnabled, setSyncEnabled] = useState(true)
   const [autoSync, setAutoSync] = useState(true)
   const [events, setEvents] = useState<CalendarEvent[]>([])
-  const [selectedCalendar, setSelectedCalendar] = useState<string>('primary')
+  const [_selectedCalendar, _setSelectedCalendar] = useState<string>('primary')
   const { toast } = useToast()
 
   useEffect(() => {
     // Check if user has connected calendars
     checkCalendarConnection()
-  }, [])
+  }, [checkCalendarConnection])
 
-  const checkCalendarConnection = async () => {
+  const checkCalendarConnection = useCallback(async () => {
     try {
       // Simulate checking calendar connection
       await new Promise(resolve => setTimeout(resolve, 1000))
@@ -62,10 +61,10 @@ export function CalendarIntegration({ className = "" }: CalendarIntegrationProps
         setConnectedCalendars(['primary', 'work', 'personal'])
         loadCalendarEvents()
       }
-    } catch (error) {
-      console.error('Failed to check calendar connection:', error)
+    } catch {
+      console.error('Failed to check calendar connection')
     }
-  }
+  }, [])
 
   const connectCalendar = async (provider: 'google' | 'outlook') => {
     setIsLoading(true)
@@ -83,7 +82,7 @@ export function CalendarIntegration({ className = "" }: CalendarIntegrationProps
       })
       
       loadCalendarEvents()
-    } catch (error) {
+    } catch {
       toast({
         title: "❌ Connection failed",
         description: "Please try again or check your credentials",
@@ -107,7 +106,7 @@ export function CalendarIntegration({ className = "" }: CalendarIntegrationProps
         title: "Calendar disconnected",
         description: "Your calendar sync has been disabled",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Failed to disconnect",
         description: "Please try again",
@@ -159,8 +158,8 @@ export function CalendarIntegration({ className = "" }: CalendarIntegrationProps
       ]
       
       setEvents(mockEvents)
-    } catch (error) {
-      console.error('Failed to load calendar events:', error)
+    } catch {
+      console.error('Failed to load calendar events')
     }
   }
 
@@ -175,7 +174,7 @@ export function CalendarIntegration({ className = "" }: CalendarIntegrationProps
         title: "✅ Tasks synced to calendar!",
         description: "Your tasks have been added to your calendar",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "❌ Sync failed",
         description: "Please try again",
@@ -197,7 +196,7 @@ export function CalendarIntegration({ className = "" }: CalendarIntegrationProps
         title: "✅ Event created!",
         description: "New event added to your calendar",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "❌ Failed to create event",
         description: "Please try again",

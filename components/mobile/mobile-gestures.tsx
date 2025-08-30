@@ -27,10 +27,10 @@ interface SwipeGesture {
 }
 
 interface TouchGestureProps {
-  onSwipe?: (gesture: SwipeGesture) => void
+  onSwipe?: (_gesture: SwipeGesture) => void
   onDoubleTap?: () => void
   onLongPress?: () => void
-  onPinch?: (scale: number) => void
+  onPinch?: (_scale: number) => void
   children: React.ReactNode
   className?: string
 }
@@ -39,7 +39,7 @@ export function TouchGestureWrapper({
   onSwipe,
   onDoubleTap,
   onLongPress,
-  onPinch,
+  onPinch: _onPinch,
   children,
   className = "",
 }: TouchGestureProps) {

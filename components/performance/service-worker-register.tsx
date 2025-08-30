@@ -4,14 +4,14 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { Download, CheckCircle, XCircle, RefreshCw } from 'lucide-react'
+import { Download, CheckCircle, RefreshCw } from 'lucide-react'
 
 export function ServiceWorkerRegister() {
   const [isSupported, setIsSupported] = useState(false)
   const [isInstalled, setIsInstalled] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null)
+  const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null)
 
   useEffect(() => {
     // Check if service worker is supported

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { OnboardingWizard } from "./onboarding-wizard"
 import { InteractiveTutorial } from "./interactive-tutorial"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,18 +12,11 @@ import {
   Sparkles, 
   Target, 
   Users, 
-  ArrowRight, 
   CheckCircle, 
   Rocket, 
-  Brain,
   Lightbulb,
   Play,
   SkipForward,
-  Zap,
-  TrendingUp,
-  FileText,
-  Settings,
-  Star,
   Gift
 } from "lucide-react"
 
@@ -34,7 +27,7 @@ interface EnhancedOnboardingProps {
   userData?: any
 }
 
-export function EnhancedOnboarding({ open, onComplete, onSkip, userData }: EnhancedOnboardingProps) {
+export function EnhancedOnboarding({ open, onComplete, onSkip, userData: _userData }: EnhancedOnboardingProps) {
   const [currentPhase, setCurrentPhase] = useState<"wizard" | "tutorial" | "complete">("wizard")
   const [onboardingData, setOnboardingData] = useState<any>(null)
   const [tutorialType, setTutorialType] = useState<"dashboard" | "ai-agents" | "tasks" | "goals" | "files" | "complete">("dashboard")
@@ -43,7 +36,7 @@ export function EnhancedOnboarding({ open, onComplete, onSkip, userData }: Enhan
 
   const totalPhases = 3
   const currentPhaseIndex = currentPhase === "wizard" ? 0 : currentPhase === "tutorial" ? 1 : 2
-  const progress = ((currentPhaseIndex + 1) / totalPhases) * 100
+  const _progress = ((currentPhaseIndex + 1) / totalPhases) * 100
 
   const tutorialOrder = ["dashboard", "ai-agents", "tasks", "goals", "files", "complete"]
 

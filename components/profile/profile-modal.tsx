@@ -27,9 +27,9 @@ interface ProfileModalProps {
   onOpenChange: (open: boolean) => void
 }
 
-export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
+export function ProfileModal({ open: _open, onOpenChange }: ProfileModalProps) {
   const user = useUser()
-  const stackApp = useStackApp()
+  const _stackApp = useStackApp()
   
   const signOut = async () => {
     if (user) {
