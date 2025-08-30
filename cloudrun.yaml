@@ -19,7 +19,7 @@ spec:
         autoscaling.knative.dev/maxScale: "5"
     spec:
       containerConcurrency: 80
-      timeoutSeconds: 300
+      timeoutSeconds: 900
       containers:
       - image: us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform:cache-bust-20250818-041321
         ports:
@@ -30,6 +30,12 @@ spec:
           value: "production"
         - name: HOSTNAME
           value: "0.0.0.0"
+        - name: NEW_RELIC_APP_NAME
+          value: "soloboss-ai-platform"
+        - name: NODE_OPTIONS
+          value: "--max-old-space-size=1536"
+        - name: PORT
+          value: "3000"
         # Stack Auth Configuration
         - name: NEXT_PUBLIC_STACK_PROJECT_ID
           valueFrom:
@@ -93,6 +99,14 @@ spec:
             cpu: "1"
             memory: "512Mi"
         # Health check configuration (readinessProbe not supported in this project)
+        startupProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 30
         livenessProbe:
           httpGet:
             path: /api/health
@@ -100,3 +114,4 @@ spec:
           initialDelaySeconds: 60
           periodSeconds: 10
           timeoutSeconds: 10
+          failureThreshold: 3

@@ -7,7 +7,7 @@ WORKDIR /app
 # Install dependencies
 FROM base AS deps
 COPY package.json package-lock.json ./
-RUN npm ci --legacy-peer-deps
+RUN npm ci --legacy-peer-deps --only=production
 
 # Build the application
 FROM deps AS builder
@@ -21,6 +21,7 @@ WORKDIR /app
 # Environment variables
 ENV NODE_ENV=production
 ENV HOSTNAME="0.0.0.0"
+ENV PORT=3000
 
 # Create nextjs user
 RUN addgroup --system --gid 1001 nodejs
