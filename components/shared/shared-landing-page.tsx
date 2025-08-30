@@ -25,6 +25,7 @@ import {
 import Image from "next/image"
 import Link from "next/link"
 import { ScheduleDemoModal } from "@/components/schedule/schedule-demo-modal"
+import { ResponsiveImage } from "@/components/ui/responsive-image"
 
 interface SharedLandingPageProps {
   showAuthModal?: boolean
@@ -161,11 +162,18 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-cyan-50 to-pink-50">
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-purple-200 dark:border-teal-800">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container-responsive py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Image src="/images/soloboss-logo.png" alt="SoloBoss AI" width={40} height={40} className="rounded-lg" />
-              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 via-teal-500 to-pink-600 bg-clip-text text-transparent">
+              <ResponsiveImage 
+                src="/images/soloboss-logo.png" 
+                alt="SoloBoss AI" 
+                width={40} 
+                height={40} 
+                className="rounded-lg"
+                fallbackSrc="/images/logo.png"
+              />
+              <span className="text-responsive-xl lg:text-responsive-2xl font-bold bg-gradient-to-r from-purple-600 via-teal-500 to-pink-600 bg-clip-text text-transparent">
                 SoloBoss AI
               </span>
             </div>
@@ -311,24 +319,24 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
       </nav>
 
       {/* Hero Section */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <section className="p-responsive-xl">
+        <div className="container-responsive">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left side - Content */}
             <div className="space-y-8">
               <Badge className="mb-6 bg-gradient-to-r from-purple-500 via-teal-500 to-pink-500 text-white">
                 ✨ AI-Powered Productivity Revolution
               </Badge>
-              <h1 className="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
+              <h1 className="text-responsive-4xl lg:text-responsive-6xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
                 Become the Ultimate
                 <br />
-                <span className="text-5xl md:text-7xl">SoloBoss</span>
+                <span className="text-responsive-5xl lg:text-responsive-7xl">SoloBoss</span>
               </h1>
-              <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-8">
+              <p className="text-responsive-lg lg:text-responsive-xl text-gray-600 dark:text-gray-300 mb-8">
                 Transform your productivity with AI agents that work 24/7. Automate everything, achieve more, and dominate
                 your industry like never before.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 mb-10">
+              <div className="flex-responsive mb-10">
                 <Link href="/signup">
                   <Button
                     size="lg"
@@ -353,13 +361,14 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
             {/* Right side - Hero Image */}
             <div className="relative">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <Image
+                <ResponsiveImage
                   src="/images/soloboss-hero-silhouette.jpg"
                   alt="SoloBoss - Confident entrepreneur working in her office"
                   width={600}
                   height={400}
                   className="w-full h-auto object-cover"
                   priority
+                  fallbackSrc="/images/soloboss-hero-silhouette.png"
                 />
                 {/* Gradient overlay to enhance the integration */}
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 via-transparent to-teal-900/20" />
@@ -369,18 +378,18 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
 
           {/* Stats - moved below the hero content */}
           <div className="mt-16">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto text-center">
+            <div className="mobile-first-grid max-w-4xl mx-auto text-center">
               <div className="text-center">
-                <div className="text-4xl font-bold text-purple-600 dark:text-teal-400">300%</div>
-                <div className="text-gray-600 dark:text-gray-300">Productivity Increase</div>
+                <div className="text-responsive-3xl lg:text-responsive-4xl font-bold text-purple-600 dark:text-teal-400">300%</div>
+                <div className="text-responsive-sm lg:text-responsive-base text-gray-600 dark:text-gray-300">Productivity Increase</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-teal-600 dark:text-pink-400">50K+</div>
-                <div className="text-gray-600 dark:text-gray-300">Active Users</div>
+                <div className="text-responsive-3xl lg:text-responsive-4xl font-bold text-teal-600 dark:text-pink-400">50K+</div>
+                <div className="text-responsive-sm lg:text-responsive-base text-gray-600 dark:text-gray-300">Active Users</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-pink-600 dark:text-purple-400">$2M+</div>
-                <div className="text-gray-600 dark:text-gray-300">Revenue Generated</div>
+                <div className="text-responsive-3xl lg:text-responsive-4xl font-bold text-pink-600 dark:text-purple-400">$2M+</div>
+                <div className="text-responsive-sm lg:text-responsive-base text-gray-600 dark:text-gray-300">Revenue Generated</div>
               </div>
             </div>
           </div>
@@ -388,8 +397,8 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
       </section>
 
       {/* SoloBoss Motto Banner */}
-      <section className="py-16 px-4 bg-gradient-to-r from-purple-50 via-teal-50 to-pink-50 dark:from-purple-900/20 dark:via-teal-900/20 dark:to-pink-900/20">
-        <div className="container mx-auto">
+      <section className="p-responsive-xl bg-gradient-to-r from-purple-50 via-teal-50 to-pink-50 dark:from-purple-900/20 dark:via-teal-900/20 dark:to-pink-900/20">
+        <div className="container-responsive">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -397,12 +406,13 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
             viewport={{ once: true }}
             className="relative rounded-3xl overflow-hidden shadow-2xl"
           >
-            <Image
+            <ResponsiveImage
               src="/images/soloboss-banner.jpg"
               alt="Confident. Creative. In control. That's the SoloBoss way."
               width={1200}
               height={300}
               className="w-full h-auto object-cover"
+              fallbackSrc="/images/soloboss-banner.png"
             />
             {/* Optional overlay for better text readability if needed */}
             <div className="absolute inset-0 bg-gradient-to-r from-black/10 via-transparent to-black/10" />
@@ -411,8 +421,8 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-20 px-4 bg-white/50 dark:bg-slate-800/50">
-        <div className="container mx-auto">
+      <section id="features" className="p-responsive-xl bg-white/50 dark:bg-slate-800/50">
+        <div className="container-responsive">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -420,16 +430,16 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
+            <h2 className="text-responsive-3xl lg:text-responsive-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
               Supercharge Your Success
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-responsive-lg lg:text-responsive-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Our AI-powered platform gives you everything you need to dominate your market and achieve unprecedented
               growth.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid-responsive">
             {features.map((feature, index) => (
               <motion.div
                 key={index}
@@ -458,8 +468,8 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
       </section>
 
       {/* AI Agents Section */}
-      <section id="agents" className="py-20 px-4 bg-white/50 dark:bg-slate-800/50">
-        <div className="container mx-auto">
+      <section id="agents" className="p-responsive-xl bg-white/50 dark:bg-slate-800/50">
+        <div className="container-responsive">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -467,16 +477,16 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
+            <h2 className="text-responsive-3xl lg:text-responsive-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
               Meet Your AI Squad ✨
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-responsive-lg lg:text-responsive-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               8 specialized AI agents, each with unique personalities and expertise to handle different aspects of your business. 
               Your virtual dream team, available 24/7.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <div className="mobile-first-grid mb-12">
             {[
               { name: "Roxy", role: "Creative Strategist", specialty: "Brand & Content Creation", color: "from-purple-500 to-pink-500", image: "/images/agents/roxy.png" },
               { name: "Blaze", role: "Performance Coach", specialty: "Productivity & Goal Achievement", color: "from-orange-500 to-red-500", image: "/images/agents/blaze.png" },
@@ -590,7 +600,7 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
                       &ldquo;{testimonials[currentTestimonial].content}&rdquo;
                     </blockquote>
                     <div className="flex items-center justify-center space-x-4">
-                      <Image
+                      <ResponsiveImage
                         src={testimonials[currentTestimonial].avatar || "/default-user.svg"}
                         alt={testimonials[currentTestimonial].name}
                         width={60}
@@ -626,8 +636,8 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 px-4 bg-white/50 dark:bg-slate-800/50">
-        <div className="container mx-auto">
+      <section id="pricing" className="p-responsive-xl bg-white/50 dark:bg-slate-800/50">
+        <div className="container-responsive">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -635,15 +645,15 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
+            <h2 className="text-responsive-3xl lg:text-responsive-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
               Choose Your Power Level
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+            <p className="text-responsive-lg lg:text-responsive-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
               Start your journey to becoming a SoloBoss with our flexible pricing plans.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="mobile-first-grid max-w-6xl mx-auto">
             {pricingPlans.map((plan, index) => (
               <motion.div
                 key={index}
@@ -708,22 +718,22 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4">
-        <div className="container mx-auto text-center">
+      <section className="p-responsive-xl">
+        <div className="container-responsive text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
             viewport={{ once: true }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
+            <h2 className="text-responsive-3xl lg:text-responsive-5xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-teal-600 to-pink-600 bg-clip-text text-transparent">
               Ready to Become a SoloBoss?
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-responsive-lg lg:text-responsive-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
               Join the revolution of AI-powered entrepreneurs. Start for free today and experience the future of
               productivity.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <div className="flex-responsive justify-center items-center">
               <Link href="/signup">
                 <Button
                   size="lg"
@@ -747,19 +757,20 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12 px-4">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <footer className="bg-gray-900 text-white p-responsive-xl">
+        <div className="container-responsive">
+          <div className="mobile-first-grid">
             <div>
               <div className="flex items-center space-x-2 mb-4">
-                <Image
+                <ResponsiveImage
                   src="/images/soloboss-logo.png"
                   alt="SoloBoss AI"
                   width={32}
                   height={32}
                   className="rounded-lg"
+                  fallbackSrc="/images/logo.png"
                 />
-                <span className="text-xl font-bold">SoloBoss AI</span>
+                <span className="text-responsive-lg lg:text-responsive-xl font-bold">SoloBoss AI</span>
               </div>
               <p className="text-gray-400">Empowering entrepreneurs with AI-powered productivity tools.</p>
             </div>
@@ -854,7 +865,7 @@ export function SharedLandingPage(_props: SharedLandingPageProps) {
             </div>
           </div>
           <Separator className="my-8 bg-gray-800" />
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex-responsive justify-between items-center">
             <p className="text-gray-400">© 2024 SoloBoss AI. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy" className="text-gray-400 hover:text-white transition-colors">

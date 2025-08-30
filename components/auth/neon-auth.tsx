@@ -6,7 +6,8 @@ import { RecaptchaSignupButton, RecaptchaSigninButton } from "@/components/ui/re
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CalendarIcon, AlertCircle, CheckCircle, Lock } from "lucide-react"
+import { EmpowermentCard } from "@/components/ui/boss-card"
+import { CalendarIcon, AlertCircle, CheckCircle, Lock, Crown } from "lucide-react"
 import { format, subYears } from "date-fns"
 import { motion } from "framer-motion"
 
