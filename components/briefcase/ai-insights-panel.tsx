@@ -6,9 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/hooks/use-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
@@ -16,26 +14,15 @@ import {
   FileText, 
   Hash, 
   TrendingUp, 
-  TrendingDown, 
   Minus, 
   Lightbulb, 
   Target, 
-  AlertTriangle,
   CheckCircle,
-  Calendar,
-  Clock,
-  Eye,
-  Share2,
-  Download,
   Sparkles,
   Zap,
   Search,
   Tag,
   Users,
-  BarChart3,
-  PieChart,
-  Activity,
-  Filter,
   RefreshCw,
   Star,
   ArrowRight,
@@ -223,13 +210,13 @@ export default function AIInsightsPanel({ file, onClose, className = "" }: AIIns
       if (response.ok) {
         toast({
           title: "Tag applied",
-          description: `Added "${tagName}" to document`,
+          description: `Added &quot;${tagName}&quot; to document`,
         })
         
         // Remove from suggestions
         setSuggestedTags(prev => prev.filter(tag => tag.name !== tagName))
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to apply tag",
@@ -252,10 +239,10 @@ export default function AIInsightsPanel({ file, onClose, className = "" }: AIIns
       if (response.ok) {
         toast({
           title: "Category updated",
-          description: `Set category to "${categoryName}"`,
+          description: `Set category to &quot;${categoryName}&quot;`,
         })
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to update category",
@@ -265,7 +252,7 @@ export default function AIInsightsPanel({ file, onClose, className = "" }: AIIns
   }, [file, toast])
 
   // Get sentiment icon and color
-  const getSentimentDisplay = (sentiment: string, score: number) => {
+  const getSentimentDisplay = (sentiment: string, _score: number) => {
     switch (sentiment) {
       case 'positive':
         return {
@@ -340,7 +327,7 @@ export default function AIInsightsPanel({ file, onClose, className = "" }: AIIns
             </div>
           </div>
           <CardDescription>
-            AI-powered insights and analysis for "{file.name}"
+            AI-powered insights and analysis for &quot;{file.name}&quot;
           </CardDescription>
         </CardHeader>
         <CardContent>

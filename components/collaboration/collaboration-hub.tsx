@@ -214,7 +214,7 @@ export function CollaborationHub() {
               <div className="space-y-2">
                 <Label>Or choose a predefined workflow:</Label>
                 <div className="grid gap-2">
-                  {Object.entries(workflows).map(([key, workflow]: [string, { title: string; description: string }]) => (
+                  {Object.entries(workflows).map(([key, workflow]) => (
                     <Card key={key} className="cursor-pointer hover:bg-muted/50" onClick={() => handleCreateTask(key)}>
                       <CardContent className="p-3">
                         <div className="flex items-center justify-between">
@@ -356,12 +356,12 @@ function TaskDetails({
   onExecutePhase,
   loading,
   getAgentColor: _getAgentColor,
-  getStatusIcon: _getStatusIcon,
+  getStatusIcon,
 }: TaskDetailsProps) {
   const [phaseInput, setPhaseInput] = useState("")
   const [selectedPhaseId, setSelectedPhaseId] = useState<string | null>(null)
 
-  const _currentPhase = task.phases.find((p) => p.status === "in-progress")
+
 
   return (
     <div className="space-y-6">

@@ -3,7 +3,6 @@
 // Force dynamic rendering to avoid static generation issues with StackAuth
 export const dynamic = 'force-dynamic'
 
-import { useUser, useStackApp } from "@stackframe/stack"
 import { useSafeUser, useSafeStackApp } from "@/hooks/use-safe-stack"
 import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

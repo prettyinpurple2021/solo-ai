@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
-import { BossButton, EmpowermentButton } from "@/components/ui/boss-button"
-import { BossCard, EmpowermentCard } from "@/components/ui/boss-card"
 import { RecaptchaSignupButton, RecaptchaSigninButton } from "@/components/ui/recaptcha-button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { CalendarIcon, AlertCircle, CheckCircle, Crown, Shield, Lock } from "lucide-react"
+import { CalendarIcon, AlertCircle, CheckCircle, Lock } from "lucide-react"
 import { format, subYears } from "date-fns"
 import { motion } from "framer-motion"
 
@@ -22,7 +20,7 @@ export function NeonAuth() {
   const [success, setSuccess] = useState<string | null>(null)
   const [isClient, setIsClient] = useState(false)
   const [user, setUser] = useState<any>(null)
-  const [stackApp, setStackApp] = useState<any>(null)
+  const [_stackApp, setStackApp] = useState<any>(null)
   
   // Enhanced sign-up form state
   const [signUpData, setSignUpData] = useState({
@@ -52,7 +50,7 @@ export function NeonAuth() {
         // We can't use hooks conditionally, so we'll handle this differently
         // For now, we'll use a simple approach
       } catch (error) {
-        console.warn('Stack Auth not available:', error)
+        console.warn(&apos;Stack Auth not available:&apos;, error)
       }
     }
     
@@ -66,7 +64,7 @@ export function NeonAuth() {
     }
   }, [user, router, isClient])
 
-  const handleSignIn = async (formData: any) => {
+  const handleSignIn = async (_formData: any) => {
     setLoading(true)
     setError(null)
     setSuccess(null)
@@ -84,7 +82,7 @@ export function NeonAuth() {
       }, 1000)
       
     } catch (err: any) {
-      setError(err.message || 'Sign in failed')
+      setError(err.message || &apos;Sign in failed&apos;)
     } finally {
       setLoading(false)
     }
@@ -161,7 +159,7 @@ export function NeonAuth() {
     return Object.keys(errors).length === 0
   }
 
-  const handleSignUp = async (formData: any) => {
+  const handleSignUp = async (_formData: any) => {
     if (!validateSignUpForm()) {
       return { success: false, error: "Please fix the form errors" }
     }
@@ -338,7 +336,7 @@ export function NeonAuth() {
 
                 <div className="text-center">
                   <p className="text-sm text-gray-600">
-                    Don't have an account?{" "}
+                    Don&apos;t have an account?{" "}
                     <button
                       type="button"
                       onClick={() => router.push('/signup')}
@@ -401,7 +399,7 @@ export function NeonAuth() {
                       type="date"
                       value={signUpData.dateOfBirth}
                       onChange={(e) => handleSignUpInputChange("dateOfBirth", e.target.value)}
-                      max={format(subYears(new Date(), 18), 'yyyy-MM-dd')}
+                      max={format(subYears(new Date(), 18), &apos;yyyy-MM-dd&apos;)}
                       className="glass pr-10"
                       required
                     />

@@ -10,7 +10,6 @@ import { Switch } from '@/components/ui/switch'
 import { Slider } from '@/components/ui/slider'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { DatePickerWithRange } from '@/components/ui/date-range-picker'
 import { useToast } from '@/hooks/use-toast'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -25,12 +24,7 @@ import {
   HardDrive,
   Sparkles,
   Folder,
-  Clock,
   Star,
-  Download,
-  Eye,
-  Edit,
-  Share2,
   RotateCcw,
   SlidersHorizontal,
   Brain,
@@ -325,7 +319,7 @@ export default function AdvancedSearchPanel({
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                 <Input
-                  placeholder={filters.semantic ? "Search with AI (describe what you're looking for)..." : "Search files..."}
+                  placeholder={filters.semantic ? "Search with AI (describe what you&apos;re looking for)..." : "Search files..."}
                   value={filters.query}
                   onChange={(e) => handleQueryChange(e.target.value)}
                   onFocus={() => setShowSuggestions(filters.query.length > 1)}

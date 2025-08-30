@@ -17,16 +17,12 @@ import {
   History, 
   RotateCcw, 
   RotateCw, 
-  Clock, 
   CalendarClock, 
   FileText, 
   Save, 
   Check, 
-  AlertTriangle,
-  Archive,
   ArrowLeft,
   ArrowRight,
-  MoreHorizontal,
   Download,
   Edit,
   Lock,
@@ -78,7 +74,7 @@ interface DocumentVersioningModalProps {
   onClose: () => void
   file: BriefcaseFile | null
   currentUserId: string
-  currentUserName: string
+  _currentUserName: string
 }
 
 export default function DocumentVersioningModal({
@@ -86,7 +82,7 @@ export default function DocumentVersioningModal({
   onClose,
   file,
   currentUserId,
-  currentUserName
+  _currentUserName
 }: DocumentVersioningModalProps) {
   const [activeTab, setActiveTab] = useState<'history' | 'compare'>('history')
   const [versions, setVersions] = useState<VersionHistory[]>([])
@@ -198,7 +194,7 @@ export default function DocumentVersioningModal({
           description: `Created version ${newVersion.versionNumber}`,
         })
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to create new version",
@@ -230,7 +226,7 @@ export default function DocumentVersioningModal({
           description: `Restored to version ${restoredVersion.versionNumber}`,
         })
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to restore version",
@@ -264,7 +260,7 @@ export default function DocumentVersioningModal({
           description: `Version ${isLocked ? 'unlocked' : 'locked'}`,
         })
       }
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: `Failed to ${isLocked ? 'unlock' : 'lock'} version`,
@@ -287,7 +283,7 @@ export default function DocumentVersioningModal({
         title: "Download started",
         description: "Your file will download shortly",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Error",
         description: "Failed to download version",
@@ -350,7 +346,7 @@ export default function DocumentVersioningModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <History className="w-5 h-5 text-blue-600" />
-            Version History for "{file.name}"
+            Version History for &quot;{file.name}&quot;
           </DialogTitle>
           <DialogDescription>
             Track, compare, and restore previous versions of this document
