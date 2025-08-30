@@ -431,7 +431,9 @@
 .audio-bar-active {
   transform: scaleY(1.5);
 }
-  }
+
+.skeleton-text {
+  max-width: var(--skeleton-width, 80%);
 }
 
 /* Responsive Design */

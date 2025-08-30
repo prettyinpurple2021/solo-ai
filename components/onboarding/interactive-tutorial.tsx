@@ -527,15 +527,15 @@ export function InteractiveTutorial({ open, onCompleteAction, onSkipAction, tuto
                   Step {currentStep + 1} of {totalSteps} - {currentStepData.title}
                 </DialogDescription>
               </div>
-              <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={skipTutorial} className="text-sm">
-                  <SkipForward className="h-4 w-4 mr-1" />
-                  Skip
-                </Button>
-                                 <Button variant="ghost" size="sm" onClick={onSkipAction} className="text-sm">
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
+                             <div className="flex items-center gap-2">
+                 <Button variant="ghost" size="sm" onClick={skipTutorial} className="text-sm">
+                   <SkipForward className="h-4 w-4 mr-1" />
+                   Skip
+                 </Button>
+                 <Button variant="ghost" size="sm" onClick={onSkipAction} className="text-sm">
+                   <X className="h-4 w-4" />
+                 </Button>
+               </div>
             </div>
             <Progress value={progress} className="w-full" />
           </DialogHeader>
