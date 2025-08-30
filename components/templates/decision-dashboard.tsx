@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import BaseTemplate, { TemplateData } from "./base-template"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Plus, 
@@ -27,7 +28,6 @@ import {
   Lightbulb,
   Scale,
   Crown,
-  Zap,
   BarChart3
 } from "lucide-react"
 
@@ -61,16 +61,16 @@ interface DecisionDashboardProps {
   onExport?: (format: 'json' | 'pdf' | 'csv') => void
 }
 
-export default function DecisionDashboard({ template, onSave, onExport }: DecisionDashboardProps) {
+export default function DecisionDashboard({ template, onSave: _onSave, onExport: _onExport }: DecisionDashboardProps) {
   const [currentStep, setCurrentStep] = useState(1)
-  const [data, setData] = useState<DecisionDashboardData>({
+  const [_data, setData] = useState<DecisionDashboardData>({
     decisionTitle: "",
     context: "",
     stakeholders: [],
     deadline: "",
     options: []
   })
-  const [aiInsights, setAiInsights] = useState<string[]>([])
+  const [_aiInsights, setAiInsights] = useState<string[]>([])
   const [isAnalyzing, setIsAnalyzing] = useState(false)
 
   const totalSteps = 4
@@ -90,12 +90,12 @@ export default function DecisionDashboard({ template, onSave, onExport }: Decisi
   })
 
   // Add new option
-  const addOption = () => {
+  const addOption = useCallback(() => {
     setData(prev => ({
       ...prev,
       options: [...prev.options, createOption()]
     }))
-  }
+  }, [])
 
   // Remove option
   const removeOption = (optionId: string) => {
@@ -216,10 +216,10 @@ export default function DecisionDashboard({ template, onSave, onExport }: Decisi
 
   // Initialize with one option if none exist
   useEffect(() => {
-    if (data.options.length === 0) {
+    if (_data.options.length === 0) {
       addOption()
     }
-  }, [])
+  }, [addOption, _data.options.length])
 
   return (
     <BaseTemplate

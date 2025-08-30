@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Shield, Settings, Clock } from "lucide-react"
+import { Shield, Settings, Clock, Eye, AlertTriangle, Download, CheckCircle } from "lucide-react"
 
 interface DataRequest {
   id: string

@@ -20,14 +20,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useUser, useStackApp } from "@stackframe/stack"
-import { Loader2, User } from "lucide-react"
+import { Loader2, User, Camera, Trash2, AlertTriangle } from "lucide-react"
 
 interface ProfileModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
 }
 
-export function ProfileModal({ open: _open, onOpenChange }: ProfileModalProps) {
+export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   const user = useUser()
   const _stackApp = useStackApp()
   

@@ -85,7 +85,7 @@ export function DmSalesScriptGenerator() {
             <Label htmlFor="offer">Offer Details</Label>
             <Textarea
               id="offer"
-              placeholder="What are you selling? What specific problem does it solve? What's the main benefit?"
+              placeholder="What are you selling? What specific problem does it solve? What&apos;s the main benefit?"
               value={offerDetails}
               onChange={(e) => setOfferDetails(e.target.value)}
               rows={3}

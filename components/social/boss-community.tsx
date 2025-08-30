@@ -495,7 +495,7 @@ export function BossCommunity() {
                       <span className="font-semibold text-sm">Reward</span>
                     </div>
                     <p className="text-sm font-medium">
-                      {challenge.reward.points} Boss Points + "{challenge.reward.badge}" Badge
+                      {challenge.reward.points} Boss Points + &quot;{challenge.reward.badge}&quot; Badge
                     </p>
                   </div>
 

@@ -188,7 +188,7 @@ export function FreebieFunnelBuilder() {
             <Label htmlFor="productDescription">Offer Description</Label>
             <Textarea
               id="productDescription"
-              placeholder="What are you selling? What's the main benefit?"
+              placeholder="What are you selling? What&apos;s the main benefit?"
               value={productDescription}
               onChange={(e) => setProductDescription(e.target.value)}
               rows={3}

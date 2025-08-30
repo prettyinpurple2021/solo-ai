@@ -1,15 +1,15 @@
 "use client"
 
-import { useState, useEffect, useCallback, useRef, RefObject } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect, useCallback, useRef } from "react"
+
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+
 import { Progress } from "@/components/ui/progress"
 import { 
   Briefcase, 
@@ -20,36 +20,17 @@ import {
   Music,
   Archive,
   Search,
-  Filter,
   Grid3x3,
   List,
-  Download,
-  Share2,
   Trash2,
-  Star,
   FolderPlus,
   Folder,
-  Calendar,
   FileSpreadsheet,
   FileType,
   FileCode,
-  MoreHorizontal,
-  Crown,
-  Sparkles,
-  Eye,
-  SlidersHorizontal,
-  X,
-  ChevronDown,
-  ChevronUp,
-  BookmarkPlus,
-  TrendingUp,
-  Clock,
-  HardDrive,
-  Tag,
-  Plus,
   Loader2
 } from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
+import { _motion, _AnimatePresence } from "framer-motion"
 import { useToast } from "@/hooks/use-toast"
 import FilePreviewModal from "@/components/file-preview-modal"
 
@@ -76,32 +57,32 @@ interface Folder {
 
 export default function BriefcasePage() {
   const [files, setFiles] = useState<BriefcaseFile[]>([])
-  const [folders, setFolders] = useState<Folder[]>([])
+  const [_folders, setFolders] = useState<Folder[]>([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedFolder, setSelectedFolder] = useState<string | null>(null)
+  const [_selectedFolder, setSelectedFolder] = useState<string | null>(null)
   const [showUploadDialog, setShowUploadDialog] = useState(false)
-  const [showFolderDialog, setShowFolderDialog] = useState(false)
+  const [_showFolderDialog, setShowFolderDialog] = useState(false)
   const [uploadProgress, setUploadProgress] = useState(0)
   const [isUploading, setIsUploading] = useState(false)
   
   // Preview modal state
   const [showPreviewModal, setShowPreviewModal] = useState(false)
-  const [previewFile, setPreviewFile] = useState<BriefcaseFile | null>(null)
+  const [_previewFile, setPreviewFile] = useState<BriefcaseFile | null>(null)
   const [previewIndex, setPreviewIndex] = useState(0)
   
   // Mobile optimization state
-  const [isRefreshing, setIsRefreshing] = useState(false)
-  const [lastTouchY, setLastTouchY] = useState(0)
+  const [_isRefreshing, setIsRefreshing] = useState(false)
+  const [_lastTouchY, setLastTouchY] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   
   // Advanced search state
-  const [showAdvancedSearch, setShowAdvancedSearch] = useState(false)
-  const [sortBy, setSortBy] = useState<'name' | 'size' | 'date' | 'type' | 'modified'>('date')
-  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
-  const [searchFilters, setSearchFilters] = useState({
+  const [_showAdvancedSearch, setShowAdvancedSearch] = useState(false)
+  const [_sortBy, setSortBy] = useState<'name' | 'size' | 'date' | 'type' | 'modified'>('date')
+  const [_sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
+  const [_searchFilters, setSearchFilters] = useState({
     fileSize: { min: '', max: '' },
     dateRange: { start: '', end: '' },
     tags: [],
@@ -109,20 +90,20 @@ export default function BriefcasePage() {
     fileTypes: [],
     folders: []
   })
-  const [savedSearches, setSavedSearches] = useState<Array<{
+  const [_savedSearches, setSavedSearches] = useState<Array<{
     id: string
     name: string
     query: string
     category: string
-    filters: typeof searchFilters
-    sortBy: typeof sortBy
-    sortOrder: typeof sortOrder
+    filters: typeof _searchFilters
+    sortBy: typeof _sortBy
+    sortOrder: typeof _sortOrder
     createdAt: Date
   }>>([])
   
   // Search suggestions and autocomplete
-  const [showSuggestions, setShowSuggestions] = useState(false)
-  const [searchHistory, setSearchHistory] = useState<string[]>([])
+  const [_showSuggestions, setShowSuggestions] = useState(false)
+  const [_searchHistory, setSearchHistory] = useState<string[]>([])
 
   const { toast } = useToast()
 

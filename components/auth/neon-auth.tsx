@@ -16,12 +16,12 @@ export function NeonAuth() {
   const pathname = usePathname()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
+  const [_loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
   const [isClient, setIsClient] = useState(false)
-  const [user, setUser] = useState<any>(null)
-  const [_stackApp, setStackApp] = useState<any>(null)
+  const [user, _setUser] = useState<any>(null)
+  const [_stackApp, _setStackApp] = useState<any>(null)
   
   // Enhanced sign-up form state
   const [signUpData, setSignUpData] = useState({
@@ -47,11 +47,11 @@ export function NeonAuth() {
     // Dynamically import Stack Auth to avoid SSR issues
     const initStackAuth = async () => {
       try {
-        const { useUser, useStackApp } = await import("@stackframe/stack")
+        const { useUser: _useUser, useStackApp: _useStackApp } = await import("@stackframe/stack")
         // We can't use hooks conditionally, so we'll handle this differently
         // For now, we'll use a simple approach
       } catch (error) {
-        console.warn(&apos;Stack Auth not available:&apos;, error)
+        console.warn('Stack Auth not available:', error)
       }
     }
     
@@ -83,7 +83,7 @@ export function NeonAuth() {
       }, 1000)
       
     } catch (err: any) {
-      setError(err.message || &apos;Sign in failed&apos;)
+      setError(err.message || 'Sign in failed')
     } finally {
       setLoading(false)
     }
@@ -337,7 +337,7 @@ export function NeonAuth() {
 
                 <div className="text-center">
                   <p className="text-sm text-gray-600">
-                    Don&apos;t have an account?{" "}
+                    Don't have an account?{" "}
                     <button
                       type="button"
                       onClick={() => router.push('/signup')}
@@ -400,7 +400,7 @@ export function NeonAuth() {
                       type="date"
                       value={signUpData.dateOfBirth}
                       onChange={(e) => handleSignUpInputChange("dateOfBirth", e.target.value)}
-                      max={format(subYears(new Date(), 18), &apos;yyyy-MM-dd&apos;)}
+                      max={format(subYears(new Date(), 18), 'yyyy-MM-dd')}
                       className="glass pr-10"
                       required
                     />

@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { FileText, Shield } from "lucide-react"
+import { FileText, Shield, CheckCircle, Copy, Download } from "lucide-react"
 
 interface PolicyData {
   businessName: string

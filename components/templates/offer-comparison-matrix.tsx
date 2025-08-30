@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -253,7 +253,7 @@ export function OfferComparisonMatrix() {
             </div>
             
             <div className="mt-4 text-sm text-muted-foreground">
-              <p><strong>Tip:</strong> Type "✓", "yes", or "included" for checkmarks. Type "✗", "no", or "not included" for X marks.</p>
+              <p><strong>Tip:</strong> Type &quot;✓&quot;, &quot;yes&quot;, or &quot;included&quot; for checkmarks. Type &quot;✗&quot;, &quot;no&quot;, or &quot;not included&quot; for X marks.</p>
             </div>
           </CardContent>
         </Card>

@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Switch } from '@/components/ui/switch'
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { useToast } from '@/hooks/use-toast'
@@ -24,7 +24,6 @@ import {
   ArrowLeft,
   ArrowRight,
   Download,
-  Edit,
   Lock,
   Unlock
 } from 'lucide-react'
@@ -100,7 +99,7 @@ export default function DocumentVersioningModal({
     if (isOpen && file) {
       loadVersionHistory()
     }
-  }, [isOpen, file])
+  }, [isOpen, file, loadVersionHistory])
 
   const loadVersionHistory = useCallback(async () => {
     if (!file) return
@@ -353,7 +352,7 @@ export default function DocumentVersioningModal({
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(value: any) => setActiveTab(value)} className="flex-1">
+        <Tabs value={activeTab} onValueChange={(value: 'history' | 'compare') => setActiveTab(value)} className="flex-1">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="history" className="flex items-center gap-1">
               <History className="w-3 h-3" />
@@ -378,7 +377,7 @@ export default function DocumentVersioningModal({
                     <Label>Version Type</Label>
                     <Select 
                       value={newVersionType} 
-                      onValueChange={(value: any) => setNewVersionType(value)}
+                                                onValueChange={(value: 'minor' | 'major') => setNewVersionType(value)}
                     >
                       <SelectTrigger className="mt-1">
                         <SelectValue />
@@ -611,7 +610,7 @@ export default function DocumentVersioningModal({
                 onClick={() => {
                   setActiveTab('compare')
                   // Set the compare version to the previous version if possible
-                  const selectedVersionObj = versions.find(v => v.id === selectedVersion)
+                  const _selectedVersionObj = versions.find(v => v.id === selectedVersion)
                   const selectedIndex = versions.findIndex(v => v.id === selectedVersion)
                   if (selectedIndex < versions.length - 1) {
                     setCompareVersion(versions[selectedIndex + 1].id)

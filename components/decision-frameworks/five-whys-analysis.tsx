@@ -17,7 +17,7 @@ interface WhyStep {
   potentialSolutions: string[]
 }
 
-interface FiveWhysAnalysis {
+interface _FiveWhysAnalysis {
   problem: string
   context: string
   whySteps: WhyStep[]
@@ -88,7 +88,7 @@ export function FiveWhysAnalysis() {
   }
 
   const saveAnalysis = () => {
-    const analysisData: FiveWhysAnalysis = {
+    const analysisData: _FiveWhysAnalysis = {
       problem,
       context,
       whySteps,

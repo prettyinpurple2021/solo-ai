@@ -47,7 +47,7 @@ export function BigLeapPlanner() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">"Big Leap" Planner</h3>
+        <h3 className="text-lg font-semibold">&quot;Big Leap&quot; Planner</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."

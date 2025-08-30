@@ -12,11 +12,7 @@ import {
   Sparkles,
   Users,
   Save,
-  FileText,
-  Download,
-  Share2,
   Copy,
-  CheckCircle,
   Briefcase
 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
@@ -24,7 +20,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 
 interface Message {
   id: string
@@ -316,7 +312,7 @@ export default function AgentsPage() {
       // Create file content based on format
       let fileContent = selectedMessageToSave.content
       let mimeType = 'text/plain'
-      let fileExtension = saveForm.format
+      const fileExtension = saveForm.format
       
       if (saveForm.format === 'md') {
         fileContent = `# ${saveForm.fileName}\n\n${selectedMessageToSave.content}`
@@ -353,11 +349,7 @@ export default function AgentsPage() {
       if (response.ok) {
         toast({
           title: "Saved Successfully!",
-          description: `"${saveForm.fileName}" has been saved to your Briefcase.`,
-          action: {
-            label: "View Briefcase",
-            onClick: () => window.location.href = '/dashboard/briefcase'
-          }
+          description: `"${saveForm.fileName}" has been saved to your Briefcase.`
         })
         setShowSaveDialog(false)
         setSaveForm({

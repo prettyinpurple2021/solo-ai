@@ -28,9 +28,7 @@ import {
   RotateCcw,
   SlidersHorizontal,
   Brain,
-  Zap,
-  Target,
-  TrendingUp
+  Target
 } from 'lucide-react'
 import { DateRange } from 'react-day-picker'
 
@@ -186,7 +184,7 @@ export default function AdvancedSearchPanel({
         
         if (response.ok) {
           const aiSuggestions = await response.json()
-          aiSuggestions.forEach((suggestion: any) => {
+          aiSuggestions.forEach((suggestion: { query: string; label: string }) => {
             suggestions.unshift({
               type: 'query',
               value: suggestion.query,
@@ -619,7 +617,7 @@ export default function AdvancedSearchPanel({
                           <span className="text-sm font-medium text-purple-900">AI Search Active</span>
                         </div>
                         <p className="text-sm text-purple-700">
-                          Describe what you're looking for in natural language. AI will understand context and find semantically relevant files.
+                          Describe what you&apos;re looking for in natural language. AI will understand context and find semantically relevant files.
                         </p>
                       </div>
                     )}
@@ -632,7 +630,7 @@ export default function AdvancedSearchPanel({
                         <Label>Sort by</Label>
                         <Select 
                           value={filters.sortBy} 
-                          onValueChange={(value: any) => onFiltersChange({ ...filters, sortBy: value })}
+                          onValueChange={(value: 'relevance' | 'date' | 'name' | 'size') => onFiltersChange({ ...filters, sortBy: value })}
                         >
                           <SelectTrigger className="mt-1">
                             <SelectValue />
@@ -670,7 +668,7 @@ export default function AdvancedSearchPanel({
                         <Label>Sort order</Label>
                         <Select 
                           value={filters.sortOrder} 
-                          onValueChange={(value: any) => onFiltersChange({ ...filters, sortOrder: value })}
+                          onValueChange={(value: 'asc' | 'desc') => onFiltersChange({ ...filters, sortOrder: value })}
                         >
                           <SelectTrigger className="mt-1">
                             <SelectValue />

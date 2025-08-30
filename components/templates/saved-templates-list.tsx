@@ -1,13 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { toast } from 'sonner'
+import { useState } from 'react';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import Link from 'next/link';
+
 import { useTemplates } from '@/hooks/use-templates-swr';
 import { SavedTemplate } from '@/lib/types';
-import { FileText, Calendar, Download, Trash2, Eye } from 'lucide-react';
+import { FileText, Download, Trash2, Eye } from 'lucide-react';
 import {
   Dialog,
   DialogContent,
@@ -20,7 +21,7 @@ import {
 // Uses SavedTemplate from hook to avoid duplicate/conflicting types
 
 export function SavedTemplatesList() {
-  const [selectedTemplate, setSelectedTemplate] = useState<SavedTemplate | null>(null);
+  const [_selectedTemplate, setSelectedTemplate] = useState<SavedTemplate | null>(null);
   const { templates: savedTemplates, isLoading, deleteTemplate, exportTemplate } = useTemplates();
 
   const getTemplateIcon = (slug: string) => {
@@ -78,7 +79,7 @@ export function SavedTemplatesList() {
               Save your work from the templates to see them here.
             </p>
             <Button asChild>
-              <a href="/templates">Go to Templates</a>
+              <Link href="/templates">Go to Templates</Link>
             </Button>
           </CardContent>
         </Card>
@@ -90,7 +91,7 @@ export function SavedTemplatesList() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold boss-text-gradient">Saved Templates</h3>
-        <Badge variant="default">{savedTemplates.length} templates</Badge>
+        <span className="text-sm text-muted-foreground">{savedTemplates.length} templates</span>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

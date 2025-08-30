@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Crown, Target, CheckCircle, Brain, Users, Rocket, Sparkles, ArrowLeft, ArrowRight } from 'lucide-react'
 
 
 interface OnboardingData {
@@ -44,7 +45,7 @@ interface OnboardingWizardProps {
 
 export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [data, setData] = useState<OnboardingData>({
+  const [_data, setData] = useState<OnboardingData>({
     personalInfo: { name: "", businessType: "", industry: "", experience: "" },
     goals: { primaryGoals: [], timeframe: "", biggestChallenge: "" },
     preferences: { workStyle: "", communicationStyle: "", focusTime: "", notifications: [] },
@@ -133,7 +134,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
     if (currentStep < totalSteps - 1) {
       setCurrentStep(currentStep + 1)
     } else {
-      onComplete(data)
+      onComplete(_data)
     }
   }
 
@@ -144,7 +145,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
   }
 
   const toggleGoal = (goalId: string) => {
-    const currentGoals = data.goals.primaryGoals
+    const currentGoals = _data.goals.primaryGoals
     const newGoals = currentGoals.includes(goalId)
       ? currentGoals.filter((g) => g !== goalId)
       : [...currentGoals, goalId]
@@ -152,7 +153,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
   }
 
   const toggleAgent = (agentId: string) => {
-    const currentAgents = data.aiTeam.selectedAgents
+    const currentAgents = _data.aiTeam.selectedAgents
     const newAgents = currentAgents.includes(agentId)
       ? currentAgents.filter((a) => a !== agentId)
       : [...currentAgents, agentId]
@@ -170,7 +171,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
               </div>
               <h2 className="text-3xl font-bold boss-heading">Welcome to Your Empire! 👑</h2>
               <p className="text-lg text-muted-foreground">
-                Let's set up your SoloBoss AI platform to match your unique boss energy!
+                Let&apos;s set up your SoloBoss AI platform to match your unique boss energy!
               </p>
             </div>
 
@@ -237,7 +238,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                 <Target className="h-8 w-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold boss-heading">What are your empire goals? 🎯</h2>
-              <p className="text-muted-foreground">Select all that apply - we'll customize your experience!</p>
+                              <p className="text-muted-foreground">Select all that apply - we&apos;ll customize your experience!</p>
             </div>
 
             <div className="grid gap-3 md:grid-cols-2">
@@ -267,9 +268,9 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label className="font-semibold">What's your biggest challenge right now?</Label>
+                <Label className="font-semibold">What&apos;s your biggest challenge right now?</Label>
                 <Textarea
-                  placeholder="Tell us what's keeping you from reaching your full boss potential..."
+                                      placeholder="Tell us what&apos;s keeping you from reaching your full boss potential..."
                   value={data.goals.biggestChallenge}
                   onChange={(e) => updateData("goals", { biggestChallenge: e.target.value })}
                   className="border-2 border-purple-200 focus:border-purple-400"
@@ -287,7 +288,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                 <Brain className="h-8 w-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold boss-heading">How do you work best? 🧠</h2>
-              <p className="text-muted-foreground">Let's optimize your AI team for your work style!</p>
+                              <p className="text-muted-foreground">Let&apos;s optimize your AI team for your work style!</p>
             </div>
 
             <div className="space-y-6">
@@ -421,8 +422,8 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
               <div className="w-16 h-16 mx-auto bg-gradient-to-r from-yellow-500 to-pink-500 rounded-full flex items-center justify-center">
                 <Rocket className="h-8 w-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold boss-heading">You're Ready to Rule! 🚀</h2>
-              <p className="text-muted-foreground">Here's your personalized empire setup:</p>
+                              <h2 className="text-2xl font-bold boss-heading">You&apos;re Ready to Rule! 🚀</h2>
+                              <p className="text-muted-foreground">Here&apos;s your personalized empire setup:</p>
             </div>
 
             <div className="space-y-4">
@@ -523,7 +524,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
             <div>
               <DialogTitle className="boss-heading text-xl">SoloBoss AI Setup</DialogTitle>
               <DialogDescription>
-                Step {currentStep + 1} of {totalSteps} - Let's build your empire!
+                Step {currentStep + 1} of {totalSteps} - Let&apos;s build your empire!
               </DialogDescription>
             </div>
             <Button variant="ghost" onClick={onSkip} className="text-sm">

@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { useToast } from '@/hooks/use-toast'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
@@ -30,17 +30,8 @@ import {
   MessageCircle,
   Settings,
   Trash2,
-  Plus,
-  Check,
-  X,
-  Globe,
   Lock,
-  UserCheck,
-  AlertTriangle,
-  QrCode,
-  Smartphone,
-  Crown,
-  Sparkles
+  Crown
 } from 'lucide-react'
 
 interface BriefcaseFile {
@@ -110,7 +101,7 @@ export default function FileSharingModal({
   onClose, 
   file, 
   currentUserId, 
-  currentUserName 
+  currentUserName: _currentUserName 
 }: FileSharingModalProps) {
   const [activeTab, setActiveTab] = useState<'share' | 'permissions' | 'links' | 'activity'>('share')
   const [permissions, setPermissions] = useState<SharePermission[]>([])
@@ -147,7 +138,7 @@ export default function FileSharingModal({
     if (isOpen && file) {
       loadSharingData()
     }
-  }, [isOpen, file])
+  }, [isOpen, file, loadSharingData])
 
   const loadSharingData = useCallback(async () => {
     if (!file) return
@@ -337,7 +328,7 @@ export default function FileSharingModal({
         description: "User access has been revoked",
       })
 
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Error",
         description: "Failed to remove access",
@@ -354,7 +345,7 @@ export default function FileSharingModal({
         title: "Copied",
         description: "Link copied to clipboard",
       })
-    } catch (error) {
+    } catch (_error) {
       toast({
         title: "Error",
         description: "Failed to copy link",
@@ -427,11 +418,11 @@ export default function FileSharingModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Share2 className="w-5 h-5 text-purple-600" />
-            Share "{file.name}"
+            Share &quot;{file.name}&quot;
           </DialogTitle>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(value: any) => setActiveTab(value)} className="flex-1">
+        <Tabs value={activeTab} onValueChange={(value: 'share' | 'permissions' | 'links' | 'activity') => setActiveTab(value)} className="flex-1">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="share" className="flex items-center gap-1">
               <Share2 className="w-3 h-3" />
@@ -513,7 +504,7 @@ export default function FileSharingModal({
 
                   <div>
                     <Label>Role</Label>
-                    <Select value={inviteRole} onValueChange={(value: any) => setInviteRole(value)}>
+                    <Select value={inviteRole} onValueChange={(value: 'viewer' | 'commenter' | 'editor') => setInviteRole(value)}>
                       <SelectTrigger className="mt-1">
                         <SelectValue />
                       </SelectTrigger>

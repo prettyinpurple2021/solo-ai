@@ -13,7 +13,8 @@ import {
   CheckCircle, 
   XCircle,
   ArrowUpRight,
-  Settings
+  Settings,
+  Download
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
@@ -165,7 +166,7 @@ export function SubscriptionManager({ className = "" }: SubscriptionManagerProps
     } finally {
       setIsLoading(false)
     }
-  }, [])
+  }, [plans])
 
   const upgradePlan = async (planId: string) => {
     try {

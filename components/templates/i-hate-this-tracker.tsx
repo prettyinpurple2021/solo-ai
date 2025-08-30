@@ -41,7 +41,7 @@ export function IHateThisTracker() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <AlertTriangle className="w-5 h-5 text-chart-5" />
-          <h3 className="text-lg font-semibold">"I Hate This" Tracker</h3>
+          <h3 className="text-lg font-semibold">&quot;I Hate This&quot; Tracker</h3>
         </div>
         <div className="flex gap-2">
           <Input
@@ -59,7 +59,7 @@ export function IHateThisTracker() {
 
       <div className="flex space-x-2">
         <Input
-          placeholder="What's draining your energy?"
+          placeholder="What&apos;s draining your energy?"
           value={newItem}
           onChange={(e) => setNewItem(e.target.value)}
           onKeyPress={(e) => e.key === 'Enter' && addItem()}

@@ -8,7 +8,17 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { 
-  Lightbulb
+  Lightbulb,
+  CheckCircle,
+  Play,
+  SkipForward,
+  Rocket,
+  Crown,
+  Gift,
+  Users,
+  Target,
+  TrendingUp,
+  Sparkles
 } from "lucide-react"
 
 interface EnhancedOnboardingProps {
@@ -140,7 +150,7 @@ export function EnhancedOnboarding({ open, onComplete, onSkip, userData: _userDa
         <div>
           <h2 className="text-3xl font-bold boss-heading mb-2">Welcome to Your Empire! 👑</h2>
           <p className="text-lg text-muted-foreground mb-6">
-            You've completed the onboarding and tutorials. Your SoloBoss AI platform is ready to help you dominate your industry!
+                          You&apos;ve completed the onboarding and tutorials. Your SoloBoss AI platform is ready to help you dominate your industry!
           </p>
         </div>
 
@@ -197,7 +207,7 @@ export function EnhancedOnboarding({ open, onComplete, onSkip, userData: _userDa
         </div>
 
         <div className="space-y-4">
-          <h3 className="text-xl font-bold">What's Next?</h3>
+                        <h3 className="text-xl font-bold">What&apos;s Next?</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="p-4 bg-purple-50 rounded-lg">
               <Users className="h-8 w-8 text-purple-600 mx-auto mb-2" />

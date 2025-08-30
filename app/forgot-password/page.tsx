@@ -5,12 +5,12 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { BossButton, EmpowermentButton } from "@/components/ui/boss-button"
-import { BossCard, EmpowermentCard } from "@/components/ui/boss-card"
+import { EmpowermentButton } from "@/components/ui/boss-button"
+import { EmpowermentCard } from "@/components/ui/boss-card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { AlertCircle, CheckCircle, Crown, Lock, ArrowLeft } from "lucide-react"
+import { AlertCircle, CheckCircle, Lock, ArrowLeft } from "lucide-react"
 import { motion } from "framer-motion"
 
 export default function ForgotPasswordPage() {
@@ -51,8 +51,8 @@ export default function ForgotPasswordPage() {
     try {
       // For now, simulate successful password reset
       setSuccess("Password reset email sent! Check your inbox for instructions.")
-    } catch (err: any) {
-      setError(err.message || "Failed to send reset email. Please try again.")
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to send reset email. Please try again.")
     } finally {
       setLoading(false)
     }

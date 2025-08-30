@@ -8,7 +8,7 @@ import { Progress } from '@/components/ui/progress'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { useToast } from '@/hooks/use-toast'
-import { motion, AnimatePresence } from 'framer-motion'
+import { _motion, _AnimatePresence } from 'framer-motion'
 import { 
   Brain, 
   FileText, 
@@ -19,15 +19,11 @@ import {
   Target, 
   CheckCircle,
   Sparkles,
-  Zap,
-  Search,
   Tag,
   Users,
   RefreshCw,
-  Star,
   ArrowRight,
   BookOpen,
-  MessageSquare,
   ThumbsUp,
   ThumbsDown,
   Smile,
@@ -52,7 +48,7 @@ interface BriefcaseFile {
 interface DocumentInsight {
   type: 'summary' | 'key_points' | 'sentiment' | 'category' | 'tags' | 'recommendations'
   title: string
-  content: string | string[] | Record<string, any>
+  content: string | string[] | Record<string, unknown>
   confidence: number
   generated: Date
 }
@@ -113,7 +109,7 @@ export default function AIInsightsPanel({ file, onClose, className = "" }: AIIns
     if (file) {
       generateInsights()
     }
-  }, [file])
+  }, [file, generateInsights])
 
   const generateInsights = useCallback(async () => {
     if (!file) return
@@ -359,7 +355,7 @@ export default function AIInsightsPanel({ file, onClose, className = "" }: AIIns
           )}
 
           {!loading && insights.length > 0 && (
-            <Tabs value={activeInsight} onValueChange={(value: any) => setActiveInsight(value)}>
+            <Tabs value={activeInsight} onValueChange={(value: 'summary' | 'sentiment' | 'topics' | 'entities' | 'tags' | 'recommendations') => setActiveInsight(value)}>
               <TabsList className="grid w-full grid-cols-4">
                 <TabsTrigger value="overview">Overview</TabsTrigger>
                 <TabsTrigger value="sentiment">Sentiment</TabsTrigger>

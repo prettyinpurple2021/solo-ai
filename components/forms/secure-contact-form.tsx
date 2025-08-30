@@ -173,7 +173,7 @@ export function SecureContactForm({ onSubmit, className = "" }: SecureContactFor
               value={formData.subject}
               onChange={handleInputChange('subject')}
               disabled={isLoading}
-              placeholder="What&apos;s this about?"
+              placeholder="What's this about?"
             />
           </div>
 

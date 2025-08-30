@@ -1,12 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
 import { Badge } from "@/components/ui/badge"
 import { BossButton } from "@/components/ui/boss-button"
 import { BossCard } from "@/components/ui/boss-card"
 import { Progress } from "@/components/ui/progress"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 import { motion, AnimatePresence } from "framer-motion"
 import { 
   Download, 
@@ -15,7 +15,6 @@ import {
   ArrowLeft, 
   Sparkles,
   Crown,
-  Zap,
   Save,
   RefreshCw
 } from "lucide-react"
@@ -49,7 +48,7 @@ export default function BaseTemplate({
   totalSteps = 1,
   onSave,
   onExport,
-  onReset,
+  onReset: _onReset,
   showProgress = false,
   className = ""
 }: BaseTemplateProps) {
@@ -57,7 +56,7 @@ export default function BaseTemplate({
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [isBookmarked, setIsBookmarked] = useState(false)
 
-  const handleSave = async (data: any) => {
+  const handleSave = async (_data: any) => {
     if (!onSave) return
     
     setIsSaving(true)

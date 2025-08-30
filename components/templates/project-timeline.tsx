@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
+import { useState, useEffect } from "react"
 import BaseTemplate, { TemplateData } from "./base-template"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
@@ -14,40 +14,25 @@ import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+
 import { Switch } from "@/components/ui/switch"
-import { motion, AnimatePresence } from "framer-motion"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { motion } from "framer-motion"
 import { 
   Calendar, 
-  Clock, 
   Users, 
   Target, 
   AlertTriangle, 
   AlertCircle,
-  CheckCircle2,
   Plus,
   Minus,
-  ArrowRight,
-  ArrowDown,
   BarChart3,
   Flag,
-  User,
-  Settings,
-  Crown,
-  Brain,
   Lightbulb,
   TrendingUp,
-  Filter,
-  Search,
   Edit3,
   Trash2,
-  Move,
-  Link,
-  Unlink,
-  Zap,
-  FileText,
-  Star,
-  Timer,
   ChevronRight,
   ChevronDown,
   DollarSign,
@@ -58,7 +43,6 @@ import {
   Circle,
   CheckCircle,
   CalendarDays,
-  Clock as ClockIcon,
   Briefcase
 } from "lucide-react"
 
@@ -165,13 +149,13 @@ interface ProjectTimelineProps {
   onExport?: (format: 'json' | 'pdf' | 'csv' | 'mpp') => void
 }
 
-export default function ProjectTimeline({ template, onSave, onExport }: ProjectTimelineProps) {
+export default function ProjectTimeline({ template, onSave: _onSave, onExport: _onExport }: ProjectTimelineProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [viewMode, setViewMode] = useState<'gantt' | 'kanban' | 'calendar' | 'list'>('gantt')
-  const [selectedTask, setSelectedTask] = useState<ProjectTask | null>(null)
-  const [timelineZoom, setTimelineZoom] = useState<'days' | 'weeks' | 'months'>('weeks')
+  const [_selectedTask, setSelectedTask] = useState<ProjectTask | null>(null)
+  const [_timelineZoom, setTimelineZoom] = useState<'days' | 'weeks' | 'months'>('weeks')
   const [showCriticalPath, setShowCriticalPath] = useState(false)
-  const [data, setData] = useState<ProjectTimelineData>({
+  const [_data, setData] = useState<ProjectTimelineData>({
     projectName: "",
     projectDescription: "",
     startDate: new Date(),
@@ -612,7 +596,7 @@ export default function ProjectTimeline({ template, onSave, onExport }: ProjectT
                 Project Setup
               </CardTitle>
               <CardDescription>
-                Define your project's basic information and constraints
+                Define your project&apos;s basic information and constraints
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">

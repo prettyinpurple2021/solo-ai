@@ -79,7 +79,7 @@ interface WithRecaptchaProps {
 }
 
 export function WithRecaptcha({
-  action,
+  action: _action,
   minScore,
   onSuccess,
   onError,

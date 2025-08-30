@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import BaseTemplate, { TemplateData } from "./base-template"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
@@ -11,15 +11,15 @@ import { Button } from "@/components/ui/button"
 import { BossButton } from "@/components/ui/boss-button"
 import { BossCard } from "@/components/ui/boss-card"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { motion, AnimatePresence } from "framer-motion"
+
+import { motion } from "framer-motion"
 import { 
   User, 
   MapPin, 
-  Heart, 
   Frown, 
   Meh, 
   Smile,
@@ -27,9 +27,7 @@ import {
   Minus,
   ArrowRight,
   Target,
-  TrendingUp,
   AlertTriangle,
-  CheckCircle,
   MessageCircle,
   Phone,
   Mail,
@@ -37,17 +35,8 @@ import {
   Store,
   Smartphone,
   Monitor,
-  Settings,
-  Crown,
-  Brain,
   Lightbulb,
-  Zap,
   BarChart3,
-  Eye,
-  ThumbsUp,
-  ThumbsDown,
-  Star,
-  Clock,
   Route
 } from "lucide-react"
 
@@ -147,7 +136,7 @@ interface CustomerJourneyMapperProps {
   onExport?: (format: 'json' | 'pdf' | 'csv') => void
 }
 
-export default function CustomerJourneyMapper({ template, onSave, onExport }: CustomerJourneyMapperProps) {
+export default function CustomerJourneyMapper({ template, onSave: _onSave, onExport: _onExport }: CustomerJourneyMapperProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [data, setData] = useState<CustomerJourneyData>({
     journeyName: "",

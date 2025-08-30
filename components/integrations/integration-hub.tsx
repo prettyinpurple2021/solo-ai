@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { Calendar, MessageSquare } from "lucide-react"
+import { Calendar, MessageSquare, Link, Zap, CheckCircle, Globe, Sparkles, Settings, AlertCircle } from "lucide-react"
 import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
 

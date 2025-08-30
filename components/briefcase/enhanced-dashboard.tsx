@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
@@ -10,21 +10,17 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useToast } from '@/hooks/use-toast'
-import { motion } from 'framer-motion'
+import { _motion } from 'framer-motion'
 import { 
   BarChart3,
   PieChart,
   TrendingUp,
-  TrendingDown,
   Activity,
   HardDrive,
   Files,
   Users,
   Eye,
-  Download,
   Share2,
-  Clock,
-  Calendar,
   Star,
   Hash,
   FolderOpen,
@@ -34,15 +30,11 @@ import {
   Zap,
   Target,
   AlertTriangle,
-  CheckCircle,
   ArrowUp,
   ArrowDown,
   Minus,
   Plus,
-  Filter,
-  Search,
   RefreshCw,
-  Settings,
   Crown,
   Shield,
   Globe
@@ -129,7 +121,7 @@ export default function EnhancedDashboard({ className = "" }: EnhancedDashboardP
   // Load dashboard data
   useEffect(() => {
     loadDashboardData()
-  }, [timeRange])
+  }, [timeRange, loadDashboardData])
 
   const loadDashboardData = useCallback(async () => {
     setLoading(true)
@@ -252,7 +244,7 @@ export default function EnhancedDashboard({ className = "" }: EnhancedDashboardP
           <p className="text-gray-600">Comprehensive insights into your document management</p>
         </div>
         <div className="flex items-center gap-2">
-          <Select value={timeRange} onValueChange={(value: any) => setTimeRange(value)}>
+          <Select value={timeRange} onValueChange={(value: '7d' | '30d' | '90d' | '1y') => setTimeRange(value)}>
             <SelectTrigger className="w-32">
               <SelectValue />
             </SelectTrigger>
@@ -344,7 +336,7 @@ export default function EnhancedDashboard({ className = "" }: EnhancedDashboardP
       )}
 
       {/* Main Dashboard Tabs */}
-      <Tabs value={activeTab} onValueChange={(value: any) => setActiveTab(value)}>
+      <Tabs value={activeTab} onValueChange={(value: 'overview' | 'analytics' | 'ai-insights' | 'collaboration') => setActiveTab(value)}>
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
@@ -523,8 +515,8 @@ export default function EnhancedDashboard({ className = "" }: EnhancedDashboardP
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {storage.largeSuggestions.map((suggestion, index) => (
-                    <div key={index} className="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  {storage.largeSuggestions.map((suggestion, _index) => (
+                                          <div key={_index} className="flex items-center justify-between p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                       <div>
                         <div className="font-medium">{suggestion.fileName}</div>
                         <div className="text-sm text-gray-600">{suggestion.suggestion}</div>

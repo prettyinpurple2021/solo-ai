@@ -1,48 +1,37 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState } from "react"
 import BaseTemplate, { TemplateData } from "./base-template"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Slider } from "@/components/ui/slider"
 import { Button } from "@/components/ui/button"
 import { BossButton } from "@/components/ui/boss-button"
 import { BossCard } from "@/components/ui/boss-card"
 import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { motion, AnimatePresence } from "framer-motion"
+
+import { motion } from "framer-motion"
 import { 
   Mail, 
   Users, 
-  Target, 
   BarChart3, 
   Send, 
   Eye, 
   Split, 
-  Calendar,
   Plus,
   Minus,
   Copy,
   Image,
   Type,
   Link,
-  Palette,
-  Crown,
-  Zap,
-  Brain,
-  AlertTriangle,
-  CheckCircle,
   TrendingUp,
-  Clock,
-  Star,
   Edit3,
-  Settings,
-  Play
+  Settings
 } from "lucide-react"
 
 interface EmailBlock {
@@ -122,9 +111,9 @@ interface EmailCampaignBuilderProps {
   onExport?: (format: 'json' | 'pdf' | 'csv') => void
 }
 
-export default function EmailCampaignBuilder({ template, onSave, onExport }: EmailCampaignBuilderProps) {
+export default function EmailCampaignBuilder({ template, onSave: _onSave, onExport: _onExport }: EmailCampaignBuilderProps) {
   const [currentStep, setCurrentStep] = useState(1)
-  const [data, setData] = useState<EmailCampaignData>({
+  const [_data, setData] = useState<EmailCampaignData>({
     campaignName: "",
     campaignType: 'newsletter',
     audience: [],
@@ -253,7 +242,7 @@ export default function EmailCampaignBuilder({ template, onSave, onExport }: Ema
   }
 
   // Update block
-  const updateBlock = (id: string, updates: Partial<EmailBlock>) => {
+  const _updateBlock = (id: string, updates: Partial<EmailBlock>) => {
     setData(prev => ({
       ...prev,
       blocks: prev.blocks.map(block =>
@@ -291,7 +280,7 @@ export default function EmailCampaignBuilder({ template, onSave, onExport }: Ema
   }
 
   // Move block up/down
-  const moveBlock = (id: string, direction: 'up' | 'down') => {
+  const _moveBlock = (id: string, direction: 'up' | 'down') => {
     const currentIndex = data.blocks.findIndex(block => block.id === id)
     if (currentIndex === -1) return
 
@@ -984,7 +973,7 @@ export default function EmailCampaignBuilder({ template, onSave, onExport }: Ema
                 <h4 className="font-semibold mb-4">Common Personalization Examples</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   <div className="p-3 bg-gray-50 rounded">
-                    <strong>{{firstName}}</strong> - Recipient's first name
+                    <strong>{{firstName}}</strong> - Recipient&apos;s first name
                   </div>
                   <div className="p-3 bg-gray-50 rounded">
                     <strong>{{companyName}}</strong> - Company name
