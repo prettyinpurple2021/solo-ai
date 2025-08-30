@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { useState } from "react"
 import { Crown, Heart, Sparkles, Twitter, Instagram, Linkedin, Github, Mail, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -70,7 +71,7 @@ export function AppFooter() {
       } else {
         setErrorMessage(data.error || 'Something went wrong. Please try again.')
       }
-    } catch (error) {
+    } catch {
       setErrorMessage('Network error. Please try again.')
     } finally {
       setIsSubmitting(false)
@@ -141,10 +142,12 @@ export function AppFooter() {
           <div className="lg:col-span-2">
             <div className="flex items-center gap-3 mb-6">
               <div className="relative">
-                <img
+                <Image
                   src="/images/logo.png"
                   alt="SoloBoss AI"
-                  className="h-12 w-12 rounded-xl object-contain punk-shadow"
+                  width={48}
+                  height={48}
+                  className="rounded-xl object-contain punk-shadow"
                 />
                 <Crown className="absolute -top-1 -right-1 h-5 w-5 text-purple-600" />
               </div>

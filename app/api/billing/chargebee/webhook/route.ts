@@ -64,8 +64,7 @@ export async function POST(req: NextRequest) {
     }
     logApiEvent({ level: 'info', route: '/api/billing/chargebee/webhook', status: 200, message: 'Event processed', meta: { type: _type, customerId: customer?.id, subscriptionId: subscription?.id } })
     return NextResponse.json({ received: true })
-  } catch (error) {
-    logApiEvent({ level: 'error', route: '/api/billing/chargebee/webhook', status: 500, message: 'Webhook processing error', meta: { error: (error as Error)?.message } })
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   } finally {
     client.release()

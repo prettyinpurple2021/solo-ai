@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Crown, Sparkles, Target, Users, ArrowRight, ArrowLeft, CheckCircle, Rocket, Brain } from "lucide-react"
+
 
 interface OnboardingData {
   personalInfo: {

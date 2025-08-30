@@ -1,0 +1,26 @@
+0 verbose cli C:\Program Files\nodejs\node.exe C:\Users\prett\AppData\Roaming\npm\node_modules\npm\bin\npm-cli.js
+1 info using npm@11.4.1
+2 info using node@v22.17.0
+3 silly config load:file:C:\Users\prett\AppData\Roaming\npm\node_modules\npm\npmrc
+4 warn ".eslintcache" is being parsed as a normal command line argument.
+5 warn Unknown cli config "--cache-location". This will stop working in the next major version of npm.
+6 silly config load:file:C:\Users\prett\Desktop\ai agent profile images\soloboss vercel production\v0-solo-boss-ai-platform\.npmrc
+7 silly config load:file:C:\Users\prett\.npmrc
+8 silly config load:file:C:\Users\prett\AppData\Roaming\npm\etc\npmrc
+9 verbose title npm run lint .eslintcache
+10 verbose argv "run" "lint" "--cache-location" ".eslintcache" "--cache" "false"
+11 verbose logfile logs-max:10 dir:C:\Users\prett\Desktop\ai agent profile images\soloboss vercel production\v0-solo-boss-ai-platform\false\_logs\2025-08-30T11_35_18_394Z-
+12 verbose logfile C:\Users\prett\Desktop\ai agent profile images\soloboss vercel production\v0-solo-boss-ai-platform\false\_logs\2025-08-30T11_35_18_394Z-debug-0.log
+13 silly logfile done cleaning log files
+14 http fetch GET 200 https://registry.npmjs.org/npm 477ms
+15 verbose cwd C:\Users\prett\Desktop\ai agent profile images\soloboss vercel production\v0-solo-boss-ai-platform
+16 verbose os Windows_NT 10.0.19045
+17 verbose node v22.17.0
+18 verbose npm  v11.4.1
+19 notice
+19 notice New [33mminor[39m version of npm available! [33m11.4.1[39m -> [34m11.5.2[39m
+19 notice Changelog: [34mhttps://github.com/npm/cli/releases/tag/v11.5.2[39m
+19 notice To update run: [4mnpm install -g npm@11.5.2[24m
+19 notice  { force: true, [Symbol(proc-log.meta)]: true }
+20 verbose exit 1
+21 verbose code 1

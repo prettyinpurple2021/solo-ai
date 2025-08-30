@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Users, FileText, Brain, Save, TrendingUp } from "lucide-react"
+import { Users, Save } from "lucide-react"
 
 interface SelfAnalysis {
   strengths: string[]
@@ -120,7 +120,7 @@ export function FirstHireArchitect() {
     "Team management and leadership"
   ]
 
-  const updateSelfAnalysis = (field: keyof SelfAnalysis, value: any) => {
+  const updateSelfAnalysis = (field: keyof SelfAnalysis, value: string[] | Record<string, number>) => {
     setSelfAnalysis(prev => ({ ...prev, [field]: value }))
   }
 
@@ -132,7 +132,7 @@ export function FirstHireArchitect() {
     updateSelfAnalysis(field, newArray)
   }
 
-  const updateRoleProfile = (field: keyof RoleProfile, value: any) => {
+  const updateRoleProfile = (field: keyof RoleProfile, value: string | string[] | { min: number; max: number; equity: number }) => {
     setRoleProfile(prev => ({ ...prev, [field]: value }))
   }
 
@@ -635,7 +635,7 @@ export function FirstHireArchitect() {
       <Alert>
         <Users className="h-4 w-4" />
         <AlertDescription>
-          <strong>First Hire Tip:</strong> Focus on hiring for the biggest business gap that's holding you back. 
+          <strong>First Hire Tip:</strong> Focus on hiring for the biggest business gap that&apos;s holding you back. 
           The right first hire should free up your time and directly contribute to business growth.
         </AlertDescription>
       </Alert>

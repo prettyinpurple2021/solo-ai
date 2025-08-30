@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { FileText, Download, Copy, Shield, CheckCircle } from "lucide-react"
+import { FileText, Shield } from "lucide-react"
 
 interface PolicyData {
   businessName: string
@@ -85,7 +85,7 @@ export function PolicyGenerator() {
     "Right to lodge a complaint"
   ]
 
-  const updatePolicyData = (field: keyof PolicyData, value: any) => {
+  const updatePolicyData = (field: keyof PolicyData, value: string | string[]) => {
     setPolicyData(prev => ({ ...prev, [field]: value }))
   }
 

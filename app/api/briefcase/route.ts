@@ -124,8 +124,7 @@ export async function GET(request: NextRequest) {
       }
     })
 
-  } catch (error) {
-    console.error('Briefcase GET error:', error)
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch files' },
       { status: 500 }

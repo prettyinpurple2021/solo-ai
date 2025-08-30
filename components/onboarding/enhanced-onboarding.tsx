@@ -8,23 +8,14 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
 import { 
-  Crown, 
-  Sparkles, 
-  Target, 
-  Users, 
-  CheckCircle, 
-  Rocket, 
-  Lightbulb,
-  Play,
-  SkipForward,
-  Gift
+  Lightbulb
 } from "lucide-react"
 
 interface EnhancedOnboardingProps {
   open: boolean
-  onComplete: (data: any) => void
+  onComplete: (data: Record<string, unknown>) => void
   onSkip: () => void
-  userData?: any
+  userData?: Record<string, unknown>
 }
 
 export function EnhancedOnboarding({ open, onComplete, onSkip, userData: _userData }: EnhancedOnboardingProps) {
@@ -40,7 +31,7 @@ export function EnhancedOnboarding({ open, onComplete, onSkip, userData: _userDa
 
   const tutorialOrder = ["dashboard", "ai-agents", "tasks", "goals", "files", "complete"]
 
-  const handleWizardComplete = (data: any) => {
+  const handleWizardComplete = (data: Record<string, unknown>) => {
     setOnboardingData(data)
     setCurrentPhase("tutorial")
     setShowTutorial(true)

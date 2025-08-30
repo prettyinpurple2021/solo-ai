@@ -179,10 +179,7 @@ export function AchievementCelebration({ achievement, onClose, onShare }: Achiev
 }
 
 export function LevelUpCelebration({ newLevel, oldLevel, onClose }: LevelUpCelebrationProps) {
-  const [showAnimation, setShowAnimation] = useState(false)
-
   useEffect(() => {
-    setShowAnimation(true)
     const timer = setTimeout(() => {
       onClose()
     }, 6000)
@@ -207,7 +204,7 @@ export function LevelUpCelebration({ newLevel, oldLevel, onClose }: LevelUpCeleb
               LEVEL UP! 🎉
             </DialogTitle>
             <DialogDescription className="text-lg font-semibold">
-              You've ascended to boss level {newLevel.level}!
+              You&apos;ve ascended to boss level {newLevel.level}!
             </DialogDescription>
           </div>
         </DialogHeader>
@@ -320,33 +317,4 @@ export function StreakCelebration({ streakCount, onClose }: StreakCelebrationPro
   )
 }
 
-// CSS for confetti animation (add to globals.css)
-const confettiStyles = `
-.confetti-animation {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  pointer-events: none;
-}
 
-.confetti-piece {
-  position: absolute;
-  width: 8px;
-  height: 8px;
-  animation: confetti-fall 3s linear infinite;
-}
-
-@keyframes confetti-fall {
-  0% {
-    transform: translateY(-100vh) rotate(0deg);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg);
-    opacity: 0;
-  }
-}
-`

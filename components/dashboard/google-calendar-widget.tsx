@@ -71,7 +71,7 @@ export function GoogleCalendarWidget() {
 
         setEvents(todaysEvents);
 
-      } catch (e: any) {
+      } catch (e: unknown) {
         setError(e.message || 'An unknown error occurred.');
       } finally {
         setIsLoading(false);
@@ -85,7 +85,7 @@ export function GoogleCalendarWidget() {
     return (
       <Card className="boss-card">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5 text-blue-600" /> Today's Agenda</CardTitle>
+          <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5 text-blue-600" /> Today&apos;s Agenda</CardTitle>
           <CardDescription>Loading your Google Calendar events...</CardDescription>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -101,12 +101,12 @@ export function GoogleCalendarWidget() {
     return (
       <Card className="boss-card">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5 text-blue-600" /> Today's Agenda</CardTitle>
+          <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5 text-blue-600" /> Today&apos;s Agenda</CardTitle>
           <CardDescription>Connect Google Calendar to see your events here.</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col items-center justify-center text-center p-8">
           <Calendar className="h-16 w-16 text-gray-400 mb-4" />
-          <p className="mb-4 font-medium">You haven't connected your Google Calendar yet.</p>
+          <p className="mb-4 font-medium">You haven&apos;t connected your Google Calendar yet.</p>
           <Button asChild className="punk-button text-white">
             <Link href="/dashboard/integrations">Connect Now</Link>
           </Button>
@@ -131,8 +131,8 @@ export function GoogleCalendarWidget() {
 
   return (
     <Card className="boss-card">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5 text-blue-600" /> Today's Agenda</CardTitle>
+              <CardHeader>
+        <CardTitle className="flex items-center gap-2"><Calendar className="h-5 w-5 text-blue-600" /> Today&apos;s Agenda</CardTitle>
         <CardDescription>Your events from Google Calendar for today.</CardDescription>
       </CardHeader>
       <CardContent>

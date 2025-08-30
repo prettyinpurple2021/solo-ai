@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Brain, TrendingUp, TrendingDown, Shield, Save, Download } from "lucide-react"
+import { Brain, TrendingUp, TrendingDown, Shield, Save } from "lucide-react"
 
 interface DecisionOption {
   id: string
@@ -60,31 +60,13 @@ export function CostBenefitMatrix() {
     }
   }
 
-  const updateOption = (id: string, field: keyof DecisionOption, value: any) => {
-    setOptions(options.map(option => 
-      option.id === id ? { ...option, [field]: value } : option
-    ))
-  }
+
 
   const removeOption = (id: string) => {
     setOptions(options.filter(option => option.id !== id))
   }
 
-  const addArrayItem = (optionId: string, field: keyof DecisionOption, item: string) => {
-    const option = options.find(o => o.id === optionId)
-    if (option) {
-      const currentArray = option[field] as string[]
-      updateOption(optionId, field, [...currentArray, item])
-    }
-  }
 
-  const removeArrayItem = (optionId: string, field: keyof DecisionOption, index: number) => {
-    const option = options.find(o => o.id === optionId)
-    if (option) {
-      const currentArray = option[field] as string[]
-      updateOption(optionId, field, currentArray.filter((_, i) => i !== index))
-    }
-  }
 
   const analyzeDecision = async () => {
     setIsAnalyzing(true)
@@ -236,7 +218,8 @@ ${options.map(opt => `- ${opt.name}: ${opt.mitigations.join(', ')}`).join('\n')}
                   <select
                     className="w-full p-2 border rounded"
                     value={currentOption.riskLevel || "medium"}
-                    onChange={(e) => setCurrentOption({...currentOption, riskLevel: e.target.value as any})}
+                    onChange={(e) => setCurrentOption({...currentOption, riskLevel: e.target.value as "low" | "medium" | "high"})}
+                    aria-label="Select risk level"
                   >
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>

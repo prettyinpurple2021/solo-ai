@@ -88,7 +88,7 @@ export function SpadeFramework() {
     { id: "explain", title: "Explain", icon: AlertTriangle }
   ]
 
-  const updateSpadeData = (step: keyof SpadeStep, field: string, value: any) => {
+  const updateSpadeData = (step: keyof SpadeStep, field: string, value: string | string[]) => {
     setSpadeData(prev => ({
       ...prev,
       [step]: {
@@ -166,7 +166,7 @@ export function SpadeFramework() {
             setCurrentStep(index)
           }}>
             <TabsList className="grid w-full grid-cols-5">
-              {steps.map((step, index) => (
+              {steps.map((step) => (
                 <TabsTrigger key={step.id} value={step.id} className="flex items-center gap-2">
                   <step.icon className="w-4 h-4" />
                   {step.title}
@@ -503,6 +503,7 @@ export function SpadeFramework() {
                   className="w-full p-2 border rounded"
                   value={spadeData.decide.selectedOption}
                   onChange={(e) => updateSpadeData("decide", "selectedOption", e.target.value)}
+                  aria-label="Select decision option"
                 >
                   <option value="">Select an option...</option>
                   {spadeData.alternatives.options.map((option) => (

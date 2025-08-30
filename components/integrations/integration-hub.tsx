@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { Calendar, MessageSquare, Globe, Zap, Settings, CheckCircle, AlertCircle, Link, Sparkles } from "lucide-react"
+import { Calendar, MessageSquare } from "lucide-react"
 import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -97,7 +97,7 @@ export function IntegrationHub() {
         if (!response.ok) throw new Error('Failed to disconnect');
         setConnectedProviders(prev => prev.filter(p => p !== providerId));
         toast.success(`Successfully disconnected from ${providerId}.`);
-      } catch (error) {
+      } catch {
         toast.error(`Failed to disconnect from ${providerId}. Please try again.`);
       }
     } else {

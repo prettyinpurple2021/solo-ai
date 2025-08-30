@@ -30,7 +30,7 @@ export function GuardianAiDashboard() {
     activeConsents: 0,
     pendingRequests: 0
   })
-  const [_loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
   // Fetch compliance data on component mount
   useEffect(() => {
@@ -44,7 +44,7 @@ export function GuardianAiDashboard() {
             totalScans: data.summary.total_scans || 0,
             issuesResolved: data.summary.resolved_issues || 0,
             policiesGenerated: data.summary.active_policies || 0,
-            activeConsents: data.scans.filter((scan: any) => scan.has_cookie_banner).length || 0,
+            activeConsents: data.scans.filter((scan: { has_cookie_banner: boolean }) => scan.has_cookie_banner).length || 0,
             pendingRequests: (data.summary.total_issues || 0) - (data.summary.resolved_issues || 0)
           })
         }

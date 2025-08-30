@@ -8,12 +8,7 @@ import { Switch } from '@/components/ui/switch'
 import { 
   Calendar, 
   Clock, 
-  CheckCircle, 
-  XCircle, 
-  RefreshCw,
-  ExternalLink,
-  Settings,
-  Plus
+  CheckCircle
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 

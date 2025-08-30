@@ -48,10 +48,10 @@ export async function POST(request: NextRequest) {
     const dateOfBirth = metadata?.date_of_birth || null
 
     // Create user in database
-    const userId = randomUUID()
+    const _userId = randomUUID()
     const newUsers = await sql`
       INSERT INTO users (id, email, password_hash, full_name, username, date_of_birth, created_at, updated_at)
-      VALUES (${userId}, ${email.toLowerCase()}, ${passwordHash}, ${fullName}, ${usernameValue}, ${dateOfBirth}, NOW(), NOW())
+      VALUES (${_userId}, ${email.toLowerCase()}, ${passwordHash}, ${fullName}, ${usernameValue}, ${dateOfBirth}, NOW(), NOW())
       RETURNING id, email, full_name, username, date_of_birth, created_at
     `
 

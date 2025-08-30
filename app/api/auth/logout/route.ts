@@ -16,8 +16,7 @@ export async function DELETE(_request: NextRequest) {
     })
 
     return response
-  } catch (error) {
-    console.error('Logout error:', error)
+  } catch {
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

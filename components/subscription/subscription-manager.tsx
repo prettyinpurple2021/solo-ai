@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -13,10 +13,7 @@ import {
   CheckCircle, 
   XCircle,
   ArrowUpRight,
-  Settings,
-  Download,
-  Calendar,
-  BarChart3
+  Settings
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
@@ -133,9 +130,9 @@ export function SubscriptionManager({ className = "" }: SubscriptionManagerProps
 
   useEffect(() => {
     loadSubscriptionData()
-  }, [])
+  }, [loadSubscriptionData])
 
-  const loadSubscriptionData = async () => {
+  const loadSubscriptionData = useCallback(async () => {
     try {
       setIsLoading(true)
       
@@ -163,12 +160,12 @@ export function SubscriptionManager({ className = "" }: SubscriptionManagerProps
       
       setSubscription(mockSubscription)
       setCurrentPlan(currentPlanData || null)
-    } catch (error) {
-      console.error('Failed to load subscription data:', error)
+    } catch {
+      console.error('Failed to load subscription data')
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [])
 
   const upgradePlan = async (planId: string) => {
     try {
@@ -186,7 +183,7 @@ export function SubscriptionManager({ className = "" }: SubscriptionManagerProps
       })
       
       setShowUpgrade(false)
-    } catch (error) {
+    } catch {
       toast({
         title: "❌ Upgrade failed",
         description: "Please try again or contact support",
@@ -215,7 +212,7 @@ export function SubscriptionManager({ className = "" }: SubscriptionManagerProps
         title: "Subscription canceled",
         description: "Your subscription will end at the current billing period",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Failed to cancel",
         description: "Please try again or contact support",
@@ -244,7 +241,7 @@ export function SubscriptionManager({ className = "" }: SubscriptionManagerProps
         title: "✅ Subscription reactivated!",
         description: "Your subscription will continue as normal",
       })
-    } catch (error) {
+    } catch {
       toast({
         title: "Failed to reactivate",
         description: "Please try again or contact support",

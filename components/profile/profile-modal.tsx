@@ -20,7 +20,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useUser, useStackApp } from "@stackframe/stack"
-import { Loader2, User, Trash2, AlertTriangle, Camera } from "lucide-react"
+import { Loader2, User } from "lucide-react"
 
 interface ProfileModalProps {
   open: boolean

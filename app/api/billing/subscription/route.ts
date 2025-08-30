@@ -14,8 +14,7 @@ export async function GET(req: NextRequest) {
     if (res.rowCount === 0) return NextResponse.json({ error: 'user not found' }, { status: 404 })
     const { subscription_tier, subscription_status } = res.rows[0]
     return NextResponse.json({ plan: subscription_tier, status: subscription_status })
-  } catch (error) {
-    console.error('Database error:', error)
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   } finally {
     client.release()

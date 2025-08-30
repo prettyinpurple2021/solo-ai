@@ -45,7 +45,7 @@ interface FilePreviewModalProps {
   file: BriefcaseFile | null
   files?: BriefcaseFile[] // For navigation between files
   currentIndex?: number
-  onNavigate?: (direction: 'prev' | 'next') => void
+  onNavigate?: (_direction: 'prev' | 'next') => void
 }
 
 interface PreviewState {
@@ -238,7 +238,7 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
 
   // Get file icon
   const getFileIcon = (filename: string, previewType: string | null) => {
-    if (previewType === 'image') return <Image className="w-4 h-4" />
+    if (previewType === 'image') return <Image className="w-4 h-4" alt="Image file" />
     if (previewType === 'text') return <FileCode className="w-4 h-4" />
     if (previewType === 'audio') return <Music className="w-4 h-4" />
     if (previewType === 'video') return <Video className="w-4 h-4" />
@@ -375,9 +375,11 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
           >
             <div className="relative touch-pan-x touch-pan-y">
               {previewState.previewUrl && (
-                <img
+                <Image
                   src={previewState.previewUrl}
-                  alt={file?.name}
+                  alt={file?.name || "File preview"}
+                  width={800}
+                  height={600}
                   className={`max-w-full max-h-full object-contain transition-transform duration-200 select-none ${
                     isTouching ? 'duration-0' : 'duration-200'
                   }`}

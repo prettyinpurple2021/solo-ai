@@ -451,7 +451,7 @@ export function CompensationModeler() {
                       <strong>Key Insights:</strong>
                       <ul className="mt-2 space-y-1">
                         <li>• Your runway will decrease by {Math.abs(financialImpact.runwayChange).toFixed(1)} months</li>
-                        <li>• You'll need ${financialImpact.revenueNeeded.toLocaleString()}/month to break even</li>
+                        <li>• You&apos;ll need ${financialImpact.revenueNeeded.toLocaleString()}/month to break even</li>
                         <li>• Consider revenue growth to offset the increased burn rate</li>
                       </ul>
                     </AlertDescription>

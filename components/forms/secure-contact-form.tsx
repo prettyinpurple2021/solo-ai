@@ -19,7 +19,7 @@ interface ContactFormData {
 }
 
 interface SecureContactFormProps {
-  onSubmit?: (data: ContactFormData) => Promise<void>
+  onSubmit?: (_data: ContactFormData) => Promise<void>
   className?: string
 }
 
@@ -173,7 +173,7 @@ export function SecureContactForm({ onSubmit, className = "" }: SecureContactFor
               value={formData.subject}
               onChange={handleInputChange('subject')}
               disabled={isLoading}
-              placeholder="What's this about?"
+              placeholder="What&apos;s this about?"
             />
           </div>
 

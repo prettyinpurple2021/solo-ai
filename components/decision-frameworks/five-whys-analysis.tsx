@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Brain, Search, Target, Save, Lightbulb, AlertTriangle } from "lucide-react"
+import { Brain, Search, Target, Save, Lightbulb } from "lucide-react"
 
 interface WhyStep {
   question: string
@@ -46,7 +46,7 @@ export function FiveWhysAnalysis() {
     setWhySteps([...whySteps, newStep])
   }
 
-  const updateWhyStep = (index: number, field: keyof WhyStep, value: any) => {
+  const updateWhyStep = (index: number, field: keyof WhyStep, value: string | string[]) => {
     const newSteps = [...whySteps]
     newSteps[index] = { ...newSteps[index], [field]: value }
     setWhySteps(newSteps)
@@ -319,7 +319,7 @@ export function FiveWhysAnalysis() {
       <Alert>
         <Brain className="h-4 w-4" />
         <AlertDescription>
-          <strong>Five Whys Tip:</strong> Keep asking "why" until you reach the root cause. The goal is to identify 
+          <strong>Five Whys Tip:</strong> Keep asking &quot;why&quot; until you reach the root cause. The goal is to identify 
           the fundamental issue, not just symptoms. Usually, 5 iterations are sufficient, but you may need more or fewer.
         </AlertDescription>
       </Alert>

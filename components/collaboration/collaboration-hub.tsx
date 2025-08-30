@@ -1,8 +1,9 @@
 "use client"
 
 import type React from "react"
+import Image from "next/image"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -56,18 +57,18 @@ export function CollaborationHub() {
   const [selectedTask, setSelectedTask] = useState<CollaborationTask | null>(null)
   const [phaseOutputs, setPhaseOutputs] = useState<Record<string, Record<string, string>>>({})
   const [handoffs, setHandoffs] = useState<Record<string, AgentHandoff[]>>({})
-  const [workflows, setWorkflows] = useState<any>({})
+  const [workflows, setWorkflows] = useState<Record<string, { title: string; description: string }>>({})
   const [newTaskInput, setNewTaskInput] = useState("")
-  const [suggestion, setSuggestion] = useState<any>(null)
+  const [suggestion, setSuggestion] = useState<{ reasoning: string; recommended: boolean; workflow?: string } | null>(null)
+
+  const loadWorkflows = useCallback(async () => {
+    const workflowData = await getWorkflows()
+    setWorkflows(workflowData)
+  }, [getWorkflows])
 
   useEffect(() => {
     loadWorkflows()
-  }, [])
-
-  const loadWorkflows = async () => {
-    const workflowData = await getWorkflows()
-    setWorkflows(workflowData)
-  }
+  }, [loadWorkflows])
 
   const handleCreateTask = async (workflowType: string, customTitle?: string) => {
     const task = await createTask(workflowType, customTitle ? { title: customTitle } : undefined)
@@ -213,7 +214,7 @@ export function CollaborationHub() {
               <div className="space-y-2">
                 <Label>Or choose a predefined workflow:</Label>
                 <div className="grid gap-2">
-                  {Object.entries(workflows).map(([key, workflow]: [string, any]) => (
+                  {Object.entries(workflows).map(([key, workflow]: [string, { title: string; description: string }]) => (
                     <Card key={key} className="cursor-pointer hover:bg-muted/50" onClick={() => handleCreateTask(key)}>
                       <CardContent className="p-3">
                         <div className="flex items-center justify-between">
@@ -290,11 +291,13 @@ export function CollaborationHub() {
                         {/* In the team members display section */}
                         <div className="flex flex-wrap gap-1">
                           {task.requiredAgents.map((agent) => (
-                            <img
+                            <Image
                               key={agent}
                               src={getAgentAvatar(agent) || "/default-user.svg"}
                               alt={agent}
-                              className="w-6 h-6 rounded-full object-cover border border-white shadow-sm"
+                              width={24}
+                              height={24}
+                              className="rounded-full object-cover border border-white shadow-sm"
                               title={agent.charAt(0).toUpperCase() + agent.slice(1)}
                             />
                           ))}
@@ -340,25 +343,25 @@ interface TaskDetailsProps {
   task: CollaborationTask
   phaseOutputs: Record<string, string>
   handoffs: AgentHandoff[]
-  onExecutePhase: (task: CollaborationTask, phaseId: string, input: string) => void
+  onExecutePhase: (_task: CollaborationTask, _phaseId: string, _input: string) => void
   loading: boolean
-  getAgentColor: (agent: string) => string
-  getStatusIcon: (status: string) => React.ReactNode
+  getAgentColor: (_agent: string) => string
+  getStatusIcon: (_status: string) => React.ReactNode
 }
 
 function TaskDetails({
   task,
-  phaseOutputs,
+  phaseOutputs: _phaseOutputs,
   handoffs,
   onExecutePhase,
   loading,
-  getAgentColor,
-  getStatusIcon,
+  getAgentColor: _getAgentColor,
+  getStatusIcon: _getStatusIcon,
 }: TaskDetailsProps) {
   const [phaseInput, setPhaseInput] = useState("")
   const [selectedPhaseId, setSelectedPhaseId] = useState<string | null>(null)
 
-  const currentPhase = task.phases.find((p) => p.status === "in-progress")
+  const _currentPhase = task.phases.find((p) => p.status === "in-progress")
 
   return (
     <div className="space-y-6">
@@ -395,10 +398,12 @@ function TaskDetails({
                   <div className="flex items-center gap-2 mb-1">
                     <h4 className="font-medium">{phase.name}</h4>
                     {/* Update the phase timeline agent displays: */}
-                    <img
+                    <Image
                       src={getAgentAvatar(phase.assignedAgent) || "/default-user.svg"}
                       alt={phase.assignedAgent}
-                      className="w-6 h-6 rounded-full object-cover border border-white shadow-sm"
+                      width={24}
+                      height={24}
+                      className="rounded-full object-cover border border-white shadow-sm"
                     />
                     <span className="text-sm text-muted-foreground capitalize">{phase.assignedAgent}</span>
                   </div>
@@ -455,16 +460,20 @@ function TaskDetails({
                   <div key={index} className="p-3 border rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                       {/* Update the handoff displays: */}
-                      <img
+                      <Image
                         src={getAgentAvatar(handoff.fromAgent) || "/default-user.svg"}
                         alt={handoff.fromAgent}
-                        className="w-5 h-5 rounded-full object-cover border border-white"
+                        width={20}
+                        height={20}
+                        className="rounded-full object-cover border border-white"
                       />
                       <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                      <img
+                      <Image
                         src={getAgentAvatar(handoff.toAgent) || "/default-user.svg"}
                         alt={handoff.toAgent}
-                        className="w-5 h-5 rounded-full object-cover border border-white"
+                        width={20}
+                        height={20}
+                        className="rounded-full object-cover border border-white"
                       />
                       <span className="text-sm font-medium">
                         {handoff.fromAgent} → {handoff.toAgent}

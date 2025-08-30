@@ -22,9 +22,9 @@ declare global {
   interface Window {
     grecaptcha: {
       enterprise: {
-        ready: (callback: () => void) => void
-        execute: (siteKey: string, options: { action: string }) => Promise<string>
-        reset: (widgetId?: string) => void
+        ready: (_callback: () => void) => void
+        execute: (_siteKey: string, _options: { action: string }) => Promise<string>
+        reset: (_widgetId?: string) => void
       }
     }
   }
@@ -32,7 +32,7 @@ declare global {
 
 export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
   const [isReady, setIsReady] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [_isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
 
   const executeRecaptcha = async (action: string): Promise<string | null> => {

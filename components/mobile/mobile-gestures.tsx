@@ -8,15 +8,6 @@ import { Badge } from "@/components/ui/badge"
 import {
   Smartphone,
   ShuffleIcon as Swipe,
-  TouchpadOff,
-  Zap,
-  Heart,
-  Star,
-  ArrowUp,
-  ArrowDown,
-  ArrowLeft,
-  ArrowRight,
-  Sparkles,
 } from "lucide-react"
 
 interface SwipeGesture {

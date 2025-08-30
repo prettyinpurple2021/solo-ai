@@ -15,7 +15,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useUser } from "@stackframe/stack"
 import { useProfile } from "@/hooks/use-profile-swr"
-import { User, Camera, Upload, X, Settings, Bell, Shield, Crown, Sparkles, Save, Trash2 } from "lucide-react"
+import { User, Camera, Upload } from "lucide-react"
 
 interface EnhancedProfileModalProps {
   _open: boolean
