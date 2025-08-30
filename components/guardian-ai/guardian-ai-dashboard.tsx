@@ -30,7 +30,7 @@ export function GuardianAiDashboard() {
     activeConsents: 0,
     pendingRequests: 0
   })
-  const [loading, setLoading] = useState(true)
+  const [_loading, setLoading] = useState(true)
 
   // Fetch compliance data on component mount
   useEffect(() => {

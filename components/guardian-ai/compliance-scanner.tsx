@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Alert } from "@/components/ui/alert"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Shield, AlertTriangle, CheckCircle, ExternalLink, Eye, Database, Cookie, User, Download, FileText } from "lucide-react"
+import { Shield, AlertTriangle, CheckCircle, Eye, Database, Cookie, User, Download, FileText } from "lucide-react"
 
 interface ComplianceIssue {
   id: string

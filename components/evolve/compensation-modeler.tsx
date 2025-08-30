@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { TrendingUp, DollarSign, Calculator, Save, TrendingDown, Users } from "lucide-react"
+import { TrendingUp, DollarSign, Calculator, Save, TrendingDown } from "lucide-react"
 
 interface BusinessMetrics {
   monthlyRevenue: number

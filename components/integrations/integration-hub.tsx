@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Switch } from "@/components/ui/switch"
 import { Input } from "@/components/ui/input"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Calendar, Mail, MessageSquare, CreditCard, FileText, Camera, Globe, Zap, Settings, CheckCircle, AlertCircle, Plus, Link, Sparkles, Crown, Shield, BarChart3 } from "lucide-react"
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Calendar, MessageSquare, Globe, Zap, Settings, CheckCircle, AlertCircle, Link, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -67,8 +67,7 @@ export function IntegrationHub() {
         if (!response.ok) throw new Error('Failed to fetch status');
         const data = await response.json();
         setConnectedProviders(data.connectedProviders);
-      } catch (error) {
-        console.error(error);
+      } catch {
         toast.error("Could not load integration statuses.");
       } finally {
         setIsLoading(false);

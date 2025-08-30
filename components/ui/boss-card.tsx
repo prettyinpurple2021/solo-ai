@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import { ReactNode } from "react"
 import { cn } from "@/lib/utils"
-import { Crown, Sparkles, Zap } from "lucide-react"
+import { Crown, Sparkles } from "lucide-react"
 
 interface BossCardProps {
   children: ReactNode

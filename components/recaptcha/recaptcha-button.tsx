@@ -71,7 +71,7 @@ interface WithRecaptchaProps {
   action: string
   minScore?: number
   onSuccess: () => Promise<void> | void
-  onError?: (error: string) => void
+  onError?: (_error: string) => void
   children: (props: {
     onClick: () => Promise<void>
     isValidating: boolean

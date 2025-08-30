@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Slider } from "@/components/ui/slider"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Users, Target, FileText, Brain, Save, TrendingUp } from "lucide-react"
+import { Users, FileText, Brain, Save, TrendingUp } from "lucide-react"
 
 interface SelfAnalysis {
   strengths: string[]
@@ -152,7 +152,6 @@ export function FirstHireArchitect() {
     // Simulate AI analysis
     setTimeout(() => {
       const gaps = selfAnalysis.businessGaps
-      const priorities = selfAnalysis.priorities
       
       let suggestedTitle = "Business Operations Manager"
       let suggestedDescription = "A versatile role to support business growth and operational efficiency"

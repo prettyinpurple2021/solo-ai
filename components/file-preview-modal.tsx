@@ -5,11 +5,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+
 import { 
   X, 
   Download, 
-  Share2, 
   ZoomIn, 
   ZoomOut, 
   RotateCw,
@@ -17,10 +16,6 @@ import {
   Minimize2,
   ChevronLeft,
   ChevronRight,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
   FileText,
   Image,
   Music,
@@ -28,7 +23,7 @@ import {
   FileCode,
   Archive
 } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+
 
 interface BriefcaseFile {
   id: string
@@ -83,8 +78,8 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false)
 
   // Media player state
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(false)
+  const [_isPlaying, setIsPlaying] = useState(false)
+  const [_isMuted, setIsMuted] = useState(false)
 
   // Touch gesture state
   const [touchStart, setTouchStart] = useState<{ x: number; y: number; distance?: number } | null>(null)
@@ -266,12 +261,7 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
     console.log('Download file:', file.name)
   }
 
-  // Share file
-  const handleShare = () => {
-    if (!file) return
-    // In a real implementation, this would open a share dialog
-    console.log('Share file:', file.name)
-  }
+
 
   // Touch gesture handlers
   const handleTouchStart = useCallback((e: TouchEvent<HTMLDivElement>) => {

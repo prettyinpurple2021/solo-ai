@@ -60,7 +60,7 @@ import {
   CalendarDays,
   Clock as ClockIcon,
   Briefcase
-}
+} from "lucide-react"
 
 interface ProjectTask {
   id: string
@@ -1296,6 +1296,8 @@ export default function ProjectTimeline({ template, onSave, onExport }: ProjectT
                                 className="w-8 h-8 rounded border-2 border-gray-300 hover:border-gray-400"
                                 style={{ backgroundColor: color }}
                                 onClick={() => updateMilestone(milestone.id, { color })}
+                                title={`Select ${color} color`}
+                                aria-label={`Select ${color} color`}
                               />
                             ))}
                           </div>
@@ -1446,6 +1448,8 @@ export default function ProjectTimeline({ template, onSave, onExport }: ProjectT
                               className="w-8 h-8 rounded border-2 border-gray-300 hover:border-gray-400"
                               style={{ backgroundColor: color }}
                               onClick={() => updateMilestone(milestone.id, { color })}
+                              title={`Select ${color} color`}
+                              aria-label={`Select ${color} color`}
                             />
                           ))}
                         </div>

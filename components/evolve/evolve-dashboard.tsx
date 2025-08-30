@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { Users, TrendingUp, Calculator, FileText, Brain, Save, Target } from "lucide-react"
+import { Users, TrendingUp, Calculator, FileText, Brain, Target } from "lucide-react"
 import { FirstHireArchitect } from "./first-hire-architect"
 import { CompensationModeler } from "./compensation-modeler"
 
@@ -20,7 +20,7 @@ interface ScalingMetrics {
 
 export function EvolveDashboard() {
   const [activeTab, setActiveTab] = useState("overview")
-  const [metrics, setMetrics] = useState<ScalingMetrics>({
+  const [metrics] = useState<ScalingMetrics>({
     currentTeamSize: 1,
     targetTeamSize: 3,
     hiringBudget: 150000,

@@ -14,7 +14,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useUser } from "@stackframe/stack"
-import { toast } from "sonner"
 import { useProfile } from "@/hooks/use-profile-swr"
 import { User, Camera, Upload, X, Settings, Bell, Shield, Crown, Sparkles, Save, Trash2 } from "lucide-react"
 
@@ -25,7 +24,7 @@ interface EnhancedProfileModalProps {
 
 export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProfileModalProps) {
   const user = useUser()
-  const { profile, isLoading, updateProfile, uploadAvatar, removeAvatar } = useProfile()
+  const { profile, updateProfile, uploadAvatar, removeAvatar } = useProfile()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [formData, setFormData] = useState({
@@ -229,6 +228,7 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
                   accept="image/*"
                   onChange={handleImageUpload}
                   className="hidden"
+                  aria-label="Upload profile photo"
                 />
               </div>
               <p className="text-xs text-gray-500 text-center">Upload a boss-level photo! Max 2MB, JPG/PNG format 📸</p>
