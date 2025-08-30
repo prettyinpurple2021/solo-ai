@@ -34,8 +34,6 @@ spec:
           value: "soloboss-ai-platform"
         - name: NODE_OPTIONS
           value: "--max-old-space-size=1536"
-        - name: PORT
-          value: "3000"
         # Stack Auth Configuration
         - name: NEXT_PUBLIC_STACK_PROJECT_ID
           valueFrom:
