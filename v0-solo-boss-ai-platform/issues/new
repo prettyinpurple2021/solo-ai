@@ -1,0 +1,52 @@
+### Title: Fix Docker Build Failure by Installing DevDependencies Needed for Next.js + Tailwind
+
+## Problem
+
+The Docker build is failing with the error:
+
+```
+Error: Cannot find module 'tailwindcss'
+Build failed because of webpack errors
+```
+
+This is caused by the build phase only installing production dependencies (`npm ci --only=production`), which omits devDependencies such as `tailwindcss`. Since Next.js requires Tailwind (and possibly other devDependencies) during the build, the build fails.
+
+## Affected Files
+
+- [Dockerfile](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/blob/09c430b3b2876143c021730e6e66fe0fc1148b41/Dockerfile)
+- [package.json](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/blob/09c430b3b2876143c021730e6e66fe0fc1148b41/package.json)
+
+## Solution
+
+1. **Update the Dockerfile** so that all dependencies, including devDependencies, are installed during the build phase.
+2. This means removing `--only=production` from the `npm ci` command in the build stage.
+
+### Before (current Dockerfile snippet):
+
+```dockerfile
+FROM base AS deps
+COPY package.json package-lock.json ./
+RUN npm ci --legacy-peer-deps --only=production
+```
+
+### After (proposed fix):
+
+```dockerfile
+FROM base AS deps
+COPY package.json package-lock.json ./
+RUN npm ci --legacy-peer-deps
+```
+
+> This ensures that `tailwindcss` and other devDependencies are available for the Next.js build.
+
+## References
+
+- [Failing GitHub Actions Job Log](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/actions/runs/17337366667/job/49225821835)
+- [Dockerfile@09c430b3](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/blob/09c430b3b2876143c021730e6e66fe0fc1148b41/Dockerfile)
+- [package.json@09c430b3](https://github.com/prettyinpurple2021/v0-solo-boss-ai-platform/blob/09c430b3b2876143c021730e6e66fe0fc1148b41/package.json)
+
+## Acceptance Criteria
+
+- [ ] Docker build completes successfully in CI/CD.
+- [ ] No "Cannot find module 'tailwindcss'" or similar errors during the build.
+- [ ] Next.js build output is present in the final image.
