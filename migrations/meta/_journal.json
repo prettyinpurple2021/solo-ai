@@ -8,6 +8,13 @@
       "when": 1756150567006,
       "tag": "0000_empty_vanisher",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1756532356557,
+      "tag": "0001_yellow_firestar",
+      "breakpoints": true
     }
   ]
 }
