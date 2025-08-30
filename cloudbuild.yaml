@@ -1,21 +1,21 @@
 steps:
 # Build the container image
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/soloboss-ai-v3/idx-soloboss-v3-25083662/idx-soloboss-v3-25083662', '.']
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform', '.']
 
 # Push the container image to Artifact Registry
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['push', 'us-central1-docker.pkg.dev/soloboss-ai-v3/idx-soloboss-v3-25083662/idx-soloboss-v3-25083662']
+  args: ['push', 'us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform']
 
-# Deploy the container image to Cloud Run
+# Deploy the container image to Cloud Run with proper health checks
 - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
   entrypoint: 'gcloud'
   args:
   - 'run'
   - 'deploy'
-  - 'idx-soloboss-v3-25083662'
+  - 'soloboss-ai-platform'
   - '--image'
-  - 'us-central1-docker.pkg.dev/soloboss-ai-v3/idx-soloboss-v3-25083662/idx-soloboss-v3-25083662'
+  - 'us-central1-docker.pkg.dev/soloboss-ai-v3/soloboss-ai-platform/soloboss-ai-platform'
   - '--region'
   - 'us-central1'
   - '--platform'
@@ -23,6 +23,20 @@ steps:
   - '--allow-unauthenticated'
   - '--service-account'
   - 'soloboss-deployer@soloboss-ai-v3.iam.gserviceaccount.com'
+  - '--port'
+  - '3000'
+  - '--cpu'
+  - '2'
+  - '--memory'
+  - '2Gi'
+  - '--concurrency'
+  - '80'
+  - '--timeout'
+  - '900'
+  - '--min-instances'
+  - '0'
+  - '--max-instances'
+  - '5'
 
 # Specify the logging option
 options:

@@ -46,3 +46,6 @@ next-env.d.ts
 !tailwind.config.ts
 !drizzle.config.ts
 !components.json
+
+# New Relic logs
+newrelic_agent.log
