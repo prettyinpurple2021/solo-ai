@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, text, timestamp, boolean, jsonb } from 'drizzle-orm/pg-core';
+import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uuid } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 
 // Users table
@@ -122,6 +122,96 @@ export const posts = pgTable('posts', {
   content: text('content').notNull().default(''),
 });
 
+// Competitor Profiles table
+export const competitorProfiles = pgTable('competitor_profiles', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  user_id: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  domain: varchar('domain', { length: 255 }),
+  description: text('description'),
+  industry: varchar('industry', { length: 100 }),
+  headquarters: varchar('headquarters', { length: 255 }),
+  founded_year: integer('founded_year'),
+  employee_count: integer('employee_count'),
+  funding_amount: decimal('funding_amount', { precision: 15, scale: 2 }),
+  funding_stage: varchar('funding_stage', { length: 50 }),
+  threat_level: varchar('threat_level', { length: 20 }).notNull().default('medium'),
+  monitoring_status: varchar('monitoring_status', { length: 20 }).notNull().default('active'),
+  social_media_handles: jsonb('social_media_handles').default('{}'),
+  key_personnel: jsonb('key_personnel').default('[]'),
+  products: jsonb('products').default('[]'),
+  market_position: jsonb('market_position').default('{}'),
+  competitive_advantages: jsonb('competitive_advantages').default('[]'),
+  vulnerabilities: jsonb('vulnerabilities').default('[]'),
+  monitoring_config: jsonb('monitoring_config').default('{}'),
+  last_analyzed: timestamp('last_analyzed'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  userIdIdx: index('competitor_profiles_user_id_idx').on(table.user_id),
+  threatLevelIdx: index('competitor_profiles_threat_level_idx').on(table.threat_level),
+  monitoringStatusIdx: index('competitor_profiles_monitoring_status_idx').on(table.monitoring_status),
+  domainIdx: index('competitor_profiles_domain_idx').on(table.domain),
+  industryIdx: index('competitor_profiles_industry_idx').on(table.industry),
+}));
+
+// Intelligence Data table
+export const intelligenceData = pgTable('intelligence_data', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  competitor_id: uuid('competitor_id').notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
+  user_id: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  source_type: varchar('source_type', { length: 50 }).notNull(),
+  source_url: varchar('source_url', { length: 1000 }),
+  data_type: varchar('data_type', { length: 100 }).notNull(),
+  raw_content: jsonb('raw_content'),
+  extracted_data: jsonb('extracted_data').default('{}'),
+  analysis_results: jsonb('analysis_results').default('[]'),
+  confidence: decimal('confidence', { precision: 3, scale: 2 }).default('0.00'),
+  importance: varchar('importance', { length: 20 }).notNull().default('medium'),
+  tags: jsonb('tags').default('[]'),
+  collected_at: timestamp('collected_at').defaultNow(),
+  processed_at: timestamp('processed_at'),
+  expires_at: timestamp('expires_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  competitorIdIdx: index('intelligence_data_competitor_id_idx').on(table.competitor_id),
+  userIdIdx: index('intelligence_data_user_id_idx').on(table.user_id),
+  sourceTypeIdx: index('intelligence_data_source_type_idx').on(table.source_type),
+  dataTypeIdx: index('intelligence_data_data_type_idx').on(table.data_type),
+  importanceIdx: index('intelligence_data_importance_idx').on(table.importance),
+  collectedAtIdx: index('intelligence_data_collected_at_idx').on(table.collected_at),
+  expiresAtIdx: index('intelligence_data_expires_at_idx').on(table.expires_at),
+}));
+
+// Competitor Alerts table
+export const competitorAlerts = pgTable('competitor_alerts', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  competitor_id: uuid('competitor_id').notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
+  user_id: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  intelligence_id: uuid('intelligence_id').references(() => intelligenceData.id, { onDelete: 'set null' }),
+  alert_type: varchar('alert_type', { length: 100 }).notNull(),
+  severity: varchar('severity', { length: 20 }).notNull().default('info'),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  source_data: jsonb('source_data').default('{}'),
+  action_items: jsonb('action_items').default('[]'),
+  recommended_actions: jsonb('recommended_actions').default('[]'),
+  is_read: boolean('is_read').default(false),
+  is_archived: boolean('is_archived').default(false),
+  acknowledged_at: timestamp('acknowledged_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  competitorIdIdx: index('competitor_alerts_competitor_id_idx').on(table.competitor_id),
+  userIdIdx: index('competitor_alerts_user_id_idx').on(table.user_id),
+  alertTypeIdx: index('competitor_alerts_alert_type_idx').on(table.alert_type),
+  severityIdx: index('competitor_alerts_severity_idx').on(table.severity),
+  isReadIdx: index('competitor_alerts_is_read_idx').on(table.is_read),
+  isArchivedIdx: index('competitor_alerts_is_archived_idx').on(table.is_archived),
+  createdAtIdx: index('competitor_alerts_created_at_idx').on(table.created_at),
+}));
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   briefcases: many(briefcases),
@@ -131,6 +221,9 @@ export const usersRelations = relations(users, ({ many }) => ({
   taskCategories: many(taskCategories),
   taskAnalytics: many(taskAnalytics),
   productivityInsights: many(productivityInsights),
+  competitorProfiles: many(competitorProfiles),
+  intelligenceData: many(intelligenceData),
+  competitorAlerts: many(competitorAlerts),
 }));
 
 export const briefcasesRelations = relations(briefcases, ({ one, many }) => ({
@@ -204,5 +297,42 @@ export const productivityInsightsRelations = relations(productivityInsights, ({ 
   user: one(users, {
     fields: [productivityInsights.user_id],
     references: [users.id],
+  }),
+}));
+
+// Competitor Intelligence Relations
+export const competitorProfilesRelations = relations(competitorProfiles, ({ one, many }) => ({
+  user: one(users, {
+    fields: [competitorProfiles.user_id],
+    references: [users.id],
+  }),
+  intelligenceData: many(intelligenceData),
+  alerts: many(competitorAlerts),
+}));
+
+export const intelligenceDataRelations = relations(intelligenceData, ({ one, many }) => ({
+  competitor: one(competitorProfiles, {
+    fields: [intelligenceData.competitor_id],
+    references: [competitorProfiles.id],
+  }),
+  user: one(users, {
+    fields: [intelligenceData.user_id],
+    references: [users.id],
+  }),
+  alerts: many(competitorAlerts),
+}));
+
+export const competitorAlertsRelations = relations(competitorAlerts, ({ one }) => ({
+  competitor: one(competitorProfiles, {
+    fields: [competitorAlerts.competitor_id],
+    references: [competitorProfiles.id],
+  }),
+  user: one(users, {
+    fields: [competitorAlerts.user_id],
+    references: [users.id],
+  }),
+  intelligence: one(intelligenceData, {
+    fields: [competitorAlerts.intelligence_id],
+    references: [intelligenceData.id],
   }),
 }));

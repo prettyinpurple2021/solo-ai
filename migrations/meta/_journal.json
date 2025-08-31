@@ -15,6 +15,20 @@
       "when": 1756532356557,
       "tag": "0001_yellow_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756598281715,
+      "tag": "0002_sloppy_mikhail_rasputin",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1756599733632,
+      "tag": "0003_wonderful_preak",
+      "breakpoints": true
     }
   ]
 }
