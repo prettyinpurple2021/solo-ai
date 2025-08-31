@@ -106,8 +106,13 @@
   - Create competitor enrichment trigger UI
   - _Requirements: 1.1, 1.2, 1.3_
 
-- [ ] 4. Web Scraping Infrastructure
-- [ ] 4.1 Implement ethical web scraping service
+- [-] 4. Web Scraping Infrastructure
+
+
+
+- [x] 4.1 Implement ethical web scraping service
+
+
   - Create web scraper with robots.txt compliance and rate limiting
   - Build website change detection system with diff analysis
   - Implement pricing page monitoring with structured data extraction
@@ -115,7 +120,8 @@
   - Create job posting scraper with role categorization and strategic analysis
   - _Requirements: 2.1, 2.2, 8.1, 8.2_
 
-- [ ] 4.2 Build scraping scheduler and queue system
+- [-] 4.2 Build scraping scheduler and queue system
+
   - Implement background job queue for scheduled scraping tasks
   - Create intelligent scheduling based on competitor importance and change frequency
   - Add retry mechanisms with exponential backoff for failed scraping attempts
