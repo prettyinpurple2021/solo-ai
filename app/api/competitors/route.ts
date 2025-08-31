@@ -285,6 +285,121 @@ export async function POST(request: NextRequest) {
       })
       .returning()
 
+    // Trigger automatic enrichment if domain is provided and basic info is missing
+    const shouldAutoEnrich = data.domain && (
+      !data.description || 
+      !data.industry || 
+      !data.headquarters ||
+      !data.employeeCount ||
+      (data.keyPersonnel || []).length === 0 ||
+      Object.keys(data.socialMediaHandles || {}).length === 0
+    )
+
+    if (shouldAutoEnrich) {
+      // Perform background enrichment (fire and forget)
+      setImmediate(async () => {
+        try {
+          const { competitorEnrichmentService } = await import('@/lib/competitor-enrichment-service')
+          
+          const competitorData = {
+            id: newCompetitor.id,
+            userId: newCompetitor.user_id,
+            name: newCompetitor.name,
+            domain: newCompetitor.domain || undefined,
+            description: newCompetitor.description || undefined,
+            industry: newCompetitor.industry || undefined,
+            headquarters: newCompetitor.headquarters || undefined,
+            foundedYear: newCompetitor.founded_year || undefined,
+            employeeCount: newCompetitor.employee_count || undefined,
+            fundingAmount: newCompetitor.funding_amount ? parseFloat(newCompetitor.funding_amount) : undefined,
+            fundingStage: newCompetitor.funding_stage as any || undefined,
+            threatLevel: newCompetitor.threat_level as any,
+            monitoringStatus: newCompetitor.monitoring_status as any,
+            socialMediaHandles: newCompetitor.social_media_handles || {},
+            keyPersonnel: newCompetitor.key_personnel || [],
+            products: newCompetitor.products || [],
+            marketPosition: newCompetitor.market_position || {},
+            competitiveAdvantages: newCompetitor.competitive_advantages || [],
+            vulnerabilities: newCompetitor.vulnerabilities || [],
+            monitoringConfig: newCompetitor.monitoring_config || {},
+            lastAnalyzed: newCompetitor.last_analyzed || undefined,
+            createdAt: newCompetitor.created_at!,
+            updatedAt: newCompetitor.updated_at!,
+          }
+
+          const enrichmentResult = await competitorEnrichmentService.enrichCompetitorProfile(competitorData)
+          
+          if (enrichmentResult.success && enrichmentResult.data) {
+            // Update competitor with enriched data
+            const updateData: any = {}
+            
+            if (enrichmentResult.data.description && !newCompetitor.description) {
+              updateData.description = enrichmentResult.data.description
+            }
+            if (enrichmentResult.data.industry && !newCompetitor.industry) {
+              updateData.industry = enrichmentResult.data.industry
+            }
+            if (enrichmentResult.data.headquarters && !newCompetitor.headquarters) {
+              updateData.headquarters = enrichmentResult.data.headquarters
+            }
+            if (enrichmentResult.data.foundedYear && !newCompetitor.founded_year) {
+              updateData.founded_year = enrichmentResult.data.foundedYear
+            }
+            if (enrichmentResult.data.employeeCount && !newCompetitor.employee_count) {
+              updateData.employee_count = enrichmentResult.data.employeeCount
+            }
+            if (enrichmentResult.data.threatLevel) {
+              updateData.threat_level = enrichmentResult.data.threatLevel
+            }
+            
+            // Merge social media handles
+            if (enrichmentResult.data.socialMediaHandles) {
+              const existingHandles = newCompetitor.social_media_handles || {}
+              updateData.social_media_handles = {
+                ...existingHandles,
+                ...enrichmentResult.data.socialMediaHandles,
+              }
+            }
+            
+            // Add key personnel if none exist
+            if (enrichmentResult.data.keyPersonnel && (newCompetitor.key_personnel || []).length === 0) {
+              updateData.key_personnel = enrichmentResult.data.keyPersonnel
+            }
+            
+            // Add products if none exist
+            if (enrichmentResult.data.products && (newCompetitor.products || []).length === 0) {
+              updateData.products = enrichmentResult.data.products
+            }
+            
+            // Add competitive advantages
+            if (enrichmentResult.data.competitiveAdvantages) {
+              const existingAdvantages = newCompetitor.competitive_advantages || []
+              updateData.competitive_advantages = [...existingAdvantages, ...enrichmentResult.data.competitiveAdvantages]
+            }
+            
+            // Add vulnerabilities
+            if (enrichmentResult.data.vulnerabilities) {
+              const existingVulnerabilities = newCompetitor.vulnerabilities || []
+              updateData.vulnerabilities = [...existingVulnerabilities, ...enrichmentResult.data.vulnerabilities]
+            }
+
+            if (Object.keys(updateData).length > 0) {
+              updateData.last_analyzed = new Date()
+              updateData.updated_at = new Date()
+              
+              await db
+                .update(competitorProfiles)
+                .set(updateData)
+                .where(eq(competitorProfiles.id, newCompetitor.id))
+            }
+          }
+        } catch (error) {
+          console.error('Background enrichment failed:', error)
+          // Don't throw error as this is background processing
+        }
+      })
+    }
+
     // Transform result to match interface
     const transformedCompetitor = {
       id: newCompetitor.id,
