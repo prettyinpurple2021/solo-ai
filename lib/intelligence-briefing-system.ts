@@ -350,8 +350,9 @@ export class IntelligenceBriefingService {
       intelligence,
       alerts
     }
-  }  /
-**
+  }
+
+  /**
    * Generate briefing content using AI
    */
   private async generateBriefingContent(

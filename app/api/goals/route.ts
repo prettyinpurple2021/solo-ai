@@ -5,7 +5,7 @@ import { rateLimitByIp } from '@/lib/rate-limit'
 import { z } from 'zod'
 import { getIdempotencyKeyFromRequest, reserveIdempotencyKey } from '@/lib/idempotency'
 
-export async function GET(_request: NextRequest) {
+export async function GET(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
     
@@ -13,13 +13,61 @@ export async function GET(_request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const client = await createClient()
-    const { rows: goals } = await client.query(
-      'SELECT * FROM goals WHERE user_id = $1 ORDER BY created_at DESC',
-      [user.id]
-    )
+    const { searchParams } = new URL(request.url)
+    const includeCompetitive = searchParams.get('include_competitive') === 'true'
 
-    return NextResponse.json({ goals })
+    const client = await createClient()
+    
+    let query = `
+      SELECT g.*,
+             COUNT(t.id) as total_tasks,
+             COUNT(CASE WHEN t.status = 'completed' THEN 1 END) as completed_tasks
+      FROM goals g
+      LEFT JOIN tasks t ON t.goal_id = g.id
+      WHERE g.user_id = $1
+      GROUP BY g.id
+      ORDER BY g.created_at DESC
+    `
+    
+    if (includeCompetitive) {
+      query = `
+        SELECT g.*,
+               COUNT(t.id) as total_tasks,
+               COUNT(CASE WHEN t.status = 'completed' THEN 1 END) as completed_tasks,
+               COUNT(CASE WHEN t.ai_suggestions->>'source' = 'competitive_intelligence' THEN 1 END) as competitive_tasks,
+               cp.name as primary_competitor_name,
+               cp.threat_level as primary_competitor_threat_level
+        FROM goals g
+        LEFT JOIN tasks t ON t.goal_id = g.id
+        LEFT JOIN competitor_profiles cp ON cp.id = (g.ai_suggestions->'competitive_context'->>'competitorId')::int
+        WHERE g.user_id = $1
+        GROUP BY g.id, cp.name, cp.threat_level
+        ORDER BY g.created_at DESC
+      `
+    }
+    
+    const { rows: goals } = await client.query(query, [user.id])
+
+    // Enhance goals with competitive intelligence context if requested
+    const enhancedGoals = goals.map(goal => {
+      const competitiveContext = goal.ai_suggestions?.competitive_context
+      return {
+        ...goal,
+        competitive_intelligence: includeCompetitive && competitiveContext ? {
+          has_competitive_context: true,
+          competitor_id: competitiveContext.competitorId,
+          competitor_name: goal.primary_competitor_name || competitiveContext.competitorName,
+          threat_level: goal.primary_competitor_threat_level || competitiveContext.threatLevel,
+          competitive_tasks_count: parseInt(goal.competitive_tasks) || 0,
+          benchmark_metrics: competitiveContext.benchmarkMetrics || []
+        } : {
+          has_competitive_context: false,
+          competitive_tasks_count: 0
+        }
+      }
+    })
+
+    return NextResponse.json({ goals: enhancedGoals })
   } catch (error) {
     console.error('Error fetching goals:', error)
     return NextResponse.json(

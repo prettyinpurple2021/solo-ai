@@ -4,6 +4,7 @@ import { createClient } from '@/lib/neon/server'
 import { streamText } from 'ai'
 import { openai } from '@ai-sdk/openai'
 import { rateLimitByIp } from '@/lib/rate-limit'
+import { CompetitiveIntelligenceContextService } from '@/lib/competitive-intelligence-context'
 import { z } from 'zod'
 
 export async function POST(request: NextRequest) {
@@ -29,20 +30,34 @@ export async function POST(request: NextRequest) {
     }
     const { message, agentId } = parsed.data
 
+    // Get competitive intelligence context
+    const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(user.id, agentId)
+    
+    // Get agent-specific prompts with competitive intelligence integration
+    const agentPrompts = CompetitiveIntelligenceContextService.getAgentCompetitivePrompts()
+    const agentId_typed = agentId as keyof typeof agentPrompts
+    
     // Get agent personality based on agentId
     const agentPersonalities = {
-      'roxy': 'You are Roxy, a strategic business advisor. Use the SPADE framework for decision-making.',
-      'blaze': 'You are Blaze, a growth and marketing expert. Use cost-benefit analysis for recommendations.',
-      'glitch': 'You are Glitch, a problem-solving specialist. Use the Five Whys framework.',
-      'lumi': 'You are Lumi, a compliance and legal expert. Focus on GDPR, CCPA, and business compliance.',
-      'nova': 'You are Nova, a productivity and time management coach.',
-      'echo': 'You are Echo, a communication and networking specialist.',
-      'vex': 'You are Vex, a technical and systems optimization expert.',
-      'lexi': 'You are Lexi, a creative and branding strategist.'
+      'roxy': agentPrompts.roxy?.system_prompt || 'You are Roxy, a strategic business advisor. Use the SPADE framework for decision-making.',
+      'blaze': agentPrompts.blaze?.system_prompt || 'You are Blaze, a growth and marketing expert. Use cost-benefit analysis for recommendations.',
+      'glitch': agentPrompts.glitch?.system_prompt || 'You are Glitch, a problem-solving specialist. Use the Five Whys framework.',
+      'lumi': agentPrompts.lumi?.system_prompt || 'You are Lumi, a compliance and legal expert. Focus on GDPR, CCPA, and business compliance.',
+      'nova': agentPrompts.nova?.system_prompt || 'You are Nova, a productivity and time management coach.',
+      'echo': agentPrompts.echo?.system_prompt || 'You are Echo, a communication and networking specialist.',
+      'vex': agentPrompts.vex?.system_prompt || 'You are Vex, a technical and systems optimization expert.',
+      'lexi': agentPrompts.lexi?.system_prompt || 'You are Lexi, a creative and branding strategist.'
     }
 
     const agentPersonality = agentPersonalities[agentId as keyof typeof agentPersonalities] || 
       'You are a helpful AI assistant for SoloBoss AI platform.'
+    
+    // Format competitive intelligence context for the agent
+    const competitiveContextString = CompetitiveIntelligenceContextService.formatContextForAgent(
+      competitiveContext, 
+      agentId || 'general', 
+      message
+    )
 
     // Ensure user exists in database
     const client = await createClient()
@@ -80,13 +95,15 @@ export async function POST(request: NextRequest) {
       [user.id, agentId || 'general', message]
     )
 
-    // Stream AI response
+    // Stream AI response with competitive intelligence context
+    const systemPrompt = `${agentPersonality} You are helping a SoloBoss AI user. Be helpful, professional, and use frameworks when appropriate.${competitiveContextString}`
+    
     const result = await streamText({
       model: openai('gpt-4o'),
       messages: [
         {
           role: 'system',
-          content: `${agentPersonality} You are helping a SoloBoss AI user. Be helpful, professional, and use frameworks when appropriate.`
+          content: systemPrompt
         },
         {
           role: 'user',
@@ -94,7 +111,7 @@ export async function POST(request: NextRequest) {
         }
       ],
       temperature: 0.7,
-      maxTokens: 1000
+      maxTokens: 1500 // Increased for competitive intelligence context
     })
 
     // Update conversation with response

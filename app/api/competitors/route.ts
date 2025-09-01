@@ -3,6 +3,7 @@ import { db } from '@/db'
 import { competitorProfiles } from '@/db/schema'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
+import { CompetitiveIntelligenceGamificationTriggers } from '@/lib/competitive-intelligence-gamification-triggers'
 import { z } from 'zod'
 import { eq, and, or, ilike, desc, asc } from 'drizzle-orm'
 import type { CompetitorProfile, CompetitorFilters, ThreatLevel, MonitoringStatus, FundingStage } from '@/lib/competitor-intelligence-types'
@@ -399,6 +400,9 @@ export async function POST(request: NextRequest) {
         }
       })
     }
+
+    // Trigger gamification for adding a competitor
+    await CompetitiveIntelligenceGamificationTriggers.onCompetitorAdded(user.id, newCompetitor.id)
 
     // Transform result to match interface
     const transformedCompetitor = {
