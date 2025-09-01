@@ -212,6 +212,52 @@ export const competitorAlerts = pgTable('competitor_alerts', {
   createdAtIdx: index('competitor_alerts_created_at_idx').on(table.created_at),
 }));
 
+// Scraping Jobs table
+export const scrapingJobs = pgTable('scraping_jobs', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  competitor_id: integer('competitor_id').notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  job_type: varchar('job_type', { length: 50 }).notNull(),
+  url: varchar('url', { length: 1000 }).notNull(),
+  priority: varchar('priority', { length: 20 }).notNull().default('medium'),
+  frequency_type: varchar('frequency_type', { length: 20 }).notNull().default('interval'),
+  frequency_value: varchar('frequency_value', { length: 100 }).notNull(),
+  frequency_timezone: varchar('frequency_timezone', { length: 50 }),
+  next_run_at: timestamp('next_run_at').notNull(),
+  last_run_at: timestamp('last_run_at'),
+  retry_count: integer('retry_count').notNull().default(0),
+  max_retries: integer('max_retries').notNull().default(3),
+  status: varchar('status', { length: 20 }).notNull().default('pending'),
+  config: jsonb('config').notNull().default('{}'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  competitorIdIdx: index('scraping_jobs_competitor_id_idx').on(table.competitor_id),
+  userIdIdx: index('scraping_jobs_user_id_idx').on(table.user_id),
+  statusIdx: index('scraping_jobs_status_idx').on(table.status),
+  priorityIdx: index('scraping_jobs_priority_idx').on(table.priority),
+  nextRunAtIdx: index('scraping_jobs_next_run_at_idx').on(table.next_run_at),
+  jobTypeIdx: index('scraping_jobs_job_type_idx').on(table.job_type),
+}));
+
+// Scraping Job Results table
+export const scrapingJobResults = pgTable('scraping_job_results', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  job_id: varchar('job_id', { length: 255 }).notNull().references(() => scrapingJobs.id, { onDelete: 'cascade' }),
+  success: boolean('success').notNull(),
+  data: jsonb('data'),
+  error: text('error'),
+  execution_time: integer('execution_time').notNull(),
+  changes_detected: boolean('changes_detected').notNull().default(false),
+  retry_count: integer('retry_count').notNull().default(0),
+  completed_at: timestamp('completed_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow(),
+}, (table) => ({
+  jobIdIdx: index('scraping_job_results_job_id_idx').on(table.job_id),
+  successIdx: index('scraping_job_results_success_idx').on(table.success),
+  completedAtIdx: index('scraping_job_results_completed_at_idx').on(table.completed_at),
+}));
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   briefcases: many(briefcases),
@@ -224,6 +270,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   competitorProfiles: many(competitorProfiles),
   intelligenceData: many(intelligenceData),
   competitorAlerts: many(competitorAlerts),
+  scrapingJobs: many(scrapingJobs),
 }));
 
 export const briefcasesRelations = relations(briefcases, ({ one, many }) => ({
@@ -308,6 +355,7 @@ export const competitorProfilesRelations = relations(competitorProfiles, ({ one,
   }),
   intelligenceData: many(intelligenceData),
   alerts: many(competitorAlerts),
+  scrapingJobs: many(scrapingJobs),
 }));
 
 export const intelligenceDataRelations = relations(intelligenceData, ({ one, many }) => ({
@@ -334,5 +382,25 @@ export const competitorAlertsRelations = relations(competitorAlerts, ({ one }) =
   intelligence: one(intelligenceData, {
     fields: [competitorAlerts.intelligence_id],
     references: [intelligenceData.id],
+  }),
+}));
+
+// Scraping Jobs Relations
+export const scrapingJobsRelations = relations(scrapingJobs, ({ one, many }) => ({
+  competitor: one(competitorProfiles, {
+    fields: [scrapingJobs.competitor_id],
+    references: [competitorProfiles.id],
+  }),
+  user: one(users, {
+    fields: [scrapingJobs.user_id],
+    references: [users.id],
+  }),
+  results: many(scrapingJobResults),
+}));
+
+export const scrapingJobResultsRelations = relations(scrapingJobResults, ({ one }) => ({
+  job: one(scrapingJobs, {
+    fields: [scrapingJobResults.job_id],
+    references: [scrapingJobs.id],
   }),
 }));
