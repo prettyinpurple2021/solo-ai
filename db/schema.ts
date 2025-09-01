@@ -258,6 +258,96 @@ export const scrapingJobResults = pgTable('scraping_job_results', {
   completedAtIdx: index('scraping_job_results_completed_at_idx').on(table.completed_at),
 }));
 
+// Competitive Opportunities table
+export const competitiveOpportunities = pgTable('competitive_opportunities', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  user_id: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  competitor_id: uuid('competitor_id').notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
+  intelligence_id: uuid('intelligence_id').references(() => intelligenceData.id, { onDelete: 'set null' }),
+  opportunity_type: varchar('opportunity_type', { length: 50 }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  confidence: decimal('confidence', { precision: 3, scale: 2 }).notNull(),
+  impact: varchar('impact', { length: 20 }).notNull(),
+  effort: varchar('effort', { length: 20 }).notNull(),
+  timing: varchar('timing', { length: 20 }).notNull(),
+  priority_score: decimal('priority_score', { precision: 5, scale: 2 }).notNull(),
+  evidence: jsonb('evidence').default('[]'),
+  recommendations: jsonb('recommendations').default('[]'),
+  status: varchar('status', { length: 50 }).default('identified'),
+  assigned_to: uuid('assigned_to').references(() => users.id, { onDelete: 'set null' }),
+  implementation_notes: text('implementation_notes'),
+  roi_estimate: decimal('roi_estimate', { precision: 10, scale: 2 }),
+  actual_roi: decimal('actual_roi', { precision: 10, scale: 2 }),
+  success_metrics: jsonb('success_metrics').default('{}'),
+  tags: jsonb('tags').default('[]'),
+  is_archived: boolean('is_archived').default(false),
+  detected_at: timestamp('detected_at').defaultNow(),
+  started_at: timestamp('started_at'),
+  completed_at: timestamp('completed_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  userIdIdx: index('competitive_opportunities_user_id_idx').on(table.user_id),
+  competitorIdIdx: index('competitive_opportunities_competitor_id_idx').on(table.competitor_id),
+  opportunityTypeIdx: index('competitive_opportunities_type_idx').on(table.opportunity_type),
+  impactIdx: index('competitive_opportunities_impact_idx').on(table.impact),
+  statusIdx: index('competitive_opportunities_status_idx').on(table.status),
+  priorityScoreIdx: index('competitive_opportunities_priority_score_idx').on(table.priority_score),
+  detectedAtIdx: index('competitive_opportunities_detected_at_idx').on(table.detected_at),
+  isArchivedIdx: index('competitive_opportunities_is_archived_idx').on(table.is_archived),
+}));
+
+// Opportunity Actions table
+export const opportunityActions = pgTable('opportunity_actions', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  opportunity_id: varchar('opportunity_id', { length: 255 }).notNull().references(() => competitiveOpportunities.id, { onDelete: 'cascade' }),
+  user_id: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  action_type: varchar('action_type', { length: 50 }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  priority: varchar('priority', { length: 20 }).default('medium'),
+  estimated_effort_hours: integer('estimated_effort_hours'),
+  actual_effort_hours: integer('actual_effort_hours'),
+  estimated_cost: decimal('estimated_cost', { precision: 10, scale: 2 }),
+  actual_cost: decimal('actual_cost', { precision: 10, scale: 2 }),
+  expected_outcome: text('expected_outcome'),
+  actual_outcome: text('actual_outcome'),
+  status: varchar('status', { length: 50 }).default('pending'),
+  due_date: timestamp('due_date'),
+  completed_at: timestamp('completed_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  opportunityIdIdx: index('opportunity_actions_opportunity_id_idx').on(table.opportunity_id),
+  userIdIdx: index('opportunity_actions_user_id_idx').on(table.user_id),
+  statusIdx: index('opportunity_actions_status_idx').on(table.status),
+  priorityIdx: index('opportunity_actions_priority_idx').on(table.priority),
+  dueDateIdx: index('opportunity_actions_due_date_idx').on(table.due_date),
+}));
+
+// Opportunity Metrics table
+export const opportunityMetrics = pgTable('opportunity_metrics', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  opportunity_id: varchar('opportunity_id', { length: 255 }).notNull().references(() => competitiveOpportunities.id, { onDelete: 'cascade' }),
+  user_id: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  metric_name: varchar('metric_name', { length: 100 }).notNull(),
+  metric_type: varchar('metric_type', { length: 50 }).notNull(),
+  baseline_value: decimal('baseline_value', { precision: 15, scale: 4 }),
+  target_value: decimal('target_value', { precision: 15, scale: 4 }),
+  current_value: decimal('current_value', { precision: 15, scale: 4 }),
+  unit: varchar('unit', { length: 50 }),
+  measurement_date: timestamp('measurement_date').defaultNow(),
+  notes: text('notes'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  opportunityIdIdx: index('opportunity_metrics_opportunity_id_idx').on(table.opportunity_id),
+  userIdIdx: index('opportunity_metrics_user_id_idx').on(table.user_id),
+  metricNameIdx: index('opportunity_metrics_metric_name_idx').on(table.metric_name),
+  measurementDateIdx: index('opportunity_metrics_measurement_date_idx').on(table.measurement_date),
+}));
+
 // Relations
 export const usersRelations = relations(users, ({ many }) => ({
   briefcases: many(briefcases),
@@ -271,6 +361,9 @@ export const usersRelations = relations(users, ({ many }) => ({
   intelligenceData: many(intelligenceData),
   competitorAlerts: many(competitorAlerts),
   scrapingJobs: many(scrapingJobs),
+  competitiveOpportunities: many(competitiveOpportunities),
+  opportunityActions: many(opportunityActions),
+  opportunityMetrics: many(opportunityMetrics),
 }));
 
 export const briefcasesRelations = relations(briefcases, ({ one, many }) => ({
@@ -356,6 +449,7 @@ export const competitorProfilesRelations = relations(competitorProfiles, ({ one,
   intelligenceData: many(intelligenceData),
   alerts: many(competitorAlerts),
   scrapingJobs: many(scrapingJobs),
+  opportunities: many(competitiveOpportunities),
 }));
 
 export const intelligenceDataRelations = relations(intelligenceData, ({ one, many }) => ({
@@ -402,5 +496,49 @@ export const scrapingJobResultsRelations = relations(scrapingJobResults, ({ one 
   job: one(scrapingJobs, {
     fields: [scrapingJobResults.job_id],
     references: [scrapingJobs.id],
+  }),
+}));
+// Co
+mpetitive Opportunities Relations
+export const competitiveOpportunitiesRelations = relations(competitiveOpportunities, ({ one, many }) => ({
+  user: one(users, {
+    fields: [competitiveOpportunities.user_id],
+    references: [users.id],
+  }),
+  competitor: one(competitorProfiles, {
+    fields: [competitiveOpportunities.competitor_id],
+    references: [competitorProfiles.id],
+  }),
+  intelligence: one(intelligenceData, {
+    fields: [competitiveOpportunities.intelligence_id],
+    references: [intelligenceData.id],
+  }),
+  assignedUser: one(users, {
+    fields: [competitiveOpportunities.assigned_to],
+    references: [users.id],
+  }),
+  actions: many(opportunityActions),
+  metrics: many(opportunityMetrics),
+}));
+
+export const opportunityActionsRelations = relations(opportunityActions, ({ one }) => ({
+  opportunity: one(competitiveOpportunities, {
+    fields: [opportunityActions.opportunity_id],
+    references: [competitiveOpportunities.id],
+  }),
+  user: one(users, {
+    fields: [opportunityActions.user_id],
+    references: [users.id],
+  }),
+}));
+
+export const opportunityMetricsRelations = relations(opportunityMetrics, ({ one }) => ({
+  opportunity: one(competitiveOpportunities, {
+    fields: [opportunityMetrics.opportunity_id],
+    references: [competitiveOpportunities.id],
+  }),
+  user: one(users, {
+    fields: [opportunityMetrics.user_id],
+    references: [users.id],
   }),
 }));
