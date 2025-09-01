@@ -498,8 +498,8 @@ export const scrapingJobResultsRelations = relations(scrapingJobResults, ({ one 
     references: [scrapingJobs.id],
   }),
 }));
-// Co
-mpetitive Opportunities Relations
+
+// Competitive Opportunities Relations
 export const competitiveOpportunitiesRelations = relations(competitiveOpportunities, ({ one, many }) => ({
   user: one(users, {
     fields: [competitiveOpportunities.user_id],

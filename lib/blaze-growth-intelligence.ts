@@ -116,8 +116,8 @@ export interface PricingStrategyAnalysis {
   marketPositioning: string
   analyzedAt: Date
 }
-ex
-port interface GrowthPatternAnalysis {
+
+export interface GrowthPatternAnalysis {
   competitorId: number
   growthMetrics: GrowthMetric[]
   expansionPatterns: ExpansionPattern[]

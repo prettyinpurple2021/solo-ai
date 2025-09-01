@@ -4,12 +4,9 @@ import { competitorAlerts, competitorProfiles, intelligenceData } from '@/db/sch
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import { z } from 'zod'
-import { eq, and, or, desc, asc, gte, lte, inArray } from 'drizzle-orm'
+import { eq, and, desc, asc, gte, lte, inArray } from 'drizzle-orm'
 import type { 
-  CompetitorAlert,
-  AlertFilters,
   AlertSeverity,
-  AlertType,
   ActionItem,
   Recommendation
 } from '@/lib/competitor-intelligence-types'
