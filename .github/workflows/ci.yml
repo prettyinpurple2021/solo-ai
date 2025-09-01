@@ -79,8 +79,7 @@ jobs:
           NEXT_PUBLIC_STACK_PROJECT_ID: test-project-id
           NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY: test-publishable-key
           STACK_SECRET_SERVER_KEY: test-secret-key
-          OPENAI_API_KEY: sk-test-key
-          JWT_SECRET: test-jwt-secret-that-is-at-least-32-characters-long
+          JWT_SECRET: fake-jwt-secret-for-ci-testing-32-chars
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
