@@ -7,7 +7,7 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "NODE_OPTIONS='--max-old-space-size=4096' tsc --noEmit",
     "start": "NODE_OPTIONS='-r newrelic' next start",
     "e2e": "playwright test",
     "setup-db": "node scripts/setup-database.js",
