@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { competitorAlerts, competitorProfiles, intelligenceData } from '@/db/schema'
 import { authenticateRequest } from '@/lib/auth-server'
+import { CompetitiveIntelligenceGamificationTriggers } from '@/lib/competitive-intelligence-gamification-triggers'
 import { z } from 'zod'
 import { eq, and } from 'drizzle-orm'
 import type { 
@@ -208,6 +209,11 @@ export async function PUT(
       .set(updateData)
       .where(eq(competitorAlerts.id, alertId))
       .returning()
+
+    // Trigger gamification if alert was processed (marked as read)
+    if (data.isRead === true && !existingAlert[0].is_read) {
+      await CompetitiveIntelligenceGamificationTriggers.onAlertProcessed(user.id, alertId)
+    }
 
     // Get competitor and intelligence info
     const competitor = await db

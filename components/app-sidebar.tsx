@@ -13,6 +13,8 @@ import {
   Shield,
   CheckSquare,
   FileText,
+  Eye,
+  Focus,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -58,6 +60,11 @@ const data = {
       icon: Bot,
     },
     {
+      title: "Competitor Intel",
+      url: "/dashboard/competitors",
+      icon: Eye,
+    },
+    {
       title: "Briefcase",
       url: "/dashboard/briefcase",
       icon: Briefcase,
@@ -75,7 +82,7 @@ const data = {
     {
       title: "Focus Mode",
       url: "/dashboard/focus",
-      icon: Target,
+      icon: Focus,
     },
     {
       title: "Burnout Shield",
