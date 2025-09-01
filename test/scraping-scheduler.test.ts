@@ -14,12 +14,15 @@ describe('ScrapingScheduler', () => {
   let scheduler: ScrapingScheduler
 
   beforeEach(() => {
-    scheduler = new ScrapingScheduler()
+    jest.useFakeTimers()
+    scheduler = new ScrapingScheduler(false) // Don't auto-start during tests
     jest.clearAllMocks()
   })
 
   afterEach(() => {
     scheduler.destroy()
+    jest.clearAllTimers()
+    jest.useRealTimers()
   })
 
   describe('scheduleJob', () => {

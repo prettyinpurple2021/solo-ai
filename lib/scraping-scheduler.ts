@@ -100,8 +100,10 @@ export class ScrapingScheduler {
   private readonly MAX_CONCURRENT_JOBS = 5
   private readonly PROCESSING_INTERVAL = 30000 // 30 seconds
 
-  constructor() {
-    this.startProcessing()
+  constructor(autoStart: boolean = true) {
+    if (autoStart && process.env.NODE_ENV !== 'test') {
+      this.startProcessing()
+    }
   }
 
   /**
@@ -677,6 +679,13 @@ export class ScrapingScheduler {
   }
 
   /**
+   * Manually start processing (useful for tests)
+   */
+  start(): void {
+    this.startProcessing()
+  }
+
+  /**
    * Cleanup method to stop processing and clear resources
    */
   destroy(): void {
@@ -688,7 +697,7 @@ export class ScrapingScheduler {
 }
 
 // Export singleton instance
-export const scrapingScheduler = new ScrapingScheduler()
+export const scrapingScheduler = new ScrapingScheduler(true)
 
 // Export types for external use
 export type { ScrapingJob, ScrapingJobConfig, ScrapingFrequency, QueueMetrics, ScrapingJobResult, ValidationResult }
