@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for lib/scraping-scheduler.ts</title>
+    <title>Code coverage report for db/schema.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">lib</a> scraping-scheduler.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">db</a> schema.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45.16% </span>
+                <span class="strong">29.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>112/248</span>
+                <span class='fraction'>36/121</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">30.76% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>40/130</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>26/40</span>
+                <span class='fraction'>0/53</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45.81% </span>
+                <span class="strong">48.61% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>104/227</span>
+                <span class='fraction'>35/72</span>
             </div>
         
             
@@ -606,166 +606,10 @@
 <a name='L541'></a><a href='#L541'>541</a>
 <a name='L542'></a><a href='#L542'>542</a>
 <a name='L543'></a><a href='#L543'>543</a>
-<a name='L544'></a><a href='#L544'>544</a>
-<a name='L545'></a><a href='#L545'>545</a>
-<a name='L546'></a><a href='#L546'>546</a>
-<a name='L547'></a><a href='#L547'>547</a>
-<a name='L548'></a><a href='#L548'>548</a>
-<a name='L549'></a><a href='#L549'>549</a>
-<a name='L550'></a><a href='#L550'>550</a>
-<a name='L551'></a><a href='#L551'>551</a>
-<a name='L552'></a><a href='#L552'>552</a>
-<a name='L553'></a><a href='#L553'>553</a>
-<a name='L554'></a><a href='#L554'>554</a>
-<a name='L555'></a><a href='#L555'>555</a>
-<a name='L556'></a><a href='#L556'>556</a>
-<a name='L557'></a><a href='#L557'>557</a>
-<a name='L558'></a><a href='#L558'>558</a>
-<a name='L559'></a><a href='#L559'>559</a>
-<a name='L560'></a><a href='#L560'>560</a>
-<a name='L561'></a><a href='#L561'>561</a>
-<a name='L562'></a><a href='#L562'>562</a>
-<a name='L563'></a><a href='#L563'>563</a>
-<a name='L564'></a><a href='#L564'>564</a>
-<a name='L565'></a><a href='#L565'>565</a>
-<a name='L566'></a><a href='#L566'>566</a>
-<a name='L567'></a><a href='#L567'>567</a>
-<a name='L568'></a><a href='#L568'>568</a>
-<a name='L569'></a><a href='#L569'>569</a>
-<a name='L570'></a><a href='#L570'>570</a>
-<a name='L571'></a><a href='#L571'>571</a>
-<a name='L572'></a><a href='#L572'>572</a>
-<a name='L573'></a><a href='#L573'>573</a>
-<a name='L574'></a><a href='#L574'>574</a>
-<a name='L575'></a><a href='#L575'>575</a>
-<a name='L576'></a><a href='#L576'>576</a>
-<a name='L577'></a><a href='#L577'>577</a>
-<a name='L578'></a><a href='#L578'>578</a>
-<a name='L579'></a><a href='#L579'>579</a>
-<a name='L580'></a><a href='#L580'>580</a>
-<a name='L581'></a><a href='#L581'>581</a>
-<a name='L582'></a><a href='#L582'>582</a>
-<a name='L583'></a><a href='#L583'>583</a>
-<a name='L584'></a><a href='#L584'>584</a>
-<a name='L585'></a><a href='#L585'>585</a>
-<a name='L586'></a><a href='#L586'>586</a>
-<a name='L587'></a><a href='#L587'>587</a>
-<a name='L588'></a><a href='#L588'>588</a>
-<a name='L589'></a><a href='#L589'>589</a>
-<a name='L590'></a><a href='#L590'>590</a>
-<a name='L591'></a><a href='#L591'>591</a>
-<a name='L592'></a><a href='#L592'>592</a>
-<a name='L593'></a><a href='#L593'>593</a>
-<a name='L594'></a><a href='#L594'>594</a>
-<a name='L595'></a><a href='#L595'>595</a>
-<a name='L596'></a><a href='#L596'>596</a>
-<a name='L597'></a><a href='#L597'>597</a>
-<a name='L598'></a><a href='#L598'>598</a>
-<a name='L599'></a><a href='#L599'>599</a>
-<a name='L600'></a><a href='#L600'>600</a>
-<a name='L601'></a><a href='#L601'>601</a>
-<a name='L602'></a><a href='#L602'>602</a>
-<a name='L603'></a><a href='#L603'>603</a>
-<a name='L604'></a><a href='#L604'>604</a>
-<a name='L605'></a><a href='#L605'>605</a>
-<a name='L606'></a><a href='#L606'>606</a>
-<a name='L607'></a><a href='#L607'>607</a>
-<a name='L608'></a><a href='#L608'>608</a>
-<a name='L609'></a><a href='#L609'>609</a>
-<a name='L610'></a><a href='#L610'>610</a>
-<a name='L611'></a><a href='#L611'>611</a>
-<a name='L612'></a><a href='#L612'>612</a>
-<a name='L613'></a><a href='#L613'>613</a>
-<a name='L614'></a><a href='#L614'>614</a>
-<a name='L615'></a><a href='#L615'>615</a>
-<a name='L616'></a><a href='#L616'>616</a>
-<a name='L617'></a><a href='#L617'>617</a>
-<a name='L618'></a><a href='#L618'>618</a>
-<a name='L619'></a><a href='#L619'>619</a>
-<a name='L620'></a><a href='#L620'>620</a>
-<a name='L621'></a><a href='#L621'>621</a>
-<a name='L622'></a><a href='#L622'>622</a>
-<a name='L623'></a><a href='#L623'>623</a>
-<a name='L624'></a><a href='#L624'>624</a>
-<a name='L625'></a><a href='#L625'>625</a>
-<a name='L626'></a><a href='#L626'>626</a>
-<a name='L627'></a><a href='#L627'>627</a>
-<a name='L628'></a><a href='#L628'>628</a>
-<a name='L629'></a><a href='#L629'>629</a>
-<a name='L630'></a><a href='#L630'>630</a>
-<a name='L631'></a><a href='#L631'>631</a>
-<a name='L632'></a><a href='#L632'>632</a>
-<a name='L633'></a><a href='#L633'>633</a>
-<a name='L634'></a><a href='#L634'>634</a>
-<a name='L635'></a><a href='#L635'>635</a>
-<a name='L636'></a><a href='#L636'>636</a>
-<a name='L637'></a><a href='#L637'>637</a>
-<a name='L638'></a><a href='#L638'>638</a>
-<a name='L639'></a><a href='#L639'>639</a>
-<a name='L640'></a><a href='#L640'>640</a>
-<a name='L641'></a><a href='#L641'>641</a>
-<a name='L642'></a><a href='#L642'>642</a>
-<a name='L643'></a><a href='#L643'>643</a>
-<a name='L644'></a><a href='#L644'>644</a>
-<a name='L645'></a><a href='#L645'>645</a>
-<a name='L646'></a><a href='#L646'>646</a>
-<a name='L647'></a><a href='#L647'>647</a>
-<a name='L648'></a><a href='#L648'>648</a>
-<a name='L649'></a><a href='#L649'>649</a>
-<a name='L650'></a><a href='#L650'>650</a>
-<a name='L651'></a><a href='#L651'>651</a>
-<a name='L652'></a><a href='#L652'>652</a>
-<a name='L653'></a><a href='#L653'>653</a>
-<a name='L654'></a><a href='#L654'>654</a>
-<a name='L655'></a><a href='#L655'>655</a>
-<a name='L656'></a><a href='#L656'>656</a>
-<a name='L657'></a><a href='#L657'>657</a>
-<a name='L658'></a><a href='#L658'>658</a>
-<a name='L659'></a><a href='#L659'>659</a>
-<a name='L660'></a><a href='#L660'>660</a>
-<a name='L661'></a><a href='#L661'>661</a>
-<a name='L662'></a><a href='#L662'>662</a>
-<a name='L663'></a><a href='#L663'>663</a>
-<a name='L664'></a><a href='#L664'>664</a>
-<a name='L665'></a><a href='#L665'>665</a>
-<a name='L666'></a><a href='#L666'>666</a>
-<a name='L667'></a><a href='#L667'>667</a>
-<a name='L668'></a><a href='#L668'>668</a>
-<a name='L669'></a><a href='#L669'>669</a>
-<a name='L670'></a><a href='#L670'>670</a>
-<a name='L671'></a><a href='#L671'>671</a>
-<a name='L672'></a><a href='#L672'>672</a>
-<a name='L673'></a><a href='#L673'>673</a>
-<a name='L674'></a><a href='#L674'>674</a>
-<a name='L675'></a><a href='#L675'>675</a>
-<a name='L676'></a><a href='#L676'>676</a>
-<a name='L677'></a><a href='#L677'>677</a>
-<a name='L678'></a><a href='#L678'>678</a>
-<a name='L679'></a><a href='#L679'>679</a>
-<a name='L680'></a><a href='#L680'>680</a>
-<a name='L681'></a><a href='#L681'>681</a>
-<a name='L682'></a><a href='#L682'>682</a>
-<a name='L683'></a><a href='#L683'>683</a>
-<a name='L684'></a><a href='#L684'>684</a>
-<a name='L685'></a><a href='#L685'>685</a>
-<a name='L686'></a><a href='#L686'>686</a>
-<a name='L687'></a><a href='#L687'>687</a>
-<a name='L688'></a><a href='#L688'>688</a>
-<a name='L689'></a><a href='#L689'>689</a>
-<a name='L690'></a><a href='#L690'>690</a>
-<a name='L691'></a><a href='#L691'>691</a>
-<a name='L692'></a><a href='#L692'>692</a>
-<a name='L693'></a><a href='#L693'>693</a>
-<a name='L694'></a><a href='#L694'>694</a>
-<a name='L695'></a><a href='#L695'>695</a>
-<a name='L696'></a><a href='#L696'>696</a>
-<a name='L697'></a><a href='#L697'>697</a>
-<a name='L698'></a><a href='#L698'>698</a>
-<a name='L699'></a><a href='#L699'>699</a>
-<a name='L700'></a><a href='#L700'>700</a>
-<a name='L701'></a><a href='#L701'>701</a>
-<a name='L702'></a><a href='#L702'>702</a>
-<a name='L703'></a><a href='#L703'>703</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L544'></a><a href='#L544'>544</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -782,6 +626,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -793,26 +653,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -834,41 +680,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -880,175 +691,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1062,386 +731,217 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-yes">69x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-yes">32x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1453,13 +953,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
-<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1467,709 +960,739 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from 'zod'
-import { webScrapingService, type ScrapingResult } from './web-scraping-service'
-import type { CompetitorProfile } from './competitor-intelligence-types'
-&nbsp;
-// Types for scheduling system
-export interface ScrapingJob {
-  id: string
-  competitorId: number
-  userId: string
-  jobType: 'website' | 'pricing' | 'products' | 'jobs' | 'social'
-  url: string
-  priority: 'low' | 'medium' | 'high' | 'critical'
-  frequency: ScrapingFrequency
-  nextRunAt: Date
-  lastRunAt?: Date
-  retryCount: number
-  maxRetries: number
-  status: 'pending' | 'running' | 'completed' | 'failed' | 'paused'
-  config: ScrapingJobConfig
-  createdAt: Date
-  updatedAt: Date
-}
-&nbsp;
-export interface ScrapingJobConfig {
-  enableChangeDetection: boolean
-  changeThreshold: number
-  notifyOnChange: boolean
-  storeHistory: boolean
-  customSelectors?: Record&lt;string, string&gt;
-  excludePatterns?: string[]
-}
-&nbsp;
-export interface ScrapingFrequency {
-  type: 'interval' | 'cron' | 'manual'
-  value: string | number // minutes for interval, cron expression for cron
-  timezone?: string
-}
-&nbsp;
-export interface QueueMetrics {
-  totalJobs: number
-  pendingJobs: number
-  runningJobs: number
-  completedJobs: number
-  failedJobs: number
-  averageExecutionTime: number
-  successRate: number
-}
-&nbsp;
-export interface ScrapingJobResult {
-  jobId: string
-  success: boolean
-  data?: any
-  error?: string
-  executionTime: number
-  changesDetected: boolean
-  retryCount: number
-  completedAt: Date
-}
-&nbsp;
-export interface ValidationResult {
-  isValid: boolean
-  errors: string[]
-  warnings: string[]
-  confidence: number
-}
-&nbsp;
-// Default job configuration
-const DEFAULT_JOB_CONFIG: ScrapingJobConfig = {
-  enableChangeDetection: true,
-  changeThreshold: 0.1, // 10% change threshold
-  notifyOnChange: true,
-  storeHistory: true,
-}
-&nbsp;
-/**
- * Scraping Scheduler and Queue System
- * 
- * This service manages the scheduling and execution of web scraping jobs with:
- * - Intelligent scheduling based on competitor importance and change frequency
- * - Background job queue with priority handling
- * - Retry mechanisms with exponential backoff
- * - Data quality validation and monitoring
- * - Performance optimization and resource management
- */
-export class ScrapingScheduler {
-  private jobQueue: Map&lt;string, ScrapingJob&gt; = new Map()
-  private runningJobs: Set&lt;string&gt; = new Set()
-  private jobHistory: Map&lt;string, ScrapingJobResult[]&gt; = new Map()
-  private metrics: QueueMetrics = {
-    totalJobs: 0,
-    pendingJobs: 0,
-    runningJobs: 0,
-    completedJobs: 0,
-    failedJobs: 0,
-    averageExecutionTime: 0,
-    successRate: 0,
-  }
-  private isRunning = false
-  private processingInterval?: NodeJS.Timeout
-  private readonly MAX_CONCURRENT_JOBS = 5
-  private readonly PROCESSING_INTERVAL = 30000 // 30 seconds
-&nbsp;
-  constructor(autoStart: boolean = <span class="branch-0 cbranch-no" title="branch not covered" >true)</span> {
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (autoStart &amp;&amp; process.env.NODE_ENV !== 'test') {
-<span class="cstat-no" title="statement not covered" >      this.startProcessing()</span>
-    }
-  }
-&nbsp;
-  /**
-   * Schedule a new scraping job
-   */
-  async scheduleJob(
-    competitorId: number,
-    userId: string,
-    jobType: ScrapingJob['jobType'],
-    url: string,
-    frequency: ScrapingFrequency,
-    config: Partial&lt;ScrapingJobConfig&gt; = {}
-  ): Promise&lt;string&gt; {
-    const jobId = this.generateJobId(competitorId, jobType, url)
-    
-    const job: ScrapingJob = {
-      id: jobId,
-      competitorId,
-      userId,
-      jobType,
-      url,
-      priority: this.calculateJobPriority(competitorId, jobType),
-      frequency,
-      nextRunAt: this.calculateNextRun(frequency),
-      retryCount: 0,
-      maxRetries: 3,
-      status: 'pending',
-      config: { ...DEFAULT_JOB_CONFIG, ...config },
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }
-&nbsp;
-    this.jobQueue.set(jobId, job)
-    this.updateMetrics()
-    
-    console.log(`Scheduled scraping job: ${jobId} for ${url}`)
-    return jobId
-  }
-&nbsp;
-  /**
-   * Schedule jobs for a competitor based on their profile and importance
-   */
-  async scheduleCompetitorJobs(
-    competitor: CompetitorProfile,
-    userId: string
-  ): Promise&lt;string[]&gt; {
-    const jobIds: string[] = []
-    
-    // Determine scraping frequency based on threat level
-    const frequency = this.getFrequencyByThreatLevel(competitor.threatLevel)
-    
-    // Schedule website monitoring
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (competitor.domain) {
-      const websiteJobId = await this.scheduleJob(
-        competitor.id,
-        userId,
-        'website',
-        `https://${competitor.domain}`,
-        frequency
-      )
-      jobIds.push(websiteJobId)
-&nbsp;
-      // Schedule pricing page monitoring if likely to have pricing
-      const pricingUrl = this.guessPricingUrl(competitor.domain)
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (pricingUrl) {
-        const pricingJobId = await this.scheduleJob(
-          competitor.id,
-          userId,
-          'pricing',
-          pricingUrl,
-          frequency
-        )
-        jobIds.push(pricingJobId)
-      }
-&nbsp;
-      // Schedule product page monitoring
-      const productUrl = this.guessProductUrl(competitor.domain)
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (productUrl) {
-        const productJobId = await this.scheduleJob(
-          competitor.id,
-          userId,
-          'products',
-          productUrl,
-          frequency
-        )
-        jobIds.push(productJobId)
-      }
-&nbsp;
-      // Schedule job posting monitoring
-      const jobsUrl = this.guessJobsUrl(competitor.domain)
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (jobsUrl) {
-        const jobsJobId = await this.scheduleJob(
-          competitor.id,
-          userId,
-          'jobs',
-          jobsUrl,
-          { ...frequency, type: 'interval', value: frequency.value as number * 2 } // Less frequent
-        )
-        jobIds.push(jobsJobId)
-      }
-    }
-&nbsp;
-    return jobIds
-  }
-&nbsp;
-  /**
-   * Execute a specific job immediately
-   */
-<span class="fstat-no" title="function not covered" >  async e</span>xecuteJob(jobId: string): Promise&lt;ScrapingJobResult&gt; {
-    const job = <span class="cstat-no" title="statement not covered" >this.jobQueue.get(jobId)</span>
-<span class="cstat-no" title="statement not covered" >    if (!job) {</span>
-<span class="cstat-no" title="statement not covered" >      throw new Error(`Job not found: ${jobId}`)</span>
-    }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    if (this.runningJobs.has(jobId)) {</span>
-<span class="cstat-no" title="statement not covered" >      throw new Error(`Job already running: ${jobId}`)</span>
-    }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    return await this.processJob(job)</span>
-  }
-&nbsp;
-  /**
-   * Pause a scheduled job
-   */
-  pauseJob(jobId: string): boolean {
-    const job = this.jobQueue.get(jobId)
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!job) <span class="cstat-no" title="statement not covered" >return false</span>
-&nbsp;
-    job.status = 'paused'
-    job.updatedAt = new Date()
-    this.updateMetrics()
-    return true
-  }
-&nbsp;
-  /**
-   * Resume a paused job
-   */
-  resumeJob(jobId: string): boolean {
-    const job = this.jobQueue.get(jobId)
-    if (!job || job.status !== 'paused') return false
-&nbsp;
-    job.status = 'pending'
-    job.nextRunAt = this.calculateNextRun(job.frequency)
-    job.updatedAt = new Date()
-    this.updateMetrics()
-    return true
-  }
-&nbsp;
-  /**
-   * Cancel and remove a job
-   */
-  cancelJob(jobId: string): boolean {
-    const job = this.jobQueue.get(jobId)
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!job) <span class="cstat-no" title="statement not covered" >return false</span>
-&nbsp;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (this.runningJobs.has(jobId)) {
-      // Mark for cancellation, will be removed when execution completes
-<span class="cstat-no" title="statement not covered" >      job.status = 'paused'</span>
-    } else {
-      this.jobQueue.delete(jobId)
-    }
-    
-    this.updateMetrics()
-    return true
-  }
-&nbsp;
-  /**
-   * Get job status and details
-   */
-  getJob(jobId: string): ScrapingJob | null {
-    return this.jobQueue.get(jobId) || null
-  }
-&nbsp;
-  /**
-   * Get all jobs for a competitor
-   */
-  getCompetitorJobs(competitorId: number): ScrapingJob[] {
-    return Array.from(this.jobQueue.values()).filter(job =&gt; job.competitorId === competitorId)
-  }
-&nbsp;
-  /**
-   * Get job execution history
-   */
-  getJobHistory(jobId: string): ScrapingJobResult[] {
-    return this.jobHistory.get(jobId) || []
-  }
-&nbsp;
-  /**
-   * Get queue metrics and performance statistics
-   */
-  getMetrics(): QueueMetrics {
-    return { ...this.metrics }
-  }
-&nbsp;
-  /**
-   * Validate scraping results for quality and accuracy
-   */
-  validateScrapingResult(result: ScrapingResult, job: ScrapingJob): ValidationResult {
-    const validation: ValidationResult = {
-      isValid: true,
-      errors: [],
-      warnings: [],
-      confidence: 1.0,
-    }
-&nbsp;
-    if (!result.success) {
-      validation.isValid = false
-      validation.errors.push(result.error || <span class="branch-1 cbranch-no" title="branch not covered" >'Scraping failed')</span>
-      validation.confidence = 0
-      return validation
-    }
-&nbsp;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!result.data) {
-<span class="cstat-no" title="statement not covered" >      validation.isValid = false</span>
-<span class="cstat-no" title="statement not covered" >      validation.errors.push('No data returned from scraping')</span>
-<span class="cstat-no" title="statement not covered" >      validation.confidence = 0</span>
-<span class="cstat-no" title="statement not covered" >      return validation</span>
-    }
-&nbsp;
-    // Validate based on job type
-    switch (job.jobType) {
-      case 'website':
-        validation.confidence *= this.validateWebsiteData(result.data)
-        break
-<span class="branch-1 cbranch-no" title="branch not covered" >      case 'pricing':</span>
-<span class="cstat-no" title="statement not covered" >        validation.confidence *= this.validatePricingData(result.data)</span>
-<span class="cstat-no" title="statement not covered" >        break</span>
-<span class="branch-2 cbranch-no" title="branch not covered" >      case 'products':</span>
-<span class="cstat-no" title="statement not covered" >        validation.confidence *= this.validateProductData(result.data)</span>
-<span class="cstat-no" title="statement not covered" >        break</span>
-<span class="branch-3 cbranch-no" title="branch not covered" >      case 'jobs':</span>
-<span class="cstat-no" title="statement not covered" >        validation.confidence *= this.validateJobData(result.data)</span>
-<span class="cstat-no" title="statement not covered" >        break</span>
-    }
-&nbsp;
-    // Check response time
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (result.responseTime &gt; 30000) {
-<span class="cstat-no" title="statement not covered" >      validation.warnings.push('Slow response time detected')</span>
-<span class="cstat-no" title="statement not covered" >      validation.confidence *= 0.9</span>
-    }
-&nbsp;
-    // Check if cached result is too old
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (result.cached) {
-<span class="cstat-no" title="statement not covered" >      validation.warnings.push('Using cached data')</span>
-<span class="cstat-no" title="statement not covered" >      validation.confidence *= 0.95</span>
-    }
-&nbsp;
-    return validation
-  }
-&nbsp;
-  // Private methods
-&nbsp;
-  private <span class="fstat-no" title="function not covered" >startProcessing(): void {</span>
-<span class="cstat-no" title="statement not covered" >    if (this.isRunning) <span class="cstat-no" title="statement not covered" >return</span></span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    this.isRunning = true</span>
-<span class="cstat-no" title="statement not covered" >    this.processingInterval = setInterval(<span class="fstat-no" title="function not covered" >() =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >      this.processQueue()</span>
-    }, this.PROCESSING_INTERVAL)
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    console.log('Scraping scheduler started')</span>
-  }
-&nbsp;
-  private stopProcessing(): void {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (!this.isRunning) return
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    this.isRunning = false</span>
-<span class="cstat-no" title="statement not covered" >    if (this.processingInterval) {</span>
-<span class="cstat-no" title="statement not covered" >      clearInterval(this.processingInterval)</span>
-<span class="cstat-no" title="statement not covered" >      this.processingInterval = undefined</span>
-    }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    console.log('Scraping scheduler stopped')</span>
-  }
-&nbsp;
-<span class="fstat-no" title="function not covered" >  private async p</span>rocessQueue(): Promise&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >    if (this.runningJobs.size &gt;= this.MAX_CONCURRENT_JOBS) {</span>
-<span class="cstat-no" title="statement not covered" >      return /</span>/ Queue is full
-    }
-&nbsp;
-    // Get pending jobs that are ready to run
-    const readyJobs = <span class="cstat-no" title="statement not covered" >Array.from(this.jobQueue.values())</span>
-      .filter(<span class="fstat-no" title="function not covered" >job =&gt; </span>
-<span class="cstat-no" title="statement not covered" >        job.status === 'pending' &amp;&amp; </span>
-        job.nextRunAt &lt;= new Date() &amp;&amp;
-        !this.runningJobs.has(job.id)
-      )
-      .sort(<span class="fstat-no" title="function not covered" >(a</span>, b) =&gt; {
-        // Sort by priority, then by next run time
-        const priorityOrder = <span class="cstat-no" title="statement not covered" >{ critical: 4, high: 3, medium: 2, low: 1 }</span>
-        const priorityDiff = <span class="cstat-no" title="statement not covered" >priorityOrder[b.priority] - priorityOrder[a.priority]</span>
-<span class="cstat-no" title="statement not covered" >        if (priorityDiff !== 0) <span class="cstat-no" title="statement not covered" >return priorityDiff</span></span>
-<span class="cstat-no" title="statement not covered" >        return a.nextRunAt.getTime() - b.nextRunAt.getTime()</span>
-      })
-&nbsp;
-    // Process jobs up to the concurrent limit
-    const jobsToProcess = <span class="cstat-no" title="statement not covered" >readyJobs.slice(0, this.MAX_CONCURRENT_JOBS - this.runningJobs.size)</span>
-    
-<span class="cstat-no" title="statement not covered" >    for (const job of jobsToProcess) {</span>
-<span class="cstat-no" title="statement not covered" >      this.processJob(job).catch(<span class="fstat-no" title="function not covered" >error =&gt; {</span></span>
-<span class="cstat-no" title="statement not covered" >        console.error(`Error processing job ${job.id}:`, error)</span>
-      })
-    }
-  }
-&nbsp;
-<span class="fstat-no" title="function not covered" >  private async p</span>rocessJob(job: ScrapingJob): Promise&lt;ScrapingJobResult&gt; {
-    const startTime = <span class="cstat-no" title="statement not covered" >Date.now()</span>
-<span class="cstat-no" title="statement not covered" >    this.runningJobs.add(job.id)</span>
-    
-    // Update job status
-<span class="cstat-no" title="statement not covered" >    job.status = 'running'</span>
-<span class="cstat-no" title="statement not covered" >    job.lastRunAt = new Date()</span>
-<span class="cstat-no" title="statement not covered" >    job.updatedAt = new Date()</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    try {</span>
-<span class="cstat-no" title="statement not covered" >      console.log(`Processing scraping job: ${job.id} (${job.jobType}) for ${job.url}`)</span>
-&nbsp;
-      // Execute the scraping based on job type
-      let scrapingResult: ScrapingResult
-      
-<span class="cstat-no" title="statement not covered" >      switch (job.jobType) {</span>
-        case 'website':
-<span class="cstat-no" title="statement not covered" >          scrapingResult = await webScrapingService.scrapeCompetitorWebsite(job.url)</span>
-<span class="cstat-no" title="statement not covered" >          break</span>
-        case 'pricing':
-<span class="cstat-no" title="statement not covered" >          scrapingResult = await webScrapingService.monitorPricingPages(job.url)</span>
-<span class="cstat-no" title="statement not covered" >          break</span>
-        case 'products':
-<span class="cstat-no" title="statement not covered" >          scrapingResult = await webScrapingService.trackProductPages(job.url)</span>
-<span class="cstat-no" title="statement not covered" >          break</span>
-        case 'jobs':
-<span class="cstat-no" title="statement not covered" >          scrapingResult = await webScrapingService.scrapeJobPostings(job.url)</span>
-<span class="cstat-no" title="statement not covered" >          break</span>
-        default:
-<span class="cstat-no" title="statement not covered" >          throw new Error(`Unknown job type: ${job.jobType}`)</span>
-      }
-&nbsp;
-      // Validate the result
-      const validation = <span class="cstat-no" title="statement not covered" >this.validateScrapingResult(scrapingResult, job)</span>
-      
-      const result: ScrapingJobResult = <span class="cstat-no" title="statement not covered" >{</span>
-        jobId: job.id,
-        success: scrapingResult.success &amp;&amp; validation.isValid,
-        data: scrapingResult.data,
-        error: scrapingResult.error || (validation.errors.length &gt; 0 ? validation.errors.join('; ') : undefined),
-        executionTime: Date.now() - startTime,
-        changesDetected: false, // Will be determined by change detection logic
-        retryCount: job.retryCount,
-        completedAt: new Date(),
-      }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >      if (result.success) {</span>
-        // Job completed successfully
-<span class="cstat-no" title="statement not covered" >        job.status = 'completed'</span>
-<span class="cstat-no" title="statement not covered" >        job.retryCount = 0</span>
-<span class="cstat-no" title="statement not covered" >        job.nextRunAt = this.calculateNextRun(job.frequency)</span>
-<span class="cstat-no" title="statement not covered" >        this.metrics.completedJobs++</span>
-      } else {
-        // Job failed, check if we should retry
-<span class="cstat-no" title="statement not covered" >        job.retryCount++</span>
-        
-<span class="cstat-no" title="statement not covered" >        if (job.retryCount &lt;= job.maxRetries) {</span>
-<span class="cstat-no" title="statement not covered" >          job.status = 'pending'</span>
-<span class="cstat-no" title="statement not covered" >          job.nextRunAt = this.calculateRetryTime(job.retryCount)</span>
-<span class="cstat-no" title="statement not covered" >          console.log(`Job ${job.id} failed, scheduling retry ${job.retryCount}/${job.maxRetries}`)</span>
-        } else {
-<span class="cstat-no" title="statement not covered" >          job.status = 'failed'</span>
-          job.nextRunAt = this.calculateNextRun(job.frequency) // Try again next cycle
-<span class="cstat-no" title="statement not covered" >          this.metrics.failedJobs++</span>
-<span class="cstat-no" title="statement not covered" >          console.error(`Job ${job.id} failed permanently after ${job.maxRetries} retries`)</span>
-        }
-      }
-&nbsp;
-      // Store result in history
-      const history = <span class="cstat-no" title="statement not covered" >this.jobHistory.get(job.id) || []</span>
-<span class="cstat-no" title="statement not covered" >      history.push(result)</span>
-      // Keep only last 10 results
-<span class="cstat-no" title="statement not covered" >      if (history.length &gt; 10) {</span>
-<span class="cstat-no" title="statement not covered" >        history.splice(0, history.length - 10)</span>
-      }
-<span class="cstat-no" title="statement not covered" >      this.jobHistory.set(job.id, history)</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >      job.updatedAt = new Date()</span>
-<span class="cstat-no" title="statement not covered" >      this.updateMetrics()</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >      return result</span>
-    } catch (error) {
-      // Unexpected error during processing
-<span class="cstat-no" title="statement not covered" >      job.retryCount++</span>
-      
-      const result: ScrapingJobResult = <span class="cstat-no" title="statement not covered" >{</span>
-        jobId: job.id,
-        success: false,
-        error: error instanceof Error ? error.message : 'Unknown processing error',
-        executionTime: Date.now() - startTime,
-        changesDetected: false,
-        retryCount: job.retryCount,
-        completedAt: new Date(),
-      }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >      if (job.retryCount &lt;= job.maxRetries) {</span>
-<span class="cstat-no" title="statement not covered" >        job.status = 'pending'</span>
-<span class="cstat-no" title="statement not covered" >        job.nextRunAt = this.calculateRetryTime(job.retryCount)</span>
-      } else {
-<span class="cstat-no" title="statement not covered" >        job.status = 'failed'</span>
-<span class="cstat-no" title="statement not covered" >        job.nextRunAt = this.calculateNextRun(job.frequency)</span>
-<span class="cstat-no" title="statement not covered" >        this.metrics.failedJobs++</span>
-      }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >      job.updatedAt = new Date()</span>
-<span class="cstat-no" title="statement not covered" >      this.updateMetrics()</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >      return result</span>
-    } finally {
-<span class="cstat-no" title="statement not covered" >      this.runningJobs.delete(job.id)</span>
-    }
-  }
-&nbsp;
-  private generateJobId(competitorId: number, jobType: string, url: string): string {
-    const hash = Buffer.from(`${competitorId}-${jobType}-${url}`).toString('base64')
-    return `job_${hash.replace(/[^a-zA-Z0-9]/g, '').substring(0, 16)}`
-  }
-&nbsp;
-  private calculateJobPriority(competitorId: number, jobType: string): ScrapingJob['priority'] {
-    // This would typically query the competitor's threat level from the database
-    // For now, we'll use a simple heuristic
-    
-    if (jobType === 'pricing') return 'high' // Pricing changes are important
-    if (jobType === 'website') return 'medium' // General website changes
-    if (jobType === 'products') return 'medium' // Product updates
-    if (jobType === 'jobs') return 'low' // Job postings are less urgent
-    
-<span class="cstat-no" title="statement not covered" >    return 'medium'</span>
-  }
-&nbsp;
-  private getFrequencyByThreatLevel(threatLevel: string): ScrapingFrequency {
-    switch (threatLevel) {
-      case 'critical':
-        return { type: 'interval', value: 60 } // Every hour
-      case 'high':
-        return { type: 'interval', value: 240 } // Every 4 hours
-      case 'medium':
-        return { type: 'interval', value: 720 } // Every 12 hours
-      case 'low':
-      default:
-        return { type: 'interval', value: 1440 } // Daily
-    }
-  }
-&nbsp;
-  private calculateNextRun(frequency: ScrapingFrequency): Date {
-    const now = new Date()
-    
-    switch (frequency.type) {
-      case 'interval':
-        const minutes = typeof frequency.value === 'number' ? frequency.value : <span class="branch-1 cbranch-no" title="branch not covered" >parseInt(frequency.value as string)</span>
-        return new Date(now.getTime() + minutes * 60 * 1000)
-      
-<span class="branch-1 cbranch-no" title="branch not covered" >      case 'cron':</span>
-        // For cron expressions, we'd use a cron parser library
-        // For now, default to 1 hour
-<span class="cstat-no" title="statement not covered" >        return new Date(now.getTime() + 60 * 60 * 1000)</span>
-      
-<span class="branch-2 cbranch-no" title="branch not covered" >      case 'manual':</span>
-      default:
-        // Manual jobs don't auto-schedule
-        return new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000) // 1 year from now
-    }
-  }
-&nbsp;
-  private <span class="fstat-no" title="function not covered" >calculateRetryTime(r</span>etryCount: number): Date {
-    // Exponential backoff: 2^retryCount minutes
-    const delayMinutes = <span class="cstat-no" title="statement not covered" >Math.pow(2, retryCount)</span>
-<span class="cstat-no" title="statement not covered" >    return new Date(Date.now() + delayMinutes * 60 * 1000)</span>
-  }
-&nbsp;
-  private guessPricingUrl(domain: string): string | null {
-    const commonPaths = ['/pricing', '/plans', '/subscribe', '/buy', '/purchase']
-    // Return the first common path (in a real implementation, we might check which exists)
-    return `https://${domain}${commonPaths[0]}`
-  }
-&nbsp;
-  private guessProductUrl(domain: string): string | null {
-    const commonPaths = ['/products', '/features', '/solutions', '/services']
-    return `https://${domain}${commonPaths[0]}`
-  }
-&nbsp;
-  private guessJobsUrl(domain: string): string | null {
-    const commonPaths = ['/careers', '/jobs', '/hiring', '/join', '/work-with-us']
-    return `https://${domain}${commonPaths[0]}`
-  }
-&nbsp;
-  private validateWebsiteData(data: any): number {
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!data || typeof data !== 'object') <span class="cstat-no" title="statement not covered" >return 0</span>
-    
-    let confidence = 1.0
-    
-    // Check for basic website data
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (!data.title) <span class="cstat-no" title="statement not covered" >confidence *= 0.8</span>
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (!data.description) confidence *= 0.9
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (!data.content || data.content.length &lt; 100) confidence *= 0.7
-    
-    return confidence
-  }
-&nbsp;
-  private <span class="fstat-no" title="function not covered" >validatePricingData(d</span>ata: any): number {
-<span class="cstat-no" title="statement not covered" >    if (!data || !data.plans || !Array.isArray(data.plans)) <span class="cstat-no" title="statement not covered" >return 0</span></span>
-    
-    let confidence = <span class="cstat-no" title="statement not covered" >1.0</span>
-    
-    // Check pricing plan quality
-<span class="cstat-no" title="statement not covered" >    if (data.plans.length === 0) <span class="cstat-no" title="statement not covered" >return 0</span></span>
-    
-<span class="cstat-no" title="statement not covered" >    for (const plan of data.plans) {</span>
-<span class="cstat-no" title="statement not covered" >      if (!plan.name || typeof plan.price !== 'number') {</span>
-<span class="cstat-no" title="statement not covered" >        confidence *= 0.5</span>
-      }
-    }
-    
-<span class="cstat-no" title="statement not covered" >    return confidence</span>
-  }
-&nbsp;
-  private <span class="fstat-no" title="function not covered" >validateProductData(d</span>ata: any): number {
-<span class="cstat-no" title="statement not covered" >    if (!data || !data.products || !Array.isArray(data.products)) <span class="cstat-no" title="statement not covered" >return 0</span></span>
-    
-    let confidence = <span class="cstat-no" title="statement not covered" >1.0</span>
-    
-<span class="cstat-no" title="statement not covered" >    if (data.products.length === 0) <span class="cstat-no" title="statement not covered" >return 0</span></span>
-    
-<span class="cstat-no" title="statement not covered" >    for (const product of data.products) {</span>
-<span class="cstat-no" title="statement not covered" >      if (!product.name) {</span>
-<span class="cstat-no" title="statement not covered" >        confidence *= 0.7</span>
-      }
-    }
-    
-<span class="cstat-no" title="statement not covered" >    return confidence</span>
-  }
-&nbsp;
-  private <span class="fstat-no" title="function not covered" >validateJobData(d</span>ata: any): number {
-<span class="cstat-no" title="statement not covered" >    if (!Array.isArray(data)) <span class="cstat-no" title="statement not covered" >return 0</span></span>
-    
-    let confidence = <span class="cstat-no" title="statement not covered" >1.0</span>
-    
-    if (data.length === 0) return 0.5 // No jobs might be valid
-    
-<span class="cstat-no" title="statement not covered" >    for (const job of data) {</span>
-<span class="cstat-no" title="statement not covered" >      if (!job.title || !job.description) {</span>
-<span class="cstat-no" title="statement not covered" >        confidence *= 0.8</span>
-      }
-    }
-    
-<span class="cstat-no" title="statement not covered" >    return confidence</span>
-  }
-&nbsp;
-  private updateMetrics(): void {
-    const jobs = Array.from(this.jobQueue.values())
-    
-    this.metrics.totalJobs = jobs.length
-    this.metrics.pendingJobs = jobs.filter(j =&gt; j.status === 'pending').length
-    this.metrics.runningJobs = this.runningJobs.size
-    this.metrics.completedJobs = jobs.filter(j =&gt; j.status === 'completed').length
-    this.metrics.failedJobs = jobs.filter(j =&gt; j.status === 'failed').length
-    
-    // Calculate success rate
-    const totalCompleted = this.metrics.completedJobs + this.metrics.failedJobs
-    this.metrics.successRate = totalCompleted &gt; 0 ? <span class="branch-0 cbranch-no" title="branch not covered" >this.metrics.completedJobs / totalCompleted : 0</span>
-    
-    // Calculate average execution time from recent job history
-    const allResults = Array.from(this.jobHistory.values()).flat()
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (allResults.length &gt; 0) {
-      const totalTime = <span class="cstat-no" title="statement not covered" >allResults.reduce(<span class="fstat-no" title="function not covered" >(s</span>um, result) =&gt; <span class="cstat-no" title="statement not covered" >sum + result.executionTime,</span> 0)</span>
-<span class="cstat-no" title="statement not covered" >      this.metrics.averageExecutionTime = totalTime / allResults.length</span>
-    }
-  }
-&nbsp;
-  /**
-   * Manually start processing (useful for tests)
-   */
-<span class="fstat-no" title="function not covered" >  start(): void {</span>
-<span class="cstat-no" title="statement not covered" >    this.startProcessing()</span>
-  }
-&nbsp;
-  /**
-   * Cleanup method to stop processing and clear resources
-   */
-  destroy(): void {
-    this.stopProcessing()
-    this.jobQueue.clear()
-    this.runningJobs.clear()
-    this.jobHistory.clear()
-  }
-}
-&nbsp;
-// Export singleton instance
-export const <span class="cstat-no" title="statement not covered" >scrapingScheduler </span>= new ScrapingScheduler(true)
-&nbsp;
-// Export types for external use
-export type { ScrapingJob, ScrapingJobConfig, ScrapingFrequency, QueueMetrics, ScrapingJobResult, ValidationResult }</pre></td></tr></table></pre>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uuid } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
+&nbsp;
+// Users table
+export const <span class="cstat-no" title="statement not covered" >users </span>= pgTable('users', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  password_hash: varchar('password_hash', { length: 255 }).notNull(),
+  full_name: varchar('full_name', { length: 255 }),
+  username: varchar('username', { length: 100 }).unique(),
+  date_of_birth: timestamp('date_of_birth'),
+  avatar_url: varchar('avatar_url', { length: 500 }),
+  subscription_tier: varchar('subscription_tier', { length: 50 }).default('free'),
+  subscription_status: varchar('subscription_status', { length: 50 }).default('active'),
+  is_verified: boolean('is_verified').default(false),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+});
+&nbsp;
+// Briefcase/Projects table
+export const <span class="cstat-no" title="statement not covered" >briefcases </span>= pgTable('briefcases', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  status: varchar('status', { length: 50 }).default('active'),
+  metadata: jsonb('metadata'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+});
+&nbsp;
+// Goals table
+export const <span class="cstat-no" title="statement not covered" >goals </span>= pgTable('goals', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  briefcase_id: integer('briefcase_id').references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >b</span>riefcases.id,</span> { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  status: varchar('status', { length: 50 }).default('pending'),
+  priority: varchar('priority', { length: 20 }).default('medium'),
+  due_date: timestamp('due_date'),
+  completed_at: timestamp('completed_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+});
+&nbsp;
+// Tasks table (enhanced)
+export const <span class="cstat-no" title="statement not covered" >tasks </span>= pgTable('tasks', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  goal_id: integer('goal_id').references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >g</span>oals.id,</span> { onDelete: 'cascade' }),
+  briefcase_id: integer('briefcase_id').references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >b</span>riefcases.id,</span> { onDelete: 'cascade' }),
+  parent_task_id: integer('parent_task_id').references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >t</span>asks.id,</span> { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  status: varchar('status', { length: 50 }).default('pending'),
+  priority: varchar('priority', { length: 20 }).default('medium'),
+  category: varchar('category', { length: 100 }),
+  tags: jsonb('tags').default('[]'),
+  due_date: timestamp('due_date'),
+  estimated_minutes: integer('estimated_minutes'),
+  actual_minutes: integer('actual_minutes'),
+  energy_level: varchar('energy_level', { length: 20 }).default('medium'),
+  is_recurring: boolean('is_recurring').default(false),
+  recurrence_pattern: jsonb('recurrence_pattern'),
+  ai_suggestions: jsonb('ai_suggestions').default('{}'),
+  completed_at: timestamp('completed_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+});
+&nbsp;
+// Templates table
+export const <span class="cstat-no" title="statement not covered" >templates </span>= pgTable('templates', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  content: text('content').notNull(),
+  category: varchar('category', { length: 100 }),
+  is_public: boolean('is_public').default(false),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+});
+&nbsp;
+// Task Categories table
+export const <span class="cstat-no" title="statement not covered" >taskCategories </span>= pgTable('task_categories', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  name: varchar('name', { length: 100 }).notNull(),
+  color: varchar('color', { length: 7 }).default('#8B5CF6'),
+  icon: varchar('icon', { length: 50 }),
+  is_default: boolean('is_default').default(false),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+});
+&nbsp;
+// Task Analytics table
+export const <span class="cstat-no" title="statement not covered" >taskAnalytics </span>= pgTable('task_analytics', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  task_id: integer('task_id').notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >t</span>asks.id,</span> { onDelete: 'cascade' }),
+  action: varchar('action', { length: 50 }).notNull(),
+  timestamp: timestamp('timestamp').defaultNow(),
+  metadata: jsonb('metadata').default('{}'),
+});
+&nbsp;
+// Productivity Insights table
+export const <span class="cstat-no" title="statement not covered" >productivityInsights </span>= pgTable('productivity_insights', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  insight_type: varchar('insight_type', { length: 50 }).notNull(),
+  date: timestamp('date', { mode: 'date' }).notNull(),
+  metrics: jsonb('metrics').notNull(),
+  ai_recommendations: jsonb('ai_recommendations').default('{}'),
+  created_at: timestamp('created_at').defaultNow(),
+});
+&nbsp;
+// Posts table (existing)
+export const <span class="cstat-no" title="statement not covered" >posts </span>= pgTable('posts', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull().default(''),
+});
+&nbsp;
+// Competitor Profiles table
+export const <span class="cstat-no" title="statement not covered" >competitorProfiles </span>= pgTable('competitor_profiles', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  domain: varchar('domain', { length: 255 }),
+  description: text('description'),
+  industry: varchar('industry', { length: 100 }),
+  headquarters: varchar('headquarters', { length: 255 }),
+  founded_year: integer('founded_year'),
+  employee_count: integer('employee_count'),
+  funding_amount: decimal('funding_amount', { precision: 15, scale: 2 }),
+  funding_stage: varchar('funding_stage', { length: 50 }),
+  threat_level: varchar('threat_level', { length: 20 }).notNull().default('medium'),
+  monitoring_status: varchar('monitoring_status', { length: 20 }).notNull().default('active'),
+  social_media_handles: jsonb('social_media_handles').default('{}'),
+  key_personnel: jsonb('key_personnel').default('[]'),
+  products: jsonb('products').default('[]'),
+  market_position: jsonb('market_position').default('{}'),
+  competitive_advantages: jsonb('competitive_advantages').default('[]'),
+  vulnerabilities: jsonb('vulnerabilities').default('[]'),
+  monitoring_config: jsonb('monitoring_config').default('{}'),
+  last_analyzed: timestamp('last_analyzed'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, <span class="fstat-no" title="function not covered" >(t</span>able) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  userIdIdx: index('competitor_profiles_user_id_idx').on(table.user_id),
+  threatLevelIdx: index('competitor_profiles_threat_level_idx').on(table.threat_level),
+  monitoringStatusIdx: index('competitor_profiles_monitoring_status_idx').on(table.monitoring_status),
+  domainIdx: index('competitor_profiles_domain_idx').on(table.domain),
+  industryIdx: index('competitor_profiles_industry_idx').on(table.industry),
+}));
+&nbsp;
+// Intelligence Data table
+export const <span class="cstat-no" title="statement not covered" >intelligenceData </span>= pgTable('intelligence_data', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  competitor_id: integer('competitor_id').notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >c</span>ompetitorProfiles.id,</span> { onDelete: 'cascade' }),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  source_type: varchar('source_type', { length: 50 }).notNull(),
+  source_url: varchar('source_url', { length: 1000 }),
+  data_type: varchar('data_type', { length: 100 }).notNull(),
+  raw_content: jsonb('raw_content'),
+  extracted_data: jsonb('extracted_data').default('{}'),
+  analysis_results: jsonb('analysis_results').default('[]'),
+  confidence: decimal('confidence', { precision: 3, scale: 2 }).default('0.00'),
+  importance: varchar('importance', { length: 20 }).notNull().default('medium'),
+  tags: jsonb('tags').default('[]'),
+  collected_at: timestamp('collected_at').defaultNow(),
+  processed_at: timestamp('processed_at'),
+  expires_at: timestamp('expires_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, <span class="fstat-no" title="function not covered" >(t</span>able) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  competitorIdIdx: index('intelligence_data_competitor_id_idx').on(table.competitor_id),
+  userIdIdx: index('intelligence_data_user_id_idx').on(table.user_id),
+  sourceTypeIdx: index('intelligence_data_source_type_idx').on(table.source_type),
+  dataTypeIdx: index('intelligence_data_data_type_idx').on(table.data_type),
+  importanceIdx: index('intelligence_data_importance_idx').on(table.importance),
+  collectedAtIdx: index('intelligence_data_collected_at_idx').on(table.collected_at),
+  expiresAtIdx: index('intelligence_data_expires_at_idx').on(table.expires_at),
+}));
+&nbsp;
+// Competitor Alerts table
+export const <span class="cstat-no" title="statement not covered" >competitorAlerts </span>= pgTable('competitor_alerts', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  competitor_id: integer('competitor_id').notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >c</span>ompetitorProfiles.id,</span> { onDelete: 'cascade' }),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  intelligence_id: integer('intelligence_id').references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >i</span>ntelligenceData.id,</span> { onDelete: 'set null' }),
+  alert_type: varchar('alert_type', { length: 100 }).notNull(),
+  severity: varchar('severity', { length: 20 }).notNull().default('info'),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  source_data: jsonb('source_data').default('{}'),
+  action_items: jsonb('action_items').default('[]'),
+  recommended_actions: jsonb('recommended_actions').default('[]'),
+  is_read: boolean('is_read').default(false),
+  is_archived: boolean('is_archived').default(false),
+  acknowledged_at: timestamp('acknowledged_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, <span class="fstat-no" title="function not covered" >(t</span>able) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  competitorIdIdx: index('competitor_alerts_competitor_id_idx').on(table.competitor_id),
+  userIdIdx: index('competitor_alerts_user_id_idx').on(table.user_id),
+  alertTypeIdx: index('competitor_alerts_alert_type_idx').on(table.alert_type),
+  severityIdx: index('competitor_alerts_severity_idx').on(table.severity),
+  isReadIdx: index('competitor_alerts_is_read_idx').on(table.is_read),
+  isArchivedIdx: index('competitor_alerts_is_archived_idx').on(table.is_archived),
+  createdAtIdx: index('competitor_alerts_created_at_idx').on(table.created_at),
+}));
+&nbsp;
+// Scraping Jobs table
+export const scrapingJobs = pgTable('scraping_jobs', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  competitor_id: integer('competitor_id').notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >c</span>ompetitorProfiles.id,</span> { onDelete: 'cascade' }),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  job_type: varchar('job_type', { length: 50 }).notNull(),
+  url: varchar('url', { length: 1000 }).notNull(),
+  priority: varchar('priority', { length: 20 }).notNull().default('medium'),
+  frequency_type: varchar('frequency_type', { length: 20 }).notNull().default('interval'),
+  frequency_value: varchar('frequency_value', { length: 100 }).notNull(),
+  frequency_timezone: varchar('frequency_timezone', { length: 50 }),
+  next_run_at: timestamp('next_run_at').notNull(),
+  last_run_at: timestamp('last_run_at'),
+  retry_count: integer('retry_count').notNull().default(0),
+  max_retries: integer('max_retries').notNull().default(3),
+  status: varchar('status', { length: 20 }).notNull().default('pending'),
+  config: jsonb('config').notNull().default('{}'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, <span class="fstat-no" title="function not covered" >(t</span>able) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  competitorIdIdx: index('scraping_jobs_competitor_id_idx').on(table.competitor_id),
+  userIdIdx: index('scraping_jobs_user_id_idx').on(table.user_id),
+  statusIdx: index('scraping_jobs_status_idx').on(table.status),
+  priorityIdx: index('scraping_jobs_priority_idx').on(table.priority),
+  nextRunAtIdx: index('scraping_jobs_next_run_at_idx').on(table.next_run_at),
+  jobTypeIdx: index('scraping_jobs_job_type_idx').on(table.job_type),
+}));
+&nbsp;
+// Scraping Job Results table
+export const <span class="cstat-no" title="statement not covered" >scrapingJobResults </span>= pgTable('scraping_job_results', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  job_id: varchar('job_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >s</span>crapingJobs.id,</span> { onDelete: 'cascade' }),
+  success: boolean('success').notNull(),
+  data: jsonb('data'),
+  error: text('error'),
+  execution_time: integer('execution_time').notNull(),
+  changes_detected: boolean('changes_detected').notNull().default(false),
+  retry_count: integer('retry_count').notNull().default(0),
+  completed_at: timestamp('completed_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow(),
+}, <span class="fstat-no" title="function not covered" >(t</span>able) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  jobIdIdx: index('scraping_job_results_job_id_idx').on(table.job_id),
+  successIdx: index('scraping_job_results_success_idx').on(table.success),
+  completedAtIdx: index('scraping_job_results_completed_at_idx').on(table.completed_at),
+}));
+&nbsp;
+// Competitive Opportunities table
+export const <span class="cstat-no" title="statement not covered" >competitiveOpportunities </span>= pgTable('competitive_opportunities', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  user_id: uuid('user_id').notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  competitor_id: uuid('competitor_id').notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >c</span>ompetitorProfiles.id,</span> { onDelete: 'cascade' }),
+  intelligence_id: uuid('intelligence_id').references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >i</span>ntelligenceData.id,</span> { onDelete: 'set null' }),
+  opportunity_type: varchar('opportunity_type', { length: 50 }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  confidence: decimal('confidence', { precision: 3, scale: 2 }).notNull(),
+  impact: varchar('impact', { length: 20 }).notNull(),
+  effort: varchar('effort', { length: 20 }).notNull(),
+  timing: varchar('timing', { length: 20 }).notNull(),
+  priority_score: decimal('priority_score', { precision: 5, scale: 2 }).notNull(),
+  evidence: jsonb('evidence').default('[]'),
+  recommendations: jsonb('recommendations').default('[]'),
+  status: varchar('status', { length: 50 }).default('identified'),
+  assigned_to: uuid('assigned_to').references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'set null' }),
+  implementation_notes: text('implementation_notes'),
+  roi_estimate: decimal('roi_estimate', { precision: 10, scale: 2 }),
+  actual_roi: decimal('actual_roi', { precision: 10, scale: 2 }),
+  success_metrics: jsonb('success_metrics').default('{}'),
+  tags: jsonb('tags').default('[]'),
+  is_archived: boolean('is_archived').default(false),
+  detected_at: timestamp('detected_at').defaultNow(),
+  started_at: timestamp('started_at'),
+  completed_at: timestamp('completed_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, <span class="fstat-no" title="function not covered" >(t</span>able) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  userIdIdx: index('competitive_opportunities_user_id_idx').on(table.user_id),
+  competitorIdIdx: index('competitive_opportunities_competitor_id_idx').on(table.competitor_id),
+  opportunityTypeIdx: index('competitive_opportunities_type_idx').on(table.opportunity_type),
+  impactIdx: index('competitive_opportunities_impact_idx').on(table.impact),
+  statusIdx: index('competitive_opportunities_status_idx').on(table.status),
+  priorityScoreIdx: index('competitive_opportunities_priority_score_idx').on(table.priority_score),
+  detectedAtIdx: index('competitive_opportunities_detected_at_idx').on(table.detected_at),
+  isArchivedIdx: index('competitive_opportunities_is_archived_idx').on(table.is_archived),
+}));
+&nbsp;
+// Opportunity Actions table
+export const <span class="cstat-no" title="statement not covered" >opportunityActions </span>= pgTable('opportunity_actions', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  opportunity_id: varchar('opportunity_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >c</span>ompetitiveOpportunities.id,</span> { onDelete: 'cascade' }),
+  user_id: uuid('user_id').notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  action_type: varchar('action_type', { length: 50 }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  priority: varchar('priority', { length: 20 }).default('medium'),
+  estimated_effort_hours: integer('estimated_effort_hours'),
+  actual_effort_hours: integer('actual_effort_hours'),
+  estimated_cost: decimal('estimated_cost', { precision: 10, scale: 2 }),
+  actual_cost: decimal('actual_cost', { precision: 10, scale: 2 }),
+  expected_outcome: text('expected_outcome'),
+  actual_outcome: text('actual_outcome'),
+  status: varchar('status', { length: 50 }).default('pending'),
+  due_date: timestamp('due_date'),
+  completed_at: timestamp('completed_at'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, <span class="fstat-no" title="function not covered" >(t</span>able) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  opportunityIdIdx: index('opportunity_actions_opportunity_id_idx').on(table.opportunity_id),
+  userIdIdx: index('opportunity_actions_user_id_idx').on(table.user_id),
+  statusIdx: index('opportunity_actions_status_idx').on(table.status),
+  priorityIdx: index('opportunity_actions_priority_idx').on(table.priority),
+  dueDateIdx: index('opportunity_actions_due_date_idx').on(table.due_date),
+}));
+&nbsp;
+// Opportunity Metrics table
+export const <span class="cstat-no" title="statement not covered" >opportunityMetrics </span>= pgTable('opportunity_metrics', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  opportunity_id: varchar('opportunity_id', { length: 255 }).notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >c</span>ompetitiveOpportunities.id,</span> { onDelete: 'cascade' }),
+  user_id: uuid('user_id').notNull().references(<span class="fstat-no" title="function not covered" >() =&gt; <span class="cstat-no" title="statement not covered" >u</span>sers.id,</span> { onDelete: 'cascade' }),
+  metric_name: varchar('metric_name', { length: 100 }).notNull(),
+  metric_type: varchar('metric_type', { length: 50 }).notNull(),
+  baseline_value: decimal('baseline_value', { precision: 15, scale: 4 }),
+  target_value: decimal('target_value', { precision: 15, scale: 4 }),
+  current_value: decimal('current_value', { precision: 15, scale: 4 }),
+  unit: varchar('unit', { length: 50 }),
+  measurement_date: timestamp('measurement_date').defaultNow(),
+  notes: text('notes'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, <span class="fstat-no" title="function not covered" >(t</span>able) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  opportunityIdIdx: index('opportunity_metrics_opportunity_id_idx').on(table.opportunity_id),
+  userIdIdx: index('opportunity_metrics_user_id_idx').on(table.user_id),
+  metricNameIdx: index('opportunity_metrics_metric_name_idx').on(table.metric_name),
+  measurementDateIdx: index('opportunity_metrics_measurement_date_idx').on(table.measurement_date),
+}));
+&nbsp;
+// Relations
+export const <span class="cstat-no" title="statement not covered" >usersRelations </span>= relations(users, <span class="fstat-no" title="function not covered" >({</span> many }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  briefcases: many(briefcases),
+  goals: many(goals),
+  tasks: many(tasks),
+  templates: many(templates),
+  taskCategories: many(taskCategories),
+  taskAnalytics: many(taskAnalytics),
+  productivityInsights: many(productivityInsights),
+  competitorProfiles: many(competitorProfiles),
+  intelligenceData: many(intelligenceData),
+  competitorAlerts: many(competitorAlerts),
+  scrapingJobs: many(scrapingJobs),
+  competitiveOpportunities: many(competitiveOpportunities),
+  opportunityActions: many(opportunityActions),
+  opportunityMetrics: many(opportunityMetrics),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >briefcasesRelations </span>= relations(briefcases, <span class="fstat-no" title="function not covered" >({</span> one, many }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  user: one(users, {
+    fields: [briefcases.user_id],
+    references: [users.id],
+  }),
+  goals: many(goals),
+  tasks: many(tasks),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >goalsRelations </span>= relations(goals, <span class="fstat-no" title="function not covered" >({</span> one, many }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  user: one(users, {
+    fields: [goals.user_id],
+    references: [users.id],
+  }),
+  briefcase: one(briefcases, {
+    fields: [goals.briefcase_id],
+    references: [briefcases.id],
+  }),
+  tasks: many(tasks),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >tasksRelations </span>= relations(tasks, <span class="fstat-no" title="function not covered" >({</span> one, many }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  user: one(users, {
+    fields: [tasks.user_id],
+    references: [users.id],
+  }),
+  goal: one(goals, {
+    fields: [tasks.goal_id],
+    references: [goals.id],
+  }),
+  briefcase: one(briefcases, {
+    fields: [tasks.briefcase_id],
+    references: [briefcases.id],
+  }),
+  parentTask: one(tasks, {
+    fields: [tasks.parent_task_id],
+    references: [tasks.id],
+  }),
+  subtasks: many(tasks),
+  analytics: many(taskAnalytics),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >templatesRelations </span>= relations(templates, <span class="fstat-no" title="function not covered" >({</span> one }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  user: one(users, {
+    fields: [templates.user_id],
+    references: [users.id],
+  }),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >taskCategoriesRelations </span>= relations(taskCategories, <span class="fstat-no" title="function not covered" >({</span> one }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  user: one(users, {
+    fields: [taskCategories.user_id],
+    references: [users.id],
+  }),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >taskAnalyticsRelations </span>= relations(taskAnalytics, <span class="fstat-no" title="function not covered" >({</span> one }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  user: one(users, {
+    fields: [taskAnalytics.user_id],
+    references: [users.id],
+  }),
+  task: one(tasks, {
+    fields: [taskAnalytics.task_id],
+    references: [tasks.id],
+  }),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >productivityInsightsRelations </span>= relations(productivityInsights, <span class="fstat-no" title="function not covered" >({</span> one }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  user: one(users, {
+    fields: [productivityInsights.user_id],
+    references: [users.id],
+  }),
+}));
+&nbsp;
+// Competitor Intelligence Relations
+export const <span class="cstat-no" title="statement not covered" >competitorProfilesRelations </span>= relations(competitorProfiles, <span class="fstat-no" title="function not covered" >({</span> one, many }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  user: one(users, {
+    fields: [competitorProfiles.user_id],
+    references: [users.id],
+  }),
+  intelligenceData: many(intelligenceData),
+  alerts: many(competitorAlerts),
+  scrapingJobs: many(scrapingJobs),
+  opportunities: many(competitiveOpportunities),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >intelligenceDataRelations </span>= relations(intelligenceData, <span class="fstat-no" title="function not covered" >({</span> one, many }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  competitor: one(competitorProfiles, {
+    fields: [intelligenceData.competitor_id],
+    references: [competitorProfiles.id],
+  }),
+  user: one(users, {
+    fields: [intelligenceData.user_id],
+    references: [users.id],
+  }),
+  alerts: many(competitorAlerts),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >competitorAlertsRelations </span>= relations(competitorAlerts, <span class="fstat-no" title="function not covered" >({</span> one }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  competitor: one(competitorProfiles, {
+    fields: [competitorAlerts.competitor_id],
+    references: [competitorProfiles.id],
+  }),
+  user: one(users, {
+    fields: [competitorAlerts.user_id],
+    references: [users.id],
+  }),
+  intelligence: one(intelligenceData, {
+    fields: [competitorAlerts.intelligence_id],
+    references: [intelligenceData.id],
+  }),
+}));
+&nbsp;
+// Scraping Jobs Relations
+export const <span class="cstat-no" title="statement not covered" >scrapingJobsRelations </span>= relations(scrapingJobs, <span class="fstat-no" title="function not covered" >({</span> one, many }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  competitor: one(competitorProfiles, {
+    fields: [scrapingJobs.competitor_id],
+    references: [competitorProfiles.id],
+  }),
+  user: one(users, {
+    fields: [scrapingJobs.user_id],
+    references: [users.id],
+  }),
+  results: many(scrapingJobResults),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >scrapingJobResultsRelations </span>= relations(scrapingJobResults, <span class="fstat-no" title="function not covered" >({</span> one }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  job: one(scrapingJobs, {
+    fields: [scrapingJobResults.job_id],
+    references: [scrapingJobs.id],
+  }),
+}));
+&nbsp;
+// Competitive Opportunities Relations
+export const <span class="cstat-no" title="statement not covered" >competitiveOpportunitiesRelations </span>= relations(competitiveOpportunities, <span class="fstat-no" title="function not covered" >({</span> one, many }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  user: one(users, {
+    fields: [competitiveOpportunities.user_id],
+    references: [users.id],
+  }),
+  competitor: one(competitorProfiles, {
+    fields: [competitiveOpportunities.competitor_id],
+    references: [competitorProfiles.id],
+  }),
+  intelligence: one(intelligenceData, {
+    fields: [competitiveOpportunities.intelligence_id],
+    references: [intelligenceData.id],
+  }),
+  assignedUser: one(users, {
+    fields: [competitiveOpportunities.assigned_to],
+    references: [users.id],
+  }),
+  actions: many(opportunityActions),
+  metrics: many(opportunityMetrics),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >opportunityActionsRelations </span>= relations(opportunityActions, <span class="fstat-no" title="function not covered" >({</span> one }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  opportunity: one(competitiveOpportunities, {
+    fields: [opportunityActions.opportunity_id],
+    references: [competitiveOpportunities.id],
+  }),
+  user: one(users, {
+    fields: [opportunityActions.user_id],
+    references: [users.id],
+  }),
+}));
+&nbsp;
+export const <span class="cstat-no" title="statement not covered" >opportunityMetricsRelations </span>= relations(opportunityMetrics, <span class="fstat-no" title="function not covered" >({</span> one }) =&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+  opportunity: one(competitiveOpportunities, {
+    fields: [opportunityMetrics.opportunity_id],
+    references: [competitiveOpportunities.id],
+  }),
+  user: one(users, {
+    fields: [opportunityMetrics.user_id],
+    references: [users.id],
+  }),
+}));</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->

@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for lib/competitor-enrichment-service.ts</title>
+    <title>Code coverage report for lib/database-scraping-scheduler.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../prettify.css" />
     <link rel="stylesheet" href="../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../index.html">All files</a> / <a href="index.html">lib</a> competitor-enrichment-service.ts</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">lib</a> database-scraping-scheduler.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">79.37% </span>
+                <span class="strong">33.05% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>177/223</span>
+                <span class='fraction'>39/118</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.37% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>95/141</span>
+                <span class='fraction'>20/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">33.33% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>23/23</span>
+                <span class='fraction'>7/21</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">78.97% </span>
+                <span class="strong">33.62% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>169/214</span>
+                <span class='fraction'>39/116</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -580,505 +580,7 @@
 <a name='L515'></a><a href='#L515'>515</a>
 <a name='L516'></a><a href='#L516'>516</a>
 <a name='L517'></a><a href='#L517'>517</a>
-<a name='L518'></a><a href='#L518'>518</a>
-<a name='L519'></a><a href='#L519'>519</a>
-<a name='L520'></a><a href='#L520'>520</a>
-<a name='L521'></a><a href='#L521'>521</a>
-<a name='L522'></a><a href='#L522'>522</a>
-<a name='L523'></a><a href='#L523'>523</a>
-<a name='L524'></a><a href='#L524'>524</a>
-<a name='L525'></a><a href='#L525'>525</a>
-<a name='L526'></a><a href='#L526'>526</a>
-<a name='L527'></a><a href='#L527'>527</a>
-<a name='L528'></a><a href='#L528'>528</a>
-<a name='L529'></a><a href='#L529'>529</a>
-<a name='L530'></a><a href='#L530'>530</a>
-<a name='L531'></a><a href='#L531'>531</a>
-<a name='L532'></a><a href='#L532'>532</a>
-<a name='L533'></a><a href='#L533'>533</a>
-<a name='L534'></a><a href='#L534'>534</a>
-<a name='L535'></a><a href='#L535'>535</a>
-<a name='L536'></a><a href='#L536'>536</a>
-<a name='L537'></a><a href='#L537'>537</a>
-<a name='L538'></a><a href='#L538'>538</a>
-<a name='L539'></a><a href='#L539'>539</a>
-<a name='L540'></a><a href='#L540'>540</a>
-<a name='L541'></a><a href='#L541'>541</a>
-<a name='L542'></a><a href='#L542'>542</a>
-<a name='L543'></a><a href='#L543'>543</a>
-<a name='L544'></a><a href='#L544'>544</a>
-<a name='L545'></a><a href='#L545'>545</a>
-<a name='L546'></a><a href='#L546'>546</a>
-<a name='L547'></a><a href='#L547'>547</a>
-<a name='L548'></a><a href='#L548'>548</a>
-<a name='L549'></a><a href='#L549'>549</a>
-<a name='L550'></a><a href='#L550'>550</a>
-<a name='L551'></a><a href='#L551'>551</a>
-<a name='L552'></a><a href='#L552'>552</a>
-<a name='L553'></a><a href='#L553'>553</a>
-<a name='L554'></a><a href='#L554'>554</a>
-<a name='L555'></a><a href='#L555'>555</a>
-<a name='L556'></a><a href='#L556'>556</a>
-<a name='L557'></a><a href='#L557'>557</a>
-<a name='L558'></a><a href='#L558'>558</a>
-<a name='L559'></a><a href='#L559'>559</a>
-<a name='L560'></a><a href='#L560'>560</a>
-<a name='L561'></a><a href='#L561'>561</a>
-<a name='L562'></a><a href='#L562'>562</a>
-<a name='L563'></a><a href='#L563'>563</a>
-<a name='L564'></a><a href='#L564'>564</a>
-<a name='L565'></a><a href='#L565'>565</a>
-<a name='L566'></a><a href='#L566'>566</a>
-<a name='L567'></a><a href='#L567'>567</a>
-<a name='L568'></a><a href='#L568'>568</a>
-<a name='L569'></a><a href='#L569'>569</a>
-<a name='L570'></a><a href='#L570'>570</a>
-<a name='L571'></a><a href='#L571'>571</a>
-<a name='L572'></a><a href='#L572'>572</a>
-<a name='L573'></a><a href='#L573'>573</a>
-<a name='L574'></a><a href='#L574'>574</a>
-<a name='L575'></a><a href='#L575'>575</a>
-<a name='L576'></a><a href='#L576'>576</a>
-<a name='L577'></a><a href='#L577'>577</a>
-<a name='L578'></a><a href='#L578'>578</a>
-<a name='L579'></a><a href='#L579'>579</a>
-<a name='L580'></a><a href='#L580'>580</a>
-<a name='L581'></a><a href='#L581'>581</a>
-<a name='L582'></a><a href='#L582'>582</a>
-<a name='L583'></a><a href='#L583'>583</a>
-<a name='L584'></a><a href='#L584'>584</a>
-<a name='L585'></a><a href='#L585'>585</a>
-<a name='L586'></a><a href='#L586'>586</a>
-<a name='L587'></a><a href='#L587'>587</a>
-<a name='L588'></a><a href='#L588'>588</a>
-<a name='L589'></a><a href='#L589'>589</a>
-<a name='L590'></a><a href='#L590'>590</a>
-<a name='L591'></a><a href='#L591'>591</a>
-<a name='L592'></a><a href='#L592'>592</a>
-<a name='L593'></a><a href='#L593'>593</a>
-<a name='L594'></a><a href='#L594'>594</a>
-<a name='L595'></a><a href='#L595'>595</a>
-<a name='L596'></a><a href='#L596'>596</a>
-<a name='L597'></a><a href='#L597'>597</a>
-<a name='L598'></a><a href='#L598'>598</a>
-<a name='L599'></a><a href='#L599'>599</a>
-<a name='L600'></a><a href='#L600'>600</a>
-<a name='L601'></a><a href='#L601'>601</a>
-<a name='L602'></a><a href='#L602'>602</a>
-<a name='L603'></a><a href='#L603'>603</a>
-<a name='L604'></a><a href='#L604'>604</a>
-<a name='L605'></a><a href='#L605'>605</a>
-<a name='L606'></a><a href='#L606'>606</a>
-<a name='L607'></a><a href='#L607'>607</a>
-<a name='L608'></a><a href='#L608'>608</a>
-<a name='L609'></a><a href='#L609'>609</a>
-<a name='L610'></a><a href='#L610'>610</a>
-<a name='L611'></a><a href='#L611'>611</a>
-<a name='L612'></a><a href='#L612'>612</a>
-<a name='L613'></a><a href='#L613'>613</a>
-<a name='L614'></a><a href='#L614'>614</a>
-<a name='L615'></a><a href='#L615'>615</a>
-<a name='L616'></a><a href='#L616'>616</a>
-<a name='L617'></a><a href='#L617'>617</a>
-<a name='L618'></a><a href='#L618'>618</a>
-<a name='L619'></a><a href='#L619'>619</a>
-<a name='L620'></a><a href='#L620'>620</a>
-<a name='L621'></a><a href='#L621'>621</a>
-<a name='L622'></a><a href='#L622'>622</a>
-<a name='L623'></a><a href='#L623'>623</a>
-<a name='L624'></a><a href='#L624'>624</a>
-<a name='L625'></a><a href='#L625'>625</a>
-<a name='L626'></a><a href='#L626'>626</a>
-<a name='L627'></a><a href='#L627'>627</a>
-<a name='L628'></a><a href='#L628'>628</a>
-<a name='L629'></a><a href='#L629'>629</a>
-<a name='L630'></a><a href='#L630'>630</a>
-<a name='L631'></a><a href='#L631'>631</a>
-<a name='L632'></a><a href='#L632'>632</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">16x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">13x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
+<a name='L518'></a><a href='#L518'>518</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -1086,212 +588,447 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-yes">11x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">271x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-yes">508x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">34x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">18x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1299,15 +1036,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1315,648 +1050,571 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { z } from 'zod'
-import type { 
-  CompetitorProfile, 
-  CompetitorProfileUpdate, 
-  ThreatLevel, 
-  SocialMediaHandles, 
-  KeyPerson, 
-  Product 
-} from './competitor-intelligence-types'
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { eq, and, lte, desc, asc, sql, inArray, isNull, or } from 'drizzle-orm'
+import { db } from '@/db'
+import { scrapingJobs, scrapingJobResults, competitorProfiles, intelligenceData } from '@/db/schema'
+import { v4 as uuidv4 } from 'uuid'
 &nbsp;
-// Configuration for enrichment service
-interface EnrichmentConfig {
-  enableWebScraping: boolean
-  enableSocialMediaDiscovery: boolean
-  enablePersonnelMapping: boolean
-  enableThreatAssessment: boolean
-  respectRateLimit: boolean
-  maxRetries: number
+export type JobType = 'website' | 'pricing' | 'products' | 'jobs' | 'social'
+export type JobPriority = 'low' | 'medium' | 'high' | 'critical'
+export type JobStatus = 'pending' | 'running' | 'completed' | 'failed' | 'paused'
+export type FrequencyType = 'interval' | 'cron' | 'manual'
+&nbsp;
+export interface ScrapingJobConfig {
+  changeDetection?: {
+    enabled: boolean
+    threshold: number // percentage change to trigger alert
+    ignoreSelectors?: string[]
+  }
+  selectors?: {
+    content?: string[]
+    pricing?: string[]
+    products?: string[]
+  }
+  headers?: Record&lt;string, string&gt;
+  timeout?: number
+  retryDelay?: number
+  respectRobotsTxt?: boolean
 }
 &nbsp;
-// Default configuration
-const DEFAULT_CONFIG: EnrichmentConfig = {
-  enableWebScraping: true,
-  enableSocialMediaDiscovery: true,
-  enablePersonnelMapping: true,
-  enableThreatAssessment: true,
-  respectRateLimit: true,
-  maxRetries: 3,
+export interface CreateJobParams {
+  competitorId: number
+  userId: string
+  jobType: JobType
+  url: string
+  priority?: JobPriority
+  frequencyType?: FrequencyType
+  frequencyValue: string
+  frequencyTimezone?: string
+  config?: ScrapingJobConfig
+  maxRetries?: number
 }
 &nbsp;
-// Company information extracted from various sources
-interface CompanyInfo {
-  name: string
-  domain?: string
-  description?: string
-  industry?: string
-  headquarters?: string
-  foundedYear?: number
-  employeeCount?: number
-  fundingAmount?: number
-  fundingStage?: string
-  socialMediaHandles?: SocialMediaHandles
-  keyPersonnel?: KeyPerson[]
-  products?: Product[]
-  competitiveAdvantages?: string[]
-  vulnerabilities?: string[]
-}
-&nbsp;
-// Enrichment result with confidence scores
-interface EnrichmentResult {
+export interface JobResult {
   success: boolean
-  data?: CompetitorProfileUpdate
-  confidence: number
-  sources: string[]
-  errors: string[]
-  warnings: string[]
+  data?: any
+  error?: string
+  executionTime: number
+  changesDetected: boolean
+  retryCount: number
 }
 &nbsp;
-// Social media platform patterns for URL validation
-const SOCIAL_MEDIA_PATTERNS = {
-  linkedin: /^https?:\/\/(www\.)?linkedin\.com\/(company|in)\/[a-zA-Z0-9-_]+\/?$/,
-  twitter: /^https?:\/\/(www\.)?(twitter\.com|x\.com)\/[a-zA-Z0-9_]+\/?$/,
-  facebook: /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9.-]+\/?$/,
-  instagram: /^https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9_.]+\/?$/,
-  youtube: /^https?:\/\/(www\.)?youtube\.com\/(channel|c|user)\/[a-zA-Z0-9_-]+\/?$/,
-}
+export class ScrapingScheduler {
+  private static instance: ScrapingScheduler
+  private jobQueue: Map&lt;string, NodeJS.Timeout&gt; = new Map()
+  private runningJobs: Set&lt;string&gt; = new Set()
 &nbsp;
-// Industry keywords for threat assessment
-const INDUSTRY_KEYWORDS = {
-  'technology': ['software', 'saas', 'tech', 'digital', 'ai', 'ml', 'cloud', 'platform'],
-  'finance': ['fintech', 'banking', 'payment', 'financial', 'investment', 'trading'],
-  'healthcare': ['health', 'medical', 'pharma', 'biotech', 'telemedicine', 'wellness'],
-  'ecommerce': ['ecommerce', 'retail', 'marketplace', 'shopping', 'commerce'],
-  'education': ['edtech', 'education', 'learning', 'training', 'academic'],
-  'marketing': ['martech', 'advertising', 'marketing', 'analytics', 'crm'],
-}
-&nbsp;
-/**
- * Competitor Profile Enrichment Service
- * 
- * This service automatically enriches competitor profiles by gathering data from:
- * - Company websites and business directories
- * - Social media platforms
- * - Public personnel information
- * - Market analysis for threat assessment
- */
-export class CompetitorEnrichmentService {
-  private config: EnrichmentConfig
-  private rateLimitTracker: Map&lt;string, number&gt; = new Map()
-&nbsp;
-  constructor(config: Partial&lt;EnrichmentConfig&gt; = {}) {
-    this.config = { ...DEFAULT_CONFIG, ...config }
+  static getInstance(): ScrapingScheduler {
+    if (!ScrapingScheduler.instance) {
+      ScrapingScheduler.instance = new ScrapingScheduler()
+    }
+    return ScrapingScheduler.instance
   }
 &nbsp;
   /**
-   * Main enrichment method that orchestrates all enrichment processes
+   * Create a new scraping job
    */
-  async enrichCompetitorProfile(
-    competitorData: Partial&lt;CompetitorProfile&gt;,
-    userBusinessDomain?: string
-  ): Promise&lt;EnrichmentResult&gt; {
-    const result: EnrichmentResult = {
-      success: false,
-      confidence: 0,
-      sources: [],
-      errors: [],
-      warnings: [],
-    }
+  async createJob(params: CreateJobParams): Promise&lt;string&gt; {
+    const jobId = uuidv4()
+    const nextRunAt = this.calculateNextRun(params.frequencyType || 'interval', params.frequencyValue, params.frequencyTimezone)
 &nbsp;
-    try {
-      const enrichedData: CompetitorProfileUpdate = {}
-      let totalConfidence = 0
-      let confidenceCount = 0
+    await db.insert(scrapingJobs).values({
+      id: jobId,
+      competitor_id: params.competitorId,
+      user_id: params.userId,
+      job_type: params.jobType,
+      url: params.url,
+      priority: params.priority || 'medium',
+      frequency_type: params.frequencyType || 'interval',
+      frequency_value: params.frequencyValue,
+      frequency_timezone: params.frequencyTimezone,
+      next_run_at: nextRunAt,
+      max_retries: params.maxRetries || 3,
+      config: params.config || {},
+      status: 'pending'
+    })
 &nbsp;
-      // 1. Extract company information from website
-      if (this.config.enableWebScraping &amp;&amp; competitorData.domain) {
-        try {
-          const websiteInfo = await this.extractCompanyInfoFromWebsite(competitorData.domain)
-          if (websiteInfo.success) {
-            Object.assign(enrichedData, websiteInfo.data)
-            totalConfidence += websiteInfo.confidence
-            confidenceCount++
-            result.sources.push('company_website')
-          } else {
-            result.warnings.push(`Website extraction failed: ${websiteInfo.errors.join(', ')}`)
-          }
-        } catch (error) {
-<span class="cstat-no" title="statement not covered" >          result.warnings.push(`Website extraction error: ${error instanceof Error ? error.message : 'Unknown error'}`)</span>
-        }
-      }
+    // Schedule the job
+    this.scheduleJob(jobId, nextRunAt)
+    
+    return jobId
+  }
 &nbsp;
-      // 2. Discover and validate social media handles
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (this.config.enableSocialMediaDiscovery) {
-        try {
-          const socialMediaInfo = await this.discoverSocialMediaHandles(
-            competitorData.name || '',
-            competitorData.domain
+  /**
+   * Get jobs ready to run
+   */
+<span class="fstat-no" title="function not covered" >  async g</span>etJobsToRun(): Promise&lt;any[]&gt; {
+    const now = <span class="cstat-no" title="statement not covered" >new Date()</span>
+    
+<span class="cstat-no" title="statement not covered" >    return await db</span>
+      .select()
+      .from(scrapingJobs)
+      .where(
+        and(
+          lte(scrapingJobs.next_run_at, now),
+          inArray(scrapingJobs.status, ['pending', 'failed']),
+          or(
+            isNull(scrapingJobs.last_run_at),
+            sql`${scrapingJobs.retry_count} &lt; ${scrapingJobs.max_retries}`
           )
-          <span class="missing-if-branch" title="if path not taken" >I</span>if (socialMediaInfo.success) {
-<span class="cstat-no" title="statement not covered" >            enrichedData.socialMediaHandles = {</span>
-              ...enrichedData.socialMediaHandles,
-              ...socialMediaInfo.data?.socialMediaHandles,
-            }
-<span class="cstat-no" title="statement not covered" >            totalConfidence += socialMediaInfo.confidence</span>
-<span class="cstat-no" title="statement not covered" >            confidenceCount++</span>
-<span class="cstat-no" title="statement not covered" >            result.sources.push('social_media_discovery')</span>
-          } else {
-            result.warnings.push(`Social media discovery failed: ${socialMediaInfo.errors.join(', ')}`)
-          }
-        } catch (error) {
-<span class="cstat-no" title="statement not covered" >          result.warnings.push(`Social media discovery error: ${error instanceof Error ? error.message : 'Unknown error'}`)</span>
-        }
-      }
-&nbsp;
-      // 3. Identify key personnel
-      if (this.config.enablePersonnelMapping &amp;&amp; competitorData.domain) {
-        try {
-          const personnelInfo = await this.identifyKeyPersonnel(
-            competitorData.name || '',
-            competitorData.domain
-          )
-          if (personnelInfo.success) {
-            enrichedData.keyPersonnel = [
-              ...(enrichedData.keyPersonnel || []),
-              ...(personnelInfo.data?.keyPersonnel || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>,
-            ]
-            totalConfidence += personnelInfo.confidence
-            confidenceCount++
-            result.sources.push('personnel_mapping')
-          } else <span class="missing-if-branch" title="else path not taken" >E</span>{
-<span class="cstat-no" title="statement not covered" >            result.warnings.push(`Personnel mapping failed: ${personnelInfo.errors.join(', ')}`)</span>
-          }
-        } catch (error) {
-<span class="cstat-no" title="statement not covered" >          result.warnings.push(`Personnel mapping error: ${error instanceof Error ? error.message : 'Unknown error'}`)</span>
-        }
-      }
-&nbsp;
-      // 4. Assess threat level based on market overlap and company characteristics
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (this.config.enableThreatAssessment) {
-        try {
-          const threatAssessment = await this.assessThreatLevel(
-            { ...competitorData, ...enrichedData } as CompetitorProfile,
-            userBusinessDomain
-          )
-          if (threatAssessment.success) {
-            enrichedData.threatLevel = threatAssessment.data?.threatLevel
-            enrichedData.competitiveAdvantages = [
-              ...(enrichedData.competitiveAdvantages || []),
-              ...(threatAssessment.data?.competitiveAdvantages || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>,
-            ]
-            enrichedData.vulnerabilities = [
-              ...(enrichedData.vulnerabilities || []),
-              ...(threatAssessment.data?.vulnerabilities || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>,
-            ]
-            totalConfidence += threatAssessment.confidence
-            confidenceCount++
-            result.sources.push('threat_assessment')
-          } else <span class="missing-if-branch" title="else path not taken" >E</span>{
-<span class="cstat-no" title="statement not covered" >            result.warnings.push(`Threat assessment failed: ${threatAssessment.errors.join(', ')}`)</span>
-          }
-        } catch (error) {
-<span class="cstat-no" title="statement not covered" >          result.warnings.push(`Threat assessment error: ${error instanceof Error ? error.message : 'Unknown error'}`)</span>
-        }
-      }
-&nbsp;
-      // Calculate overall confidence
-      result.confidence = confidenceCount &gt; 0 ? totalConfidence / confidenceCount : <span class="branch-1 cbranch-no" title="branch not covered" >0</span>
-      result.data = enrichedData
-      result.success = Object.keys(enrichedData).length &gt; 0
-&nbsp;
-      return result
-    } catch (error) {
-<span class="cstat-no" title="statement not covered" >      result.errors.push(`Enrichment failed: ${error instanceof Error ? error.message : 'Unknown error'}`)</span>
-<span class="cstat-no" title="statement not covered" >      return result</span>
-    }
+        )
+      )
+      .orderBy(
+        desc(scrapingJobs.priority),
+        asc(scrapingJobs.next_run_at)
+      )
+      .limit(10)
   }
 &nbsp;
   /**
-   * Extract company information from website
+   * Update job status
    */
-  private async extractCompanyInfoFromWebsite(domain: string): Promise&lt;EnrichmentResult&gt; {
-    const result: EnrichmentResult = {
-      success: false,
-      confidence: 0,
-      sources: ['website_scraping'],
-      errors: [],
-      warnings: [],
+<span class="fstat-no" title="function not covered" >  async u</span>pdateJobStatus(jobId: string, status: JobStatus, lastRunAt?: Date): Promise&lt;void&gt; {
+    const updateData: any = <span class="cstat-no" title="statement not covered" >{ status }</span>
+<span class="cstat-no" title="statement not covered" >    if (lastRunAt) {</span>
+<span class="cstat-no" title="statement not covered" >      updateData.last_run_at = lastRunAt</span>
     }
 &nbsp;
-    try {
-      // Check rate limiting
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (!this.checkRateLimit('website_scraping')) {
-<span class="cstat-no" title="statement not covered" >        result.errors.push('Rate limit exceeded for website scraping')</span>
-<span class="cstat-no" title="statement not covered" >        return result</span>
-      }
+<span class="cstat-no" title="statement not covered" >    await db</span>
+      .update(scrapingJobs)
+      .set(updateData)
+      .where(eq(scrapingJobs.id, jobId))
+  }
 &nbsp;
-      // Simulate website scraping (in production, use actual web scraping)
-      // This would use libraries like Puppeteer, Playwright, or Cheerio
-      const websiteData = await this.simulateWebsiteScraping(domain)
+  /**
+   * Record job execution result
+   */
+<span class="fstat-no" title="function not covered" >  async r</span>ecordJobResult(jobId: string, result: JobResult): Promise&lt;void&gt; {
+    // Insert result record
+<span class="cstat-no" title="statement not covered" >    await db.insert(scrapingJobResults).values({</span>
+      job_id: jobId,
+      success: result.success,
+      data: result.data,
+      error: result.error,
+      execution_time: result.executionTime,
+      changes_detected: result.changesDetected,
+      retry_count: result.retryCount
+    })
+&nbsp;
+    // Update job based on result
+    const job = <span class="cstat-no" title="statement not covered" >await db</span>
+      .select()
+      .from(scrapingJobs)
+      .where(eq(scrapingJobs.id, jobId))
+      .limit(1)
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (job.length === 0) <span class="cstat-no" title="statement not covered" >return</span></span>
+&nbsp;
+    const currentJob = <span class="cstat-no" title="statement not covered" >job[0]</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (result.success) {</span>
+      // Success - schedule next run
+      const nextRun = <span class="cstat-no" title="statement not covered" >this.calculateNextRun(</span>
+        currentJob.frequency_type as FrequencyType,
+        currentJob.frequency_value,
+        currentJob.frequency_timezone
+      )
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      await db</span>
+        .update(scrapingJobs)
+        .set({
+          status: 'completed',
+          last_run_at: new Date(),
+          next_run_at: nextRun,
+          retry_count: 0
+        })
+        .where(eq(scrapingJobs.id, jobId))
+&nbsp;
+      // Schedule next execution
+<span class="cstat-no" title="statement not covered" >      this.scheduleJob(jobId, nextRun)</span>
+&nbsp;
+      // Store intelligence data if changes detected
+<span class="cstat-no" title="statement not covered" >      if (result.changesDetected &amp;&amp; result.data) {</span>
+<span class="cstat-no" title="statement not covered" >        await this.storeIntelligenceData(currentJob, result.data)</span>
+      }
+    } else {
+      // Failure - handle retry logic
+      const newRetryCount = <span class="cstat-no" title="statement not covered" >currentJob.retry_count + 1</span>
       
-      if (websiteData) {
-        result.data = {
-          description: websiteData.description,
-          industry: websiteData.industry,
-          headquarters: websiteData.headquarters,
-          foundedYear: websiteData.foundedYear,
-          employeeCount: websiteData.employeeCount,
-          products: websiteData.products,
-        }
-        result.confidence = 0.75 // Moderate confidence for simulated data
-        result.success = true
+<span class="cstat-no" title="statement not covered" >      if (newRetryCount &gt;= currentJob.max_retries) {</span>
+        // Max retries reached - mark as failed
+<span class="cstat-no" title="statement not covered" >        await db</span>
+          .update(scrapingJobs)
+          .set({
+            status: 'failed',
+            retry_count: newRetryCount
+          })
+          .where(eq(scrapingJobs.id, jobId))
       } else {
-        result.errors.push('No data extracted from website')
-      }
+        // Schedule retry with exponential backoff
+        const retryDelay = <span class="cstat-no" title="statement not covered" >this.calculateRetryDelay(newRetryCount)</span>
+        const nextRetry = <span class="cstat-no" title="statement not covered" >new Date(Date.now() + retryDelay)</span>
 &nbsp;
-      return result
-    } catch (error) {
-<span class="cstat-no" title="statement not covered" >      result.errors.push(`Website extraction error: ${error instanceof Error ? error.message : 'Unknown error'}`)</span>
-<span class="cstat-no" title="statement not covered" >      return result</span>
+<span class="cstat-no" title="statement not covered" >        await db</span>
+          .update(scrapingJobs)
+          .set({
+            status: 'pending',
+            retry_count: newRetryCount,
+            next_run_at: nextRetry
+          })
+          .where(eq(scrapingJobs.id, jobId))
+&nbsp;
+        // Schedule retry
+<span class="cstat-no" title="statement not covered" >        this.scheduleJob(jobId, nextRetry)</span>
+      }
     }
   }
 &nbsp;
   /**
-   * Discover and validate social media handles
+   * Schedule a job for execution
    */
-  private async discoverSocialMediaHandles(
-    companyName: string,
-    domain?: string
-  ): Promise&lt;EnrichmentResult&gt; {
-    const result: EnrichmentResult = {
-      success: false,
-      confidence: 0,
-      sources: ['social_media_apis'],
-      errors: [],
-      warnings: [],
+  private scheduleJob(jobId: string, runAt: Date): void {
+    // Clear existing timeout if any
+    const existingTimeout = this.jobQueue.get(jobId)
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (existingTimeout) {
+<span class="cstat-no" title="statement not covered" >      clearTimeout(existingTimeout)</span>
     }
 &nbsp;
-    try {
-      // Check rate limiting
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (!this.checkRateLimit('social_media_discovery')) {
-<span class="cstat-no" title="statement not covered" >        result.errors.push('Rate limit exceeded for social media discovery')</span>
-<span class="cstat-no" title="statement not covered" >        return result</span>
-      }
-&nbsp;
-      const socialHandles: SocialMediaHandles = {}
-      let foundHandles = 0
-&nbsp;
-      // Simulate social media handle discovery
-      // In production, this would use social media APIs or web scraping
-      const discoveredHandles = await this.simulateSocialMediaDiscovery(companyName, domain)
+    const delay = runAt.getTime() - Date.now()
+    
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (delay &lt;= 0) {
+      // Job should run immediately
+<span class="cstat-no" title="statement not covered" >      this.executeJob(jobId)</span>
+    } else {
+      // Schedule for future execution
+      const timeout = setTimeout(<span class="fstat-no" title="function not covered" >() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        this.executeJob(jobId)</span>
+      }, delay)
       
-      // Validate discovered handles
-      for (const [platform, url] of Object.entries(discoveredHandles)) {
-        if (this.validateSocialMediaUrl(platform as keyof SocialMediaHandles, url)) {
-          socialHandles[platform as keyof SocialMediaHandles] = url
-          foundHandles++
-        } else {
-          result.warnings.push(`Invalid ${platform} URL: ${url}`)
-        }
-      }
-&nbsp;
-      if (foundHandles &gt; 0) {
-        result.data = { socialMediaHandles }
-        result.confidence = Math.min(0.8, foundHandles * 0.2) // Higher confidence with more handles
-<span class="cstat-no" title="statement not covered" >        result.success = true</span>
-      } else {
-        result.warnings.push('No valid social media handles found')
-      }
-&nbsp;
-      return result
-    } catch (error) {
-      result.errors.push(`Social media discovery error: ${error instanceof Error ? error.message : <span class="branch-1 cbranch-no" title="branch not covered" >'Unknown error'}`)</span>
-      return result
+      this.jobQueue.set(jobId, timeout)
     }
   }
 &nbsp;
   /**
-   * Identify key personnel and their roles
+   * Execute a scraping job
    */
-  private async identifyKeyPersonnel(
-    companyName: string,
-    domain: string
-  ): Promise&lt;EnrichmentResult&gt; {
-    const result: EnrichmentResult = {
-      success: false,
-      confidence: 0,
-      sources: ['linkedin_api', 'company_website'],
-      errors: [],
-      warnings: [],
+<span class="fstat-no" title="function not covered" >  private async e</span>xecuteJob(jobId: string): Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >    if (this.runningJobs.has(jobId)) {</span>
+<span class="cstat-no" title="statement not covered" >      return /</span>/ Job already running
     }
 &nbsp;
-    try {
-      // Check rate limiting
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (!this.checkRateLimit('personnel_mapping')) {
-<span class="cstat-no" title="statement not covered" >        result.errors.push('Rate limit exceeded for personnel mapping')</span>
-<span class="cstat-no" title="statement not covered" >        return result</span>
-      }
+<span class="cstat-no" title="statement not covered" >    this.runningJobs.add(jobId)</span>
+<span class="cstat-no" title="statement not covered" >    this.jobQueue.delete(jobId)</span>
 &nbsp;
-      // Simulate personnel identification
-      // In production, this would use LinkedIn API, company websites, or business directories
-      const personnel = await this.simulatePersonnelIdentification(companyName, domain)
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >      await this.updateJobStatus(jobId, 'running', new Date())</span>
       
-      if (personnel.length &gt; 0) {
-        result.data = { keyPersonnel: personnel }
-        result.confidence = Math.min(0.7, personnel.length * 0.15) // Confidence based on number of personnel found
-        result.success = true
-      } else <span class="missing-if-branch" title="else path not taken" >E</span>{
-<span class="cstat-no" title="statement not covered" >        result.warnings.push('No key personnel identified')</span>
+      // Get job details
+      const job = <span class="cstat-no" title="statement not covered" >await db</span>
+        .select()
+        .from(scrapingJobs)
+        .where(eq(scrapingJobs.id, jobId))
+        .limit(1)
+&nbsp;
+<span class="cstat-no" title="statement not covered" >      if (job.length === 0) {</span>
+<span class="cstat-no" title="statement not covered" >        throw new Error(`Job ${jobId} not found`)</span>
       }
 &nbsp;
-      return result
+      const jobData = <span class="cstat-no" title="statement not covered" >job[0]</span>
+      const startTime = <span class="cstat-no" title="statement not covered" >Date.now()</span>
+&nbsp;
+      // Execute the actual scraping
+      const result = <span class="cstat-no" title="statement not covered" >await this.performScraping(jobData)</span>
+      const executionTime = <span class="cstat-no" title="statement not covered" >Date.now() - startTime</span>
+&nbsp;
+      // Record the result
+<span class="cstat-no" title="statement not covered" >      await this.recordJobResult(jobId, {</span>
+        ...result,
+        executionTime,
+        retryCount: jobData.retry_count
+      })
+&nbsp;
     } catch (error) {
-<span class="cstat-no" title="statement not covered" >      result.errors.push(`Personnel identification error: ${error instanceof Error ? error.message : 'Unknown error'}`)</span>
-<span class="cstat-no" title="statement not covered" >      return result</span>
-    }
-  }
-&nbsp;
-  /**
-   * Assess threat level based on market overlap and company characteristics
-   */
-  private async assessThreatLevel(
-    competitor: CompetitorProfile,
-    userBusinessDomain?: string
-  ): Promise&lt;EnrichmentResult&gt; {
-    const result: EnrichmentResult = {
-      success: false,
-      confidence: 0,
-      sources: ['market_analysis'],
-      errors: [],
-      warnings: [],
-    }
-&nbsp;
-    try {
-      let threatScore = 0
-      const advantages: string[] = []
-      const vulnerabilities: string[] = []
-&nbsp;
-      // Factor 1: Company size (employee count)
-      if (competitor.employeeCount) {
-        if (competitor.employeeCount &gt; 1000) {
-          threatScore += 30
-          advantages.push('Large workforce and resources')
-        } else if (competitor.employeeCount &gt; 100) {
-          threatScore += 20
-          advantages.push('Established team size')
-        } else <span class="missing-if-branch" title="else path not taken" >E</span>if (competitor.employeeCount &lt; 20) {
-          threatScore += 5
-          vulnerabilities.push('Limited workforce')
-        }
-      }
-&nbsp;
-      // Factor 2: Funding stage and amount
-      if (competitor.fundingStage) {
-        switch (competitor.fundingStage) {
-          case 'ipo':
-            threatScore += 40
-            advantages.push('Public company with significant resources')
-            break
-          case 'series-c':
-            threatScore += 30
-            advantages.push('Well-funded with proven market fit')
-            break
-<span class="branch-2 cbranch-no" title="branch not covered" >          case 'series-b':</span>
-<span class="cstat-no" title="statement not covered" >            threatScore += 20</span>
-<span class="cstat-no" title="statement not covered" >            advantages.push('Growing company with investor backing')</span>
-<span class="cstat-no" title="statement not covered" >            break</span>
-<span class="branch-3 cbranch-no" title="branch not covered" >          case 'series-a':</span>
-<span class="cstat-no" title="statement not covered" >            threatScore += 15</span>
-<span class="cstat-no" title="statement not covered" >            advantages.push('Early-stage funding secured')</span>
-<span class="cstat-no" title="statement not covered" >            break</span>
-          case 'seed':
-            threatScore += 10
-            vulnerabilities.push('Early-stage funding limitations')
-            break
-        }
-      }
-&nbsp;
-      // Factor 3: Market overlap (industry similarity)
-      if (competitor.industry &amp;&amp; userBusinessDomain) {
-        const industryOverlap = this.calculateIndustryOverlap(competitor.industry, userBusinessDomain)
-        threatScore += industryOverlap * 20
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (industryOverlap &gt; 0.7) {
-<span class="cstat-no" title="statement not covered" >          advantages.push('Direct market competitor')</span>
-        }
-      }
-&nbsp;
-      // Factor 4: Product portfolio size
-      if (competitor.products &amp;&amp; competitor.products.length &gt; 0) {
-        const activeProducts = competitor.products.filter(p =&gt; p.status === 'active').length
-        threatScore += Math.min(activeProducts * 5, 25)
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (activeProducts &gt; 5) {
-<span class="cstat-no" title="statement not covered" >          advantages.push('Diverse product portfolio')</span>
-        } else if (activeProducts === 1) {
-          vulnerabilities.push('Single product dependency')
-        }
-      }
-&nbsp;
-      // Factor 5: Social media presence (indicates market engagement)
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (competitor.socialMediaHandles) {
-        const socialPlatforms = <span class="cstat-no" title="statement not covered" >Object.keys(competitor.socialMediaHandles).length</span>
-<span class="cstat-no" title="statement not covered" >        threatScore += socialPlatforms * 2</span>
-<span class="cstat-no" title="statement not covered" >        if (socialPlatforms &gt;= 4) {</span>
-<span class="cstat-no" title="statement not covered" >          advantages.push('Strong social media presence')</span>
-        }
-      }
-&nbsp;
-      // Factor 6: Key personnel quality
-      if (competitor.keyPersonnel &amp;&amp; competitor.keyPersonnel.length &gt; 0) {
-        const executiveCount = competitor.keyPersonnel.filter(p =&gt; 
-          p.role.toLowerCase().includes('ceo') || 
-          p.role.toLowerCase().includes('cto') || 
-<span class="branch-2 cbranch-no" title="branch not covered" >          p.role.toLowerCase().includes('founder')</span>
-        ).length
-        threatScore += executiveCount * 5
-        <span class="missing-if-branch" title="else path not taken" >E</span>if (executiveCount &gt; 0) {
-          advantages.push('Experienced leadership team')
-        }
-      }
-&nbsp;
-      // Determine threat level based on score
-      let threatLevel: ThreatLevel
-      if (threatScore &gt;= 80) {
-        threatLevel = 'critical'
-      } else if (threatScore &gt;= 60) {
-        threatLevel = 'high'
-      } else if (threatScore &gt;= 30) {
-        threatLevel = 'medium'
-      } else {
-        threatLevel = 'low'
-      }
-&nbsp;
-      result.data = {
-        threatLevel,
-        competitiveAdvantages: advantages,
-        vulnerabilities: vulnerabilities,
-      }
-      result.confidence = 0.85 // High confidence in algorithmic assessment
-      result.success = true
-&nbsp;
-      return result
-    } catch (error) {
-<span class="cstat-no" title="statement not covered" >      result.errors.push(`Threat assessment error: ${error instanceof Error ? error.message : 'Unknown error'}`)</span>
-<span class="cstat-no" title="statement not covered" >      return result</span>
-    }
-  }
-&nbsp;
-  /**
-   * Calculate industry overlap between competitor and user business
-   */
-  private calculateIndustryOverlap(competitorIndustry: string, userBusinessDomain: string): number {
-    const competitorKeywords = competitorIndustry.toLowerCase().split(/\s+/)
-    const userKeywords = userBusinessDomain.toLowerCase().split(/\s+/)
-    
-    let overlapScore = 0
-    
-    // Check for direct industry matches
-    for (const [industry, keywords] of Object.entries(INDUSTRY_KEYWORDS)) {
-      const competitorMatches = keywords.filter(keyword =&gt; 
-        competitorKeywords.some(word =&gt; word.includes(keyword))
-      ).length
-      const userMatches = keywords.filter(keyword =&gt; 
-        userKeywords.some(word =&gt; word.includes(keyword))
-      ).length
+<span class="cstat-no" title="statement not covered" >      console.error(`Error executing job ${jobId}:`, error)</span>
       
-      if (competitorMatches &gt; 0 &amp;&amp; userMatches &gt; 0) {
-        overlapScore = Math.max(overlapScore, (competitorMatches + userMatches) / (keywords.length * 2))
-      }
+<span class="cstat-no" title="statement not covered" >      await this.recordJobResult(jobId, {</span>
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        executionTime: 0,
+        changesDetected: false,
+        retryCount: 0
+      })
+    } finally {
+<span class="cstat-no" title="statement not covered" >      this.runningJobs.delete(jobId)</span>
     }
-    
-    // Check for direct keyword overlap
-    const directOverlap = competitorKeywords.filter(word =&gt; 
-      userKeywords.some(userWord =&gt; userWord.includes(word) || word.includes(userWord))
-    ).length
-    
-    const directOverlapScore = directOverlap / Math.max(competitorKeywords.length, userKeywords.length)
-    
-    return Math.max(overlapScore, directOverlapScore)
   }
 &nbsp;
   /**
-   * Validate social media URL format
+   * Perform the actual scraping (placeholder - will be implemented with web scraper)
    */
-  private validateSocialMediaUrl(platform: keyof SocialMediaHandles, url: string): boolean {
-    const pattern = SOCIAL_MEDIA_PATTERNS[platform]
-    return pattern ? pattern.test(url) : <span class="branch-1 cbranch-no" title="branch not covered" >false</span>
+<span class="fstat-no" title="function not covered" >  private async p</span>erformScraping(job: any): Promise&lt;Omit&lt;JobResult, 'executionTime' | 'retryCount'&gt;&gt; {
+    // This is a placeholder implementation
+    // In the actual implementation, this would use the web scraper service
+    
+<span class="cstat-no" title="statement not covered" >    try {</span>
+      // Simulate scraping delay
+<span class="cstat-no" title="statement not covered" >      await new Promise(<span class="fstat-no" title="function not covered" >resolve =&gt; <span class="cstat-no" title="statement not covered" >s</span>etTimeout(resolve, 1000))</span></span>
+      
+      // Mock successful scraping result
+<span class="cstat-no" title="statement not covered" >      return {</span>
+        success: true,
+        data: {
+          url: job.url,
+          content: 'Mock scraped content',
+          timestamp: new Date().toISOString(),
+          jobType: job.job_type
+        },
+        changesDetected: Math.random() &gt; 0.7 // 30% chance of changes
+      }
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >      return {</span>
+        success: false,
+        error: error instanceof Error ? error.message : 'Scraping failed',
+        changesDetected: false
+      }
+    }
   }
 &nbsp;
   /**
-   * Check rate limiting for API calls
+   * Store intelligence data from successful scraping
    */
-  private checkRateLimit(operation: string): boolean {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (!this.config.respectRateLimit) return true
-    
-    const now = <span class="cstat-no" title="statement not covered" >Date.now()</span>
-    const lastCall = <span class="cstat-no" title="statement not covered" >this.rateLimitTracker.get(operation) || 0</span>
-    const minInterval = <span class="cstat-no" title="statement not covered" >1000 /</span>/ 1 second between calls
-    
-<span class="cstat-no" title="statement not covered" >    if (now - lastCall &lt; minInterval) {</span>
-<span class="cstat-no" title="statement not covered" >      return false</span>
-    }
-    
-<span class="cstat-no" title="statement not covered" >    this.rateLimitTracker.set(operation, now)</span>
-<span class="cstat-no" title="statement not covered" >    return true</span>
-  }
-&nbsp;
-  // Simulation methods (replace with actual implementations in production)
-  
-  private async simulateWebsiteScraping(domain: string): Promise&lt;CompanyInfo | null&gt; {
-    // Simulate network delay
-    await new Promise(resolve =&gt; setTimeout(resolve, 500))
-    
-    // Mock data based on domain
-    const mockData: Record&lt;string, CompanyInfo&gt; = {
-      'techcorp.com': {
-        name: 'TechCorp Solutions',
-        description: 'Leading provider of enterprise software solutions for modern businesses',
-        industry: 'Technology',
-        headquarters: 'San Francisco, CA',
-        foundedYear: 2015,
-        employeeCount: 250,
-        products: [
-          {
-            name: 'TechCorp Platform',
-            description: 'Enterprise automation platform',
-            category: 'Software',
-            status: 'active',
-            features: ['Automation', 'Analytics', 'Integration']
-          }
-        ]
-      }
-    }
-    
-    const domainKey = domain.replace(/^https?:\/\//, '').replace(/\/$/, '')
-    return mockData[domainKey] || null
-  }
-&nbsp;
-  private async simulateSocialMediaDiscovery(
-    companyName: string, 
-    domain?: string
-  ): Promise&lt;Record&lt;string, string&gt;&gt; {
-    // Simulate network delay
-    await new Promise(resolve =&gt; setTimeout(resolve, 300))
-    
-    const handles: Record&lt;string, string&gt; = {}
-    const cleanName = companyName.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '')
-    
-    // Simulate discovered handles
-    if (Math.random() &gt; 0.3) {
-      handles.linkedin = `https://linkedin.com/company/${cleanName}`
-    }
-    if (Math.random() &gt; 0.4) {
-      handles.twitter = `https://twitter.com/${cleanName}`
-    }
-    if (Math.random() &gt; 0.6) {
-      handles.facebook = `https://facebook.com/${cleanName}`
-    }
-    
-    return handles
-  }
-&nbsp;
-  private async simulatePersonnelIdentification(
-    companyName: string,
-    domain: string
-  ): Promise&lt;KeyPerson[]&gt; {
-    // Simulate network delay
-    await new Promise(resolve =&gt; setTimeout(resolve, 400))
-    
-    const mockPersonnel: KeyPerson[] = [
-      {
-        name: 'John Smith',
-        role: 'CEO &amp; Founder',
-        linkedinProfile: 'https://linkedin.com/in/johnsmith',
-        previousCompanies: ['Previous Corp', 'Startup Inc']
+<span class="fstat-no" title="function not covered" >  private async s</span>toreIntelligenceData(job: any, scrapedData: any): Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >    await db.insert(intelligenceData).values({</span>
+      competitor_id: job.competitor_id,
+      user_id: job.user_id,
+      source_type: 'website',
+      source_url: job.url,
+      data_type: job.job_type,
+      raw_content: scrapedData,
+      extracted_data: {
+        jobId: job.id,
+        scrapedAt: new Date().toISOString(),
+        changeDetected: true
       },
-      {
-        name: 'Sarah Johnson',
-        role: 'CTO',
-        linkedinProfile: 'https://linkedin.com/in/sarahjohnson',
-        previousCompanies: ['Tech Giant', 'Innovation Labs']
-      }
-    ]
-    
-    // Return random subset
-    return mockPersonnel.slice(0, Math.floor(Math.random() * mockPersonnel.length) + 1)
+      importance: this.mapPriorityToImportance(job.priority),
+      tags: [job.job_type, 'automated'],
+      collected_at: new Date()
+    })
   }
-}
 &nbsp;
-// Export singleton instance
-export const <span class="cstat-no" title="statement not covered" >competitorEnrichmentService </span>= new CompetitorEnrichmentService()
+  /**
+   * Calculate next run time based on frequency
+   */
+  private calculateNextRun(frequencyType: FrequencyType, frequencyValue: string, timezone?: string): Date {
+    const now = new Date()
+    
+    switch (frequencyType) {
+      case 'interval':
+        // Frequency value is in minutes
+        const minutes = parseInt(frequencyValue, 10)
+        return new Date(now.getTime() + minutes * 60 * 1000)
+      
+      case 'cron':
+        // For now, implement basic cron parsing
+        // In production, use a proper cron library like node-cron
+        return new Date(now.getTime() + 60 * 60 * 1000) // Default to 1 hour
+      
+      case 'manual':
+        // Manual jobs don't auto-schedule
+        return new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000) // 1 year in future
+      
+      default:
+        return new Date(now.getTime() + 60 * 60 * 1000) // Default to 1 hour
+    }
+  }
 &nbsp;
-// Export types for external use
-export type { EnrichmentResult, CompanyInfo, EnrichmentConfig }</pre></td></tr></table></pre>
+  /**
+   * Calculate retry delay with exponential backoff
+   */
+  private calculateRetryDelay(retryCount: number): number {
+    // Exponential backoff: 2^retryCount minutes, max 60 minutes
+    const baseDelay = Math.min(Math.pow(2, retryCount), 60) * 60 * 1000
+    // Add jitter to prevent thundering herd
+    const jitter = Math.random() * 0.1 * baseDelay
+    return baseDelay + jitter
+  }
+&nbsp;
+  /**
+   * Map job priority to intelligence importance
+   */
+  private mapPriorityToImportance(priority: string): string {
+    switch (priority) {
+      case 'critical': return 'critical'
+      case 'high': return 'high'
+      case 'medium': return 'medium'
+      case 'low': return 'low'
+      default: return 'medium'
+    }
+  }
+&nbsp;
+  /**
+   * Start the scheduler (process pending jobs)
+   */
+<span class="fstat-no" title="function not covered" >  async s</span>tart(): Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >    console.log('Starting scraping scheduler...')</span>
+    
+    // Load and schedule existing jobs
+    const pendingJobs = <span class="cstat-no" title="statement not covered" >await db</span>
+      .select()
+      .from(scrapingJobs)
+      .where(inArray(scrapingJobs.status, ['pending', 'failed']))
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    for (const job of pendingJobs) {</span>
+<span class="cstat-no" title="statement not covered" >      this.scheduleJob(job.id, job.next_run_at)</span>
+    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    console.log(`Scheduled ${pendingJobs.length} existing jobs`)</span>
+  }
+&nbsp;
+  /**
+   * Stop the scheduler
+   */
+  stop(): void {
+    console.log('Stopping scraping scheduler...')
+    
+    // Clear all timeouts
+    for (const timeout of this.jobQueue.values()) {
+      clearTimeout(timeout)
+    }
+    
+    this.jobQueue.clear()
+    console.log('Scraping scheduler stopped')
+  }
+&nbsp;
+  /**
+   * Get job statistics
+   */
+<span class="fstat-no" title="function not covered" >  async g</span>etJobStats(userId?: string): Promise&lt;any&gt; {
+    const baseQuery = <span class="cstat-no" title="statement not covered" >db.select({</span>
+      status: scrapingJobs.status,
+      count: sql&lt;number&gt;`count(*)`
+    }).from(scrapingJobs)
+&nbsp;
+    const query = <span class="cstat-no" title="statement not covered" >userId </span>
+      ? baseQuery.where(eq(scrapingJobs.user_id, userId))
+      : baseQuery
+&nbsp;
+    const stats = <span class="cstat-no" title="statement not covered" >await query.groupBy(scrapingJobs.status)</span>
+    
+<span class="cstat-no" title="statement not covered" >    return stats.reduce(<span class="fstat-no" title="function not covered" >(a</span>cc, stat) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >      acc[stat.status] = stat.count</span>
+<span class="cstat-no" title="statement not covered" >      return acc</span>
+    }, {} as Record&lt;string, number&gt;)
+  }
+&nbsp;
+  /**
+   * Pause a job
+   */
+<span class="fstat-no" title="function not covered" >  async p</span>auseJob(jobId: string): Promise&lt;void&gt; {
+<span class="cstat-no" title="statement not covered" >    await this.updateJobStatus(jobId, 'paused')</span>
+    
+    // Clear scheduled execution
+    const timeout = <span class="cstat-no" title="statement not covered" >this.jobQueue.get(jobId)</span>
+<span class="cstat-no" title="statement not covered" >    if (timeout) {</span>
+<span class="cstat-no" title="statement not covered" >      clearTimeout(timeout)</span>
+<span class="cstat-no" title="statement not covered" >      this.jobQueue.delete(jobId)</span>
+    }
+  }
+&nbsp;
+  /**
+   * Resume a paused job
+   */
+<span class="fstat-no" title="function not covered" >  async r</span>esumeJob(jobId: string): Promise&lt;void&gt; {
+    const job = <span class="cstat-no" title="statement not covered" >await db</span>
+      .select()
+      .from(scrapingJobs)
+      .where(eq(scrapingJobs.id, jobId))
+      .limit(1)
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    if (job.length === 0) {</span>
+<span class="cstat-no" title="statement not covered" >      throw new Error(`Job ${jobId} not found`)</span>
+    }
+&nbsp;
+    const jobData = <span class="cstat-no" title="statement not covered" >job[0]</span>
+    const nextRun = <span class="cstat-no" title="statement not covered" >this.calculateNextRun(</span>
+      jobData.frequency_type as FrequencyType,
+      jobData.frequency_value,
+      jobData.frequency_timezone
+    )
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    await db</span>
+      .update(scrapingJobs)
+      .set({
+        status: 'pending',
+        next_run_at: nextRun
+      })
+      .where(eq(scrapingJobs.id, jobId))
+&nbsp;
+<span class="cstat-no" title="statement not covered" >    this.scheduleJob(jobId, nextRun)</span>
+  }
+&nbsp;
+  /**
+   * Delete a job
+   */
+<span class="fstat-no" title="function not covered" >  async d</span>eleteJob(jobId: string): Promise&lt;void&gt; {
+    // Clear scheduled execution
+    const timeout = <span class="cstat-no" title="statement not covered" >this.jobQueue.get(jobId)</span>
+<span class="cstat-no" title="statement not covered" >    if (timeout) {</span>
+<span class="cstat-no" title="statement not covered" >      clearTimeout(timeout)</span>
+<span class="cstat-no" title="statement not covered" >      this.jobQueue.delete(jobId)</span>
+    }
+&nbsp;
+    // Remove from running jobs
+<span class="cstat-no" title="statement not covered" >    this.runningJobs.delete(jobId)</span>
+&nbsp;
+    // Delete from database (cascade will handle results)
+<span class="cstat-no" title="statement not covered" >    await db</span>
+      .delete(scrapingJobs)
+      .where(eq(scrapingJobs.id, jobId))
+  }
+}</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
