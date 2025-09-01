@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
-import { competitorAlerts, competitorProfiles, users } from '@/db/schema'
+import { competitorAlerts, competitorProfiles } from '@/db/schema'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import { z } from 'zod'
 import { eq, and, gte, desc, inArray } from 'drizzle-orm'
 import type { AlertSeverity } from '@/lib/competitor-intelligence-types'
 
-// Validation schema for notification preferences
-const NotificationPreferencesSchema = z.object({
+// Validation schema for notification preferences (for future use)
+const _NotificationPreferencesSchema = z.object({
   email: z.boolean().default(true),
   push: z.boolean().default(true),
   sms: z.boolean().default(false),
@@ -99,7 +99,7 @@ async function sendNotification(
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
     

@@ -36,6 +36,9 @@ next-env.d.ts
 # Local Netlify folder
 .netlify
 
+# Test coverage reports
+coverage/
+
 # secrets and sensitive files
 /secrets/
 *.json

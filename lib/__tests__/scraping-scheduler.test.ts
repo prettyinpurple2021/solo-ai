@@ -38,6 +38,8 @@ describe('ScrapingScheduler', () => {
 
   afterEach(() => {
     scheduler.stop()
+    // Force reset the singleton instance to prevent test interference
+    ;(ScrapingScheduler as any).instance = null
   })
 
   describe('createJob', () => {
@@ -131,6 +133,8 @@ describe('ScrapingQueueProcessor', () => {
 
   afterEach(() => {
     queueProcessor.stop()
+    // Force reset the singleton instance to prevent test interference
+    ;(queueProcessor.constructor as any).instance = null
   })
 
   describe('addJob', () => {
