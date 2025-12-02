@@ -28,8 +28,8 @@ const SendMessageSchema = z.object({
   toAgent: z.string().nullable().optional(), // null for broadcast, specific agent ID for direct message
   messageType: z.enum(['request', 'response', 'notification', 'handoff', 'broadcast']).default('request'),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
-  metadata: z.record(z.any()).optional(),
-  context: z.record(z.any()).optional()
+  metadata: z.record(z.string(), z.any()).optional(),
+  context: z.record(z.string(), z.any()).optional()
 })
 
 
@@ -143,12 +143,12 @@ export async function POST(
 
   } catch (error) {
     logError('Error sending message:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid message data',
-        details: error.errors
+        details: (error as z.ZodError).errors
       }, { status: 400 })
     }
 
@@ -207,7 +207,7 @@ export async function GET(
 
     // Get conversation context
     const conversationContext = await contextManager.getConversationContext(sessionId)
-    
+
     if (!conversationContext) {
       return NextResponse.json({
         success: true,
@@ -228,7 +228,7 @@ export async function GET(
     let filteredMessages = [...conversationContext.conversationHistory]
 
     if (priority) {
-      filteredMessages = filteredMessages.filter(msg => 
+      filteredMessages = filteredMessages.filter(msg =>
         msg.importance === priority || (priority === 'urgent' && msg.importance === 'high')
       )
     }

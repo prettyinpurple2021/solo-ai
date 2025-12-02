@@ -19,7 +19,7 @@ const requestSchema = z.object({
   message: z.string().min(1, 'Message is required').max(5000, 'Message is too long'),
   agentId: z.string().min(1).default('roxy'),
   preferredAgent: z.string().min(1).optional(),
-  context: z.record(z.any()).optional(),
+  context: z.record(z.string(), z.any()).optional(),
   stream: z.boolean().optional(),
 })
 

@@ -1,12 +1,12 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { opportunityRecommendationSystem} from '@/lib/opportunity-recommendation-system'
-import { db} from '@/db'
-import { competitiveOpportunities, opportunityMetrics} from '@/db/schema'
-import { eq, and} from 'drizzle-orm'
-import { z} from 'zod'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { opportunityRecommendationSystem } from '@/lib/opportunity-recommendation-system'
+import { db } from '@/db'
+import { competitiveOpportunities, opportunityMetrics } from '@/db/schema'
+import { eq, and } from 'drizzle-orm'
+import { z } from 'zod'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -163,10 +163,10 @@ export async function POST(
     }, { status: 201 })
   } catch (error) {
     logError('Error creating opportunity metric:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: (error as z.ZodError).errors },
         { status: 400 }
       )
     }
@@ -248,7 +248,7 @@ export async function PUT(
     })
   } catch (error) {
     logError('Error updating opportunity metric:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid request data', details: error.errors },

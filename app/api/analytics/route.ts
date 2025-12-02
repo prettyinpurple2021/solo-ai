@@ -1,9 +1,9 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { analytics} from '@/lib/analytics'
-import { z} from 'zod'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { analytics } from '@/lib/analytics'
+import { z } from 'zod'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -17,7 +17,7 @@ export const dynamic = 'force-dynamic'
 const AnalyticsEventSchema = z.object({
   event: z.enum([
     'user_signup',
-    'user_login', 
+    'user_login',
     'user_logout',
     'page_view',
     'ai_agent_interaction',
@@ -32,7 +32,7 @@ const AnalyticsEventSchema = z.object({
     'error_occurred',
     'performance_metric'
   ]),
-  properties: z.record(z.any()).default({}),
+  properties: z.record(z.string(), z.any()).default({}),
   timestamp: z.string().datetime().optional()
 })
 
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error tracking analytics event:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { error: 'Invalid event data', details: error.errors },

@@ -34,7 +34,7 @@ const CreateSessionSchema = z.object({
     maxParticipants: z.number().optional(),
     requiresHumanApproval: z.boolean().optional()
   }).optional(),
-  initialContext: z.record(z.any()).optional()
+  initialContext: z.record(z.string(), z.any()).optional()
 })
 
 const SessionResponseSchema = z.object({
@@ -110,12 +110,12 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error creating collaboration session:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid request data',
-        details: error.errors
+        details: (error as z.ZodError).errors
       }, { status: 400 })
     }
 
@@ -156,7 +156,7 @@ export async function GET(request: NextRequest) {
 
     // Get user's sessions
     const userSessions = sessionManager.getUserSessions(user.id.toString())
-    
+
     // Filter by status if provided
     let filteredSessions = userSessions
     if (status) {
@@ -172,7 +172,7 @@ export async function GET(request: NextRequest) {
     // Enhance sessions with state information
     const enhancedSessions = paginatedSessions.map(session => {
       const sessionState = sessionManager.getSessionState(session.id)
-      const agents = session.participatingAgents.map(agentId => 
+      const agents = session.participatingAgents.map(agentId =>
         collaborationHub.getAgent(agentId)
       ).filter(Boolean)
 

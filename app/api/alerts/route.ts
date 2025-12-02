@@ -1,16 +1,16 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { competitorAlerts, competitorProfiles, intelligenceData} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { z} from 'zod'
-import { eq, and, desc, asc, gte, lte, inArray} from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { competitorAlerts, competitorProfiles, intelligenceData } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { z } from 'zod'
+import { eq, and, desc, asc, gte, lte, inArray } from 'drizzle-orm'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
 
-import type { 
+import type {
   AlertSeverity,
   ActionItem,
   Recommendation
@@ -28,7 +28,7 @@ const AlertCreateSchema = z.object({
   severity: z.enum(['info', 'warning', 'urgent', 'critical']).default('info'),
   title: z.string().min(1).max(255),
   description: z.string().max(1000).optional(),
-  sourceData: z.record(z.any()).default({}),
+  sourceData: z.record(z.string(), z.any()).default({}),
   actionItems: z.array(z.object({
     id: z.string(),
     title: z.string(),
@@ -72,7 +72,7 @@ const AlertFiltersSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -80,10 +80,10 @@ export async function GET(request: NextRequest) {
     // Parse query parameters
     const url = new URL(request.url)
     const queryParams = Object.fromEntries(url.searchParams.entries())
-    
+
     // Parse parameters into correct types for schema
     const parsedParams: any = { ...queryParams }
-    
+
     // Parse arrays from query string
     if (parsedParams.competitorIds) {
       parsedParams.competitorIds = parsedParams.competitorIds
@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
     if (parsedParams.severity) {
       parsedParams.severity = parsedParams.severity.split(',')
     }
-    
+
     // Parse booleans
     if (parsedParams.isRead) {
       parsedParams.isRead = parsedParams.isRead === 'true'
@@ -105,7 +105,7 @@ export async function GET(request: NextRequest) {
     if (parsedParams.isArchived) {
       parsedParams.isArchived = parsedParams.isArchived === 'true'
     }
-    
+
     // Parse date range
     if (parsedParams.startDate && parsedParams.endDate) {
       parsedParams.dateRange = {
@@ -115,7 +115,7 @@ export async function GET(request: NextRequest) {
       delete parsedParams.startDate
       delete parsedParams.endDate
     }
-    
+
     // Convert string numbers to numbers
     if (parsedParams.page) parsedParams.page = parseInt(parsedParams.page as string)
     if (parsedParams.limit) parsedParams.limit = parseInt(parsedParams.limit as string)
@@ -288,14 +288,14 @@ export async function POST(request: NextRequest) {
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
     const parsed = AlertCreateSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },
@@ -387,7 +387,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { 
+      {
         alert: transformedAlert,
         competitor: {
           id: competitorInfo.id,

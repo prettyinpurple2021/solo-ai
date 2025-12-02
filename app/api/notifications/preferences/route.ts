@@ -15,7 +15,7 @@ const notificationChannelSchema = z.object({
   name: z.string(),
   type: z.enum(['email', 'push', 'slack', 'discord', 'webhook', 'in_app']),
   enabled: z.boolean(),
-  config: z.record(z.any()),
+  config: z.record(z.string(), z.any()),
   severityFilter: z.array(z.enum(['info', 'warning', 'urgent', 'critical'])),
   typeFilter: z.array(z.enum(['pricing_change', 'product_launch', 'funding_announcement', 'key_hire', 'negative_news', 'website_change', 'social_activity', 'job_posting', 'partnership'])),
 });
@@ -119,7 +119,7 @@ export async function PUT(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid preferences data', details: error.errors },
+        { error: 'Invalid preferences data', details: (error as z.ZodError).errors },
         { status: 400 }
       );
     }

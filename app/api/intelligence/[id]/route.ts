@@ -1,16 +1,16 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { intelligenceData, competitorProfiles} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { z} from 'zod'
-import { eq, and} from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { intelligenceData, competitorProfiles } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { z } from 'zod'
+import { eq, and } from 'drizzle-orm'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
 
 import type {
-  SourceType, 
+  SourceType,
   ImportanceLevel,
   ExtractedData,
   AnalysisResult
@@ -24,7 +24,7 @@ const IntelligenceUpdateSchema = z.object({
   extractedData: z.object({
     title: z.string().optional(),
     content: z.string().optional(),
-    metadata: z.record(z.any()).default({}),
+    metadata: z.record(z.string(), z.any()).default({}),
     entities: z.array(z.object({
       text: z.string(),
       type: z.enum(['person', 'organization', 'location', 'product', 'technology', 'other']),
@@ -51,7 +51,7 @@ export async function GET(
 ) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -137,7 +137,7 @@ export async function PUT(
 ) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -150,7 +150,7 @@ export async function PUT(
 
     const body = await request.json()
     const parsed = IntelligenceUpdateSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },
@@ -257,7 +257,7 @@ export async function DELETE(
 ) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

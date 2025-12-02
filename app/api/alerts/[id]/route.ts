@@ -1,16 +1,16 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { competitorAlerts, competitorProfiles, intelligenceData} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { CompetitiveIntelligenceGamificationTriggers} from '@/lib/competitive-intelligence-gamification-triggers'
-import { z} from 'zod'
-import { eq, and} from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { competitorAlerts, competitorProfiles, intelligenceData } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { CompetitiveIntelligenceGamificationTriggers } from '@/lib/competitive-intelligence-gamification-triggers'
+import { z } from 'zod'
+import { eq, and } from 'drizzle-orm'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
 
-import type { 
+import type {
   AlertSeverity,
   ActionItem,
   Recommendation
@@ -22,7 +22,7 @@ const AlertUpdateSchema = z.object({
   severity: z.enum(['info', 'warning', 'urgent', 'critical']).optional(),
   title: z.string().min(1).max(255).optional(),
   description: z.string().max(1000).optional(),
-  sourceData: z.record(z.any()).optional(),
+  sourceData: z.record(z.string(), z.any()).optional(),
   actionItems: z.array(z.object({
     id: z.string(),
     title: z.string(),
@@ -57,9 +57,9 @@ export async function GET(
   try {
     const params = await context.params
     const { id } = params
-    
+
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -157,9 +157,9 @@ export async function PUT(
   try {
     const params = await context.params
     const { id } = params
-    
+
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -171,7 +171,7 @@ export async function PUT(
 
     const body = await request.json()
     const parsed = AlertUpdateSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },
@@ -251,7 +251,7 @@ export async function PUT(
         .from(intelligenceData)
         .where(eq(intelligenceData.id, updatedAlert.intelligence_id))
         .limit(1)
-      
+
       intelligence = intelligenceResult.length > 0 ? intelligenceResult[0] : null
     }
 
@@ -306,9 +306,9 @@ export async function DELETE(
   try {
     const params = await context.params
     const { id } = params
-    
+
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

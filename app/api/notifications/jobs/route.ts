@@ -19,7 +19,7 @@ const createJobSchema = z.object({
   icon: z.string().url().optional(),
   badge: z.string().url().optional(),
   image: z.string().url().optional(),
-  data: z.record(z.any()).optional(),
+  data: z.record(z.string(), z.any()).optional(),
   actions: z.array(z.object({
     action: z.string(),
     title: z.string(),

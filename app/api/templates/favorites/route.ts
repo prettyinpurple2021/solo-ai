@@ -33,22 +33,22 @@ export async function POST(request: NextRequest) {
     // Handle favorite action
     const result = await handleFavoriteAction(authResult.user.id, templateId, action)
 
-    logInfo('Template favorite action completed', { 
-      userId: authResult.user.id, 
-      templateId, 
+    logInfo('Template favorite action completed', {
+      userId: authResult.user.id,
+      templateId,
       action,
-      isFavorite: result.isFavorite 
+      isFavorite: result.isFavorite
     })
-    
-    return NextResponse.json({ 
-      success: true, 
+
+    return NextResponse.json({
+      success: true,
       isFavorite: result.isFavorite,
       message: result.message
     })
   } catch (error) {
     logError('Error handling template favorite:', error)
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid request data', details: error.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid request data', details: (error as z.ZodError).errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -70,9 +70,9 @@ export async function GET(request: NextRequest) {
     const favorites = await getUserFavoriteTemplates(authResult.user.id)
 
     logInfo('User favorite templates fetched', { userId: authResult.user.id, count: favorites.length })
-    return NextResponse.json({ 
-      success: true, 
-      favorites 
+    return NextResponse.json({
+      success: true,
+      favorites
     })
   } catch (error) {
     logError('Error fetching favorite templates:', error)

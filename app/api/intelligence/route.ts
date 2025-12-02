@@ -1,24 +1,24 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { intelligenceData, competitorProfiles} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { intelligenceData, competitorProfiles } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
 import { createErrorResponse } from '@/lib/api-response'
-import { z} from 'zod'
-import { eq, and, or, desc, asc, gte, lte, inArray} from 'drizzle-orm'
+import { z } from 'zod'
+import { eq, and, or, desc, asc, gte, lte, inArray } from 'drizzle-orm'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
 
-import type { 
+import type {
   IntelligenceData,
   IntelligenceFilters,
   SourceType,
   ImportanceLevel,
   ExtractedData,
   AnalysisResult
- } from '@/lib/competitor-intelligence-types'
+} from '@/lib/competitor-intelligence-types'
 
 
 // Force dynamic rendering
@@ -34,7 +34,7 @@ const IntelligenceCreateSchema = z.object({
   extractedData: z.object({
     title: z.string().optional(),
     content: z.string().optional(),
-    metadata: z.record(z.any()).default({}),
+    metadata: z.record(z.string(), z.any()).default({}),
     entities: z.array(z.object({
       text: z.string(),
       type: z.enum(['person', 'organization', 'location', 'product', 'technology', 'other']),
@@ -47,7 +47,12 @@ const IntelligenceCreateSchema = z.object({
     }).optional(),
     topics: z.array(z.string()).default([]),
     keyInsights: z.array(z.string()).default([]),
-  }).default({}),
+  }).default({
+    metadata: {},
+    entities: [],
+    topics: [],
+    keyInsights: []
+  }),
   analysisResults: z.array(z.object({
     agentId: z.string(),
     analysisType: z.string(),
@@ -100,7 +105,7 @@ const IntelligenceFiltersSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return createErrorResponse('Unauthorized', 401)
     }
@@ -108,7 +113,7 @@ export async function GET(request: NextRequest) {
     // Parse query parameters
     const url = new URL(request.url)
     const queryParams = Object.fromEntries(url.searchParams.entries())
-    
+
     // Parse arrays from query string
     const parsedParams: any = { ...queryParams }
     if (queryParams.competitorIds) {
@@ -126,7 +131,7 @@ export async function GET(request: NextRequest) {
     if (queryParams.tags) {
       parsedParams.tags = queryParams.tags.split(',')
     }
-    
+
     // Parse date range
     if (queryParams.startDate && queryParams.endDate) {
       parsedParams.dateRange = {
@@ -136,7 +141,7 @@ export async function GET(request: NextRequest) {
       delete parsedParams.startDate
       delete parsedParams.endDate
     }
-    
+
     // Convert string numbers to numbers
     if (parsedParams.page) parsedParams.page = parseInt(parsedParams.page as string)
     if (parsedParams.limit) parsedParams.limit = parseInt(parsedParams.limit as string)
@@ -174,7 +179,7 @@ export async function GET(request: NextRequest) {
     if (filters.tags && filters.tags.length > 0) {
       // Use JSON contains operator for tags array
       conditions.push(
-        or(...filters.tags.map(_tag => 
+        or(...filters.tags.map(_tag =>
           // This is a simplified approach - in production you'd want proper JSON array contains
           eq(intelligenceData.tags, JSON.stringify(filters.tags))
         ))!
@@ -276,14 +281,14 @@ export async function POST(request: NextRequest) {
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return createErrorResponse('Unauthorized', 401)
     }
 
     const body = await request.json()
     const parsed = IntelligenceCreateSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },

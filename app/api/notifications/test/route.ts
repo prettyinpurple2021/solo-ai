@@ -1,10 +1,10 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server';
-import { authenticateRequest} from '@/lib/auth-server';
-import { rateLimitByIp} from '@/lib/rate-limit';
-import { notificationDelivery} from '@/lib/notification-delivery-system';
-import { CompetitorAlert} from '@/hooks/use-competitor-alerts';
-import { z} from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
+import { authenticateRequest } from '@/lib/auth-server';
+import { rateLimitByIp } from '@/lib/rate-limit';
+import { notificationDelivery } from '@/lib/notification-delivery-system';
+import { CompetitorAlert } from '@/hooks/use-competitor-alerts';
+import { z } from 'zod';
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -13,7 +13,7 @@ export const runtime = 'edge'
 const testNotificationSchema = z.object({
   channel_type: z.enum(['email', 'push', 'slack', 'discord', 'webhook']),
   severity: z.enum(['info', 'warning', 'urgent', 'critical']).default('info'),
-  config: z.record(z.any()).optional(),
+  config: z.record(z.string(), z.any()).optional(),
 });
 
 
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: result.success,
-      message: result.success 
+      message: result.success
         ? `Test notification sent successfully via ${channel_type}`
         : `Failed to send test notification: ${result.error}`,
       result,
@@ -79,10 +79,10 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error sending test notification:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid test parameters', details: error.errors },
+        { error: 'Invalid test parameters', details: (error as z.ZodError).errors },
         { status: 400 }
       );
     }

@@ -1,11 +1,11 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { intelligenceData, competitorProfiles} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { z} from 'zod'
-import { eq, and} from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { intelligenceData, competitorProfiles } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { z } from 'zod'
+import { eq, and } from 'drizzle-orm'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -53,7 +53,7 @@ const ProcessingRequestSchema = z.object({
   extractedData: z.object({
     title: z.string().optional(),
     content: z.string().optional(),
-    metadata: z.record(z.any()).default({}),
+    metadata: z.record(z.string(), z.any()).default({}),
     entities: z.array(z.object({
       text: z.string(),
       type: z.enum(['person', 'organization', 'location', 'product', 'technology', 'other']),
@@ -84,7 +84,7 @@ export async function POST(
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -97,7 +97,7 @@ export async function POST(
 
     const body = await request.json()
     const parsed = ProcessingRequestSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },
@@ -169,7 +169,7 @@ export async function POST(
 
     // Calculate overall confidence based on analysis results
     const overallConfidence = data.confidence || (
-      mergedAnalysisResults.length > 0 
+      mergedAnalysisResults.length > 0
         ? mergedAnalysisResults.reduce((sum, result) => sum + result.confidence, 0) / mergedAnalysisResults.length
         : parseFloat(currentIntelligence.confidence || '0')
     )

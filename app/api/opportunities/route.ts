@@ -1,10 +1,10 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { opportunityRecommendationSystem} from '@/lib/opportunity-recommendation-system'
-import { competitiveOpportunityDetector} from '@/lib/competitive-opportunity-detection'
-import { z} from 'zod'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { opportunityRecommendationSystem } from '@/lib/opportunity-recommendation-system'
+import { competitiveOpportunityDetector } from '@/lib/competitive-opportunity-detection'
+import { z } from 'zod'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -18,7 +18,7 @@ const createOpportunitySchema = z.object({
   competitorId: z.string(),
   opportunityType: z.enum([
     'competitor_weakness',
-    'market_gap', 
+    'market_gap',
     'pricing_opportunity',
     'talent_acquisition',
     'partnership_opportunity',
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
     // Parse query parameters
     const url = new URL(request.url)
     const queryParams = Object.fromEntries(url.searchParams.entries())
-    
+
     // Parse arrays from query string
     const parsedParams: any = { ...queryParams }
     if (queryParams.status) {
@@ -207,10 +207,10 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
   } catch (error) {
     logError('Error creating opportunity:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: (error as z.ZodError).errors },
         { status: 400 }
       )
     }

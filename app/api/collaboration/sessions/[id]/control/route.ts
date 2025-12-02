@@ -25,7 +25,7 @@ const JoinSessionSchema = z.object({
   action: z.literal('join'),
   agentId: z.string().min(1, 'Agent ID is required'),
   capabilities: z.array(z.string()).optional(),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.string(), z.any()).optional()
 })
 
 const LeaveSessionSchema = z.object({
@@ -121,7 +121,7 @@ export async function POST(
 
         // Get updated session to return participant info
         const updatedSession = sessionManager.getSession(sessionId)
-        
+
         return NextResponse.json({
           success: true,
           data: {
@@ -136,8 +136,8 @@ export async function POST(
       case 'leave':
         // Leave session
         const leaveResult = await sessionManager.leaveSession(
-          sessionId, 
-          validatedAction.agentId, 
+          sessionId,
+          validatedAction.agentId,
           validatedAction.reason
         )
 
@@ -189,7 +189,7 @@ export async function POST(
             status: 'paused',
             pausedAt: new Date().toISOString(),
             reason: validatedAction.reason,
-            autoResumeAt: validatedAction.duration ? 
+            autoResumeAt: validatedAction.duration ?
               new Date(Date.now() + validatedAction.duration * 60000).toISOString() : undefined
           },
           message: 'Session paused successfully'
@@ -250,12 +250,12 @@ export async function POST(
 
   } catch (error) {
     logError('Error performing session control action:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid control action data',
-        details: error.errors
+        details: (error as z.ZodError).errors
       }, { status: 400 })
     }
 
@@ -336,7 +336,7 @@ export async function GET(
       } else if (session.sessionStatus === 'paused') {
         availableActions.push('resume')
       }
-      
+
       if (session.sessionStatus !== 'cancelled') {
         availableActions.push('transfer')
       }

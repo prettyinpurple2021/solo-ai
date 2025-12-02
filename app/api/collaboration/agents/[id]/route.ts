@@ -24,7 +24,7 @@ const sessionManager = new SessionManager(collaborationHub, messageRouter)
 const ExecuteCapabilitySchema = z.object({
   capability: z.string().min(1, 'Capability name is required'),
   input: z.any().optional(),
-  context: z.record(z.any()).optional()
+  context: z.record(z.string(), z.any()).optional()
 })
 
 
@@ -77,7 +77,7 @@ export async function GET(
       return sum + (sessionState?.sessionMetrics?.averageResponseTime || 0)
     }, 0)
 
-    const averageResponseTime = agentSessions.length > 0 
+    const averageResponseTime = agentSessions.length > 0
       ? Math.round(totalResponseTime / agentSessions.length)
       : agent.responseTimeMs
 
@@ -207,12 +207,12 @@ export async function POST(
 
   } catch (error) {
     logError('Error executing agent capability:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid request data',
-        details: error.errors
+        details: (error as z.ZodError).errors
       }, { status: 400 })
     }
 

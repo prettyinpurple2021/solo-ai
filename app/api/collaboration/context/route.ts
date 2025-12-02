@@ -32,7 +32,7 @@ const StoreContextSchema = z.object({
   priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   tags: z.array(z.string()).default([]),
   expiresAt: z.string().datetime().optional(),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.string(), z.any()).optional()
 })
 
 // Context query schema
@@ -116,12 +116,12 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error storing context:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid context data',
-        details: error.errors
+        details: (error as z.ZodError).errors
       }, { status: 400 })
     }
 
@@ -149,7 +149,7 @@ export async function GET(request: NextRequest) {
 
     // Parse query parameters
     const { searchParams } = new URL(request.url)
-    
+
     const queryData = {
       sessionId: searchParams.get('sessionId') || undefined,
       agentId: searchParams.get('agentId') || undefined,
@@ -238,12 +238,12 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     logError('Error retrieving context:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid query parameters',
-        details: error.errors
+        details: (error as z.ZodError).errors
       }, { status: 400 })
     }
 

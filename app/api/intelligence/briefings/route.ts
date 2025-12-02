@@ -1,9 +1,9 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { intelligenceBriefingService} from '@/lib/intelligence-briefing-system'
-import { z} from 'zod'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { intelligenceBriefingService } from '@/lib/intelligence-briefing-system'
+import { z } from 'zod'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -28,14 +28,14 @@ export async function POST(request: NextRequest) {
       requests: 10,
       window: 60 * 1000 // 1 minute
     })
-    
+
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
         { error: 'Rate limit exceeded' },
         { status: 429 }
       )
     }
-    
+
     // Authentication
     const { user, error } = await authenticateRequest()
     if (error || !user) {
@@ -44,18 +44,18 @@ export async function POST(request: NextRequest) {
         { status: 401 }
       )
     }
-    
+
     const userId = user.id
-    
+
     // Parse and validate request body
     const body = await request.json()
     const validatedData = briefingRequestSchema.parse(body)
-    
+
     const { briefingType, competitorIds, topics, customization } = validatedData
-    
+
     // Generate briefing based on type
     let briefing
-    
+
     switch (briefingType) {
       case 'daily':
         briefing = await intelligenceBriefingService.generateDailyBriefing(
@@ -88,22 +88,22 @@ export async function POST(request: NextRequest) {
           { status: 400 }
         )
     }
-    
+
     return NextResponse.json({
       success: true,
       briefing
     })
-    
+
   } catch (error) {
     logError('Error generating intelligence briefing:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: (error as z.ZodError).errors },
         { status: 400 }
       )
     }
-    
+
     return NextResponse.json(
       { error: 'Failed to generate briefing' },
       { status: 500 }
@@ -118,14 +118,14 @@ export async function GET(request: NextRequest) {
       requests: 20,
       window: 60 * 1000 // 1 minute
     })
-    
+
     if (!rateLimitResult.allowed) {
       return NextResponse.json(
         { error: 'Rate limit exceeded' },
         { status: 429 }
       )
     }
-    
+
     // Authentication
     const { user, error } = await authenticateRequest()
     if (error || !user) {
@@ -134,25 +134,25 @@ export async function GET(request: NextRequest) {
         { status: 401 }
       )
     }
-    
+
     const userId = user.id
     const { searchParams } = new URL(request.url)
     const limit = parseInt(searchParams.get('limit') || '10')
-    
+
     // Get briefing history
     const briefings = await intelligenceBriefingService.getBriefingHistory(
       userId,
       limit
     )
-    
+
     return NextResponse.json({
       success: true,
       briefings
     })
-    
+
   } catch (error) {
     logError('Error fetching briefing history:', error)
-    
+
     return NextResponse.json(
       { error: 'Failed to fetch briefings' },
       { status: 500 }
