@@ -36,7 +36,7 @@ const jobSchema = z.object({
   userId: z.string(),
   agentId: z.string(),
   message: z.string(),
-  context: z.record(z.any()).optional(),
+  context: z.record(z.string(), z.any()).optional(),
   preferredAgent: z.string().optional(),
   status: z.enum(['queued', 'processing', 'completed', 'failed']),
   result: z

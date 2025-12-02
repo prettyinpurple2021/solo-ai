@@ -19,7 +19,7 @@ export const WorkflowNodeSchema = z.object({
     x: z.number(),
     y: z.number()
   }),
-  config: z.record(z.any()),
+  config: z.record(z.string(), z.any()),
   inputs: z.array(z.string()).default([]),
   outputs: z.array(z.string()).default([]),
   status: z.enum(['pending', 'running', 'completed', 'failed', 'skipped']).default('pending'),
@@ -45,10 +45,10 @@ export const WorkflowSchema = z.object({
   version: z.string().default('1.0.0'),
   status: z.enum(['draft', 'active', 'paused', 'archived']).default('draft'),
   triggerType: z.enum(['manual', 'scheduled', 'webhook', 'event', 'ai_trigger']),
-  triggerConfig: z.record(z.any()),
+  triggerConfig: z.record(z.string(), z.any()),
   nodes: z.array(WorkflowNodeSchema),
   edges: z.array(WorkflowEdgeSchema),
-  variables: z.record(z.any()).default({}),
+  variables: z.record(z.string(), z.any()).default({}),
   settings: z.object({
     timeout: z.number().default(300000), // 5 minutes
     retryAttempts: z.number().default(3),
@@ -253,7 +253,7 @@ export class WorkflowEngine {
         to: z.string().email(),
         subject: z.string(),
         template: z.string().optional(),
-        variables: z.record(z.any()).optional()
+        variables: z.record(z.string(), z.any()).optional()
       }),
       execute: async (config: unknown, _context) => {
         const configTyped = config as { to: string; subject: string; template?: string; variables?: Record<string, unknown> }

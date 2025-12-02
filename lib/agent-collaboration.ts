@@ -106,7 +106,7 @@ export class AgentCollaborationManager {
       id: taskId,
       title: customization?.title || workflow.title,
       description: customization?.description || workflow.description,
-      requiredAgents: [...new Set(workflow.phases.map((p) => p.agent))],
+      requiredAgents: Array.from(new Set(workflow.phases.map((p) => p.agent))),
       currentPhase: phases[0].id,
       phases,
       status: "in-progress",

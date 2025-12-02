@@ -21,7 +21,7 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
         this.name = String(fileName)
         this.lastModified = typeof options.lastModified === "number" ? options.lastModified : Date.now()
         this.type = options.type || ''
-        
+
         // Convert file bits to buffer
         const buffers: any[] = []
         for (const bit of fileBits) {
@@ -52,7 +52,7 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
         throw new Error('stream() not implemented in polyfill')
       }
     }
-    ;(globalThis as any).File = PolyfillFile
+    ; (globalThis as any).File = PolyfillFile
   }
 
   // Polyfill global FormData if not present
@@ -81,7 +81,7 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
       }
 
       *entries(): IterableIterator<[string, PolyfillFormDataEntryValue]> {
-        for (const [key, value] of this._data) {
+        for (const [key, value] of Array.from(this._data)) {
           yield [key, value]
         }
       }
@@ -102,9 +102,9 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
         return this.entries()
       }
     }
-    ;(globalThis as any).FormData = PolyfillFormData
+    ; (globalThis as any).FormData = PolyfillFormData
   }
 }
 
 
-export {}
+export { }

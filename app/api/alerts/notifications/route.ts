@@ -1,11 +1,11 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { competitorAlerts, competitorProfiles} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { z} from 'zod'
-import { eq, and, gte, desc, inArray, sql} from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { competitorAlerts, competitorProfiles } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { z } from 'zod'
+import { eq, and, gte, desc, inArray, sql } from 'drizzle-orm'
 import type { AlertSeverity } from '@/lib/competitor-intelligence-types'
 import { Resend } from 'resend'
 import webpush from 'web-push'
@@ -30,7 +30,12 @@ const _NotificationPreferencesSchema = z.object({
     start: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).default('22:00'), // HH:MM format
     end: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).default('08:00'),
     timezone: z.string().default('UTC'),
-  }).default({}),
+  }).default({
+    enabled: false,
+    start: '22:00',
+    end: '08:00',
+    timezone: 'UTC'
+  }),
   competitorFilters: z.array(z.number().int().positive()).optional(),
   alertTypeFilters: z.array(z.string()).optional(),
 })
@@ -64,7 +69,7 @@ function initializeServices() {
   if (!vapidConfigured) {
     const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
     const privateVapidKey = process.env.VAPID_PRIVATE_KEY
-    
+
     if (publicVapidKey && privateVapidKey && privateVapidKey !== 'your-private-key-here' && privateVapidKey.length > 20) {
       try {
         webpush.setVapidDetails(
@@ -95,7 +100,7 @@ function generateEmailContent(alerts: any[], template: string, priority: string)
     const severitySummary = []
     if (criticalCount > 0) severitySummary.push(`${criticalCount} critical`)
     if (urgentCount > 0) severitySummary.push(`${urgentCount} urgent`)
-    
+
     html = `
       <!DOCTYPE html>
       <html>
@@ -139,7 +144,7 @@ function generateEmailContent(alerts: any[], template: string, priority: string)
         </body>
       </html>
     `
-    
+
     text = `${subject}\n\nYou have ${alertCount} new competitor alert${alertCount > 1 ? 's' : ''}:\n\n${alerts.slice(0, 5).map(alert => `- ${alert.title} (${alert.competitor?.name || 'Unknown'}) - ${alert.severity.toUpperCase()}`).join('\n')}${alertCount > 5 ? `\n...and ${alertCount - 5} more` : ''}\n\nView all alerts: ${process.env.NEXT_PUBLIC_APP_URL || 'https://solobossai.fun'}/dashboard/competitors`
   } else if (template === 'detailed') {
     subject = `Detailed Competitor Intelligence: ${alertCount} Alert${alertCount > 1 ? 's' : ''}`
@@ -188,7 +193,7 @@ function generateEmailContent(alerts: any[], template: string, priority: string)
         </body>
       </html>
     `
-    
+
     text = alerts.map(alert => `${alert.title}\nCompetitor: ${alert.competitor?.name || 'Unknown'}\nSeverity: ${alert.severity.toUpperCase()}\n\n${alert.description}\n\n---\n`).join('\n')
   } else {
     // critical_only template
@@ -232,7 +237,7 @@ function generateEmailContent(alerts: any[], template: string, priority: string)
         </body>
       </html>
     `
-    
+
     text = `CRITICAL ALERTS - Immediate Attention Required\n\n${criticalAlerts.map(alert => `${alert.title}\nCompetitor: ${alert.competitor?.name || 'Unknown'}\n${alert.description}\n\n---\n`).join('\n')}`
   }
 
@@ -247,7 +252,7 @@ async function sendNotification(
   priority: string
 ): Promise<{ success: boolean; deliveredChannels: string[]; errors: string[] }> {
   initializeServices()
-  
+
   const deliveredChannels: string[] = []
   const errors: string[] = []
 
@@ -263,7 +268,7 @@ async function sendNotification(
       }
 
       const { subject, html, text } = generateEmailContent(alerts, template, priority)
-      
+
       const response = await resendClient.emails.send({
         from: process.env.FROM_EMAIL || 'SoloSuccess AI <alerts@solobossai.fun>',
         to: user.email,
@@ -282,7 +287,7 @@ async function sendNotification(
         template,
         priority,
       })
-      
+
       deliveredChannels.push('email')
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -311,9 +316,9 @@ async function sendNotification(
 
       const criticalCount = alerts.filter(a => a.severity === 'critical').length
       const alertCount = alerts.length
-      
+
       const payload = {
-        title: criticalCount > 0 
+        title: criticalCount > 0
           ? `🚨 ${criticalCount} Critical Alert${criticalCount > 1 ? 's' : ''}`
           : `${alertCount} New Competitor Alert${alertCount > 1 ? 's' : ''}`,
         body: criticalCount > 0
@@ -344,17 +349,17 @@ async function sendNotification(
           }
 
           await webpush.sendNotification(pushSubscription, JSON.stringify(payload))
-          
+
           await sql`
             UPDATE push_subscriptions 
             SET last_used_at = NOW() 
             WHERE id = ${subscription.id}
           `
-          
+
           successCount++
         } catch (error: any) {
           logError(`Failed to send push to subscription ${subscription.id}:`, error)
-          
+
           if (error.statusCode === 410 || error.statusCode === 404) {
             await sql`
               UPDATE push_subscriptions 
@@ -400,7 +405,7 @@ async function sendNotification(
       const phoneNumber = user.phone_number || user.phone
       const criticalCount = alerts.filter(a => a.severity === 'critical').length
       const alertCount = alerts.length
-      
+
       let message = ''
       if (criticalCount > 0) {
         message = `🚨 SoloSuccess Alert: ${criticalCount} CRITICAL competitor alert${criticalCount > 1 ? 's' : ''} require immediate attention. Check dashboard: ${process.env.NEXT_PUBLIC_APP_URL || 'https://solobossai.fun'}/dashboard/competitors`
@@ -419,7 +424,7 @@ async function sendNotification(
         alertCount: alerts.length,
         criticalCount,
       })
-      
+
       deliveredChannels.push('sms')
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
@@ -438,7 +443,7 @@ async function sendNotification(
 export async function GET(_request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -519,14 +524,14 @@ export async function POST(request: NextRequest) {
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
     const parsed = NotificationDeliverySchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },

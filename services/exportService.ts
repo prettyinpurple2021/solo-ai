@@ -34,10 +34,10 @@ ${report.missionBrief}
 - **Velocity:** ${report.metrics?.velocity || 'N/A'}/100
 
 ## 3. INTERCEPTED INTEL
-${report.intel.map(i => `- ${i}`).join('\n')}
+${report.intel?.map(i => `- ${i}`).join('\n') || 'No intel intercepted.'}
 
 ## 4. CRITICAL VULNERABILITIES
-${report.vulnerabilities.map(v => `- [WEAKNESS] ${v}`).join('\n')}
+${report.vulnerabilities?.map(v => `- [WEAKNESS] ${v}`).join('\n') || 'No vulnerabilities detected.'}
 
 ## 5. DEFENSIVE STRENGTHS
 ${report.strengths.map(s => `- [STRENGTH] ${s}`).join('\n')}

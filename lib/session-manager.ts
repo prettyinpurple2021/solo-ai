@@ -5,11 +5,11 @@
 
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { z } from 'zod'
-import type { 
-  CollaborationSession, 
-  AgentMessage, 
+import type {
+  CollaborationSession,
+  AgentMessage,
   CollaborationHub,
-  AgentDefinition 
+  AgentDefinition
 } from './collaboration-hub'
 import type { MessageRouter } from './message-router'
 
@@ -107,7 +107,7 @@ export class SessionManager {
   }): Promise<CollaborationSession> {
     try {
       const sessionId = crypto.randomUUID()
-      
+
       // Load template if specified
       let template: SessionTemplate | undefined
       if (config.templateId) {
@@ -119,7 +119,7 @@ export class SessionManager {
 
       // Determine required agents
       const requiredAgents = config.requiredAgents || template?.requiredAgents || []
-      
+
       // Validate agents exist and are available
       const availableAgents = requiredAgents.filter(agentId => {
         const agent = this.collaborationHub.getAgent(agentId)
@@ -196,7 +196,7 @@ export class SessionManager {
       this.sessionStates.set(sessionId, sessionState)
 
       logInfo(`✅ Session ${sessionId} created with ${availableAgents.length} agents`)
-      
+
       return session
 
     } catch (error) {
@@ -212,7 +212,7 @@ export class SessionManager {
     try {
       const session = this.activeSessions.get(sessionId)
       const sessionState = this.sessionStates.get(sessionId)
-      
+
       if (!session || !sessionState) {
         throw new Error(`Session ${sessionId} not found`)
       }
@@ -252,12 +252,12 @@ export class SessionManager {
       sessionState.participantCount = session.participatingAgents.length
       sessionState.updatedAt = new Date()
       sessionState.lastActivity = new Date()
-      
+
       this.sessionStates.set(sessionId, sessionState)
 
       // Notify other agents
       await this.sendSystemMessage(
-        sessionId, 
+        sessionId,
         `Agent ${agent.name} has joined the collaboration session.`,
         { newAgent: { id: agentId, name: agent.name, capabilities: agent.capabilities } }
       )
@@ -266,7 +266,7 @@ export class SessionManager {
       await this.createCheckpoint(sessionId, `Agent ${agentId} joined`)
 
       logInfo(`✅ Agent ${agentId} joined session ${sessionId}`)
-      
+
       return true
 
     } catch (error) {
@@ -282,7 +282,7 @@ export class SessionManager {
     try {
       const session = this.activeSessions.get(sessionId)
       const sessionState = this.sessionStates.get(sessionId)
-      
+
       if (!session || !sessionState) {
         throw new Error(`Session ${sessionId} not found`)
       }
@@ -294,7 +294,7 @@ export class SessionManager {
 
       // Remove agent from session
       session.participatingAgents.splice(agentIndex, 1)
-      
+
       // Update agent's current sessions
       const agent = this.collaborationHub.getAgent(agentId)
       if (agent) {
@@ -308,13 +308,13 @@ export class SessionManager {
       sessionState.participantCount = session.participatingAgents.length
       sessionState.updatedAt = new Date()
       sessionState.lastActivity = new Date()
-      
+
       this.sessionStates.set(sessionId, sessionState)
 
       // Notify other agents
       const agentName = agent?.name || agentId
       await this.sendSystemMessage(
-        sessionId, 
+        sessionId,
         `Agent ${agentName} has left the collaboration session.${reason ? ` Reason: ${reason}` : ''}`,
         { leftAgent: { id: agentId, name: agentName, reason } }
       )
@@ -328,7 +328,7 @@ export class SessionManager {
       }
 
       logInfo(`✅ Agent ${agentId} left session ${sessionId}`)
-      
+
       return true
 
     } catch (error) {
@@ -357,7 +357,7 @@ export class SessionManager {
 
       // Notify agents
       await this.sendSystemMessage(
-        sessionId, 
+        sessionId,
         `Session has been paused.${reason ? ` Reason: ${reason}` : ''}`,
         { pauseReason: reason }
       )
@@ -366,7 +366,7 @@ export class SessionManager {
       await this.createCheckpoint(sessionId, `Session paused: ${reason || 'Manual pause'}`)
 
       logInfo(`⏸️ Session ${sessionId} paused: ${reason || 'Manual pause'}`)
-      
+
       return true
 
     } catch (error) {
@@ -396,7 +396,7 @@ export class SessionManager {
 
       // Notify agents
       await this.sendSystemMessage(
-        sessionId, 
+        sessionId,
         'Session has been resumed. Collaboration can continue.',
         {}
       )
@@ -405,7 +405,7 @@ export class SessionManager {
       await this.createCheckpoint(sessionId, 'Session resumed')
 
       logInfo(`▶️ Session ${sessionId} resumed`)
-      
+
       return true
 
     } catch (error) {
@@ -421,7 +421,7 @@ export class SessionManager {
     try {
       const session = this.activeSessions.get(sessionId)
       const sessionState = this.sessionStates.get(sessionId)
-      
+
       if (!session || !sessionState) {
         throw new Error(`Session ${sessionId} not found`)
       }
@@ -448,7 +448,7 @@ export class SessionManager {
 
       // Send completion message
       await this.sendSystemMessage(
-        sessionId, 
+        sessionId,
         `Session completed successfully.${summary ? ` Summary: ${summary}` : ''}`,
         { completionSummary: summary }
       )
@@ -464,7 +464,7 @@ export class SessionManager {
       }, sessionState.configuration.autoArchiveAfter)
 
       logInfo(`✅ Session ${sessionId} completed`)
-      
+
       return true
 
     } catch (error) {
@@ -496,7 +496,7 @@ export class SessionManager {
 
       // In a real implementation, move to cold storage
       logInfo(`📦 Session ${sessionId} archived`)
-      
+
       return true
 
     } catch (error) {
@@ -550,13 +550,13 @@ export class SessionManager {
     try {
       const session = this.activeSessions.get(sessionId)
       const sessionState = this.sessionStates.get(sessionId)
-      
+
       if (!session || !sessionState) {
         throw new Error(`Session ${sessionId} not found`)
       }
 
       const checkpointId = crypto.randomUUID()
-      
+
       const checkpoint: SessionCheckpoint = {
         checkpointId,
         sessionId,
@@ -569,16 +569,16 @@ export class SessionManager {
 
       const checkpoints = this.sessionCheckpoints.get(sessionId) || []
       checkpoints.push(checkpoint)
-      
+
       // Keep only last 10 checkpoints to manage memory
       if (checkpoints.length > 10) {
         checkpoints.splice(0, checkpoints.length - 10)
       }
-      
+
       this.sessionCheckpoints.set(sessionId, checkpoints)
 
       logInfo(`📸 Checkpoint created for session ${sessionId}: ${description}`)
-      
+
       return checkpointId
 
     } catch (error) {
@@ -604,16 +604,16 @@ export class SessionManager {
 
       // Restore session state
       this.sessionStates.set(sessionId, { ...checkpoint.state })
-      
+
       // Notify agents about restoration
       await this.sendSystemMessage(
-        sessionId, 
+        sessionId,
         `Session restored from checkpoint created at ${checkpoint.timestamp.toISOString()}`,
         { restoredFromCheckpoint: checkpointId }
       )
 
       logInfo(`🔄 Session ${sessionId} restored from checkpoint ${checkpointId}`)
-      
+
       return true
 
     } catch (error) {
@@ -638,7 +638,7 @@ export class SessionManager {
         if (taskIndex !== -1) {
           sessionState.pendingTasks.splice(taskIndex, 1)
         }
-        
+
         if (!sessionState.completedTasks.includes(taskId)) {
           sessionState.completedTasks.push(taskId)
         }
@@ -648,7 +648,7 @@ export class SessionManager {
         if (taskIndex !== -1) {
           sessionState.completedTasks.splice(taskIndex, 1)
         }
-        
+
         if (!sessionState.pendingTasks.includes(taskId)) {
           sessionState.pendingTasks.push(taskId)
         }
@@ -658,7 +658,7 @@ export class SessionManager {
       this.sessionStates.set(sessionId, sessionState)
 
       logInfo(`📝 Task ${taskId} marked as ${status} in session ${sessionId}`)
-      
+
       return true
 
     } catch (error) {
@@ -671,8 +671,8 @@ export class SessionManager {
    * Send system message to session
    */
   private async sendSystemMessage(
-    sessionId: string, 
-    content: string, 
+    sessionId: string,
+    content: string,
     context?: Record<string, any>
   ): Promise<void> {
     const systemMessage: AgentMessage = {
@@ -772,7 +772,7 @@ export class SessionManager {
     const now = Date.now()
     const sessionsToArchive: string[] = []
 
-    for (const [sessionId, sessionState] of this.sessionStates.entries()) {
+    for (const [sessionId, sessionState] of Array.from(this.sessionStates.entries())) {
       const timeSinceActivity = now - sessionState.lastActivity.getTime()
       const maxDuration = sessionState.configuration.maxDuration
 

@@ -23,18 +23,18 @@ async function getStripeInstance() {
   if (!process.env.STRIPE_SECRET_KEY) {
     return null
   }
-  
+
   if (!stripeInstance) {
     const StripeClass = await loadStripe()
     if (!StripeClass) {
       return null
     }
     stripeInstance = new StripeClass(process.env.STRIPE_SECRET_KEY, {
-      apiVersion: '2025-08-27.basil',
+      apiVersion: '2024-06-20',
       typescript: true,
-    })
+    } as any)
   }
-  
+
   return stripeInstance
 }
 
@@ -182,7 +182,7 @@ export function hasFeatureAccess(
 ): boolean {
   const tier = getSubscriptionTier(userTier)
   if (!tier) return false
-  
+
   const limit = tier.limits[feature]
   return limit === -1 || (typeof limit === 'number' && limit > 0) // -1 means unlimited
 }
@@ -194,7 +194,7 @@ export function getFeatureLimit(
 ): number {
   const tier = getSubscriptionTier(userTier)
   if (!tier) return 0
-  
+
   return typeof tier.limits[feature] === 'number' ? tier.limits[feature] : 0
 }
 
@@ -219,7 +219,7 @@ export async function createStripeCustomer(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   return await stripe.customers.create({
     email,
     name,
@@ -242,7 +242,7 @@ export async function createCheckoutSession(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   return await stripe.checkout.sessions.create({
     customer: customerId,
     payment_method_types: ['card'],
@@ -277,7 +277,7 @@ export async function createBillingPortalSession(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   return await stripe.billingPortal.sessions.create({
     customer: customerId,
     return_url: returnUrl,
@@ -292,7 +292,7 @@ export async function getStripeSubscription(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   return await stripe.subscriptions.retrieve(subscriptionId)
 }
 
@@ -305,7 +305,7 @@ export async function cancelStripeSubscription(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   if (immediately) {
     return await stripe.subscriptions.cancel(subscriptionId)
   } else {
@@ -324,9 +324,9 @@ export async function updateStripeSubscription(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   const subscription = await stripe.subscriptions.retrieve(subscriptionId)
-  
+
   return await stripe.subscriptions.update(subscriptionId, {
     items: [
       {
@@ -346,7 +346,7 @@ export async function getStripeCustomer(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   return await stripe.customers.retrieve(customerId) as import('stripe').Stripe.Customer
 }
 
@@ -358,12 +358,12 @@ export async function listStripeSubscriptions(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   const subscriptions = await stripe.subscriptions.list({
     customer: customerId,
     status: 'all'
   })
-  
+
   return subscriptions.data
 }
 
@@ -376,12 +376,12 @@ export async function listStripeCustomers(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   const customers = await stripe.customers.list({
     limit,
     starting_after: startingAfter
   })
-  
+
   return customers.data
 }
 
@@ -398,12 +398,12 @@ export async function getStripeCustomersPaginated(
   if (!stripe) {
     throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
   }
-  
+
   const customers = await stripe.customers.list({
     limit,
     starting_after: startingAfter
   })
-  
+
   return {
     customers: customers.data,
     hasMore: customers.has_more,

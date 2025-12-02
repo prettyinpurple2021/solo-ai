@@ -55,11 +55,11 @@ export class MessageRouter {
     failedDeliveries: number
     averageDeliveryTime: number
   } = {
-    totalMessages: 0,
-    successfulDeliveries: 0,
-    failedDeliveries: 0,
-    averageDeliveryTime: 0
-  }
+      totalMessages: 0,
+      successfulDeliveries: 0,
+      failedDeliveries: 0,
+      averageDeliveryTime: 0
+    }
 
   constructor(hub: CollaborationHub) {
     this.collaborationHub = hub
@@ -71,7 +71,7 @@ export class MessageRouter {
    */
   async routeMessage(message: AgentMessage): Promise<MessageDeliveryResult> {
     const startTime = Date.now()
-    
+
     try {
       // Validate message
       if (!message.sessionId) {
@@ -92,7 +92,7 @@ export class MessageRouter {
 
       // Determine recipients
       const recipients = await this.determineRecipients(processedMessage)
-      
+
       if (recipients.length === 0) {
         return {
           messageId: message.id,
@@ -120,7 +120,7 @@ export class MessageRouter {
 
       // Deliver message
       const deliveryResult = await this.deliverMessage(processedMessage, recipients)
-      
+
       // Update routing status
       route.deliveryStatus = deliveryResult.failed.length === 0 ? 'delivered' : 'failed'
       this.routingHistory.set(message.id, route)
@@ -164,8 +164,8 @@ export class MessageRouter {
       throw new Error(`Session ${message.sessionId} not found`)
     }
 
-    const recipients = session.participatingAgents.filter(agentId => 
-      agentId !== message.fromAgent && 
+    const recipients = session.participatingAgents.filter(agentId =>
+      agentId !== message.fromAgent &&
       !(excludeAgents?.includes(agentId))
     )
 
@@ -181,7 +181,7 @@ export class MessageRouter {
       context?: Record<string, any>
       requiredCapabilities?: string[]
       excludeAgents?: string[]
-    }, 
+    },
     sessionId: string
   ): Promise<string | null> {
     const session = this.collaborationHub.getSession(sessionId)
@@ -201,11 +201,11 @@ export class MessageRouter {
     // Score agents based on capabilities and specializations
     const agentScores = availableAgents.map(agent => {
       let score = 0
-      
+
       // Score based on required capabilities
       if (request.requiredCapabilities?.length) {
         const matchingCapabilities = request.requiredCapabilities.filter(cap =>
-          agent.capabilities.some(agentCap => 
+          agent.capabilities.some(agentCap =>
             agentCap.toLowerCase().includes(cap.toLowerCase()) ||
             cap.toLowerCase().includes(agentCap.toLowerCase())
           )
@@ -231,7 +231,7 @@ export class MessageRouter {
     })
 
     // Return the highest scoring agent
-    const bestAgent = agentScores.reduce((best, current) => 
+    const bestAgent = agentScores.reduce((best, current) =>
       current.score > best.score ? current : best
     )
 
@@ -243,14 +243,14 @@ export class MessageRouter {
    */
   async establishCommunicationChannel(agents: string[], sessionId: string): Promise<string> {
     const channelId = crypto.randomUUID()
-    
+
     // Validate agents exist in the session
     const session = this.collaborationHub.getSession(sessionId)
     if (!session) {
       throw new Error(`Session ${sessionId} not found`)
     }
 
-    const validAgents = agents.filter(agentId => 
+    const validAgents = agents.filter(agentId =>
       session.participatingAgents.includes(agentId)
     )
 
@@ -262,7 +262,7 @@ export class MessageRouter {
     const channelRule: RoutingRule = {
       id: channelId,
       name: `Channel for agents: ${validAgents.join(', ')}`,
-      condition: (message) => 
+      condition: (message) =>
         message.sessionId === sessionId &&
         validAgents.includes(message.fromAgent) &&
         message.metadata?.channelId === channelId,
@@ -275,7 +275,7 @@ export class MessageRouter {
     this.routingRules.set(channelId, channelRule)
 
     logInfo(`✅ Communication channel ${channelId} established for agents: ${validAgents.join(', ')}`)
-    
+
     return channelId
   }
 
@@ -308,7 +308,7 @@ export class MessageRouter {
    * Apply routing rules to a message
    */
   private async applyRoutingRules(message: AgentMessage): Promise<AgentMessage | null> {
-    for (const rule of this.routingRules.values()) {
+    for (const rule of Array.from(this.routingRules.values())) {
       if (!rule.enabled) continue
 
       try {
@@ -317,25 +317,25 @@ export class MessageRouter {
             case 'block':
               logInfo(`Message ${message.id} blocked by rule: ${rule.name}`)
               return null
-              
+
             case 'transform':
               // Apply transformations (priority, target agents, etc.)
               if (rule.priority) {
                 message.priority = rule.priority
               }
               break
-              
+
             case 'route':
               // Override target agents if specified
               if (rule.targetAgents?.length) {
                 message.toAgent = rule.targetAgents[0] // For now, route to first agent
-                message.metadata = { 
-                  ...message.metadata, 
-                  alternativeTargets: rule.targetAgents.slice(1) 
+                message.metadata = {
+                  ...message.metadata,
+                  alternativeTargets: rule.targetAgents.slice(1)
                 }
               }
               break
-              
+
             case 'duplicate':
               // Create duplicate messages for multiple targets
               if (rule.targetAgents?.length) {
@@ -371,7 +371,7 @@ export class MessageRouter {
       // Broadcast - get all agents in session except sender
       const session = this.collaborationHub.getSession(message.sessionId)
       if (!session) return []
-      
+
       return session.participatingAgents.filter(agentId => agentId !== message.fromAgent)
     } else {
       // Direct message
@@ -397,15 +397,15 @@ export class MessageRouter {
 
         // Add message to agent's queue
         this.addToQueue(agentId, message)
-        
+
         // For now, consider delivery successful
         // In a real implementation, this would interface with the actual AI agents
         successful.push(agentId)
 
       } catch (error) {
-        failed.push({ 
-          agentId, 
-          error: error instanceof Error ? error.message : 'Unknown delivery error' 
+        failed.push({
+          agentId,
+          error: error instanceof Error ? error.message : 'Unknown delivery error'
         })
       }
     }
@@ -426,13 +426,13 @@ export class MessageRouter {
     if (!this.messageQueue.has(agentId)) {
       this.messageQueue.set(agentId, [])
     }
-    
+
     const queue = this.messageQueue.get(agentId)!
-    
+
     // Insert based on priority
     const priorityOrder = { urgent: 0, high: 1, medium: 2, low: 3 }
     const messagePriority = priorityOrder[message.priority || 'medium']
-    
+
     let insertIndex = queue.length
     for (let i = 0; i < queue.length; i++) {
       const queuedPriority = priorityOrder[queue[i].priority || 'medium']
@@ -441,7 +441,7 @@ export class MessageRouter {
         break
       }
     }
-    
+
     queue.splice(insertIndex, 0, message)
   }
 
@@ -460,7 +460,7 @@ export class MessageRouter {
     this.messageStats.totalMessages++
     this.messageStats.successfulDeliveries += deliveryResult.successful.length
     this.messageStats.failedDeliveries += deliveryResult.failed.length
-    
+
     // Update average delivery time
     const currentAvg = this.messageStats.averageDeliveryTime
     const newAvg = (currentAvg * (this.messageStats.totalMessages - 1) + deliveryResult.deliveryTime) / this.messageStats.totalMessages

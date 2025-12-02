@@ -123,7 +123,7 @@ export class WebScrapingService {
    */
   async scrapeCompetitorWebsite(url: string): Promise<ScrapingResult<WebsiteData>> {
     const startTime = Date.now()
-    
+
     try {
       // Check cache first
       const cached = this.getFromCache(`website:${url}`)
@@ -156,15 +156,15 @@ export class WebScrapingService {
       const result = await this.executeWithRetry(async () => {
         const response = await this.fetchWithTimeout(url)
         const html = response.body
-        
+
         // Simple text extraction without cheerio
         const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i)
         const title = titleMatch ? titleMatch[1].trim() : ''
-        
+
         const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i) ||
-                         html.match(/<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']*)["']/i)
+          html.match(/<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']*)["']/i)
         const description = descMatch ? descMatch[1] : undefined
-        
+
         return {
           url,
           title,
@@ -199,7 +199,7 @@ export class WebScrapingService {
    */
   async detectWebsiteChanges(url: string, previousContent?: string): Promise<ScrapingResult<ChangeDetection[]>> {
     const startTime = Date.now()
-    
+
     try {
       const scrapingResult = await this.scrapeCompetitorWebsite(url)
       if (!scrapingResult.success || !scrapingResult.data) {
@@ -213,7 +213,7 @@ export class WebScrapingService {
       }
 
       const changes: ChangeDetection[] = []
-      
+
       if (previousContent) {
         const currentContent = scrapingResult.data.content
         const contentChanges = this.detectContentChanges(previousContent, currentContent, url)
@@ -243,7 +243,7 @@ export class WebScrapingService {
    */
   async monitorPricingPages(url: string): Promise<ScrapingResult<PricingData>> {
     const startTime = Date.now()
-    
+
     try {
       const cached = this.getFromCache(`pricing:${url}`)
       if (cached) {
@@ -304,7 +304,7 @@ export class WebScrapingService {
    */
   async trackProductPages(url: string): Promise<ScrapingResult<ProductData>> {
     const startTime = Date.now()
-    
+
     try {
       const cached = this.getFromCache(`products:${url}`)
       if (cached) {
@@ -365,7 +365,7 @@ export class WebScrapingService {
    */
   async scrapeJobPostings(url: string): Promise<ScrapingResult<JobPosting[]>> {
     const startTime = Date.now()
-    
+
     try {
       const cached = this.getFromCache(`jobs:${url}`)
       if (cached) {
@@ -428,7 +428,7 @@ export class WebScrapingService {
 
     try {
       const domain = this.getDomain(url)
-      
+
       // Check cache first
       if (this.robotsCache.has(domain)) {
         const robots = this.robotsCache.get(domain)
@@ -439,10 +439,10 @@ export class WebScrapingService {
       const robotsUrl = `${domain}/robots.txt`
       const response = await this.fetchWithTimeout(robotsUrl)
       const robots = robotsParser(robotsUrl, response.body)
-      
+
       // Cache the robots.txt for future use
       this.robotsCache.set(domain, robots)
-      
+
       return robots.isAllowed(url, this.config.userAgent) ?? true
     } catch (error) {
       // If robots.txt is not accessible, allow scraping but log warning
@@ -455,18 +455,18 @@ export class WebScrapingService {
     const now = Date.now()
     const lastRequest = this.rateLimitTracker.get(domain) || 0
     const timeSinceLastRequest = now - lastRequest
-    
+
     if (timeSinceLastRequest < this.config.requestDelay) {
       const waitTime = this.config.requestDelay - timeSinceLastRequest
       await new Promise(resolve => setTimeout(resolve, waitTime))
     }
-    
+
     this.rateLimitTracker.set(domain, Date.now())
   }
 
   private async executeWithRetry<T>(operation: () => Promise<T>): Promise<ScrapingResult<T>> {
     let lastError: Error | null = null
-    
+
     for (let attempt = 0; attempt <= this.config.maxRetries; attempt++) {
       try {
         const data = await operation()
@@ -479,12 +479,12 @@ export class WebScrapingService {
         }
       } catch (error) {
         lastError = error instanceof Error ? error : new Error('Unknown error')
-        
+
         // Don't retry on certain errors
         if (lastError.message.includes('HTTP 4') || lastError.message.includes('robots.txt')) {
           break
         }
-        
+
         if (attempt < this.config.maxRetries) {
           // Exponential backoff with max delay
           const delay = Math.min(Math.pow(2, attempt) * 1000, 5000)
@@ -492,7 +492,7 @@ export class WebScrapingService {
         }
       }
     }
-    
+
     return {
       success: false,
       error: lastError?.message || 'Operation failed after retries',
@@ -505,7 +505,7 @@ export class WebScrapingService {
   private async fetchWithTimeout(url: string): Promise<{ body: string; status: number }> {
     const controller = new AbortController()
     const timeoutId = setTimeout(() => controller.abort(), this.config.timeout)
-    
+
     try {
       const response = await fetch(url, {
         headers: {
@@ -517,13 +517,13 @@ export class WebScrapingService {
         },
         signal: controller.signal,
       })
-      
+
       clearTimeout(timeoutId)
-      
+
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`)
       }
-      
+
       const body = await response.text()
       return { body, status: response.status }
     } catch (error) {
@@ -543,15 +543,15 @@ export class WebScrapingService {
 
   private extractSimpleMetadata(html: string): Record<string, any> {
     const metadata: Record<string, any> = {}
-    
+
     // Extract basic meta tags with regex
     const metaRegex = /<meta[^>]*(?:name|property)=["']([^"']+)["'][^>]*content=["']([^"']*)["'][^>]*/gi
     let match
-    
+
     while ((match = metaRegex.exec(html)) !== null) {
       metadata[match[1]] = match[2]
     }
-    
+
     // Try to extract JSON-LD structured data
     const structuredDataRegex = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([^<]*)<\/script>/gi
     const structuredDataMatches = html.match(structuredDataRegex)
@@ -569,18 +569,18 @@ export class WebScrapingService {
         }
       })
     }
-    
+
     return metadata
   }
 
   private detectContentChanges(oldContent: string, newContent: string, url: string): ChangeDetection[] {
     const changes: ChangeDetection[] = []
-    
+
     // Simple text-based change detection
     if (oldContent !== newContent) {
       // Calculate similarity (simplified)
       const similarity = this.calculateSimilarity(oldContent, newContent)
-      
+
       changes.push({
         url,
         changeType: 'content',
@@ -590,7 +590,7 @@ export class WebScrapingService {
         detectedAt: new Date(),
       })
     }
-    
+
     return changes
   }
 
@@ -598,35 +598,35 @@ export class WebScrapingService {
     // Simple Jaccard similarity
     const set1 = new Set(str1.toLowerCase().split(/\s+/))
     const set2 = new Set(str2.toLowerCase().split(/\s+/))
-    
-    const intersection = new Set([...set1].filter(x => set2.has(x)))
+
+    const intersection = new Set(Array.from(set1).filter(x => set2.has(x)))
     const union = new Set([...set1, ...set2])
-    
+
     return intersection.size / union.size
   }
 
   private extractPricingData(html: string, url: string): PricingData | null {
     try {
       const plans: PricingPlan[] = []
-      
+
       // Find all pricing plan divs using regex
       // Match <div class="pricing-plan [optional classes]">...</div>
       const pricingPlanRegex = /<div[^>]*class="[^"]*pricing-plan[^"]*"[^>]*>([\s\S]*?)<\/div>\s*(?=<div[^>]*class="[^"]*pricing-plan|<\/body|$)/gi
-      
+
       let planMatch
       while ((planMatch = pricingPlanRegex.exec(html)) !== null) {
         const planHtml = planMatch[0]
         const planContent = planMatch[1]
-        
+
         // Extract plan name from <h3> tag
         const nameMatch = planContent.match(/<h3[^>]*>([^<]+)<\/h3>/i)
         const name = nameMatch ? nameMatch[1].trim() : ''
-        
+
         // Extract price from .price div
         const priceMatch = planContent.match(/<div[^>]*class="[^"]*price[^"]*"[^>]*>([^<]+)<\/div>/i)
         const priceText = priceMatch ? priceMatch[1].trim() : ''
         const price = this.extractPrice(priceText)
-        
+
         // Extract features from <ul> list
         const features: string[] = []
         const ulMatch = planContent.match(/<ul[^>]*>([\s\S]*?)<\/ul>/i)
@@ -638,13 +638,13 @@ export class WebScrapingService {
             features.push(featureMatch[1].trim())
           }
         }
-        
+
         // Check if this plan is popular (has "popular" class)
         const isPopular = /class="[^"]*\bpopular\b[^"]*"/.test(planHtml)
-        
+
         // Detect interval from price text
         const interval = this.detectInterval(priceText)
-        
+
         if (name && price !== null) {
           plans.push({
             name,
@@ -655,13 +655,13 @@ export class WebScrapingService {
           })
         }
       }
-      
+
       if (plans.length === 0) {
         return null
       }
-      
+
       const currency = this.detectCurrency(html)
-      
+
       return {
         url,
         plans,
@@ -701,17 +701,17 @@ export class WebScrapingService {
     try {
       const $ = cheerio.load(html)
       const products: Product[] = []
-      
+
       // Find all elements with class "product"
       $('.product').each((_, element) => {
         const $product = $(element)
-        
+
         // Extract name from h2 tag
         const name = $product.find('h2').text().trim()
-        
+
         // Extract description from .description class
         const description = $product.find('.description').text().trim()
-        
+
         // Extract features from ul li tags
         const features: string[] = []
         $product.find('ul li').each((_, li) => {
@@ -720,7 +720,7 @@ export class WebScrapingService {
             features.push(feature)
           }
         })
-        
+
         // Only add product if it has a name
         if (name) {
           products.push({
@@ -733,11 +733,11 @@ export class WebScrapingService {
           })
         }
       })
-      
+
       if (products.length === 0) {
         return null
       }
-      
+
       return {
         url,
         products,
@@ -754,23 +754,23 @@ export class WebScrapingService {
     try {
       const $ = cheerio.load(html)
       const jobPostings: JobPosting[] = []
-      
+
       // Find all elements with class "job"
       $('.job').each((_, element) => {
         const $job = $(element)
-        
+
         // Extract job title from h3.job-title or h3
         const title = $job.find('h3.job-title, h3').first().text().trim()
-        
+
         // Extract location
         const location = $job.find('.location').text().trim()
-        
+
         // Extract department
         const department = $job.find('.department').text().trim()
-        
+
         // Extract description
         const description = $job.find('.job-description, p').first().text().trim()
-        
+
         // Extract requirements from ul li
         const requirements: string[] = []
         $job.find('ul li').each((_, li) => {
@@ -779,13 +779,13 @@ export class WebScrapingService {
             requirements.push(requirement)
           }
         })
-        
+
         // Determine job type and remote status
         const fullJobText = $job.text().toLowerCase()
         const type = this.detectJobType(fullJobText)
         const remote = this.detectRemote(fullJobText)
         const strategicImportance = this.assessJobImportance(title, department)
-        
+
         // Only add job if it has a title
         if (title) {
           jobPostings.push({
@@ -802,7 +802,7 @@ export class WebScrapingService {
           })
         }
       })
-      
+
       return jobPostings
     } catch (error) {
       logError('Error extracting job postings:', error)
@@ -826,23 +826,23 @@ export class WebScrapingService {
   private assessJobImportance(title: string, department?: string): 'low' | 'medium' | 'high' | 'critical' {
     const lowerTitle = title.toLowerCase()
     const lowerDept = department?.toLowerCase() || ''
-    
+
     // Critical roles
     if (lowerTitle.includes('ceo') || lowerTitle.includes('cto') || lowerTitle.includes('founder')) {
       return 'critical'
     }
-    
+
     // High importance roles
     if (lowerTitle.includes('director') || lowerTitle.includes('vp') || lowerTitle.includes('head of') ||
-        lowerDept.includes('engineering') || lowerDept.includes('product') || lowerDept.includes('sales')) {
+      lowerDept.includes('engineering') || lowerDept.includes('product') || lowerDept.includes('sales')) {
       return 'high'
     }
-    
+
     // Medium importance roles
     if (lowerTitle.includes('manager') || lowerTitle.includes('lead') || lowerTitle.includes('senior')) {
       return 'medium'
     }
-    
+
     return 'low'
   }
 

@@ -20,7 +20,7 @@ export const ExportConfigSchema = z.object({
     start: z.date(),
     end: z.date()
   }).optional(),
-  filters: z.record(z.any()).optional(),
+  filters: z.record(z.string(), z.any()).optional(),
   styling: z.object({
     theme: z.enum(['light', 'dark', 'corporate']).default('light'),
     colors: z.array(z.string()).optional(),
@@ -100,11 +100,11 @@ export class AnalyticsExportService {
     userId: string
   ): Promise<{ jobId: string; status: string; message: string }> {
     const jobId = crypto.randomUUID()
-    
+
     try {
       // Validate configuration
       const validatedConfig = ExportConfigSchema.parse(config)
-      
+
       // Check export limits
       if (this.activeExports >= this.maxConcurrentExports) {
         throw new Error('Export queue is full. Please try again later.')
@@ -159,14 +159,14 @@ export class AnalyticsExportService {
 
     try {
       this.updateJobStatus(jobId, 'processing', null, 10)
-      
+
       // Prepare data based on configuration
       const processedData = await this.prepareData(reportData, config)
       this.updateJobStatus(jobId, 'processing', null, 30)
 
       // Generate export based on format
       let result: ExportResult
-      
+
       switch (config.format) {
         case 'pdf':
           result = await this.exportToPDF(processedData, config)
@@ -191,7 +191,7 @@ export class AnalyticsExportService {
       }
 
       this.updateJobStatus(jobId, 'completed', null, 100, result)
-      
+
       // Clean up after 1 hour
       setTimeout(() => {
         this.exportQueue.delete(jobId)
@@ -214,8 +214,8 @@ export class AnalyticsExportService {
 
     // Apply date range filter
     if (config.dateRange) {
-      data = data.filter(item => 
-        item.timestamp >= config.dateRange!.start && 
+      data = data.filter(item =>
+        item.timestamp >= config.dateRange!.start &&
         item.timestamp <= config.dateRange!.end
       )
     }
@@ -272,9 +272,9 @@ export class AnalyticsExportService {
   private async exportToPDF(data: ProcessedData, config: ExportConfig): Promise<ExportResult> {
     // This would integrate with a PDF generation library like Puppeteer or jsPDF
     // For now, return a mock result
-    
+
     const pdfContent = this.generatePDFContent(data, config)
-    
+
     return {
       format: 'pdf',
       filename: `analytics-report-${new Date().toISOString().split('T')[0]}.pdf`,
@@ -291,9 +291,9 @@ export class AnalyticsExportService {
   private async exportToExcel(data: ProcessedData, config: ExportConfig): Promise<ExportResult> {
     // This would integrate with a library like xlsx or exceljs
     // For now, return a mock result
-    
+
     const excelContent = this.generateExcelContent(data, config)
-    
+
     return {
       format: 'excel',
       filename: `analytics-report-${new Date().toISOString().split('T')[0]}.xlsx`,
@@ -309,7 +309,7 @@ export class AnalyticsExportService {
    */
   private async exportToCSV(data: ProcessedData, config: ExportConfig): Promise<ExportResult> {
     const csvContent = this.generateCSVContent(data)
-    
+
     return {
       format: 'csv',
       filename: `analytics-report-${new Date().toISOString().split('T')[0]}.csv`,
@@ -325,7 +325,7 @@ export class AnalyticsExportService {
    */
   private async exportToJSON(data: ProcessedData, config: ExportConfig): Promise<ExportResult> {
     const jsonContent = JSON.stringify(data, null, 2)
-    
+
     return {
       format: 'json',
       filename: `analytics-report-${new Date().toISOString().split('T')[0]}.json`,
@@ -342,7 +342,7 @@ export class AnalyticsExportService {
   private async exportToPNG(data: ProcessedData, config: ExportConfig): Promise<ExportResult> {
     // This would generate PNG images of charts
     const pngContent = this.generatePNGContent(data, config)
-    
+
     return {
       format: 'png',
       filename: `analytics-charts-${new Date().toISOString().split('T')[0]}.png`,
@@ -358,7 +358,7 @@ export class AnalyticsExportService {
    */
   private async exportToSVG(data: ProcessedData, config: ExportConfig): Promise<ExportResult> {
     const svgContent = this.generateSVGContent(data, config)
-    
+
     return {
       format: 'svg',
       filename: `analytics-charts-${new Date().toISOString().split('T')[0]}.svg`,
@@ -426,7 +426,7 @@ export class AnalyticsExportService {
         </body>
       </html>
     `
-    
+
     return content
   }
 
@@ -444,7 +444,7 @@ export class AnalyticsExportService {
         item.timestamp.toISOString()
       ])
     ]
-    
+
     return rows.map(row => row.join(',')).join('\n')
   }
 
@@ -459,8 +459,8 @@ export class AnalyticsExportService {
       item.type,
       item.timestamp.toISOString()
     ])
-    
-    return [headers, ...rows].map(row => 
+
+    return [headers, ...rows].map(row =>
       row.map(field => `"${field.toString().replace(/"/g, '""')}"`).join(',')
     ).join('\n')
   }

@@ -9,10 +9,10 @@ import { z } from "zod"
 const envSchema = z.object({
   // Database - Required for core functionality
   DATABASE_URL: z.string().min(1, "Neon database URL is required"),
-  
+
   // JWT Authentication - Required for authentication
   JWT_SECRET: z.string().min(32, "JWT secret must be at least 32 characters"),
-  
+
   // Stack Auth - Optional (for backward compatibility)
   NEXT_PUBLIC_STACK_PROJECT_ID: z.string().min(1, "Stack Auth project ID is required").optional(),
   NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY: z.string().min(1, "Stack Auth publishable key is required").optional(),
@@ -65,7 +65,7 @@ const envSchema = z.object({
   // App Configuration - Required
   NEXT_PUBLIC_APP_URL: z.string().url("Invalid app URL"),
   NEXTAUTH_URL: z.string().url("Invalid NextAuth URL").optional(),
-  
+
   // Environment
   NODE_ENV: z.enum(["development", "production", "test"]).optional(),
 })
@@ -83,11 +83,11 @@ export function validateEnv() {
     return env
   } catch (error) {
     if (error instanceof z.ZodError) {
-      logError("❌ Environment variable validation failed:")
-      error.errors.forEach((err) => {
+      logError("❌ Environment variable validation failed:");
+      (error as any).errors.forEach((err: any) => {
         logError(`  - ${err.path.join(".")}: ${err.message}`)
       })
-      
+
       // In development, show helpful setup messages
       if (process.env.NODE_ENV !== "production") {
         logError("\n📝 Setup Instructions:")
@@ -96,7 +96,7 @@ export function validateEnv() {
         logError("  3. Restart your development server")
         logError("\n🔗 Documentation: Check README.md for detailed setup instructions")
       }
-      
+
       // Do not crash build by default. Opt-in via VALIDATE_ENV=true.
       if (process.env.VALIDATE_ENV === "true") {
         throw new Error("Environment validation failed")

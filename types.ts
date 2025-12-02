@@ -274,6 +274,15 @@ export interface ContentAmplification {
     generatedAt: string;
 }
 
+export interface CreativeAsset {
+    id: string;
+    title: string;
+    type: 'image' | 'video' | 'copy' | 'ad';
+    content: string;
+    platform: string;
+    generatedAt: string;
+}
+
 // THE SYSTEM (SOPs)
 export interface SOP {
     id: string;
@@ -314,7 +323,25 @@ export interface CompetitorReport {
     pricingModel: string;
     marketingChannels: string[];
     threatLevel: 'Low' | 'Medium' | 'High' | 'Critical';
+    missionBrief?: string;
+    metrics?: {
+        innovation: number;
+        marketPresence: number;
+        ux: number;
+        pricing: number;
+        velocity: number;
+    };
+    intel?: string[];
+    vulnerabilities?: string[];
     generatedAt: string;
+}
+
+export interface ToastMessage {
+    id: string;
+    title: string;
+    message: string;
+    type: 'success' | 'error' | 'info' | 'xp';
+    xpAmount?: number;
 }
 
 export interface LaunchStrategy {
@@ -354,4 +381,14 @@ export interface SavedWarRoomSession extends WarRoomResponse {
     id: string;
     topic: string;
     timestamp: string;
+}
+
+export interface SavedCodeSnippet {
+    id: string;
+    title: string;
+    language: string;
+    code: string;
+    description: string;
+    tags: string[];
+    createdAt: string;
 }

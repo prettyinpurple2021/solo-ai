@@ -27,7 +27,7 @@ const ExportRequestSchema = z.object({
       type: z.enum(['metric', 'dimension', 'calculated']),
       name: z.string(),
       value: z.union([z.number(), z.string()]),
-      metadata: z.record(z.any()).optional(),
+      metadata: z.record(z.string(), z.any()).optional(),
       timestamp: z.date()
     })),
     charts: z.array(z.object({
@@ -35,7 +35,7 @@ const ExportRequestSchema = z.object({
       type: z.string(),
       title: z.string(),
       data: z.array(z.any()),
-      config: z.record(z.any()),
+      config: z.record(z.string(), z.any()),
       metadata: z.object({
         created: z.date(),
         updated: z.date(),
@@ -93,17 +93,17 @@ export async function POST(request: NextRequest) {
         filters: validatedData.config.filters || {}
       }
     }
-    
+
     const result = await analyticsExportService.exportData(
       reportDataWithMetadata,
       validatedData.config,
       user.id.toString()
     )
 
-    logApi('POST', '/api/analytics/export', 202, undefined, { 
-      userId: user.id, 
+    logApi('POST', '/api/analytics/export', 202, undefined, {
+      userId: user.id,
       format: validatedData.config.format,
-      jobId: result.jobId 
+      jobId: result.jobId
     })
 
     return NextResponse.json({
@@ -114,12 +114,12 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error creating analytics export:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid export request data',
-        details: error.errors
+        details: (error as z.ZodError).errors
       }, { status: 400 })
     }
 
@@ -266,9 +266,9 @@ export async function DELETE(request: NextRequest) {
       }, { status: 404 })
     }
 
-    logApi('DELETE', '/api/analytics/export', 200, undefined, { 
-      userId: user.id, 
-      jobId 
+    logApi('DELETE', '/api/analytics/export', 200, undefined, {
+      userId: user.id,
+      jobId
     })
 
     return NextResponse.json({

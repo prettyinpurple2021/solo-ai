@@ -16,6 +16,17 @@ export interface WarRoomDebate {
 // --- AI Service ---
 
 export const geminiService = {
+    // Generic Content Generation
+    async generateContent(prompt: string, options?: { temperature?: number; maxOutputTokens?: number }): Promise<string> {
+        try {
+            const response = await apiService.post('/ai/generate', { prompt, ...options });
+            return response.text;
+        } catch (error) {
+            console.error('Generate Content Error:', error);
+            return "{}"; // Return empty JSON object string on error to prevent parse failure
+        }
+    },
+
     // Chat
     async getAgentResponse(agentId: string, history: ChatMessage[], newMessage: string): Promise<string> {
         try {

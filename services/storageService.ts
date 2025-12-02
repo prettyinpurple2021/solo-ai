@@ -239,6 +239,7 @@ export const storageService = {
             founderName: '',
             industry: '',
             description: '',
+            goals: [],
             brandDna: dna,
             updatedAt: new Date().toISOString()
         };

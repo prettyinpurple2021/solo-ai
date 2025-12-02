@@ -47,8 +47,8 @@ export class AgentSecurityManager {
   private static instance: AgentSecurityManager
   private rateLimitStore: Map<string, { count: number; resetTime: number }> = new Map()
   private activeSessions: Map<string, { userId: string; lastActivity: number }> = new Map()
-  
-  private constructor() {}
+
+  private constructor() { }
 
   static getInstance(): AgentSecurityManager {
     if (!AgentSecurityManager.instance) {
@@ -69,7 +69,7 @@ export class AgentSecurityManager {
       if (!userId || userId === 'anonymous') {
         return false
       }
-      
+
       // Check if user has an active session
       const session = this.activeSessions.get(userId)
       if (session) {
@@ -81,13 +81,13 @@ export class AgentSecurityManager {
           this.activeSessions.delete(userId)
         }
       }
-      
+
       // Create new session
       this.activeSessions.set(userId, {
         userId,
         lastActivity: Date.now()
       })
-      
+
       return true
     } catch (error) {
       logError('Authentication error:', error)
@@ -98,7 +98,7 @@ export class AgentSecurityManager {
   async authorizeAgentAccess(userId: string, agentId: string, action: string): Promise<boolean> {
     try {
       const sql = this.getSql()
-      
+
       // Check if user has permission for this agent and action
       const result = await sql`
         SELECT permissions, restrictions, expires_at
@@ -112,22 +112,22 @@ export class AgentSecurityManager {
       }
 
       const permission = result[0] as { permissions: string[]; restrictions: string[]; expires_at: Date | null }
-      
+
       // Check if action is explicitly restricted
       if (permission.restrictions && permission.restrictions.includes(action)) {
         return false
       }
-      
+
       // Check if action is allowed
       if (permission.permissions && permission.permissions.includes(action)) {
         return true
       }
-      
+
       // Check for wildcard permissions
       if (permission.permissions && permission.permissions.includes('*')) {
         return true
       }
-      
+
       return false
     } catch (error) {
       logError('Authorization error:', error)
@@ -139,9 +139,9 @@ export class AgentSecurityManager {
   async checkRateLimit(userId: string, agentId: string, config: RateLimitConfig): Promise<boolean> {
     const key = `${userId}:${agentId}`
     const now = Date.now()
-    
+
     const current = this.rateLimitStore.get(key)
-    
+
     if (!current || now > current.resetTime) {
       // Reset or create new rate limit window
       this.rateLimitStore.set(key, {
@@ -150,11 +150,11 @@ export class AgentSecurityManager {
       })
       return true
     }
-    
+
     if (current.count >= config.maxRequests) {
       return false
     }
-    
+
     current.count++
     return true
   }
@@ -174,7 +174,7 @@ export class AgentSecurityManager {
       const sql = this.getSql()
       const auditId = crypto.randomUUID()
       const metadataJson = JSON.stringify(metadata)
-      
+
       await sql`
         INSERT INTO security_audit_logs (
           id, user_id, agent_id, action, resource, success,
@@ -203,7 +203,7 @@ export class AgentSecurityManager {
       const permissionsJson = JSON.stringify(permissions)
       const restrictionsJson = JSON.stringify(restrictions)
       const now = new Date()
-      
+
       await sql`
         INSERT INTO agent_permissions (
           id, user_id, agent_id, permissions, restrictions, expires_at, created_at, updated_at
@@ -225,7 +225,7 @@ export class AgentSecurityManager {
   async revokePermission(userId: string, agentId: string): Promise<void> {
     try {
       const sql = this.getSql()
-      
+
       await sql`
         DELETE FROM agent_permissions 
         WHERE user_id = ${userId} AND agent_id = ${agentId}
@@ -300,7 +300,7 @@ export class AgentSecurityManager {
   // Session Management
   async createSession(userId: string, metadata: Record<string, unknown> = {}): Promise<string> {
     const sessionId = crypto.randomUUID()
-    
+
     this.activeSessions.set(sessionId, {
       userId,
       lastActivity: Date.now()
@@ -321,7 +321,7 @@ export class AgentSecurityManager {
 
   async validateSession(sessionId: string): Promise<{ valid: boolean; userId?: string }> {
     const session = this.activeSessions.get(sessionId)
-    
+
     if (!session) {
       return { valid: false }
     }
@@ -338,7 +338,7 @@ export class AgentSecurityManager {
 
   async destroySession(sessionId: string): Promise<void> {
     const session = this.activeSessions.get(sessionId)
-    
+
     if (session) {
       await this.logSecurityEvent(
         session.userId,
@@ -349,21 +349,21 @@ export class AgentSecurityManager {
         { sessionId }
       )
     }
-    
+
     this.activeSessions.delete(sessionId)
   }
 
   // Cleanup expired sessions and rate limits
   async cleanup(): Promise<void> {
     const now = Date.now()
-    
+
     // Clean up expired sessions
-    for (const [sessionId, session] of this.activeSessions.entries()) {
+    for (const [sessionId, session] of Array.from(this.activeSessions.entries())) {
       if (now - session.lastActivity > 30 * 60 * 1000) {
         this.activeSessions.delete(sessionId)
       }
     }
-    
+
     // Clean up expired rate limits
     for (const [key, rateLimit] of this.rateLimitStore.entries()) {
       if (now > rateLimit.resetTime) {
@@ -381,7 +381,7 @@ export class AgentSecurityManager {
   }> {
     try {
       const sql = this.getSql()
-      
+
       const [auditResult, failedAuthResult] = await Promise.all([
         sql`
           SELECT COUNT(*) as total_logs

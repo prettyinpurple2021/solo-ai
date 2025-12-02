@@ -260,7 +260,7 @@ Do not include markdown code fences or additional commentary.`
               type: z.string().min(1),
               priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
               assignedTo: z.string().min(1),
-              context: z.record(z.any()).default({}),
+              context: z.record(z.string(), z.any()).default({}),
               expectedOutcome: z.string().min(1),
               deadline: z.string().optional().nullable(),
             }),
@@ -278,7 +278,7 @@ Do not include markdown code fences or additional commentary.`
                   confidence: z.number().min(0).max(1).optional(),
                   impact: z.string().optional(),
                   urgency: z.string().optional(),
-                  supportingData: z.array(z.record(z.any())).default([]),
+                  supportingData: z.array(z.record(z.string(), z.any())).default([]),
                 }),
               )
               .default([]),
@@ -297,7 +297,7 @@ Do not include markdown code fences or additional commentary.`
                 }),
               )
               .default([]),
-            metadata: z.record(z.any()).optional(),
+            metadata: z.record(z.string(), z.any()).optional(),
           })
           .optional(),
       })
@@ -327,17 +327,17 @@ Do not include markdown code fences or additional commentary.`
         })),
         analysis: parsed.analysis
           ? {
-              insights: parsed.analysis.insights,
-              recommendations: parsed.analysis.recommendations,
-              metadata: parsed.analysis.metadata,
-            }
+            insights: parsed.analysis.insights,
+            recommendations: parsed.analysis.recommendations,
+            metadata: parsed.analysis.metadata,
+          }
           : undefined,
       }
     } catch (error) {
       logError(`Error generating response for ${this.name}:`, error)
       const errorMessage = error instanceof Error ? error.message : 'Unknown error'
       const errorStack = error instanceof Error ? error.stack : 'No stack trace'
-      
+
       return {
         content: `I apologize, but I encountered an error processing your request: ${errorMessage}`,
         confidence: 0.1,
