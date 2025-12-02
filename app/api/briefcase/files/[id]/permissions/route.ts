@@ -1,20 +1,22 @@
 import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  withDocumentAuth, 
-  getSql, 
-  createErrorResponse 
+import {
+  withDocumentAuth,
+  getSql,
+  createErrorResponse
 } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
 
 export const GET = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const sql = getSql()
 
       // Get permissions with access counts
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const permissions = await sql`
         SELECT 
           dp.id,
@@ -64,6 +66,7 @@ export const GET = withDocumentAuth(
 )
 
 export const POST = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const { email, role, message } = await request.json()
@@ -75,6 +78,7 @@ export const POST = withDocumentAuth(
       const sql = getSql()
 
       // Check if permission already exists
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const existingPermission = await sql`
         SELECT id FROM document_permissions 
         WHERE document_id = ${documentId} AND email = ${email} AND is_active = true
@@ -85,6 +89,7 @@ export const POST = withDocumentAuth(
       }
 
       // Create permission
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newPermission = await sql`
         INSERT INTO document_permissions (
           document_id, user_id, email, role, granted_by, granted_at, is_active

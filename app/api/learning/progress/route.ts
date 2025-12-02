@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { userProgress } from '@/db/schema'
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json(progress)
     } catch (error) {
-        console.error('Error fetching user progress:', error)
+        logError('Error fetching user progress:', error)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 }
@@ -83,7 +84,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(result[0])
     } catch (error) {
-        console.error('Error saving user progress:', error)
+        logError('Error saving user progress:', error)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 }

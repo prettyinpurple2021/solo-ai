@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
-    logError('Error in learning API', { error })
+    logError('Error in learning API', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
     }
   } catch (error) {
-    logError('Error in learning API POST', { error })
+    logError('Error in learning API POST', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

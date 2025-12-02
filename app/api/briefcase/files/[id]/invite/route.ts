@@ -1,8 +1,8 @@
 import { logError, logWarn, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  withDocumentAuth, 
-  getSql, 
+import {
+  withDocumentAuth,
+  getSql,
   createErrorResponse,
   verifyDocumentOwnership
 } from '@/lib/api-utils'
@@ -11,6 +11,7 @@ import {
 export const runtime = 'edge'
 
 export const POST = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const { email, role, message } = await request.json()
@@ -33,6 +34,7 @@ export const POST = withDocumentAuth(
       }
 
       // Check if permission already exists
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const existingPermission = await sql`
         SELECT id FROM document_permissions 
         WHERE document_id = ${documentId} AND email = ${email} AND is_active = true
@@ -43,6 +45,7 @@ export const POST = withDocumentAuth(
       }
 
       // Create permission
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newPermission = await sql`
         INSERT INTO document_permissions (
           document_id, user_id, email, role, granted_by, granted_at, is_active

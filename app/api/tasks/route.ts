@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { createErrorResponse } from '@/lib/api-response'
 import { getDb } from '@/lib/database-client'
@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
     const competitiveOnly = searchParams.get('competitive_only') === 'true'
 
     const sql = getSql()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let tasks: any[] = []
 
     if (includeCompetitive) {

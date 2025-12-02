@@ -1,6 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -15,7 +15,7 @@ export async function GET(
   try {
     const params = await context.params
     const { id } = params
-    
+
     const { user, error } = await authenticateRequest()
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -25,6 +25,7 @@ export async function GET(
     const sql = getSql()
 
     // Verify document ownership
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const documentRows = await sql`
       SELECT id FROM documents 
       WHERE id = ${documentId} AND user_id = ${user.id}
@@ -35,6 +36,7 @@ export async function GET(
     }
 
     // Get activity
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const activity = await sql`
       SELECT 
         da.id,
@@ -51,6 +53,7 @@ export async function GET(
       LIMIT 50
     ` as any[]
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return NextResponse.json(activity.map((item: any) => ({
       id: item.id,
       userId: item.user_id,
@@ -63,8 +66,8 @@ export async function GET(
 
   } catch (error) {
     logError('Get activity error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to get activity' 
+    return NextResponse.json({
+      error: 'Failed to get activity'
     }, { status: 500 })
   }
 }

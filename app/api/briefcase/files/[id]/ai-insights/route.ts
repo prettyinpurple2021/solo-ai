@@ -1,6 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -21,9 +21,9 @@ export async function POST(
   try {
     const params = await context.params
     const { id } = params
-    
+
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -32,12 +32,13 @@ export async function POST(
     const sql = getSql()
 
     // Get document info with file data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const documentRows = await sql`
       SELECT id, name, mime_type, file_data, user_id
       FROM documents 
       WHERE id = ${documentId} AND user_id = ${user.id}
     ` as any[]
-    
+
     const document = documentRows[0]
 
     if (!document) {
@@ -59,9 +60,9 @@ export async function POST(
     ]
 
     if (!textBasedTypes.includes(document.mime_type)) {
-      return NextResponse.json({ 
+      return NextResponse.json({
         error: 'Document type not suitable for AI analysis',
-        supportedTypes: textBasedTypes 
+        supportedTypes: textBasedTypes
       }, { status: 400 })
     }
 
@@ -70,14 +71,14 @@ export async function POST(
     const content = fileBuffer.toString('utf-8')
 
     if (content.length === 0) {
-      return NextResponse.json({ 
-        error: 'Document is empty' 
+      return NextResponse.json({
+        error: 'Document is empty'
       }, { status: 400 })
     }
 
     // Limit content size for AI processing (50KB max)
     const maxContentLength = 50000
-    const truncatedContent = content.length > maxContentLength 
+    const truncatedContent = content.length > maxContentLength
       ? content.substring(0, maxContentLength) + '...'
       : content
 
@@ -111,7 +112,8 @@ export async function POST(
       return NextResponse.json({ error: 'Failed to generate AI insights' }, { status: 500 })
     }
 
-    const workerResult = await workerResponse.json()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const workerResult = await workerResponse.json() as any
     const insights = workerResult.insights
 
     // Save insights to database

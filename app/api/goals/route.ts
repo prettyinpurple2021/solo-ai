@@ -1,11 +1,11 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
 import { createErrorResponse } from '@/lib/api-response'
 import { getSql } from '@/lib/api-utils'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { z} from 'zod'
-import { getIdempotencyKeyFromRequest, reserveIdempotencyKey} from '@/lib/idempotency'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { z } from 'zod'
+import { getIdempotencyKeyFromRequest } from '@/lib/idempotency'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return createErrorResponse('Unauthorized', 401)
     }
@@ -27,8 +27,9 @@ export async function GET(request: NextRequest) {
     const includeCompetitive = searchParams.get('include_competitive') === 'true'
 
     const sql = getSql()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sqlClient = sql as any
-    
+
     let query = `
       SELECT g.*,
              COUNT(t.id) as total_tasks,
@@ -39,7 +40,7 @@ export async function GET(request: NextRequest) {
       GROUP BY g.id
       ORDER BY g.created_at DESC
     `
-    
+
     if (includeCompetitive) {
       query = `
         SELECT g.*,
@@ -56,10 +57,12 @@ export async function GET(request: NextRequest) {
         ORDER BY g.created_at DESC
       `
     }
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const goals = await sqlClient.unsafe(query, [user.id]) as any[]
 
     // Enhance goals with competitive intelligence context if requested
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const enhancedGoals = goals.map((goal: any) => {
       const competitiveContext = goal.ai_suggestions?.competitive_context
       return {
@@ -95,7 +98,7 @@ export async function POST(request: NextRequest) {
     if (!allowed) return createErrorResponse('Too many requests', 429)
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return createErrorResponse('Unauthorized', 401)
     }
@@ -124,7 +127,8 @@ export async function POST(request: NextRequest) {
       //   return createErrorResponse('Duplicate request', 409)
       // }
     }
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const goalRows = await sql`
       INSERT INTO goals (user_id, title, description, target_date, category, priority, status)
       VALUES (${user.id}, ${title}, ${description || ''}, ${target_date || null}, ${category || 'general'}, ${priority || 'medium'}, ${'active'})

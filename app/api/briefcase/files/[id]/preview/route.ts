@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { neon } from '@neondatabase/serverless'
@@ -25,7 +25,7 @@ export async function GET(
 ) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -70,7 +70,7 @@ export async function GET(
     // For images, return the file directly
     if (document.mime_type.startsWith('image/')) {
       const fileResponse = await fetch(document.file_url)
-      
+
       if (!fileResponse.ok) {
         return NextResponse.json({ error: 'File not found in storage' }, { status: 404 })
       }

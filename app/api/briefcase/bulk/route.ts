@@ -27,10 +27,10 @@ export async function POST(
 
     // Verify all files belong to the user
     // Convert fileIds array to PostgreSQL array format
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const userFiles = await sql`
       SELECT id FROM documents 
       WHERE id = ANY(${fileIds}::uuid[]) AND user_id = ${user.id}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ` as any[]
 
     if (userFiles.length !== fileIds.length) {
@@ -140,9 +140,9 @@ async function handleBulkMove(sql: any, fileIds: string[], folderId: string, use
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[] }
 
   // Verify folder exists and belongs to user
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const folderRows = await sql`
     SELECT id FROM document_folders WHERE id = ${folderId} AND user_id = ${userId}
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ` as any[]
 
   if (folderRows.length === 0) {
@@ -179,9 +179,9 @@ async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, use
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[], copiedFiles: [] as string[] }
 
   // Verify folder exists and belongs to user
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const folderRows = await sql`
     SELECT id FROM document_folders WHERE id = ${folderId} AND user_id = ${userId}
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ` as any[]
 
   if (folderRows.length === 0) {
@@ -191,9 +191,9 @@ async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, use
   for (const fileId of fileIds) {
     try {
       // Get original file data
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const originalFileRows = await sql`
         SELECT * FROM documents WHERE id = ${fileId} AND user_id = ${userId}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ` as any[]
 
       if (originalFileRows.length === 0) {
@@ -207,6 +207,7 @@ async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, use
       // Create copy with new name
       const copyName = `${originalFile.name} (Copy)`
       const tagsJson = typeof originalFile.tags === 'string' ? originalFile.tags : JSON.stringify(originalFile.tags || [])
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const copiedFileRows = await sql`
         INSERT INTO documents (
           user_id, name, original_name, file_type, mime_type, size, file_data,
@@ -214,7 +215,6 @@ async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, use
         ) VALUES (${userId}, ${copyName}, ${originalFile.original_name}, ${originalFile.file_type}, ${originalFile.mime_type}, ${originalFile.size}, ${originalFile.file_data},
         ${originalFile.category}, ${tagsJson}::jsonb, ${originalFile.description || null}, ${folderId}, ${false}, NOW(), NOW())
         RETURNING id
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ` as any[]
 
       const copiedFile = copiedFileRows[0]
@@ -244,9 +244,9 @@ async function handleBulkTag(sql: any, fileIds: string[], tags: string[], operat
   for (const fileId of fileIds) {
     try {
       // Get current tags
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const fileRows = await sql`
         SELECT tags FROM documents WHERE id = ${fileId} AND user_id = ${userId}
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ` as any[]
 
       if (fileRows.length === 0) {

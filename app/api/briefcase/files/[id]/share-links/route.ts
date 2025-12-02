@@ -18,7 +18,6 @@ export const GET = withDocumentAuth(
       const sql = getSql()
 
       // Get share links
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const shareLinks = await sql`
         SELECT 
           id, url, permissions, expires_at, max_access_count, 
@@ -27,7 +26,7 @@ export const GET = withDocumentAuth(
         FROM document_share_links 
         WHERE document_id = ${documentId} AND is_active = true
         ORDER BY created_at DESC
-      ` as any[]
+      ` as any[] // eslint-disable-line @typescript-eslint/no-explicit-any
 
       return NextResponse.json(shareLinks.map(link => ({
         id: link.id,
@@ -81,7 +80,6 @@ export const POST = withDocumentAuth(
 
       // Create share link
       const permissionsJson = typeof permissions === 'string' ? permissions : JSON.stringify(permissions)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newLinkRows = await sql`
         INSERT INTO document_share_links (
           id, document_id, created_by, url, password_hash, permissions, 
@@ -91,7 +89,7 @@ export const POST = withDocumentAuth(
         ${expiresAt || null}, ${maxAccess || null}, ${downloadEnabled || false}, ${requireAuth || false}, 
         ${true}, NOW())
         RETURNING *
-      ` as any[]
+      ` as any[] // eslint-disable-line @typescript-eslint/no-explicit-any
       const newLink = newLinkRows[0]
 
       // Log activity

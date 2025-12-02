@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { learningModules } from '@/db/schema'
@@ -21,7 +22,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(modules)
   } catch (error) {
-    console.error('Error fetching learning modules:', error)
+    logError('Error fetching learning modules:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

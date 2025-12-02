@@ -1,8 +1,8 @@
 import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  withDocumentAuth, 
-  getSql, 
+import {
+  withDocumentAuth,
+  getSql,
   createErrorResponse,
   verifyDocumentOwnership,
   parseDocumentTags
@@ -12,6 +12,7 @@ import {
 export const runtime = 'edge'
 
 export const POST = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const { tag } = await request.json()
@@ -76,6 +77,7 @@ export const POST = withDocumentAuth(
 )
 
 export const DELETE = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const { searchParams } = new URL(request.url)

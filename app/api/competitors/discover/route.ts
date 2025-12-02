@@ -66,10 +66,12 @@ async function discoverCompetitorsFromWorker(
       throw new Error(`Worker request failed: ${response.status}`)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await response.json() as { research?: { topCompetitors?: any[] } }
     const topCompetitors = result?.research?.topCompetitors || []
 
     // Map worker response to suggestion shape
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const suggestions = topCompetitors.map((comp: any, index: number) => {
       const name = comp.company || comp.title || `Competitor ${index + 1}`
       const domain = comp.domain || safeDomainFromUrl(comp.url) || `competitor${index + 1}.com`
@@ -99,6 +101,7 @@ async function discoverCompetitorsFromWorker(
 
     return suggestions.slice(0, maxResults)
   } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     logError('Error in competitor discovery via worker:', error as any)
     throw error
   }

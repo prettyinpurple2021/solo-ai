@@ -333,7 +333,9 @@ export async function POST(request: NextRequest) {
       if (results.pricing_analyses) {
         results.revenue_optimization = await Promise.all(
           results.pricing_analyses
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .filter((analysis: any) => analysis.pricing_analysis !== null)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .map(async (analysis: any) => {
               try {
                 const suggestions = await blazeGrowthIntelligence.generateRevenueOptimizationSuggestions(
@@ -362,16 +364,20 @@ export async function POST(request: NextRequest) {
 
     // Generate cross-competitor insights
     if (analysis_scope === 'comprehensive' && results.pricing_analyses) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const successfulAnalyses = results.pricing_analyses.filter((a: any) => a.pricing_analysis !== null)
 
       results.market_insights = {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         pricing_models_detected: [...new Set(successfulAnalyses.map((a: any) => a.pricing_analysis.pricingModel.type))],
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         average_market_position: successfulAnalyses.reduce((sum: number, a: any) => {
           const positionScore = a.pricing_analysis.competitivePricing.marketPosition === 'premium' ? 4 :
             a.pricing_analysis.competitivePricing.marketPosition === 'mid_market' ? 3 :
               a.pricing_analysis.competitivePricing.marketPosition === 'value' ? 2 : 1
           return sum + positionScore
         }, 0) / successfulAnalyses.length,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         total_pricing_gaps: successfulAnalyses.reduce((sum: number, a: any) =>
           sum + (a.pricing_analysis.competitivePricing.pricingGaps?.length || 0), 0
         ),

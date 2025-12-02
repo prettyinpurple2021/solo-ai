@@ -1,6 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -27,11 +27,12 @@ export async function PATCH(
     const sql = getSql()
 
     // Verify document ownership
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const documentRows = await sql`
       SELECT id FROM documents 
       WHERE id = ${documentId} AND user_id = ${user.id}
     ` as any[]
-    
+
     const document = documentRows[0]
 
     if (!document) {
@@ -39,8 +40,10 @@ export async function PATCH(
     }
 
     // Build update query dynamically using unsafe for dynamic fields
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sqlClient = sql as any
     const setParts: string[] = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const queryParams: any[] = []
     let paramIndex = 1
 
@@ -88,6 +91,7 @@ export async function PATCH(
       WHERE id = $${paramIndex}
       RETURNING *
     `
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedDocumentRows = await sqlClient.unsafe(updateQuery, queryParams) as any[]
     const updatedDocument = updatedDocumentRows[0]
 
@@ -120,8 +124,8 @@ export async function PATCH(
 
   } catch (error) {
     logError('Update metadata error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to update metadata' 
+    return NextResponse.json({
+      error: 'Failed to update metadata'
     }, { status: 500 })
   }
 }

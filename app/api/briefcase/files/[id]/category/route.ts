@@ -1,8 +1,8 @@
 import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  withDocumentAuth, 
-  getSql, 
+import {
+  withDocumentAuth,
+  getSql,
   createErrorResponse,
   verifyDocumentOwnership
 } from '@/lib/api-utils'
@@ -11,6 +11,7 @@ import {
 export const runtime = 'edge'
 
 export const POST = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const { category } = await request.json()
@@ -63,6 +64,7 @@ export const POST = withDocumentAuth(
 )
 
 export const GET = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const { document, error } = await verifyDocumentOwnership(

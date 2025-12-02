@@ -1,20 +1,22 @@
 import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  withDocumentAuth, 
-  getSql, 
-  createErrorResponse 
+import {
+  withDocumentAuth,
+  getSql,
+  createErrorResponse
 } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
 
 export const GET = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const sql = getSql()
 
       // Get document versions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const versions = await sql`
         SELECT 
           dv.id,
@@ -56,12 +58,14 @@ export const GET = withDocumentAuth(
 )
 
 export const POST = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const { changelog } = await request.json()
       const sql = getSql()
 
       // Get document details
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const documentRows = await sql`
         SELECT id, name, file_data, file_size, mime_type FROM documents 
         WHERE id = ${documentId} AND user_id = ${user.id}
@@ -74,6 +78,7 @@ export const POST = withDocumentAuth(
       const doc = documentRows[0]
 
       // Get next version number
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const lastVersionRows = await sql`
         SELECT version_number FROM document_versions 
         WHERE document_id = ${documentId} 
@@ -85,6 +90,7 @@ export const POST = withDocumentAuth(
 
       // Create new version
       const changelogText = changelog || `Version ${nextVersionNumber}`
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newVersionRows = await sql`
         INSERT INTO document_versions (
           document_id, version_number, file_name, file_data, file_size, 

@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { authenticateRequest } from '@/lib/auth-server'
@@ -165,7 +165,7 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid project data', details: (error as any).errors },
+        { error: 'Invalid project data', details: error.errors },
         { status: 400 }
       )
     }

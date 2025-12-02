@@ -1,6 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -15,7 +15,7 @@ export async function PATCH(
   try {
     const params = await context.params
     const { id: documentId, permissionId } = params
-    
+
     const { user, error } = await authenticateRequest()
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -30,6 +30,7 @@ export async function PATCH(
     const sql = getSql()
 
     // Verify document ownership
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const documentRows = await sql`
       SELECT id FROM documents 
       WHERE id = ${documentId} AND user_id = ${user.id}
@@ -40,6 +41,7 @@ export async function PATCH(
     }
 
     // Update permission
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedPermissionRows = await sql`
       UPDATE document_permissions 
       SET role = ${role}
@@ -71,8 +73,8 @@ export async function PATCH(
 
   } catch (error) {
     logError('Update permission error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to update permission' 
+    return NextResponse.json({
+      error: 'Failed to update permission'
     }, { status: 500 })
   }
 }
@@ -84,7 +86,7 @@ export async function DELETE(
   try {
     const params = await context.params
     const { id: documentId, permissionId } = params
-    
+
     const { user, error } = await authenticateRequest()
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -93,6 +95,7 @@ export async function DELETE(
     const sql = getSql()
 
     // Verify document ownership
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const documentRows = await sql`
       SELECT id FROM documents 
       WHERE id = ${documentId} AND user_id = ${user.id}
@@ -103,6 +106,7 @@ export async function DELETE(
     }
 
     // Get permission details before deletion
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const permissionRows = await sql`
       SELECT email, role FROM document_permissions 
       WHERE id = ${permissionId} AND document_id = ${documentId}
@@ -138,8 +142,8 @@ export async function DELETE(
 
   } catch (error) {
     logError('Delete permission error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to delete permission' 
+    return NextResponse.json({
+      error: 'Failed to delete permission'
     }, { status: 500 })
   }
 }

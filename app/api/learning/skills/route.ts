@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { neon } from '@neondatabase/serverless'
 import { logInfo, logError } from '@/lib/logger'
 import * as jose from 'jose'
-import { getNeonConnection, safeDbQuery } from '@/lib/database-utils'
+import { getNeonConnection } from '@/lib/database-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(skills)
   } catch (error) {
-    logError('Error fetching skills', { error })
+    logError('Error fetching skills', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

@@ -121,9 +121,12 @@ export async function POST(request: NextRequest) {
           threatLevel: existingCompetitor.threat_level as ThreatLevel,
           monitoringStatus: existingCompetitor.monitoring_status as MonitoringStatus,
           socialMediaHandles: (existingCompetitor.social_media_handles as Record<string, string>) || {},
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           keyPersonnel: (existingCompetitor.key_personnel as any[]) || [],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           products: (existingCompetitor.products as any[]) || [],
           marketPosition: existingCompetitor.market_position && typeof existingCompetitor.market_position === 'object' && !Array.isArray(existingCompetitor.market_position) &&
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             'targetMarkets' in existingCompetitor.market_position ? existingCompetitor.market_position as any : {
             targetMarkets: [],
             competitiveAdvantages: [],
@@ -135,6 +138,7 @@ export async function POST(request: NextRequest) {
           },
           competitiveAdvantages: (existingCompetitor.competitive_advantages as string[]) || [],
           vulnerabilities: (existingCompetitor.vulnerabilities as string[]) || [],
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           monitoringConfig: existingCompetitor.monitoring_config && typeof existingCompetitor.monitoring_config === 'object' && !Array.isArray(existingCompetitor.monitoring_config) ? existingCompetitor.monitoring_config as any : {
             websiteMonitoring: false,
             socialMediaMonitoring: false,
@@ -179,6 +183,7 @@ export async function POST(request: NextRequest) {
 
           // Merge key personnel (avoid duplicates)
           if (enrichmentResult.data.keyPersonnel) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const existingPersonnel = (existingCompetitor.key_personnel as any[]) || []
             const newPersonnel = enrichmentResult.data.keyPersonnel.filter(newPerson =>
               !existingPersonnel.some(existing =>
@@ -191,6 +196,7 @@ export async function POST(request: NextRequest) {
 
           // Merge products (avoid duplicates)
           if (enrichmentResult.data.products) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const existingProducts = (existingCompetitor.products as any[]) || []
             const newProducts = enrichmentResult.data.products.filter(newProduct =>
               !existingProducts.some(existing =>

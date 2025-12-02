@@ -1,6 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -23,6 +23,7 @@ export async function GET(
     const sql = getSql()
 
     // Verify document ownership
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const documentRows = await sql`
       SELECT id FROM documents 
       WHERE id = ${documentId} AND user_id = ${user.id}
@@ -33,6 +34,7 @@ export async function GET(
     }
 
     // Get version details
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const versionRows = await sql`
       SELECT 
         dv.*,
@@ -46,7 +48,7 @@ export async function GET(
     if (versionRows.length === 0) {
       return NextResponse.json({ error: 'Version not found' }, { status: 404 })
     }
-    
+
     const version = versionRows[0]
 
     return NextResponse.json({
@@ -65,8 +67,8 @@ export async function GET(
 
   } catch (error) {
     logError('Get version error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to get version' 
+    return NextResponse.json({
+      error: 'Failed to get version'
     }, { status: 500 })
   }
 }
@@ -87,6 +89,7 @@ export async function POST(
     const sql = getSql()
 
     // Verify document ownership
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const documentRows = await sql`
       SELECT id FROM documents 
       WHERE id = ${documentId} AND user_id = ${user.id}
@@ -97,6 +100,7 @@ export async function POST(
     }
 
     // Get version details
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const versionRows = await sql`
       SELECT * FROM document_versions 
       WHERE id = ${versionId} AND document_id = ${documentId}
@@ -166,8 +170,8 @@ export async function POST(
 
   } catch (error) {
     logError('Version action error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to process version action' 
+    return NextResponse.json({
+      error: 'Failed to process version action'
     }, { status: 500 })
   }
 }
@@ -187,6 +191,7 @@ export async function DELETE(
     const sql = getSql()
 
     // Verify document ownership
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const documentRows = await sql`
       SELECT id FROM documents 
       WHERE id = ${documentId} AND user_id = ${user.id}
@@ -197,6 +202,7 @@ export async function DELETE(
     }
 
     // Get version details before deletion
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const versionRows = await sql`
       SELECT version_number, changelog, is_current FROM document_versions 
       WHERE id = ${versionId} AND document_id = ${documentId}
@@ -237,8 +243,8 @@ export async function DELETE(
 
   } catch (error) {
     logError('Delete version error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to delete version' 
+    return NextResponse.json({
+      error: 'Failed to delete version'
     }, { status: 500 })
   }
 }

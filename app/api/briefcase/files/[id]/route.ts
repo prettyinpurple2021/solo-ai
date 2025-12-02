@@ -26,6 +26,7 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
     if (docRows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
     const { name, description, category, folder_id } = body
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updatedRows = await sql`
       UPDATE documents
       SET name = COALESCE(${name || null}, name),
@@ -35,7 +36,6 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
           updated_at = NOW()
       WHERE id = ${id}
       RETURNING *
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ` as any[]
     const updated = updatedRows[0]
 
@@ -92,12 +92,12 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ id
     const { id } = params
 
     const sql = getSql()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const resultRows = await sql`
       SELECT d.*, f.name AS folder_name, f.color AS folder_color
       FROM documents d
       LEFT JOIN document_folders f ON f.id = d.folder_id
       WHERE d.id = ${id} AND d.user_id = ${user.id}
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ` as any[]
     const r = resultRows[0]
     if (!r) return NextResponse.json({ error: 'Not found' }, { status: 404 })
