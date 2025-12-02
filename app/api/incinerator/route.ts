@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
 
         if (error instanceof z.ZodError) {
             return NextResponse.json(
-                { error: 'Invalid idea data', details: error.errors },
+                { error: 'Invalid idea data', details: (error as any).errors },
                 { status: 400 }
             )
         }

@@ -1,12 +1,12 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server';
-import { authenticateRequest} from '@/lib/auth-server';
-import { rateLimitByIp} from '@/lib/rate-limit';
-import { socialMediaAnalysisEngine} from '@/lib/social-media-analysis-engine';
-import { db} from '@/db';
-import { competitorProfiles} from '@/db/schema';
-import { eq, and, inArray} from 'drizzle-orm';
-import { z} from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
+import { authenticateRequest } from '@/lib/auth-server';
+import { rateLimitByIp } from '@/lib/rate-limit';
+import { socialMediaAnalysisEngine } from '@/lib/social-media-analysis-engine';
+import { db } from '@/db';
+import { competitorProfiles } from '@/db/schema';
+import { eq, and, inArray } from 'drizzle-orm';
+import { z } from 'zod';
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -19,8 +19,8 @@ export const dynamic = 'force-dynamic'
 const querySchema = z.object({
   competitor_ids: z.string().transform(str => str.split(',').map(Number)),
   platform: z.enum(['linkedin', 'twitter', 'facebook', 'instagram', 'youtube']).optional(),
-  days: z.string().transform(Number).default('30'),
-  metrics: z.string().transform(str => str.split(',')).default('engagement,frequency,reach,sentiment')
+  days: z.coerce.number().default(30),
+  metrics: z.string().default('engagement,frequency,reach,sentiment').transform(str => str.split(','))
 });
 
 /**
@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
       const foundIds = competitors.map(c => c.id);
       const missingIds = competitor_ids.filter(id => !foundIds.includes(id));
       return NextResponse.json(
-        { 
+        {
           error: 'Some competitors not found or not accessible',
           missing_competitor_ids: missingIds
         },
@@ -134,10 +134,10 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     logError('Error generating competitive benchmarks:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -213,7 +213,7 @@ export async function POST(request: NextRequest) {
 
     // Generate custom benchmarks based on type
     let benchmarkResults: any;
-    
+
     switch (benchmark_type) {
       case 'performance':
         benchmarkResults = await generatePerformanceBenchmarks(competitor_ids, platform, days, metrics);
@@ -250,10 +250,10 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error creating custom benchmark:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
 async function processBenchmarkData(benchmarks: any[], competitors: any[], metrics: string[]) {
   return benchmarks.map(benchmark => {
     const competitor = competitors.find(c => c.id === benchmark.competitorId);
-    
+
     return {
       competitor: {
         id: competitor.id,
@@ -290,13 +290,13 @@ async function processBenchmarkData(benchmarks: any[], competitors: any[], metri
 
 function filterMetrics(benchmarks: any, requestedMetrics: string[]) {
   const filtered: any = {};
-  
+
   requestedMetrics.forEach(metric => {
     if (benchmarks[metric]) {
       filtered[metric] = benchmarks[metric];
     }
   });
-  
+
   return filtered;
 }
 
@@ -322,10 +322,10 @@ function generateComparativeInsights(benchmarks: any[]) {
   // Analyze each platform
   Object.entries(platformGroups).forEach(([platform, platformBenchmarks]) => {
     // Find top performers
-    const sortedByEngagement = platformBenchmarks.sort((a, b) => 
+    const sortedByEngagement = platformBenchmarks.sort((a, b) =>
       (b.metrics.engagement?.value || 0) - (a.metrics.engagement?.value || 0)
     );
-    
+
     if (sortedByEngagement.length > 0) {
       insights.top_performers.push({
         platform,
@@ -338,7 +338,7 @@ function generateComparativeInsights(benchmarks: any[]) {
     // Identify underperformers (bottom 25%)
     const bottomQuartile = Math.ceil(sortedByEngagement.length * 0.25);
     const underperformers = sortedByEngagement.slice(-bottomQuartile);
-    
+
     underperformers.forEach(underperformer => {
       insights.underperformers.push({
         platform,
@@ -353,11 +353,11 @@ function generateComparativeInsights(benchmarks: any[]) {
     strengths.forEach(strength => {
       strengthCounts[strength] = (strengthCounts[strength] || 0) + 1;
     });
-    
+
     const commonStrengths = Object.entries(strengthCounts)
       .filter(([_, count]) => count > 1)
       .map(([strength]) => strength);
-    
+
     insights.key_differentiators.push(...commonStrengths);
   });
 
@@ -381,7 +381,7 @@ function generateStrategicRecommendations(benchmarks: any[]) {
 
   benchmarks.forEach(benchmark => {
     const platform = benchmark.platform;
-    
+
     if (!recommendations.platform_specific[platform]) {
       recommendations.platform_specific[platform] = [];
     }
@@ -439,7 +439,7 @@ function generateBenchmarkSummary(benchmarks: any[]) {
     platformPerformance[benchmark.platform] = (platformPerformance[benchmark.platform] || 0) + engagementValue;
   });
 
-  const topPlatform = Object.entries(platformPerformance).reduce((top, [platform, value]) => 
+  const topPlatform = Object.entries(platformPerformance).reduce((top, [platform, value]) =>
     value > top[1] ? [platform, value] : top
   );
   summary.top_performing_platform = topPlatform[0];

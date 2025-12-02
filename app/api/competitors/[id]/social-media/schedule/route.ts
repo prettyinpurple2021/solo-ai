@@ -1,12 +1,12 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server';
-import { authenticateRequest} from '@/lib/auth-server';
-import { rateLimitByIp} from '@/lib/rate-limit';
-import { socialMediaScheduler} from '@/lib/social-media-scheduler';
-import { db} from '@/db';
-import { competitorProfiles} from '@/db/schema';
-import { eq, and} from 'drizzle-orm';
-import { z} from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
+import { authenticateRequest } from '@/lib/auth-server';
+import { rateLimitByIp } from '@/lib/rate-limit';
+import { socialMediaScheduler } from '@/lib/social-media-scheduler';
+import { db } from '@/db';
+import { competitorProfiles } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
+import { z } from 'zod';
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -98,10 +98,10 @@ export async function GET(
 
   } catch (error) {
     logError('Error getting social media schedule:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -177,7 +177,7 @@ export async function POST(
     }
 
     // If no platforms specified, use all available platforms from handles
-    const availablePlatforms = Object.keys(socialHandles).filter(platform => 
+    const availablePlatforms = Object.keys(socialHandles).filter(platform =>
       ['linkedin', 'twitter', 'facebook', 'instagram', 'youtube'].includes(platform)
     );
 
@@ -187,8 +187,8 @@ export async function POST(
     const missingHandles = platformsToMonitor.filter(platform => !socialHandles[platform]);
     if (missingHandles.length > 0) {
       return NextResponse.json(
-        { 
-          error: 'Missing social media handles', 
+        {
+          error: 'Missing social media handles',
           missing_platforms: missingHandles,
           available_platforms: availablePlatforms
         },
@@ -206,7 +206,7 @@ export async function POST(
     // Update competitor monitoring status
     await db
       .update(competitorProfiles)
-      .set({ 
+      .set({
         monitoring_status: config.enabled ? 'active' : 'paused',
         updated_at: new Date()
       })
@@ -229,10 +229,10 @@ export async function POST(
 
   } catch (error) {
     logError('Error scheduling social media monitoring:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -316,7 +316,7 @@ export async function PUT(
     if (updates.enabled !== undefined) {
       await db
         .update(competitorProfiles)
-        .set({ 
+        .set({
           monitoring_status: updates.enabled ? 'active' : 'paused',
           updated_at: new Date()
         })
@@ -341,10 +341,10 @@ export async function PUT(
 
   } catch (error) {
     logError('Error updating social media monitoring:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -412,7 +412,7 @@ export async function DELETE(
     // Update competitor status
     await db
       .update(competitorProfiles)
-      .set({ 
+      .set({
         monitoring_status: 'paused',
         updated_at: new Date()
       })
@@ -428,10 +428,10 @@ export async function DELETE(
 
   } catch (error) {
     logError('Error pausing social media monitoring:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }

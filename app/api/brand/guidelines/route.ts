@@ -48,14 +48,14 @@ export async function POST(request: NextRequest) {
     const guidelines = await generateBrandGuidelinesWithAI(brandData)
 
     logInfo('Brand guidelines generated successfully', { userId: authResult.user.id })
-    return NextResponse.json({ 
-      success: true, 
-      guidelines 
+    return NextResponse.json({
+      success: true,
+      guidelines
     })
   } catch (error) {
     logError('Error generating brand guidelines:', error)
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid brand data', details: error.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid brand data', details: (error as any).errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

@@ -1,12 +1,12 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server';
-import { authenticateRequest} from '@/lib/auth-server';
-import { rateLimitByIp} from '@/lib/rate-limit';
-import { socialMediaAnalysisEngine} from '@/lib/social-media-analysis-engine';
-import { db} from '@/db';
-import { competitorProfiles} from '@/db/schema';
-import { eq, and} from 'drizzle-orm';
-import { z} from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
+import { authenticateRequest } from '@/lib/auth-server';
+import { rateLimitByIp } from '@/lib/rate-limit';
+import { socialMediaAnalysisEngine } from '@/lib/social-media-analysis-engine';
+import { db } from '@/db';
+import { competitorProfiles } from '@/db/schema';
+import { eq, and } from 'drizzle-orm';
+import { z } from 'zod';
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -22,7 +22,7 @@ const paramsSchema = z.object({
 
 const querySchema = z.object({
   platform: z.enum(['linkedin', 'twitter', 'facebook', 'instagram', 'youtube']).optional(),
-  days: z.string().transform(Number).default('30'),
+  days: z.coerce.number().default(30),
   analysis_type: z.enum(['engagement', 'frequency', 'audience', 'campaigns', 'all']).default('all')
 });
 
@@ -56,7 +56,7 @@ export async function GET(
     // Validate params
     const params = await context.params;
     const { id: competitorId } = paramsSchema.parse(params);
-    
+
     // Validate query parameters
     const url = new URL(request.url);
     const { platform, days, analysis_type } = querySchema.parse({
@@ -165,10 +165,10 @@ export async function GET(
 
   } catch (error) {
     logError('Error generating social media insights:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -209,7 +209,7 @@ function generateSummaryInsights(insights: any): any {
     }
 
     // Calculate engagement score (0-100)
-    const avgEngagement = engagementData.patterns.timeOfDay.reduce((sum: number, pattern: any) => 
+    const avgEngagement = engagementData.patterns.timeOfDay.reduce((sum: number, pattern: any) =>
       sum + pattern.avgEngagement, 0) / engagementData.patterns.timeOfDay.length;
     const engagementScore = Math.min(100, (avgEngagement / 100) * 100);
     totalScore += engagementScore;
@@ -220,7 +220,7 @@ function generateSummaryInsights(insights: any): any {
   if (insights.posting_frequency && insights.posting_frequency.length > 0) {
     const frequencyData = insights.posting_frequency[0];
     summary.key_findings.push(`Posts ${frequencyData.frequency.daily.average.toFixed(1)} times daily with ${frequencyData.consistency.score}% consistency`);
-    
+
     if (frequencyData.consistency.score < 70) {
       summary.areas_for_improvement.push('Inconsistent posting schedule');
     } else {
@@ -235,7 +235,7 @@ function generateSummaryInsights(insights: any): any {
   if (insights.audience_analysis && insights.audience_analysis.length > 0) {
     const audienceData = insights.audience_analysis[0];
     summary.key_findings.push(`Engagement rate: ${(audienceData.engagement.avgEngagementRate * 100).toFixed(1)}%`);
-    
+
     if (audienceData.engagement.engagementTrend === 'growing') {
       summary.competitive_advantages.push('Growing audience engagement');
     } else if (audienceData.engagement.engagementTrend === 'declining') {
@@ -253,7 +253,7 @@ function generateSummaryInsights(insights: any): any {
     const campaignData = insights.campaign_analysis[0];
     if (campaignData.campaigns.length > 0) {
       summary.key_findings.push(`${campaignData.campaigns.length} campaigns detected in analysis period`);
-      
+
       const successfulCampaigns = campaignData.campaigns.filter((c: any) => c.success === 'high').length;
       if (successfulCampaigns > 0) {
         summary.competitive_advantages.push(`${successfulCampaigns} highly successful campaigns`);
@@ -282,7 +282,7 @@ function generateStrategicRecommendations(insights: any): any {
   // Engagement-based recommendations
   if (insights.engagement_patterns && insights.engagement_patterns.length > 0) {
     const engagementData = insights.engagement_patterns[0];
-    
+
     if (engagementData.patterns.timeOfDay.length > 0) {
       const bestTime = engagementData.patterns.timeOfDay[0];
       recommendations.timing_optimization.push(`Schedule posts at ${bestTime.hour}:00 for maximum engagement`);
@@ -302,7 +302,7 @@ function generateStrategicRecommendations(insights: any): any {
   // Frequency-based recommendations
   if (insights.posting_frequency && insights.posting_frequency.length > 0) {
     const frequencyData = insights.posting_frequency[0];
-    
+
     if (frequencyData.consistency.score < 70) {
       recommendations.immediate_actions.push('Improve posting consistency to build audience trust');
     }
@@ -321,7 +321,7 @@ function generateStrategicRecommendations(insights: any): any {
   // Audience-based recommendations
   if (insights.audience_analysis && insights.audience_analysis.length > 0) {
     const audienceData = insights.audience_analysis[0];
-    
+
     if (audienceData.engagement.engagementTrend === 'declining') {
       recommendations.immediate_actions.push('Address declining engagement with fresh content strategy');
     }
@@ -334,9 +334,9 @@ function generateStrategicRecommendations(insights: any): any {
   // Campaign-based recommendations
   if (insights.campaign_analysis && insights.campaign_analysis.length > 0) {
     const campaignData = insights.campaign_analysis[0];
-    
+
     if (campaignData.campaignTypes.length > 0) {
-      const bestCampaignType = campaignData.campaignTypes.reduce((best: any, current: any) => 
+      const bestCampaignType = campaignData.campaignTypes.reduce((best: any, current: any) =>
         current.successRate > best.successRate ? current : best
       );
       recommendations.strategic_moves.push(`Focus on ${bestCampaignType.type} campaigns (${bestCampaignType.successRate}% success rate)`);

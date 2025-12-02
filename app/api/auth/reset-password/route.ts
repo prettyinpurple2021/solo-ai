@@ -20,10 +20,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const validation = ResetPasswordSchema.safeParse(body)
-    
+
     if (!validation.success) {
       return NextResponse.json(
-        { error: validation.error.errors[0].message },
+        { error: (validation.error as any).errors[0].message },
         { status: 400 }
       )
     }
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
     // Update user's password
     await db
       .update(users)
-      .set({ 
+      .set({
         password_hash: hashedPassword,
         updated_at: new Date()
       })
@@ -85,18 +85,18 @@ export async function POST(request: NextRequest) {
       .where(eq(passwordResetTokens.id, resetToken.id))
 
     // Get client IP for security logging
-    const ipAddress = request.headers.get('x-forwarded-for') || 
-                     request.headers.get('x-real-ip') || 
-                     'unknown'
+    const ipAddress = request.headers.get('x-forwarded-for') ||
+      request.headers.get('x-real-ip') ||
+      'unknown'
 
-    logInfo('Password reset completed successfully', { 
+    logInfo('Password reset completed successfully', {
       userId: resetToken.user_id,
       tokenId: resetToken.id,
-      ipAddress 
+      ipAddress
     })
 
-    return NextResponse.json({ 
-      message: 'Password has been reset successfully. You can now sign in with your new password.' 
+    return NextResponse.json({
+      message: 'Password has been reset successfully. You can now sign in with your new password.'
     })
 
   } catch (error) {

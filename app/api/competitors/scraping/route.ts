@@ -1,13 +1,13 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { z} from 'zod'
-import { queueProcessor} from '@/lib/scraping-queue-processor'
-import { authenticateRequest} from '@/lib/auth-server'
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { queueProcessor } from '@/lib/scraping-queue-processor'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getFeatureFlags } from '@/lib/feature-flags'
 import { db } from '@/db'
 import { scrapingJobs } from '@/db/schema'
 import { and, eq, gte } from 'drizzle-orm'
-import { rateLimitByIp} from '@/lib/rate-limit'
+import { rateLimitByIp } from '@/lib/rate-limit'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -36,7 +36,7 @@ const createJobSchema = z.object({
       pricing: z.array(z.string()).optional(),
       products: z.array(z.string()).optional()
     }).optional(),
-    headers: z.record(z.string()).optional(),
+    headers: z.record(z.string(), z.string()).optional(),
     timeout: z.number().optional(),
     retryDelay: z.number().optional(),
     respectRobotsTxt: z.boolean().optional(),
@@ -142,12 +142,12 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error creating scraping job:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { 
+        {
           error: 'Invalid request data',
-          details: error.errors
+          details: (error as any).errors
         },
         { status: 400 }
       )

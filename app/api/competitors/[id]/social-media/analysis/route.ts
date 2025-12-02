@@ -1,11 +1,11 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server';
-import { authenticateRequest} from '@/lib/auth-server';
-import { rateLimitByIp} from '@/lib/rate-limit';
-import { db} from '@/db';
-import { competitorProfiles, intelligenceData} from '@/db/schema';
-import { eq, and, desc, gte} from 'drizzle-orm';
-import { z} from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
+import { authenticateRequest } from '@/lib/auth-server';
+import { rateLimitByIp } from '@/lib/rate-limit';
+import { db } from '@/db';
+import { competitorProfiles, intelligenceData } from '@/db/schema';
+import { eq, and, desc, gte } from 'drizzle-orm';
+import { z } from 'zod';
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -21,7 +21,7 @@ const paramsSchema = z.object({
 
 const querySchema = z.object({
   platform: z.enum(['linkedin', 'twitter', 'facebook', 'instagram', 'youtube']).optional(),
-  days: z.string().transform(Number).default('30'),
+  days: z.coerce.number().default(30),
   analysis_type: z.enum(['engagement', 'sentiment', 'content', 'frequency', 'all']).default('all')
 });
 
@@ -55,7 +55,7 @@ export async function GET(
     // Validate params
     const params = await context.params;
     const { id: competitorId } = paramsSchema.parse(params);
-    
+
     // Validate query parameters
     const url = new URL(request.url);
     const { platform, days, analysis_type } = querySchema.parse({
@@ -147,10 +147,10 @@ export async function GET(
 
   } catch (error) {
     logError('Error generating social media analysis:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -171,7 +171,7 @@ async function generateSocialMediaAnalysis(
   _platform?: string
 ) {
   const platformData: Record<string, any[]> = {};
-  
+
   // Group data by platform
   data.forEach(item => {
     const platformName = item.data_type?.replace('_analysis', '') || 'unknown';
@@ -235,15 +235,15 @@ function generateEngagementAnalysis(platformData: Record<string, any[]>) {
     items.forEach(item => {
       const extractedData = item.extracted_data || {};
       const posts = item.raw_content || [];
-      
+
       if (Array.isArray(posts)) {
         platformPosts += posts.length;
-        
+
         posts.forEach((post: any) => {
           if (post.engagement) {
-            const postEngagement = (post.engagement.likes || 0) + 
-                                 (post.engagement.shares || 0) + 
-                                 (post.engagement.comments || 0);
+            const postEngagement = (post.engagement.likes || 0) +
+              (post.engagement.shares || 0) +
+              (post.engagement.comments || 0);
             platformEngagement += postEngagement;
           }
         });
@@ -383,7 +383,7 @@ function generateContentAnalysis(platformData: Record<string, any[]>) {
   Object.entries(platformData).forEach(([platform, items]) => {
     items.forEach(item => {
       const extractedData = item.extracted_data || {};
-      
+
       // Analyze content themes
       if (extractedData.contentThemes) {
         extractedData.contentThemes.forEach((theme: any) => {
@@ -462,7 +462,7 @@ function generateFrequencyAnalysis(platformData: Record<string, any[]>) {
         platformDailyFreq += freq.daily || 0;
         platformWeeklyFreq += freq.weekly || 0;
         platformMonthlyFreq += freq.monthly || 0;
-        
+
         if (freq.peakDays) platformPeakDays.push(...freq.peakDays);
         if (freq.peakHours) platformPeakHours.push(...freq.peakHours);
       }

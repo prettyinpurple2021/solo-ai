@@ -1,10 +1,10 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server';
-import { authenticateRequest} from '@/lib/auth-server';
-import { rateLimitByIp} from '@/lib/rate-limit';
-import { socialMediaJobProcessor} from '@/lib/social-media-job-processor';
-import { socialMediaScheduler} from '@/lib/social-media-scheduler';
-import { z} from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
+import { authenticateRequest } from '@/lib/auth-server';
+import { rateLimitByIp } from '@/lib/rate-limit';
+import { socialMediaJobProcessor } from '@/lib/social-media-job-processor';
+import { socialMediaScheduler } from '@/lib/social-media-scheduler';
+import { z } from 'zod';
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
 
     // Get processor status
     const processorStatus = socialMediaJobProcessor.getStatus();
-    
+
     // Get monitoring statistics for the user
     const monitoringStats = await socialMediaScheduler.getMonitoringStats(user.id);
 
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           );
         }
-        
+
         // Trigger analysis for specific competitor
         const analysisResult = await socialMediaJobProcessor.analyzeCompetitorManually(competitor_id);
         result.message = `Analysis completed for competitor ${competitor_id}`;
@@ -151,10 +151,10 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error processing processor action:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -204,7 +204,7 @@ export async function PUT(request: NextRequest) {
     // Update processor configuration
     // Note: In a real implementation, you'd store this configuration in a database
     // and the processor would read from it
-    
+
     let message = 'Processor configuration updated';
     const updates: string[] = [];
 
@@ -233,10 +233,10 @@ export async function PUT(request: NextRequest) {
 
   } catch (error) {
     logError('Error updating processor configuration:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid configuration parameters', details: error.errors },
+        { error: 'Invalid configuration parameters', details: (error as any).errors },
         { status: 400 }
       );
     }

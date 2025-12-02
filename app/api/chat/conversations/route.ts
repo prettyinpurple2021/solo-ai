@@ -1,8 +1,8 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { z} from 'zod'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
 import { db } from '@/db'
 import { chatConversations, chatMessages } from '@/db/schema'
 import { eq, desc, and } from 'drizzle-orm'
@@ -27,7 +27,7 @@ function getAgentName(agentId: string): string {
     'collaborative': 'Collaborative AI',
     'default': 'AI Assistant'
   }
-  
+
   return agentNames[agentId] || agentNames['default']
 }
 
@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
     // Create new conversation in database
     const conversationId = uuidv4()
     const agentName = getAgentName(conversationData.agentId || 'roxy')
-    
+
     const [newConversation] = await db
       .insert(chatConversations)
       .values({
@@ -167,10 +167,10 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error creating conversation:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid conversation data', details: error.errors },
+        { error: 'Invalid conversation data', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -205,7 +205,7 @@ export async function PUT(request: NextRequest) {
     // Parse request body
     const body = await request.json()
     const { id, ...updateData } = body
-    
+
     if (!id) {
       return NextResponse.json(
         { error: 'Conversation ID is required' },
@@ -237,10 +237,10 @@ export async function PUT(request: NextRequest) {
 
   } catch (error) {
     logError('Error updating conversation:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid conversation data', details: error.errors },
+        { error: 'Invalid conversation data', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -275,7 +275,7 @@ export async function DELETE(request: NextRequest) {
     // Get conversation ID from query params
     const { searchParams } = new URL(request.url)
     const conversationId = searchParams.get('id')
-    
+
     if (!conversationId) {
       return NextResponse.json(
         { error: 'Conversation ID is required' },

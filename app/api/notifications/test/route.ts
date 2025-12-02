@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid test parameters', details: (error as z.ZodError).errors },
+        { error: 'Invalid test parameters', details: (error as any).errors },
         { status: 400 }
       );
     }

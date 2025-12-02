@@ -119,7 +119,7 @@ export async function PUT(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid preferences data', details: (error as z.ZodError).errors },
+        { error: 'Invalid preferences data', details: (error as any).errors },
         { status: 400 }
       );
     }

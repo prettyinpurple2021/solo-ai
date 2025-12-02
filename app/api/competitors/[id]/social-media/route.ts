@@ -1,12 +1,12 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server';
-import { authenticateRequest} from '@/lib/auth-server';
-import { rateLimitByIp} from '@/lib/rate-limit';
-import { socialMediaMonitor} from '@/lib/social-media-monitor';
-import { db} from '@/db';
-import { competitorProfiles, intelligenceData} from '@/db/schema';
-import { eq, and, desc} from 'drizzle-orm';
-import { z} from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
+import { authenticateRequest } from '@/lib/auth-server';
+import { rateLimitByIp } from '@/lib/rate-limit';
+import { socialMediaMonitor } from '@/lib/social-media-monitor';
+import { db } from '@/db';
+import { competitorProfiles, intelligenceData } from '@/db/schema';
+import { eq, and, desc } from 'drizzle-orm';
+import { z } from 'zod';
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -22,8 +22,8 @@ const paramsSchema = z.object({
 
 const querySchema = z.object({
   platform: z.enum(['linkedin', 'twitter', 'facebook', 'instagram', 'youtube']).optional(),
-  limit: z.string().transform(Number).default('50'),
-  offset: z.string().transform(Number).default('0')
+  limit: z.coerce.number().default(50),
+  offset: z.coerce.number().default(0)
 });
 
 /**
@@ -56,7 +56,7 @@ export async function GET(
     // Validate params
     const params = await context.params;
     const { id: competitorId } = paramsSchema.parse(params);
-    
+
     // Validate query parameters
     const url = new URL(request.url);
     const { platform, limit, offset } = querySchema.parse({
@@ -142,10 +142,10 @@ export async function GET(
 
   } catch (error) {
     logError('Error fetching social media data:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -226,7 +226,7 @@ export async function POST(
 
     // Start social media monitoring
     let results;
-    
+
     if (platforms && platforms.length > 0) {
       // Monitor specific platforms
       results = [];
@@ -247,7 +247,7 @@ export async function POST(
               platformData = await socialMediaMonitor.monitorInstagramActivity(competitorId);
               break;
           }
-          
+
           if (platformData) {
             results.push({
               platform,
@@ -289,7 +289,7 @@ export async function POST(
     // Update competitor's last analyzed timestamp
     await db
       .update(competitorProfiles)
-      .set({ 
+      .set({
         last_analyzed: new Date(),
         updated_at: new Date()
       })
@@ -308,10 +308,10 @@ export async function POST(
 
   } catch (error) {
     logError('Error starting social media monitoring:', error);
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', details: (error as any).errors },
         { status: 400 }
       );
     }

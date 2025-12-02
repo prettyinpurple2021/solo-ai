@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid context data',
-        details: (error as z.ZodError).errors
+        details: (error as any).errors
       }, { status: 400 })
     }
 
@@ -243,7 +243,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid query parameters',
-        details: (error as z.ZodError).errors
+        details: (error as any).errors
       }, { status: 400 })
     }
 

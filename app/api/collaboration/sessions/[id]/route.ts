@@ -202,7 +202,7 @@ export async function PATCH(
         case 'completed':
           if (['active', 'paused'].includes(currentStatus || '')) {
             updateResult = await sessionManager.completeSession(
-              sessionId, 
+              sessionId,
               validatedData.completionSummary
             )
             message = 'Session completed successfully'
@@ -235,12 +235,12 @@ export async function PATCH(
 
   } catch (error) {
     logError('Error updating collaboration session:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid request data',
-        details: error.errors
+        details: (error as any).errors
       }, { status: 400 })
     }
 

@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
       '90d': 90,
       '1y': 365
     }[validatedParams.timeframe]
-    
+
     const startDate = new Date(now.getTime() - timeframeDays * 24 * 60 * 60 * 1000)
 
     // Gather user data for analysis
@@ -147,7 +147,7 @@ export async function GET(request: NextRequest) {
             historicalData: userAnalytics.aiInteractionHistory
           }
         ]
-        
+
         response.data.anomalies = await predictiveAnalytics.detectAnomalies(anomalyData)
       } catch (error) {
         logWarn('Failed to detect anomalies:', error)
@@ -159,10 +159,10 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     logError('Error generating predictive insights:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid parameters', details: error.errors },
+        { error: 'Invalid parameters', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -408,9 +408,9 @@ async function gatherUserData(
       activeDays: activeDaySet.size,
       lastLoginAt: loginEvents.length > 0
         ? loginEvents
-            .map(event => event.lastActivity)
-            .filter((value): value is Date => Boolean(value))
-            .sort((a, b) => b.getTime() - a.getTime())[0] ?? null
+          .map(event => event.lastActivity)
+          .filter((value): value is Date => Boolean(value))
+          .sort((a, b) => b.getTime() - a.getTime())[0] ?? null
         : null
     }
 
@@ -474,7 +474,7 @@ async function gatherBusinessData(
           createdAt: users.created_at,
           subscriptionTier: users.subscription_tier
         })
-      .from(users)
+        .from(users)
         .where(
           and(
             gte(users.created_at, historyStart),

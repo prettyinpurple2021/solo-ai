@@ -255,7 +255,7 @@ export async function POST(
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid control action data',
-        details: (error as z.ZodError).errors
+        details: (error as any).errors
       }, { status: 400 })
     }
 

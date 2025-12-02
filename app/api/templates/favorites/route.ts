@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logError('Error handling template favorite:', error)
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid request data', details: (error as z.ZodError).errors }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid request data', details: (error as any).errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }

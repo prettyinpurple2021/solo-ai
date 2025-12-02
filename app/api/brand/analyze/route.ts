@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic'
 
 // Initialize OpenAI client only if API key is available
 // This allows builds to succeed in environments without the key
-const openai = process.env.OPENAI_API_KEY 
+const openai = process.env.OPENAI_API_KEY
   ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY })
   : null
 
@@ -53,14 +53,14 @@ export async function POST(request: NextRequest) {
     const analysis = await analyzeBrandWithAI(brandData)
 
     logInfo('Brand analysis completed successfully', { userId: authResult.user.id })
-    return NextResponse.json({ 
-      success: true, 
-      analysis 
+    return NextResponse.json({
+      success: true,
+      analysis
     })
   } catch (error) {
     logError('Error in brand analysis:', error)
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid brand data', details: error.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid brand data', details: (error as any).errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -128,7 +128,7 @@ Format your response as JSON with the following structure:
     })
 
     const aiResponse = completion.choices[0]?.message?.content || ''
-    
+
     // Parse AI response
     try {
       const analysis = JSON.parse(aiResponse)

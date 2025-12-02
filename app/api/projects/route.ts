@@ -1,8 +1,8 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { z} from 'zod'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
 import { neon } from '@neondatabase/serverless'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -135,9 +135,9 @@ export async function POST(request: NextRequest) {
         ${projectData.description || ''},
         ${projectData.status || 'active'},
         ${JSON.stringify({
-          color: projectData.color || '#6366f1',
-          icon: projectData.icon || '📁'
-        })},
+      color: projectData.color || '#6366f1',
+      icon: projectData.icon || '📁'
+    })},
         NOW(),
         NOW()
       )
@@ -162,10 +162,10 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Error creating project:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid project data', details: error.errors },
+        { error: 'Invalid project data', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -200,7 +200,7 @@ export async function PUT(request: NextRequest) {
     // Parse request body
     const body = await request.json()
     const { id, ...updateData } = body
-    
+
     if (!id) {
       return NextResponse.json(
         { error: 'Project ID is required' },
@@ -212,20 +212,20 @@ export async function PUT(request: NextRequest) {
 
     // Update project in database
     const sql = getSql()
-    
+
     // First, get existing metadata to preserve other fields
     const existingProject = await sql`
       SELECT metadata FROM briefcases 
       WHERE id = ${id} AND user_id = ${user.id}
     `
-    
+
     if (existingProject.length === 0) {
       return NextResponse.json(
         { error: 'Project not found or access denied' },
         { status: 404 }
       )
     }
-    
+
     // Merge existing metadata with new values
     const existingMetadata = existingProject[0].metadata || {}
     const updatedMetadata = {
@@ -233,7 +233,7 @@ export async function PUT(request: NextRequest) {
       ...(validatedData.color && { color: validatedData.color }),
       ...(validatedData.icon && { icon: validatedData.icon })
     }
-    
+
     const result = await sql`
       UPDATE briefcases 
       SET 
@@ -280,10 +280,10 @@ export async function PUT(request: NextRequest) {
 
   } catch (error) {
     logError('Error updating project:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid project data', details: error.errors },
+        { error: 'Invalid project data', details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -318,7 +318,7 @@ export async function DELETE(request: NextRequest) {
     // Get project ID from query params
     const { searchParams } = new URL(request.url)
     const projectId = searchParams.get('id')
-    
+
     if (!projectId) {
       return NextResponse.json(
         { error: 'Project ID is required' },

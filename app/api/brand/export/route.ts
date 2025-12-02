@@ -39,15 +39,15 @@ export async function POST(request: NextRequest) {
     const exportData = await generateBrandExport(authResult.user.id, format, includeAssets, includeGuidelines)
 
     logInfo('Brand export generated successfully', { userId: authResult.user.id, format })
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       exportData,
       downloadUrl: `/api/brand/export/download/${exportData.id}`
     })
   } catch (error) {
     logError('Error generating brand export:', error)
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid export parameters', details: error.errors }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid export parameters', details: (error as any).errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -105,7 +105,7 @@ async function generateBrandExport(userId: string, format: string, includeAssets
       const json = JSON.stringify(payload, null, 2)
       const base64 = Buffer.from(json, 'utf-8').toString('base64')
       const dataUrl = `data:application/json;base64,${base64}`
-      const originalName = `brand-export-${new Date().toISOString().slice(0,10)}.json`
+      const originalName = `brand-export-${new Date().toISOString().slice(0, 10)}.json`
 
       const [doc] = await db
         .insert(documents)
@@ -146,7 +146,7 @@ async function generateBrandExport(userId: string, format: string, includeAssets
       const pdfBytes = generateMinimalBrandPdf(payload)
       const base64 = Buffer.from(pdfBytes).toString('base64')
       const dataUrl = `data:application/pdf;base64,${base64}`
-      const originalName = `brand-export-${new Date().toISOString().slice(0,10)}.pdf`
+      const originalName = `brand-export-${new Date().toISOString().slice(0, 10)}.pdf`
 
       const [doc] = await db
         .insert(documents)
@@ -198,7 +198,7 @@ async function generateBrandExport(userId: string, format: string, includeAssets
       const zipContent = await zip.generateAsync({ type: 'uint8array', compression: 'DEFLATE', compressionOptions: { level: 6 } })
       const base64 = Buffer.from(zipContent).toString('base64')
       const dataUrl = `data:application/zip;base64,${base64}`
-      const originalName = `brand-export-${new Date().toISOString().slice(0,10)}.zip`
+      const originalName = `brand-export-${new Date().toISOString().slice(0, 10)}.zip`
 
       const [doc] = await db
         .insert(documents)
@@ -265,8 +265,8 @@ export async function GET(request: NextRequest) {
       .where(and(eq(documents.user_id, authResult.user.id), eq(documents.category, 'brand_export')))
       .orderBy(desc(documents.created_at))
 
-    return NextResponse.json({ 
-      success: true, 
+    return NextResponse.json({
+      success: true,
       exports: rows.map(row => ({
         id: row.id,
         format: row.mime_type === 'application/json' ? 'json' : 'binary',

@@ -1,10 +1,10 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import '@/lib/server-polyfills'
-import { NextRequest, NextResponse} from 'next/server'
-import { z} from 'zod'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { scrapingScheduler} from '@/lib/scraping-scheduler'
+import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { scrapingScheduler } from '@/lib/scraping-scheduler'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -23,7 +23,7 @@ const updateJobSchema = z.object({
     changeThreshold: z.number().min(0).max(1).optional(),
     notifyOnChange: z.boolean().optional(),
     storeHistory: z.boolean().optional(),
-    customSelectors: z.record(z.string()).optional(),
+    customSelectors: z.record(z.string(), z.string()).optional(),
     excludePatterns: z.array(z.string()).optional(),
   }).optional(),
 })
@@ -88,8 +88,8 @@ export async function GET(
           totalExecutions: history.length,
           successfulExecutions: history.filter(h => h.success).length,
           failedExecutions: history.filter(h => !h.success).length,
-          averageExecutionTime: history.length > 0 
-            ? history.reduce((sum, h) => sum + h.executionTime, 0) / history.length 
+          averageExecutionTime: history.length > 0
+            ? history.reduce((sum, h) => sum + h.executionTime, 0) / history.length
             : 0,
           lastExecution: history.length > 0 ? history[history.length - 1] : null,
         },
@@ -223,10 +223,10 @@ export async function PUT(
     })
   } catch (error) {
     logError('Error updating job:', error)
-    
+
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
+        { error: 'Invalid request data', details: (error as any).errors },
         { status: 400 }
       )
     }
