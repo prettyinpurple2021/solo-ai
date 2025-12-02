@@ -28,7 +28,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
 
   // Environment variables configuration
@@ -207,7 +207,7 @@ const nextConfig = {
         "webpack-bundle-analyzer",
         "eslint",
       ];
-      
+
       // Further minimize server bundle
       // NOTE: `usedExports` can conflict with some caching strategies (cacheUnaffected) in
       // certain webpack/Next.js versions. Enable it only for non-dev server builds to avoid

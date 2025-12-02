@@ -71,15 +71,8 @@ async function apiCall<T>(
     fallbackValue?: T
 ): Promise<T> {
     if (!USE_BACKEND) {
-        await delay();
-        if (fallbackKey) {
-            if (body !== undefined && (method === 'POST' || method === 'PUT')) {
-                set(fallbackKey, body);
-                return body as T;
-            }
-            return get<T>(fallbackKey, fallbackValue as T);
-        }
-        throw new Error('Backend disabled and no fallback key provided');
+        // Strict mode: Fail if backend is required but disabled
+        throw new Error('Backend storage is required but disabled (VITE_USE_BACKEND_STORAGE=false).');
     }
 
     try {
@@ -107,16 +100,19 @@ async function apiCall<T>(
 
         const data = await response.json();
 
-        // Cache in localStorage for offline fallback
+        // Cache in localStorage for offline fallback (optional, but good for UX)
         if (fallbackKey && data) {
             set(fallbackKey, data);
         }
 
         return data as T;
     } catch (error) {
-        console.warn(`API call failed, using localStorage fallback:`, error);
-        // Fallback to localStorage
+        console.error(`API call failed:`, error);
+        // In strict production mode, we might want to throw here. 
+        // But for now, let's allow fallback ONLY if it's a network error, 
+        // but warn heavily that we are offline.
         if (fallbackKey) {
+            console.warn('⚠️ USING OFFLINE FALLBACK STORAGE');
             return get<T>(fallbackKey, fallbackValue as T);
         }
         throw error;

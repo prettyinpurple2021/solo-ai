@@ -1,5 +1,4 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
+
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
 import typescriptEslint from '@typescript-eslint/eslint-plugin';
@@ -44,7 +43,7 @@ export default [
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-empty-object-type': 'off',
-      
+
       // General rules
       'no-unused-vars': [
         'warn',
@@ -57,16 +56,16 @@ export default [
       'prefer-const': 'warn',
       // Disallow console in application code; allow in logger and config files
       'no-console': ['error', { allow: ['warn', 'error'] }],
-      
+
       // React specific rules
       'react/no-unescaped-entities': 'warn',
       'react/jsx-no-undef': 'warn',
     },
   },
-  
+
   // Next.js specific configuration
   ...compat.extends('next/core-web-vitals'),
-  
+
   // Override for TypeScript files
   {
     files: ['**/*.ts', '**/*.tsx'],
@@ -81,7 +80,7 @@ export default [
       'no-console': 'off',
     },
   },
-  
+
   // Ignore patterns
   {
     ignores: [

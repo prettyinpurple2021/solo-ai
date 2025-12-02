@@ -119,6 +119,10 @@ import aiRouter from './routes/ai';
 
 // ... (imports)
 
+import dashboardRouter from './routes/dashboard';
+
+// ... (imports)
+
 app.use('/api/admin', adminRouter);
 app.use('/api/contacts', contactsRouter);
 app.use('/api/pitch-decks', pitchDecksRouter);
@@ -127,6 +131,7 @@ app.use('/api/resources', resourcesRouter);
 app.use('/api/ai', aiRouter);
 app.use('/api/search', searchRouter);
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/dashboard', dashboardRouter);
 
 // Auth Routes
 app.post('/api/auth/signup', async (req: Request, res: Response) => {
