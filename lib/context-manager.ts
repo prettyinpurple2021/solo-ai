@@ -19,7 +19,7 @@ export const ContextEntrySchema = z.object({
   expiresAt: z.date().optional(),
   priority: z.enum(['low', 'medium', 'high', 'critical']).default('medium'),
   tags: z.array(z.string()).default([]),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.string(), z.any()).optional()
 })
 
 export const ConversationContextSchema = z.object({
@@ -33,7 +33,7 @@ export const ConversationContextSchema = z.object({
     timestamp: z.date(),
     importance: z.enum(['low', 'medium', 'high']).default('medium')
   })),
-  sharedKnowledge: z.record(z.any()).default({}),
+  sharedKnowledge: z.record(z.string(), z.any()).default({}),
   activeGoals: z.array(z.object({
     id: z.string(),
     description: z.string(),
@@ -86,11 +86,11 @@ export class ContextManager {
     byType: Map<string, Set<string>>
     byTags: Map<string, Set<string>>
   } = {
-    bySession: new Map(),
-    byAgent: new Map(),
-    byType: new Map(),
-    byTags: new Map()
-  }
+      bySession: new Map(),
+      byAgent: new Map(),
+      byType: new Map(),
+      byTags: new Map()
+    }
 
   constructor() {
     this.startContextCleanup()
@@ -109,18 +109,18 @@ export class ContextManager {
 
       // Validate entry
       const validatedEntry = ContextEntrySchema.parse(contextEntry)
-      
+
       // Store the entry
       this.contextStore.set(validatedEntry.id, validatedEntry)
-      
+
       // Update indices
       this.updateIndices(validatedEntry)
-      
+
       // Update session context
       await this.updateSessionContext(validatedEntry)
-      
+
       logInfo(`📝 Context stored: ${validatedEntry.contextType}/${validatedEntry.key} for ${validatedEntry.agentId}`)
-      
+
       return validatedEntry.id
 
     } catch (error) {
@@ -167,7 +167,7 @@ export class ContextManager {
 
       // Get the actual entries and apply additional filters
       let results: ContextEntry[] = []
-      
+
       for (const id of candidateIds) {
         const entry = this.contextStore.get(id)
         if (!entry) continue
@@ -175,8 +175,8 @@ export class ContextManager {
         // Apply time range filter
         if (query.timeRange) {
           const entryTime = entry.timestamp.getTime()
-          if (entryTime < query.timeRange.start.getTime() || 
-              entryTime > query.timeRange.end.getTime()) {
+          if (entryTime < query.timeRange.start.getTime() ||
+            entryTime > query.timeRange.end.getTime()) {
             continue
           }
         }
@@ -204,11 +204,11 @@ export class ContextManager {
         const priorityOrder = { critical: 4, high: 3, medium: 2, low: 1 }
         const aPriority = priorityOrder[a.priority]
         const bPriority = priorityOrder[b.priority]
-        
+
         if (aPriority !== bPriority) {
           return bPriority - aPriority
         }
-        
+
         return b.timestamp.getTime() - a.timestamp.getTime()
       })
 
@@ -236,12 +236,12 @@ export class ContextManager {
    * Update conversation context
    */
   async updateConversationContext(
-    sessionId: string, 
+    sessionId: string,
     updates: Partial<Omit<ConversationContext, 'sessionId' | 'lastUpdated'>>
   ): Promise<void> {
     try {
       const existing = this.sessionContexts.get(sessionId)
-      
+
       if (!existing) {
         // Create new conversation context
         const newContext: ConversationContext = {
@@ -253,7 +253,7 @@ export class ContextManager {
           lastUpdated: new Date(),
           ...updates
         }
-        
+
         this.sessionContexts.set(sessionId, newContext)
       } else {
         // Update existing context
@@ -262,7 +262,7 @@ export class ContextManager {
           ...updates,
           lastUpdated: new Date()
         }
-        
+
         this.sessionContexts.set(sessionId, updatedContext)
       }
 
@@ -278,15 +278,15 @@ export class ContextManager {
    * Add message to conversation history
    */
   async addToConversationHistory(
-    sessionId: string, 
-    messageId: string, 
-    agentId: string, 
+    sessionId: string,
+    messageId: string,
+    agentId: string,
     content: string,
     importance: 'low' | 'medium' | 'high' = 'medium'
   ): Promise<void> {
     try {
       let context = this.sessionContexts.get(sessionId)
-      
+
       if (!context) {
         context = {
           sessionId,
@@ -330,9 +330,9 @@ export class ContextManager {
    * Store shared knowledge
    */
   async storeSharedKnowledge(
-    sessionId: string, 
-    key: string, 
-    value: any, 
+    sessionId: string,
+    key: string,
+    value: any,
     agentId?: string
   ): Promise<void> {
     try {
@@ -349,7 +349,7 @@ export class ContextManager {
 
       // Update session context
       let context = this.sessionContexts.get(sessionId)
-      
+
       if (!context) {
         context = {
           sessionId,
@@ -378,7 +378,7 @@ export class ContextManager {
    */
   async getSharedKnowledge(sessionId: string, key?: string): Promise<any> {
     const context = this.sessionContexts.get(sessionId)
-    
+
     if (!context) {
       return key ? undefined : {}
     }
@@ -401,7 +401,7 @@ export class ContextManager {
   ): Promise<void> {
     try {
       let context = this.sessionContexts.get(sessionId)
-      
+
       if (!context) {
         context = {
           sessionId,
@@ -415,7 +415,7 @@ export class ContextManager {
 
       // Find existing goal or add new one
       const existingIndex = context.activeGoals.findIndex(g => g.id === goal.id)
-      
+
       if (existingIndex !== -1) {
         context.activeGoals[existingIndex] = { ...goal, priority: goal.priority || 'medium' }
       } else {
@@ -469,15 +469,15 @@ export class ContextManager {
       const agentSet = new Set<string>()
       const topicMap = new Map<string, number>()
       const keyInsights: string[] = []
-      
+
       contextEntries.forEach(entry => {
         agentSet.add(entry.agentId)
-        
+
         // Extract topics from tags
         entry.tags.forEach(tag => {
           topicMap.set(tag, (topicMap.get(tag) || 0) + 1)
         })
-        
+
         // Collect high-priority insights
         if (entry.priority === 'high' || entry.priority === 'critical') {
           if (typeof entry.value === 'string') {

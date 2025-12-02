@@ -20,14 +20,14 @@ export interface AlertCondition {
 }
 
 export type AlertSeverity = 'info' | 'warning' | 'urgent' | 'critical';
-export type AlertType = 
-  | 'pricing_change' 
-  | 'product_launch' 
-  | 'funding_announcement' 
-  | 'key_hire' 
-  | 'negative_news' 
-  | 'website_change' 
-  | 'social_activity' 
+export type AlertType =
+  | 'pricing_change'
+  | 'product_launch'
+  | 'funding_announcement'
+  | 'key_hire'
+  | 'negative_news'
+  | 'website_change'
+  | 'social_activity'
   | 'job_posting'
   | 'partnership'
   | 'acquisition'
@@ -156,7 +156,7 @@ export class CompetitorAlertSystem {
       }
 
       const intel = intelligence[0];
-      
+
       // Get competitor profile for threat level context
       const competitor = await db
         .select()
@@ -172,7 +172,7 @@ export class CompetitorAlertSystem {
       const comp = competitor[0];
 
       // Process each alert type
-      for (const [alertType, triggers] of this.alertTriggers) {
+      for (const [alertType, triggers] of Array.from(this.alertTriggers)) {
         for (const trigger of triggers) {
           if (!trigger.isActive) continue;
 
@@ -213,10 +213,10 @@ export class CompetitorAlertSystem {
 
     for (const condition of trigger.conditions) {
       maxScore += condition.weight;
-      
+
       const fieldValue = this.getFieldValue(condition.field, intelligence, competitor);
       const conditionMet = this.evaluateCondition(condition, fieldValue);
-      
+
       if (conditionMet) {
         totalScore += condition.weight;
       }
@@ -232,7 +232,7 @@ export class CompetitorAlertSystem {
     if (field.includes('.')) {
       const parts = field.split('.');
       let value = intelligence;
-      
+
       for (const part of parts) {
         if (value && typeof value === 'object') {
           value = value[part];
@@ -240,7 +240,7 @@ export class CompetitorAlertSystem {
           return null;
         }
       }
-      
+
       return value;
     }
 
@@ -248,7 +248,7 @@ export class CompetitorAlertSystem {
     if (intelligence.hasOwnProperty(field)) {
       return intelligence[field];
     }
-    
+
     if (competitor.hasOwnProperty(field)) {
       return competitor[field];
     }
@@ -269,31 +269,31 @@ export class CompetitorAlertSystem {
     switch (condition.operator) {
       case 'equals':
         return fieldValue === condition.value;
-      
+
       case 'contains':
         if (typeof fieldValue === 'string' && typeof condition.value === 'string') {
           const regex = new RegExp(condition.value, 'i');
           return regex.test(fieldValue);
         }
         return false;
-      
+
       case 'greater_than':
         return Number(fieldValue) > Number(condition.value);
-      
+
       case 'less_than':
         return Number(fieldValue) < Number(condition.value);
-      
+
       case 'changed':
         // This would require historical comparison - simplified for now
         return true;
-      
+
       case 'matches_pattern':
         if (typeof fieldValue === 'string' && typeof condition.value === 'string') {
           const regex = new RegExp(condition.value, 'i');
           return regex.test(fieldValue);
         }
         return false;
-      
+
       default:
         return false;
     }
@@ -306,7 +306,7 @@ export class CompetitorAlertSystem {
     cooldownMinutes: number
   ): Promise<boolean> {
     const cooldownTime = new Date(Date.now() - cooldownMinutes * 60 * 1000);
-    
+
     const recentAlert = await db
       .select()
       .from(competitorAlerts)
@@ -371,9 +371,9 @@ export class CompetitorAlertSystem {
   private generateAlertDescription(alertType: AlertType, intelligence: any, trigger: AlertTrigger): string {
     const extractedData = intelligence.extracted_data || {};
     const content = extractedData.content || intelligence.raw_content || '';
-    
+
     // Truncate content for description
-    const truncatedContent = typeof content === 'string' 
+    const truncatedContent = typeof content === 'string'
       ? content.substring(0, 200) + (content.length > 200 ? '...' : '')
       : 'Intelligence data detected';
 
@@ -545,7 +545,7 @@ export class CompetitorAlertSystem {
   async markAlertAsRead(alertId: number, userId: string): Promise<void> {
     await db
       .update(competitorAlerts)
-      .set({ 
+      .set({
         is_read: true,
         acknowledged_at: new Date(),
         updated_at: new Date(),
@@ -561,7 +561,7 @@ export class CompetitorAlertSystem {
   async archiveAlert(alertId: number, userId: string): Promise<void> {
     await db
       .update(competitorAlerts)
-      .set({ 
+      .set({
         is_archived: true,
         updated_at: new Date(),
       })

@@ -52,7 +52,7 @@ describe('ScrapingScheduler', () => {
         1, 'user123', 'website', 'https://example.com',
         { type: 'interval', value: 720 }
       )
-      
+
       const jobId2 = await scheduler.scheduleJob(
         1, 'user123', 'pricing', 'https://example.com/pricing',
         { type: 'interval', value: 720 }
@@ -66,7 +66,7 @@ describe('ScrapingScheduler', () => {
         1, 'user123', 'pricing', 'https://example.com/pricing',
         { type: 'interval', value: 720 }
       )
-      
+
       const jobsJobId = await scheduler.scheduleJob(
         1, 'user123', 'jobs', 'https://example.com/careers',
         { type: 'interval', value: 720 }
@@ -82,17 +82,17 @@ describe('ScrapingScheduler', () => {
     it('should handle errors in scheduleJob', async () => {
       // Mock the generateJobId method to throw an error
       const originalGenerateJobId = (scheduler as any).generateJobId
-      ;(scheduler as any).generateJobId = jest.fn().mockImplementation(() => {
-        throw new Error('Test error')
-      })
+        ; (scheduler as any).generateJobId = jest.fn().mockImplementation(() => {
+          throw new Error('Test error')
+        })
 
       await expect(scheduler.scheduleJob(
         1, 'user123', 'website', 'https://example.com',
         { type: 'interval', value: 720 }
       )).rejects.toThrow('Test error')
 
-      // Restore original method
-      ;(scheduler as any).generateJobId = originalGenerateJobId
+        // Restore original method
+        ; (scheduler as any).generateJobId = originalGenerateJobId
     })
   })
 
@@ -103,16 +103,47 @@ describe('ScrapingScheduler', () => {
         name: 'Test Competitor',
         domain: 'example.com',
         threatLevel: 'high' as const,
-        user_id: 'user123',
-        monitoring_status: 'active' as const,
-        created_at: new Date(),
-        updated_at: new Date(),
+        userId: 'user123',
+        monitoringStatus: 'active' as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        description: undefined,
+        industry: undefined,
+        headquarters: undefined,
+        foundedYear: undefined,
+        employeeCount: undefined,
+        socialMediaHandles: {},
+        keyPersonnel: [],
+        products: [],
+        marketPosition: {
+          targetMarkets: [],
+          competitiveAdvantages: [],
+          marketSegments: []
+        },
+        competitiveAdvantages: [],
+        vulnerabilities: [],
+        monitoringConfig: {
+          websiteMonitoring: true,
+          socialMediaMonitoring: true,
+          newsMonitoring: true,
+          jobPostingMonitoring: true,
+          appStoreMonitoring: true,
+          monitoringFrequency: 'daily' as const,
+          alertThresholds: {
+            pricing: true,
+            productLaunches: true,
+            hiring: true,
+            funding: true,
+            partnerships: true
+          }
+        },
+        lastAnalyzed: undefined
       }
 
       const jobIds = await scheduler.scheduleCompetitorJobs(competitor, 'user123')
 
       expect(jobIds.length).toBeGreaterThan(0)
-      
+
       // Should schedule at least website monitoring
       const jobs = jobIds.map(id => scheduler.getJob(id)).filter(Boolean)
       expect(jobs.some(job => job?.jobType === 'website')).toBe(true)
@@ -124,10 +155,35 @@ describe('ScrapingScheduler', () => {
         name: 'Critical Competitor',
         domain: 'critical.com',
         threatLevel: 'critical' as const,
-        user_id: 'user123',
-        monitoring_status: 'active' as const,
-        created_at: new Date(),
-        updated_at: new Date(),
+        userId: 'user123',
+        monitoringStatus: 'active' as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        socialMediaHandles: {},
+        keyPersonnel: [],
+        products: [],
+        marketPosition: {
+          targetMarkets: [],
+          competitiveAdvantages: [],
+          marketSegments: []
+        },
+        competitiveAdvantages: [],
+        vulnerabilities: [],
+        monitoringConfig: {
+          websiteMonitoring: true,
+          socialMediaMonitoring: true,
+          newsMonitoring: true,
+          jobPostingMonitoring: true,
+          appStoreMonitoring: true,
+          monitoringFrequency: 'daily' as const,
+          alertThresholds: {
+            pricing: true,
+            productLaunches: true,
+            hiring: true,
+            funding: true,
+            partnerships: true
+          }
+        }
       }
 
       const lowCompetitor = {
@@ -135,10 +191,35 @@ describe('ScrapingScheduler', () => {
         name: 'Low Competitor',
         domain: 'low.com',
         threatLevel: 'low' as const,
-        user_id: 'user123',
-        monitoring_status: 'active' as const,
-        created_at: new Date(),
-        updated_at: new Date(),
+        userId: 'user123',
+        monitoringStatus: 'active' as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        socialMediaHandles: {},
+        keyPersonnel: [],
+        products: [],
+        marketPosition: {
+          targetMarkets: [],
+          competitiveAdvantages: [],
+          marketSegments: []
+        },
+        competitiveAdvantages: [],
+        vulnerabilities: [],
+        monitoringConfig: {
+          websiteMonitoring: true,
+          socialMediaMonitoring: true,
+          newsMonitoring: true,
+          jobPostingMonitoring: true,
+          appStoreMonitoring: true,
+          monitoringFrequency: 'daily' as const,
+          alertThresholds: {
+            pricing: true,
+            productLaunches: true,
+            hiring: true,
+            funding: true,
+            partnerships: true
+          }
+        }
       }
 
       const criticalJobIds = await scheduler.scheduleCompetitorJobs(criticalCompetitor, 'user123')
@@ -200,7 +281,7 @@ describe('ScrapingScheduler', () => {
         1, 'user123', 'website', 'https://competitor1.com',
         { type: 'interval', value: 720 }
       )
-      
+
       const competitor2JobId = await scheduler.scheduleJob(
         2, 'user123', 'website', 'https://competitor2.com',
         { type: 'interval', value: 720 }
@@ -261,7 +342,7 @@ describe('ScrapingScheduler', () => {
 
     it('should update metrics when job status changes', async () => {
       const jobId = await scheduler.scheduleJob(1, 'user123', 'website', 'https://example.com', { type: 'interval', value: 720 })
-      
+
       scheduler.pauseJob(jobId)
       const metrics = scheduler.getMetrics()
 
@@ -272,7 +353,7 @@ describe('ScrapingScheduler', () => {
   describe('job history', () => {
     it('should maintain job execution history', async () => {
       const jobId = await scheduler.scheduleJob(1, 'user123', 'website', 'https://example.com', { type: 'interval', value: 720 })
-      
+
       // Initially no history
       const initialHistory = scheduler.getJobHistory(jobId)
       expect(initialHistory).toHaveLength(0)

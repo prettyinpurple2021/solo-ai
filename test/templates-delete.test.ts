@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { NextResponse, NextRequest } from 'next/server'
 
 jest.mock('@/lib/auth-server', () => ({
   authenticateRequest: jest.fn(),
@@ -30,7 +30,7 @@ describe('DELETE /api/templates/[id]', () => {
   it('returns 401 when user is not authenticated', async () => {
     authenticateRequest.mockResolvedValue({ user: null, error: 'No authentication token' })
 
-    const res = (await DELETE(new Request('http://localhost'), makeContext('123'))) as NextResponse
+    const res = (await DELETE(new NextRequest('http://localhost'), makeContext('123'))) as NextResponse
     expect(res.status).toBe(401)
     const body = await res.json()
     expect(body).toEqual({ error: 'Unauthorized' })
@@ -43,7 +43,7 @@ describe('DELETE /api/templates/[id]', () => {
     const dbMock = { execute: queryMock }
     getDb.mockReturnValue(dbMock)
 
-    const res = (await DELETE(new Request('http://localhost'), makeContext('999'))) as NextResponse
+    const res = (await DELETE(new NextRequest('http://localhost'), makeContext('999'))) as NextResponse
     expect(res.status).toBe(404)
     const body = await res.json()
     expect(body).toEqual({ error: 'Not found' })
@@ -53,7 +53,7 @@ describe('DELETE /api/templates/[id]', () => {
     // normalize the SQL arg (handles plain string, TemplateStringsArray, or SQL object)
     const [sqlArg] = queryMock.mock.calls[0]
     let sql: string
-    
+
     if (sqlArg && typeof sqlArg === 'object' && sqlArg.queryChunks) {
       // Handle Drizzle SQL object - extract string chunks and join them
       // The queryChunks array contains StringChunk objects and parameter values
@@ -67,7 +67,7 @@ describe('DELETE /api/templates/[id]', () => {
       // Handle plain string
       sql = String(sqlArg)
     }
-    
+
     expect(sql).toMatch(/DELETE FROM user_templates/i)
     expect(sql).toMatch(/WHERE id = .* AND user_id = /i)
   })
@@ -78,14 +78,14 @@ describe('DELETE /api/templates/[id]', () => {
     const dbMock = { execute: queryMock }
     getDb.mockReturnValue(dbMock)
 
-    const res = (await DELETE(new Request('http://localhost'), makeContext('42'))) as NextResponse
+    const res = (await DELETE(new NextRequest('http://localhost'), makeContext('42'))) as NextResponse
     expect(res.status).toBe(204)
     // no body on 204
     expect(queryMock).toHaveBeenCalledTimes(1)
     // Check that the template literal was called with the correct SQL
     const [sqlArg] = queryMock.mock.calls[0]
     let sql: string
-    
+
     if (sqlArg && typeof sqlArg === 'object' && sqlArg.queryChunks) {
       // Handle Drizzle SQL object - extract string chunks and join them
       const stringChunks = sqlArg.queryChunks.filter((chunk: any) => chunk.value && Array.isArray(chunk.value))
@@ -97,7 +97,7 @@ describe('DELETE /api/templates/[id]', () => {
       // Handle plain string
       sql = String(sqlArg)
     }
-    
+
     expect(sql).toMatch(/DELETE FROM user_templates/i)
   })
 })

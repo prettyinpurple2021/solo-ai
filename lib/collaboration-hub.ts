@@ -17,12 +17,12 @@ export const AgentMessageSchema = z.object({
   toAgent: z.string().nullable(), // null for broadcast messages
   messageType: z.enum(['request', 'response', 'notification', 'handoff', 'broadcast']),
   content: z.string(),
-  context: z.record(z.any()).optional(),
+  context: z.record(z.string(), z.any()).optional(),
   priority: z.enum(['low', 'medium', 'high', 'urgent']).default('medium'),
   threadId: z.string().uuid().optional(),
   parentMessageId: z.string().uuid().optional(),
   timestamp: z.date(),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.string(), z.any()).optional()
 })
 
 export const CollaborationSessionSchema = z.object({
@@ -35,7 +35,7 @@ export const CollaborationSessionSchema = z.object({
   createdAt: z.date(),
   updatedAt: z.date(),
   completedAt: z.date().optional(),
-  metadata: z.record(z.any()).optional()
+  metadata: z.record(z.string(), z.any()).optional()
 })
 
 export const AgentDefinitionSchema = z.object({
@@ -225,10 +225,10 @@ export class CollaborationHub {
     try {
       // Validate request
       const sessionId = crypto.randomUUID()
-      
+
       // Determine participating agents
       const participants = await this.selectAgentsForCollaboration(request)
-      
+
       if (participants.length === 0) {
         return {
           sessionId: '',
@@ -310,7 +310,7 @@ export class CollaborationHub {
     try {
       // Validate message
       const validatedMessage = AgentMessageSchema.parse(message)
-      
+
       // Check if session exists
       const session = this.activeSessions.get(validatedMessage.sessionId)
       if (!session) {
@@ -324,9 +324,9 @@ export class CollaborationHub {
       session.updatedAt = new Date()
       this.activeSessions.set(session.id, session)
 
-      this.emitEvent('message_routed', { 
-        sessionId: validatedMessage.sessionId, 
-        messageType: validatedMessage.messageType 
+      this.emitEvent('message_routed', {
+        sessionId: validatedMessage.sessionId,
+        messageType: validatedMessage.messageType
       })
 
     } catch (error) {
@@ -412,7 +412,7 @@ export class CollaborationHub {
    */
   private async selectAgentsForCollaboration(request: CollaborationRequest): Promise<AgentDefinition[]> {
     const selectedAgents: AgentDefinition[] = []
-    
+
     // If specific agents are required, try to get them first
     if (request.requiredAgents?.length) {
       for (const agentId of request.requiredAgents) {
@@ -426,8 +426,8 @@ export class CollaborationHub {
     // If primary agent is specified, prioritize it
     if (request.primaryAgent) {
       const primaryAgent = this.agents.get(request.primaryAgent)
-      if (primaryAgent && primaryAgent.status === 'available' && 
-          !selectedAgents.find(a => a.id === primaryAgent.id)) {
+      if (primaryAgent && primaryAgent.status === 'available' &&
+        !selectedAgents.find(a => a.id === primaryAgent.id)) {
         selectedAgents.unshift(primaryAgent) // Add to beginning
       }
     }
@@ -444,7 +444,7 @@ export class CollaborationHub {
       )
 
       for (const specialization of neededSpecializations) {
-        const specialist = availableAgents.find(agent => 
+        const specialist = availableAgents.find(agent =>
           agent.specializations.includes(specialization)
         )
         if (specialist && selectedAgents.length < 4) {

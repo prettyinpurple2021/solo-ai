@@ -1,4 +1,4 @@
-import { drizzle } from 'drizzle-orm/neon-http'
+import { drizzle, NeonHttpDatabase } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
 import * as schema from '@/db/schema'
 import { logger, logError } from './logger'
@@ -8,7 +8,7 @@ import { logger, logError } from './logger'
  * This replaces all raw SQL usage across the application
  */
 
-let _db: ReturnType<typeof drizzle> | null = null
+let _db: NeonHttpDatabase<typeof schema> | null = null
 
 /**
  * Get the centralized database client
@@ -16,7 +16,7 @@ let _db: ReturnType<typeof drizzle> | null = null
  */
 export function getDb() {
   // Prevent DB usage during build - check multiple build indicators
-  const isBuildTime = 
+  const isBuildTime =
     process.env.NEXT_PHASE === 'phase-production-build' ||
     process.env.SKIP_DB_CHECK === 'true' ||
     (typeof window === 'undefined' && !process.env.DATABASE_URL)
@@ -37,7 +37,7 @@ export function getDb() {
         schema,
         client,
       })
-      
+
       logger.info('Database client initialized successfully')
     } catch (error) {
       logError('Failed to initialize database client:', error)
@@ -76,9 +76,9 @@ export async function checkDatabaseHealth(): Promise<{ healthy: boolean; error?:
 }
 
 // Export db for backward compatibility, but it will only be created when first accessed
-export const db = new Proxy({} as ReturnType<typeof drizzle>, {
+export const db = new Proxy({} as NeonHttpDatabase<typeof schema>, {
   get(target, prop) {
-    return getDb()[prop as keyof ReturnType<typeof drizzle>]
+    return getDb()[prop as keyof NeonHttpDatabase<typeof schema>]
   }
 })
 

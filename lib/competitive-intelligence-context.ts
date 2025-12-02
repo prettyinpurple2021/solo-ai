@@ -90,7 +90,7 @@ export class CompetitiveIntelligenceContextService {
   static async getCompetitiveContext(userId: string, agentId?: string): Promise<CompetitiveIntelligenceContext> {
     try {
       const sql = getSql()
-      
+
       // Get active competitors with recent activity
       const competitors = await sql`
         SELECT cp.id, cp.name, cp.threat_level, cp.market_position,
@@ -106,7 +106,7 @@ export class CompetitiveIntelligenceContextService {
          ORDER BY cp.threat_level DESC, recent_intelligence_count DESC
          LIMIT 5
       ` as any[]
-      
+
       // Get recent alerts (last 7 days)
       const recent_alerts = await sql`
         SELECT ca.id, ca.title, ca.severity, ca.alert_type, ca.created_at,
@@ -118,7 +118,7 @@ export class CompetitiveIntelligenceContextService {
          ORDER BY ca.created_at DESC
          LIMIT 10
       ` as any[]
-      
+
       // Get competitive opportunities
       const opportunities = await sql`
         SELECT co.id, co.title, co.impact, co.opportunity_type,
@@ -130,7 +130,7 @@ export class CompetitiveIntelligenceContextService {
          ORDER BY co.priority_score DESC
          LIMIT 5
       ` as any[]
-      
+
       // Get competitive tasks
       const competitive_tasks = await sql`
         SELECT t.id, t.title, t.status, t.priority,
@@ -144,10 +144,10 @@ export class CompetitiveIntelligenceContextService {
          ORDER BY t.created_at DESC
          LIMIT 8
       ` as any[]
-      
+
       // Generate market insights based on recent intelligence
       const market_insights = await this.generateMarketInsights(userId)
-      
+
       // Enhance competitors with recent activities
       const enhancedCompetitors = await Promise.all(
         (competitors as any[]).map(async (competitor: { id: number; name: string; threat_level: string; market_position: any }) => {
@@ -159,7 +159,7 @@ export class CompetitiveIntelligenceContextService {
              ORDER BY collected_at DESC
              LIMIT 3
           ` as any[]
-          
+
           return {
             ...competitor,
             recent_activities: activities.map((a: { data_type: string; importance: string }) => `${a.data_type} (${a.importance})`),
@@ -167,7 +167,7 @@ export class CompetitiveIntelligenceContextService {
           }
         })
       )
-      
+
       return {
         competitors: enhancedCompetitors,
         recent_alerts: recent_alerts.map((alert: { id: number; title: string; severity: string; alert_type: string; competitor_name: string; created_at: Date }) => ({
@@ -189,14 +189,14 @@ export class CompetitiveIntelligenceContextService {
       }
     }
   }
-  
+
   /**
    * Generate market insights from recent intelligence data
    */
   private static async generateMarketInsights(userId: string): Promise<any[]> {
     try {
       const sql = getSql()
-      
+
       // Get recent high-importance intelligence
       const intelligence = await sql`
         SELECT id.data_type, id.analysis_results, cp.name as competitor_name
@@ -208,25 +208,25 @@ export class CompetitiveIntelligenceContextService {
          ORDER BY id.collected_at DESC
          LIMIT 20
       ` as any[]
-      
+
       // Analyze patterns and generate insights
       const insights = []
       const dataTypes = new Map()
       const competitorActivities = new Map()
-      
+
       for (const item of intelligence) {
         // Count data types
         dataTypes.set(item.data_type, (dataTypes.get(item.data_type) || 0) + 1)
-        
+
         // Track competitor activities
         if (!competitorActivities.has(item.competitor_name)) {
           competitorActivities.set(item.competitor_name, [])
         }
         competitorActivities.get(item.competitor_name).push(item.data_type)
       }
-      
+
       // Generate trend insights
-      for (const [dataType, count] of dataTypes.entries()) {
+      for (const [dataType, count] of Array.from(dataTypes.entries())) {
         if (count >= 3) {
           insights.push({
             trend: `Increased ${dataType} Activity`,
@@ -237,9 +237,9 @@ export class CompetitiveIntelligenceContextService {
           })
         }
       }
-      
+
       // Generate competitor-specific insights
-      for (const [competitor, activities] of competitorActivities.entries()) {
+      for (const [competitor, activities] of Array.from(competitorActivities.entries())) {
         if (activities.length >= 3) {
           insights.push({
             trend: `${competitor} Increased Activity`,
@@ -249,14 +249,14 @@ export class CompetitiveIntelligenceContextService {
           })
         }
       }
-      
+
       return insights.slice(0, 5) // Return top 5 insights
     } catch (error) {
       logError('Error generating market insights:', error)
       return []
     }
   }
-  
+
   /**
    * Get agent-specific competitive intelligence prompts
    */
@@ -337,24 +337,24 @@ export class CompetitiveIntelligenceContextService {
       }
     }
   }
-  
+
   /**
    * Format competitive intelligence context for AI agent prompts
    */
   static formatContextForAgent(
-    context: CompetitiveIntelligenceContext, 
+    context: CompetitiveIntelligenceContext,
     agentId: string,
     userMessage: string
   ): string {
     const prompts = this.getAgentCompetitivePrompts()
     const agentPrompts = prompts[agentId as keyof AgentCompetitivePrompts]
-    
+
     if (!agentPrompts || this.isContextEmpty(context)) {
       return ''
     }
-    
+
     let contextString = '\n\n## Competitive Intelligence Context\n'
-    
+
     // Add competitors context
     if (context.competitors.length > 0) {
       contextString += '\n### Active Competitors:\n'
@@ -362,7 +362,7 @@ export class CompetitiveIntelligenceContextService {
         contextString += `- **${competitor.name}** (${competitor.threat_level} threat): ${competitor.recent_activities.join(', ')}\n`
       })
     }
-    
+
     // Add recent alerts
     if (context.recent_alerts.length > 0) {
       contextString += '\n### Recent Competitive Alerts:\n'
@@ -370,7 +370,7 @@ export class CompetitiveIntelligenceContextService {
         contextString += `- ${alert.competitor_name}: ${alert.title} (${alert.severity})\n`
       })
     }
-    
+
     // Add opportunities
     if (context.opportunities.length > 0) {
       contextString += '\n### Competitive Opportunities:\n'
@@ -378,7 +378,7 @@ export class CompetitiveIntelligenceContextService {
         contextString += `- ${opp.title} (${opp.impact} impact) - ${opp.competitor_name}\n`
       })
     }
-    
+
     // Add pending competitive tasks
     if (context.competitive_tasks.length > 0) {
       contextString += '\n### Pending Competitive Tasks:\n'
@@ -386,7 +386,7 @@ export class CompetitiveIntelligenceContextService {
         contextString += `- ${task.title} (${task.priority} priority) - ${task.competitor_name}\n`
       })
     }
-    
+
     // Add market insights
     if (context.market_insights.length > 0) {
       contextString += '\n### Market Insights:\n'
@@ -394,30 +394,30 @@ export class CompetitiveIntelligenceContextService {
         contextString += `- ${insight.trend}: ${insight.description} (${insight.impact} impact)\n`
       })
     }
-    
+
     // Add agent-specific integration guidance
     contextString += `\n### ${agentId.toUpperCase()} Integration Guidance:\n`
     contextString += agentPrompts.context_integration
-    
+
     // Check if user message is related to competitive intelligence
     if (this.isCompetitiveQuery(userMessage)) {
       contextString += '\n\n**Note**: This query appears to be related to competitive intelligence. Please provide analysis incorporating the above competitive context.'
     }
-    
+
     return contextString
   }
-  
+
   /**
    * Check if context is empty
    */
   private static isContextEmpty(context: CompetitiveIntelligenceContext): boolean {
-    return context.competitors.length === 0 && 
-           context.recent_alerts.length === 0 && 
-           context.opportunities.length === 0 && 
-           context.competitive_tasks.length === 0 &&
-           context.market_insights.length === 0
+    return context.competitors.length === 0 &&
+      context.recent_alerts.length === 0 &&
+      context.opportunities.length === 0 &&
+      context.competitive_tasks.length === 0 &&
+      context.market_insights.length === 0
   }
-  
+
   /**
    * Check if user message is related to competitive intelligence
    */
@@ -428,36 +428,36 @@ export class CompetitiveIntelligenceContextService {
       'industry', 'market analysis', 'competitive advantage', 'differentiation',
       'market leader', 'market dynamics', 'competitive landscape'
     ]
-    
+
     const lowerMessage = message.toLowerCase()
     return competitiveKeywords.some(keyword => lowerMessage.includes(keyword))
   }
-  
+
   /**
    * Generate competitive intelligence queries for agents
    */
   static generateCompetitiveQueries(context: CompetitiveIntelligenceContext): string[] {
     const queries = []
-    
+
     if (context.recent_alerts.length > 0) {
       queries.push(`What should I do about the recent ${context.recent_alerts[0].alert_type} from ${context.recent_alerts[0].competitor_name}?`)
     }
-    
+
     if (context.opportunities.length > 0) {
       queries.push(`How can I capitalize on the ${context.opportunities[0].title} opportunity?`)
     }
-    
+
     if (context.competitors.length > 0) {
       const highThreatCompetitors = context.competitors.filter(c => c.threat_level === 'high' || c.threat_level === 'critical')
       if (highThreatCompetitors.length > 0) {
         queries.push(`What's my strategy against ${highThreatCompetitors[0].name}?`)
       }
     }
-    
+
     if (context.market_insights.length > 0) {
       queries.push(`What does the ${context.market_insights[0].trend} trend mean for my business?`)
     }
-    
+
     return queries.slice(0, 3) // Return top 3 suggested queries
   }
 }

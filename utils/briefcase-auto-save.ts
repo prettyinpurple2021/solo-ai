@@ -56,7 +56,7 @@ class BriefcaseAutoSaver {
             type: 'chat',
             title: this.generateChatTitle(title, messages, agentName),
             content: { messages },
-            metadata: { 
+            metadata: {
               agentName,
               messageCount: messages.length,
               conversationId
@@ -103,7 +103,7 @@ class BriefcaseAutoSaver {
           type: 'template_save',
           title: `${title} (${progress}% complete)`,
           content,
-          metadata: { 
+          metadata: {
             templateSlug,
             progress,
             autoSaved: true
@@ -175,14 +175,14 @@ class BriefcaseAutoSaver {
     if (firstUserMessage) {
       const content = firstUserMessage.content.trim()
       const truncated = content.length > 50 ? content.substring(0, 50) + '...' : content
-      return agentName 
+      return agentName
         ? `${agentName}: ${truncated}`
         : `Chat: ${truncated}`
     }
 
     // Fallback to generic title with agent name if available
     const timestamp = new Date().toLocaleDateString()
-    return agentName 
+    return agentName
       ? `${agentName} Chat - ${timestamp}`
       : `Chat Conversation - ${timestamp}`
   }
@@ -191,7 +191,7 @@ class BriefcaseAutoSaver {
    * Clear all pending saves
    */
   clearPendingSaves() {
-    for (const timeout of this.saveQueue.values()) {
+    for (const timeout of Array.from(this.saveQueue.values())) {
       clearTimeout(timeout)
     }
     this.saveQueue.clear()

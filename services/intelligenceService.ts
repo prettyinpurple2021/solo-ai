@@ -1,5 +1,5 @@
 // Daily Intelligence Service
-import * as geminiService from './geminiService';
+import { geminiService } from './geminiService';
 import { storageService } from './storageService';
 
 export interface PriorityAction {

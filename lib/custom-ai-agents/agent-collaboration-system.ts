@@ -47,7 +47,7 @@ export class AgentCollaborationSystem {
     this.agents = new Map()
     this.collaborationQueue = []
     this.workflows = new Map()
-    
+
     this.initializeAgents()
   }
 
@@ -65,7 +65,7 @@ export class AgentCollaborationSystem {
 
   // Main orchestration method
   async processRequest(
-    request: string, 
+    request: string,
     context?: Record<string, any>,
     preferredAgent?: string
   ): Promise<{
@@ -76,7 +76,7 @@ export class AgentCollaborationSystem {
     // Determine the best agent to handle the primary request
     const primaryAgentId = preferredAgent || this.determinePrimaryAgent(request, context)
     const primaryAgent = this.agents.get(primaryAgentId)
-    
+
     if (!primaryAgent) {
       throw new Error(`Agent ${primaryAgentId} not found`)
     }
@@ -88,7 +88,7 @@ export class AgentCollaborationSystem {
 
     // Record training data
     await primaryAgent.recordTrainingData(request, primaryResponse, context || {}, responseTime, true)
-    
+
     // Check if collaboration is needed
     const collaborationResponses: AgentResponse[] = []
     if (primaryResponse.collaborationRequests.length > 0) {
@@ -115,47 +115,47 @@ export class AgentCollaborationSystem {
   // Determine the best agent for a request
   private determinePrimaryAgent(request: string, context?: Record<string, any>): string {
     const requestLower = request.toLowerCase()
-    
+
     // Strategic decision-making
     if (requestLower.includes("decision") || requestLower.includes("strategy") || requestLower.includes("plan")) {
       return "roxy"
     }
-    
+
     // Growth and sales
     if (requestLower.includes("growth") || requestLower.includes("sales") || requestLower.includes("revenue")) {
       return "blaze"
     }
-    
+
     // Marketing and content
     if (requestLower.includes("marketing") || requestLower.includes("content") || requestLower.includes("brand")) {
       return "echo"
     }
-    
+
     // Legal and compliance
     if (requestLower.includes("legal") || requestLower.includes("compliance") || requestLower.includes("policy")) {
       return "lumi"
     }
-    
+
     // Technical and system
     if (requestLower.includes("technical") || requestLower.includes("system") || requestLower.includes("code")) {
       return "vex"
     }
-    
+
     // Data and analysis
     if (requestLower.includes("data") || requestLower.includes("analysis") || requestLower.includes("metrics")) {
       return "lexi"
     }
-    
+
     // Design and UX
     if (requestLower.includes("design") || requestLower.includes("ui") || requestLower.includes("ux")) {
       return "nova"
     }
-    
+
     // Problem-solving and debugging
     if (requestLower.includes("problem") || requestLower.includes("bug") || requestLower.includes("issue")) {
       return "glitch"
     }
-    
+
     // Default to Roxy for general requests
     return "roxy"
   }
@@ -167,7 +167,7 @@ export class AgentCollaborationSystem {
     context?: Record<string, any>
   ): Promise<AgentResponse[]> {
     const responses: AgentResponse[] = []
-    
+
     for (const req of requests) {
       const targetAgent = this.agents.get(req.agentId)
       if (!targetAgent) {
@@ -178,16 +178,16 @@ export class AgentCollaborationSystem {
       try {
         const response = await targetAgent.collaborateWith(fromAgentId, req.request)
         responses.push(response)
-        
+
         // Update agent relationships
         targetAgent.updateRelationship(fromAgentId, req, { success: true })
-        
+
       } catch (error) {
         logError(`Collaboration failed between ${fromAgentId} and ${req.agentId}:`, error)
         targetAgent.updateRelationship(fromAgentId, req, { success: false, error: error instanceof Error ? error.message : 'Unknown error' })
       }
     }
-    
+
     return responses
   }
 
@@ -207,7 +207,7 @@ export class AgentCollaborationSystem {
     context?: Record<string, any>
   ): Promise<AgentWorkflow> {
     const workflowId = `workflow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
-    
+
     const workflow: AgentWorkflow = {
       id: workflowId,
       name: `Collaborative Workflow - ${new Date().toISOString()}`,
@@ -251,51 +251,51 @@ export class AgentCollaborationSystem {
     }
 
     workflow.status = "in_progress"
-    
+
     try {
       // Execute workflow steps in dependency order
       const completedSteps = new Set<string>()
       const pendingSteps = [...workflow.steps]
-      
+
       while (pendingSteps.length > 0) {
-        const readySteps = pendingSteps.filter(step => 
+        const readySteps = pendingSteps.filter(step =>
           step.dependencies.every(dep => completedSteps.has(dep))
         )
-        
+
         if (readySteps.length === 0) {
           throw new Error("Workflow has circular dependencies or missing dependencies")
         }
-        
+
         // Execute ready steps in parallel
         const stepPromises = readySteps.map(async (step) => {
           const agent = this.agents.get(step.agentId)
           if (!agent) {
             throw new Error(`Agent ${step.agentId} not found`)
           }
-          
+
           const response = await agent.processRequest(step.task, {
             workflowId,
             stepId: step.agentId
           })
-          
+
           workflow.results[step.agentId] = response
           completedSteps.add(step.agentId)
-          
+
           // Remove completed step from pending
           const index = pendingSteps.indexOf(step)
           pendingSteps.splice(index, 1)
         })
-        
+
         await Promise.all(stepPromises)
       }
-      
+
       workflow.status = "completed"
-      
+
     } catch (error) {
       workflow.status = "failed"
       workflow.results.error = error instanceof Error ? error.message : 'Unknown error'
     }
-    
+
     return workflow
   }
 
@@ -350,7 +350,7 @@ export class AgentCollaborationSystem {
     }
 
     // Collect agent relationship data
-    for (const [agentId, agent] of this.agents) {
+    for (const [agentId, agent] of Array.from(this.agents)) {
       (insights.agentRelationships as any)[agentId] = agent.getMemory().relationships
     }
 

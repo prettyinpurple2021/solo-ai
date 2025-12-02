@@ -46,21 +46,21 @@ export async function withRateLimit(
   try {
     const limit = RATE_LIMITS[type]
     const result = await rateLimitByIp(request, limit)
-    
+
     if (!result.allowed) {
       const response = createErrorResponse(
         'Rate limit exceeded. Please try again later.',
         429
       )
-      
+
       response.headers.set('Retry-After', '60')
       response.headers.set('X-RateLimit-Limit', limit.requests.toString())
       response.headers.set('X-RateLimit-Remaining', '0')
       response.headers.set('X-RateLimit-Reset', new Date(Date.now() + limit.window * 1000).toISOString())
-      
+
       return { allowed: false, response }
     }
-    
+
     return { allowed: true }
   } catch (error) {
     logError('Rate limiting error:', error)
@@ -97,12 +97,12 @@ export function validateRequest<T>(
     }
 
     const result = schema.safeParse(data)
-    
+
     if (!result.success) {
-      const errors = result.error.errors.map(err => 
+      const errors = (result.error as any).errors.map((err: any) =>
         `${err.path.join('.')}: ${err.message}`
       ).join(', ')
-      
+
       return {
         success: false,
         response: createErrorResponse(`Validation error: ${errors}`, 400)
@@ -129,12 +129,12 @@ export async function validateRequestBody<T>(
   try {
     const body = await request.json()
     const result = schema.safeParse(body)
-    
+
     if (!result.success) {
-      const errors = result.error.errors.map(err => 
+      const errors = (result.error as any).errors.map((err: any) =>
         `${err.path.join('.')}: ${err.message}`
       ).join(', ')
-      
+
       return {
         success: false,
         response: createErrorResponse(`Validation error: ${errors}`, 400)
@@ -195,9 +195,9 @@ export function withApiMiddleware<T>(
       if (options.requireAuth) {
         // Import here to avoid circular dependencies
         const { authenticateRequest } = await import('./auth-server')
-        
+
         const { user, error } = await authenticateRequest()
-        
+
         if (error || !user) {
           const response = createErrorResponse(error || 'Authentication required', 401)
           return applySecurityHeaders(response) as NextResponse<T>
@@ -206,18 +206,18 @@ export function withApiMiddleware<T>(
 
       // Execute the handler
       const response = await handler(request, ...args)
-      
+
       // Apply security headers
       return applySecurityHeaders(response) as NextResponse<T>
 
     } catch (error) {
       logError('API middleware error:', error)
-      
+
       const response = createErrorResponse(
         'An unexpected error occurred',
         500
       )
-      
+
       return applySecurityHeaders(response) as NextResponse<T>
     }
   }
@@ -240,7 +240,7 @@ export function withCors(response: NextResponse): NextResponse {
 export function logRequest(request: NextRequest, response: NextResponse) {
   const { method, url } = request
   const { status } = response
-  
+
   const logData = {
     method,
     url,
