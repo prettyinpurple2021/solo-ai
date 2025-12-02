@@ -113,6 +113,7 @@ export async function GET(request: NextRequest) {
       WHERE ${whereClause}
     `
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const countResult = await sqlClient.unsafe(countQuery, params) as any[]
 
     const total = parseInt(countResult[0]?.total || '0')

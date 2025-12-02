@@ -61,7 +61,7 @@ export async function GET(
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -198,7 +198,7 @@ export async function PUT(
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -211,7 +211,7 @@ export async function PUT(
 
     const body = await request.json()
     const parsed = UpdateCompetitorSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },
@@ -296,6 +296,7 @@ export async function PUT(
     `
 
     const sqlClient = sql as any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const result = await sqlClient.unsafe(updateQuery, updateValues) as any[]
 
     if (result.length === 0) {
@@ -338,7 +339,7 @@ export async function DELETE(
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

@@ -1,9 +1,9 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server';
-import { authenticateRequest} from '@/lib/auth-server';
-import { rateLimitByIp} from '@/lib/rate-limit';
-import { alertSystem} from '@/lib/competitor-alert-system';
-import { z} from 'zod';
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server';
+import { authenticateRequest } from '@/lib/auth-server';
+import { rateLimitByIp } from '@/lib/rate-limit';
+import { alertSystem } from '@/lib/competitor-alert-system';
+import { z } from 'zod';
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
 
     // Get alerts
     const alerts = await alertSystem.getActiveAlerts(user.id, params.limit);
-    
+
     // Filter by severity if specified
     let filteredAlerts = alerts;
     if (params.severity) {
