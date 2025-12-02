@@ -225,7 +225,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({ agentId, initialMessage, o
                                             {isUser ? <User size={9} className="md:hidden" /> : <Bot size={9} className="md:hidden" />}
                                             {isUser ? <User size={10} className="hidden md:inline" /> : <Bot size={10} className="hidden md:inline" />}
                                             <span className="font-bold tracking-wider text-[9px] md:text-[10px]">{isUser ? 'YOU' : agent.name}</span>
-                                            <span className="ml-auto text-[9px] md:text-[10px]">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                            <span className="ml-auto text-[9px] md:text-[10px]">{new Date(msg.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                         </div>
                                         <p className="text-xs md:text-sm whitespace-pre-wrap leading-relaxed font-normal">{msg.text}</p>
                                     </div>

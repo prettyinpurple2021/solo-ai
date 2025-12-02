@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { ArrowRight, Zap, Shield, Target, Cpu, BarChart3, Users, Brain, Rocket, MessageSquare, Briefcase, TrendingUp, Network } from 'lucide-react';
 import { MarketingLayout } from './marketing/layout/MarketingLayout';
 
 export function LandingPage() {
-    const navigate = useNavigate();
+    const router = useRouter();
     const featuresRef = useRef<HTMLDivElement>(null);
 
     const scrollToFeatures = () => {
@@ -44,7 +44,7 @@ export function LandingPage() {
 
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-8">
                         <button
-                            onClick={() => navigate('/signup')}
+                            onClick={() => router.push('/signup')}
                             className="group relative px-8 py-4 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/25 w-full sm:w-auto"
                         >
                             Start Free Trial
@@ -125,7 +125,7 @@ export function LandingPage() {
                             Join solo founders who are building faster, deciding smarter, and scaling further—all with AI.
                         </p>
                         <button
-                            onClick={() => navigate('/signup')}
+                            onClick={() => router.push('/signup')}
                             className="px-8 py-4 bg-emerald-500 text-black font-bold rounded-xl hover:bg-emerald-400 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-emerald-500/25"
                         >
                             Start Your Free Trial

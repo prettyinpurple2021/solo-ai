@@ -1,8 +1,8 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 export function Footer() {
-    const navigate = useNavigate();
+    const router = useRouter();
 
     return (
         <footer className="border-t border-white/5 bg-black/50 backdrop-blur-sm relative z-10 mt-auto">
@@ -24,19 +24,19 @@ export function Footer() {
                     <div>
                         <h4 className="font-bold text-white mb-4">Product</h4>
                         <ul className="space-y-2 text-sm text-zinc-400">
-                            <li><button onClick={() => navigate('/features')} className="hover:text-emerald-400 transition-colors">Features</button></li>
-                            <li><button onClick={() => navigate('/pricing')} className="hover:text-emerald-400 transition-colors">Pricing</button></li>
-                            <li><button onClick={() => navigate('/signup')} className="hover:text-emerald-400 transition-colors">Get Started</button></li>
+                            <li><button onClick={() => router.push('/features')} className="hover:text-emerald-400 transition-colors">Features</button></li>
+                            <li><button onClick={() => router.push('/pricing')} className="hover:text-emerald-400 transition-colors">Pricing</button></li>
+                            <li><button onClick={() => router.push('/signup')} className="hover:text-emerald-400 transition-colors">Get Started</button></li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="font-bold text-white mb-4">Company</h4>
                         <ul className="space-y-2 text-sm text-zinc-400">
-                            <li><button onClick={() => navigate('/about')} className="hover:text-emerald-400 transition-colors">About Us</button></li>
-                            <li><button onClick={() => navigate('/contact')} className="hover:text-emerald-400 transition-colors">Contact</button></li>
-                            <li><button onClick={() => navigate('/privacy')} className="hover:text-emerald-400 transition-colors">Privacy Policy</button></li>
-                            <li><button onClick={() => navigate('/terms')} className="hover:text-emerald-400 transition-colors">Terms of Service</button></li>
+                            <li><button onClick={() => router.push('/about')} className="hover:text-emerald-400 transition-colors">About Us</button></li>
+                            <li><button onClick={() => router.push('/contact')} className="hover:text-emerald-400 transition-colors">Contact</button></li>
+                            <li><button onClick={() => router.push('/privacy')} className="hover:text-emerald-400 transition-colors">Privacy Policy</button></li>
+                            <li><button onClick={() => router.push('/terms')} className="hover:text-emerald-400 transition-colors">Terms of Service</button></li>
                         </ul>
                     </div>
                 </div>
@@ -46,8 +46,8 @@ export function Footer() {
                         © {new Date().getFullYear()} SoloSuccess AI. All rights reserved.
                     </div>
                     <div className="flex gap-6 text-sm text-zinc-500">
-                        <button onClick={() => navigate('/privacy')} className="hover:text-zinc-300 transition-colors">Privacy</button>
-                        <button onClick={() => navigate('/terms')} className="hover:text-zinc-300 transition-colors">Terms</button>
+                        <button onClick={() => router.push('/privacy')} className="hover:text-zinc-300 transition-colors">Privacy</button>
+                        <button onClick={() => router.push('/terms')} className="hover:text-zinc-300 transition-colors">Terms</button>
                     </div>
                 </div>
             </div>

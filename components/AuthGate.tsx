@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { realtimeService } from "../services/realtimeService";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useRouter, usePathname } from "next/navigation";
 
 export function AuthGate({ children }: { children: React.ReactNode }) {
-    const navigate = useNavigate();
-    const location = useLocation();
+    const router = useRouter();
+    const pathname = usePathname();
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | undefined>(undefined);
 
     useEffect(() => {
@@ -38,9 +38,9 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (isAuthenticated === false) {
-            navigate('/login', { state: { from: location } });
+            router.push('/login?from=' + encodeURIComponent(pathname));
         }
-    }, [isAuthenticated, navigate, location]);
+    }, [isAuthenticated, router, pathname]);
 
     if (isAuthenticated === undefined) {
         return (

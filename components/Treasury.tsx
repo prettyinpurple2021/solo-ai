@@ -50,7 +50,7 @@ export const Treasury: React.FC = () => {
         let cash = financials.currentCash;
         let revenue = financials.monthlyRevenue;
         const burn = financials.monthlyBurn;
-        const growth = financials.growthRate / 100;
+        const growth = (financials.growthRate || 0) / 100;
 
         const data = [];
         let zeroCashMonth = -1;

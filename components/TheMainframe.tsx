@@ -59,6 +59,8 @@ export const TheMainframe: React.FC = () => {
 
         const newSnippet: SavedCodeSnippet = {
             ...codeResult,
+            description: codeResult.explanation,
+            tags: [],
             id: `code-${Date.now()}`,
             title: input.length > 30 ? input.substring(0, 30) + '...' : input,
             timestamp: new Date().toISOString()

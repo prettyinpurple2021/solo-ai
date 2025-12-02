@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import {
     Users,
     CreditCard,
@@ -18,13 +18,13 @@ type AdminView = 'overview' | 'users' | 'subscriptions' | 'health';
 
 export function AdminDashboard() {
     const [currentView, setCurrentView] = useState<AdminView>('overview');
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const handleLogout = () => {
         // Clear admin session
         sessionStorage.removeItem('admin_session');
         sessionStorage.removeItem('admin_session_expires');
-        navigate('/app');
+        router.push('/app');
     };
 
     const renderView = () => {

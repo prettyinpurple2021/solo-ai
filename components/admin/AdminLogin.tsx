@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Lock, ArrowRight, AlertCircle } from 'lucide-react';
 
 export function AdminLogin() {
     const [pin, setPin] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
+    const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,7 +38,7 @@ export function AdminLogin() {
                     String(Date.now() + (2 * 60 * 60 * 1000))); // 2 hours
             }
 
-            navigate('/app/admin/dashboard');
+            router.push('/app/admin/dashboard');
         } catch (err: any) {
             setError(err.message);
         } finally {

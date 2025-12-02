@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Loader2, Lock, Mail, ArrowRight } from 'lucide-react';
 
 export function Login() {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('');
     const [formData, setFormData] = useState({
@@ -119,7 +120,7 @@ export function Login() {
 
                     <div className="mt-6 text-center text-sm text-zinc-400">
                         Don't have an account?{' '}
-                        <Link to="/signup" className="text-emerald-400 hover:text-emerald-300 font-medium">
+                        <Link href="/signup" className="text-emerald-400 hover:text-emerald-300 font-medium">
                             Create one
                         </Link>
                     </div>

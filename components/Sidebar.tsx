@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { LayoutDashboard, Users, Eye, ShieldAlert, Swords, Flame, KanbanSquare, Power, Search, Command, Settings, Trophy, ChevronUp, NotebookPen, X, Menu, Coins, Radio, Palette, Presentation, BookTemplate, Archive, Terminal, GitBranch, Scale, Mic, Crown, Compass, Moon, Box, GraduationCap, Flag, Megaphone, Rocket, UserPlus } from 'lucide-react';
 import { AGENTS } from '../constants';
 import { AgentId, BusinessContext } from '../types';
@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onCloseMobile,
     onToggleScratchpad
 }) => {
-    const navigate = useNavigate();
+    const router = useRouter();
     const [companyName, setCompanyName] = useState('SOLO_SUCCESS');
     const [progress, setProgress] = useState({
         level: 1,
@@ -71,7 +71,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 const token = localStorage.getItem('token');
                 if (!token) return;
 
-                const API_URL = (import.meta as any).env?.VITE_API_URL || 'http://localhost:3000';
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
                 const res = await fetch(`${API_URL}/api/user`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -169,7 +169,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     label: 'Admin Control',
                     icon: <ShieldAlert size={18} className="text-emerald-500" />,
                     colorClass: 'text-emerald-500',
-                    onClick: () => navigate('/app/admin/login')
+                    onClick: () => router.push('/app/admin/login')
                 }] : [])
             ]
         }

@@ -3,8 +3,8 @@ import { ReactNode } from "react";
 
 // Create Stack Client App instance
 const stackApp = new StackClientApp({
-    projectId: import.meta.env.VITE_STACK_PROJECT_ID,
-    publishableClientKey: import.meta.env.VITE_STACK_PUBLISHABLE_CLIENT_KEY,
+    projectId: process.env.NEXT_PUBLIC_STACK_PROJECT_ID || '',
+    publishableClientKey: process.env.NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY || '',
 });
 
 // Make stackApp globally accessible for storageService

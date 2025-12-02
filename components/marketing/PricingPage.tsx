@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { MarketingLayout } from './layout/MarketingLayout';
 import { Check, Loader2 } from 'lucide-react';
-// import { useUser } from '@stackframe/stack';
+import { useUser } from '@stackframe/stack';
 import { apiService } from '../../services/apiService';
 
 export function PricingPage() {
-    const user = null; // useUser();
+    const user = useUser();
     const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
     const handleUpgrade = async (tier: string, priceId: string) => {
@@ -39,9 +39,9 @@ export function PricingPage() {
     };
 
     const PRICE_IDS = {
-        solo: import.meta.env.VITE_STRIPE_SOLO_PRICE_ID,
-        pro: import.meta.env.VITE_STRIPE_PRO_PRICE_ID,
-        agency: import.meta.env.VITE_STRIPE_AGENCY_PRICE_ID,
+        solo: process.env.NEXT_PUBLIC_STRIPE_SOLO_PRICE_ID || '',
+        pro: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || '',
+        agency: process.env.NEXT_PUBLIC_STRIPE_AGENCY_PRICE_ID || '',
     };
 
     return (

@@ -16,7 +16,13 @@ export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete }) => {
         industry: '',
         description: '',
         goals: ['', '', ''], // 3 empty goals
-        brandDna: { onboardingStatus: 'draft' } // Initialize with draft status
+        brandDna: {
+            onboardingStatus: 'draft',
+            tone: { formalVsCasual: 50, playfulVsSerious: 50, modernVsClassic: 50 },
+            personas: [],
+            coreValues: [],
+            bannedWords: []
+        }
     });
 
     // Load saved progress from DB on mount
@@ -29,7 +35,15 @@ export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete }) => {
                         ...prev,
                         ...context,
                         goals: context.goals && context.goals.length > 0 ? context.goals : ['', '', ''],
-                        brandDna: { ...prev.brandDna, ...context.brandDna }
+                        brandDna: {
+                            ...prev.brandDna,
+                            ...(context.brandDna || {}),
+                            // Ensure required fields are preserved if missing in context
+                            tone: context.brandDna?.tone || prev.brandDna?.tone || { formalVsCasual: 50, playfulVsSerious: 50, modernVsClassic: 50 },
+                            personas: context.brandDna?.personas || prev.brandDna?.personas || [],
+                            coreValues: context.brandDna?.coreValues || prev.brandDna?.coreValues || [],
+                            bannedWords: context.brandDna?.bannedWords || prev.brandDna?.bannedWords || []
+                        }
                     }));
 
                     // If we have saved data (founder name or company name), skip the boot animation
@@ -71,9 +85,17 @@ export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete }) => {
     }, [step]);
 
     const saveProgress = async (status: 'draft' | 'completed' = 'draft') => {
-        const updatedData = {
+        const currentDna = formData.brandDna || {
+            tone: { formalVsCasual: 50, playfulVsSerious: 50, modernVsClassic: 50 },
+            personas: [],
+            coreValues: [],
+            bannedWords: [],
+            onboardingStatus: 'draft'
+        };
+
+        const updatedData: BusinessContext = {
             ...formData,
-            brandDna: { ...formData.brandDna, onboardingStatus: status }
+            brandDna: { ...currentDna, onboardingStatus: status }
         };
         await storageService.saveContext(updatedData);
         return updatedData;

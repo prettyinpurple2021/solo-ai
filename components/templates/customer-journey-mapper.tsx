@@ -1,24 +1,25 @@
 "use client"
 
-import { useState} from "react"
+import React, { useState } from "react"
 import BaseTemplate, { TemplateData } from "./base-template"
 
-import { Input} from "@/components/ui/input"
-import { Textarea} from "@/components/ui/textarea"
-import { Label} from "@/components/ui/label"
-import { Slider} from "@/components/ui/slider"
-import { Button} from "@/components/ui/button"
-import { BossButton} from "@/components/ui/boss-button"
-import { BossCard} from "@/components/ui/boss-card"
-import { Badge} from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Slider } from "@/components/ui/slider"
+import { Button } from "@/components/ui/button"
+import { BossButton } from "@/components/ui/boss-button"
+import { BossCard } from "@/components/ui/boss-card"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-import { motion} from "framer-motion"
-import { 
-  User, MapPin, Frown, Meh, Smile, Plus, Minus, ArrowRight, Target, AlertTriangle, MessageCircle, Phone, Mail, Globe, Store, Smartphone, Monitor, Lightbulb, BarChart3, Route} from "lucide-react"
+import { motion } from "framer-motion"
+import {
+  User, MapPin, Frown, Meh, Smile, Plus, Minus, ArrowRight, Target, AlertTriangle, MessageCircle, Phone, Mail, Globe, Store, Smartphone, Monitor, Lightbulb, BarChart3, Route
+} from "lucide-react"
 
 interface Touchpoint {
   id: string
@@ -80,26 +81,26 @@ interface CustomerJourneyData {
   businessGoal: string
   targetOutcome: string
   timeframe: string
-  
+
   // Customer Profile
   persona: CustomerPersona
-  
+
   // Journey Mapping
   stages: JourneyStage[]
   touchpoints: Touchpoint[]
-  
+
   // Analysis
   overallSatisfactionScore: number
   criticalPainPoints: string[]
   keyOpportunities: string[]
   priorityImprovements: string[]
-  
+
   // Recommendations
   quickWins: string[]
   longTermImprovements: string[]
   resourceRequirements: string
   expectedROI: string
-  
+
   // Metrics & KPIs
   successMetrics: string[]
   currentMetrics: {
@@ -329,7 +330,7 @@ export default function CustomerJourneyMapper({ template, onSave: _onSave, onExp
 
   // Get touchpoint icon
   const getTouchpointIcon = (type: string) => {
-    const icons: { [key: string]: JSX.Element } = {
+    const icons: { [key: string]: any } = {
       website: <Globe className="w-4 h-4" />,
       'mobile-app': <Smartphone className="w-4 h-4" />,
       'social-media': <MessageCircle className="w-4 h-4" />,
@@ -525,7 +526,7 @@ export default function CustomerJourneyMapper({ template, onSave: _onSave, onExp
           </BossCard>
 
           <div className="flex justify-end">
-            <BossButton 
+            <BossButton
               onClick={() => setCurrentStep(2)}
               disabled={!data.journeyName}
               crown
@@ -847,13 +848,13 @@ export default function CustomerJourneyMapper({ template, onSave: _onSave, onExp
           </BossCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <BossButton
               onClick={() => setCurrentStep(1)}
               variant="secondary"
             >
               Previous
             </BossButton>
-            <BossButton 
+            <BossButton
               onClick={() => setCurrentStep(3)}
               crown
             >
@@ -1083,13 +1084,13 @@ export default function CustomerJourneyMapper({ template, onSave: _onSave, onExp
           </BossCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <BossButton
               onClick={() => setCurrentStep(2)}
               variant="secondary"
             >
               Previous
             </BossButton>
-            <BossButton 
+            <BossButton
               onClick={() => setCurrentStep(4)}
               crown
             >
@@ -1190,8 +1191,8 @@ export default function CustomerJourneyMapper({ template, onSave: _onSave, onExp
                               // Add touchpoint to selected stage
                               const stage = data.stages.find(s => s.id === value)
                               if (stage && !stage.touchpoints.includes(touchpoint.id)) {
-                                updateStage(value, { 
-                                  touchpoints: [...stage.touchpoints, touchpoint.id] 
+                                updateStage(value, {
+                                  touchpoints: [...stage.touchpoints, touchpoint.id]
                                 })
                               }
                             }}
@@ -1329,7 +1330,7 @@ export default function CustomerJourneyMapper({ template, onSave: _onSave, onExp
                           <Textarea
                             placeholder="e.g., Slow loading, Confusing navigation"
                             value={touchpoint.painPoints.join(", ")}
-                            onChange={(e) => updateTouchpoint(touchpoint.id, { 
+                            onChange={(e) => updateTouchpoint(touchpoint.id, {
                               painPoints: e.target.value.split(",").map(p => p.trim()).filter(Boolean)
                             })}
                             className="mt-1"
@@ -1341,7 +1342,7 @@ export default function CustomerJourneyMapper({ template, onSave: _onSave, onExp
                           <Textarea
                             placeholder="e.g., Add live chat, Simplify form"
                             value={touchpoint.opportunities.join(", ")}
-                            onChange={(e) => updateTouchpoint(touchpoint.id, { 
+                            onChange={(e) => updateTouchpoint(touchpoint.id, {
                               opportunities: e.target.value.split(",").map(o => o.trim()).filter(Boolean)
                             })}
                             className="mt-1"
@@ -1378,13 +1379,13 @@ export default function CustomerJourneyMapper({ template, onSave: _onSave, onExp
           </BossCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <BossButton
               onClick={() => setCurrentStep(3)}
               variant="secondary"
             >
               Previous
             </BossButton>
-            <BossButton 
+            <BossButton
               onClick={() => setCurrentStep(5)}
               crown
             >
@@ -1597,21 +1598,21 @@ export default function CustomerJourneyMapper({ template, onSave: _onSave, onExp
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <BossButton
               onClick={() => setCurrentStep(4)}
               variant="secondary"
             >
               Previous
             </BossButton>
             <div className="flex gap-2">
-              <BossButton 
+              <BossButton
                 onClick={handleSave}
                 variant="empowerment"
                 crown
               >
                 Save Journey Map
               </BossButton>
-              <BossButton 
+              <BossButton
                 onClick={() => handleExport('pdf')}
                 variant="accent"
               >

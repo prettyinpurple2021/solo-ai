@@ -1,17 +1,17 @@
 import React from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useRouter, usePathname } from 'next/navigation';
 
 export function Navbar() {
-    const navigate = useNavigate();
-    const location = useLocation();
+    const router = useRouter();
+    const pathname = usePathname();
 
-    const isActive = (path: string) => location.pathname === path;
+    const isActive = (path: string) => pathname === path;
 
     return (
         <nav className="relative z-50 flex items-center justify-between px-6 py-6 max-w-7xl mx-auto w-full">
             <div
                 className="flex items-center gap-2 cursor-pointer group"
-                onClick={() => navigate('/')}
+                onClick={() => router.push('/')}
             >
                 <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
                     <span className="font-bold text-black text-lg">S</span>
@@ -20,21 +20,21 @@ export function Navbar() {
             </div>
 
             <div className="hidden md:flex items-center gap-8">
-                <NavLink label="Features" path="/features" isActive={isActive('/features')} onClick={() => navigate('/features')} />
-                <NavLink label="Pricing" path="/pricing" isActive={isActive('/pricing')} onClick={() => navigate('/pricing')} />
-                <NavLink label="About" path="/about" isActive={isActive('/about')} onClick={() => navigate('/about')} />
-                <NavLink label="Contact" path="/contact" isActive={isActive('/contact')} onClick={() => navigate('/contact')} />
+                <NavLink label="Features" path="/features" isActive={isActive('/features')} onClick={() => router.push('/features')} />
+                <NavLink label="Pricing" path="/pricing" isActive={isActive('/pricing')} onClick={() => router.push('/pricing')} />
+                <NavLink label="About" path="/about" isActive={isActive('/about')} onClick={() => router.push('/about')} />
+                <NavLink label="Contact" path="/contact" isActive={isActive('/contact')} onClick={() => router.push('/contact')} />
             </div>
 
             <div className="flex items-center gap-4">
                 <button
-                    onClick={() => navigate('/login')}
+                    onClick={() => router.push('/login')}
                     className="hidden sm:block px-4 py-2 text-sm font-medium text-zinc-400 hover:text-white transition-colors"
                 >
                     Log In
                 </button>
                 <button
-                    onClick={() => navigate('/signup')}
+                    onClick={() => router.push('/signup')}
                     className="px-4 py-2 text-sm font-medium bg-white text-black rounded-lg hover:bg-zinc-200 transition-all hover:scale-105 active:scale-95"
                 >
                     Get Started

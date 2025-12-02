@@ -21,7 +21,21 @@ export interface ChatMessage {
     timestamp?: number;
 }
 
+export interface TargetPersona {
+    name: string;
+    description: string;
+    painPoints: string[];
+}
+
 export interface BrandDNA {
+    tone: {
+        formalVsCasual: number;
+        playfulVsSerious: number;
+        modernVsClassic: number;
+    };
+    personas: TargetPersona[];
+    coreValues: string[];
+    bannedWords: string[];
     voice?: string;
     values?: string[];
     audience?: string;
@@ -40,6 +54,11 @@ export interface BusinessContext {
     goals: string[];
     brandDna?: BrandDNA;
     updatedAt?: string;
+    // Financials
+    currentCash?: number;
+    monthlyBurn?: number;
+    monthlyRevenue?: number;
+    growthRate?: number;
 }
 
 export type TaskStatus = 'backlog' | 'todo' | 'in-progress' | 'done';
@@ -122,6 +141,10 @@ export interface NegotiationPrep {
 // THE MATRIX (TECH STACK)
 export interface TechStackAudit {
     score: number;
+    verdict: string;
+    pros: string[];
+    cons: string[];
+    recommendations: string[];
     timestamp: string;
 }
 
@@ -245,11 +268,18 @@ export interface RoleplayFeedback {
 }
 
 // THE TRIBE (COMMUNITY)
+export interface TribeRitual {
+    name: string;
+    frequency: string;
+    description: string;
+    action: string;
+}
+
 export interface CommunityManifesto {
     title: string;
-    values: string[];
-    missionStatement: string;
-    rituals: string[];
+    enemy: string;
+    belief: string;
+    tagline: string;
 }
 
 export interface TribeBlueprint {
@@ -257,7 +287,8 @@ export interface TribeBlueprint {
     targetAudience: string;
     platform: string;
     manifesto: CommunityManifesto;
-    growthTactics: string[];
+    rituals: TribeRitual[];
+    engagementLoops: string[];
     generatedAt: string;
 }
 
@@ -272,24 +303,39 @@ export interface ContentAmplification {
     };
     viralHooks: string[];
     generatedAt: string;
+    // Expanded fields for TheAmplifier
+    sourceTitle?: string;
+    twitterThread?: string[];
+    linkedinPost?: string;
+    tiktokScript?: string;
+    newsletterSection?: string;
 }
 
 export interface CreativeAsset {
     id: string;
-    title: string;
+    title?: string;
+    prompt?: string;
     type: 'image' | 'video' | 'copy' | 'ad';
-    content: string;
-    platform: string;
+    content?: string;
+    imageBase64?: string;
+    platform?: string;
+    style?: string;
     generatedAt: string;
 }
 
 // THE SYSTEM (SOPs)
+export interface SOPStep {
+    step: number;
+    action: string;
+    details: string;
+}
+
 export interface SOP {
     id: string;
-    title: string;
-    trigger: string;
-    steps: string[];
-    tools: string[];
+    taskName: string;
+    goal: string;
+    steps: SOPStep[];
+    successCriteria: string;
     generatedAt: string;
 }
 
@@ -297,21 +343,25 @@ export interface SOP {
 export interface JobDescription {
     id: string;
     roleTitle: string;
+    hook: string;
     responsibilities: string[];
     requirements: string[];
-    cultureFit: string;
+    perks: string[];
+    cultureFit?: string;
     generatedAt: string;
+}
+
+export interface InterviewQuestion {
+    question: string;
+    whatToLookFor: string;
+    redFlag: string;
 }
 
 export interface InterviewGuide {
     id: string;
     roleTitle: string;
-    questions: string[];
-    founderName: string;
-    industry: string;
-    description: string;
-    brandDna?: BrandDNA;
-    updatedAt: string;
+    questions: InterviewQuestion[];
+    generatedAt: string;
 }
 
 export interface CompetitorReport {
@@ -342,17 +392,27 @@ export interface ToastMessage {
     message: string;
     type: 'success' | 'error' | 'info' | 'xp';
     xpAmount?: number;
+    newProgress?: UserProgress;
+}
+
+export interface LaunchEvent {
+    day: string;
+    title: string;
+    description: string;
+    owner: string;
+    channel: string;
+}
+
+export interface LaunchPhase {
+    name: string;
+    events: LaunchEvent[];
 }
 
 export interface LaunchStrategy {
     id: string;
     productName: string;
-    phases: {
-        name: string;
-        duration: string;
-        actions: string[];
-    }[];
-    channels: string[];
+    launchDate: string;
+    phases: LaunchPhase[];
     generatedAt: string;
 }
 
@@ -383,6 +443,12 @@ export interface SavedWarRoomSession extends WarRoomResponse {
     timestamp: string;
 }
 
+export interface CodeSnippet {
+    language: string;
+    code: string;
+    explanation: string;
+}
+
 export interface SavedCodeSnippet {
     id: string;
     title: string;
@@ -390,5 +456,19 @@ export interface SavedCodeSnippet {
     code: string;
     description: string;
     tags: string[];
-    createdAt: string;
+    timestamp: string;
+}
+
+export interface IncineratorResponse {
+    roastSummary: string;
+    survivalScore: number;
+    feedback: string[];
+    rewrittenContent?: string;
+}
+
+export interface SocialStrategy {
+    pillars: { title: string; description: string }[];
+    cadence: string;
+    personaTactics: { persona: string; tactic: string }[];
+    sampleHooks: string[];
 }

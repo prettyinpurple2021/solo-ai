@@ -192,10 +192,10 @@ export const TheAmplifier: React.FC = () => {
                                 <div className="flex-1 relative bg-black border border-zinc-800 rounded-lg p-6 overflow-y-auto custom-scrollbar">
                                     <button
                                         onClick={() => copyContent(
-                                            activeTab === 'twitter' ? result.twitterThread.join('\n\n') :
-                                                activeTab === 'linkedin' ? result.linkedinPost :
-                                                    activeTab === 'tiktok' ? result.tiktokScript :
-                                                        result.newsletterSection
+                                            activeTab === 'twitter' ? result.twitterThread?.join('\n\n') || '' :
+                                                activeTab === 'linkedin' ? result.linkedinPost || '' :
+                                                    activeTab === 'tiktok' ? result.tiktokScript || '' :
+                                                        result.newsletterSection || ''
                                         )}
                                         className="absolute top-4 right-4 text-zinc-500 hover:text-white flex items-center gap-2 text-xs font-bold uppercase"
                                     >
@@ -204,11 +204,11 @@ export const TheAmplifier: React.FC = () => {
 
                                     {activeTab === 'twitter' && (
                                         <div className="space-y-4">
-                                            {result.twitterThread.map((tweet, i) => (
+                                            {result.twitterThread?.map((tweet, i) => (
                                                 <div key={i} className="flex gap-4">
                                                     <div className="flex flex-col items-center">
                                                         <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-xs font-bold text-zinc-400">{i + 1}</div>
-                                                        {i < result.twitterThread.length - 1 && <div className="w-0.5 flex-1 bg-zinc-800 my-2"></div>}
+                                                        {i < (result.twitterThread?.length || 0) - 1 && <div className="w-0.5 flex-1 bg-zinc-800 my-2"></div>}
                                                     </div>
                                                     <p className="text-zinc-300 text-sm leading-relaxed pt-1.5">{tweet}</p>
                                                 </div>
