@@ -1,11 +1,11 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { competitorAlerts} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { z} from 'zod'
-import { eq, and} from 'drizzle-orm'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { competitorAlerts } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { z } from 'zod'
+import { eq, and } from 'drizzle-orm'
 import type { AlertSeverity, ActionItem, Recommendation } from '@/lib/competitor-intelligence-types'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -28,7 +28,7 @@ export async function POST(
   try {
     const params = await context.params
     const { id } = params
-    
+
     const ip = request.headers.get('x-forwarded-for') || 'unknown'
     const { allowed } = rateLimitByIp('alerts:archive', ip, 60_000, 50)
     if (!allowed) {
@@ -36,7 +36,7 @@ export async function POST(
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -49,7 +49,7 @@ export async function POST(
     // Parse request body
     const body = await request.json().catch(() => ({}))
     const parsed = ArchiveRequestSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },
@@ -83,7 +83,7 @@ export async function POST(
     // Check if already in desired state
     if (alert.is_archived === archive) {
       return NextResponse.json(
-        { 
+        {
           message: `Alert already ${archive ? 'archived' : 'unarchived'}`,
           isArchived: alert.is_archived,
         },
@@ -111,6 +111,7 @@ export async function POST(
       severity: updatedAlert.severity as AlertSeverity,
       title: updatedAlert.title,
       description: updatedAlert.description || undefined,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sourceData: (updatedAlert.source_data as Record<string, any>) || {},
       actionItems: (updatedAlert.action_items as ActionItem[]) || [],
       recommendedActions: (updatedAlert.recommended_actions as Recommendation[]) || [],

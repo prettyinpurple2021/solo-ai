@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { competitorAlerts, competitorProfiles } from '@/db/schema'
@@ -86,7 +86,8 @@ function initializeServices() {
   }
 }
 
-function generateEmailContent(alerts: any[], template: string, priority: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function generateEmailContent(alerts: any[], template: string, _priority: string) {
   const criticalCount = alerts.filter(a => a.severity === 'critical').length
   const urgentCount = alerts.filter(a => a.severity === 'urgent').length
   const alertCount = alerts.length
@@ -245,7 +246,9 @@ function generateEmailContent(alerts: any[], template: string, priority: string)
 }
 
 async function sendNotification(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user: any,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   alerts: any[],
   channels: string[],
   template: string,
@@ -357,6 +360,7 @@ async function sendNotification(
           `
 
           successCount++
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
           logError(`Failed to send push to subscription ${subscription.id}:`, error)
 

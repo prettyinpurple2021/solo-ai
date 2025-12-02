@@ -1,6 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -30,12 +30,14 @@ export async function POST(
     const userFiles = await sql`
       SELECT id FROM documents 
       WHERE id = ANY(${fileIds}::uuid[]) AND user_id = ${user.id}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ` as any[]
 
     if (userFiles.length !== fileIds.length) {
       return NextResponse.json({ error: 'Some files not found or access denied' }, { status: 403 })
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let result: any = { success: true, processed: 0, failed: 0, errors: [] }
 
     switch (action) {
@@ -86,12 +88,13 @@ export async function POST(
 
   } catch (error) {
     logError('Bulk operation error:', error)
-    return NextResponse.json({ 
-      error: 'Failed to perform bulk operation' 
+    return NextResponse.json({
+      error: 'Failed to perform bulk operation'
     }, { status: 500 })
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleBulkDelete(sql: any, fileIds: string[], userId: string) {
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[] }
 
@@ -132,12 +135,14 @@ async function handleBulkDelete(sql: any, fileIds: string[], userId: string) {
   return result
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleBulkMove(sql: any, fileIds: string[], folderId: string, userId: string) {
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[] }
 
   // Verify folder exists and belongs to user
   const folderRows = await sql`
     SELECT id FROM document_folders WHERE id = ${folderId} AND user_id = ${userId}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ` as any[]
 
   if (folderRows.length === 0) {
@@ -169,12 +174,14 @@ async function handleBulkMove(sql: any, fileIds: string[], folderId: string, use
   return result
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, userId: string) {
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[], copiedFiles: [] as string[] }
 
   // Verify folder exists and belongs to user
   const folderRows = await sql`
     SELECT id FROM document_folders WHERE id = ${folderId} AND user_id = ${userId}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ` as any[]
 
   if (folderRows.length === 0) {
@@ -186,6 +193,7 @@ async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, use
       // Get original file data
       const originalFileRows = await sql`
         SELECT * FROM documents WHERE id = ${fileId} AND user_id = ${userId}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ` as any[]
 
       if (originalFileRows.length === 0) {
@@ -206,6 +214,7 @@ async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, use
         ) VALUES (${userId}, ${copyName}, ${originalFile.original_name}, ${originalFile.file_type}, ${originalFile.mime_type}, ${originalFile.size}, ${originalFile.file_data},
         ${originalFile.category}, ${tagsJson}::jsonb, ${originalFile.description || null}, ${folderId}, ${false}, NOW(), NOW())
         RETURNING id
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ` as any[]
 
       const copiedFile = copiedFileRows[0]
@@ -228,6 +237,7 @@ async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, use
   return result
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleBulkTag(sql: any, fileIds: string[], tags: string[], operation: 'add' | 'remove', userId: string) {
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[] }
 
@@ -236,6 +246,7 @@ async function handleBulkTag(sql: any, fileIds: string[], tags: string[], operat
       // Get current tags
       const fileRows = await sql`
         SELECT tags FROM documents WHERE id = ${fileId} AND user_id = ${userId}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       ` as any[]
 
       if (fileRows.length === 0) {
@@ -278,6 +289,7 @@ async function handleBulkTag(sql: any, fileIds: string[], tags: string[], operat
   return result
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleBulkCategory(sql: any, fileIds: string[], category: string, userId: string) {
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[] }
 
@@ -306,6 +318,7 @@ async function handleBulkCategory(sql: any, fileIds: string[], category: string,
   return result
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleBulkFavorite(sql: any, fileIds: string[], favorite: boolean, userId: string) {
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[] }
 
@@ -335,6 +348,7 @@ async function handleBulkFavorite(sql: any, fileIds: string[], favorite: boolean
   return result
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleBulkDownload(sql: any, fileIds: string[], userId: string) {
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[], downloadUrls: [] as string[] }
 
@@ -365,6 +379,7 @@ async function handleBulkDownload(sql: any, fileIds: string[], userId: string) {
   return result
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function handleBulkShare(_sql: any, fileIds: string[], permissions: any, _userId: string) {
   const result = { success: true, processed: 0, failed: 0, errors: [] as string[], shareLinks: [] as string[] }
 

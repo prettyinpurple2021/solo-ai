@@ -1,9 +1,9 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { getScrapingSystemHealth} from '@/lib/scraping-startup'
-import { queueProcessor} from '@/lib/scraping-queue-processor'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { getScrapingSystemHealth } from '@/lib/scraping-startup'
+import { queueProcessor } from '@/lib/scraping-queue-processor'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -38,10 +38,10 @@ export async function GET(request: NextRequest) {
 
     // Get system health
     const systemHealth = getScrapingSystemHealth()
-    
+
     // Get queue statistics
     const queueStats = await queueProcessor.getQueueStats()
-    
+
     // Get processor health
     const processorHealth = queueProcessor.getHealthStatus()
 
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     logError('Error getting scraping system health:', error)
-    
+
     return NextResponse.json({
       success: false,
       error: 'Health check failed',
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
 
     // For now, we'll allow any authenticated user to restart
     // In production, you might want to check for admin role
-    
+
     const body = await request.json()
     const { action } = body
 

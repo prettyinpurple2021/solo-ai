@@ -1,10 +1,10 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { competitorAlerts} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { eq, and} from 'drizzle-orm'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { competitorAlerts } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { eq, and } from 'drizzle-orm'
 import type { AlertSeverity, ActionItem, Recommendation } from '@/lib/competitor-intelligence-types'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -22,7 +22,7 @@ export async function POST(
   try {
     const params = await context.params
     const { id } = params
-    
+
     const ip = request.headers.get('x-forwarded-for') || 'unknown'
     const { allowed } = rateLimitByIp('alerts:acknowledge', ip, 60_000, 50)
     if (!allowed) {
@@ -30,7 +30,7 @@ export async function POST(
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -64,7 +64,7 @@ export async function POST(
     // Check if already acknowledged
     if (alert.acknowledged_at) {
       return NextResponse.json(
-        { 
+        {
           message: 'Alert already acknowledged',
           acknowledgedAt: alert.acknowledged_at,
         },
@@ -93,6 +93,7 @@ export async function POST(
       severity: updatedAlert.severity as AlertSeverity,
       title: updatedAlert.title,
       description: updatedAlert.description || undefined,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sourceData: (updatedAlert.source_data as Record<string, any>) || {},
       actionItems: (updatedAlert.action_items as ActionItem[]) || [],
       recommendedActions: (updatedAlert.recommended_actions as Recommendation[]) || [],

@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { neon } from '@neondatabase/serverless'
@@ -19,7 +19,7 @@ function getSql() {
 export async function GET(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     const category = url.searchParams.get('category')
     const search = url.searchParams.get('search')
     const folderId = url.searchParams.get('folderId')
-    
+
     const sql = getSql()
     const offset = (page - 1) * limit
 
@@ -96,7 +96,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -115,11 +115,11 @@ export async function POST(request: NextRequest) {
     for (const file of files) {
       // Generate unique ID
       const fileId = crypto.randomUUID()
-      
+
       // Determine file category
       const fileType = file.name.split('.').pop()?.toLowerCase() || 'unknown'
       let category = 'uncategorized'
-      
+
       if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'].includes(fileType)) {
         category = 'images'
       } else if (['pdf', 'doc', 'docx', 'txt', 'md'].includes(fileType)) {

@@ -1,7 +1,7 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
 import { createErrorResponse } from '@/lib/api-response'
-import { neon} from '@neondatabase/serverless'
+import { neon } from '@neondatabase/serverless'
 import * as jose from 'jose'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -22,27 +22,27 @@ function getSql() {
 async function authenticateJWTRequest(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization')
-    
+
     if (!authHeader?.startsWith('Bearer ')) {
       return { user: null, error: 'Authorization header required' }
     }
 
     const token = authHeader.substring(7)
-    
+
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET is not configured')
     }
 
     const secret = new TextEncoder().encode(process.env.JWT_SECRET)
     const { payload } = await jose.jwtVerify(token, secret)
-    
+
     // Type guard to ensure payload has required properties
     if (!payload || !payload.userId) {
       return { user: null, error: 'Invalid token' }
     }
-    
+
     // After type guard, we can safely access properties
-    return { 
+    return {
       user: {
         id: payload.userId as string,
         email: (payload.email as string) || '',
@@ -55,8 +55,8 @@ async function authenticateJWTRequest(request: NextRequest) {
         wellness_score: 50,
         focus_minutes: 0,
         onboarding_completed: false
-      }, 
-      error: null 
+      },
+      error: null
     }
   } catch (error) {
     logError('JWT authentication error:', error)
@@ -67,7 +67,7 @@ async function authenticateJWTRequest(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { user, error } = await authenticateJWTRequest(request)
-    
+
     if (error || !user) {
       return createErrorResponse('Unauthorized', 401)
     }
@@ -179,6 +179,7 @@ export async function GET(request: NextRequest) {
     const stats = statsResult[0]
 
     // Transform briefcases to match expected format
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const files = briefcases.map((briefcase: any) => ({
       id: briefcase.id.toString(),
       name: briefcase.title,
@@ -234,7 +235,7 @@ export async function GET(request: NextRequest) {
       name: error instanceof Error ? error.name : undefined
     })
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error',
         details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
       },
@@ -246,7 +247,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { user, error } = await authenticateJWTRequest(request)
-    
+
     if (error || !user) {
       return createErrorResponse('Unauthorized', 401)
     }

@@ -1,10 +1,10 @@
 import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import { 
-  withDocumentAuth, 
-  getSql, 
-  createErrorResponse, 
-  generateUUID 
+import {
+  withDocumentAuth,
+  getSql,
+  createErrorResponse,
+  generateUUID
 } from '@/lib/api-utils'
 import bcrypt from 'bcryptjs'
 
@@ -12,11 +12,13 @@ import bcrypt from 'bcryptjs'
 export const runtime = 'nodejs'
 
 export const GET = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
       const sql = getSql()
 
       // Get share links
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const shareLinks = await sql`
         SELECT 
           id, url, permissions, expires_at, max_access_count, 
@@ -49,15 +51,16 @@ export const GET = withDocumentAuth(
 )
 
 export const POST = withDocumentAuth(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async (request: NextRequest, user: any, documentId: string) => {
     try {
-      const { 
-        permissions, 
-        password, 
-        expiresAt, 
-        downloadEnabled, 
-        maxAccess, 
-        requireAuth 
+      const {
+        permissions,
+        password,
+        expiresAt,
+        downloadEnabled,
+        maxAccess,
+        requireAuth
       } = await request.json()
 
       if (!permissions) {
@@ -78,6 +81,7 @@ export const POST = withDocumentAuth(
 
       // Create share link
       const permissionsJson = typeof permissions === 'string' ? permissions : JSON.stringify(permissions)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const newLinkRows = await sql`
         INSERT INTO document_share_links (
           id, document_id, created_by, url, password_hash, permissions, 

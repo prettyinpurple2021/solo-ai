@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth-server';
 import { rateLimitByIp } from '@/lib/rate-limit';
@@ -101,7 +101,8 @@ export async function POST(request: NextRequest) {
 
     const { action, competitor_id, interval_minutes } = requestSchema.parse(body);
 
-    let result: any = { action };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const result: any = { action };
 
     switch (action) {
       case 'start':
@@ -154,7 +155,7 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: (error as any).errors },
+        { error: 'Invalid request parameters', details: error.errors },
         { status: 400 }
       );
     }
@@ -205,7 +206,7 @@ export async function PUT(request: NextRequest) {
     // Note: In a real implementation, you'd store this configuration in a database
     // and the processor would read from it
 
-    let message = 'Processor configuration updated';
+    const message = 'Processor configuration updated';
     const updates: string[] = [];
 
     if (config.interval_minutes) {
@@ -236,7 +237,7 @@ export async function PUT(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid configuration parameters', details: (error as any).errors },
+        { error: 'Invalid configuration parameters', details: error.errors },
         { status: 400 }
       );
     }

@@ -1,6 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { logError, logWarn } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -15,6 +15,7 @@ interface DocumentSearchResult {
   tags: string[]
   category: string
   file_type: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ai_insights: any
 }
 
@@ -47,10 +48,12 @@ export async function POST(request: NextRequest) {
     } = await request.json()
 
     const sql = getSql()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sqlClient = sql as any
 
     // Build base query
     let whereConditions = ['d.user_id = $1']
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let params: any[] = [user.id]
     let paramIndex = 2
 
@@ -63,6 +66,7 @@ export async function POST(request: NextRequest) {
           // Use parameterized queries to prevent SQL injection
           const placeholders = semanticResults.map(() => `$${paramIndex++}`).join(',')
           whereConditions.push(`d.id IN (${placeholders})`)
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           params.push(...semanticResults.map((r: any) => r.id))
         } else {
           // Fallback to regular text search if semantic search fails
@@ -190,6 +194,7 @@ export async function POST(request: NextRequest) {
     params.push(limit, offset)
 
     // Execute search using unsafe for dynamic SQL
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const files = await sqlClient.unsafe(query_sql, params) as any[]
 
     // Get total count for pagination
@@ -200,6 +205,7 @@ export async function POST(request: NextRequest) {
       WHERE ${whereConditions.join(' AND ')}
     `
     const countParams = params.slice(0, -2) // Remove limit and offset
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const countResult = await sqlClient.unsafe(countQuery, countParams) as any[]
     const total = countResult[0]?.total || 0
 
@@ -207,6 +213,7 @@ export async function POST(request: NextRequest) {
     const stats = await getSearchStats(sql, user.id, whereConditions, countParams)
 
     return NextResponse.json({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       files: files.map((file: any) => ({
         ...file,
         downloadUrl: `/api/briefcase/files/${file.id}/download`,
@@ -236,13 +243,14 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Search error:', error)
-    return NextResponse.json({ 
-      error: 'Search failed' 
+    return NextResponse.json({
+      error: 'Search failed'
     }, { status: 500 })
   }
 }
 
 // Perform semantic search using AI worker
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function performSemanticSearch(query: string, userId: string, sql: any) {
   try {
     // Get user's documents for semantic analysis
@@ -257,7 +265,7 @@ async function performSemanticSearch(query: string, userId: string, sql: any) {
     if (documents.length === 0) {
       return []
     }
-    
+
     const context = documents.map((doc: DocumentSearchResult) => ({
       id: doc.id,
       name: doc.name,
@@ -275,9 +283,10 @@ async function performSemanticSearch(query: string, userId: string, sql: any) {
     };
 
     // Get worker environment from Cloudflare
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const env = process.env as any;
     const googleAIWorker = env.GOOGLE_AI_WORKER;
-    
+
     if (!googleAIWorker) {
       logWarn('Google AI worker not available, skipping semantic search');
       return [];
@@ -297,11 +306,13 @@ async function performSemanticSearch(query: string, userId: string, sql: any) {
     }
 
     const result = await response.json();
-    
+
     // Parse worker response
     if (result.success && Array.isArray(result.relevantDocuments)) {
       return result.relevantDocuments
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .filter((doc: any) => doc.id && doc.relevance_score > 0.3)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .sort((a: any, b: any) => b.relevance_score - a.relevance_score)
         .slice(0, 20)
     }
@@ -314,10 +325,12 @@ async function performSemanticSearch(query: string, userId: string, sql: any) {
 }
 
 // Get search statistics
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getSearchStats(sql: any, userId: string, whereConditions: string[], params: any[]) {
   try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sqlClient = sql as any
-    
+
     // File type distribution
     const fileTypeStatsQuery = `
       SELECT file_type, COUNT(*) as count, SUM(size) as total_size
@@ -326,6 +339,7 @@ async function getSearchStats(sql: any, userId: string, whereConditions: string[
       GROUP BY file_type
       ORDER BY count DESC
     `
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fileTypeStats = await sqlClient.unsafe(fileTypeStatsQuery, params) as any[]
 
     // Category distribution
@@ -336,6 +350,7 @@ async function getSearchStats(sql: any, userId: string, whereConditions: string[
       GROUP BY category
       ORDER BY count DESC
     `
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const categoryStats = await sqlClient.unsafe(categoryStatsQuery, params) as any[]
 
     // Tag distribution
@@ -347,6 +362,7 @@ async function getSearchStats(sql: any, userId: string, whereConditions: string[
       ORDER BY count DESC
       LIMIT 20
     `
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const tagStats = await sqlClient.unsafe(tagStatsQuery, params) as any[]
 
     return {

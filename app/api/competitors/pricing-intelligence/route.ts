@@ -1,12 +1,12 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { db} from '@/db'
-import { competitorProfiles, intelligenceData} from '@/db/schema'
-import { eq, and, gte, desc, inArray} from 'drizzle-orm'
-import { blazeGrowthIntelligence} from '@/lib/blaze-growth-intelligence'
-import { z} from 'zod'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { db } from '@/db'
+import { competitorProfiles, intelligenceData } from '@/db/schema'
+import { eq, and, gte, desc, inArray } from 'drizzle-orm'
+import { blazeGrowthIntelligence } from '@/lib/blaze-growth-intelligence'
+import { z } from 'zod'
 import type { SourceType, ImportanceLevel, ExtractedData, AnalysisResult } from '@/lib/competitor-intelligence-types'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
     // Get recent pricing-related intelligence for all competitors
     const competitorIds = competitors.map(c => c.id)
     const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-    
+
     const pricingIntelligence = await db.select()
       .from(intelligenceData)
       .where(
@@ -93,9 +93,9 @@ export async function GET(request: NextRequest) {
       .orderBy(desc(intelligenceData.collected_at))
 
     // Filter for pricing-related intelligence
-    const pricingData = pricingIntelligence.filter(intel => 
+    const pricingData = pricingIntelligence.filter(intel =>
       intel.data_type.includes('pricing') ||
-      (intel.extracted_data as any)?.topics?.some((topic: string) => 
+      (intel.extracted_data as { topics?: string[] })?.topics?.some((topic: string) =>
         topic.toLowerCase().includes('price') ||
         topic.toLowerCase().includes('cost') ||
         topic.toLowerCase().includes('subscription') ||
@@ -107,7 +107,7 @@ export async function GET(request: NextRequest) {
     const pricingAnalyses = await Promise.all(
       competitors.map(async (competitor) => {
         const competitorPricingData = pricingData.filter(d => d.competitor_id === competitor.id)
-        
+
         if (competitorPricingData.length === 0) {
           return {
             competitor: {
@@ -221,11 +221,10 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { 
-      competitor_ids, 
+    const {
+      competitor_ids,
       analysis_scope,
-      market_context,
-      include_recommendations 
+      market_context
     } = pricingAnalysisSchema.parse(body)
 
     // Verify all competitors exist and belong to user
@@ -259,7 +258,7 @@ export async function POST(request: NextRequest) {
       .orderBy(desc(intelligenceData.collected_at))
       .limit(500)
 
-    const results: any = {
+    const results: Record<string, any> = {
       competitors: competitors.map(c => ({
         id: c.id,
         name: c.name,
@@ -275,7 +274,7 @@ export async function POST(request: NextRequest) {
       results.pricing_analyses = await Promise.all(
         competitors.map(async (competitor) => {
           const competitorIntelligence = intelligence.filter(i => i.competitor_id === competitor.id)
-          
+
           // Transform database results to match IntelligenceData interface
           const transformedIntelligence = competitorIntelligence.map(item => ({
             id: item.id,
@@ -295,7 +294,7 @@ export async function POST(request: NextRequest) {
             createdAt: item.created_at || new Date(),
             updatedAt: item.updated_at || new Date()
           }))
-          
+
           try {
             const pricingAnalysis = await blazeGrowthIntelligence.analyzePricingStrategy(
               competitor.id,
@@ -364,16 +363,16 @@ export async function POST(request: NextRequest) {
     // Generate cross-competitor insights
     if (analysis_scope === 'comprehensive' && results.pricing_analyses) {
       const successfulAnalyses = results.pricing_analyses.filter((a: any) => a.pricing_analysis !== null)
-      
+
       results.market_insights = {
         pricing_models_detected: [...new Set(successfulAnalyses.map((a: any) => a.pricing_analysis.pricingModel.type))],
         average_market_position: successfulAnalyses.reduce((sum: number, a: any) => {
           const positionScore = a.pricing_analysis.competitivePricing.marketPosition === 'premium' ? 4 :
-                               a.pricing_analysis.competitivePricing.marketPosition === 'mid_market' ? 3 :
-                               a.pricing_analysis.competitivePricing.marketPosition === 'value' ? 2 : 1
+            a.pricing_analysis.competitivePricing.marketPosition === 'mid_market' ? 3 :
+              a.pricing_analysis.competitivePricing.marketPosition === 'value' ? 2 : 1
           return sum + positionScore
         }, 0) / successfulAnalyses.length,
-        total_pricing_gaps: successfulAnalyses.reduce((sum: number, a: any) => 
+        total_pricing_gaps: successfulAnalyses.reduce((sum: number, a: any) =>
           sum + (a.pricing_analysis.competitivePricing.pricingGaps?.length || 0), 0
         ),
         market_opportunity_score: Math.min(100, successfulAnalyses.length * 20) // Simple scoring

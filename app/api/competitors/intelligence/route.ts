@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import {
@@ -142,7 +143,7 @@ export async function GET(req: NextRequest) {
         })
 
     } catch (error) {
-        console.error('Error fetching intelligence data:', error)
+        logError('Error fetching intelligence data:', error)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 }

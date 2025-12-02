@@ -1,9 +1,9 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
-import { v4 as uuidv4} from 'uuid'
-import { headers} from 'next/headers'
+import { v4 as uuidv4 } from 'uuid'
+import { headers } from 'next/headers'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -78,6 +78,7 @@ async function saveFile(params: {
     userAgent: userAgent,
   })
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const documentRows = await sql`
       INSERT INTO documents (
         id, user_id, folder_id, name, original_name, file_type, mime_type,
@@ -88,7 +89,7 @@ async function saveFile(params: {
       ${category}, ${description || null}, ${tagsJson}::jsonb, ${metadataJson}::jsonb, NOW(), NOW())
       RETURNING *
     ` as any[]
-  
+
   const document = documentRows[0]
 
   if (folderId) {
@@ -149,6 +150,7 @@ export async function POST(request: NextRequest) {
     try {
       if (rawTags.trim().startsWith('[')) {
         const parsed = JSON.parse(rawTags)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         tags = JSON.stringify(Array.isArray(parsed) ? parsed.map((t: any) => String(t).trim().toLowerCase()).filter(Boolean) : [])
       } else if (rawTags.trim().length > 0) {
         const arr = rawTags.split(',').map(t => t.trim().toLowerCase()).filter(Boolean)
@@ -189,6 +191,7 @@ export async function PUT(request: NextRequest) {
     try {
       if (rawTags.trim().startsWith('[')) {
         const parsed = JSON.parse(rawTags)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         tags = JSON.stringify(Array.isArray(parsed) ? parsed.map((t: any) => String(t).trim().toLowerCase()).filter(Boolean) : [])
       } else if (rawTags.trim().length > 0) {
         const arr = rawTags.split(',').map(t => t.trim().toLowerCase()).filter(Boolean)
@@ -206,6 +209,7 @@ export async function PUT(request: NextRequest) {
       files.map((file) => saveFile({ userId: user.id, file, folderId, category, description, tags }))
     )
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const successes = results.filter(r => r.status === 'fulfilled') as PromiseFulfilledResult<any>[]
     const failures = results.filter(r => r.status === 'rejected') as PromiseRejectedResult[]
 

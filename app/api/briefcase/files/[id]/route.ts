@@ -1,6 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -21,6 +21,7 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
 
     const sql = getSql()
     // Ensure ownership
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const docRows = await sql`SELECT id FROM documents WHERE id = ${id} AND user_id = ${user.id}` as any[]
     if (docRows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 })
 
@@ -34,6 +35,7 @@ export async function PUT(request: NextRequest, context: { params: Promise<{ id:
           updated_at = NOW()
       WHERE id = ${id}
       RETURNING *
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ` as any[]
     const updated = updatedRows[0]
 
@@ -55,6 +57,7 @@ export async function DELETE(_request: NextRequest, context: { params: Promise<{
 
     const sql = getSql()
     // Ensure ownership
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const docRows = await sql`SELECT id, size, folder_id FROM documents WHERE id = ${id} AND user_id = ${user.id}` as any[]
     if (docRows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     const doc = docRows[0]
@@ -94,6 +97,7 @@ export async function GET(_request: NextRequest, context: { params: Promise<{ id
       FROM documents d
       LEFT JOIN document_folders f ON f.id = d.folder_id
       WHERE d.id = ${id} AND d.user_id = ${user.id}
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ` as any[]
     const r = resultRows[0]
     if (!r) return NextResponse.json({ error: 'Not found' }, { status: 404 })

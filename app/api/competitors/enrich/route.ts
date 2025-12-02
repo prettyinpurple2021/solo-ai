@@ -1,12 +1,11 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { competitorProfiles} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { competitorEnrichmentService} from '@/lib/competitor-enrichment-service'
-import { z} from 'zod'
-import { eq, and, inArray} from 'drizzle-orm'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { competitorProfiles } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { z } from 'zod'
+import { eq, and, inArray } from 'drizzle-orm'
 import type { ThreatLevel, MonitoringStatus, FundingStage } from '@/lib/competitor-intelligence-types'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -48,7 +47,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -56,7 +55,7 @@ export async function POST(request: NextRequest) {
     // Parse request body
     const body = await request.json()
     const parsed = BatchEnrichmentRequestSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },
@@ -121,10 +120,10 @@ export async function POST(request: NextRequest) {
           fundingStage: existingCompetitor.funding_stage as FundingStage || undefined,
           threatLevel: existingCompetitor.threat_level as ThreatLevel,
           monitoringStatus: existingCompetitor.monitoring_status as MonitoringStatus,
-          socialMediaHandles: existingCompetitor.social_media_handles || {},
-          keyPersonnel: Array.isArray(existingCompetitor.key_personnel) ? existingCompetitor.key_personnel : [],
-          products: Array.isArray(existingCompetitor.products) ? existingCompetitor.products : [],
-          marketPosition: existingCompetitor.market_position && typeof existingCompetitor.market_position === 'object' && !Array.isArray(existingCompetitor.market_position) && 
+          socialMediaHandles: (existingCompetitor.social_media_handles as Record<string, string>) || {},
+          keyPersonnel: (existingCompetitor.key_personnel as any[]) || [],
+          products: (existingCompetitor.products as any[]) || [],
+          marketPosition: existingCompetitor.market_position && typeof existingCompetitor.market_position === 'object' && !Array.isArray(existingCompetitor.market_position) &&
             'targetMarkets' in existingCompetitor.market_position ? existingCompetitor.market_position as any : {
             targetMarkets: [],
             competitiveAdvantages: [],
@@ -134,8 +133,8 @@ export async function POST(request: NextRequest) {
             differentiationLevel: 0,
             marketFit: 0
           },
-          competitiveAdvantages: Array.isArray(existingCompetitor.competitive_advantages) ? existingCompetitor.competitive_advantages : [],
-          vulnerabilities: Array.isArray(existingCompetitor.vulnerabilities) ? existingCompetitor.vulnerabilities : [],
+          competitiveAdvantages: (existingCompetitor.competitive_advantages as string[]) || [],
+          vulnerabilities: (existingCompetitor.vulnerabilities as string[]) || [],
           monitoringConfig: existingCompetitor.monitoring_config && typeof existingCompetitor.monitoring_config === 'object' && !Array.isArray(existingCompetitor.monitoring_config) ? existingCompetitor.monitoring_config as any : {
             websiteMonitoring: false,
             socialMediaMonitoring: false,
@@ -158,8 +157,8 @@ export async function POST(request: NextRequest) {
 
         if (enrichmentResult.success && enrichmentResult.data) {
           // Update competitor profile with enriched data
-          const updateData: any = {}
-          
+          const updateData: Partial<typeof competitorProfiles.$inferInsert> = {}
+
           if (enrichmentResult.data.description) updateData.description = enrichmentResult.data.description
           if (enrichmentResult.data.industry) updateData.industry = enrichmentResult.data.industry
           if (enrichmentResult.data.headquarters) updateData.headquarters = enrichmentResult.data.headquarters
@@ -168,52 +167,52 @@ export async function POST(request: NextRequest) {
           if (enrichmentResult.data.fundingAmount) updateData.funding_amount = enrichmentResult.data.fundingAmount.toString()
           if (enrichmentResult.data.fundingStage) updateData.funding_stage = enrichmentResult.data.fundingStage
           if (enrichmentResult.data.threatLevel) updateData.threat_level = enrichmentResult.data.threatLevel
-          
+
           // Merge social media handles
           if (enrichmentResult.data.socialMediaHandles) {
-            const existingHandles = existingCompetitor.social_media_handles || {}
+            const existingHandles = (existingCompetitor.social_media_handles as Record<string, string>) || {}
             updateData.social_media_handles = {
               ...existingHandles,
               ...enrichmentResult.data.socialMediaHandles,
             }
           }
-          
+
           // Merge key personnel (avoid duplicates)
           if (enrichmentResult.data.keyPersonnel) {
-            const existingPersonnel = Array.isArray(existingCompetitor.key_personnel) ? existingCompetitor.key_personnel : []
-            const newPersonnel = enrichmentResult.data.keyPersonnel.filter(newPerson => 
-              !existingPersonnel.some(existing => 
+            const existingPersonnel = (existingCompetitor.key_personnel as any[]) || []
+            const newPersonnel = enrichmentResult.data.keyPersonnel.filter(newPerson =>
+              !existingPersonnel.some(existing =>
                 existing.name.toLowerCase() === newPerson.name.toLowerCase() &&
                 existing.role.toLowerCase() === newPerson.role.toLowerCase()
               )
             )
             updateData.key_personnel = [...existingPersonnel, ...newPersonnel]
           }
-          
+
           // Merge products (avoid duplicates)
           if (enrichmentResult.data.products) {
-            const existingProducts = Array.isArray(existingCompetitor.products) ? existingCompetitor.products : []
-            const newProducts = enrichmentResult.data.products.filter(newProduct => 
-              !existingProducts.some(existing => 
+            const existingProducts = (existingCompetitor.products as any[]) || []
+            const newProducts = enrichmentResult.data.products.filter(newProduct =>
+              !existingProducts.some(existing =>
                 existing.name.toLowerCase() === newProduct.name.toLowerCase()
               )
             )
             updateData.products = [...existingProducts, ...newProducts]
           }
-          
+
           // Merge competitive advantages (avoid duplicates)
           if (enrichmentResult.data.competitiveAdvantages) {
-            const existingAdvantages = Array.isArray(existingCompetitor.competitive_advantages) ? existingCompetitor.competitive_advantages : []
-            const newAdvantages = enrichmentResult.data.competitiveAdvantages.filter(advantage => 
+            const existingAdvantages = (existingCompetitor.competitive_advantages as string[]) || []
+            const newAdvantages = enrichmentResult.data.competitiveAdvantages.filter(advantage =>
               !existingAdvantages.includes(advantage)
             )
             updateData.competitive_advantages = [...existingAdvantages, ...newAdvantages]
           }
-          
+
           // Merge vulnerabilities (avoid duplicates)
           if (enrichmentResult.data.vulnerabilities) {
-            const existingVulnerabilities = Array.isArray(existingCompetitor.vulnerabilities) ? existingCompetitor.vulnerabilities : []
-            const newVulnerabilities = enrichmentResult.data.vulnerabilities.filter(vulnerability => 
+            const existingVulnerabilities = (existingCompetitor.vulnerabilities as string[]) || []
+            const newVulnerabilities = enrichmentResult.data.vulnerabilities.filter(vulnerability =>
               !existingVulnerabilities.includes(vulnerability)
             )
             updateData.vulnerabilities = [...existingVulnerabilities, ...newVulnerabilities]
@@ -287,7 +286,7 @@ export async function POST(request: NextRequest) {
 export async function GET(_request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -336,10 +335,10 @@ export async function GET(_request: NextRequest) {
       ]
 
       for (const field of fields) {
-        if (field.value && 
-            (Array.isArray(field.value) ? field.value.length > 0 : 
-             typeof field.value === 'object' ? Object.keys(field.value).length > 0 : 
-             field.value)) {
+        if (field.value &&
+          (Array.isArray(field.value) ? field.value.length > 0 :
+            typeof field.value === 'object' ? Object.keys(field.value).length > 0 :
+              field.value)) {
           score += field.weight
         }
       }
@@ -355,10 +354,10 @@ export async function GET(_request: NextRequest) {
 
       if (score < 70 || !competitor.lastAnalyzed) {
         stats.needsEnrichment++
-        
+
         let priority: 'high' | 'medium' | 'low' = 'low'
         let reason = 'Basic enrichment recommended'
-        
+
         if (!competitor.lastAnalyzed) {
           priority = 'high'
           reason = 'Never been enriched'

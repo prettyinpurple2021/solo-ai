@@ -1,11 +1,12 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
+import { logError, logInfo } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
 import { getSql } from '@/lib/api-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
+
 
 
 // Force dynamic rendering
@@ -20,7 +21,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -29,6 +30,7 @@ export async function GET(request: NextRequest) {
     const sql = getSql()
 
     // Get total competitors count
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const totalCompetitorsRows = await sql`
       SELECT COUNT(*) as count
       FROM competitor_profiles
@@ -37,6 +39,7 @@ export async function GET(request: NextRequest) {
     const totalCompetitors = { count: parseInt(totalCompetitorsRows[0]?.count || '0') }
 
     // Get competitors by threat level
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const threatLevelStatsRows = await sql`
       SELECT threat_level, COUNT(*) as count
       FROM competitor_profiles
@@ -48,6 +51,7 @@ export async function GET(request: NextRequest) {
     const thirtyDaysAgo = new Date()
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const recentAlertsRows = await sql`
       SELECT COUNT(*) as count
       FROM competitor_alerts ca
@@ -61,6 +65,7 @@ export async function GET(request: NextRequest) {
     const sevenDaysAgo = new Date()
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const recentActivitiesRows = await sql`
       SELECT COUNT(*) as count
       FROM competitor_activities ca
@@ -71,6 +76,7 @@ export async function GET(request: NextRequest) {
     const recentActivities = { count: parseInt(recentActivitiesRows[0]?.count || '0') }
 
     // Get active monitoring count
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const activeMonitoringRows = await sql`
       SELECT COUNT(*) as count
       FROM competitor_profiles
@@ -86,6 +92,7 @@ export async function GET(request: NextRequest) {
       low: 0
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     threatLevelStatsRows.forEach((stat: any) => {
       if (stat.threat_level && stat.threat_level in threatDistribution) {
         threatDistribution[stat.threat_level as keyof typeof threatDistribution] = parseInt(stat.count || '0')
@@ -93,6 +100,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Calculate average employee count (if column exists)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const avgEmployeeCountRows = await sql`
       SELECT AVG(employee_count) as avg
       FROM competitor_profiles
@@ -101,6 +109,7 @@ export async function GET(request: NextRequest) {
     const avgEmployeeCount = { avg: parseFloat(avgEmployeeCountRows[0]?.avg || '0') }
 
     // Calculate total funding tracked (if column exists)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const totalFundingRows = await sql`
       SELECT SUM(funding_amount) as sum
       FROM competitor_profiles
@@ -116,11 +125,11 @@ export async function GET(request: NextRequest) {
       threatDistribution,
       averageEmployeeCount: Math.round(avgEmployeeCount.avg || 0),
       totalFundingTracked: totalFunding.sum || 0,
-      monitoringCoverage: totalCompetitors.count > 0 ? 
+      monitoringCoverage: totalCompetitors.count > 0 ?
         Math.round((activeMonitoring.count / totalCompetitors.count) * 100) : 0,
-      alertFrequency: recentAlerts.count > 0 ? 
+      alertFrequency: recentAlerts.count > 0 ?
         Math.round(recentAlerts.count / 30 * 7) : 0, // Alerts per week
-      activityLevel: recentActivities.count > 0 ? 
+      activityLevel: recentActivities.count > 0 ?
         Math.round(recentActivities.count / 7) : 0, // Activities per day
       lastUpdated: new Date().toISOString()
     }

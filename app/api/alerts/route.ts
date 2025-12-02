@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { competitorAlerts, competitorProfiles, intelligenceData } from '@/db/schema'
@@ -82,6 +82,7 @@ export async function GET(request: NextRequest) {
     const queryParams = Object.fromEntries(url.searchParams.entries())
 
     // Parse parameters into correct types for schema
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parsedParams: any = { ...queryParams }
 
     // Parse arrays from query string
@@ -213,6 +214,7 @@ export async function GET(request: NextRequest) {
       severity: item.alert.severity as AlertSeverity,
       title: item.alert.title,
       description: item.alert.description || undefined,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sourceData: (item.alert.source_data as Record<string, any>) || {},
       actionItems: (item.alert.action_items as ActionItem[]) || [],
       recommendedActions: (item.alert.recommended_actions as Recommendation[]) || [],
@@ -225,6 +227,7 @@ export async function GET(request: NextRequest) {
         id: item.competitor.id,
         name: item.competitor.name,
         domain: item.competitor.domain || undefined,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         threatLevel: item.competitor.threatLevel as any,
       } : undefined,
       intelligence: item.intelligence ? {
@@ -376,6 +379,7 @@ export async function POST(request: NextRequest) {
       severity: newAlert.severity as AlertSeverity,
       title: newAlert.title,
       description: newAlert.description || undefined,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       sourceData: (newAlert.source_data as Record<string, any>) || {},
       actionItems: (newAlert.action_items as ActionItem[]) || [],
       recommendedActions: (newAlert.recommended_actions as Recommendation[]) || [],

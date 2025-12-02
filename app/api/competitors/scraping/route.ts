@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { queueProcessor } from '@/lib/scraping-queue-processor'
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
     const recentJobs = await db
       .select({ id: scrapingJobs.id })
       .from(scrapingJobs)
-      .where(and(eq(scrapingJobs.user_id, user.id), gte(scrapingJobs.created_at, oneHourAgo as any)))
+      .where(and(eq(scrapingJobs.user_id, user.id), gte(scrapingJobs.created_at, oneHourAgo)))
     if (recentJobs.length >= flags.scrapingUserHourlyCap) {
       return NextResponse.json({ error: `Scraping hourly cap reached (${flags.scrapingUserHourlyCap})` }, { status: 429 })
     }
@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: 'Invalid request data',
-          details: (error as any).errors
+          details: error.errors
         },
         { status: 400 }
       )

@@ -4,28 +4,20 @@ export const dynamic = 'force-dynamic'
 
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { 
-  ArrowLeft, 
-  Crown, 
-  Rocket, 
-  Heart, 
-  Flame, 
-  CheckCircle,
-  Shield,
+import {
+  Crown,
   Target,
   Users,
   Zap,
-  Star,
   Trophy,
   Brain,
-  TrendingUp,
   ArrowRight
 } from "lucide-react"
-import { 
-  TacticalButton, 
-  GlassCard, 
-  RankStars, 
-  CamoBackground, 
+import {
+  TacticalButton,
+  GlassCard,
+  RankStars,
+  CamoBackground,
   SergeantDivider,
   StatsBadge,
   TacticalGrid,
@@ -41,7 +33,7 @@ export default function AboutPage() {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-20">
               <Link href="/" className="flex items-center gap-3">
-                <motion.div 
+                <motion.div
                   className="w-12 h-12 rounded-xl bg-gradient-to-br from-military-hot-pink to-military-blush-pink flex items-center justify-center shadow-lg"
                   whileHover={{ scale: 1.05 }}
                 >
@@ -49,7 +41,7 @@ export default function AboutPage() {
                 </motion.div>
                 <span className="font-heading text-xl font-bold text-white">SoloSuccess AI</span>
               </Link>
-              
+
               <div className="flex items-center gap-4">
                 <Link href="/signin">
                   <TacticalButton variant="outline" size="sm">
@@ -81,16 +73,16 @@ export default function AboutPage() {
                   Elite Business Platform
                 </span>
               </div>
-              
+
               <h1 className="font-heading text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
                 About <span className="text-transparent bg-clip-text bg-gradient-to-r from-military-hot-pink to-military-blush-pink">SoloSuccess AI</span>
               </h1>
-              
+
               <p className="text-xl text-military-storm-grey mb-8 max-w-3xl mx-auto leading-relaxed">
-                The ultimate military-grade platform for solo entrepreneurs who refuse to settle for mediocrity. 
+                The ultimate military-grade platform for solo entrepreneurs who refuse to settle for mediocrity.
                 Built for the elite, designed for domination.
               </p>
-              
+
               <div className="flex flex-wrap justify-center gap-4">
                 <TacticalButton size="lg" className="group">
                   Start Your Mission
@@ -117,17 +109,17 @@ export default function AboutPage() {
                 >
                   <Target className="w-10 h-10 text-white" />
                 </motion.div>
-                
+
                 <h2 className="font-heading text-4xl font-bold text-white mb-6">
                   Our Mission
                 </h2>
-                
+
                 <p className="text-lg text-military-storm-grey leading-relaxed mb-8">
-                  We believe every solo entrepreneur deserves access to military-grade tools and AI-powered intelligence 
-                  that can transform their business from struggling startup to market-dominating empire. No more settling 
+                  We believe every solo entrepreneur deserves access to military-grade tools and AI-powered intelligence
+                  that can transform their business from struggling startup to market-dominating empire. No more settling
                   for generic solutions or amateur tools.
                 </p>
-                
+
                 <div className="grid md:grid-cols-3 gap-8 mt-12">
                   <div className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-military-hot-pink/20 to-military-blush-pink/20 flex items-center justify-center">
@@ -136,7 +128,7 @@ export default function AboutPage() {
                     <h3 className="font-heading text-xl font-bold text-white mb-2">Elite Standards</h3>
                     <p className="text-military-storm-grey">Military-grade security and performance</p>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-military-hot-pink/20 to-military-blush-pink/20 flex items-center justify-center">
                       <Brain className="w-8 h-8 text-military-hot-pink" />
@@ -144,7 +136,7 @@ export default function AboutPage() {
                     <h3 className="font-heading text-xl font-bold text-white mb-2">AI-Powered</h3>
                     <p className="text-military-storm-grey">Cutting-edge artificial intelligence</p>
                   </div>
-                  
+
                   <div className="text-center">
                     <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-military-hot-pink/20 to-military-blush-pink/20 flex items-center justify-center">
                       <Trophy className="w-8 h-8 text-military-hot-pink" />
@@ -169,7 +161,7 @@ export default function AboutPage() {
                 The principles that drive everything we do
               </p>
             </div>
-            
+
             <TacticalGrid className="max-w-6xl mx-auto">
               <TacticalGridItem>
                 <GlassCard className="h-full p-8">
@@ -180,12 +172,12 @@ export default function AboutPage() {
                     <h3 className="font-heading text-2xl font-bold text-white">Excellence</h3>
                   </div>
                   <p className="text-military-storm-grey leading-relaxed">
-                    We never settle for "good enough." Every feature, every interaction, every result 
+                    We never settle for &quot;good enough.&quot; Every feature, every interaction, every result
                     must meet the highest standards of excellence.
                   </p>
                 </GlassCard>
               </TacticalGridItem>
-              
+
               <TacticalGridItem>
                 <GlassCard className="h-full p-8">
                   <div className="flex items-center gap-4 mb-6">
@@ -195,12 +187,12 @@ export default function AboutPage() {
                     <h3 className="font-heading text-2xl font-bold text-white">Innovation</h3>
                   </div>
                   <p className="text-military-storm-grey leading-relaxed">
-                    We constantly push the boundaries of what's possible, leveraging cutting-edge 
+                    We constantly push the boundaries of what&apos;s possible, leveraging cutting-edge
                     technology to give you the ultimate competitive advantage.
                   </p>
                 </GlassCard>
               </TacticalGridItem>
-              
+
               <TacticalGridItem>
                 <GlassCard className="h-full p-8">
                   <div className="flex items-center gap-4 mb-6">
@@ -210,12 +202,12 @@ export default function AboutPage() {
                     <h3 className="font-heading text-2xl font-bold text-white">Community</h3>
                   </div>
                   <p className="text-military-storm-grey leading-relaxed">
-                    We're building a community of elite entrepreneurs who support each other's 
+                    We&apos;re building a community of elite entrepreneurs who support each other&apos;s
                     success and share the drive for domination.
                   </p>
                 </GlassCard>
               </TacticalGridItem>
-              
+
               <TacticalGridItem>
                 <GlassCard className="h-full p-8">
                   <div className="flex items-center gap-4 mb-6">
@@ -225,7 +217,7 @@ export default function AboutPage() {
                     <h3 className="font-heading text-2xl font-bold text-white">Results</h3>
                   </div>
                   <p className="text-military-storm-grey leading-relaxed">
-                    We measure success by the results we deliver for our users. No fluff, no 
+                    We measure success by the results we deliver for our users. No fluff, no
                     empty promises - just measurable business growth.
                   </p>
                 </GlassCard>
@@ -245,7 +237,7 @@ export default function AboutPage() {
                 The numbers that prove our dominance
               </p>
             </div>
-            
+
             <div className="grid md:grid-cols-4 gap-8 max-w-4xl mx-auto">
               <div className="text-center">
                 <StatsBadge value="99.9%" label="Uptime" className="text-4xl font-bold text-military-hot-pink" />
@@ -276,10 +268,10 @@ export default function AboutPage() {
                   Ready to Join the Elite?
                 </h2>
                 <p className="text-xl text-military-storm-grey mb-8 max-w-2xl mx-auto">
-                  Stop settling for amateur tools. Get access to military-grade AI and 
+                  Stop settling for amateur tools. Get access to military-grade AI and
                   start dominating your market today.
                 </p>
-                
+
                 <div className="flex flex-wrap justify-center gap-4">
                   <Link href="/signup">
                     <TacticalButton size="lg" className="group">
@@ -308,7 +300,7 @@ export default function AboutPage() {
                 </div>
                 <span className="font-heading text-lg font-bold text-white">SoloSuccess AI</span>
               </div>
-              
+
               <div className="flex items-center gap-6 text-military-storm-grey">
                 <Link href="/privacy" className="hover:text-military-hot-pink transition-colors">Privacy</Link>
                 <Link href="/terms" className="hover:text-military-hot-pink transition-colors">Terms</Link>

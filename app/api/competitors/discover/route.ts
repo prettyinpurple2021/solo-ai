@@ -66,11 +66,11 @@ async function discoverCompetitorsFromWorker(
       throw new Error(`Worker request failed: ${response.status}`)
     }
 
-    const result = await response.json()
+    const result = await response.json() as { research?: { topCompetitors?: any[] } }
     const topCompetitors = result?.research?.topCompetitors || []
 
     // Map worker response to suggestion shape
-    const suggestions = (topCompetitors as any[]).map((comp: any, index: number) => {
+    const suggestions = topCompetitors.map((comp: any, index: number) => {
       const name = comp.company || comp.title || `Competitor ${index + 1}`
       const domain = comp.domain || safeDomainFromUrl(comp.url) || `competitor${index + 1}.com`
       const desc = comp.snippet || comp.title || 'Competitor company'
@@ -104,184 +104,29 @@ async function discoverCompetitorsFromWorker(
   }
 }
 
-// Search business directories like Crunchbase, AngelList, etc.
-async function searchBusinessDirectories(businessDescription: string, targetMarket?: string) {
-  try {
-    const env = process.env as unknown as Env
-    const competitorWorker = env.COMPETITOR_WORKER
-
-    if (!competitorWorker) {
-      throw new Error('Competitor worker not configured')
-    }
-
-    const searchTerms = extractSearchTerms(businessDescription, targetMarket)
-    const industry = extractIndustry(businessDescription)
-    
-    const workerRequest = new Request('https://worker/search-directories', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        searchTerms,
-        industry,
-        targetMarket: targetMarket || 'Global',
-        sources: ['crunchbase', 'angellist', 'linkedin', 'google_business']
-      })
-    })
-
-    const response = await competitorWorker.fetch(workerRequest)
-    if (!response.ok) {
-      throw new Error(`Directory search failed: ${response.status}`)
-    }
-
-    const result = await response.json()
-    return result.competitors || []
-  } catch (error) {
-    logError('Error searching business directories:', error)
-    return []
-  }
-}
-
-// Search industry-specific databases
-async function searchIndustryDatabases(businessDescription: string, keyProducts?: string) {
-  try {
-    const env = process.env as unknown as Env
-    const competitorWorker = env.COMPETITOR_WORKER
-
-    if (!competitorWorker) {
-      throw new Error('Competitor worker not configured')
-    }
-
-    const industry = extractIndustry(businessDescription)
-    
-    const workerRequest = new Request('https://worker/search-industry-databases', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        industry,
-        keyProducts,
-        businessDescription,
-        sources: ['trade_associations', 'professional_networks', 'market_research']
-      })
-    })
-
-    const response = await competitorWorker.fetch(workerRequest)
-    if (!response.ok) {
-      throw new Error(`Industry database search failed: ${response.status}`)
-    }
-
-    const result = await response.json()
-    return result.competitors || []
-  } catch (error) {
-    logError('Error searching industry databases:', error)
-    return []
-  }
-}
-
-// Search news and press releases for competitor mentions
-async function searchNewsAndPress(businessDescription: string, targetMarket?: string) {
-  try {
-    const env = process.env as unknown as Env
-    const competitorWorker = env.COMPETITOR_WORKER
-
-    if (!competitorWorker) {
-      throw new Error('Competitor worker not configured')
-    }
-
-    const searchTerms = extractSearchTerms(businessDescription, targetMarket)
-    const industry = extractIndustry(businessDescription)
-    
-    const workerRequest = new Request('https://worker/search-news-press', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        searchTerms,
-        industry,
-        targetMarket: targetMarket || 'Global',
-        sources: ['news_api', 'google_news', 'press_releases', 'industry_publications']
-      })
-    })
-
-    const response = await competitorWorker.fetch(workerRequest)
-    if (!response.ok) {
-      throw new Error(`News search failed: ${response.status}`)
-    }
-
-    const result = await response.json()
-    return result.competitors || []
-  } catch (error) {
-    logError('Error searching news and press:', error)
-    return []
-  }
-}
-
-// Search social media for competitor mentions
-async function searchSocialMediaMentions(businessDescription: string) {
-  try {
-    const env = process.env as unknown as Env
-    const competitorWorker = env.COMPETITOR_WORKER
-
-    if (!competitorWorker) {
-      throw new Error('Competitor worker not configured')
-    }
-
-    const searchTerms = extractSearchTerms(businessDescription)
-    const industry = extractIndustry(businessDescription)
-    
-    const workerRequest = new Request('https://worker/search-social-media', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        searchTerms,
-        industry,
-        businessDescription,
-        sources: ['twitter', 'linkedin', 'reddit', 'industry_forums']
-      })
-    })
-
-    const response = await competitorWorker.fetch(workerRequest)
-    if (!response.ok) {
-      throw new Error(`Social media search failed: ${response.status}`)
-    }
-
-    const result = await response.json()
-    return result.competitors || []
-  } catch (error) {
-    logError('Error searching social media:', error)
-    return []
-  }
-}
-
 // Helper functions for data extraction and processing
 function extractSearchTerms(businessDescription: string, targetMarket?: string): string[] {
   const terms = []
-  
+
   // Extract key business terms
   const businessWords = businessDescription.toLowerCase()
     .split(/\s+/)
     .filter(word => word.length > 3)
     .filter(word => !['the', 'and', 'for', 'with', 'that', 'this', 'from', 'they', 'have', 'been', 'were', 'said', 'each', 'which', 'their', 'time', 'will', 'about', 'there', 'could', 'other', 'after', 'first', 'well', 'also', 'where', 'much', 'some', 'very', 'when', 'come', 'here', 'just', 'like', 'long', 'make', 'many', 'over', 'such', 'take', 'than', 'them', 'these', 'think', 'want', 'been', 'good', 'great', 'little', 'new', 'now', 'old', 'see', 'two', 'way', 'who', 'boy', 'did', 'its', 'let', 'put', 'say', 'she', 'too', 'use'].includes(word))
-  
+
   terms.push(...businessWords.slice(0, 5))
-  
+
   if (targetMarket) {
     const marketWords = targetMarket.toLowerCase().split(/\s+/).filter(word => word.length > 3)
     terms.push(...marketWords.slice(0, 3))
   }
-  
+
   return [...new Set(terms)] // Remove duplicates
 }
 
 function extractIndustry(businessDescription: string): string {
   const description = businessDescription.toLowerCase()
-  
+
   if (description.includes('software') || description.includes('tech') || description.includes('app')) {
     return 'Technology'
   } else if (description.includes('health') || description.includes('medical')) {
@@ -299,7 +144,7 @@ function extractIndustry(businessDescription: string): string {
   } else if (description.includes('consulting') || description.includes('services')) {
     return 'Professional Services'
   }
-  
+
   return 'General Business'
 }
 
@@ -324,14 +169,14 @@ export async function POST(request: NextRequest) {
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
     const parsed = DiscoveryRequestSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },
@@ -348,12 +193,12 @@ export async function POST(request: NextRequest) {
       keyProducts,
       maxResults
     )
-    
+
     // Deduplicate suggestions
-    const uniqueSuggestions = aiSuggestions.filter((suggestion, index, self) => 
+    const uniqueSuggestions = aiSuggestions.filter((suggestion, index, self) =>
       index === self.findIndex(s => s.name === suggestion.name && s.domain === suggestion.domain)
     )
-    
+
     const suggestions = uniqueSuggestions.slice(0, maxResults)
 
     // Add suggested monitoring configuration based on competitor characteristics
@@ -365,9 +210,9 @@ export async function POST(request: NextRequest) {
         if (employeeCount < 1000) return 'medium'
         return 'large'
       }
-      
+
       const companySize = getCompanySize(suggestion.employeeCount || 50)
-      
+
       return {
         ...suggestion,
         suggestedMonitoringConfig: {

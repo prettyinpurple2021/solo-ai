@@ -1,11 +1,11 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { db} from '@/db'
-import { competitorAlerts} from '@/db/schema'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { z} from 'zod'
-import { eq, and, inArray} from 'drizzle-orm'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/db'
+import { competitorAlerts } from '@/db/schema'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { z } from 'zod'
+import { eq, and, inArray } from 'drizzle-orm'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -31,14 +31,14 @@ export async function POST(request: NextRequest) {
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
     const parsed = BulkOperationSchema.safeParse(body)
-    
+
     if (!parsed.success) {
       return NextResponse.json(
         { error: 'Invalid payload', details: parsed.error.flatten() },
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const updateData: any = { updated_at: new Date() }
+    const updateData: Partial<typeof competitorAlerts.$inferInsert> = { updated_at: new Date() }
     let resultMessage = ''
 
     // Determine update based on operation
@@ -81,40 +81,40 @@ export async function POST(request: NextRequest) {
         updateData.acknowledged_at = new Date()
         resultMessage = 'Alerts acknowledged successfully'
         break
-      
+
       case 'archive':
         updateData.is_archived = true
         resultMessage = 'Alerts archived successfully'
         break
-      
+
       case 'unarchive':
         updateData.is_archived = false
         resultMessage = 'Alerts unarchived successfully'
         break
-      
+
       case 'mark_read':
         updateData.is_read = true
         resultMessage = 'Alerts marked as read successfully'
         break
-      
+
       case 'mark_unread':
         updateData.is_read = false
         resultMessage = 'Alerts marked as unread successfully'
         break
-      
+
       case 'delete':
         // For delete operation, we don't update but delete
         await db
           .delete(competitorAlerts)
           .where(and(...conditions))
-        
+
         return NextResponse.json({
           message: 'Alerts deleted successfully',
           operation,
           affectedCount: alertIds.length,
           alertIds,
         })
-      
+
       default:
         return NextResponse.json(
           { error: 'Invalid operation' },
@@ -150,9 +150,12 @@ export async function POST(request: NextRequest) {
         }
       }
       acc[competitorId].alertCount++
-      acc[competitorId].severityBreakdown[alert.severity as keyof typeof acc[typeof competitorId]['severityBreakdown']]++
+      const severity = alert.severity as 'info' | 'warning' | 'urgent' | 'critical'
+      if (acc[competitorId].severityBreakdown[severity] !== undefined) {
+        acc[competitorId].severityBreakdown[severity]++
+      }
       return acc
-    }, {} as Record<number, any>)
+    }, {} as Record<number, { competitorId: number; alertCount: number; severityBreakdown: { info: number; warning: number; urgent: number; critical: number } }>)
 
     return NextResponse.json({
       message: resultMessage,

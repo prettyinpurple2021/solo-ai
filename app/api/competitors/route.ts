@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     }
 
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return createErrorResponse('Unauthorized', 401)
     }
@@ -35,32 +35,32 @@ export async function GET(request: NextRequest) {
     const industry = url.searchParams.get('industry')
     const status = url.searchParams.get('status')
     const search = url.searchParams.get('search')
-    
+
     const offset = (page - 1) * limit
 
     // Build dynamic query based on filters
-    let whereConditions = [`user_id = $1`]
-    let params = [user.id]
+    const whereConditions = [`user_id = $1`]
+    const params: (string | number)[] = [user.id]
     let paramIndex = 2
-    
+
     if (threatLevel && threatLevel !== 'all') {
       whereConditions.push(`threat_level = $${paramIndex}`)
       params.push(threatLevel)
       paramIndex++
     }
-    
+
     if (industry && industry !== 'all') {
       whereConditions.push(`industry ILIKE $${paramIndex}`)
       params.push(`%${industry}%`)
       paramIndex++
     }
-    
+
     if (status && status !== 'all') {
       whereConditions.push(`monitoring_status = $${paramIndex}`)
       params.push(status)
       paramIndex++
     }
-    
+
     if (search) {
       whereConditions.push(`(name ILIKE $${paramIndex} OR domain ILIKE $${paramIndex + 1} OR description ILIKE $${paramIndex + 2})`)
       params.push(`%${search}%`, `%${search}%`, `%${search}%`)
@@ -69,6 +69,7 @@ export async function GET(request: NextRequest) {
 
     const whereClause = whereConditions.join(' AND ')
     const sql = getSql()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sqlClient = sql as any
 
     // Get competitors with pagination
@@ -102,6 +103,7 @@ export async function GET(request: NextRequest) {
         created_at DESC
       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}
     `
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const competitors = await sqlClient.unsafe(competitorsQuery, queryParams) as any[]
 
     // Get total count
@@ -110,11 +112,13 @@ export async function GET(request: NextRequest) {
       FROM competitor_profiles 
       WHERE ${whereClause}
     `
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const countResult = await sqlClient.unsafe(countQuery, params) as any[]
 
     const total = parseInt(countResult[0]?.total || '0')
 
     // Transform the data
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const transformedCompetitors = competitors.map((competitor: any) => ({
       id: competitor.id,
       name: competitor.name,

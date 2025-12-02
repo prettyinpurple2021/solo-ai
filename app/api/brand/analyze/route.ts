@@ -1,4 +1,4 @@
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -34,6 +34,8 @@ const brandAnalysisSchema = z.object({
   }).optional(),
 })
 
+type BrandData = z.infer<typeof brandAnalysisSchema>
+
 export async function POST(request: NextRequest) {
   try {
     const authResult = await authenticateRequest()
@@ -66,7 +68,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-async function analyzeBrandWithAI(brandData: any) {
+async function analyzeBrandWithAI(brandData: BrandData) {
   try {
     if (!openai) {
       // Fallback to rule-based analysis if AI is not available
@@ -153,7 +155,7 @@ Format your response as JSON with the following structure:
   }
 }
 
-function generateFallbackAnalysis(brandData: any) {
+function generateFallbackAnalysis(brandData: BrandData) {
   const completeness = calculateCompleteness(brandData)
   const strengths = identifyStrengths(brandData)
   const improvements = identifyImprovements(brandData, completeness)
@@ -176,7 +178,7 @@ function generateFallbackAnalysis(brandData: any) {
   }
 }
 
-function calculateCompleteness(brandData: any): number {
+function calculateCompleteness(brandData: BrandData): number {
   let score = 0
   const totalFields = 8
 
@@ -192,7 +194,7 @@ function calculateCompleteness(brandData: any): number {
   return Math.round((score / totalFields) * 100)
 }
 
-function identifyStrengths(brandData: any): string[] {
+function identifyStrengths(brandData: BrandData): string[] {
   const strengths: string[] = []
 
   if (brandData.companyName && brandData.companyName.length > 2) {
@@ -226,7 +228,7 @@ function identifyStrengths(brandData: any): string[] {
   return strengths
 }
 
-function identifyImprovements(brandData: any, completeness: number): string[] {
+function identifyImprovements(brandData: BrandData, completeness: number): string[] {
   const improvements: string[] = []
 
   if (!brandData.tagline) {
@@ -260,7 +262,7 @@ function identifyImprovements(brandData: any, completeness: number): string[] {
   return improvements
 }
 
-function generateRecommendations(brandData: any, completeness: number): string[] {
+function generateRecommendations(brandData: BrandData, completeness: number): string[] {
   const recommendations: string[] = []
 
   if (completeness < 60) {
