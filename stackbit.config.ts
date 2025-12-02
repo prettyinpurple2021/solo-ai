@@ -6,5 +6,3 @@ export default defineStackbitConfig({
     ssgName: "nextjs",
     contentSources: [],
 });
-
-})

@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
+import { TIER_PRICES } from '../stripe';
 import jwt from 'jsonwebtoken';
 import { db } from '../db';
 import { users, subscriptions, adminActions, usageTracking } from '../db/schema';
@@ -73,13 +74,14 @@ router.get('/analytics', async (req: Request, res: Response) => {
         const [userCount] = await db.select({ count: count() }).from(users);
         const [subCount] = await db.select({ count: count() }).from(subscriptions);
 
-        // Calculate MRR (simplified)
+        // Calculate MRR (Real Data)
         const activeSubs = await db.select().from(subscriptions).where(eq(subscriptions.status, 'active'));
         let mrr = 0;
         activeSubs.forEach((sub: any) => {
-            if (sub.tier === 'starter') mrr += 29;
-            if (sub.tier === 'professional') mrr += 79;
-            if (sub.tier === 'empire') mrr += 199;
+            const tier = sub.tier as keyof typeof TIER_PRICES;
+            if (TIER_PRICES[tier]) {
+                mrr += TIER_PRICES[tier];
+            }
         });
 
         res.json({

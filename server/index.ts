@@ -26,12 +26,12 @@ app.set('trust proxy', 1);
 const httpServer = createServer(app);
 const io = new SocketServer(httpServer, {
     cors: {
-        origin: process.env.CLIENT_URL || "http://localhost:3001",
+        origin: process.env.CLIENT_URL || "http://localhost:3000",
         methods: ["GET", "POST"]
     }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Initialize Redis
 const redis = new Redis({

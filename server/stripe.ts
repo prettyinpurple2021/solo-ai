@@ -17,6 +17,14 @@ export const PRICE_IDS = {
     agency: process.env.STRIPE_AGENCY_PRICE_ID || '',
 };
 
+// Monthly prices for MRR calculation (in USD)
+export const TIER_PRICES = {
+    free: 0,
+    solo: 29,
+    pro: 79,
+    agency: 199
+};
+
 // Tier limits for feature gating
 export const TIER_LIMITS = {
     free: {

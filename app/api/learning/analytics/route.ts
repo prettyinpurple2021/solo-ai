@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
-import { learningModules, userProgress } from '@/db/schema'
-import { eq, and, desc, gte } from 'drizzle-orm'
+import { learningModules, userProgress, userAchievements, users, achievements } from '@/db/schema'
+import { eq, and, desc, gte, sql, count } from 'drizzle-orm'
 import { verifyAuth } from '@/lib/auth-server'
 
 export const dynamic = 'force-dynamic'
@@ -117,7 +117,49 @@ export async function GET(req: NextRequest) {
       .sort((a, b) => b.time_spent - a.time_spent)
       .slice(0, 5)
 
-    // Weekly Goal Progress (Arbitrary goal of 5 modules/week for now)
+    // Calculate Certifications Earned (Real Data)
+    // Count achievements where category is 'certification'
+    const certificationsCountResult = await db
+      .select({ count: count() })
+      .from(userAchievements)
+      .innerJoin(achievements, eq(userAchievements.achievement_id, achievements.id))
+      .where(
+        and(
+          eq(userAchievements.user_id, userId),
+          eq(achievements.category, 'certification')
+        )
+      )
+
+    const certificationsEarned = certificationsCountResult[0]?.count || 0
+
+    // Calculate Peer Rank (Real Data)
+    // Rank based on total modules completed compared to other users
+    // 1. Get total modules completed for current user (already calculated: totalModulesCompleted)
+    // 2. Count users who have completed MORE modules
+
+    // Subquery to get module counts for all users
+    const userModuleCounts = db
+      .select({
+        userId: userProgress.user_id,
+        completedCount: count(userProgress.module_id).as('completed_count')
+      })
+      .from(userProgress)
+      .where(eq(userProgress.status, 'completed'))
+      .groupBy(userProgress.user_id)
+      .as('user_module_counts')
+
+    // Count users with more completed modules
+    const betterUsersResult = await db
+      .select({ count: count() })
+      .from(userModuleCounts)
+      .where(sql`${userModuleCounts.completedCount} > ${totalModulesCompleted}`)
+
+    const betterUsersCount = betterUsersResult[0]?.count || 0
+    const peerRank = betterUsersCount + 1
+
+    // Weekly Goal Progress (Real Data)
+    // Goal: 5 modules per week (default)
+    // We already calculated learningVelocity (modules completed in last 7 days)
     const weeklyGoal = 5
     const weeklyGoalProgress = Math.min(100, Math.round((learningVelocity / weeklyGoal) * 100))
 
@@ -129,8 +171,8 @@ export async function GET(req: NextRequest) {
       current_streak: currentStreak,
       learning_velocity: learningVelocity,
       top_categories: topCategories,
-      certifications_earned: Math.floor(totalModulesCompleted / 5), // Mock logic: 1 cert per 5 modules
-      peer_rank: 12, // Placeholder as we don't have global leaderboard yet
+      certifications_earned: certificationsEarned,
+      peer_rank: peerRank,
       weekly_goal_progress: weeklyGoalProgress
     }
 

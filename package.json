@@ -11,7 +11,9 @@
     "db:generate": "drizzle-kit generate --config=server/drizzle.config.ts",
     "db:push": "drizzle-kit push --config=server/drizzle.config.ts",
     "db:studio": "drizzle-kit studio --config=server/drizzle.config.ts",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "cd server && npm run dev",
+    "dev:all": "concurrently \"npm run dev\" \"npm run server\""
   },
   "dependencies": {
     "@ai-sdk/anthropic": "latest",
@@ -49,6 +51,8 @@
     "@radix-ui/react-toggle": "latest",
     "@radix-ui/react-toggle-group": "latest",
     "@radix-ui/react-tooltip": "latest",
+    "@react-email/components": "^1.0.1",
+    "@react-email/render": "^2.0.0",
     "@stackframe/stack": "^2.8.52",
     "@stripe/stripe-js": "^8.5.2",
     "@upstash/qstash": "latest",
@@ -104,6 +108,7 @@
     "zod": "latest"
   },
   "devDependencies": {
+    "@stackbit/types": "^2.1.14",
     "@testing-library/jest-dom": "^6.5.0",
     "@testing-library/react": "^16.0.0",
     "@types/node": "^22.14.0",

@@ -1,9 +1,9 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { CompetitorAlert } from '@/hooks/use-competitor-alerts';
-
+import { io, Socket } from 'socket.io-client';
 
 export interface WebSocketMessage {
-  type: 'competitor_alert' | 'alert_update' | 'connection_status' | 'ping' | 'pong';
+  type: 'competitor_alert' | 'alert_update' | 'connection_status' | 'ping' | 'pong' | 'task:updated' | 'chat:updated' | 'context:updated' | 'report:created';
   data?: any;
   timestamp: string;
 }
@@ -27,11 +27,7 @@ export interface AlertUpdateMessage extends WebSocketMessage {
 
 export class WebSocketNotificationService {
   private static instance: WebSocketNotificationService;
-  private ws: WebSocket | null = null;
-  private reconnectAttempts = 0;
-  private maxReconnectAttempts = 5;
-  private reconnectDelay = 1000; // Start with 1 second
-  private heartbeatInterval: NodeJS.Timeout | null = null;
+  private ws: Socket | null = null;
   private listeners: Map<string, Set<(message: WebSocketMessage) => void>> = new Map();
   private connectionStatus: 'connecting' | 'connected' | 'disconnected' | 'error' = 'disconnected';
 
@@ -47,10 +43,14 @@ export class WebSocketNotificationService {
     this.listeners.set('competitor_alert', new Set());
     this.listeners.set('alert_update', new Set());
     this.listeners.set('connection_status', new Set());
+    this.listeners.set('task:updated', new Set());
+    this.listeners.set('chat:updated', new Set());
+    this.listeners.set('context:updated', new Set());
+    this.listeners.set('report:created', new Set());
   }
 
   connect(userId: string): void {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (this.ws && this.ws.connected) {
       return; // Already connected
     }
 
@@ -58,102 +58,83 @@ export class WebSocketNotificationService {
     this.notifyConnectionStatus();
 
     try {
-      // In a real implementation, you would connect to your WebSocket server
-      // For now, we'll simulate the connection
-      const wsUrl = this.getWebSocketUrl(userId);
-      
-      // Simulate WebSocket connection
+      const wsUrl = this.getWebSocketUrl();
       logInfo(`Connecting to WebSocket: ${wsUrl}`);
-      
-      // For development, we'll simulate a successful connection
-      setTimeout(() => {
-        this.connectionStatus = 'connected';
-        this.reconnectAttempts = 0;
-        this.notifyConnectionStatus();
-        this.startHeartbeat();
-        logInfo('WebSocket connected (simulated)');
-      }, 1000);
 
-      // In a real implementation:
-      // this.ws = new WebSocket(wsUrl);
-      // this.setupEventListeners();
-      
+      this.ws = io(wsUrl, {
+        transports: ['websocket'],
+        reconnection: true,
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+      });
+
+      this.setupEventListeners(userId);
+
     } catch (error) {
       logError('WebSocket connection error:', error);
       this.connectionStatus = 'error';
       this.notifyConnectionStatus();
-      this.scheduleReconnect(userId);
     }
   }
 
-  private getWebSocketUrl(userId: string): string {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host;
-    return `${protocol}//${host}/ws/notifications?userId=${userId}`;
+  private getWebSocketUrl(): string {
+    // Use environment variable or default to localhost:3001 (backend port)
+    // In production, this might be the same host if served from same origin, or a specific API URL
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+    return apiUrl;
   }
 
-  private setupEventListeners(): void {
+  private setupEventListeners(userId: string): void {
     if (!this.ws) return;
 
-    this.ws.onopen = () => {
+    this.ws.on('connect', () => {
       logInfo('WebSocket connected');
       this.connectionStatus = 'connected';
-      this.reconnectAttempts = 0;
       this.notifyConnectionStatus();
-      this.startHeartbeat();
-    };
 
-    this.ws.onmessage = (event) => {
-      try {
-        const message: WebSocketMessage = JSON.parse(event.data);
-        this.handleMessage(message);
-      } catch (error) {
-        logError('Error parsing WebSocket message:', error);
-      }
-    };
+      // Join user room
+      this.ws?.emit('join', userId);
+    });
 
-    this.ws.onclose = (event) => {
-      logInfo('WebSocket disconnected', { code: event.code, reason: event.reason });
+    this.ws.on('disconnect', (reason) => {
+      logInfo('WebSocket disconnected', { reason });
       this.connectionStatus = 'disconnected';
       this.notifyConnectionStatus();
-      this.stopHeartbeat();
-      
-      // Attempt to reconnect unless it was a clean close
-      if (event.code !== 1000) {
-        this.scheduleReconnect();
-      }
-    };
+    });
 
-    this.ws.onerror = (error) => {
-      logError('WebSocket error:', error);
+    this.ws.on('connect_error', (error) => {
+      logError('WebSocket connection error:', error);
       this.connectionStatus = 'error';
       this.notifyConnectionStatus();
-    };
+    });
+
+    // Listen for specific events from server
+    this.ws.on('task:updated', (data) => {
+      this.handleMessage({ type: 'task:updated', data, timestamp: new Date().toISOString() });
+    });
+
+    this.ws.on('chat:updated', (data) => {
+      this.handleMessage({ type: 'chat:updated', data, timestamp: new Date().toISOString() });
+    });
+
+    this.ws.on('context:updated', (data) => {
+      this.handleMessage({ type: 'context:updated', data, timestamp: new Date().toISOString() });
+    });
+
+    this.ws.on('report:created', (data) => {
+      this.handleMessage({ type: 'report:created', data, timestamp: new Date().toISOString() });
+      // Also treat report creation as a competitor alert for now
+      this.handleMessage({
+        type: 'competitor_alert',
+        data: { alert: data, userId },
+        timestamp: new Date().toISOString()
+      });
+    });
   }
 
   private handleMessage(message: WebSocketMessage): void {
     logInfo('Received WebSocket message:', message);
-
-    switch (message.type) {
-      case 'competitor_alert':
-        this.notifyListeners('competitor_alert', message);
-        break;
-      
-      case 'alert_update':
-        this.notifyListeners('alert_update', message);
-        break;
-      
-      case 'ping':
-        this.sendPong();
-        break;
-      
-      case 'pong':
-        // Heartbeat response received
-        break;
-      
-      default:
-        logWarn('Unknown message type:', message.type);
-    }
+    this.notifyListeners(message.type, message);
   }
 
   private notifyListeners(type: string, message: WebSocketMessage): void {
@@ -178,60 +159,6 @@ export class WebSocketNotificationService {
     this.notifyListeners('connection_status', message);
   }
 
-  private startHeartbeat(): void {
-    this.stopHeartbeat();
-    this.heartbeatInterval = setInterval(() => {
-      this.sendPing();
-    }, 30000); // Send ping every 30 seconds
-  }
-
-  private stopHeartbeat(): void {
-    if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval);
-      this.heartbeatInterval = null;
-    }
-  }
-
-  private sendPing(): void {
-    const message: WebSocketMessage = {
-      type: 'ping',
-      timestamp: new Date().toISOString(),
-    };
-    this.sendMessage(message);
-  }
-
-  private sendPong(): void {
-    const message: WebSocketMessage = {
-      type: 'pong',
-      timestamp: new Date().toISOString(),
-    };
-    this.sendMessage(message);
-  }
-
-  private sendMessage(message: WebSocketMessage): void {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
-      this.ws.send(JSON.stringify(message));
-    }
-  }
-
-  private scheduleReconnect(userId?: string): void {
-    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      logError('Max reconnection attempts reached');
-      return;
-    }
-
-    this.reconnectAttempts++;
-    const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts - 1); // Exponential backoff
-
-    logInfo(`Scheduling reconnection attempt ${this.reconnectAttempts} in ${delay}ms`);
-    
-    setTimeout(() => {
-      if (userId) {
-        this.connect(userId);
-      }
-    }, delay);
-  }
-
   // Public methods for managing listeners
   addListener(type: string, listener: (message: WebSocketMessage) => void): void {
     if (!this.listeners.has(type)) {
@@ -254,34 +181,15 @@ export class WebSocketNotificationService {
       data: { alert, userId },
       timestamp: new Date().toISOString(),
     };
-    
-    // Simulate receiving the message after a short delay
-    setTimeout(() => {
-      this.handleMessage(message);
-    }, 100);
-  }
-
-  // Simulate an alert update (for development/testing)
-  simulateAlertUpdate(alertId: number, action: 'read' | 'archived' | 'updated', userId: string): void {
-    const message: AlertUpdateMessage = {
-      type: 'alert_update',
-      data: { alertId, action, userId },
-      timestamp: new Date().toISOString(),
-    };
-    
-    setTimeout(() => {
-      this.handleMessage(message);
-    }, 100);
+    this.handleMessage(message);
   }
 
   disconnect(): void {
-    this.stopHeartbeat();
-    
     if (this.ws) {
-      this.ws.close(1000, 'Client disconnect');
+      this.ws.disconnect();
       this.ws = null;
     }
-    
+
     this.connectionStatus = 'disconnected';
     this.notifyConnectionStatus();
   }
