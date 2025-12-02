@@ -5,12 +5,12 @@ import type { CompetitorProfile } from '../lib/competitor-intelligence-types'
 // Mock the web scraping service to prevent network calls
 jest.mock('../lib/web-scraping-service', () => ({
   webScrapingService: {
-    scrapeCompetitorWebsite: jest.fn().mockResolvedValue({
+    scrapeCompetitorWebsite: jest.fn().mockImplementation(() => Promise.resolve({
       title: 'Mock Company',
       content: 'Mock company content',
       metadata: {},
       links: []
-    }),
+    })),
     canScrapeUrl: jest.fn().mockReturnValue(true)
   }
 }))
@@ -208,10 +208,10 @@ describe('CompetitorEnrichmentService', () => {
   describe('social media validation', () => {
     it('should validate LinkedIn URLs correctly', async () => {
       const service = new CompetitorEnrichmentService()
-      
+
       // Access private method for testing
       const validateUrl = (service as any).validateSocialMediaUrl.bind(service)
-      
+
       expect(validateUrl('linkedin', 'https://linkedin.com/company/techcorp')).toBe(true)
       expect(validateUrl('linkedin', 'https://www.linkedin.com/company/techcorp')).toBe(true)
       expect(validateUrl('linkedin', 'https://linkedin.com/in/johndoe')).toBe(true)
@@ -222,7 +222,7 @@ describe('CompetitorEnrichmentService', () => {
     it('should validate Twitter URLs correctly', async () => {
       const service = new CompetitorEnrichmentService()
       const validateUrl = (service as any).validateSocialMediaUrl.bind(service)
-      
+
       expect(validateUrl('twitter', 'https://twitter.com/techcorp')).toBe(true)
       expect(validateUrl('twitter', 'https://x.com/techcorp')).toBe(true)
       expect(validateUrl('twitter', 'https://www.twitter.com/techcorp')).toBe(true)
@@ -234,24 +234,24 @@ describe('CompetitorEnrichmentService', () => {
     it('should calculate high overlap for similar industries', async () => {
       const service = new CompetitorEnrichmentService()
       const calculateOverlap = (service as any).calculateIndustryOverlap.bind(service)
-      
+
       const overlap = calculateOverlap(
         'AI software technology platform',
         'Machine learning software for business automation'
       )
-      
+
       expect(overlap).toBeGreaterThan(0.2)
     })
 
     it('should calculate low overlap for different industries', async () => {
       const service = new CompetitorEnrichmentService()
       const calculateOverlap = (service as any).calculateIndustryOverlap.bind(service)
-      
+
       const overlap = calculateOverlap(
         'Healthcare medical devices',
         'Financial trading software'
       )
-      
+
       expect(overlap).toBeLessThan(0.3)
     })
   })
