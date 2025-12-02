@@ -25,7 +25,7 @@ const nextConfig = {
 
   // Production builds should catch errors
   eslint: {
-    ignoreDuringBuilds: true,
+    ignoreDuringBuilds: false,
   },
   typescript: {
     ignoreBuildErrors: false,
