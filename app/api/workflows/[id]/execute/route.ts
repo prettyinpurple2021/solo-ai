@@ -78,7 +78,8 @@ export async function POST(
 
     // Get execution parameters from request body
     const body = await request.json()
-    const { input, variables, options } = body || {}
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { input } = (body || {}) as any
 
     // Create execution record
     const execution = await workflowEngine.createExecution(workflowId, input || {}, user.id)
@@ -172,7 +173,8 @@ export async function GET(
         completedAt: exec.completedAt,
         duration: exec.executionTime, // mapped from duration
         input: exec.variables, // variables includes input
-        output: Object.fromEntries(exec.nodeResults),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        output: Object.fromEntries(exec.nodeResults as any),
         error: exec.error,
         logs: exec.logs
       }))

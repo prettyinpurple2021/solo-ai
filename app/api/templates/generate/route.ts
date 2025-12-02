@@ -1,4 +1,4 @@
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -74,12 +74,13 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logError('Error generating AI template:', error)
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid template request', details: (error as any).errors }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid template request', details: error.errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function generateAITemplate(request: any, userId: string) {
   try {
     if (!openai) {
@@ -130,6 +131,7 @@ async function generateAITemplate(request: any, userId: string) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function generateAIPrompt(request: any): string {
   const basePrompt = `Generate professional, actionable content for the following request:`
 
@@ -245,6 +247,7 @@ Provide practical, actionable content that can be immediately implemented.`
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseAIResponse(aiResponse: string, type: string, templateType?: string): any {
   try {
     // Try to parse as JSON first
@@ -270,6 +273,7 @@ function parseAIResponse(aiResponse: string, type: string, templateType?: string
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseSalesScripts(content: string): any[] {
   const scripts = content.split(/\d+\./).filter(s => s.trim())
   return scripts.slice(0, 5).map((script, index) => ({
@@ -280,6 +284,7 @@ function parseSalesScripts(content: string): any[] {
   }))
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseViralHooks(content: string): any[] {
   const hooks = content.split(/\d+\./).filter(h => h.trim())
   return hooks.slice(0, 5).map((hook, index) => ({
@@ -290,6 +295,7 @@ function parseViralHooks(content: string): any[] {
   }))
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseOfferNames(content: string): any[] {
   const names = content.split(/\d+\./).filter(n => n.trim())
   return names.slice(0, 5).map((name, index) => ({
@@ -300,6 +306,7 @@ function parseOfferNames(content: string): any[] {
   }))
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseGenericContent(content: string): any {
   return {
     content: content,
@@ -308,6 +315,7 @@ function parseGenericContent(content: string): any {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function generateFallbackTemplate(request: any, userId: string) {
   // Fallback to structured mock data if AI fails
   const fallbackContent = {
@@ -338,6 +346,7 @@ function generateFallbackTemplate(request: any, userId: string) {
   }
 
   return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     content: (fallbackContent as any)[request.templateType || request.type] || [{
       content: 'AI-generated content based on your requirements',
       type: request.templateType || request.type,

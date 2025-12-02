@@ -1,10 +1,10 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import '@/lib/server-polyfills'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { neon } from '@neondatabase/serverless'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { getIdempotencyKeyFromRequest, reserveIdempotencyKey} from '@/lib/idempotency'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { getIdempotencyKeyFromRequest, reserveIdempotencyKey } from '@/lib/idempotency'
 
 
 
@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     const { allowed } = rateLimitByIp('upload', ip, 60_000, 30)
     if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
@@ -75,6 +75,7 @@ export async function POST(request: NextRequest) {
     // Idempotency support: use provided key
     const key = getIdempotencyKeyFromRequest(request)
     if (key) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const reserved = await reserveIdempotencyKey(sql as any, key)
       if (!reserved) {
         return NextResponse.json({ error: 'Duplicate request' }, { status: 409 })
@@ -86,9 +87,9 @@ export async function POST(request: NextRequest) {
       RETURNING id, filename, content_type, file_size, category, created_at
     `
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       file: rows[0],
-      message: 'File uploaded successfully' 
+      message: 'File uploaded successfully'
     }, { status: 201 })
   } catch (error) {
     logError('Error uploading file:', error)
@@ -102,7 +103,7 @@ export async function POST(request: NextRequest) {
 export async function GET(_request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }

@@ -1,4 +1,4 @@
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logError('Error handling template favorite:', error)
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid request data', details: (error as any).errors }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid request data', details: error.errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -124,7 +124,7 @@ async function handleFavoriteAction(userId: string, templateId: string, action: 
   }
 }
 
-async function getUserFavoriteTemplates(userId: string) {
+async function getUserFavoriteTemplates(_userId: string) {
   try {
     // Mock favorite templates - in production, this would query the database
     const favorites = [

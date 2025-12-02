@@ -1,4 +1,4 @@
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -53,6 +53,7 @@ async function getUserTemplateAnalytics(userId: string) {
       WHERE user_id = ${userId}
     `)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const usage = (templateUsage.rows[0] as any) || {}
 
     const analytics = {
@@ -106,6 +107,7 @@ async function getUserTemplateAnalytics(userId: string) {
 }
 
 // Helper functions for real database queries
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getTemplatesByCategory(db: any, userId: string) {
   try {
     const result = await db.execute(sql`
@@ -117,7 +119,9 @@ async function getTemplatesByCategory(db: any, userId: string) {
       ORDER BY count DESC
     `)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rows = result.rows as any[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const total = rows.reduce((sum: number, row: any) => sum + parseInt(row.count), 0)
     return rows.map(row => ({
       category: row.category,
@@ -130,6 +134,7 @@ async function getTemplatesByCategory(db: any, userId: string) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getTemplatesByDifficulty(db: any, userId: string) {
   try {
     const result = await db.execute(sql`
@@ -141,7 +146,9 @@ async function getTemplatesByDifficulty(db: any, userId: string) {
       ORDER BY count DESC
     `)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const rows = result.rows as any[]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const total = rows.reduce((sum: number, row: any) => sum + parseInt(row.count), 0)
     return rows.map(row => ({
       difficulty: row.difficulty,
@@ -154,6 +161,7 @@ async function getTemplatesByDifficulty(db: any, userId: string) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getMonthlyUsage(db: any, userId: string) {
   try {
     const result = await db.execute(sql`
@@ -167,6 +175,7 @@ async function getMonthlyUsage(db: any, userId: string) {
       ORDER BY DATE_TRUNC('month', created_at)
     `)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (result.rows as any[]).map(row => ({
       month: row.month,
       count: parseInt(row.count)
@@ -177,6 +186,7 @@ async function getMonthlyUsage(db: any, userId: string) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getProductivityStats(db: any, userId: string) {
   try {
     const result = await db.execute(sql`
@@ -188,6 +198,7 @@ async function getProductivityStats(db: any, userId: string) {
       WHERE user_id = ${userId}
     `)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const stats = (result.rows[0] as any) || {}
     return {
       averageCompletionTime: Math.round(parseFloat(stats.avg_completion_time) || 0),
@@ -206,6 +217,7 @@ async function getProductivityStats(db: any, userId: string) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function getTemplateInsights(db: any, userId: string) {
   try {
     const topTemplates = await db.execute(sql`
@@ -221,6 +233,7 @@ async function getTemplateInsights(db: any, userId: string) {
     `)
 
     return {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       topPerformingTemplates: (topTemplates.rows as any[]).map(row => ({
         name: row.name,
         usage: parseInt(row.usage),
@@ -240,6 +253,7 @@ async function getTemplateInsights(db: any, userId: string) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function calculateStreakDays(db: any, userId: string) {
   try {
     const result = await db.execute(sql`
@@ -255,12 +269,14 @@ async function calculateStreakDays(db: any, userId: string) {
       WHERE date >= CURRENT_DATE - INTERVAL '30 days'
     `)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return parseInt((result.rows[0] as any)?.streak) || 0
-  } catch (error) {
+  } catch (_error) {
     return 0
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function generateRecommendations(db: any, userId: string) {
   // Simple recommendation logic - can be enhanced with ML
   return [

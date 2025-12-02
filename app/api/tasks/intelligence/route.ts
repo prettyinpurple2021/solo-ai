@@ -1,7 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
-import { getDb } from '@/lib/database-client'
 import { getSql } from '@/lib/api-utils'
 import { TaskIntelligenceEngine, TaskIntelligenceData, TaskOptimizationResult } from '@/lib/ai-task-intelligence'
 import { z } from 'zod'
@@ -87,7 +86,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: 'Invalid request data',
-          details: (error as any).errors
+          details: error.errors
         },
         { status: 400 }
       )
@@ -103,7 +102,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     // Authenticate user via JWT
     const { user, error } = await authenticateRequest()

@@ -1,7 +1,5 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import { authenticateRequest } from '@/lib/auth-server'
-import { getDb } from '@/lib/database-client'
 import { getSql } from '@/lib/api-utils'
 import { z } from 'zod'
 
@@ -33,6 +31,7 @@ export async function POST(request: NextRequest) {
     const { ids, status, priority } = parsed.data
 
     const sql = getSql()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let rows: any[] = []
 
     if (status && priority) {

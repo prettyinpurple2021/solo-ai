@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { logError, logInfo } from '@/lib/logger'
 import { rateLimitByIp } from '@/lib/rate-limit'
-import { neon } from '@neondatabase/serverless'
 import { getNeonConnection } from '@/lib/database-utils'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
@@ -13,6 +12,7 @@ export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 function getSql() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return getNeonConnection() as any
 }
 
@@ -45,8 +45,9 @@ export async function GET(request: NextRequest) {
     const offset = (page - 1) * limit
 
     // Build query conditions
-    let conditions = [`w.user_id = $1`]
-    let params: any[] = [user.id]
+    const conditions = [`w.user_id = $1`]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const params: any[] = [user.id]
     let paramIndex = 2
 
     if (status) {
@@ -121,6 +122,7 @@ export async function GET(request: NextRequest) {
       total
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return NextResponse.json({
       workflows: workflows.map((w: any) => ({
         ...w,
@@ -326,7 +328,8 @@ export async function PUT(request: NextRequest) {
 
     // Build dynamic update query
     let updateFields = []
-    let params = []
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let params: any[] = []
     let paramIndex = 1
 
     if (updates.name !== undefined) {

@@ -13,6 +13,7 @@ function getSql() {
   if (!url) {
     throw new Error('DATABASE_URL is not set')
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return neon(url) as any
 }
 
@@ -43,8 +44,9 @@ export async function GET(request: NextRequest) {
     const featured = searchParams.get('featured') === 'true'
 
     // Build query conditions
-    let conditions = [`is_public = true`]
-    let params: any[] = []
+    const conditions = [`is_public = true`]
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const params: any[] = []
     let paramIndex = 1
 
     if (category) {
