@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSql } from '@/lib/api-utils'
 import { authenticateRequest } from '@/lib/auth-server'
@@ -48,6 +48,7 @@ const notificationSchema = z.object({
   icon: z.string().url().optional(),
   badge: z.string().url().optional(),
   image: z.string().url().optional(),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: z.record(z.string(), z.any()).optional(),
   actions: z.array(z.object({
     action: z.string(),
@@ -158,6 +159,7 @@ export async function POST(request: NextRequest) {
 
     // Get target subscriptions
     const sql = getSql()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let subscriptions: any[] = []
 
     if (notification.allUsers) {
@@ -263,6 +265,7 @@ export async function POST(request: NextRequest) {
           success: true
         })
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         logError(`Failed to send notification to user ${subscription.user_id}:`, error)
 

@@ -17,7 +17,7 @@ export async function POST(req: Request) {
     )`;
     await sql`insert into newsletter_subscribers (email, source) values (${email}, ${source ?? 'blog_hero'}) on conflict (email) do nothing`;
     return NextResponse.json({ ok: true })
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }

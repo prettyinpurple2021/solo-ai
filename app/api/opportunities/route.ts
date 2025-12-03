@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -82,6 +82,7 @@ export async function GET(request: NextRequest) {
     const queryParams = Object.fromEntries(url.searchParams.entries())
 
     // Parse arrays from query string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const parsedParams: any = { ...queryParams }
     if (queryParams.status) {
       parsedParams.status = queryParams.status.split(',')
@@ -186,14 +187,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate recommendations
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const recommendations = await opportunityRecommendationSystem.generateRecommendations(opportunityResult as any)
 
     // Calculate prioritization
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const prioritization = await opportunityRecommendationSystem.calculatePriorityScore(opportunityResult as any)
 
     // Store opportunity
     const opportunityId = await opportunityRecommendationSystem.storeOpportunity(
       user.id,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       opportunityResult as any,
       recommendations,
       prioritization
@@ -210,7 +214,7 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: (error as any).errors },
+        { error: 'Invalid request data', details: error.errors },
         { status: 400 }
       )
     }

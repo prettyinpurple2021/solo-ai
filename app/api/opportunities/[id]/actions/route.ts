@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -26,19 +26,7 @@ const createActionSchema = z.object({
   dueDate: z.string().optional()
 })
 
-const _updateActionSchema = z.object({
-  title: z.string().min(1).max(255).optional(),
-  description: z.string().optional(),
-  priority: z.enum(['low', 'medium', 'high']).optional(),
-  estimatedEffortHours: z.number().min(0).optional(),
-  actualEffortHours: z.number().min(0).optional(),
-  estimatedCost: z.number().min(0).optional(),
-  actualCost: z.number().min(0).optional(),
-  expectedOutcome: z.string().optional(),
-  actualOutcome: z.string().optional(),
-  status: z.enum(['pending', 'in_progress', 'completed', 'cancelled']).optional(),
-  dueDate: z.string().optional()
-})
+
 
 export async function GET(
   request: NextRequest,
@@ -178,7 +166,7 @@ export async function POST(
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: (error as any).errors },
+        { error: 'Invalid request data', details: error.errors },
         { status: 400 }
       )
     }

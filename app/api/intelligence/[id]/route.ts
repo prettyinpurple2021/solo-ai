@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { intelligenceData, competitorProfiles } from '@/db/schema'
@@ -119,6 +119,7 @@ export async function GET(
         id: item.competitor.id,
         name: item.competitor.name,
         domain: item.competitor.domain || undefined,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         threatLevel: item.competitor.threatLevel as any,
       } : undefined,
     })
@@ -180,6 +181,7 @@ export async function PUT(
     }
 
     // Build update object
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const updateData: any = {
       updated_at: new Date(),
     }
@@ -239,6 +241,7 @@ export async function PUT(
         id: competitor[0].id,
         name: competitor[0].name,
         domain: competitor[0].domain || undefined,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         threatLevel: competitor[0].threatLevel as any,
       } : undefined,
     })

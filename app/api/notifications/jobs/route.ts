@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -19,6 +19,7 @@ const createJobSchema = z.object({
   icon: z.string().url().optional(),
   badge: z.string().url().optional(),
   image: z.string().url().optional(),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: z.record(z.string(), z.any()).optional(),
   actions: z.array(z.object({
     action: z.string(),

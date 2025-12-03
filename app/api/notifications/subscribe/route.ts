@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSql } from '@/lib/api-utils'
 import { authenticateRequest } from '@/lib/auth-server'
@@ -126,6 +126,7 @@ export async function POST(request: NextRequest) {
     logError('Error subscribing to push notifications:', error)
 
     // Type-safe error handling
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (error && typeof error === 'object' && 'code' in error && (error as any).code === '23505') {
       // PostgreSQL unique constraint violation
       return NextResponse.json(

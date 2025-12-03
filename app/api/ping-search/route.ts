@@ -15,7 +15,7 @@ export async function POST() {
     ])
     const ok = g.ok && b.ok
     return NextResponse.json({ ok, google: g.status, bing: b.status })
-  } catch (err) {
+  } catch {
     return NextResponse.json({ ok: false, error: 'Ping failed' }, { status: 500 })
   }
 }

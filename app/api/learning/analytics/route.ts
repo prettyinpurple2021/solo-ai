@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { learningModules, userProgress, userAchievements, users, achievements } from '@/db/schema'
-import { eq, and, desc, gte, sql, count } from 'drizzle-orm'
+import { eq, and, sql, count } from 'drizzle-orm'
 import { verifyAuth } from '@/lib/auth-server'
 
 export const dynamic = 'force-dynamic'
@@ -37,8 +37,10 @@ export async function GET(req: NextRequest) {
     let totalScore = 0
     let quizCount = 0
     progress.forEach(p => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data = p.data as any
       if (data && data.quizScores) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         Object.values(data.quizScores).forEach((score: any) => {
           if (typeof score === 'number') {
             totalScore += score

@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -10,7 +10,7 @@ import {
   initializeNotificationProcessor,
   stopNotificationProcessor,
   getProcessorStatus
- } from '@/lib/notification-processor'
+} from '@/lib/notification-processor'
 
 
 // Force dynamic rendering

@@ -139,6 +139,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     logError('Preferences POST error:', error)
     // Neon read-only compute or transaction
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((error as any)?.code === '25006') {
       return NextResponse.json(
         { error: 'Database is read-only. Use a writable Neon endpoint to save preferences.' },
@@ -173,6 +174,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ success: true, deleted: key })
   } catch (error) {
     logError('Preferences DELETE error:', error)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((error as any)?.code === '25006') {
       return NextResponse.json(
         { error: 'Database is read-only. Use a writable Neon endpoint to delete preferences.' },
