@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/database-client'
 import { getSql } from '@/lib/api-utils'
@@ -14,7 +14,7 @@ export async function GET(
   try {
     const contextParams = await context.params
     const { shareId } = contextParams
-    const db = getDb()
+
 
     // Get share link details
     const sql = getSql()
@@ -105,7 +105,7 @@ export async function POST(
     const contextParams = await context.params
     const { shareId } = contextParams
     const { password, action } = await request.json()
-    const db = getDb()
+
 
     // Get share link details
     const sql = getSql()

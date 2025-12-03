@@ -1,8 +1,8 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { getUserSubscription, hasActiveSubscription} from '@/lib/stripe-db-utils'
-import { getStripe} from '@/lib/stripe'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
+import { getUserSubscription, hasActiveSubscription } from '@/lib/stripe-db-utils'
+import { getStripe } from '@/lib/stripe'
 
 export const runtime = 'nodejs'
 
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
     }
 
     const { feature } = await request.json()
-    
+
     if (!feature) {
       return NextResponse.json(
         { error: 'Feature is required' },
@@ -83,10 +83,10 @@ export async function POST(request: NextRequest) {
 
     // Check if user has active subscription
     const hasActive = await hasActiveSubscription(user.id)
-    
+
     // Get subscription details
     const subscription = await getUserSubscription(user.id)
-    
+
     return NextResponse.json({
       hasAccess: hasActive,
       subscription: subscription,

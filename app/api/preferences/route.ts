@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { neon } from '@neondatabase/serverless'
 import * as jose from 'jose'
@@ -67,6 +67,7 @@ export async function GET(req: NextRequest) {
       const preferences = result.reduce((acc, row) => {
         acc[row.preference_key] = row.preference_value
         return acc
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       }, {} as Record<string, any>)
 
       return NextResponse.json({ preferences })
@@ -74,6 +75,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     logError('Preferences GET error:', error)
     // If table is missing, return empty preferences instead of 500
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if ((error as any)?.code === '42P01') {
       return NextResponse.json({ preferences: {} })
     }
@@ -113,6 +115,7 @@ export async function POST(req: NextRequest) {
         preferences: results.reduce((acc, row) => {
           acc[row.preference_key] = row.preference_value
           return acc
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         }, {} as Record<string, any>)
       })
     } else if (key && value !== undefined) {

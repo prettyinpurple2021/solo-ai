@@ -283,7 +283,7 @@ export async function PUT(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid project data', details: (error as any).errors },
+        { error: 'Invalid project data', details: error.errors },
         { status: 400 }
       )
     }

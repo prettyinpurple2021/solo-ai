@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { neon } from '@neondatabase/serverless'
@@ -22,20 +22,20 @@ function getSql() {
 export async function GET(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const url = new URL(request.url)
     const range = url.searchParams.get('range') || 'week'
-    
+
     const sql = getSql()
-    
+
     // Calculate date range
     const now = new Date()
     const startDate = new Date()
-    
+
     switch (range) {
       case 'week':
         startDate.setDate(now.getDate() - 7)
@@ -114,15 +114,15 @@ export async function GET(request: NextRequest) {
     const goalData = goals[0] || { total: 0, achieved: 0, in_progress: 0 }
     const focusData = focusSessions[0] || { total_sessions: 0, total_minutes: 0, avg_duration: 0, weekly_sessions: 0, weekly_minutes: 0 }
     const previousFocusData = previousFocusSessions[0] || { total_sessions: 0, total_minutes: 0 }
-    
+
     const completionRate = taskData.total > 0 ? Math.round((taskData.completed / taskData.total) * 100) : 0
     const achievementRate = goalData.total > 0 ? Math.round((goalData.achieved / goalData.total) * 100) : 0
-    
+
     // Calculate focus trends
-    const focusTrend = previousFocusData.total_minutes > 0 
+    const focusTrend = previousFocusData.total_minutes > 0
       ? Math.round(((focusData.total_minutes / Math.max(focusData.total_sessions, 1)) - (previousFocusData.total_minutes / Math.max(previousFocusData.total_sessions, 1))) * 100)
       : 0
-    
+
     const previousTasks = await sql`
       SELECT 
         COUNT(*) as total,
@@ -134,7 +134,7 @@ export async function GET(request: NextRequest) {
     `
 
     const previousTaskData = previousTasks[0] || { total: 0, completed: 0 }
-    const weeklyTrend = previousTaskData.total > 0 
+    const weeklyTrend = previousTaskData.total > 0
       ? Math.round(((taskData.completed / taskData.total) - (previousTaskData.completed / previousTaskData.total)) * 100)
       : 0
 
@@ -166,7 +166,8 @@ export async function GET(request: NextRequest) {
     // Process insights for recommendations
     const commonDistractions: string[] = []
     const recommendations: string[] = []
-    
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     insights.forEach((insight: any) => {
       if (insight.insight_type === 'distraction_analysis' && insight.metrics) {
         const metrics = typeof insight.metrics === 'string' ? JSON.parse(insight.metrics) : insight.metrics
@@ -242,20 +243,20 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-    
+
     if (error || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
     const body = await request.json()
     const { action, sessionData } = body
-    
+
     const sql = getSql()
-    
+
     if (action === 'start_focus_session') {
       // Start a new focus session
       const { planned_duration_minutes, task_id, session_type = 'focus' } = sessionData
-      
+
       const result = await sql`
         INSERT INTO focus_sessions (
           user_id, 
@@ -274,18 +275,18 @@ export async function POST(request: NextRequest) {
         )
         RETURNING id, started_at
       `
-      
-      return NextResponse.json({ 
-        success: true, 
+
+      return NextResponse.json({
+        success: true,
         session: result[0],
         message: 'Focus session started successfully'
       })
     }
-    
+
     if (action === 'end_focus_session') {
       // End an existing focus session
       const { session_id, actual_duration_minutes, completed = false, notes } = sessionData
-      
+
       const result = await sql`
         UPDATE focus_sessions 
         SET 
@@ -297,25 +298,25 @@ export async function POST(request: NextRequest) {
         WHERE id = ${session_id} AND user_id = ${user.id}
         RETURNING *
       `
-      
+
       if (result.length === 0) {
         return NextResponse.json({ error: 'Focus session not found' }, { status: 404 })
       }
-      
+
       // Update productivity insights based on completed session
       await updateProductivityInsights(user.id, result[0], sql)
-      
-      return NextResponse.json({ 
-        success: true, 
+
+      return NextResponse.json({
+        success: true,
         session: result[0],
         message: 'Focus session ended successfully'
       })
     }
-    
+
     if (action === 'track_distraction') {
       // Track a distraction during focus session
       const { session_id, distraction_type, description, timestamp } = sessionData
-      
+
       await sql`
         INSERT INTO focus_session_distractions (
           session_id,
@@ -329,15 +330,15 @@ export async function POST(request: NextRequest) {
           ${timestamp ? new Date(timestamp) : new Date()}
         )
       `
-      
-      return NextResponse.json({ 
+
+      return NextResponse.json({
         success: true,
         message: 'Distraction tracked successfully'
       })
     }
-    
+
     return NextResponse.json({ error: 'Invalid action' }, { status: 400 })
-    
+
   } catch (error) {
     logError('Focus session tracking error:', error)
     return NextResponse.json({ error: 'Failed to track focus session' }, { status: 500 })
@@ -345,11 +346,12 @@ export async function POST(request: NextRequest) {
 }
 
 // Helper function to update productivity insights
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function updateProductivityInsights(userId: string, session: any, sql: any) {
   try {
     const completionRate = session.status === 'completed' ? 1 : 0
     const efficiencyScore = session.duration_minutes / session.planned_duration_minutes
-    
+
     // Get recent sessions for trend analysis
     const recentSessions = await sql`
       SELECT AVG(duration_minutes) as avg_duration, COUNT(*) as session_count
@@ -358,7 +360,7 @@ async function updateProductivityInsights(userId: string, session: any, sql: any
         AND completed_at >= NOW() - INTERVAL '7 days'
         AND status = 'completed'
     `
-    
+
     const insights = {
       session_completion_rate: completionRate,
       efficiency_score: Math.min(efficiencyScore, 2), // Cap at 200%
@@ -366,7 +368,7 @@ async function updateProductivityInsights(userId: string, session: any, sql: any
       weekly_session_count: recentSessions[0]?.session_count || 0,
       session_date: new Date().toISOString().split('T')[0]
     }
-    
+
     // Store or update productivity insight
     await sql`
       INSERT INTO productivity_insights (
@@ -387,7 +389,7 @@ async function updateProductivityInsights(userId: string, session: any, sql: any
         metrics = ${JSON.stringify(insights)},
         updated_at = NOW()
     `
-    
+
     // Generate recommendations based on performance
     const recommendations = []
     if (efficiencyScore < 0.8) {
@@ -398,7 +400,7 @@ async function updateProductivityInsights(userId: string, session: any, sql: any
       recommendations.push('Identify and eliminate common distractions')
       recommendations.push('Start with shorter focus sessions to build momentum')
     }
-    
+
     if (recommendations.length > 0) {
       await sql`
         INSERT INTO productivity_insights (

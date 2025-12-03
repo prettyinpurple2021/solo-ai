@@ -1,7 +1,6 @@
 import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { createErrorResponse } from '@/lib/api-response'
-import { getDb } from '@/lib/database-client'
 import { getSql } from '@/lib/api-utils'
 import { authenticateRequest } from '@/lib/auth-server'
 import { z } from 'zod'

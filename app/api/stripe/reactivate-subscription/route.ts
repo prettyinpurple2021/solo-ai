@@ -1,9 +1,9 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { getStripe} from '@/lib/stripe'
-import { getUserSubscription, updateUserSubscription} from '@/lib/stripe-db-utils'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { getStripe } from '@/lib/stripe'
+import { getUserSubscription, updateUserSubscription } from '@/lib/stripe-db-utils'
 
 export const runtime = 'nodejs'
 
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       )
     }
-    
+
     const stripeSubscription = await stripe.subscriptions.update(
       subscription.stripe_subscription_id,
       {
@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Subscription reactivated successfully',
       cancel_at_period_end: stripeSubscription.cancel_at_period_end,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       current_period_end: new Date((stripeSubscription as any).current_period_end * 1000)
     })
 

@@ -286,6 +286,7 @@ async function generateRecommendations(db: any, userId: string) {
   ]
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function identifyPatterns(db: any, userId: string) {
   // Simple pattern identification - can be enhanced with analytics
   return [

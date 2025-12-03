@@ -1,9 +1,9 @@
-import { NextRequest } from 'next/server'
-import { 
-  createSuccessResponse, 
-  createErrorResponse, 
+
+import {
+  createSuccessResponse,
+  createErrorResponse,
   withAuth,
-  handleApiError 
+  handleApiError
 } from '@/lib/api-response'
 import { getDb } from '@/lib/database-client'
 import { users } from '@/db/schema'
@@ -23,7 +23,7 @@ export const GET = withAuth(async (request: Request, user) => {
   try {
     const { searchParams } = new URL(request.url)
     const queryResult = UserQuerySchema.safeParse(Object.fromEntries(searchParams.entries()))
-    
+
     if (!queryResult.success) {
       return createErrorResponse('Invalid query parameters', 400)
     }

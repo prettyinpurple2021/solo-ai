@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import '@/lib/server-polyfills'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
@@ -155,6 +155,7 @@ export async function PUT(
     const body = await request.json()
     const validatedData = updateJobSchema.parse(body)
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let result: any = { success: false }
     let message = ''
 
@@ -226,7 +227,7 @@ export async function PUT(
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: (error as any).errors },
+        { error: 'Invalid request data', details: error.errors },
         { status: 400 }
       )
     }

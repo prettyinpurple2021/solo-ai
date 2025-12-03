@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
     // Get the appropriate price ID
     let priceId: string
     if (billing === 'yearly') {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       priceId = (subscriptionTier as any).stripeYearlyPriceId || subscriptionTier.stripePriceId
     } else {
       priceId = subscriptionTier.stripePriceId
@@ -118,7 +119,7 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: (error as any).errors },
+        { error: 'Invalid request data', details: error.errors },
         { status: 400 }
       )
     }

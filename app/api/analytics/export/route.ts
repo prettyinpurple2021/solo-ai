@@ -3,7 +3,7 @@
  * Handles exporting analytics data in various formats
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logApi } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { analyticsExportService, ExportConfigSchema } from '@/lib/analytics-export'
@@ -27,6 +27,7 @@ const ExportRequestSchema = z.object({
       type: z.enum(['metric', 'dimension', 'calculated']),
       name: z.string(),
       value: z.union([z.number(), z.string()]),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metadata: z.record(z.string(), z.any()).optional(),
       timestamp: z.date()
     })),
@@ -34,7 +35,9 @@ const ExportRequestSchema = z.object({
       id: z.string(),
       type: z.string(),
       title: z.string(),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data: z.array(z.any()),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       config: z.record(z.string(), z.any()),
       metadata: z.object({
         created: z.date(),
@@ -119,7 +122,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid export request data',
-        details: (error as any).errors
+        details: error.errors
       }, { status: 400 })
     }
 

@@ -1,6 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { validateRecaptcha} from '@/lib/recaptcha'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { validateRecaptcha } from '@/lib/recaptcha'
 
 
 
@@ -24,12 +24,12 @@ export async function POST(request: NextRequest) {
 
     // Validate reCAPTCHA token
     const isValid = await validateRecaptcha(token, action, minScore)
-    
+
     if (!isValid) {
       return NextResponse.json(
-        { 
-          success: false, 
-          error: 'reCAPTCHA validation failed. Please try again.' 
+        {
+          success: false,
+          error: 'reCAPTCHA validation failed. Please try again.'
         },
         { status: 400 }
       )
@@ -42,11 +42,11 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('reCAPTCHA validation error:', error)
-    
+
     return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Internal server error during reCAPTCHA validation' 
+      {
+        success: false,
+        error: 'Internal server error during reCAPTCHA validation'
       },
       { status: 500 }
     )

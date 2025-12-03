@@ -122,8 +122,8 @@ export async function GET(request: NextRequest) {
       total
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return NextResponse.json({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       workflows: workflows.map((w: any) => ({
         ...w,
         stats: {
@@ -327,9 +327,9 @@ export async function PUT(request: NextRequest) {
     }
 
     // Build dynamic update query
-    let updateFields = []
+    const updateFields = []
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let params: any[] = []
+    const params: any[] = []
     let paramIndex = 1
 
     if (updates.name !== undefined) {

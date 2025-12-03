@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import * as jose from 'jose'
 import { unifiedBriefcase } from '@/lib/unified-briefcase'
@@ -18,14 +18,14 @@ async function authenticateJWTRequest(request: NextRequest) {
     const token = authHeader.substring(7)
     const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
     const { payload: decoded } = await jose.jwtVerify(token, secret)
-    
-    return { 
+
+    return {
       user: {
         id: decoded.userId as string,
         email: decoded.email as string,
         full_name: (decoded.full_name as string) || null,
-      }, 
-      error: null 
+      },
+      error: null
     }
   } catch (error) {
     logError('JWT authentication error:', error)
@@ -37,19 +37,19 @@ async function authenticateJWTRequest(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { user, error } = await authenticateJWTRequest(request)
-    
+
     if (error || !user) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       )
     }
-    
+
     const userId = user.id
 
     const formData = await request.formData()
     const file = formData.get('avatar') as File
-    
+
     if (!file) {
       return NextResponse.json(
         { error: 'No file provided' },
@@ -91,9 +91,9 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     logError('Avatar upload error:', error)
-    
+
     const errorMessage = error instanceof Error ? error.message : 'Upload failed'
-    
+
     return NextResponse.json(
       { error: errorMessage },
       { status: 500 }
@@ -104,19 +104,19 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { user, error } = await authenticateJWTRequest(request)
-    
+
     if (error || !user) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
       )
     }
-    
+
     const userId = user.id
 
     // Get current user avatar
     const avatar = await unifiedBriefcase.getUserAvatar(userId)
-    
+
     if (!avatar) {
       return NextResponse.json({ avatar: null })
     }
@@ -134,7 +134,7 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     logError('Get avatar error:', error)
-    
+
     return NextResponse.json(
       { error: 'Failed to fetch avatar' },
       { status: 500 }

@@ -1,17 +1,12 @@
-import { logger, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose'
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'nodejs'
 
-import { 
-  getSql, 
-  createErrorResponse, 
-  createSuccessResponse, 
-  parseRequestBody, 
-  executeQuery,
-  withApiHandler 
+import {
+  getSql
 } from '@/lib/api-utils'
 
 
@@ -73,10 +68,10 @@ export async function POST(request: NextRequest) {
 
     // Generate JWT token
     const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
-    const token = await new jose.SignJWT({ 
-      userId: user.id, 
+    const token = await new jose.SignJWT({
+      userId: user.id,
       email: user.email,
-      username: user.username 
+      username: user.username
     })
       .setProtectedHeader({ alg: 'HS256' })
       .setExpirationTime('7d')
@@ -123,7 +118,7 @@ export async function POST(request: NextRequest) {
       name: error instanceof Error ? error.name : undefined
     })
     return NextResponse.json(
-      { 
+      {
         error: 'Internal server error',
         details: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
       },

@@ -7,8 +7,8 @@ import {
 } from '@/lib/api-response'
 import { withApiMiddleware } from '@/lib/api-middleware'
 import { getDb } from '@/lib/database-client'
-import { tasks, users } from '@/db/schema'
-import { eq, and, desc, asc, count, sql } from 'drizzle-orm'
+import { tasks } from '@/db/schema'
+import { eq, and, desc, asc, count } from 'drizzle-orm'
 import { z } from 'zod'
 
 // Force dynamic rendering

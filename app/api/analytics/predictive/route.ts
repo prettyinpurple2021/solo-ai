@@ -92,6 +92,7 @@ export async function GET(request: NextRequest) {
       return b.confidence - a.confidence
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response: any = {
       success: true,
       data: {
@@ -162,7 +163,7 @@ export async function GET(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid parameters', details: (error as any).errors },
+        { error: 'Invalid parameters', details: error.errors },
         { status: 400 }
       )
     }

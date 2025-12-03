@@ -1,8 +1,8 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { scrapingScheduler} from '@/lib/scraping-scheduler'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { scrapingScheduler } from '@/lib/scraping-scheduler'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -84,8 +84,8 @@ export async function GET(request: NextRequest) {
     const recentHistory = recentExecutions.slice(0, 20)
 
     // Calculate user success rate
-    const userSuccessRate = recentHistory.length > 0 
-      ? recentHistory.filter(h => h.success).length / recentHistory.length 
+    const userSuccessRate = recentHistory.length > 0
+      ? recentHistory.filter(h => h.success).length / recentHistory.length
       : 0
 
     // Calculate average execution time for user jobs
@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
         recentHistory,
         summary: {
           totalUserJobs: userJobs.length,
-          activeMonitoring: userJobs.filter(job => 
+          activeMonitoring: userJobs.filter(job =>
             job.status === 'pending' || job.status === 'running'
           ).length,
           healthScore: calculateHealthScore(userJobs, recentHistory),
@@ -126,6 +126,7 @@ export async function GET(request: NextRequest) {
 /**
  * Calculate a health score for the user's scraping system
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function calculateHealthScore(jobs: any[], recentHistory: any[]): number {
   if (jobs.length === 0) return 100 // No jobs = no problems
 
@@ -159,6 +160,7 @@ function calculateHealthScore(jobs: any[], recentHistory: any[]): number {
 /**
  * Get the next scheduled job for the user
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getNextScheduledJob(jobs: any[]): any {
   const pendingJobs = jobs
     .filter(job => job.status === 'pending')

@@ -23,12 +23,15 @@ export async function GET(request: NextRequest) {
     const rows = await db
       .select()
       .from(scrapingJobResults)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .where(eq(scrapingJobResults.success, false as any))
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .orderBy(scrapingJobResults.completed_at as any)
       .limit(limit)
 
     const data = rows
       .reverse()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       .map((r: any) => ({
         jobId: r.job_id,
         error: r.error,
