@@ -1,10 +1,10 @@
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import { z } from 'zod'
 import { getDb } from '@/lib/database-client'
-import { documents, userBrandSettings, documentFolders } from '@/db/schema'
+import { documents, userBrandSettings } from '@/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
 import JSZip from 'jszip'
 
@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logError('Error generating brand export:', error)
     if (error instanceof z.ZodError) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return NextResponse.json({ error: 'Invalid export parameters', details: (error as any).errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -242,7 +243,7 @@ async function generateBrandExport(userId: string, format: string, includeAssets
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const authResult = await authenticateRequest()
     if (!authResult.user) {
@@ -306,6 +307,7 @@ async function loadBrandAssets(db: ReturnType<typeof getDb>, userId: string) {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function generateMinimalBrandPdf(payload: any): Uint8Array {
   // Build a minimal one-page PDF with a text summary of key brand settings.
   // Reference: PDF 1.4 objects layout (catalog, pages, page, font, content, xref, trailer).
@@ -335,15 +337,8 @@ function generateMinimalBrandPdf(payload: any): Uint8Array {
   textOps.push('ET')
   const contentStream = textOps.join('\n')
 
-  const objects: string[] = []
   let offset = 0
   const xref: number[] = []
-  const append = (s: string) => {
-    const enc = Buffer.from(s, 'binary')
-    const prev = offset
-    offset += enc.length
-    return { enc, prev }
-  }
 
   // PDF Header
   let chunks: Buffer[] = []

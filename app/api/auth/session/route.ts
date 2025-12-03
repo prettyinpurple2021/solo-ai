@@ -22,15 +22,15 @@ export async function GET(request: NextRequest) {
     // Try to get token from Authorization header or cookie
     const authHeader = request.headers.get('authorization')
     const cookieToken = request.cookies.get('auth_token')?.value
-    
+
     let token: string | null = null
-    
+
     if (authHeader && authHeader.startsWith('Bearer ')) {
       token = authHeader.substring(7)
     } else if (cookieToken) {
       token = cookieToken
     }
-    
+
     if (!token) {
       return NextResponse.json(
         { user: null, session: null },
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     }
     const secret = new TextEncoder().encode(process.env.JWT_SECRET)
     const { payload } = await jose.jwtVerify(token, secret)
-    
+
     if (!payload || !payload.userId) {
       return NextResponse.json(
         { user: null, session: null },
@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
       }
     })
 
-  } catch (error) {
+  } catch {
     // Invalid token or other error - return null session
     return NextResponse.json(
       { user: null, session: null },

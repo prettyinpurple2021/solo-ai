@@ -1,7 +1,6 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
-import * as jose from 'jose'
 import jwt from 'jsonwebtoken'
 import { neon } from '@neondatabase/serverless'
 import { enqueueOnboardingWorkflow } from '@/lib/onboarding/onboarding-queue'
@@ -138,7 +137,7 @@ export async function POST(request: NextRequest) {
       const fs = require('fs');
       const debugMsg = `[${new Date().toISOString()}] Signup Error: ${error instanceof Error ? error.message : String(error)}\nStack: ${error instanceof Error ? error.stack : 'No stack'}\n\n`;
       fs.appendFileSync('debug-auth.log', debugMsg);
-    } catch (e) {
+    } catch {
       // ignore
     }
 
