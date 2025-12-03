@@ -14,36 +14,28 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
-import { 
-  Plus, 
-  Trash2, 
-  Save, 
-  Download, 
-  Eye, 
-  Settings, 
-  BarChart3, 
-  PieChart, 
-  LineChart, 
+import {
+  Plus,
+  Trash2,
+  Save,
+  Eye,
+  Settings,
+  BarChart3,
+  PieChart,
+  LineChart,
   TrendingUp,
   Calendar,
   Filter,
   Target,
   Users,
   Activity,
-  DollarSign,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Info,
-  Sparkles,
-  Zap,
-  Crown
+  CheckCircle
 } from 'lucide-react'
 import { HolographicButton } from '@/components/ui/holographic-button'
 import { HolographicCard } from '@/components/ui/holographic-card'
 import { HolographicLoader } from '@/components/ui/holographic-loader'
 import { useToast } from '@/hooks/use-toast'
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 
 // Types
 interface ReportField {
@@ -61,8 +53,8 @@ interface ReportFilter {
   id: string
   field: string
   operator: 'equals' | 'not_equals' | 'contains' | 'not_contains' | 'greater_than' | 'less_than' | 'between' | 'in' | 'not_in'
-  value: any
-  value2?: any // For 'between' operator
+  value: string | number | boolean | Date
+  value2?: string | number | boolean | Date // For 'between' operator
 }
 
 interface ReportVisualization {
@@ -75,7 +67,7 @@ interface ReportVisualization {
   groupBy?: string
   metrics: string[]
   filters: ReportFilter[]
-  config: Record<string, any>
+  config: Record<string, unknown>
 }
 
 interface CustomReport {
@@ -106,22 +98,22 @@ const REPORT_FIELDS: ReportField[] = [
   { id: 'active_users', name: 'Active Users', type: 'metric', dataType: 'number', category: 'Users', description: 'Users active in the last 30 days', aggregation: 'count' },
   { id: 'new_users', name: 'New Users', type: 'metric', dataType: 'number', category: 'Users', description: 'Users who signed up in the selected period', aggregation: 'count' },
   { id: 'retention_rate', name: 'Retention Rate', type: 'calculated', dataType: 'number', category: 'Users', description: 'Percentage of users who remain active', formula: '(active_users / total_users) * 100' },
-  
+
   // Engagement Metrics
   { id: 'session_duration', name: 'Session Duration', type: 'metric', dataType: 'number', category: 'Engagement', description: 'Average time spent per session', aggregation: 'avg' },
   { id: 'page_views', name: 'Page Views', type: 'metric', dataType: 'number', category: 'Engagement', description: 'Total number of page views', aggregation: 'sum' },
   { id: 'bounce_rate', name: 'Bounce Rate', type: 'calculated', dataType: 'number', category: 'Engagement', description: 'Percentage of single-page sessions', formula: '(single_page_sessions / total_sessions) * 100' },
-  
+
   // Business Metrics
   { id: 'revenue', name: 'Revenue', type: 'metric', dataType: 'number', category: 'Business', description: 'Total revenue generated', aggregation: 'sum' },
   { id: 'mrr', name: 'Monthly Recurring Revenue', type: 'metric', dataType: 'number', category: 'Business', description: 'Monthly recurring revenue', aggregation: 'sum' },
   { id: 'conversion_rate', name: 'Conversion Rate', type: 'calculated', dataType: 'number', category: 'Business', description: 'Percentage of users who convert', formula: '(converted_users / total_users) * 100' },
-  
+
   // Feature Usage
   { id: 'ai_interactions', name: 'AI Interactions', type: 'metric', dataType: 'number', category: 'Features', description: 'Total AI agent interactions', aggregation: 'sum' },
   { id: 'goals_created', name: 'Goals Created', type: 'metric', dataType: 'number', category: 'Features', description: 'Number of goals created by users', aggregation: 'sum' },
   { id: 'tasks_completed', name: 'Tasks Completed', type: 'metric', dataType: 'number', category: 'Features', description: 'Number of tasks completed', aggregation: 'sum' },
-  
+
   // Dimensions
   { id: 'user_id', name: 'User ID', type: 'dimension', dataType: 'string', category: 'Dimensions', description: 'Unique user identifier' },
   { id: 'date', name: 'Date', type: 'dimension', dataType: 'date', category: 'Dimensions', description: 'Event date' },
@@ -148,11 +140,11 @@ interface CustomReportBuilderProps {
   className?: string
 }
 
-export function CustomReportBuilder({ 
-  onSave, 
-  onExport, 
-  initialReport, 
-  className = "" 
+export function CustomReportBuilder({
+  onSave,
+  onExport,
+  initialReport,
+  className = ""
 }: CustomReportBuilderProps) {
   const [report, setReport] = useState<CustomReport>(initialReport || {
     id: crypto.randomUUID(),
@@ -168,13 +160,13 @@ export function CustomReportBuilder({
     updatedAt: new Date(),
     createdBy: 'current-user'
   })
-  
+
   const [activeTab, setActiveTab] = useState<'design' | 'visualize' | 'schedule' | 'preview'>('design')
   const [selectedVisualization, setSelectedVisualization] = useState<ReportVisualization | null>(null)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isExporting, setIsExporting] = useState(false)
-  
+
   const { toast } = useToast()
 
   // Get available fields by category
@@ -199,12 +191,12 @@ export function CustomReportBuilder({
       filters: [],
       config: {}
     }
-    
+
     setReport(prev => ({
       ...prev,
       visualizations: [...prev.visualizations, newViz]
     }))
-    
+
     setSelectedVisualization(newViz)
     setActiveTab('visualize')
   }, [])
@@ -213,11 +205,11 @@ export function CustomReportBuilder({
   const updateVisualization = useCallback((vizId: string, updates: Partial<ReportVisualization>) => {
     setReport(prev => ({
       ...prev,
-      visualizations: prev.visualizations.map(viz => 
+      visualizations: prev.visualizations.map(viz =>
         viz.id === vizId ? { ...viz, ...updates } : viz
       )
     }))
-    
+
     if (selectedVisualization?.id === vizId) {
       setSelectedVisualization(prev => prev ? { ...prev, ...updates } : null)
     }
@@ -229,7 +221,7 @@ export function CustomReportBuilder({
       ...prev,
       visualizations: prev.visualizations.filter(viz => viz.id !== vizId)
     }))
-    
+
     if (selectedVisualization?.id === vizId) {
       setSelectedVisualization(null)
     }
@@ -243,7 +235,7 @@ export function CustomReportBuilder({
       operator: 'equals',
       value: ''
     }
-    
+
     if (isGlobal) {
       setReport(prev => ({
         ...prev,
@@ -261,13 +253,13 @@ export function CustomReportBuilder({
     if (isGlobal) {
       setReport(prev => ({
         ...prev,
-        globalFilters: prev.globalFilters.map(filter => 
+        globalFilters: prev.globalFilters.map(filter =>
           filter.id === filterId ? { ...filter, ...updates } : filter
         )
       }))
     } else if (selectedVisualization) {
       updateVisualization(selectedVisualization.id, {
-        filters: selectedVisualization.filters.map(filter => 
+        filters: selectedVisualization.filters.map(filter =>
           filter.id === filterId ? { ...filter, ...updates } : filter
         )
       })
@@ -298,23 +290,23 @@ export function CustomReportBuilder({
       })
       return
     }
-    
+
     setIsSaving(true)
     try {
       const updatedReport = {
         ...report,
         updatedAt: new Date()
       }
-      
+
       setReport(updatedReport)
       onSave?.(updatedReport)
-      
+
       toast({
         title: 'Report Saved',
         description: 'Your custom report has been saved successfully',
         variant: 'success'
       })
-      
+
       logInfo('Custom report saved:', { reportId: updatedReport.id, name: updatedReport.name })
     } catch (error) {
       logError('Failed to save report:', error)
@@ -333,13 +325,13 @@ export function CustomReportBuilder({
     setIsExporting(true)
     try {
       onExport?.(report, format)
-      
+
       toast({
         title: 'Export Started',
         description: `Exporting report as ${format.toUpperCase()}...`,
         variant: 'success'
       })
-      
+
       logInfo('Report export initiated:', { reportId: report.id, format })
     } catch (error) {
       logError('Failed to export report:', error)
@@ -434,7 +426,7 @@ export function CustomReportBuilder({
       </HolographicCard>
 
       {/* Main Builder Interface */}
-      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)}>
+      <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'design' | 'visualize' | 'schedule' | 'preview')}>
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="design" className="flex items-center gap-2">
             <Settings className="h-4 w-4" />
@@ -528,7 +520,7 @@ export function CustomReportBuilder({
                       </Select>
                       <Select
                         value={filter.operator}
-                        onValueChange={(value) => updateFilter(filter.id, { operator: value as any }, true)}
+                        onValueChange={(value) => updateFilter(filter.id, { operator: value as ReportFilter['operator'] }, true)}
                       >
                         <SelectTrigger className="w-32">
                           <SelectValue />
@@ -588,9 +580,8 @@ export function CustomReportBuilder({
               {report.visualizations.map(viz => (
                 <HolographicCard
                   key={viz.id}
-                  className={`cursor-pointer transition-all ${
-                    selectedVisualization?.id === viz.id ? 'ring-2 ring-purple-500' : ''
-                  }`}
+                  className={`cursor-pointer transition-all ${selectedVisualization?.id === viz.id ? 'ring-2 ring-purple-500' : ''
+                    }`}
                   onClick={() => setSelectedVisualization(viz)}
                 >
                   <CardContent className="p-4">
@@ -639,12 +630,12 @@ export function CustomReportBuilder({
                       placeholder="Enter visualization title..."
                     />
                   </div>
-                  
+
                   <div className="space-y-2">
                     <Label>Type</Label>
                     <Select
                       value={selectedVisualization.type}
-                      onValueChange={(value) => updateVisualization(selectedVisualization.id, { type: value as any })}
+                      onValueChange={(value) => updateVisualization(selectedVisualization.id, { type: value as ReportVisualization['type'] })}
                     >
                       <SelectTrigger>
                         <SelectValue />
@@ -724,7 +715,7 @@ export function CustomReportBuilder({
                           </Select>
                           <Select
                             value={filter.operator}
-                            onValueChange={(value) => updateFilter(filter.id, { operator: value as any })}
+                            onValueChange={(value) => updateFilter(filter.id, { operator: value as ReportFilter['operator'] })}
                           >
                             <SelectTrigger className="w-24">
                               <SelectValue />
@@ -923,7 +914,7 @@ export function CustomReportBuilder({
             CSV
           </Button>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Checkbox
             id="is-public"
@@ -931,7 +922,7 @@ export function CustomReportBuilder({
             onCheckedChange={(checked) => setReport(prev => ({ ...prev, isPublic: !!checked }))}
           />
           <Label htmlFor="is-public" className="text-sm">Make public</Label>
-          
+
           <Checkbox
             id="is-template"
             checked={report.isTemplate}
