@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Swords, Send, Terminal, CheckCircle2, Target, Loader2, ArrowRight, KanbanSquare, Save, History, Archive, Trash2, Clock, Download } from 'lucide-react';
+import { Swords, Send, Terminal, CheckCircle2, Loader2, ArrowRight, KanbanSquare, Save, History, Archive, Trash2, Clock, Download } from 'lucide-react';
 import { AGENTS } from '../constants';
 import { geminiService } from '../services/geminiService';
 import { WarRoomEntry, WarRoomResponse, AgentId, Task, SavedWarRoomSession } from '../types';
