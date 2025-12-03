@@ -27,7 +27,6 @@ const ExportRequestSchema = z.object({
       type: z.enum(['metric', 'dimension', 'calculated']),
       name: z.string(),
       value: z.union([z.number(), z.string()]),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       metadata: z.record(z.string(), z.any()).optional(),
       timestamp: z.date()
     })),
@@ -35,9 +34,7 @@ const ExportRequestSchema = z.object({
       id: z.string(),
       type: z.string(),
       title: z.string(),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data: z.array(z.any()),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       config: z.record(z.string(), z.any()),
       metadata: z.object({
         created: z.date(),
@@ -49,9 +46,7 @@ const ExportRequestSchema = z.object({
   config: ExportConfigSchema
 })
 
-const ExportStatusSchema = z.object({
-  jobId: z.string().uuid()
-})
+
 
 /**
  * POST /api/analytics/export
@@ -122,7 +117,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         error: 'Validation Error',
         message: 'Invalid export request data',
-        details: error.errors
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        details: (error as any).errors
       }, { status: 400 })
     }
 
@@ -166,7 +162,7 @@ export async function GET(request: NextRequest) {
 
     // Get query parameters
     const { searchParams } = new URL(request.url)
-    const jobId = searchParams.get('jobId')
+    // const jobId = searchParams.get('jobId')
     const status = searchParams.get('status')
     const limit = parseInt(searchParams.get('limit') || '50')
     const offset = parseInt(searchParams.get('offset') || '0')

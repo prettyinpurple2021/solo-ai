@@ -689,7 +689,7 @@ function groupInsightsByImpact(insights: PredictiveInsight[]): Record<string, nu
 /**
  * Helpers
  */
-const DAY_IN_MS = 24 * 60 * 60 * 1000
+
 const ACTIVE_SUBSCRIPTION_STATUSES = new Set(['active', 'trialing', 'past_due'])
 
 function buildDayKeys(start: Date, end: Date): string[] {

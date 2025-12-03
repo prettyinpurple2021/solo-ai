@@ -3,51 +3,29 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import { motion } from 'framer-motion'
-import { 
+import {
   Crown,
-  Shield, 
-  Target, 
-  Users, 
-  TrendingUp, 
-  Activity, 
-  Settings, 
-  BarChart3, 
-  Server, 
-  Database, 
-  Zap, 
-  AlertTriangle, 
-  CheckCircle, 
-  Clock, 
+  Shield,
+  Activity,
+  BarChart3,
+  Server,
+  Database,
+  AlertTriangle,
+  CheckCircle,
   RefreshCw,
   Eye,
   Play,
   Pause,
   RotateCcw,
   ArrowRight,
-  Star,
-  Trophy,
   Sword,
-  Gem,
-  Infinity,
-  Flame,
-  Award,
-  Rocket,
-  Brain,
-  Briefcase,
-  Calendar,
-  MessageCircle,
-  Palette,
-  Focus
+  Gem
 } from 'lucide-react'
-import { 
-  TacticalButton, 
-  GlassCard, 
-  RankStars, 
-  CamoBackground, 
-  SergeantDivider,
-  StatsBadge,
-  TacticalGrid,
-  TacticalGridItem
+import {
+  TacticalButton,
+  GlassCard,
+  RankStars,
+  CamoBackground
 } from '@/components/military'
 import Link from 'next/link'
 
@@ -124,12 +102,7 @@ export default function AdminPage() {
     return `${days}d ${hours}h ${minutes}m`
   }
 
-  const formatBytes = (bytes: number) => {
-    const sizes = ['Bytes', 'KB', 'MB', 'GB']
-    if (bytes === 0) return '0 Bytes'
-    const i = Math.floor(Math.log(bytes) / Math.log(1024))
-    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i]
-  }
+
 
   if (loading) {
     return (
@@ -145,7 +118,7 @@ export default function AdminPage() {
         <GlassCard className="p-8 text-center">
           <Shield className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h1 className="font-heading text-2xl font-bold text-white mb-2">Access Denied</h1>
-          <p className="text-military-storm-grey">You don't have permission to access this area.</p>
+          <p className="text-military-storm-grey">You don&apos;t have permission to access this area.</p>
         </GlassCard>
       </div>
     )
@@ -160,7 +133,7 @@ export default function AdminPage() {
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-20">
               <Link href="/" className="flex items-center gap-3">
-                <motion.div 
+                <motion.div
                   className="w-12 h-12 rounded-xl bg-gradient-to-br from-military-hot-pink to-military-blush-pink flex items-center justify-center shadow-lg"
                   whileHover={{ scale: 1.05 }}
                 >
@@ -168,7 +141,7 @@ export default function AdminPage() {
                 </motion.div>
                 <span className="font-heading text-xl font-bold text-white">SoloSuccess AI</span>
               </Link>
-              
+
               <div className="flex items-center gap-4">
                 <Link href="/dashboard">
                   <TacticalButton variant="outline" size="sm">
@@ -199,13 +172,13 @@ export default function AdminPage() {
                   Elite Command Center
                 </span>
               </div>
-              
+
               <h1 className="font-heading text-5xl font-bold text-white mb-6">
                 Tactical <span className="text-transparent bg-clip-text bg-gradient-to-r from-military-hot-pink to-military-blush-pink">Admin</span>
               </h1>
-              
+
               <p className="text-xl text-military-storm-grey max-w-2xl">
-                Monitor and control your elite AI platform with military precision. 
+                Monitor and control your elite AI platform with military precision.
                 Real-time system status and tactical operations management.
               </p>
             </motion.div>
@@ -227,7 +200,7 @@ export default function AdminPage() {
                 <div className="mb-12">
                   <GlassCard className="p-8">
                     <h2 className="font-heading text-3xl font-bold text-white mb-6">System Status</h2>
-                    
+
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
                       <div className="text-center">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-military-hot-pink to-military-blush-pink flex items-center justify-center">
@@ -238,7 +211,7 @@ export default function AdminPage() {
                         </h3>
                         <p className="text-military-storm-grey">Uptime</p>
                       </div>
-                      
+
                       <div className="text-center">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-military-hot-pink to-military-blush-pink flex items-center justify-center">
                           <Activity className="w-8 h-8 text-white" />
@@ -248,7 +221,7 @@ export default function AdminPage() {
                         </h3>
                         <p className="text-military-storm-grey">CPU Usage</p>
                       </div>
-                      
+
                       <div className="text-center">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-military-hot-pink to-military-blush-pink flex items-center justify-center">
                           <Database className="w-8 h-8 text-white" />
@@ -258,7 +231,7 @@ export default function AdminPage() {
                         </h3>
                         <p className="text-military-storm-grey">Memory Usage</p>
                       </div>
-                      
+
                       <div className="text-center">
                         <div className="w-16 h-16 mx-auto mb-4 rounded-xl bg-gradient-to-br from-military-hot-pink to-military-blush-pink flex items-center justify-center">
                           <BarChart3 className="w-8 h-8 text-white" />
@@ -285,14 +258,13 @@ export default function AdminPage() {
                             ) : (
                               <AlertTriangle className="w-5 h-5 text-red-400" />
                             )}
-                            <span className={`text-sm font-tactical uppercase tracking-wider ${
-                              adminStatus.notifications.status.running ? 'text-green-400' : 'text-red-400'
-                            }`}>
+                            <span className={`text-sm font-tactical uppercase tracking-wider ${adminStatus.notifications.status.running ? 'text-green-400' : 'text-red-400'
+                              }`}>
                               {adminStatus.notifications.status.running ? 'Running' : 'Stopped'}
                             </span>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                           <div className="text-center">
                             <div className="text-2xl font-bold text-military-hot-pink mb-1">
@@ -315,7 +287,7 @@ export default function AdminPage() {
                         </div>
                       </GlassCard>
                     </div>
-                    
+
                     <div>
                       <GlassCard className="p-8">
                         <div className="flex items-center justify-between mb-6">
@@ -326,14 +298,13 @@ export default function AdminPage() {
                             ) : (
                               <AlertTriangle className="w-5 h-5 text-red-400" />
                             )}
-                            <span className={`text-sm font-tactical uppercase tracking-wider ${
-                              adminStatus.scraping.running ? 'text-green-400' : 'text-red-400'
-                            }`}>
+                            <span className={`text-sm font-tactical uppercase tracking-wider ${adminStatus.scraping.running ? 'text-green-400' : 'text-red-400'
+                              }`}>
                               {adminStatus.scraping.running ? 'Running' : 'Stopped'}
                             </span>
                           </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                           <div className="text-center">
                             <div className="text-2xl font-bold text-military-hot-pink mb-1">
@@ -363,26 +334,26 @@ export default function AdminPage() {
                 <div className="mb-12">
                   <GlassCard className="p-8">
                     <h2 className="font-heading text-3xl font-bold text-white mb-6">Tactical Operations</h2>
-                    
+
                     <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                       <TacticalButton className="group">
                         <Play className="w-4 h-4 mr-2" />
                         Start Services
                         <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                       </TacticalButton>
-                      
+
                       <TacticalButton variant="outline" className="group">
                         <Pause className="w-4 h-4 mr-2" />
                         Stop Services
                         <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                       </TacticalButton>
-                      
+
                       <TacticalButton variant="outline" className="group">
                         <RotateCcw className="w-4 h-4 mr-2" />
                         Restart System
                         <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                       </TacticalButton>
-                      
+
                       <TacticalButton variant="outline" className="group">
                         <Eye className="w-4 h-4 mr-2" />
                         View Logs

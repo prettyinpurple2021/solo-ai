@@ -11,14 +11,14 @@ import {
   Zap,
   Trophy,
   Brain,
-  ArrowRight
+  ArrowRight,
+  Shield
 } from "lucide-react"
 import {
   TacticalButton,
   GlassCard,
   RankStars,
   CamoBackground,
-  SergeantDivider,
   StatsBadge,
   TacticalGrid,
   TacticalGridItem
