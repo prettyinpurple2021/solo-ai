@@ -341,7 +341,7 @@ function generateMinimalBrandPdf(payload: any): Uint8Array {
   const xref: number[] = []
 
   // PDF Header
-  let chunks: Buffer[] = []
+  const chunks: Buffer[] = []
   const header = '%PDF-1.4\n%\xFF\xFF\xFF\xFF\n'
   chunks.push(Buffer.from(header, 'binary')); offset += Buffer.byteLength(header, 'binary'); xref.push(0) // placeholder
 

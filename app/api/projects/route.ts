@@ -165,7 +165,8 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid project data', details: error.errors },
+        { error: 'Invalid project data', // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        details: (error as any).errors },
         { status: 400 }
       )
     }
@@ -283,7 +284,8 @@ export async function PUT(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid project data', details: error.errors },
+        { error: 'Invalid project data', // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        details: (error as any).errors },
         { status: 400 }
       )
     }

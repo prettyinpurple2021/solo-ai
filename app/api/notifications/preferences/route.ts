@@ -119,7 +119,8 @@ export async function PUT(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid preferences data', details: error.errors },
+        { error: 'Invalid preferences data', // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        details: (error as any).errors },
         { status: 400 }
       );
     }

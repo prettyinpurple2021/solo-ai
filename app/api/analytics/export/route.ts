@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Analytics Export API
  * Handles exporting analytics data in various formats
@@ -6,7 +7,7 @@
 import { logError, logApi } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { analyticsExportService, ExportConfigSchema } from '@/lib/analytics-export'
+import { analyticsExportService, ExportConfigSchema, ExportJob } from '@/lib/analytics-export'
 import { verifyAuth } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 
@@ -168,7 +169,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0')
 
     // Get export jobs
-    let exports = analyticsExportService.getUserExports(user.id.toString())
+    let exports: ExportJob[] = analyticsExportService.getUserExports(user.id.toString())
 
     // Filter by status if provided
     if (status) {
@@ -179,7 +180,7 @@ export async function GET(request: NextRequest) {
     const paginatedExports = exports.slice(offset, offset + limit)
 
     // Transform for API response
-    const exportList = paginatedExports.map(exp => ({
+    const exportList = paginatedExports.map((exp: ExportJob) => ({
       id: exp.id,
       status: exp.status,
       format: exp.format,

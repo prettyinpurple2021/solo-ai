@@ -20,6 +20,7 @@ export const ExportConfigSchema = z.object({
     start: z.date(),
     end: z.date()
   }).optional(),
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filters: z.record(z.string(), z.any()).optional(),
   styling: z.object({
     theme: z.enum(['light', 'dark', 'corporate']).default('light'),
@@ -39,6 +40,7 @@ export interface AnalyticsData {
   type: 'metric' | 'dimension' | 'calculated'
   name: string
   value: number | string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata?: Record<string, any>
   timestamp: Date
 }
@@ -47,7 +49,9 @@ export interface ChartData {
   id: string
   type: string
   title: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any[]
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   config: Record<string, any>
   metadata: {
     created: Date
@@ -66,6 +70,7 @@ export interface ReportData {
   metadata: {
     totalRecords: number
     dateRange: { start: Date; end: Date }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     filters: Record<string, any>
   }
 }
@@ -249,6 +254,7 @@ export class AnalyticsExportService {
   /**
    * Apply filters to data
    */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private applyFilters(data: AnalyticsData[], filters: Record<string, any>): AnalyticsData[] {
     return data.filter(item => {
       return Object.entries(filters).every(([key, value]) => {
@@ -554,7 +560,7 @@ export class AnalyticsExportService {
 }
 
 // Types for export system
-interface ExportJob {
+export interface ExportJob {
   id: string
   userId: string
   status: ExportJobStatus
@@ -567,9 +573,9 @@ interface ExportJob {
   result: ExportResult | null
 }
 
-type ExportJobStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled'
+export type ExportJobStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled'
 
-interface ExportResult {
+export interface ExportResult {
   format: ExportFormat
   filename: string
   content: string
@@ -588,6 +594,7 @@ interface ProcessedData {
   metadata: {
     totalRecords: number
     dateRange: { start: Date; end: Date }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     filters: Record<string, any>
     exportConfig: ExportConfig
   }

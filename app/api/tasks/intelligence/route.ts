@@ -86,7 +86,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           error: 'Invalid request data',
-          details: error.errors
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        details: (error as any).errors
         },
         { status: 400 }
       )

@@ -62,6 +62,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logError('Error in brand analysis:', error)
     if (error instanceof z.ZodError) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return NextResponse.json({ error: 'Invalid brand data', details: (error as any).errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

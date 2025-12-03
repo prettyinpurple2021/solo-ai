@@ -9,7 +9,13 @@ export const runtime = 'edge'
 
 
 // // Force dynamic rendering
+// // Force dynamic rendering
 export const dynamic = 'force-dynamic'
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isNeonDbError(error: any): error is { code: string } {
+  return error && typeof error === 'object' && typeof error.code === 'string'
+}
 
 function getSql() {
   const url = process.env.DATABASE_URL

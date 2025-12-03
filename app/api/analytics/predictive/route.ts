@@ -163,7 +163,8 @@ export async function GET(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid parameters', details: error.errors },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { error: 'Invalid parameters', details: (error as any).errors },
         { status: 400 }
       )
     }

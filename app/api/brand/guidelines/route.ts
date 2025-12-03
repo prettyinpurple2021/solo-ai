@@ -1,4 +1,4 @@
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -29,6 +29,8 @@ const brandDataSchema = z.object({
   }).optional(),
 })
 
+type BrandData = z.infer<typeof brandDataSchema>
+
 export async function POST(request: NextRequest) {
   try {
     const authResult = await authenticateRequest()
@@ -55,13 +57,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logError('Error generating brand guidelines:', error)
     if (error instanceof z.ZodError) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return NextResponse.json({ error: 'Invalid brand data', details: (error as any).errors }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
 
-async function generateBrandGuidelinesWithAI(brandData: any) {
+async function generateBrandGuidelinesWithAI(brandData: BrandData) {
   try {
     // Mock AI-generated guidelines - in , this would use OpenAI
     const guidelines = {
@@ -78,7 +81,7 @@ async function generateBrandGuidelinesWithAI(brandData: any) {
   }
 }
 
-function generateLogoUsageRules(brandData: any): string[] {
+function generateLogoUsageRules(brandData: BrandData): string[] {
   const rules: string[] = []
 
   rules.push('Always maintain a minimum clear space around the logo equal to the height of the "x" in the logo')
@@ -101,7 +104,7 @@ function generateLogoUsageRules(brandData: any): string[] {
   return rules
 }
 
-function generateColorUsageRules(brandData: any): string[] {
+function generateColorUsageRules(brandData: BrandData): string[] {
   const rules: string[] = []
 
   if (brandData.colorPalette?.primary) {
@@ -131,7 +134,7 @@ function generateColorUsageRules(brandData: any): string[] {
   return rules
 }
 
-function generateTypographyRules(brandData: any): string[] {
+function generateTypographyRules(brandData: BrandData): string[] {
   const rules: string[] = []
 
   if (brandData.typography?.primary) {
@@ -162,7 +165,7 @@ function generateTypographyRules(brandData: any): string[] {
   return rules
 }
 
-function generateSpacingRules(brandData: any): string[] {
+function generateSpacingRules(brandData: BrandData): string[] {
   const rules: string[] = []
 
   rules.push('Use consistent spacing units (8px grid system) for all layouts')

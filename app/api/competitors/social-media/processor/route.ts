@@ -155,7 +155,8 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request parameters', details: error.errors },
+        { error: 'Invalid request parameters', // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        details: (error as any).errors },
         { status: 400 }
       );
     }
@@ -237,7 +238,8 @@ export async function PUT(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid configuration parameters', details: error.errors },
+        { error: 'Invalid configuration parameters', // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        details: (error as any).errors },
         { status: 400 }
       );
     }

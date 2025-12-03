@@ -82,7 +82,8 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid test parameters', details: error.errors },
+        { error: 'Invalid test parameters', // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        details: (error as any).errors },
         { status: 400 }
       );
     }

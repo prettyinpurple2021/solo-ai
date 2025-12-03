@@ -61,7 +61,8 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid metrics data', details: error.errors },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { error: 'Invalid metrics data', details: (error as any).errors },
         { status: 400 }
       )
     }

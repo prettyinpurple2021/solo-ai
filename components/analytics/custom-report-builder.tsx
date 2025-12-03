@@ -536,7 +536,7 @@ export function CustomReportBuilder({
                         </SelectContent>
                       </Select>
                       <Input
-                        value={filter.value}
+                        value={String(filter.value)}
                         onChange={(e) => updateFilter(filter.id, { value: e.target.value }, true)}
                         placeholder="Value..."
                         className="flex-1"
@@ -729,7 +729,7 @@ export function CustomReportBuilder({
                             </SelectContent>
                           </Select>
                           <Input
-                            value={filter.value}
+                            value={String(filter.value)}
                             onChange={(e) => updateFilter(filter.id, { value: e.target.value })}
                             placeholder="Value..."
                             className="flex-1"

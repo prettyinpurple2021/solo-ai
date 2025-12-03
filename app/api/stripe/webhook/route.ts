@@ -121,8 +121,10 @@ async function handleSubscriptionCreated(subscription: import('stripe').Stripe.S
       stripe_customer_id: customerId,
       subscription_tier: tier,
       subscription_status: subscription.status,
-      current_period_start: new Date(subscription.current_period_start * 1000),
-      current_period_end: new Date(subscription.current_period_end * 1000),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      current_period_start: new Date((subscription as any).current_period_start * 1000),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      current_period_end: new Date((subscription as any).current_period_end * 1000),
       cancel_at_period_end: subscription.cancel_at_period_end
     })
 
@@ -156,8 +158,10 @@ async function handleSubscriptionUpdated(subscription: import('stripe').Stripe.S
     const result = await updateUserSubscription(user.id, {
       subscription_tier: tier,
       subscription_status: subscription.status,
-      current_period_start: new Date(subscription.current_period_start * 1000),
-      current_period_end: new Date(subscription.current_period_end * 1000),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      current_period_start: new Date((subscription as any).current_period_start * 1000),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      current_period_end: new Date((subscription as any).current_period_end * 1000),
       cancel_at_period_end: subscription.cancel_at_period_end
     })
 
@@ -205,7 +209,8 @@ async function handleSubscriptionDeleted(subscription: import('stripe').Stripe.S
 async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
   try {
     const customerId = invoice.customer as string
-    const subscriptionId = (invoice as Stripe.Invoice).subscription as string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const subscriptionId = (invoice as any).subscription as string
 
     // Update user payment status in database
     // await updateUserPaymentStatus(user.id, {
@@ -224,7 +229,8 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
 async function handlePaymentFailed(invoice: Stripe.Invoice) {
   try {
     const customerId = invoice.customer as string
-    const subscriptionId = (invoice as Stripe.Invoice).subscription as string
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const subscriptionId = (invoice as any).subscription as string
 
     // Update user payment status in database
     // await updateUserPaymentStatus(user.id, {
