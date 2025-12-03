@@ -39,7 +39,7 @@ const CreateTaskSchema = z.object({
   briefcase_id: z.number().positive().optional()
 })
 
-const UpdateTaskSchema = CreateTaskSchema.partial()
+
 
 // GET /api/tasks - List tasks with filtering and pagination
 export const GET = withApiMiddleware(
@@ -137,7 +137,7 @@ export const GET = withApiMiddleware(
 
 // POST /api/tasks - Create a new task
 export const POST = withApiMiddleware(
-  async (request: NextRequest) => {
+  async (_request: NextRequest) => {
     try {
       // Get user from authentication
       const userId = 'user-id-from-auth' // This would come from authenticateRequest()

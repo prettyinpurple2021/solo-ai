@@ -1,6 +1,6 @@
 import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import { getDb } from '@/lib/database-client'
+
 import { getSql } from '@/lib/api-utils'
 import bcrypt from 'bcryptjs'
 

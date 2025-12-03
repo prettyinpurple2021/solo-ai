@@ -75,8 +75,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     logError('Preferences GET error:', error)
     // If table is missing, return empty preferences instead of 500
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((error as any)?.code === '42P01') {
+    if (isNeonDbError(error) && error.code === '42P01') { // '42P01' is for undefined_table
       return NextResponse.json({ preferences: {} })
     }
     return NextResponse.json({ error: 'Server error' }, { status: 500 })

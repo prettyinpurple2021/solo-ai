@@ -271,13 +271,14 @@ async function calculateStreakDays(db: any, userId: string) {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return parseInt((result.rows[0] as any)?.streak) || 0
-  } catch (_error) {
+  } catch {
     return 0
   }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function generateRecommendations(db: any, userId: string) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function generateRecommendations(_db: any, userId: string) {
   // Simple recommendation logic - can be enhanced with ML
   return [
     'Keep up the great work with your template usage!',
@@ -287,7 +288,7 @@ async function generateRecommendations(db: any, userId: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function identifyPatterns(db: any, userId: string) {
+async function identifyPatterns(_db: any, userId: string) {
   // Simple pattern identification - can be enhanced with analytics
   return [
     'You consistently complete templates with high quality',

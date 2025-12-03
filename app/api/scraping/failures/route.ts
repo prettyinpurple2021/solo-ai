@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { db } from '@/db'
 import { scrapingJobResults } from '@/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       }))
 
     return NextResponse.json({ items: data })
-  } catch (e) {
+  } catch {
     return NextResponse.json({ error: 'Failed to load scraping failures' }, { status: 500 })
   }
 }
