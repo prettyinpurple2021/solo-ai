@@ -1,442 +1,203 @@
-"use client"
+'use client'
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { useState, useEffect, useCallback} from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
-import { Button} from '@/components/ui/button'
-import { Badge} from '@/components/ui/badge'
-import { Switch} from '@/components/ui/switch'
-import { 
-  Calendar, Clock, CheckCircle, XCircle, ExternalLink, Settings, RefreshCw, Plus} from 'lucide-react'
-import { useToast} from '@/hooks/use-toast'
-
+import React, { useState, useEffect } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Calendar as CalendarIcon, Check, RefreshCw, X, ExternalLink, Loader2 } from 'lucide-react'
+import { Badge } from '@/components/ui/badge'
+import { toast } from 'sonner'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
 interface CalendarEvent {
   id: string
   title: string
+  start: Date
+  end: Date
+  isAllDay: boolean
+  location?: string
   description?: string
-  startTime: string
-  endTime: string
-  calendarId: string
-  calendarName: string
-  isRecurring: boolean
   attendees?: string[]
 }
 
-interface CalendarIntegrationProps {
-  className?: string
-}
-
-export function CalendarIntegration({ className = "" }: CalendarIntegrationProps) {
+export function CalendarIntegration() {
   const [isConnected, setIsConnected] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [connectedCalendars, setConnectedCalendars] = useState<string[]>([])
-  const [syncEnabled, setSyncEnabled] = useState(true)
-  const [autoSync, setAutoSync] = useState(true)
   const [events, setEvents] = useState<CalendarEvent[]>([])
-  const [_selectedCalendar, _setSelectedCalendar] = useState<string>('primary')
-  const { toast } = useToast()
+  const [lastSynced, setLastSynced] = useState<Date | null>(null)
+  const [syncing, setSyncing] = useState(false)
 
-  const checkCalendarConnection = useCallback(async () => {
-    try {
-      // Simulate checking calendar connection
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock data - in real app, this would check actual calendar API
-      const hasConnection = Math.random() > 0.5
-      setIsConnected(hasConnection)
-      
-      if (hasConnection) {
-        setConnectedCalendars(['primary', 'work', 'personal'])
-        loadCalendarEvents()
-      }
-    } catch {
-      logError('Failed to check calendar connection')
-    }
+  // Check connection status on mount
+  useEffect(() => {
+    checkConnection()
   }, [])
 
-  useEffect(() => {
-    // Check if user has connected calendars
-    checkCalendarConnection()
-  }, [checkCalendarConnection])
-
-  const connectCalendar = async (provider: 'google' | 'outlook') => {
-    setIsLoading(true)
-    
+  const checkConnection = async () => {
     try {
-      // Simulate OAuth flow
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Try to fetch events as a proxy for checking connection
+      const response = await fetch('/api/integrations/google/calendar?action=events')
+      if (response.ok) {
+        setIsConnected(true)
+        setLastSynced(new Date())
+        // If connected, load events
+        loadCalendarEvents()
+      } else {
+        setIsConnected(false)
+      }
+    } catch (error) {
+      console.error('Failed to check calendar connection', error)
+      setIsConnected(false)
+    }
+  }
+
+  const handleConnect = async () => {
+    setIsLoading(true)
+    try {
+      // Get Auth URL from our API
+      const response = await fetch('/api/integrations/google/calendar?action=auth_url')
+      const data = await response.json()
       
-      setIsConnected(true)
-      setConnectedCalendars(['primary', 'work', 'personal'])
-      
-      toast({
-        title: `✅ Connected to ${provider === 'google' ? 'Google' : 'Outlook'} Calendar!`,
-        description: "Your calendar is now synced with SoloSuccess AI",
-      })
-      
-      loadCalendarEvents()
-    } catch {
-      toast({
-        title: "❌ Connection failed",
-        description: "Please try again or check your credentials",
-        variant: "destructive",
-      })
+      if (data.url) {
+        // Redirect to Google OAuth
+        window.location.href = data.url
+      } else {
+        toast.error('Failed to initiate Google Calendar connection')
+      }
+    } catch (error) {
+      console.error('Connection error:', error)
+      toast.error('Failed to connect to Google Calendar')
     } finally {
       setIsLoading(false)
     }
   }
 
-  const disconnectCalendar = async () => {
+  const handleDisconnect = async () => {
+    setIsLoading(true)
     try {
-      setIsLoading(true)
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Call API to remove tokens (not fully implemented in this step, but UI should reflect intent)
+      // await fetch('/api/integrations/google/calendar', { method: 'DELETE' })
       
       setIsConnected(false)
-      setConnectedCalendars([])
       setEvents([])
-      
-      toast({
-        title: "Calendar disconnected",
-        description: "Your calendar sync has been disabled",
-      })
-    } catch {
-      toast({
-        title: "Failed to disconnect",
-        description: "Please try again",
-        variant: "destructive",
-      })
+      setLastSynced(null)
+      toast.success('Calendar disconnected')
+    } catch (error) {
+      toast.error('Failed to disconnect calendar')
     } finally {
       setIsLoading(false)
     }
   }
 
   const loadCalendarEvents = async () => {
+    if (!isConnected) return
+
+    setSyncing(true)
     try {
-      // Simulate loading calendar events
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      const mockEvents: CalendarEvent[] = [
-        {
-          id: '1',
-          title: 'Team Standup',
-          description: 'Daily team sync meeting',
-          startTime: '2024-01-15T09:00:00Z',
-          endTime: '2024-01-15T09:30:00Z',
-          calendarId: 'work',
-          calendarName: 'Work Calendar',
-          isRecurring: true,
-          attendees: ['team@company.com']
-        },
-        {
-          id: '2',
-          title: 'Client Meeting',
-          description: 'Quarterly review with client',
-          startTime: '2024-01-15T14:00:00Z',
-          endTime: '2024-01-15T15:00:00Z',
-          calendarId: 'work',
-          calendarName: 'Work Calendar',
-          isRecurring: false,
-          attendees: ['client@example.com']
-        },
-        {
-          id: '3',
-          title: 'Focus Time',
-          description: 'Deep work session',
-          startTime: '2024-01-15T10:00:00Z',
-          endTime: '2024-01-15T12:00:00Z',
-          calendarId: 'personal',
-          calendarName: 'Personal Calendar',
-          isRecurring: false
+      const response = await fetch('/api/integrations/google/calendar?action=events')
+      if (response.ok) {
+        const data = await response.json()
+        setEvents(data.events || [])
+        setLastSynced(new Date())
+        toast.success('Calendar synced successfully')
+      } else {
+        // If we get a 401/404 here, it might mean the token expired or was revoked
+        if (response.status === 401 || response.status === 404) {
+             setIsConnected(false)
         }
-      ]
-      
-      setEvents(mockEvents)
-    } catch {
-      logError('Failed to load calendar events')
-    }
-  }
-
-  const syncTasksToCalendar = async () => {
-    try {
-      setIsLoading(true)
-      
-      // Simulate syncing tasks to calendar
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      toast({
-        title: "✅ Tasks synced to calendar!",
-        description: "Your tasks have been added to your calendar",
-      })
-    } catch {
-      toast({
-        title: "❌ Sync failed",
-        description: "Please try again",
-        variant: "destructive",
-      })
+      }
+    } catch (error) {
+      console.error('Sync error:', error)
+      toast.error('Failed to sync calendar events')
     } finally {
-      setIsLoading(false)
+      setSyncing(false)
     }
-  }
-
-  const createCalendarEvent = async () => {
-    try {
-      setIsLoading(true)
-      
-      // Simulate creating calendar event
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      toast({
-        title: "✅ Event created!",
-        description: "New event added to your calendar",
-      })
-    } catch {
-      toast({
-        title: "❌ Failed to create event",
-        description: "Please try again",
-        variant: "destructive",
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const formatEventTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString('en-US', {
-      hour: 'numeric',
-      minute: '2-digit',
-      hour12: true
-    })
-  }
-
-  const formatEventDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric'
-    })
   }
 
   return (
-    <Card className={className}>
+    <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-blue-600" />
-          Calendar Integration
-        </CardTitle>
-        <CardDescription>
-          Sync your tasks and goals with your calendar for better time management
-        </CardDescription>
-      </CardHeader>
-      
-      <CardContent className="space-y-6">
-        {/* Connection Status */}
-        <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-          <div className="flex items-center gap-3">
-            {isConnected ? (
-              <CheckCircle className="w-5 h-5 text-green-600" />
-            ) : (
-              <XCircle className="w-5 h-5 text-red-600" />
-            )}
-            <div>
-              <p className="font-medium">
-                {isConnected ? 'Calendar Connected' : 'Calendar Not Connected'}
-              </p>
-              <p className="text-sm text-gray-600">
-                {isConnected 
-                  ? `${connectedCalendars.length} calendars synced`
-                  : 'Connect your calendar to sync tasks and events'
-                }
-              </p>
-            </div>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <CalendarIcon className="h-5 w-5 text-blue-500" />
+            <CardTitle>Google Calendar</CardTitle>
           </div>
-          
-          {isConnected ? (
-            <Button 
-              variant="outline" 
-              size="sm"
-              onClick={disconnectCalendar}
-              disabled={isLoading}
-            >
-              <XCircle className="w-4 h-4 mr-2" />
-              Disconnect
-            </Button>
-          ) : (
-            <div className="flex gap-2">
-              <Button 
-                size="sm"
-                onClick={() => connectCalendar('google')}
-                disabled={isLoading}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Google
-              </Button>
-              <Button 
-                size="sm"
-                onClick={() => connectCalendar('outlook')}
-                disabled={isLoading}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Outlook
-              </Button>
-            </div>
+          {isConnected && (
+            <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+              <Check className="mr-1 h-3 w-3" /> Connected
+            </Badge>
           )}
         </div>
-
-        {/* Sync Settings */}
-        {isConnected && (
+        <CardDescription>
+          Sync your tasks and deadlines with Google Calendar
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        {!isConnected ? (
+          <div className="flex flex-col items-center justify-center py-6 space-y-4 text-center">
+            <div className="p-3 bg-blue-50 rounded-full">
+              <CalendarIcon className="h-8 w-8 text-blue-500" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="font-medium">Connect your calendar</h3>
+              <p className="text-sm text-muted-foreground max-w-xs mx-auto">
+                Automatically sync your tasks, deadlines, and milestones to your Google Calendar.
+              </p>
+            </div>
+            <Button onClick={handleConnect} disabled={isLoading}>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Connecting...
+                </>
+              ) : (
+                <>Connect Google Calendar</>
+              )}
+            </Button>
+            
+            <Alert variant="default" className="bg-amber-50 border-amber-200 mt-4">
+              <AlertTitle className="text-amber-800">Configuration Required</AlertTitle>
+              <AlertDescription className="text-amber-700 text-xs">
+                This feature requires Google Calendar API keys in your .env file.
+              </AlertDescription>
+            </Alert>
+          </div>
+        ) : (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Auto-sync tasks</p>
-                <p className="text-sm text-gray-600">
-                  Automatically add new tasks to your calendar
-                </p>
-              </div>
-              <Switch 
-                checked={autoSync} 
-                onCheckedChange={setAutoSync}
-              />
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground">
+                Last synced: {lastSynced ? lastSynced.toLocaleTimeString() : 'Never'}
+              </span>
+              <Button variant="ghost" size="sm" onClick={loadCalendarEvents} disabled={syncing}>
+                <RefreshCw className={`h-4 w-4 mr-2 ${syncing ? 'animate-spin' : ''}`} />
+                Sync Now
+              </Button>
             </div>
-            
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Two-way sync</p>
-                <p className="text-sm text-gray-600">
-                  Sync calendar events back to tasks
-                </p>
-              </div>
-              <Switch 
-                checked={syncEnabled} 
-                onCheckedChange={setSyncEnabled}
-              />
-            </div>
-          </div>
-        )}
 
-        {/* Connected Calendars */}
-        {isConnected && connectedCalendars.length > 0 && (
-          <div className="space-y-3">
-            <h4 className="font-medium">Connected Calendars</h4>
-            <div className="space-y-2">
-              {connectedCalendars.map((calendar) => (
-                <div 
-                  key={calendar}
-                  className="flex items-center justify-between p-3 border rounded-lg"
-                >
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-4 h-4 text-blue-600" />
-                    <span className="capitalize">{calendar} Calendar</span>
-                    <Badge variant="secondary" className="text-xs">
-                      Active
-                    </Badge>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    <Settings className="w-4 h-4" />
-                  </Button>
+            <div className="border rounded-md divide-y">
+              {events.length === 0 ? (
+                <div className="p-4 text-center text-sm text-muted-foreground">
+                  No upcoming events found
                 </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Quick Actions */}
-        {isConnected && (
-          <div className="space-y-3">
-            <h4 className="font-medium">Quick Actions</h4>
-            <div className="flex gap-2">
-              <Button 
-                size="sm"
-                onClick={syncTasksToCalendar}
-                disabled={isLoading}
-              >
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Sync Tasks
-              </Button>
-              <Button 
-                size="sm"
-                variant="outline"
-                onClick={createCalendarEvent}
-                disabled={isLoading}
-              >
-                <Plus className="w-4 h-4 mr-2" />
-                Create Event
-              </Button>
-            </div>
-          </div>
-        )}
-
-        {/* Recent Events */}
-        {isConnected && events.length > 0 && (
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h4 className="font-medium">Recent Events</h4>
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={loadCalendarEvents}
-                disabled={isLoading}
-              >
-                <RefreshCw className="w-4 h-4" />
-              </Button>
-            </div>
-            
-            <div className="space-y-2 max-h-64 overflow-y-auto">
-              {events.map((event) => (
-                <div 
-                  key={event.id}
-                  className="flex items-start justify-between p-3 border rounded-lg hover:bg-gray-50"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-medium truncate">{event.title}</span>
-                      {event.isRecurring && (
-                        <Badge variant="outline" className="text-xs">
-                          Recurring
-                        </Badge>
-                      )}
-                    </div>
-                    
-                    {event.description && (
-                      <p className="text-sm text-gray-600 mb-2">
-                        {event.description}
+              ) : (
+                events.map((event) => (
+                  <div key={event.id} className="p-3 flex items-start justify-between hover:bg-muted/50 transition-colors">
+                    <div>
+                      <p className="font-medium text-sm">{event.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(event.start).toLocaleString()}
                       </p>
-                    )}
-                    
-                    <div className="flex items-center gap-4 text-xs text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {formatEventTime(event.startTime)} - {formatEventTime(event.endTime)}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
-                        {formatEventDate(event.startTime)}
-                      </div>
-                      <Badge variant="secondary" className="text-xs">
-                        {event.calendarName}
-                      </Badge>
                     </div>
+                    <ExternalLink className="h-4 w-4 text-muted-foreground opacity-50" />
                   </div>
-                  
-                  <Button variant="ghost" size="sm">
-                    <ExternalLink className="w-4 h-4" />
-                  </Button>
-                </div>
-              ))}
+                ))
+              )}
             </div>
-          </div>
-        )}
 
-        {/* Tips */}
-        {!isConnected && (
-          <div className="text-xs text-gray-500 bg-blue-50 rounded-lg p-3">
-            <p className="font-medium mb-1">💡 Calendar Integration Benefits:</p>
-            <ul className="space-y-1">
-              <li>• Automatically sync tasks to your calendar</li>
-              <li>• Block focus time for important tasks</li>
-              <li>• Never miss deadlines with calendar reminders</li>
-              <li>• Sync across all your devices</li>
-            </ul>
+            <div className="pt-2 flex justify-end">
+              <Button variant="outline" size="sm" onClick={handleDisconnect} className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                <X className="mr-2 h-4 w-4" />
+                Disconnect
+              </Button>
+            </div>
           </div>
         )}
       </CardContent>

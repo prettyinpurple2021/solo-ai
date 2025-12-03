@@ -534,6 +534,19 @@ export const documentActivity = pgTable('document_activity', {
   createdAtIdx: index('document_activity_created_at_idx').on(table.created_at),
 }));
 
+// User API Keys table
+export const userApiKeys = pgTable('user_api_keys', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  service: varchar('service', { length: 50 }).notNull(), // 'twitter', 'linkedin', etc.
+  key_value: text('key_value').notNull(),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  userIdIdx: index('user_api_keys_user_id_idx').on(table.user_id),
+  serviceIdx: index('user_api_keys_service_idx').on(table.service),
+}));
+
 // Relations
 export const usersRelations = relations(users, ({ many, one }) => ({
   briefcases: many(briefcases),
@@ -563,6 +576,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   chatConversations: many(chatConversations),
   chatMessages: many(chatMessages),
   passwordResetTokens: many(passwordResetTokens),
+  apiKeys: many(userApiKeys),
 }));
 
 export const briefcasesRelations = relations(briefcases, ({ one, many }) => ({
@@ -799,6 +813,13 @@ export const documentPermissionsRelations = relations(documentPermissions, ({ on
   }),
   grantedBy: one(users, {
     fields: [documentPermissions.granted_by],
+    references: [users.id],
+  }),
+}));
+
+export const userApiKeysRelations = relations(userApiKeys, ({ one }) => ({
+  user: one(users, {
+    fields: [userApiKeys.user_id],
     references: [users.id],
   }),
 }));

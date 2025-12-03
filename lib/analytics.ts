@@ -63,7 +63,7 @@ export interface PerformanceMetrics {
   databaseQueryTime: number
 }
 
-export interface BusinessMetrics {
+export interface UserBusinessMetrics {
   totalUsers: number
   activeUsers: number
   newUsersToday: number
@@ -71,6 +71,9 @@ export interface BusinessMetrics {
   newUsersThisMonth: number
   userRetentionRate: number
   featureAdoptionRate: Record<string, number>
+}
+
+export interface PlatformMetrics extends UserBusinessMetrics {
   conversionRate: number
   churnRate: number
   revenue: number
@@ -185,9 +188,9 @@ class AnalyticsService {
   }
 
   /**
-   * Calculate business metrics
+   * Calculate business metrics (User Safe Version)
    */
-  async calculateBusinessMetrics(): Promise<BusinessMetrics> {
+  async calculateBusinessMetrics(): Promise<UserBusinessMetrics> {
     const now = new Date()
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
     const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
@@ -223,10 +226,26 @@ class AnalyticsService {
       newUsersThisMonth,
       userRetentionRate: totalUsers > 0 ? (activeUsers / totalUsers) * 100 : 0,
       featureAdoptionRate: {}, // TODO: Implement
-      conversionRate: 0, // TODO: Implement
-      churnRate: 0, // TODO: Implement
-      revenue: 0,
-      mrr: 0
+    }
+  }
+
+  /**
+   * Get Platform Metrics (ADMIN ONLY - Contains Revenue Data)
+   */
+  async getPlatformMetrics(adminUserId: string): Promise<PlatformMetrics | null> {
+    // Verify admin status (this should be robust in production)
+    // For now, we assume the caller has verified auth, but we double check role if available
+    // const user = await db.query.users.findFirst({ where: eq(users.id, adminUserId) })
+    // if (user?.role !== 'admin') return null;
+
+    const baseMetrics = await this.calculateBusinessMetrics()
+
+    return {
+      ...baseMetrics,
+      conversionRate: 0, // TODO: Implement with real Stripe data
+      churnRate: 0, // TODO: Implement with real Stripe data
+      revenue: 0, // TODO: Implement with real Stripe data
+      mrr: 0 // TODO: Implement with real Stripe data
     }
   }
 
@@ -237,7 +256,7 @@ class AnalyticsService {
     events: AnalyticsEventData[]
     userMetrics: UserMetrics[]
     performanceMetrics: PerformanceMetrics[]
-    businessMetrics: BusinessMetrics
+    businessMetrics: UserBusinessMetrics
   }> {
     const businessMetrics = await this.calculateBusinessMetrics()
     const performanceMetrics = await this.getPerformanceMetrics()

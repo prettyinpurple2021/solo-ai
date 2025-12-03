@@ -46,6 +46,9 @@ import {
 } from "@/components/ui/dialog"
 import Link from 'next/link'
 
+import { ApiKeysTutorial } from '@/components/settings/api-keys-tutorial'
+import { useEffect } from 'react'
+
 export default function SettingsPage() {
   const { user, signOut, loading } = useAuth()
   const { toast } = useToast()
@@ -53,6 +56,72 @@ export default function SettingsPage() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [activeTab, setActiveTab] = useState('profile')
+  
+  // API Keys State
+  const [isSavingKeys, setIsSavingKeys] = useState(false)
+  const [apiKeys, setApiKeys] = useState({
+    twitter: '',
+    linkedin: '',
+    facebook: '',
+    instagram: ''
+  })
+
+  // Fetch keys on mount
+  useEffect(() => {
+    const fetchKeys = async () => {
+      try {
+        const response = await fetch('/api/user/api-keys')
+        if (response.ok) {
+          const data = await response.json()
+          const newKeys = { ...apiKeys }
+          data.keys.forEach((k: any) => {
+            if (k.service === 'twitter') newKeys.twitter = k.masked_value
+            if (k.service === 'linkedin') newKeys.linkedin = k.masked_value
+            if (k.service === 'facebook') newKeys.facebook = k.masked_value
+            if (k.service === 'instagram') newKeys.instagram = k.masked_value
+          })
+          setApiKeys(newKeys)
+        }
+      } catch (error) {
+        console.error('Failed to fetch API keys', error)
+      }
+    }
+    fetchKeys()
+  }, [])
+
+  const handleSaveApiKeys = async () => {
+    setIsSavingKeys(true)
+    try {
+      const keysToSave = []
+      if (apiKeys.twitter && !apiKeys.twitter.includes('***')) keysToSave.push({ service: 'twitter', key_value: apiKeys.twitter })
+      if (apiKeys.linkedin && !apiKeys.linkedin.includes('***')) keysToSave.push({ service: 'linkedin', key_value: apiKeys.linkedin })
+      if (apiKeys.facebook && !apiKeys.facebook.includes('***')) keysToSave.push({ service: 'facebook', key_value: apiKeys.facebook })
+      if (apiKeys.instagram && !apiKeys.instagram.includes('***')) keysToSave.push({ service: 'instagram', key_value: apiKeys.instagram })
+
+      const response = await fetch('/api/user/api-keys', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys: keysToSave })
+      })
+
+      if (response.ok) {
+        toast({
+          title: "API Keys Saved",
+          description: "Your integration settings have been updated.",
+        })
+      } else {
+        throw new Error('Failed to save keys')
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to save API keys.",
+        variant: "destructive"
+      })
+    } finally {
+      setIsSavingKeys(false)
+    }
+  }
 
   const [formData, setFormData] = useState({
     displayName: (user as any)?.name || "",
@@ -241,6 +310,10 @@ export default function SettingsPage() {
                   <TabsTrigger value="notifications" className="data-[state=active]:bg-military-hot-pink/20 data-[state=active]:text-white">
                     <Bell className="w-4 h-4 mr-2" />
                     Notifications
+                  </TabsTrigger>
+                  <TabsTrigger value="integrations" className="data-[state=active]:bg-military-hot-pink/20 data-[state=active]:text-white">
+                    <Globe className="w-4 h-4 mr-2" />
+                    Integrations
                   </TabsTrigger>
                   <TabsTrigger value="billing" className="data-[state=active]:bg-military-hot-pink/20 data-[state=active]:text-white">
                     <CreditCard className="w-4 h-4 mr-2" />
@@ -481,6 +554,94 @@ export default function SettingsPage() {
                             checked={notificationSettings.securityAlerts}
                             onCheckedChange={(checked) => setNotificationSettings(prev => ({ ...prev, securityAlerts: checked }))}
                           />
+                        </div>
+                      </div>
+                    </div>
+                  </GlassCard>
+                </TabsContent>
+
+                {/* Integrations Tab */}
+                <TabsContent value="integrations">
+                  <GlassCard className="p-8" glow>
+                    <div className="flex items-center justify-between mb-8">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-lg bg-military-hot-pink/20 flex items-center justify-center border border-military-hot-pink/30">
+                          <Globe className="w-6 h-6 text-military-hot-pink" />
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-heading font-bold text-white">API Integrations</h3>
+                          <p className="text-military-storm-grey">Connect your social media accounts for monitoring</p>
+                        </div>
+                      </div>
+                      <ApiKeysTutorial />
+                    </div>
+
+                    <div className="space-y-6 max-w-2xl">
+                      <div className="space-y-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="twitterKey" className="text-white">Twitter / X Bearer Token</Label>
+                          <div className="flex gap-2">
+                            <Input
+                              id="twitterKey"
+                              type="password"
+                              placeholder="Enter your Twitter Bearer Token"
+                              className="bg-military-tactical-black/50 border-military-storm-grey text-white"
+                              value={apiKeys.twitter}
+                              onChange={(e) => setApiKeys(prev => ({ ...prev, twitter: e.target.value }))}
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="linkedinKey" className="text-white">LinkedIn Access Token</Label>
+                          <Input
+                            id="linkedinKey"
+                            type="password"
+                            placeholder="Enter your LinkedIn Access Token"
+                            className="bg-military-tactical-black/50 border-military-storm-grey text-white"
+                            value={apiKeys.linkedin}
+                            onChange={(e) => setApiKeys(prev => ({ ...prev, linkedin: e.target.value }))}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="facebookKey" className="text-white">Facebook Graph Token</Label>
+                          <Input
+                            id="facebookKey"
+                            type="password"
+                            placeholder="Enter your Facebook Graph Token"
+                            className="bg-military-tactical-black/50 border-military-storm-grey text-white"
+                            value={apiKeys.facebook}
+                            onChange={(e) => setApiKeys(prev => ({ ...prev, facebook: e.target.value }))}
+                          />
+                        </div>
+
+                        <div className="space-y-2">
+                          <Label htmlFor="instagramKey" className="text-white">Instagram Graph Token</Label>
+                          <Input
+                            id="instagramKey"
+                            type="password"
+                            placeholder="Enter your Instagram Graph Token"
+                            className="bg-military-tactical-black/50 border-military-storm-grey text-white"
+                            value={apiKeys.instagram}
+                            onChange={(e) => setApiKeys(prev => ({ ...prev, instagram: e.target.value }))}
+                          />
+                        </div>
+
+                        <div className="pt-4">
+                          <Button onClick={handleSaveApiKeys} disabled={isSavingKeys} className="w-full sm:w-auto">
+                            {isSavingKeys ? (
+                              <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                                Saving Keys...
+                              </>
+                            ) : (
+                              <>
+                                <Save className="w-4 h-4 mr-2" />
+                                Save API Keys
+                              </>
+                            )}
+                          </Button>
                         </div>
                       </div>
                     </div>
