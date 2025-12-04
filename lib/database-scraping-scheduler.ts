@@ -86,7 +86,7 @@ export class ScrapingScheduler {
 
     // Schedule the job
     this.scheduleJob(jobId, nextRunAt)
-    
+
     return jobId
   }
 
@@ -95,7 +95,7 @@ export class ScrapingScheduler {
    */
   async getJobsToRun(): Promise<any[]> {
     const now = new Date()
-    
+
     return await db
       .select()
       .from(scrapingJobs)
@@ -185,7 +185,7 @@ export class ScrapingScheduler {
     } else {
       // Failure - handle retry logic
       const newRetryCount = currentJob.retry_count + 1
-      
+
       if (newRetryCount >= currentJob.max_retries) {
         // Max retries reached - mark as failed
         await db
@@ -226,7 +226,7 @@ export class ScrapingScheduler {
     }
 
     const delay = runAt.getTime() - Date.now()
-    
+
     if (delay <= 0) {
       // Job should run immediately
       this.executeJob(jobId)
@@ -235,7 +235,7 @@ export class ScrapingScheduler {
       const timeout = setTimeout(() => {
         this.executeJob(jobId)
       }, delay)
-      
+
       this.jobQueue.set(jobId, timeout)
     }
   }
@@ -253,7 +253,7 @@ export class ScrapingScheduler {
 
     try {
       await this.updateJobStatus(jobId, 'running', new Date())
-      
+
       // Get job details
       const job = await db
         .select()
@@ -281,7 +281,7 @@ export class ScrapingScheduler {
 
     } catch (error) {
       logError(`Error executing job ${jobId}:`, error)
-      
+
       await this.recordJobResult(jobId, {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -361,22 +361,30 @@ export class ScrapingScheduler {
    */
   private calculateNextRun(frequencyType: FrequencyType, frequencyValue: string, timezone?: string): Date {
     const now = new Date()
-    
+
     switch (frequencyType) {
       case 'interval':
         // Frequency value is in minutes
         const minutes = parseInt(frequencyValue, 10)
         return new Date(now.getTime() + minutes * 60 * 1000)
-      
+
       case 'cron':
-        // For now, implement basic cron parsing
-        // In production, use a proper cron library like node-cron
-        return new Date(now.getTime() + 60 * 60 * 1000) // Default to 1 hour
-      
+        // Basic cron support (hourly default if parsing fails)
+        // TODO: Integrate 'cron-parser' package for full cron expression support
+        try {
+          // Placeholder for actual cron parsing logic
+          // const interval = parser.parseExpression(frequencyValue);
+          // return interval.next().toDate();
+          return new Date(now.getTime() + 60 * 60 * 1000)
+        } catch (e) {
+          logError('Invalid cron expression, defaulting to 1 hour', { frequencyValue })
+          return new Date(now.getTime() + 60 * 60 * 1000)
+        }
+
       case 'manual':
         // Manual jobs don't auto-schedule
         return new Date(now.getTime() + 365 * 24 * 60 * 60 * 1000) // 1 year in future
-      
+
       default:
         return new Date(now.getTime() + 60 * 60 * 1000) // Default to 1 hour
     }
@@ -411,7 +419,7 @@ export class ScrapingScheduler {
    */
   async start(): Promise<void> {
     logInfo('Starting scraping scheduler...')
-    
+
     // Load and schedule existing jobs
     const pendingJobs = await db
       .select()
@@ -430,12 +438,12 @@ export class ScrapingScheduler {
    */
   stop(): void {
     logInfo('Stopping scraping scheduler...')
-    
+
     // Clear all timeouts
     for (const timeout of this.jobQueue.values()) {
       clearTimeout(timeout)
     }
-    
+
     this.jobQueue.clear()
     logInfo('Scraping scheduler stopped')
   }
@@ -449,12 +457,12 @@ export class ScrapingScheduler {
       count: sql<number>`count(*)`
     }).from(scrapingJobs)
 
-    const query = userId 
+    const query = userId
       ? baseQuery.where(eq(scrapingJobs.user_id, userId))
       : baseQuery
 
     const stats = await query.groupBy(scrapingJobs.status)
-    
+
     return stats.reduce((acc, stat) => {
       acc[stat.status] = stat.count
       return acc
@@ -466,7 +474,7 @@ export class ScrapingScheduler {
    */
   async pauseJob(jobId: string): Promise<void> {
     await this.updateJobStatus(jobId, 'paused')
-    
+
     // Clear scheduled execution
     const timeout = this.jobQueue.get(jobId)
     if (timeout) {

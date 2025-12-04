@@ -77,8 +77,8 @@ class Logger {
           break
       }
     }
-    // In production, you might want to send logs to an external service
-    // like LogRocket, or a custom logging service
+    // Send logs to external service if configured
+    // This implementation supports standard 12-factor app logging via stdout/stderr
     if (!this.isDevelopment && level <= LogLevel.WARN) {
       this.sendToExternalService(entry)
     }

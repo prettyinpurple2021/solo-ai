@@ -681,6 +681,19 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
+// Initialize background services
+if (process.env.ENABLE_SCRAPING_SCHEDULER === 'true') {
+    import('../lib/database-scraping-scheduler').then(({ ScrapingScheduler }) => {
+        ScrapingScheduler.getInstance().start().catch(err => console.error('Failed to start scraping scheduler:', err));
+    });
+}
+
+if (process.env.ENABLE_NOTIFICATION_PROCESSOR === 'true') {
+    import('../lib/notification-processor').then(({ initializeNotificationProcessor }) => {
+        initializeNotificationProcessor().catch(err => console.error('Failed to start notification processor:', err));
+    });
+}
+
 httpServer.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
     console.log(`WebSocket server active`);

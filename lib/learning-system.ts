@@ -1,4 +1,7 @@
 import { logger, logInfo, logWarn, logError } from '@/lib/logger'
+import { getDb } from '@/lib/database-client'
+import { userLearningProgress } from '@/db/schema'
+import { eq, and } from 'drizzle-orm'
 
 export interface LearningModule {
   id: string
@@ -167,7 +170,7 @@ export class PersonalizedLearningSystem {
 
   async analyzeSkillGaps(userProfile: UserLearningProfile): Promise<SkillGapAnalysis[]> {
     logInfo(`Analyzing skill gaps for user: ${userProfile.userId}`)
-    
+
     try {
       const skillGaps: SkillGapAnalysis[] = []
 
@@ -179,7 +182,7 @@ export class PersonalizedLearningSystem {
 
         if (gapScore > 10) { // Only include significant gaps
           const recommendedModules = this.findRecommendedModules(skill, userProfile)
-          
+
           skillGaps.push({
             skill,
             currentLevel,
@@ -211,7 +214,7 @@ export class PersonalizedLearningSystem {
 
   async generateLearningRecommendations(userProfile: UserLearningProfile): Promise<LearningRecommendation[]> {
     logInfo(`Generating learning recommendations for user: ${userProfile.userId}`)
-    
+
     try {
       const recommendations: LearningRecommendation[] = []
       const availableModules = this.getAvailableModules(userProfile)
@@ -257,18 +260,18 @@ export class PersonalizedLearningSystem {
     milestones: Array<{ moduleId: string; description: string }>
   }> {
     logInfo(`Creating personalized learning path for user: ${userProfile.userId}`)
-    
+
     try {
       const skillGaps = await this.analyzeSkillGaps(userProfile)
       const recommendations = await this.generateLearningRecommendations(userProfile)
-      
+
       const path: LearningModule[] = []
       const milestones: Array<{ moduleId: string; description: string }> = []
       let estimatedDuration = 0
 
       // Start with high-priority skill gaps
       const highPriorityGaps = skillGaps.filter(gap => gap.priority === 'high')
-      
+
       for (const gap of highPriorityGaps.slice(0, 3)) { // Focus on top 3 high-priority gaps
         for (const module of gap.recommendedModules.slice(0, 2)) { // Take top 2 modules per gap
           if (!path.find(m => m.id === module.id)) {
@@ -284,7 +287,7 @@ export class PersonalizedLearningSystem {
 
       // Add high-priority recommendations
       const highPriorityRecommendations = recommendations.filter(rec => rec.priority === 'high')
-      
+
       for (const rec of highPriorityRecommendations.slice(0, 2)) {
         const module = this.learningModules.find(m => m.id === rec.moduleId)
         if (module && !path.find(m => m.id === module.id)) {
@@ -300,7 +303,7 @@ export class PersonalizedLearningSystem {
       // Ensure path fits within user's available time
       const weeklyTimeLimit = userProfile.availableTimePerWeek
       const maxDuration = weeklyTimeLimit * 8 // 8 weeks maximum
-      
+
       if (estimatedDuration > maxDuration) {
         path.splice(Math.floor(path.length * 0.7)) // Keep 70% of modules
         estimatedDuration = path.reduce((sum, module) => sum + module.duration_minutes, 0)
@@ -316,14 +319,62 @@ export class PersonalizedLearningSystem {
 
   async trackLearningProgress(userId: string, moduleId: string, progress: number): Promise<void> {
     logInfo(`Tracking learning progress for user: ${userId}, module: ${moduleId}, progress: ${progress}%`)
-    
+
     try {
-      // In production, this would update the database
+      const db = getDb()
+
+      // Check if progress record exists
+      const existingProgress = await db
+        .select()
+        .from(userLearningProgress)
+        .where(
+          and(
+            eq(userLearningProgress.user_id, userId),
+            eq(userLearningProgress.module_id, moduleId)
+          )
+        )
+        .limit(1)
+
+      const status = progress >= 100 ? 'completed' : 'in_progress'
+      const now = new Date()
+
+      if (existingProgress.length > 0) {
+        // Update existing record
+        await db
+          .update(userLearningProgress)
+          .set({
+            progress,
+            status,
+            last_updated: now,
+            completed_at: progress >= 100 ? now : existingProgress[0].completed_at
+          })
+          .where(
+            and(
+              eq(userLearningProgress.user_id, userId),
+              eq(userLearningProgress.module_id, moduleId)
+            )
+          )
+      } else {
+        // Create new record
+        await db.insert(userLearningProgress).values({
+          user_id: userId,
+          module_id: moduleId,
+          progress,
+          status,
+          started_at: now,
+          last_updated: now,
+          completed_at: progress >= 100 ? now : null
+        })
+      }
+
+      // Update in-memory module stats (optional, but good for cache)
       const module = this.learningModules.find(m => m.id === moduleId)
       if (module) {
-        module.completion_rate = progress
+        // This is a global stat, so we probably shouldn't update it based on one user without aggregation
+        // But for now we'll leave it as is or remove it if it's misleading
+        // module.completion_rate = progress // Removing this as it's misleading for global stats
       }
-      
+
       // Log completion milestone
       if (progress >= 100) {
         logInfo(`Module completed: ${moduleId} by user: ${userId}`)
@@ -348,7 +399,7 @@ export class PersonalizedLearningSystem {
       if (userProfile.completedModules.includes(module.id)) {
         return false
       }
-      
+
       // Filter out modules currently in progress
       if (userProfile.inProgressModules.find(ip => ip.moduleId === module.id)) {
         return false
@@ -356,7 +407,7 @@ export class PersonalizedLearningSystem {
 
       // Filter by difficulty based on user's experience level
       const difficultyMatch = this.matchesUserExperienceLevel(module.difficulty, userProfile.experienceLevel)
-      
+
       return difficultyMatch
     })
   }
@@ -366,7 +417,7 @@ export class PersonalizedLearningSystem {
       return true
     }
 
-    return module.prerequisites.every(prereq => 
+    return module.prerequisites.every(prereq =>
       userProfile.completedModules.includes(prereq) ||
       userProfile.currentSkills.some(skill => skill.name === prereq && skill.level >= 3)
     )
@@ -376,7 +427,7 @@ export class PersonalizedLearningSystem {
     let impact = module.estimated_impact
 
     // Boost impact if module aligns with user's interests
-    if (userProfile.interests.some(interest => 
+    if (userProfile.interests.some(interest =>
       module.category.toLowerCase().includes(interest.toLowerCase())
     )) {
       impact *= 1.2
@@ -402,7 +453,7 @@ export class PersonalizedLearningSystem {
     }
 
     // Increase confidence if module matches user's goals
-    if (userProfile.learningGoals.some(goal => 
+    if (userProfile.learningGoals.some(goal =>
       module.title.toLowerCase().includes(goal.toLowerCase()) ||
       module.skills_covered.some(skill => goal.toLowerCase().includes(skill.toLowerCase()))
     )) {
@@ -414,7 +465,7 @@ export class PersonalizedLearningSystem {
 
   private determinePriority(gapScore: number, category: string): 'high' | 'medium' | 'low' {
     const criticalCategories = ['Financial Management', 'Business Strategy']
-    
+
     if (gapScore > 70 || criticalCategories.includes(category)) {
       return 'high'
     } else if (gapScore > 40) {
@@ -426,7 +477,7 @@ export class PersonalizedLearningSystem {
 
   private determineRecommendationPriority(impact: number, confidence: number): 'high' | 'medium' | 'low' {
     const score = impact * confidence
-    
+
     if (score > 75) {
       return 'high'
     } else if (score > 50) {
@@ -472,13 +523,13 @@ export class PersonalizedLearningSystem {
     ]
 
     // Find the most relevant reason
-    if (userProfile.learningGoals.some(goal => 
+    if (userProfile.learningGoals.some(goal =>
       module.title.toLowerCase().includes(goal.toLowerCase())
     )) {
       return reasons[2] // Critical for objectives
     }
 
-    if (userProfile.interests.some(interest => 
+    if (userProfile.interests.some(interest =>
       module.category.toLowerCase().includes(interest.toLowerCase())
     )) {
       return reasons[3] // Matches interests

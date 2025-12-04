@@ -15,6 +15,13 @@
       "when": 1764800947962,
       "tag": "0001_wise_kulan_gath",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1764881141938,
+      "tag": "0002_sleepy_lady_ursula",
+      "breakpoints": true
     }
   ]
 }

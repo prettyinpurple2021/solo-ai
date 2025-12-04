@@ -62,7 +62,7 @@ export class NotificationJobQueue {
    * Initialize the job queue tables
    */
   async initialize(): Promise<void> {
-    await query(`
+    await getSql().query(`
       CREATE TABLE IF NOT EXISTS notification_jobs (
         id VARCHAR(255) PRIMARY KEY,
         title TEXT NOT NULL,
@@ -90,9 +90,9 @@ export class NotificationJobQueue {
     `)
 
     // Create indexes separately
-    await query(`CREATE INDEX IF NOT EXISTS idx_notification_jobs_scheduled_time ON notification_jobs(scheduled_time)`)
-    await query(`CREATE INDEX IF NOT EXISTS idx_notification_jobs_status ON notification_jobs(status)`)
-    await query(`CREATE INDEX IF NOT EXISTS idx_notification_jobs_created_by ON notification_jobs(created_by)`)
+    await getSql().query(`CREATE INDEX IF NOT EXISTS idx_notification_jobs_scheduled_time ON notification_jobs(scheduled_time)`)
+    await getSql().query(`CREATE INDEX IF NOT EXISTS idx_notification_jobs_status ON notification_jobs(status)`)
+    await getSql().query(`CREATE INDEX IF NOT EXISTS idx_notification_jobs_created_by ON notification_jobs(created_by)`)
 
     logInfo('Notification job queue initialized')
   }
@@ -104,7 +104,7 @@ export class NotificationJobQueue {
     const jobId = `notif_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const now = new Date()
 
-    await query(`
+    await getSql().query(`
       INSERT INTO notification_jobs (
         id, title, body, icon, badge, image, data, actions, tag,
         require_interaction, silent, vibrate, user_ids, all_users,
@@ -187,7 +187,7 @@ export class NotificationJobQueue {
    * Mark a job as processing
    */
   async markJobProcessing(jobId: string): Promise<void> {
-    await query(`
+    await getSql().query(`
       UPDATE notification_jobs 
       SET status = 'processing', attempts = attempts + 1
       WHERE id = $1
@@ -198,7 +198,7 @@ export class NotificationJobQueue {
    * Mark a job as completed
    */
   async markJobCompleted(jobId: string): Promise<void> {
-    await query(`
+    await getSql().query(`
       UPDATE notification_jobs 
       SET status = 'completed', processed_at = NOW()
       WHERE id = $1
@@ -306,12 +306,12 @@ export class NotificationJobQueue {
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
 
     // Get total count
-    const countResult = await query(`
+    const countResult = await getSql().query(`
       SELECT COUNT(*) as total FROM notification_jobs ${whereClause}
     `, params)
 
     // Get jobs
-    const jobsResult = await query(`
+    const jobsResult = await getSql().query(`
       SELECT * FROM notification_jobs 
       ${whereClause}
       ORDER BY created_at DESC

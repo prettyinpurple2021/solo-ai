@@ -66,20 +66,89 @@ export default function BillingPage() {
     }
   }, [user])
 
-  const handleManageBilling = () => {
-    toast({
-      title: "Billing Portal",
-      description: "Redirecting to secure billing portal...",
-    })
-    // In production, redirect to Stripe customer portal
+  const handleManageBilling = async () => {
+    setIsLoading(true)
+    try {
+      const response = await fetch('/api/billing/portal', {
+        method: 'POST',
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        if (data.url) {
+          window.location.href = data.url
+        } else {
+          toast({
+            title: "Billing Portal",
+            description: data.message || "Redirecting to billing portal...",
+          })
+        }
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to access billing portal",
+          variant: "destructive"
+        })
+      }
+    } catch (error) {
+      console.error('Error accessing billing portal:', error)
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleUpgrade = (tier: string) => {
-    toast({
-      title: "Upgrade Initiated",
-      description: `Processing upgrade to ${tier} plan...`,
-    })
-    // In production, redirect to Stripe checkout
+  const handleUpgrade = async (tier: string) => {
+    setIsLoading(true)
+    try {
+      // Map tier to price ID (in a real app, these would be constants or fetched)
+      const priceIds = {
+        launch: 'price_launch_id',
+        accelerator: 'price_accelerator_id',
+        dominator: 'price_dominator_id'
+      }
+      
+      const priceId = priceIds[tier as keyof typeof priceIds]
+      
+      const response = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ priceId })
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        if (data.url) {
+          window.location.href = data.url
+        } else {
+          toast({
+            title: "Upgrade Initiated",
+            description: data.message || `Processing upgrade to ${tier} plan...`,
+          })
+        }
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to initiate upgrade",
+          variant: "destructive"
+        })
+      }
+    } catch (error) {
+      console.error('Error initiating upgrade:', error)
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive"
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   if (loading) {

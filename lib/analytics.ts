@@ -233,10 +233,19 @@ class AnalyticsService {
    * Get Platform Metrics (ADMIN ONLY - Contains Revenue Data)
    */
   async getPlatformMetrics(adminUserId: string): Promise<PlatformMetrics | null> {
-    // Verify admin status (this should be robust in production)
-    // For now, we assume the caller has verified auth, but we double check role if available
-    // const user = await db.query.users.findFirst({ where: eq(users.id, adminUserId) })
-    // if (user?.role !== 'admin') return null;
+    // Verify admin status
+    const adminEmail = process.env.ADMIN_EMAIL
+    if (!adminEmail) {
+      console.warn('ADMIN_EMAIL not configured, denying access to platform metrics')
+      return null
+    }
+
+    const userResult = await db.select().from(users).where(eq(users.id, adminUserId)).limit(1)
+    const user = userResult[0]
+
+    if (!user || user.email !== adminEmail) {
+      return null
+    }
 
     const baseMetrics = await this.calculateBusinessMetrics()
 

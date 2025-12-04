@@ -803,6 +803,70 @@ export const documentVersionsRelations = relations(documentVersions, ({ one }) =
   }),
 }));
 
+// Template Favorites table
+export const templateFavorites = pgTable('template_favorites', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  template_id: varchar('template_id', { length: 255 }).notNull(),
+  created_at: timestamp('created_at').defaultNow(),
+}, (table) => ({
+  userIdIdx: index('template_favorites_user_id_idx').on(table.user_id),
+  templateIdIdx: index('template_favorites_template_id_idx').on(table.template_id),
+}));
+
+// User Learning Progress table
+export const userLearningProgress = pgTable('user_learning_progress', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  module_id: varchar('module_id', { length: 255 }).notNull(),
+  progress: integer('progress').notNull().default(0),
+  status: varchar('status', { length: 50 }).default('started'),
+  started_at: timestamp('started_at').defaultNow(),
+  completed_at: timestamp('completed_at'),
+  last_updated: timestamp('last_updated').defaultNow(),
+}, (table) => ({
+  userIdIdx: index('user_learning_progress_user_id_idx').on(table.user_id),
+  moduleIdIdx: index('user_learning_progress_module_id_idx').on(table.module_id),
+}));
+
+// Custom Workflows table
+export const customWorkflows = pgTable('custom_workflows', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  description: text('description'),
+  steps: jsonb('steps').default('[]'),
+  status: varchar('status', { length: 50 }).default('pending'),
+  results: jsonb('results').default('{}'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  userIdIdx: index('custom_workflows_user_id_idx').on(table.user_id),
+  statusIdx: index('custom_workflows_status_idx').on(table.status),
+}));
+
+// Relations for new tables
+export const templateFavoritesRelations = relations(templateFavorites, ({ one }) => ({
+  user: one(users, {
+    fields: [templateFavorites.user_id],
+    references: [users.id],
+  }),
+}));
+
+export const userLearningProgressRelations = relations(userLearningProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [userLearningProgress.user_id],
+    references: [users.id],
+  }),
+}));
+
+export const customWorkflowsRelations = relations(customWorkflows, ({ one }) => ({
+  user: one(users, {
+    fields: [customWorkflows.user_id],
+    references: [users.id],
+  }),
+}));
+
 export const documentPermissionsRelations = relations(documentPermissions, ({ one }) => ({
   document: one(documents, {
     fields: [documentPermissions.document_id],

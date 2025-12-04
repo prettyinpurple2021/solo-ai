@@ -1,11 +1,11 @@
 import { z } from 'zod'
-import type { 
-  CompetitorProfile, 
-  CompetitorProfileUpdate, 
-  ThreatLevel, 
-  SocialMediaHandles, 
-  KeyPerson, 
-  Product 
+import type {
+  CompetitorProfile,
+  CompetitorProfileUpdate,
+  ThreatLevel,
+  SocialMediaHandles,
+  KeyPerson,
+  Product
 } from './competitor-intelligence-types'
 
 // Configuration for enrichment service
@@ -287,7 +287,7 @@ export class CompetitorEnrichmentService {
                 status: 'active'
               }))
             }
-          } catch {}
+          } catch { }
         }
       }
 
@@ -368,7 +368,7 @@ export class CompetitorEnrichmentService {
           }
         }
       }
-      
+
       // Validate discovered handles
       for (const [platform, url] of Object.entries(discoveredHandles)) {
         if (this.validateSocialMediaUrl(platform as keyof SocialMediaHandles, url)) {
@@ -418,7 +418,7 @@ export class CompetitorEnrichmentService {
 
       // Identify personnel from About/Team pages heuristically
       const personnel = await this.identifyPersonnelFromWeb(companyName, domain)
-      
+
       if (personnel.length > 0) {
         result.data = { keyPersonnel: personnel }
         result.confidence = Math.min(0.7, personnel.length * 0.15) // Confidence based on number of personnel found
@@ -525,9 +525,9 @@ export class CompetitorEnrichmentService {
 
       // Factor 6: Key personnel quality
       if (competitor.keyPersonnel && competitor.keyPersonnel.length > 0) {
-        const executiveCount = competitor.keyPersonnel.filter(p => 
-          p.role.toLowerCase().includes('ceo') || 
-          p.role.toLowerCase().includes('cto') || 
+        const executiveCount = competitor.keyPersonnel.filter(p =>
+          p.role.toLowerCase().includes('ceo') ||
+          p.role.toLowerCase().includes('cto') ||
           p.role.toLowerCase().includes('founder')
         ).length
         threatScore += executiveCount * 5
@@ -569,30 +569,30 @@ export class CompetitorEnrichmentService {
   private calculateIndustryOverlap(competitorIndustry: string, userBusinessDomain: string): number {
     const competitorKeywords = competitorIndustry.toLowerCase().split(/\s+/)
     const userKeywords = userBusinessDomain.toLowerCase().split(/\s+/)
-    
+
     let overlapScore = 0
-    
+
     // Check for direct industry matches
     for (const [industry, keywords] of Object.entries(INDUSTRY_KEYWORDS)) {
-      const competitorMatches = keywords.filter(keyword => 
+      const competitorMatches = keywords.filter(keyword =>
         competitorKeywords.some(word => word.includes(keyword))
       ).length
-      const userMatches = keywords.filter(keyword => 
+      const userMatches = keywords.filter(keyword =>
         userKeywords.some(word => word.includes(keyword))
       ).length
-      
+
       if (competitorMatches > 0 && userMatches > 0) {
         overlapScore = Math.max(overlapScore, (competitorMatches + userMatches) / (keywords.length * 2))
       }
     }
-    
+
     // Check for direct keyword overlap
-    const directOverlap = competitorKeywords.filter(word => 
+    const directOverlap = competitorKeywords.filter(word =>
       userKeywords.some(userWord => userWord.includes(word) || word.includes(userWord))
     ).length
-    
+
     const directOverlapScore = directOverlap / Math.max(competitorKeywords.length, userKeywords.length)
-    
+
     return Math.max(overlapScore, directOverlapScore)
   }
 
@@ -609,15 +609,15 @@ export class CompetitorEnrichmentService {
    */
   private checkRateLimit(operation: string): boolean {
     if (!this.config.respectRateLimit) return true
-    
+
     const now = Date.now()
     const lastCall = this.rateLimitTracker.get(operation) || 0
     const minInterval = 1000 // 1 second between calls
-    
+
     if (now - lastCall < minInterval) {
       return false
     }
-    
+
     this.rateLimitTracker.set(operation, now)
     return true
   }
@@ -652,15 +652,36 @@ export class CompetitorEnrichmentService {
                   previousCompanies: []
                 })
               }
-            } catch {}
+            } catch { }
           }
         }
 
         // Simplified heuristic: look for team/leadership sections
         // This is a basic implementation - would need more sophisticated parsing for production
         if (html.toLowerCase().includes('team') || html.toLowerCase().includes('leadership')) {
-          // For now, just add a placeholder as this requires complex DOM parsing
-          // In production, you'd implement proper team member extraction
+          // Attempt to find names in team sections using regex patterns
+          // Look for common patterns like "Name - Title" or "Name, Title" in list items or headings
+          const teamSectionRegex = /(?:<div[^>]*class="[^"]*team[^"]*"[^>]*>|<section[^>]*id="[^"]*team[^"]*"[^>]*>)([\s\S]*?)(?:<\/div>|<\/section>)/i
+          const teamMatch = html.match(teamSectionRegex)
+
+          if (teamMatch) {
+            const teamContent = teamMatch[1]
+            // Very basic name extraction - look for capitalized words followed by a title keyword
+            // This is brittle but better than nothing for a heuristic
+            const titleKeywords = ['CEO', 'CTO', 'Founder', 'Director', 'Head of', 'President', 'VP', 'Manager']
+            const nameTitleRegex = new RegExp(`([A-Z][a-z]+ [A-Z][a-z]+)(?:<[^>]+>|\\s|&nbsp;|[-–,])+\\s*(${titleKeywords.join('|')})`, 'g')
+
+            let match
+            while ((match = nameTitleRegex.exec(teamContent)) !== null) {
+              if (results.length >= 10) break
+              results.push({
+                name: match[1],
+                role: match[2],
+                linkedinProfile: undefined,
+                previousCompanies: []
+              })
+            }
+          }
         }
 
         if (results.length >= 10) break

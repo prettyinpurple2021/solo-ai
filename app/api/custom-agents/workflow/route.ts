@@ -1,6 +1,10 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextRequest, NextResponse} from "next/server"
-import { AgentCollaborationSystem} from "@/lib/custom-ai-agents/agent-collaboration-system"
+import { NextRequest, NextResponse } from "next/server"
+import { AgentCollaborationSystem } from "@/lib/custom-ai-agents/agent-collaboration-system"
+import { authenticateRequest } from "@/lib/auth-server"
+import { getDb } from '@/lib/database-client'
+import { customWorkflows } from '@/db/schema'
+import { eq, and } from 'drizzle-orm'
 
 
 // Store collaboration systems per user (in production, use Redis or database)
@@ -9,8 +13,12 @@ const userCollaborationSystems = new Map<string, AgentCollaborationSystem>()
 
 export async function POST(request: NextRequest) {
   try {
-    // For now, use a default user ID. In production, implement proper authentication
-    const userId = "default-user"
+    // Authenticate request
+    const { user, error } = await authenticateRequest()
+    if (error || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    const userId = user.id
 
     const { action, workflowId, stream = false } = await request.json()
 
@@ -32,7 +40,7 @@ export async function POST(request: NextRequest) {
             async start(controller) {
               try {
                 const workflow = await collaborationSystem.executeWorkflow(workflowId)
-                
+
                 // Send workflow status updates
                 const statusData = {
                   type: "workflow_status",
@@ -41,7 +49,7 @@ export async function POST(request: NextRequest) {
                   steps: workflow.steps.length,
                   completedSteps: Object.keys(workflow.results).length
                 }
-                
+
                 controller.enqueue(
                   encoder.encode(`data: ${JSON.stringify(statusData)}\n\n`)
                 )
@@ -53,7 +61,7 @@ export async function POST(request: NextRequest) {
                     agentId,
                     result: result
                   }
-                  
+
                   controller.enqueue(
                     encoder.encode(`data: ${JSON.stringify(stepData)}\n\n`)
                   )
@@ -66,7 +74,7 @@ export async function POST(request: NextRequest) {
                   status: workflow.status,
                   results: workflow.results
                 }
-                
+
                 controller.enqueue(
                   encoder.encode(`data: ${JSON.stringify(finalData)}\n\n`)
                 )
@@ -77,7 +85,7 @@ export async function POST(request: NextRequest) {
                   workflowId,
                   error: error instanceof Error ? error.message : 'Unknown error'
                 }
-                
+
                 controller.enqueue(
                   encoder.encode(`data: ${JSON.stringify(errorData)}\n\n`)
                 )
@@ -107,10 +115,10 @@ export async function POST(request: NextRequest) {
 
       case "create":
         const { name, description, steps } = await request.json()
-        
+
         if (!name || !steps || !Array.isArray(steps)) {
-          return NextResponse.json({ 
-            error: "Name and steps array are required" 
+          return NextResponse.json({
+            error: "Name and steps array are required"
           }, { status: 400 })
         }
 
@@ -129,7 +137,19 @@ export async function POST(request: NextRequest) {
           results: {}
         }
 
-        // Store workflow (in production, save to database)
+        // Store workflow in database
+        const db = getDb()
+        await db.insert(customWorkflows).values({
+          id: customWorkflow.id,
+          user_id: userId,
+          name: customWorkflow.name,
+          description: customWorkflow.description,
+          steps: customWorkflow.steps,
+          status: customWorkflow.status,
+          results: customWorkflow.results
+        })
+
+        // Also update in-memory system for immediate execution if needed
         const workflows = collaborationSystem.getAllWorkflows()
         workflows.set(customWorkflow.id, customWorkflow)
 
@@ -153,8 +173,12 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // For now, use a default user ID. In production, implement proper authentication
-    const userId = "default-user"
+    // Authenticate request
+    const { user, error } = await authenticateRequest()
+    if (error || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+    const userId = user.id
 
     const { searchParams } = new URL(request.url)
     const workflowId = searchParams.get("workflowId")
@@ -164,16 +188,33 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "No collaboration system found" }, { status: 404 })
     }
 
+    const db = getDb()
+
     if (workflowId) {
-      // Get specific workflow
-      const workflow = collaborationSystem.getWorkflow(workflowId)
-      if (!workflow) {
+      // Get specific workflow from DB
+      const workflowResult = await db
+        .select()
+        .from(customWorkflows)
+        .where(
+          and(
+            eq(customWorkflows.id, workflowId),
+            eq(customWorkflows.user_id, userId)
+          )
+        )
+        .limit(1)
+
+      if (workflowResult.length === 0) {
         return NextResponse.json({ error: "Workflow not found" }, { status: 404 })
       }
-      return NextResponse.json({ workflow })
+      return NextResponse.json({ workflow: workflowResult[0] })
     } else {
-      // Get all workflows
-      const workflows = Array.from(collaborationSystem.getAllWorkflows().values())
+      // Get all workflows from DB
+      const workflows = await db
+        .select()
+        .from(customWorkflows)
+        .where(eq(customWorkflows.user_id, userId))
+        .orderBy(customWorkflows.created_at)
+
       return NextResponse.json({ workflows })
     }
 

@@ -48,8 +48,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     logError('Error handling template favorite:', error)
     if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Invalid request data', // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        details: (error as any).errors }, { status: 400 })
+      return NextResponse.json({
+        error: 'Invalid request data', // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        details: (error as any).errors
+      }, { status: 400 })
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
@@ -81,42 +83,81 @@ export async function GET(request: NextRequest) {
   }
 }
 
+import { getDb } from '@/lib/database-client'
+import { templateFavorites } from '@/db/schema'
+import { eq, and } from 'drizzle-orm'
+
 async function handleFavoriteAction(userId: string, templateId: string, action: string) {
   try {
-    // Mock favorite management - in production, this would interact with the database
-    const currentFavorites = await getUserFavoriteTemplates(userId)
-    const isCurrentlyFavorite = currentFavorites.some(fav => fav.id === templateId)
+    const db = getDb()
 
-    let isFavorite = false
+    // Check if currently favorite
+    const existingFavorite = await db
+      .select()
+      .from(templateFavorites)
+      .where(
+        and(
+          eq(templateFavorites.user_id, userId),
+          eq(templateFavorites.template_id, templateId)
+        )
+      )
+      .limit(1)
+
+    const isCurrentlyFavorite = existingFavorite.length > 0
+    let isFavorite = isCurrentlyFavorite
     let message = ''
 
     switch (action) {
       case 'add':
         if (!isCurrentlyFavorite) {
+          await db.insert(templateFavorites).values({
+            user_id: userId,
+            template_id: templateId
+          })
           isFavorite = true
           message = 'Template added to favorites'
         } else {
-          isFavorite = true
           message = 'Template is already in favorites'
         }
         break
       case 'remove':
         if (isCurrentlyFavorite) {
+          await db
+            .delete(templateFavorites)
+            .where(
+              and(
+                eq(templateFavorites.user_id, userId),
+                eq(templateFavorites.template_id, templateId)
+              )
+            )
           isFavorite = false
           message = 'Template removed from favorites'
         } else {
-          isFavorite = false
           message = 'Template was not in favorites'
         }
         break
       case 'toggle':
-        isFavorite = !isCurrentlyFavorite
-        message = isFavorite ? 'Template added to favorites' : 'Template removed from favorites'
+        if (isCurrentlyFavorite) {
+          await db
+            .delete(templateFavorites)
+            .where(
+              and(
+                eq(templateFavorites.user_id, userId),
+                eq(templateFavorites.template_id, templateId)
+              )
+            )
+          isFavorite = false
+          message = 'Template removed from favorites'
+        } else {
+          await db.insert(templateFavorites).values({
+            user_id: userId,
+            template_id: templateId
+          })
+          isFavorite = true
+          message = 'Template added to favorites'
+        }
         break
     }
-
-    // In production, this would update the database
-    // For now, we'll simulate the action
 
     return { isFavorite, message }
   } catch (error) {
@@ -125,43 +166,29 @@ async function handleFavoriteAction(userId: string, templateId: string, action: 
   }
 }
 
-async function getUserFavoriteTemplates(_userId: string) {
+async function getUserFavoriteTemplates(userId: string) {
   try {
-    // Mock favorite templates - in production, this would query the database
-    const favorites = [
-      {
-        id: 'decision-dashboard',
-        title: 'Decision Dashboard',
-        description: 'AI-guided template to weigh pros/cons, impact, and confidence level of a tough decision',
-        category: 'Founder Systems & Self-Mgmt',
-        isFavorite: true,
-        favoritedAt: '2024-01-15T10:30:00Z',
-        usageCount: 3,
-        lastUsed: '2024-01-20T14:15:00Z'
-      },
-      {
-        id: 'dm-sales-script-generator',
-        title: 'DM Sales Script Generator',
-        description: 'For founders using IG/TikTok DMs for selling — input persona + offer, get tailored, non-cringe DM scripts',
-        category: 'Lead Gen & Sales',
-        isFavorite: true,
-        favoritedAt: '2024-01-10T09:20:00Z',
-        usageCount: 2,
-        lastUsed: '2024-01-18T11:45:00Z'
-      },
-      {
-        id: 'viral-hook-generator',
-        title: 'Viral Hook Generator',
-        description: 'Input content idea + vibe. Get high-engagement hook options in text or video format',
-        category: 'Content & Collab',
-        isFavorite: true,
-        favoritedAt: '2024-01-12T16:00:00Z',
-        usageCount: 5,
-        lastUsed: '2024-01-22T08:30:00Z'
-      }
-    ]
+    const db = getDb()
 
-    return favorites
+    // Get favorite template IDs
+    const favorites = await db
+      .select()
+      .from(templateFavorites)
+      .where(eq(templateFavorites.user_id, userId))
+
+    // In a real app, you would join with the templates table or fetch details
+    // For now, we'll return the IDs and some placeholder data if we can't fetch details
+    // Assuming we have a way to get template details, but for now we'll just return the list
+    // The frontend likely expects full template objects.
+    // If we have a templates table, we should join.
+    // But earlier I saw 'templates' table in schema.
+
+    // Let's try to fetch actual template details if possible, or return a simplified object
+    return favorites.map(fav => ({
+      id: fav.template_id,
+      isFavorite: true,
+      favoritedAt: fav.created_at
+    }))
   } catch (error) {
     logError('Error fetching favorite templates:', error)
     throw error

@@ -100,8 +100,14 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // For now, we'll allow any authenticated user to restart
-    // In production, you might want to check for admin role
+    // Check for admin role via environment variable
+    const adminEmail = process.env.ADMIN_EMAIL
+    if (adminEmail && user.email !== adminEmail) {
+      return NextResponse.json(
+        { error: 'Forbidden: Admin access required' },
+        { status: 403 }
+      )
+    }
 
     const body = await request.json()
     const { action } = body
