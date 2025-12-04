@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useCallback } from 'react'
 import { useAuth } from './use-auth'
 
@@ -115,7 +115,7 @@ export function useOpportunities() {
 
     try {
       const params = new URLSearchParams()
-      
+
       if (filters.status?.length) {
         params.append('status', filters.status.join(','))
       }
@@ -134,12 +134,12 @@ export function useOpportunities() {
       if (filters.isArchived !== undefined) {
         params.append('isArchived', filters.isArchived.toString())
       }
-      
+
       params.append('sortField', sortField)
       params.append('sortDirection', sortDirection)
 
       const response = await fetch(`/api/opportunities?${params.toString()}`)
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch opportunities')
       }
@@ -181,10 +181,10 @@ export function useOpportunities() {
     }
 
     const data = await response.json()
-    
+
     // Refresh opportunities list
     await fetchOpportunities()
-    
+
     return data
   }, [user, fetchOpportunities])
 
@@ -216,16 +216,16 @@ export function useOpportunities() {
     }
 
     const data = await response.json()
-    
+
     // Update local state
-    setOpportunities(prev => 
-      prev.map(opp => 
-        opp.id === opportunityId 
+    setOpportunities(prev =>
+      prev.map(opp =>
+        opp.id === opportunityId
           ? { ...opp, ...data.opportunity }
           : opp
       )
     )
-    
+
     return data
   }, [user])
 
@@ -249,7 +249,7 @@ export function useOpportunities() {
     if (!user) throw new Error('User not authenticated')
 
     const response = await fetch(`/api/opportunities/${opportunityId}`)
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch opportunity details')
     }
@@ -263,7 +263,7 @@ export function useOpportunities() {
     if (!user) throw new Error('User not authenticated')
 
     const response = await fetch(`/api/opportunities/analytics?timeframe=${timeframe}`)
-    
+
     if (!response.ok) {
       throw new Error('Failed to fetch opportunity analytics')
     }
@@ -305,7 +305,7 @@ export function useOpportunityActions(opportunityId: string) {
 
     try {
       const response = await fetch(`/api/opportunities/${opportunityId}/actions`)
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch actions')
       }
@@ -345,10 +345,10 @@ export function useOpportunityActions(opportunityId: string) {
     }
 
     const data = await response.json()
-    
+
     // Refresh actions list
     await fetchActions()
-    
+
     return data
   }, [user, opportunityId, fetchActions])
 
@@ -372,16 +372,16 @@ export function useOpportunityActions(opportunityId: string) {
     }
 
     const data = await response.json()
-    
+
     // Update local state
-    setActions(prev => 
-      prev.map(action => 
-        action.id === actionId 
+    setActions(prev =>
+      prev.map(action =>
+        action.id === actionId
           ? { ...action, ...data.action }
           : action
       )
     )
-    
+
     return data
   }, [user, opportunityId])
 
@@ -433,7 +433,7 @@ export function useOpportunityMetrics(opportunityId: string) {
 
     try {
       const response = await fetch(`/api/opportunities/${opportunityId}/metrics`)
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch metrics')
       }
@@ -471,10 +471,10 @@ export function useOpportunityMetrics(opportunityId: string) {
     }
 
     const data = await response.json()
-    
+
     // Refresh metrics list
     await fetchMetrics()
-    
+
     return data
   }, [user, opportunityId, fetchMetrics])
 

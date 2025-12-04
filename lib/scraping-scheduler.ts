@@ -124,7 +124,7 @@ export class ScrapingScheduler {
   ): Promise<string> {
     try {
       const jobId = this.generateJobId(competitorId, jobType, url)
-      
+
       const job: ScrapingJob = {
         id: jobId,
         competitorId,
@@ -144,7 +144,7 @@ export class ScrapingScheduler {
 
       this.jobQueue.set(jobId, job)
       this.updateMetrics()
-      
+
       logInfo(`Scheduled scraping job: ${jobId} for ${url}`)
       return jobId
     } catch (error) {
@@ -164,10 +164,10 @@ export class ScrapingScheduler {
     userId: string
   ): Promise<string[]> {
     const jobIds: string[] = []
-    
+
     // Determine scraping frequency based on threat level
     const frequency = this.getFrequencyByThreatLevel(competitor.threatLevel)
-    
+
     // Schedule website monitoring
     if (competitor.domain) {
       const websiteJobId = await this.scheduleJob(
@@ -180,7 +180,7 @@ export class ScrapingScheduler {
       jobIds.push(websiteJobId)
 
       // Schedule pricing page monitoring if likely to have pricing
-      const pricingUrl = this.guessPricingUrl(competitor.domain)
+      const pricingUrl = await this.guessPricingUrl(competitor.domain)
       if (pricingUrl) {
         const pricingJobId = await this.scheduleJob(
           competitor.id,
@@ -193,7 +193,7 @@ export class ScrapingScheduler {
       }
 
       // Schedule product page monitoring
-      const productUrl = this.guessProductUrl(competitor.domain)
+      const productUrl = await this.guessProductUrl(competitor.domain)
       if (productUrl) {
         const productJobId = await this.scheduleJob(
           competitor.id,
@@ -206,7 +206,7 @@ export class ScrapingScheduler {
       }
 
       // Schedule job posting monitoring
-      const jobsUrl = this.guessJobsUrl(competitor.domain)
+      const jobsUrl = await this.guessJobsUrl(competitor.domain)
       if (jobsUrl) {
         const jobsJobId = await this.scheduleJob(
           competitor.id,
@@ -278,7 +278,7 @@ export class ScrapingScheduler {
     } else {
       this.jobQueue.delete(jobId)
     }
-    
+
     this.updateMetrics()
     return true
   }
@@ -420,8 +420,8 @@ export class ScrapingScheduler {
 
     // Get pending jobs that are ready to run
     const readyJobs = Array.from(this.jobQueue.values())
-      .filter(job => 
-        job.status === 'pending' && 
+      .filter(job =>
+        job.status === 'pending' &&
         job.nextRunAt <= new Date() &&
         !this.runningJobs.has(job.id)
       )
@@ -435,7 +435,7 @@ export class ScrapingScheduler {
 
     // Process jobs up to the concurrent limit
     const jobsToProcess = readyJobs.slice(0, this.MAX_CONCURRENT_JOBS - this.runningJobs.size)
-    
+
     for (const job of jobsToProcess) {
       this.processJob(job).catch(error => {
         logError(`Error processing job ${job.id}:`, error)
@@ -460,10 +460,10 @@ export class ScrapingScheduler {
     }
 
     const startTime = Date.now()
-    
+
     try {
       logInfo(`Processing scraping job: ${job.id} (${job.jobType}) for ${job.url}`)
-      
+
       // Now update job status to running since it wasn't cancelled
       this.runningJobs.add(job.id)
       job.status = 'running'
@@ -472,7 +472,7 @@ export class ScrapingScheduler {
 
       // Execute the scraping based on job type
       let scrapingResult: ScrapingResult
-      
+
       switch (job.jobType) {
         case 'website':
           scrapingResult = await webScrapingService.scrapeCompetitorWebsite(job.url)
@@ -492,7 +492,7 @@ export class ScrapingScheduler {
 
       // Validate the result
       const validation = this.validateScrapingResult(scrapingResult, job)
-      
+
       const result: ScrapingJobResult = {
         jobId: job.id,
         success: scrapingResult.success && validation.isValid,
@@ -513,7 +513,7 @@ export class ScrapingScheduler {
       } else if ((job.status as any) !== 'cancelled') {
         // Job failed, check if we should retry
         job.retryCount++
-        
+
         if (job.retryCount <= job.maxRetries) {
           job.status = 'pending'
           job.nextRunAt = this.calculateRetryTime(job.retryCount)
@@ -542,7 +542,7 @@ export class ScrapingScheduler {
     } catch (error) {
       // Unexpected error during processing
       job.retryCount++
-      
+
       const result: ScrapingJobResult = {
         jobId: job.id,
         success: false,
@@ -589,12 +589,12 @@ export class ScrapingScheduler {
   private calculateJobPriority(competitorId: number, jobType: string): ScrapingJob['priority'] {
     // This would typically query the competitor's threat level from the database
     // For now, we'll use a simple heuristic
-    
+
     if (jobType === 'pricing') return 'high' // Pricing changes are important
     if (jobType === 'website') return 'medium' // General website changes
     if (jobType === 'products') return 'medium' // Product updates
     if (jobType === 'jobs') return 'low' // Job postings are less urgent
-    
+
     return 'medium'
   }
 
@@ -614,17 +614,17 @@ export class ScrapingScheduler {
 
   private calculateNextRun(frequency: ScrapingFrequency): Date {
     const now = new Date()
-    
+
     switch (frequency.type) {
       case 'interval':
         const minutes = typeof frequency.value === 'number' ? frequency.value : parseInt(frequency.value as string)
         return new Date(now.getTime() + minutes * 60 * 1000)
-      
+
       case 'cron':
         // For cron expressions, we'd use a cron parser library
         // For now, default to 1 hour
         return new Date(now.getTime() + 60 * 60 * 1000)
-      
+
       case 'manual':
       default:
         // Manual jobs don't auto-schedule
@@ -638,97 +638,121 @@ export class ScrapingScheduler {
     return new Date(Date.now() + delayMinutes * 60 * 1000)
   }
 
-  private guessPricingUrl(domain: string): string | null {
+  private async guessPricingUrl(domain: string): Promise<string | null> {
     const commonPaths = ['/pricing', '/plans', '/subscribe', '/buy', '/purchase']
-    // Return the first common path (in a real implementation, we might check which exists)
-    return `https://${domain}${commonPaths[0]}`
+    return this.findFirstExistingUrl(domain, commonPaths)
   }
 
-  private guessProductUrl(domain: string): string | null {
+  private async guessProductUrl(domain: string): Promise<string | null> {
     const commonPaths = ['/products', '/features', '/solutions', '/services']
-    return `https://${domain}${commonPaths[0]}`
+    return this.findFirstExistingUrl(domain, commonPaths)
   }
 
-  private guessJobsUrl(domain: string): string | null {
+  private async guessJobsUrl(domain: string): Promise<string | null> {
     const commonPaths = ['/careers', '/jobs', '/hiring', '/join', '/work-with-us']
-    return `https://${domain}${commonPaths[0]}`
+    return this.findFirstExistingUrl(domain, commonPaths)
+  }
+
+  private async findFirstExistingUrl(domain: string, paths: string[]): Promise<string | null> {
+    for (const path of paths) {
+      const url = `https://${domain}${path}`
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 3000) // 3s timeout
+
+        const response = await fetch(url, {
+          method: 'HEAD',
+          signal: controller.signal
+        })
+
+        clearTimeout(timeoutId)
+
+        if (response.ok) {
+          return url
+        }
+      } catch (error) {
+        // Ignore errors and try next path
+        continue
+      }
+    }
+    return null
   }
 
   private validateWebsiteData(data: any): number {
     if (!data || typeof data !== 'object') return 0
-    
+
     let confidence = 1.0
-    
+
     // Check for basic website data
     if (!data.title) confidence *= 0.8
     if (!data.description) confidence *= 0.9
     if (!data.content || data.content.length < 100) confidence *= 0.7
-    
+
     return confidence
   }
 
   private validatePricingData(data: any): number {
     if (!data || !data.plans || !Array.isArray(data.plans)) return 0
-    
+
     let confidence = 1.0
-    
+
     // Check pricing plan quality
     if (data.plans.length === 0) return 0
-    
+
     for (const plan of data.plans) {
       if (!plan.name || typeof plan.price !== 'number') {
         confidence *= 0.5
       }
     }
-    
+
     return confidence
   }
 
   private validateProductData(data: any): number {
     if (!data || !data.products || !Array.isArray(data.products)) return 0
-    
+
     let confidence = 1.0
-    
+
     if (data.products.length === 0) return 0
-    
+
     for (const product of data.products) {
       if (!product.name) {
         confidence *= 0.7
       }
     }
-    
+
     return confidence
   }
 
   private validateJobData(data: any): number {
     if (!Array.isArray(data)) return 0
-    
+
     let confidence = 1.0
-    
+
     if (data.length === 0) return 0.5 // No jobs might be valid
-    
+
     for (const job of data) {
       if (!job.title || !job.description) {
         confidence *= 0.8
       }
     }
-    
+
     return confidence
   }
 
   private updateMetrics(): void {
     const jobs = Array.from(this.jobQueue.values())
-    
+
     this.metrics.totalJobs = jobs.length
     this.metrics.pendingJobs = jobs.filter(j => j.status === 'pending').length
     this.metrics.runningJobs = this.runningJobs.size
     this.metrics.completedJobs = jobs.filter(j => j.status === 'completed').length
     this.metrics.failedJobs = jobs.filter(j => j.status === 'failed').length
-    
+
     // Calculate success rate
     const totalCompleted = this.metrics.completedJobs + this.metrics.failedJobs
     this.metrics.successRate = totalCompleted > 0 ? this.metrics.completedJobs / totalCompleted : 0
-    
+
     // Calculate average execution time from recent job history
     const allResults = Array.from(this.jobHistory.values()).flat()
     if (allResults.length > 0) {

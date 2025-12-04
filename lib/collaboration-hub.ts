@@ -75,12 +75,23 @@ export interface CollaborationResponse {
   message?: string
 }
 
+import { RoxyAgent } from './custom-ai-agents/roxy-agent'
+import { BlazeAgent } from './custom-ai-agents/blaze-agent'
+import { EchoAgent } from './custom-ai-agents/echo-agent'
+import { LumiAgent } from './custom-ai-agents/lumi-agent'
+import { VexAgent } from './custom-ai-agents/vex-agent'
+import { LexiAgent } from './custom-ai-agents/lexi-agent'
+import { NovaAgent } from './custom-ai-agents/nova-agent'
+import { GlitchAgent } from './custom-ai-agents/glitch-agent'
+import { CustomAgent } from './custom-ai-agents/core-agent'
+
 /**
  * Main Collaboration Hub class
  * Central coordination point for all multi-agent interactions
  */
 export class CollaborationHub {
   private agents: Map<string, AgentDefinition> = new Map()
+  private agentInstances: Map<string, CustomAgent> = new Map()
   private activeSessions: Map<string, CollaborationSession> = new Map()
   private messageRouter: MessageRouter
   private contextManager: ContextManager
@@ -215,7 +226,32 @@ export class CollaborationHub {
       this.agents.set(agent.id, agent)
     })
 
+    // Initialize agent instances
+    // Note: In a real app, userId would be dynamic per session, but for the singleton hub 
+    // we might need a factory or manage instances per session.
+    // For now, we'll instantiate generic ones for system-level tasks.
+    // Session-specific agents should probably be instantiated when a session starts.
+    // However, the current architecture seems to use a singleton hub.
+    // Let's instantiate them with a system user ID.
+    const systemUserId = 'system'
+
+    this.agentInstances.set('roxy', new RoxyAgent(systemUserId))
+    this.agentInstances.set('blaze', new BlazeAgent(systemUserId))
+    this.agentInstances.set('echo', new EchoAgent(systemUserId))
+    this.agentInstances.set('lumi', new LumiAgent(systemUserId))
+    this.agentInstances.set('vex', new VexAgent(systemUserId))
+    this.agentInstances.set('lexi', new LexiAgent(systemUserId))
+    this.agentInstances.set('nova', new NovaAgent(systemUserId))
+    this.agentInstances.set('glitch', new GlitchAgent(systemUserId))
+
     logInfo(`✅ Collaboration Hub initialized with ${defaultAgents.length} agents`)
+  }
+
+  /**
+   * Get agent instance by ID
+   */
+  getAgentInstance(agentId: string): CustomAgent | null {
+    return this.agentInstances.get(agentId) || null
   }
 
   /**
@@ -456,6 +492,8 @@ export class CollaborationHub {
     // Ensure we have at least one agent
     if (selectedAgents.length === 0) {
       const availableAgents = this.getAvailableAgents()
+        .filter(a => a.id === 'roxy' || a.status === 'available')
+
       if (availableAgents.length > 0) {
         // Default to Roxy (executive assistant) or first available
         const defaultAgent = availableAgents.find(a => a.id === 'roxy') || availableAgents[0]

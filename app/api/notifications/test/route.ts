@@ -53,6 +53,7 @@ export async function POST(request: NextRequest) {
       created_at: new Date().toISOString(),
       competitor_name: 'Test Competitor Inc.',
       competitor_threat_level: 'medium',
+      user_id: user.id,
     };
 
     // Create test channel configuration
@@ -82,8 +83,10 @@ export async function POST(request: NextRequest) {
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid test parameters', // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        details: (error as any).errors },
+        {
+          error: 'Invalid test parameters', // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          details: (error as any).errors
+        },
         { status: 400 }
       );
     }

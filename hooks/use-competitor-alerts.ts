@@ -15,6 +15,7 @@ export interface CompetitorAlert {
   created_at: string;
   competitor_name: string;
   competitor_threat_level: string;
+  user_id: string;
 }
 
 export interface AlertStats {
@@ -63,7 +64,7 @@ export function useCompetitorAlerts(options: UseCompetitorAlertsOptions = {}): U
   const fetchAlerts = useCallback(async () => {
     try {
       setError(null);
-      
+
       const params = new URLSearchParams({
         limit: limit.toString(),
         ...(severity && { severity }),
@@ -72,7 +73,7 @@ export function useCompetitorAlerts(options: UseCompetitorAlertsOptions = {}): U
       });
 
       const response = await fetch(`/api/competitors/alerts?${params}`);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch alerts: ${response.statusText}`);
       }
@@ -108,7 +109,7 @@ export function useCompetitorAlerts(options: UseCompetitorAlertsOptions = {}): U
       }
 
       // Update local state
-      setAlerts(prev => prev.map(alert => 
+      setAlerts(prev => prev.map(alert =>
         alert.id === alertId ? { ...alert, is_read: true } : alert
       ));
 
@@ -174,7 +175,7 @@ export function useCompetitorAlerts(options: UseCompetitorAlertsOptions = {}): U
       }
 
       const data = await response.json();
-      
+
       // Refresh alerts if any were generated
       if (data.result.alertsGenerated > 0) {
         await fetchAlerts();
@@ -222,9 +223,9 @@ export function useCompetitorSpecificAlerts(competitorId: number, limit: number 
   const fetchCompetitorAlerts = useCallback(async () => {
     try {
       setError(null);
-      
+
       const response = await fetch(`/api/competitors/${competitorId}/alerts?limit=${limit}`);
-      
+
       if (!response.ok) {
         throw new Error(`Failed to fetch competitor alerts: ${response.statusText}`);
       }

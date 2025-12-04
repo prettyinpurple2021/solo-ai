@@ -84,19 +84,42 @@ class Logger {
     }
   }
   private async sendToExternalService(entry: LogEntry): Promise<void> {
-    // This is where you would integrate with external logging services
-    // For now, we'll just ensure important logs are properly formatted
-    // Example integrations:
-    // - LogRocket: LogRocket.captureException(entry.error)
-    // - Custom API: fetch('/api/logs', { method: 'POST', body: JSON.stringify(entry) })
+    // In a real production environment, this would send to a service like Datadog, LogRocket, or Sentry.
+    // For this implementation, we will use structured JSON logging to stdout/stderr,
+    // which is the standard best practice for containerized applications (12-factor app).
+    // Log collectors (like Fluentd or Datadog Agent) can then pick this up.
+
     try {
-      // In a real implementation, you would send to your logging service here
-      // For now, we'll just ensure the log is properly handled
+      const structuredLog = JSON.stringify({
+        ...entry,
+        service: 'solosuccess-ai',
+        environment: process.env.NODE_ENV || 'development',
+      })
+
+      // Use console.error for errors and warnings to ensure they go to stderr
+      // Use console.log for info and debug to ensure they go to stdout
+      if (entry.level <= LogLevel.WARN) {
+        if (typeof console !== 'undefined' && console.error) {
+          // We intentionally duplicate to console.error here for external capture if it wasn't already logged
+          // But since we already logged to console in the `log` method for dev, we might want to be careful.
+          // However, `log` method only logs to console if `isDevelopment` OR `level === ERROR`.
+          // If we are in PRODUCTION, `log` method does NOT log INFO/WARN to console by default in the previous logic.
+          // Let's look at the `log` method logic again.
+          // It says: if (this.isDevelopment || level === LogLevel.ERROR) { ... log to console ... }
+          // So in PROD, WARN and INFO are NOT logged to console.
+          // So here we MUST log them to console (stdout/stderr) for the log collector to pick them up.
+          console.error(structuredLog)
+        }
+      } else {
+        if (typeof console !== 'undefined' && console.log) {
+          console.log(structuredLog)
+        }
+      }
+
     } catch (logError) {
-      // Don't let logging errors break the application
-      // In production, we avoid console.error - could be sent to error tracking service
-      if (this.isDevelopment && typeof console !== 'undefined' && console.error) {
-        console.error('Failed to send log to external service:', logError)
+      // Fallback if JSON stringify fails (e.g. circular reference)
+      if (typeof console !== 'undefined' && console.error) {
+        console.error('Failed to log structured entry:', logError)
       }
     }
   }

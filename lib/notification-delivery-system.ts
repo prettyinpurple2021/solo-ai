@@ -2,6 +2,8 @@ import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } 
 import { Resend } from 'resend';
 import { CompetitorAlert } from '@/hooks/use-competitor-alerts';
 import { AlertSeverity, AlertType } from './competitor-alert-system';
+import { db } from '@/lib/database-client';
+import { notifications } from '@/db/schema';
 
 
 export interface NotificationChannel {
@@ -81,7 +83,7 @@ export class NotificationDeliverySystem {
 
     // Determine delivery method based on severity
     const shouldDeliverImmediately = preferences.frequency.immediate.includes(alert.severity as AlertSeverity);
-    
+
     if (shouldDeliverImmediately) {
       // Deliver immediately
       for (const channel of preferences.channels) {
@@ -131,14 +133,14 @@ export class NotificationDeliverySystem {
     if (!channel.enabled) return false;
 
     // Check severity filter
-    if (channel.severityFilter.length > 0 && 
-        !channel.severityFilter.includes(alert.severity as AlertSeverity)) {
+    if (channel.severityFilter.length > 0 &&
+      !channel.severityFilter.includes(alert.severity as AlertSeverity)) {
       return false;
     }
 
     // Check type filter
-    if (channel.typeFilter.length > 0 && 
-        !channel.typeFilter.includes(alert.alert_type as AlertType)) {
+    if (channel.typeFilter.length > 0 &&
+      !channel.typeFilter.includes(alert.alert_type as AlertType)) {
       return false;
     }
 
@@ -183,6 +185,27 @@ export class NotificationDeliverySystem {
       result.success = true;
     } catch (error) {
       result.error = error instanceof Error ? error.message : 'Unknown error';
+    }
+
+    // Log notification to database
+    try {
+      await db.insert(notifications).values({
+        user_id: alert.user_id,
+        type: channel.type,
+        title: alert.title,
+        message: alert.description,
+        metadata: {
+          channelId: channel.id,
+          messageId: result.messageId,
+          success: result.success,
+          error: result.error,
+          alertId: alert.id
+        },
+        status: result.success ? 'sent' : 'failed',
+        sent_at: new Date()
+      });
+    } catch (dbError) {
+      logError('Failed to log notification to database:', dbError);
     }
 
     return result;
@@ -309,7 +332,7 @@ Received: ${new Date(alert.created_at).toLocaleString()}
   ): Promise<string> {
     // This would integrate with a push notification service like FCM or APNs
     // For now, we'll simulate the functionality
-    
+
     const payload = {
       title: alert.title,
       body: `${alert.competitor_name}: ${alert.description.substring(0, 100)}...`,
@@ -324,8 +347,9 @@ Received: ${new Date(alert.created_at).toLocaleString()}
     };
 
     // In a real implementation, you would send this to FCM/APNs
+    // For now we log it to our notifications table which acts as the "sent" log
     logInfo('Push notification payload:', payload);
-    
+
     return `push_${alert.id}_${Date.now()}`;
   }
 
@@ -506,7 +530,7 @@ Received: ${new Date(alert.created_at).toLocaleString()}
 
   private addToBatch(alert: CompetitorAlert, preferences: NotificationPreferences) {
     const batchKey = preferences.userId;
-    
+
     if (!this.batchedNotifications.has(batchKey)) {
       this.batchedNotifications.set(batchKey, []);
     }
@@ -555,6 +579,7 @@ Received: ${new Date(alert.created_at).toLocaleString()}
       created_at: new Date().toISOString(),
       competitor_name: 'Multiple Competitors',
       competitor_threat_level: 'medium',
+      user_id: preferences.userId,
     };
 
     // Send to enabled channels

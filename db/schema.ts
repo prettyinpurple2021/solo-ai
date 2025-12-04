@@ -577,6 +577,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   chatMessages: many(chatMessages),
   passwordResetTokens: many(passwordResetTokens),
   apiKeys: many(userApiKeys),
+  notifications: many(notifications),
 }));
 
 export const briefcasesRelations = relations(briefcases, ({ one, many }) => ({
@@ -1486,6 +1487,28 @@ export const sessionCheckpointsRelations = relations(sessionCheckpoints, ({ one 
   session: one(collaborationSessions, {
     fields: [sessionCheckpoints.session_id],
     references: [collaborationSessions.id],
+  }),
+}));
+
+// Notifications table
+export const notifications = pgTable('notifications', {
+  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  type: varchar('type', { length: 50 }).notNull(), // email, push, slack, etc.
+  title: varchar('title', { length: 255 }).notNull(),
+  message: text('message'),
+  metadata: jsonb('metadata').default('{}'),
+  status: varchar('status', { length: 20 }).default('sent'),
+  sent_at: timestamp('sent_at').defaultNow(),
+}, (table) => ({
+  userIdIdx: index('notifications_user_id_idx').on(table.user_id),
+  typeIdx: index('notifications_type_idx').on(table.type),
+}));
+
+export const notificationsRelations = relations(notifications, ({ one }) => ({
+  user: one(users, {
+    fields: [notifications.user_id],
+    references: [users.id],
   }),
 }));
 

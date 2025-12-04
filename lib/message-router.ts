@@ -389,17 +389,30 @@ export class MessageRouter {
     for (const agentId of recipients) {
       try {
         // Validate agent exists and is available
-        const agent = this.collaborationHub.getAgent(agentId)
-        if (!agent) {
-          failed.push({ agentId, error: 'Agent not found' })
+        const agentDef = this.collaborationHub.getAgent(agentId)
+        if (!agentDef) {
+          failed.push({ agentId, error: 'Agent definition not found' })
           continue
         }
 
-        // Add message to agent's queue
+        // Get the actual agent instance
+        const agent = this.collaborationHub.getAgentInstance(agentId)
+        if (!agent) {
+          failed.push({ agentId, error: 'Agent instance not found' })
+          continue
+        }
+
+        // Add message to agent's queue (for history/audit)
         this.addToQueue(agentId, message)
 
-        // For now, consider delivery successful
-        // In a real implementation, this would interface with the actual AI agents
+        // Process the message with the real agent
+        // We don't await the full processing to avoid blocking the router for too long,
+        // but we trigger it. In a robust system, this would be a job queue.
+        // For this implementation, we'll fire-and-forget the processing but catch errors.
+        this.processAgentResponse(agent, message).catch(err => {
+          logError(`Error processing message for agent ${agentId}:`, err)
+        })
+
         successful.push(agentId)
 
       } catch (error) {
@@ -416,6 +429,64 @@ export class MessageRouter {
       failed,
       totalRecipients: recipients.length,
       deliveryTime: 0 // Will be calculated by caller
+    }
+  }
+
+  /**
+   * Process agent response and route replies
+   */
+  private async processAgentResponse(agent: any, message: AgentMessage): Promise<void> {
+    // Only reply to requests to avoid infinite loops
+    if (message.messageType !== 'request' && message.messageType !== 'handoff') {
+      return
+    }
+
+    try {
+      const response = await agent.processRequest(message.content, message.context)
+
+      // Route the main response content back to the sender or session
+      if (response.content) {
+        const replyMessage: AgentMessage = {
+          id: crypto.randomUUID(),
+          sessionId: message.sessionId,
+          fromAgent: agent.id,
+          toAgent: message.fromAgent === 'user' ? 'user' : message.fromAgent, // Reply to sender
+          messageType: 'response',
+          content: response.content,
+          timestamp: new Date(),
+          priority: 'medium',
+          metadata: {
+            confidence: response.confidence,
+            reasoning: response.reasoning
+          }
+        }
+
+        // If the original sender was 'user', we might want to broadcast or just send to user.
+        // For now, routing to 'user' (which might be handled specially) or the agent ID.
+        // If toAgent is 'user', the router needs to handle it (maybe just log or store).
+
+        await this.collaborationHub.routeMessage(replyMessage)
+      }
+
+      // Handle specific collaboration requests
+      if (response.collaborationRequests && response.collaborationRequests.length > 0) {
+        for (const req of response.collaborationRequests) {
+          const collabMessage: AgentMessage = {
+            id: crypto.randomUUID(),
+            sessionId: message.sessionId,
+            fromAgent: agent.id,
+            toAgent: req.agentId,
+            messageType: 'request',
+            content: req.request,
+            timestamp: new Date(),
+            priority: (req.priority as any) || 'medium'
+          }
+          await this.collaborationHub.routeMessage(collabMessage)
+        }
+      }
+
+    } catch (error) {
+      logError(`Agent ${agent.id} failed to process message:`, error)
     }
   }
 

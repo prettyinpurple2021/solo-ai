@@ -538,8 +538,7 @@ export class SessionManager {
       // Create final checkpoint
       await this.createCheckpoint(sessionId, 'Session archived')
 
-      // In a real implementation, move to cold storage
-      logInfo(`📦 Session ${sessionId} archived`)
+      logInfo(`📦 Session ${sessionId} archived in database`)
 
       return true
 
@@ -681,13 +680,24 @@ export class SessionManager {
         .orderBy(desc(sessionMessages.timestamp))
         .limit(50) // Limit to last 50 messages for checkpoint
 
+      // Fetch real agent states
+      const agentStates: Record<string, any> = {}
+      if (session.participatingAgents && Array.isArray(session.participatingAgents)) {
+        for (const agentId of session.participatingAgents) {
+          const agent = this.collaborationHub.getAgentInstance(agentId as string)
+          if (agent) {
+            agentStates[agentId as string] = agent.getMemory()
+          }
+        }
+      }
+
       await db.insert(sessionCheckpoints).values({
         id: checkpointId,
         session_id: sessionId,
         timestamp: new Date(),
         state: sessionState,
         message_history: messages,
-        agent_states: {}, // In real implementation, fetch from agents
+        agent_states: agentStates,
         user_context: session.metadata || {},
         description
       })

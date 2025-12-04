@@ -110,6 +110,10 @@ export abstract class CustomAgent {
     }
   }
 
+  public getMemory(): AgentMemory {
+    return this.memory
+  }
+
   // Core agent methods
   abstract processRequest(request: string, context?: Record<string, any>): Promise<AgentResponse>
   abstract collaborateWith(agentId: string, request: string): Promise<AgentResponse>
@@ -117,10 +121,6 @@ export abstract class CustomAgent {
   // Memory management
   updateMemory(updates: Partial<AgentMemory>): void {
     this.memory = { ...this.memory, ...updates }
-  }
-
-  getMemory(): AgentMemory {
-    return this.memory
   }
 
   // Context building
