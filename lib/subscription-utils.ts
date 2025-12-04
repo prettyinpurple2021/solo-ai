@@ -114,7 +114,7 @@ export async function checkUsageLimit(
   switch (limitType) {
     case 'agents':
       // Count distinct agents chatted with today
-      const agentsResult = await query(
+      const agentsResult = await getSql().query(
         `SELECT COUNT(DISTINCT agent_id) AS count FROM conversations 
          WHERE user_id = $1 AND created_at >= CURRENT_DATE`,
         [userId]
@@ -124,7 +124,7 @@ export async function checkUsageLimit(
       break
     case 'conversations':
       // Check conversations today
-      const conversationResult = await query(
+      const conversationResult = await getSql().query(
         `SELECT COUNT(*) as count FROM conversations 
          WHERE user_id = $1 AND created_at >= CURRENT_DATE`,
         [userId]
@@ -133,7 +133,7 @@ export async function checkUsageLimit(
       limit = subscription.features.maxConversationsPerDay
       break
     case 'teamMembers':
-      const teamResult = await query(
+      const teamResult = await getSql().query(
         `SELECT COUNT(*) AS count FROM team_members WHERE user_id = $1`,
         [userId]
       )
@@ -157,7 +157,7 @@ export async function updateSubscriptionStatus(
   tier: string,
   status: string
 ): Promise<void> {
-  await query(
+  await getSql().query(
     'UPDATE users SET subscription_tier = $1, subscription_status = $2, updated_at = NOW() WHERE id = $3',
     [tier, status, userId]
   )

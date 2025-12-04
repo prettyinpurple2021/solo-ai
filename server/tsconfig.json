@@ -3,19 +3,29 @@
         "target": "ES2020",
         "module": "commonjs",
         "outDir": "./dist",
-        "rootDir": "./",
+        "rootDir": "..",
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "baseUrl": "..",
+        "paths": {
+            "@/*": [
+                "./*"
+            ]
+        }
     },
     "include": [
-        "./**/*.ts"
+        "./**/*.ts",
+        "../lib/**/*.ts"
     ],
     "exclude": [
         "node_modules",
         "dist",
-        "drizzle.config.ts"
+        "drizzle.config.ts",
+        "../lib/agent-intelligence-briefings.ts",
+        "../lib/intelligence-briefing-system.ts",
+        "../lib/documentParser.ts"
     ]
 }

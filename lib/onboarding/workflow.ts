@@ -1,5 +1,5 @@
 import { getSql } from '@/lib/api-utils'
-import { logError, logInfo } from '@/lib/logger'
+import { logError, logInfo, logWarn } from '@/lib/logger'
 import { sendWelcomeEmail } from '@/lib/email'
 
 interface WorkflowResult {
@@ -100,12 +100,12 @@ export async function runOnboardingWorkflow(jobId: string, userId: string): Prom
   const insertedBriefcase = briefcaseRows[0]
     ? briefcaseRows[0]
     : (
-        (await sql`
+      (await sql`
           INSERT INTO briefcases (user_id, title, description, status, metadata, created_at, updated_at)
           VALUES (${userId}, ${DEFAULT_BRIEFCASE.title}, ${DEFAULT_BRIEFCASE.description}, ${DEFAULT_BRIEFCASE.status}, ${JSON.stringify(DEFAULT_BRIEFCASE.metadata)}::jsonb, NOW(), NOW())
           RETURNING id
         ` as Array<{ id: number }>)
-      )[0]
+    )[0]
 
   if (!insertedBriefcase) {
     throw new Error('Failed to create onboarding briefcase')

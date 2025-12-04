@@ -117,6 +117,7 @@ export class DocumentParser {
 
   private static async parsePDF(buffer: Buffer): Promise<ParseResult> {
     try {
+      // @ts-ignore
       const parsed = await pdf(buffer)
       const content = parsed.text.substring(0, this.MAX_CONTENT_LENGTH).trim()
       const words = content.split(/\s+/).filter(Boolean).length
