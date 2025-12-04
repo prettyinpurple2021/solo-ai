@@ -12,6 +12,9 @@ import type {
   AgentDefinition
 } from './collaboration-hub'
 import type { MessageRouter } from './message-router'
+import { db } from '@/lib/database-client'
+import { collaborationSessions, sessionMessages, sessionCheckpoints } from '@/db/schema'
+import { eq, desc } from 'drizzle-orm'
 
 // Session state types
 export const SessionStateSchema = z.object({
@@ -75,9 +78,6 @@ export interface SessionTemplate {
  * Coordinates multi-agent collaboration sessions
  */
 export class SessionManager {
-  private activeSessions: Map<string, CollaborationSession> = new Map()
-  private sessionStates: Map<string, SessionState> = new Map()
-  private sessionCheckpoints: Map<string, SessionCheckpoint[]> = new Map()
   private sessionTemplates: Map<string, SessionTemplate> = new Map()
   private collaborationHub: CollaborationHub
   private messageRouter: MessageRouter
@@ -177,10 +177,36 @@ export class SessionManager {
         }
       }
 
-      // Store session and state
-      this.activeSessions.set(sessionId, session)
-      this.sessionStates.set(sessionId, sessionState)
-      this.sessionCheckpoints.set(sessionId, [])
+      // Store session in database
+      await db.insert(collaborationSessions).values({
+        id: sessionId,
+        user_id: config.userId,
+        goal: config.goal,
+        status: 'initializing',
+        created_at: new Date(),
+        updated_at: new Date(),
+        last_activity: new Date(),
+        participant_count: availableAgents.length,
+        message_count: 0,
+        completed_tasks: [],
+        pending_tasks: template?.workflow?.steps.map(step => step.id) || [],
+        session_metrics: {
+          averageResponseTime: 0,
+          totalInteractions: 0,
+          successfulHandoffs: 0,
+          failedHandoffs: 0
+        },
+        configuration: {
+          autoArchiveAfter: 86400000,
+          allowDynamicAgentJoining: true,
+          maxParticipants: 10,
+          requiresHumanApproval: false,
+          ...template?.configuration,
+          ...config.configuration
+        },
+        participating_agents: availableAgents,
+        metadata: config.initialContext || {}
+      })
 
       // Create initial checkpoint
       await this.createCheckpoint(sessionId, 'Session initialized')
@@ -191,9 +217,9 @@ export class SessionManager {
       }
 
       // Mark session as active
-      sessionState.status = 'active'
-      sessionState.updatedAt = new Date()
-      this.sessionStates.set(sessionId, sessionState)
+      await db.update(collaborationSessions)
+        .set({ status: 'active', updated_at: new Date() })
+        .where(eq(collaborationSessions.id, sessionId))
 
       logInfo(`✅ Session ${sessionId} created with ${availableAgents.length} agents`)
 
@@ -210,8 +236,8 @@ export class SessionManager {
    */
   async joinSession(sessionId: string, agentId: string): Promise<boolean> {
     try {
-      const session = this.activeSessions.get(sessionId)
-      const sessionState = this.sessionStates.get(sessionId)
+      const session = await this.getSession(sessionId)
+      const sessionState = await this.getSessionState(sessionId)
 
       if (!session || !sessionState) {
         throw new Error(`Session ${sessionId} not found`)
@@ -248,12 +274,15 @@ export class SessionManager {
       session.participatingAgents.push(agentId)
       agent.currentSessions.push(sessionId)
 
-      // Update session state
-      sessionState.participantCount = session.participatingAgents.length
-      sessionState.updatedAt = new Date()
-      sessionState.lastActivity = new Date()
-
-      this.sessionStates.set(sessionId, sessionState)
+      // Update session state in DB
+      await db.update(collaborationSessions)
+        .set({
+          participant_count: session.participatingAgents.length,
+          updated_at: new Date(),
+          last_activity: new Date(),
+          participating_agents: session.participatingAgents
+        })
+        .where(eq(collaborationSessions.id, sessionId))
 
       // Notify other agents
       await this.sendSystemMessage(
@@ -280,8 +309,8 @@ export class SessionManager {
    */
   async leaveSession(sessionId: string, agentId: string, reason?: string): Promise<boolean> {
     try {
-      const session = this.activeSessions.get(sessionId)
-      const sessionState = this.sessionStates.get(sessionId)
+      const session = await this.getSession(sessionId)
+      const sessionState = await this.getSessionState(sessionId)
 
       if (!session || !sessionState) {
         throw new Error(`Session ${sessionId} not found`)
@@ -304,12 +333,15 @@ export class SessionManager {
         }
       }
 
-      // Update session state
-      sessionState.participantCount = session.participatingAgents.length
-      sessionState.updatedAt = new Date()
-      sessionState.lastActivity = new Date()
-
-      this.sessionStates.set(sessionId, sessionState)
+      // Update session state in DB
+      await db.update(collaborationSessions)
+        .set({
+          participant_count: session.participatingAgents.length,
+          updated_at: new Date(),
+          last_activity: new Date(),
+          participating_agents: session.participatingAgents
+        })
+        .where(eq(collaborationSessions.id, sessionId))
 
       // Notify other agents
       const agentName = agent?.name || agentId
@@ -342,7 +374,7 @@ export class SessionManager {
    */
   async pauseSession(sessionId: string, reason?: string): Promise<boolean> {
     try {
-      const sessionState = this.sessionStates.get(sessionId)
+      const sessionState = await this.getSessionState(sessionId)
       if (!sessionState) {
         throw new Error(`Session ${sessionId} not found`)
       }
@@ -351,9 +383,12 @@ export class SessionManager {
         throw new Error(`Cannot pause session in ${sessionState.status} status`)
       }
 
-      sessionState.status = 'paused'
-      sessionState.updatedAt = new Date()
-      this.sessionStates.set(sessionId, sessionState)
+      await db.update(collaborationSessions)
+        .set({
+          status: 'paused',
+          updated_at: new Date()
+        })
+        .where(eq(collaborationSessions.id, sessionId))
 
       // Notify agents
       await this.sendSystemMessage(
@@ -380,7 +415,7 @@ export class SessionManager {
    */
   async resumeSession(sessionId: string): Promise<boolean> {
     try {
-      const sessionState = this.sessionStates.get(sessionId)
+      const sessionState = await this.getSessionState(sessionId)
       if (!sessionState) {
         throw new Error(`Session ${sessionId} not found`)
       }
@@ -389,10 +424,13 @@ export class SessionManager {
         throw new Error(`Cannot resume session in ${sessionState.status} status`)
       }
 
-      sessionState.status = 'active'
-      sessionState.updatedAt = new Date()
-      sessionState.lastActivity = new Date()
-      this.sessionStates.set(sessionId, sessionState)
+      await db.update(collaborationSessions)
+        .set({
+          status: 'active',
+          updated_at: new Date(),
+          last_activity: new Date()
+        })
+        .where(eq(collaborationSessions.id, sessionId))
 
       // Notify agents
       await this.sendSystemMessage(
@@ -419,8 +457,8 @@ export class SessionManager {
    */
   async completeSession(sessionId: string, summary?: string): Promise<boolean> {
     try {
-      const session = this.activeSessions.get(sessionId)
-      const sessionState = this.sessionStates.get(sessionId)
+      const session = await this.getSession(sessionId)
+      const sessionState = await this.getSessionState(sessionId)
 
       if (!session || !sessionState) {
         throw new Error(`Session ${sessionId} not found`)
@@ -431,9 +469,12 @@ export class SessionManager {
       }
 
       // Update session state
-      sessionState.status = 'completed'
-      sessionState.updatedAt = new Date()
-      this.sessionStates.set(sessionId, sessionState)
+      await db.update(collaborationSessions)
+        .set({
+          status: 'completed',
+          updated_at: new Date()
+        })
+        .where(eq(collaborationSessions.id, sessionId))
 
       // Remove agents from session
       for (const agentId of session.participatingAgents) {
@@ -478,7 +519,7 @@ export class SessionManager {
    */
   async archiveSession(sessionId: string): Promise<boolean> {
     try {
-      const sessionState = this.sessionStates.get(sessionId)
+      const sessionState = await this.getSessionState(sessionId)
       if (!sessionState) {
         return false
       }
@@ -487,9 +528,12 @@ export class SessionManager {
         throw new Error(`Cannot archive session in ${sessionState.status} status`)
       }
 
-      sessionState.status = 'archived'
-      sessionState.updatedAt = new Date()
-      this.sessionStates.set(sessionId, sessionState)
+      await db.update(collaborationSessions)
+        .set({
+          status: 'archived',
+          updated_at: new Date()
+        })
+        .where(eq(collaborationSessions.id, sessionId))
 
       // Create final checkpoint
       await this.createCheckpoint(sessionId, 'Session archived')
@@ -508,39 +552,112 @@ export class SessionManager {
   /**
    * Get session information
    */
-  getSession(sessionId: string): CollaborationSession | null {
-    return this.activeSessions.get(sessionId) || null
+  async getSession(sessionId: string): Promise<CollaborationSession | null> {
+    try {
+      const result = await db.select().from(collaborationSessions).where(eq(collaborationSessions.id, sessionId)).limit(1)
+      if (result.length === 0) return null
+
+      const record = result[0]
+      return {
+        id: record.id,
+        userId: parseInt(record.user_id, 10) || 0,
+        projectName: record.goal,
+        participatingAgents: (record.participating_agents as string[]) || [],
+        sessionStatus: record.status as any,
+        sessionType: 'project', // Default or fetch from DB if added
+        createdAt: record.created_at || new Date(),
+        updatedAt: record.updated_at || new Date(),
+        metadata: record.metadata as any
+      }
+    } catch (error) {
+      logError(`Error fetching session ${sessionId}:`, error)
+      return null
+    }
   }
 
   /**
    * Get session state
    */
-  getSessionState(sessionId: string): SessionState | null {
-    return this.sessionStates.get(sessionId) || null
+  async getSessionState(sessionId: string): Promise<SessionState | null> {
+    try {
+      const result = await db.select().from(collaborationSessions).where(eq(collaborationSessions.id, sessionId)).limit(1)
+      if (result.length === 0) return null
+
+      const record = result[0]
+      return {
+        sessionId: record.id,
+        status: record.status as any,
+        createdAt: record.created_at || new Date(),
+        updatedAt: record.updated_at || new Date(),
+        lastActivity: record.last_activity || new Date(),
+        participantCount: record.participant_count || 0,
+        messageCount: record.message_count || 0,
+        completedTasks: (record.completed_tasks as string[]) || [],
+        pendingTasks: (record.pending_tasks as string[]) || [],
+        sessionMetrics: (record.session_metrics as any) || {},
+        configuration: (record.configuration as any) || {}
+      }
+    } catch (error) {
+      logError(`Error fetching session state ${sessionId}:`, error)
+      return null
+    }
   }
 
   /**
    * Get all active sessions
    */
-  getActiveSessions(): CollaborationSession[] {
-    return Array.from(this.activeSessions.values())
+  async getActiveSessions(): Promise<CollaborationSession[]> {
+    try {
+      const results = await db.select().from(collaborationSessions).where(eq(collaborationSessions.status, 'active'))
+      return results.map(record => ({
+        id: record.id,
+        userId: parseInt(record.user_id, 10) || 0,
+        projectName: record.goal,
+        participatingAgents: (record.participating_agents as string[]) || [],
+        sessionStatus: record.status as any,
+        sessionType: 'project',
+        createdAt: record.created_at || new Date(),
+        updatedAt: record.updated_at || new Date(),
+        metadata: record.metadata as any
+      }))
+    } catch (error) {
+      logError('Error fetching active sessions:', error)
+      return []
+    }
   }
 
   /**
    * Get sessions by user
    */
-  getUserSessions(userId: string): CollaborationSession[] {
-    const numericUserId = parseInt(userId, 10)
-    return Array.from(this.activeSessions.values())
-      .filter(session => session.userId === numericUserId)
+  async getUserSessions(userId: string): Promise<CollaborationSession[]> {
+    try {
+      const results = await db.select().from(collaborationSessions).where(eq(collaborationSessions.user_id, userId))
+      return results.map(record => ({
+        id: record.id,
+        userId: parseInt(record.user_id, 10) || 0,
+        projectName: record.goal,
+        participatingAgents: (record.participating_agents as string[]) || [],
+        sessionStatus: record.status as any,
+        sessionType: 'project',
+        createdAt: record.created_at || new Date(),
+        updatedAt: record.updated_at || new Date(),
+        metadata: record.metadata as any
+      }))
+    } catch (error) {
+      logError(`Error fetching user sessions for ${userId}:`, error)
+      return []
+    }
   }
 
   /**
    * Get sessions by agent
    */
-  getAgentSessions(agentId: string): CollaborationSession[] {
-    return Array.from(this.activeSessions.values())
-      .filter(session => session.participatingAgents.includes(agentId))
+  async getAgentSessions(agentId: string): Promise<CollaborationSession[]> {
+    // This is harder to query with simple equality if agents are in a JSON array
+    // For now, we fetch all active and filter in memory, or use a raw query if needed
+    // Assuming low volume of active sessions for now
+    const sessions = await this.getActiveSessions()
+    return sessions.filter(session => session.participatingAgents.includes(agentId))
   }
 
   /**
@@ -548,8 +665,8 @@ export class SessionManager {
    */
   async createCheckpoint(sessionId: string, description: string): Promise<string> {
     try {
-      const session = this.activeSessions.get(sessionId)
-      const sessionState = this.sessionStates.get(sessionId)
+      const session = await this.getSession(sessionId)
+      const sessionState = await this.getSessionState(sessionId)
 
       if (!session || !sessionState) {
         throw new Error(`Session ${sessionId} not found`)
@@ -557,25 +674,23 @@ export class SessionManager {
 
       const checkpointId = crypto.randomUUID()
 
-      const checkpoint: SessionCheckpoint = {
-        checkpointId,
-        sessionId,
+      // Fetch message history from DB
+      const messages = await db.select()
+        .from(sessionMessages)
+        .where(eq(sessionMessages.session_id, sessionId))
+        .orderBy(desc(sessionMessages.timestamp))
+        .limit(50) // Limit to last 50 messages for checkpoint
+
+      await db.insert(sessionCheckpoints).values({
+        id: checkpointId,
+        session_id: sessionId,
         timestamp: new Date(),
-        state: { ...sessionState },
-        messageHistory: [], // In real implementation, get from message store
-        agentStates: {}, // In real implementation, get from agents
-        userContext: session.metadata || {}
-      }
-
-      const checkpoints = this.sessionCheckpoints.get(sessionId) || []
-      checkpoints.push(checkpoint)
-
-      // Keep only last 10 checkpoints to manage memory
-      if (checkpoints.length > 10) {
-        checkpoints.splice(0, checkpoints.length - 10)
-      }
-
-      this.sessionCheckpoints.set(sessionId, checkpoints)
+        state: sessionState,
+        message_history: messages,
+        agent_states: {}, // In real implementation, fetch from agents
+        user_context: session.metadata || {},
+        description
+      })
 
       logInfo(`📸 Checkpoint created for session ${sessionId}: ${description}`)
 
@@ -592,23 +707,32 @@ export class SessionManager {
    */
   async restoreFromCheckpoint(sessionId: string, checkpointId: string): Promise<boolean> {
     try {
-      const checkpoints = this.sessionCheckpoints.get(sessionId)
-      if (!checkpoints) {
-        throw new Error(`No checkpoints found for session ${sessionId}`)
-      }
-
-      const checkpoint = checkpoints.find(cp => cp.checkpointId === checkpointId)
-      if (!checkpoint) {
+      const result = await db.select().from(sessionCheckpoints).where(eq(sessionCheckpoints.id, checkpointId)).limit(1)
+      if (result.length === 0) {
         throw new Error(`Checkpoint ${checkpointId} not found`)
       }
 
-      // Restore session state
-      this.sessionStates.set(sessionId, { ...checkpoint.state })
+      const checkpoint = result[0]
+      const restoredState = checkpoint.state as SessionState
+
+      // Restore session state in DB
+      await db.update(collaborationSessions)
+        .set({
+          status: restoredState.status,
+          updated_at: new Date(),
+          participant_count: restoredState.participantCount,
+          message_count: restoredState.messageCount,
+          completed_tasks: restoredState.completedTasks,
+          pending_tasks: restoredState.pendingTasks,
+          session_metrics: restoredState.sessionMetrics,
+          configuration: restoredState.configuration
+        })
+        .where(eq(collaborationSessions.id, sessionId))
 
       // Notify agents about restoration
       await this.sendSystemMessage(
         sessionId,
-        `Session restored from checkpoint created at ${checkpoint.timestamp.toISOString()}`,
+        `Session restored from checkpoint created at ${(checkpoint.timestamp || new Date()).toISOString()}`,
         { restoredFromCheckpoint: checkpointId }
       )
 
@@ -627,7 +751,7 @@ export class SessionManager {
    */
   async updateTaskStatus(sessionId: string, taskId: string, status: 'completed' | 'pending'): Promise<boolean> {
     try {
-      const sessionState = this.sessionStates.get(sessionId)
+      const sessionState = await this.getSessionState(sessionId)
       if (!sessionState) {
         throw new Error(`Session ${sessionId} not found`)
       }
@@ -654,8 +778,13 @@ export class SessionManager {
         }
       }
 
-      sessionState.updatedAt = new Date()
-      this.sessionStates.set(sessionId, sessionState)
+      await db.update(collaborationSessions)
+        .set({
+          completed_tasks: sessionState.completedTasks,
+          pending_tasks: sessionState.pendingTasks,
+          updated_at: new Date()
+        })
+        .where(eq(collaborationSessions.id, sessionId))
 
       logInfo(`📝 Task ${taskId} marked as ${status} in session ${sessionId}`)
 
@@ -686,6 +815,18 @@ export class SessionManager {
       priority: 'medium',
       metadata: context
     }
+
+    await db.insert(sessionMessages).values({
+      id: systemMessage.id,
+      session_id: sessionId,
+      from_agent: 'system',
+      to_agent: null,
+      message_type: 'notification',
+      content,
+      timestamp: new Date(),
+      priority: 'medium',
+      metadata: context
+    })
 
     await this.messageRouter.broadcastMessage(systemMessage)
   }
@@ -768,32 +909,41 @@ export class SessionManager {
   /**
    * Clean up inactive or expired sessions
    */
-  private cleanupInactiveSessions(): void {
+  private async cleanupInactiveSessions(): Promise<void> {
     const now = Date.now()
     const sessionsToArchive: string[] = []
 
-    for (const [sessionId, sessionState] of Array.from(this.sessionStates.entries())) {
-      const timeSinceActivity = now - sessionState.lastActivity.getTime()
-      const maxDuration = sessionState.configuration.maxDuration
+    try {
+      const activeSessions = await this.getActiveSessions()
 
-      // Check if session has expired or been inactive too long
-      if (
-        (maxDuration && timeSinceActivity > maxDuration) ||
-        (sessionState.status === 'completed' && timeSinceActivity > sessionState.configuration.autoArchiveAfter)
-      ) {
-        sessionsToArchive.push(sessionId)
+      for (const session of activeSessions) {
+        const sessionState = await this.getSessionState(session.id)
+        if (!sessionState) continue
+
+        const timeSinceActivity = now - sessionState.lastActivity.getTime()
+        const maxDuration = sessionState.configuration.maxDuration
+
+        // Check if session has expired or been inactive too long
+        if (
+          (maxDuration && timeSinceActivity > maxDuration) ||
+          (sessionState.status === 'completed' && timeSinceActivity > sessionState.configuration.autoArchiveAfter)
+        ) {
+          sessionsToArchive.push(session.id)
+        }
       }
-    }
 
-    // Archive expired sessions
-    sessionsToArchive.forEach(sessionId => {
-      this.archiveSession(sessionId).catch((err) => {
-        logError('Failed to archive expired session', { sessionId }, err as unknown as Error)
+      // Archive expired sessions
+      sessionsToArchive.forEach(sessionId => {
+        this.archiveSession(sessionId).catch((err) => {
+          logError('Failed to archive expired session', { sessionId }, err as unknown as Error)
+        })
       })
-    })
 
-    if (sessionsToArchive.length > 0) {
-      logInfo(`🧹 Cleaned up ${sessionsToArchive.length} inactive sessions`)
+      if (sessionsToArchive.length > 0) {
+        logInfo(`🧹 Cleaned up ${sessionsToArchive.length} inactive sessions`)
+      }
+    } catch (error) {
+      logError('Error in session cleanup:', error)
     }
   }
 

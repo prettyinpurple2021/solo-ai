@@ -92,7 +92,7 @@ export async function POST(
     }
 
     // Get session
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Session not found' },
@@ -120,7 +120,7 @@ export async function POST(
         }
 
         // Get updated session to return participant info
-        const updatedSession = sessionManager.getSession(sessionId)
+        const updatedSession = await sessionManager.getSession(sessionId)
 
         return NextResponse.json({
           success: true,
@@ -149,7 +149,7 @@ export async function POST(
         }
 
         // Get updated session to return participant info
-        const updatedSessionAfterLeave = sessionManager.getSession(sessionId)
+        const updatedSessionAfterLeave = await sessionManager.getSession(sessionId)
 
         return NextResponse.json({
           success: true,
@@ -297,7 +297,7 @@ export async function GET(
     }
 
     // Get session
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Session not found' },

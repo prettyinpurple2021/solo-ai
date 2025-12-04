@@ -1385,3 +1385,107 @@ export const analyticsEventsRelations = relations(analyticsEvents, ({ one }) => 
 }));
 
 
+
+// Fine-Tuning Jobs table
+export const fineTuningJobs = pgTable('fine_tuning_jobs', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  agent_id: varchar('agent_id', { length: 255 }).notNull(), // Assuming agent ID is a string, potentially from config
+  user_id: varchar('user_id', { length: 255 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  status: varchar('status', { length: 50 }).notNull().default('pending'),
+  created_at: timestamp('created_at').defaultNow(),
+  started_at: timestamp('started_at'),
+  completed_at: timestamp('completed_at'),
+  training_data_size: integer('training_data_size').default(0),
+  validation_data_size: integer('validation_data_size').default(0),
+  parameters: jsonb('parameters').default('{}'),
+  results: jsonb('results'),
+  error: text('error'),
+}, (table) => ({
+  userIdIdx: index('fine_tuning_jobs_user_id_idx').on(table.user_id),
+  agentIdIdx: index('fine_tuning_jobs_agent_id_idx').on(table.agent_id),
+  statusIdx: index('fine_tuning_jobs_status_idx').on(table.status),
+}));
+
+export const fineTuningJobsRelations = relations(fineTuningJobs, ({ one }) => ({
+  user: one(users, {
+    fields: [fineTuningJobs.user_id],
+    references: [users.id],
+  }),
+}));
+
+// Collaboration Sessions table
+export const collaborationSessions = pgTable('collaboration_sessions', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  user_id: varchar('user_id', { length: 255 }).notNull().references(() => users.id, { onDelete: 'cascade' }),
+  goal: text('goal').notNull(),
+  status: varchar('status', { length: 50 }).notNull().default('initializing'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+  last_activity: timestamp('last_activity').defaultNow(),
+  participant_count: integer('participant_count').default(0),
+  message_count: integer('message_count').default(0),
+  completed_tasks: jsonb('completed_tasks').default('[]'),
+  pending_tasks: jsonb('pending_tasks').default('[]'),
+  session_metrics: jsonb('session_metrics').default('{}'),
+  configuration: jsonb('configuration').default('{}'),
+  participating_agents: jsonb('participating_agents').default('[]'),
+  metadata: jsonb('metadata').default('{}'),
+}, (table) => ({
+  userIdIdx: index('collaboration_sessions_user_id_idx').on(table.user_id),
+  statusIdx: index('collaboration_sessions_status_idx').on(table.status),
+}));
+
+export const collaborationSessionsRelations = relations(collaborationSessions, ({ one, many }) => ({
+  user: one(users, {
+    fields: [collaborationSessions.user_id],
+    references: [users.id],
+  }),
+  messages: many(sessionMessages),
+}));
+
+// Session Messages table
+export const sessionMessages = pgTable('session_messages', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  session_id: varchar('session_id', { length: 255 }).notNull().references(() => collaborationSessions.id, { onDelete: 'cascade' }),
+  from_agent: varchar('from_agent', { length: 255 }).notNull(),
+  to_agent: varchar('to_agent', { length: 255 }), // Nullable for broadcast
+  message_type: varchar('message_type', { length: 50 }).notNull(),
+  content: text('content').notNull(),
+  timestamp: timestamp('timestamp').defaultNow(),
+  priority: varchar('priority', { length: 20 }).default('medium'),
+  metadata: jsonb('metadata').default('{}'),
+}, (table) => ({
+  sessionIdIdx: index('session_messages_session_id_idx').on(table.session_id),
+  timestampIdx: index('session_messages_timestamp_idx').on(table.timestamp),
+}));
+
+
+export const sessionMessagesRelations = relations(sessionMessages, ({ one }) => ({
+  session: one(collaborationSessions, {
+    fields: [sessionMessages.session_id],
+    references: [collaborationSessions.id],
+  }),
+}));
+
+// Session Checkpoints table
+export const sessionCheckpoints = pgTable('session_checkpoints', {
+  id: varchar('id', { length: 255 }).primaryKey(),
+  session_id: varchar('session_id', { length: 255 }).notNull().references(() => collaborationSessions.id, { onDelete: 'cascade' }),
+  timestamp: timestamp('timestamp').defaultNow(),
+  state: jsonb('state').notNull(),
+  message_history: jsonb('message_history').default('[]'),
+  agent_states: jsonb('agent_states').default('{}'),
+  user_context: jsonb('user_context').default('{}'),
+  description: text('description'),
+}, (table) => ({
+  sessionIdIdx: index('session_checkpoints_session_id_idx').on(table.session_id),
+  timestampIdx: index('session_checkpoints_timestamp_idx').on(table.timestamp),
+}));
+
+export const sessionCheckpointsRelations = relations(sessionCheckpoints, ({ one }) => ({
+  session: one(collaborationSessions, {
+    fields: [sessionCheckpoints.session_id],
+    references: [collaborationSessions.id],
+  }),
+}));
+

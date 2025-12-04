@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Get session state for additional details
-    const sessionState = sessionManager.getSessionState(session.id)
+    const sessionState = await sessionManager.getSessionState(session.id)
 
     return NextResponse.json({
       success: true,
@@ -155,23 +155,23 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0')
 
     // Get user's sessions
-    const userSessions = sessionManager.getUserSessions(user.id.toString())
+    const userSessions = await sessionManager.getUserSessions(user.id.toString())
 
     // Filter by status if provided
     let filteredSessions = userSessions
     if (status) {
-      filteredSessions = userSessions.filter(session => {
-        const sessionState = sessionManager.getSessionState(session.id)
-        return sessionState?.status === status
-      })
+      filteredSessions = await Promise.all(userSessions.map(async session => {
+        const sessionState = await sessionManager.getSessionState(session.id)
+        return sessionState?.status === status ? session : null
+      })).then(results => results.filter((s): s is typeof userSessions[0] => s !== null))
     }
 
     // Apply pagination
     const paginatedSessions = filteredSessions.slice(offset, offset + limit)
 
     // Enhance sessions with state information
-    const enhancedSessions = paginatedSessions.map(session => {
-      const sessionState = sessionManager.getSessionState(session.id)
+    const enhancedSessions = await Promise.all(paginatedSessions.map(async session => {
+      const sessionState = await sessionManager.getSessionState(session.id)
       const agents = session.participatingAgents.map(agentId =>
         collaborationHub.getAgent(agentId)
       ).filter(Boolean)
@@ -192,7 +192,7 @@ export async function GET(request: NextRequest) {
         pendingTasks: sessionState?.pendingTasks?.length || 0,
         configuration: sessionState?.configuration
       }
-    })
+    }))
 
     return NextResponse.json({
       success: true,

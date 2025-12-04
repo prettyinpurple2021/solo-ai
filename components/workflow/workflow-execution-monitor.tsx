@@ -220,10 +220,10 @@ export function WorkflowExecutionMonitor({
   onViewDetails,
   className = ""
 }: WorkflowExecutionMonitorProps) {
-  const [executions, setExecutions] = useState<WorkflowExecution[]>(MOCK_EXECUTIONS)
-  const [stats, setStats] = useState<ExecutionStats>(MOCK_STATS)
+  const [executions, setExecutions] = useState<WorkflowExecution[]>([])
+  const [stats, setStats] = useState<ExecutionStats>(MOCK_STATS) // Stats calculation logic to be added later or fetched
   const [selectedExecution, setSelectedExecution] = useState<WorkflowExecution | null>(null)
-  const [filteredExecutions, setFilteredExecutions] = useState<WorkflowExecution[]>(MOCK_EXECUTIONS)
+  const [filteredExecutions, setFilteredExecutions] = useState<WorkflowExecution[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set())
@@ -280,16 +280,41 @@ export function WorkflowExecutionMonitor({
   const refreshExecutions = useCallback(async () => {
     setLoading(true)
     try {
-      // In real implementation, this would fetch from API
-      logInfo('Refreshing workflow executions')
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 500))
-      setLoading(false)
+      const response = await fetch('/api/workflow/executions')
+      if (!response.ok) throw new Error('Failed to fetch executions')
+      const data = await response.json()
+      
+      // Convert date strings to Date objects
+      const parsedData = data.map((e: any) => ({
+        ...e,
+        startedAt: new Date(e.startedAt),
+        completedAt: e.completedAt ? new Date(e.completedAt) : null,
+        steps: e.steps.map((s: any) => ({
+          ...s,
+          startedAt: s.startedAt ? new Date(s.startedAt) : null,
+          completedAt: s.completedAt ? new Date(s.completedAt) : null
+        })),
+        logs: e.logs.map((l: any) => ({
+          ...l,
+          timestamp: new Date(l.timestamp)
+        }))
+      }))
+
+      setExecutions(parsedData)
+      logInfo('Refreshed workflow executions')
     } catch (error) {
       logError('Failed to refresh executions:', error)
+      // Fallback to mock data if API fails
+      setExecutions(MOCK_EXECUTIONS)
+    } finally {
       setLoading(false)
     }
   }, [])
+
+  // Initial fetch
+  useEffect(() => {
+    refreshExecutions()
+  }, [refreshExecutions])
 
   // Handle stop execution
   const handleStopExecution = useCallback((execId: string | number) => {

@@ -59,22 +59,24 @@ export async function GET(
     }
 
     // Get agent's active sessions details
-    const agentSessions = sessionManager.getAgentSessions(agentId).map(session => {
-      const sessionState = sessionManager.getSessionState(session.id)
+    const rawAgentSessions = await sessionManager.getAgentSessions(agentId)
+    const agentSessions = await Promise.all(rawAgentSessions.map(async session => {
+      const sessionState = await sessionManager.getSessionState(session.id)
       return {
         id: session.id,
         projectName: session.projectName,
         status: sessionState?.status || 'unknown',
         createdAt: session.createdAt,
         lastActivity: sessionState?.lastActivity,
-        participantCount: session.participatingAgents.length
+        participantCount: session.participatingAgents.length,
+        metrics: sessionState?.sessionMetrics,
+        completedTasks: sessionState?.completedTasks
       }
-    })
+    }))
 
     // Calculate performance metrics
     const totalResponseTime = agentSessions.reduce((sum, session) => {
-      const sessionState = sessionManager.getSessionState(session.id)
-      return sum + (sessionState?.sessionMetrics?.averageResponseTime || 0)
+      return sum + (session.metrics?.averageResponseTime || 0)
     }, 0)
 
     const averageResponseTime = agentSessions.length > 0
@@ -105,13 +107,13 @@ export async function GET(
           averageResponseTime,
           totalSessions: agentSessions.length,
           completedTasks: agentSessions.reduce((sum, session) => {
-            const sessionState = sessionManager.getSessionState(session.id)
-            return sum + (sessionState?.completedTasks?.length || 0)
+            return sum + (session.completedTasks?.length || 0)
           }, 0)
         }
       },
       message: 'Agent details retrieved successfully'
     })
+
 
   } catch (error) {
     logError('Error retrieving agent details:', error)
@@ -224,8 +226,7 @@ export async function POST(
 }
 
 /**
- * Simulate capability execution
- * In a real implementation, this would interface with the actual AI agents
+ * Execute capability using real AI
  */
 async function simulateCapabilityExecution(
   agent: any,
@@ -233,54 +234,52 @@ async function simulateCapabilityExecution(
   input: any,
   context?: any
 ): Promise<any> {
-  // Simulate processing time based on agent's response time
-  await new Promise(resolve => setTimeout(resolve, agent.responseTimeMs / 10))
+  try {
+    const apiKey = process.env.GOOGLE_API_KEY || process.env.API_KEY;
+    if (!apiKey) {
+      throw new Error("Missing API Key for AI generation");
+    }
 
-  // Return simulated results based on capability type
-  switch (capability) {
-    case 'Strategic Planning':
-      return {
-        strategy: 'Generated strategic plan based on current market conditions',
-        keyActions: ['Market analysis', 'Resource allocation', 'Risk assessment'],
-        timeline: '3-6 months',
-        confidence: 0.85
-      }
+    const { GoogleGenerativeAI } = await import("@google/generative-ai");
+    const genAI = new GoogleGenerativeAI(apiKey);
 
-    case 'Data Analysis':
-      return {
-        insights: 'Data analysis reveals positive trends',
-        metrics: {
-          growth: '+12%',
-          efficiency: '+8%',
-          satisfaction: '92%'
-        },
-        recommendations: ['Focus on high-performing segments', 'Optimize resource allocation']
-      }
+    // Use a standard model for capabilities
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
-    case 'Content Creation':
-      return {
-        content: 'Generated high-quality content based on brand guidelines',
-        format: 'blog_post',
-        wordCount: 1200,
-        tone: 'professional',
-        seoScore: 87
-      }
+    const prompt = `
+      You are ${agent.displayName}.
+      Your personality is: ${agent.personality}.
+      Your capabilities include: ${agent.capabilities.join(', ')}.
+      
+      Task: Execute the capability "${capability}".
+      Input: ${JSON.stringify(input)}
+      Context: ${JSON.stringify(context || {})}
+      
+      Please provide a structured JSON response appropriate for this task. 
+      Do not include markdown formatting like \`\`\`json. Just the raw JSON.
+    `;
 
-    case 'Risk Assessment':
-      return {
-        riskLevel: 'Medium',
-        factors: ['Market volatility', 'Regulatory changes', 'Competition'],
-        mitigationStrategies: ['Diversification', 'Compliance monitoring', 'Competitive analysis'],
-        confidence: 0.78
-      }
+    const result = await model.generateContent(prompt);
+    const responseText = result.response.text();
 
-    default:
+    try {
+      // Attempt to parse JSON
+      return JSON.parse(responseText.replace(/```json/g, '').replace(/```/g, '').trim());
+    } catch (e) {
+      // Fallback if not valid JSON
       return {
-        result: `Capability ${capability} executed successfully`,
-        input: input,
-        context: context,
-        processedBy: agent.displayName,
-        timestamp: new Date().toISOString()
-      }
+        result: responseText,
+        type: 'text_response'
+      };
+    }
+
+  } catch (error) {
+    logError("AI Capability Execution Failed", error);
+    // Fallback to basic response if AI fails
+    return {
+      error: "AI execution failed",
+      message: error instanceof Error ? error.message : "Unknown error",
+      fallback: true
+    };
   }
 }

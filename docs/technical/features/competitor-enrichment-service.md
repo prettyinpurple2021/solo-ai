@@ -209,11 +209,11 @@ When creating a new competitor with a domain, the system automatically triggers 
 
 ## Data Sources
 
-### Current Implementation (Simulated)
-- Mock website scraping with realistic data patterns
-- Simulated social media discovery
-- Mock personnel identification
-- Algorithmic threat assessment
+### Current Implementation
+- Real-time website scraping with ethical compliance
+- Heuristic-based social media discovery
+- Basic personnel identification from public pages
+- Algorithmic threat assessment based on gathered data
 
 ### Production Implementation (Future)
 - Web scraping with Puppeteer/Playwright

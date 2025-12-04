@@ -2,6 +2,9 @@ import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } 
 import { SimpleTrainingCollector } from "./simple-training-collector"
 import type { TrainingInteraction } from "./simple-training-collector"
 import { PerformanceAnalytics, TrainingRecommendation } from "./performance-analytics"
+import { db } from '@/lib/database-client'
+import { fineTuningJobs } from '@/db/schema'
+import { eq, desc } from 'drizzle-orm'
 
 
 export interface FineTuningJob {
@@ -69,7 +72,7 @@ export interface TrainingDataset {
 export class FineTuningPipeline {
   private dataCollector: SimpleTrainingCollector
   private analytics: PerformanceAnalytics
-  private jobs: Map<string, FineTuningJob> = new Map()
+
 
   constructor() {
     this.dataCollector = SimpleTrainingCollector.getInstance()
@@ -77,7 +80,7 @@ export class FineTuningPipeline {
   }
 
   private generateUUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       const r = Math.random() * 16 | 0
       const v = c === 'x' ? r : (r & 0x3 | 0x8)
       return v.toString(16)
@@ -90,11 +93,11 @@ export class FineTuningPipeline {
     parameters: FineTuningParameters
   ): Promise<FineTuningJob> {
     const jobId = this.generateUUID()
-    
+
     try {
       // Get training data
       const trainingData = await this.prepareTrainingData(agentId, userId, parameters.dataFilters)
-      
+
       if (trainingData.length < 5) {
         throw new Error('Insufficient training data. Need at least 5 interactions.')
       }
@@ -150,15 +153,15 @@ export class FineTuningPipeline {
     logInfo(`After filtering: ${data.length} training interactions`)
 
     if (filters.timeRange) {
-      data = data.filter(d => 
-        d.timestamp >= filters.timeRange!.start && 
+      data = data.filter(d =>
+        d.timestamp >= filters.timeRange!.start &&
         d.timestamp <= filters.timeRange!.end
       )
     }
 
     // Shuffle and balance data
     data = this.shuffleArray(data)
-    
+
     return data
   }
 
@@ -172,9 +175,22 @@ export class FineTuningPipeline {
   }
 
   private async storeFineTuningJob(job: FineTuningJob): Promise<void> {
-    // Store in memory (in a real implementation, store in database)
-    this.jobs.set(job.id, job)
-    logInfo('Storing fine-tuning job:', job.id)
+    try {
+      await db.insert(fineTuningJobs).values({
+        id: job.id,
+        agent_id: job.agentId,
+        user_id: job.userId,
+        status: job.status,
+        created_at: job.createdAt,
+        training_data_size: job.trainingDataSize,
+        validation_data_size: job.validationDataSize,
+        parameters: job.parameters,
+      })
+      logInfo('Stored fine-tuning job in database:', job.id)
+    } catch (error) {
+      logError('Failed to store fine-tuning job:', error)
+      throw error
+    }
   }
 
   private async startFineTuningProcess(job: FineTuningJob, trainingData: TrainingInteraction[]): Promise<void> {
@@ -186,7 +202,7 @@ export class FineTuningPipeline {
 
       // Prepare training dataset
       const dataset = await this.createTrainingDataset(job, trainingData)
-      
+
       // Update job status
       job.status = 'training'
       await this.updateJobStatus(job)
@@ -250,7 +266,7 @@ export class FineTuningPipeline {
     // Calculate diversity based on unique contexts, message types, etc.
     const uniqueContexts = new Set(data.map(d => JSON.stringify(d.context))).size
     const uniqueMessageTypes = new Set(data.map(d => d.userMessage.split(' ')[0])).size
-    
+
     return Math.min(1, (uniqueContexts + uniqueMessageTypes) / (data.length * 2))
   }
 
@@ -258,9 +274,9 @@ export class FineTuningPipeline {
     // Calculate balance between successful and failed interactions
     const successful = data.filter(d => d.success).length
     const failed = data.length - successful
-    
+
     if (successful === 0 || failed === 0) return 0.5 // Perfect balance if all one type
-    
+
     const ratio = Math.min(successful, failed) / Math.max(successful, failed)
     return ratio
   }
@@ -268,10 +284,10 @@ export class FineTuningPipeline {
   private async simulateFineTuning(job: FineTuningJob, dataset: TrainingDataset): Promise<any> {
     // Simulate training process
     logInfo(`Simulating fine-tuning for ${job.agentId} with ${dataset.size} samples`)
-    
+
     // In real implementation, this would call the actual fine-tuning API
     await new Promise(resolve => setTimeout(resolve, 5000)) // Simulate 5 second training
-    
+
     return {
       accuracy: 0.85 + Math.random() * 0.1,
       loss: 0.1 + Math.random() * 0.05,
@@ -283,7 +299,7 @@ export class FineTuningPipeline {
   private async validateFineTuningResults(job: FineTuningJob, results: any): Promise<FineTuningResults> {
     // Get before metrics
     const beforeMetrics = await this.getAgentMetrics(job.agentId, job.userId)
-    
+
     // Simulate after metrics (in real implementation, test with new model)
     const afterMetrics = {
       ...beforeMetrics,
@@ -308,7 +324,7 @@ export class FineTuningPipeline {
 
   private async getAgentMetrics(agentId: string, userId: string): Promise<any> {
     const data = await this.dataCollector.getTrainingDataForAgent(agentId, userId, 1000)
-    
+
     if (data.length === 0) {
       return {
         successRate: 0,
@@ -320,11 +336,11 @@ export class FineTuningPipeline {
 
     const successful = data.filter(d => d.success).length
     const withRating = data.filter(d => d.userRating !== null)
-    
+
     return {
       successRate: (successful / data.length) * 100,
-      averageRating: withRating.length > 0 
-        ? withRating.reduce((sum, d) => sum + (d.userRating || 0), 0) / withRating.length 
+      averageRating: withRating.length > 0
+        ? withRating.reduce((sum, d) => sum + (d.userRating || 0), 0) / withRating.length
         : 0,
       averageResponseTime: data.reduce((sum, d) => sum + d.responseTime, 0) / data.length,
       averageConfidence: data.reduce((sum, d) => sum + d.confidence, 0) / data.length
@@ -332,21 +348,78 @@ export class FineTuningPipeline {
   }
 
   private async updateJobStatus(job: FineTuningJob): Promise<void> {
-    // Update in memory (in real implementation, update in database)
-    this.jobs.set(job.id, job)
-    logInfo(`Job ${job.id} status updated to: ${job.status}`)
+    try {
+      await db.update(fineTuningJobs)
+        .set({
+          status: job.status,
+          started_at: job.startedAt,
+          completed_at: job.completedAt,
+          results: job.results,
+          error: job.error,
+        })
+        .where(eq(fineTuningJobs.id, job.id))
+
+      logInfo(`Job ${job.id} status updated to: ${job.status}`)
+    } catch (error) {
+      logError(`Failed to update job status for ${job.id}:`, error)
+      throw error
+    }
   }
 
   async getFineTuningJob(jobId: string): Promise<FineTuningJob | null> {
-    // Fetch from memory (in real implementation, fetch from database)
     logInfo(`Fetching fine-tuning job: ${jobId}`)
-    return this.jobs.get(jobId) || null
+    try {
+      const result = await db.select().from(fineTuningJobs).where(eq(fineTuningJobs.id, jobId)).limit(1)
+
+      if (result.length === 0) return null
+
+      const record = result[0]
+      return {
+        id: record.id,
+        agentId: record.agent_id,
+        userId: record.user_id,
+        status: record.status as FineTuningJob['status'],
+        createdAt: record.created_at || new Date(),
+        startedAt: record.started_at || undefined,
+        completedAt: record.completed_at || undefined,
+        trainingDataSize: record.training_data_size || 0,
+        validationDataSize: record.validation_data_size || 0,
+        parameters: record.parameters as FineTuningParameters,
+        results: record.results as FineTuningResults | undefined,
+        error: record.error || undefined,
+      }
+    } catch (error) {
+      logError(`Failed to fetch fine-tuning job ${jobId}:`, error)
+      return null
+    }
   }
 
   async listFineTuningJobs(userId: string): Promise<FineTuningJob[]> {
-    // Fetch from memory (in real implementation, fetch from database)
     logInfo(`Listing fine-tuning jobs for user: ${userId}`)
-    return Array.from(this.jobs.values()).filter(job => job.userId === userId)
+    try {
+      const results = await db.select()
+        .from(fineTuningJobs)
+        .where(eq(fineTuningJobs.user_id, userId))
+        .orderBy(desc(fineTuningJobs.created_at))
+
+      return results.map(record => ({
+        id: record.id,
+        agentId: record.agent_id,
+        userId: record.user_id,
+        status: record.status as FineTuningJob['status'],
+        createdAt: record.created_at || new Date(),
+        startedAt: record.started_at || undefined,
+        completedAt: record.completed_at || undefined,
+        trainingDataSize: record.training_data_size || 0,
+        validationDataSize: record.validation_data_size || 0,
+        parameters: record.parameters as FineTuningParameters,
+        results: record.results as FineTuningResults | undefined,
+        error: record.error || undefined,
+      }))
+    } catch (error) {
+      logError(`Failed to list fine-tuning jobs for user ${userId}:`, error)
+      return []
+    }
   }
 
   async generateFineTuningRecommendations(
@@ -354,7 +427,7 @@ export class FineTuningPipeline {
     userId: string
   ): Promise<TrainingRecommendation[]> {
     const profile = await this.analytics.analyzeAgentPerformance(agentId, userId)
-    
+
     const recommendations: TrainingRecommendation[] = []
 
     // Generate fine-tuning specific recommendations
@@ -416,7 +489,7 @@ export class FineTuningPipeline {
     userId: string
   ): Promise<TrainingDataset> {
     const data = await this.dataCollector.getTrainingDataForAgent(recommendation.agentId, userId, 5000)
-    
+
     // Apply recommendation-specific filters
     let filteredData = data
 
@@ -447,7 +520,7 @@ export class FineTuningPipeline {
         dataFilters: {}
       }
     }
-    
+
     return this.createTrainingDataset(mockJob, filteredData)
   }
 }

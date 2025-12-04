@@ -282,11 +282,31 @@ export class WorkflowEngine {
       execute: async (config: unknown, _context) => {
         const configTyped = config as { task: string; prompt: string; model: string; temperature: number }
         logInfo('Executing AI task', { task: configTyped.task, model: configTyped.model })
-        // In production, integrate with OpenAI/Anthropic
-        return {
-          result: `AI ${configTyped.task} completed (Simulated)`,
-          confidence: 0.95,
-          processingTime: 100
+
+        try {
+          const apiKey = process.env.GOOGLE_API_KEY || process.env.API_KEY;
+          if (!apiKey) throw new Error("Missing API Key");
+
+          const { GoogleGenerativeAI } = await import("@google/generative-ai");
+          const genAI = new GoogleGenerativeAI(apiKey);
+          const model = genAI.getGenerativeModel({
+            model: configTyped.model.includes('gemini') ? configTyped.model : "gemini-2.0-flash-exp",
+            generationConfig: {
+              temperature: configTyped.temperature
+            }
+          });
+
+          const result = await model.generateContent(configTyped.prompt);
+          const text = result.response.text();
+
+          return {
+            result: text,
+            confidence: 0.95, // Gemini doesn't always give confidence, defaulting high for success
+            processingTime: 100 // Placeholder, could measure actual duration
+          }
+        } catch (error) {
+          logError("AI Task Failed", error);
+          throw error;
         }
       }
     })

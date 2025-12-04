@@ -58,7 +58,7 @@ export async function GET(
     const sessionId = resolvedParams.id
 
     // Get session from collaboration hub
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Collaboration session not found' },
@@ -75,7 +75,7 @@ export async function GET(
     }
 
     // Get session state and context
-    const sessionState = sessionManager.getSessionState(sessionId)
+    const sessionState = await sessionManager.getSessionState(sessionId)
     const conversationContext = await contextManager.getConversationContext(sessionId)
 
     // Get agent details
@@ -156,7 +156,7 @@ export async function PATCH(
     const sessionId = resolvedParams.id
 
     // Get session from collaboration hub
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Collaboration session not found' },
@@ -181,7 +181,7 @@ export async function PATCH(
     let message = 'Session updated successfully'
 
     if (validatedData.status) {
-      const currentState = sessionManager.getSessionState(sessionId)
+      const currentState = await sessionManager.getSessionState(sessionId)
       const currentStatus = currentState?.status
 
       switch (validatedData.status) {
@@ -219,7 +219,7 @@ export async function PATCH(
     }
 
     // Get updated session state
-    const updatedSessionState = sessionManager.getSessionState(sessionId)
+    const updatedSessionState = await sessionManager.getSessionState(sessionId)
 
     return NextResponse.json({
       success: true,
@@ -273,7 +273,7 @@ export async function DELETE(
     const sessionId = resolvedParams.id
 
     // Get session from collaboration hub
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Collaboration session not found' },

@@ -55,7 +55,7 @@ export async function POST(
     const sessionId = resolvedParams.id
 
     // Get session from collaboration hub
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Collaboration session not found' },
@@ -72,7 +72,7 @@ export async function POST(
     }
 
     // Check session status
-    const sessionState = sessionManager.getSessionState(sessionId)
+    const sessionState = await sessionManager.getSessionState(sessionId)
     if (sessionState?.status !== 'active') {
       return NextResponse.json({
         error: 'Session Inactive',
@@ -116,7 +116,7 @@ export async function POST(
     )
 
     // Update session state message count
-    const updatedSessionState = sessionManager.getSessionState(sessionId)
+    const updatedSessionState = await sessionManager.getSessionState(sessionId)
     if (updatedSessionState) {
       updatedSessionState.messageCount = (updatedSessionState.messageCount || 0) + 1
       updatedSessionState.lastActivity = new Date()
@@ -181,7 +181,7 @@ export async function GET(
     const sessionId = resolvedParams.id
 
     // Get session from collaboration hub
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Collaboration session not found' },
@@ -264,7 +264,7 @@ export async function GET(
     }))
 
     // Get session statistics
-    const sessionState = sessionManager.getSessionState(sessionId)
+    const sessionState = await sessionManager.getSessionState(sessionId)
 
     return NextResponse.json({
       success: true,

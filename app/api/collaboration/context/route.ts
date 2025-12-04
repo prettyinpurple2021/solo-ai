@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     const validatedData = StoreContextSchema.parse(body)
 
     // Verify user has access to the session
-    const session = sessionManager.getSession(validatedData.sessionId)
+    const session = await sessionManager.getSession(validatedData.sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Session not found' },
@@ -169,7 +169,7 @@ export async function GET(request: NextRequest) {
 
     // If sessionId is provided, verify user has access
     if (validatedQuery.sessionId) {
-      const session = sessionManager.getSession(validatedQuery.sessionId)
+      const session = await sessionManager.getSession(validatedQuery.sessionId)
       if (!session) {
         return NextResponse.json(
           { error: 'Not Found', message: 'Session not found' },

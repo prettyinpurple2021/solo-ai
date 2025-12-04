@@ -297,16 +297,54 @@ export function WorkflowTemplates({
   onCreateCustom, 
   className = "" 
 }: WorkflowTemplatesProps) {
-  const [templates, setTemplates] = useState<WorkflowTemplate[]>(MOCK_TEMPLATES)
-  const [filteredTemplates, setFilteredTemplates] = useState<WorkflowTemplate[]>(MOCK_TEMPLATES)
+  const [templates, setTemplates] = useState<WorkflowTemplate[]>([])
+  const [filteredTemplates, setFilteredTemplates] = useState<WorkflowTemplate[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [selectedComplexity, setSelectedComplexity] = useState<string>('all')
   const [sortBy, setSortBy] = useState<'popularity' | 'rating' | 'newest' | 'name'>('popularity')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   
   const { toast } = useToast()
+
+  // Fetch templates
+  useEffect(() => {
+    const fetchTemplates = async () => {
+      try {
+        const response = await fetch('/api/workflow/templates')
+        if (!response.ok) throw new Error('Failed to fetch templates')
+        const data = await response.json()
+        
+        // Convert date strings to Date objects
+        const parsedData = data.map((t: any) => ({
+          ...t,
+          metadata: {
+            ...t.metadata,
+            createdAt: new Date(t.metadata.createdAt),
+            updatedAt: new Date(t.metadata.updatedAt)
+          }
+        }))
+
+        setTemplates(parsedData)
+        setFilteredTemplates(parsedData)
+      } catch (error) {
+        logError('Error fetching templates:', error)
+        toast({
+          title: 'Error',
+          description: 'Failed to load workflow templates',
+          variant: 'destructive'
+        })
+        // Fallback to mock data if API fails (for demo purposes or if DB is empty)
+        setTemplates(MOCK_TEMPLATES)
+        setFilteredTemplates(MOCK_TEMPLATES)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchTemplates()
+  }, [toast])
 
   // Get unique categories
   const categories = ['all', ...Array.from(new Set(templates.map(t => t.category)))]

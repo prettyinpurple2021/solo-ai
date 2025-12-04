@@ -21,6 +21,7 @@ export const TheUplink: React.FC = () => {
     const inputSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
     const processorRef = useRef<ScriptProcessorNode | null>(null);
     const streamRef = useRef<MediaStream | null>(null);
+    const analyserRef = useRef<AnalyserNode | null>(null);
     const nextStartTimeRef = useRef<number>(0);
     const sessionRef = useRef<any>(null); // Holds the active Gemini session
 
@@ -38,16 +39,29 @@ export const TheUplink: React.FC = () => {
             return;
         }
 
-        // Simulated visualizer if we don't have easy access to the raw analyser node in this architecture
-        // In a real app, we'd attach an AnalyserNode. For this demo, we'll simulate "activity" based on state.
         const interval = setInterval(() => {
             if (status === 'speaking' || status === 'connected') {
-                // Random fluctuation for effect
-                setVolume(Math.random() * 100);
+                if (analyserRef.current) {
+                    const dataArray = new Uint8Array(analyserRef.current.frequencyBinCount);
+                    analyserRef.current.getByteFrequencyData(dataArray);
+                    
+                    // Calculate average volume
+                    let sum = 0;
+                    for (let i = 0; i < dataArray.length; i++) {
+                        sum += dataArray[i];
+                    }
+                    const average = sum / dataArray.length;
+                    
+                    // Scale for visual effect (0-100 range roughly)
+                    setVolume(Math.min(100, average * 2)); 
+                } else {
+                     // Fallback if analyser isn't ready yet
+                     setVolume(Math.random() * 10);
+                }
             } else {
-                setVolume(10);
+                setVolume(5);
             }
-        }, 100);
+        }, 50); // Faster update rate for smoother animation
         return () => clearInterval(interval);
     }, [status]);
 
@@ -102,6 +116,12 @@ export const TheUplink: React.FC = () => {
                         if (!inputContextRef.current) return;
 
                         inputSourceRef.current = inputContextRef.current.createMediaStreamSource(stream);
+                        
+                        // Setup Analyser
+                        analyserRef.current = inputContextRef.current.createAnalyser();
+                        analyserRef.current.fftSize = 256;
+                        analyserRef.current.smoothingTimeConstant = 0.5;
+
                         processorRef.current = inputContextRef.current.createScriptProcessor(4096, 1, 1);
 
                         processorRef.current.onaudioprocess = (e) => {
@@ -119,7 +139,9 @@ export const TheUplink: React.FC = () => {
                             });
                         };
 
-                        inputSourceRef.current.connect(processorRef.current);
+                        // Connect graph: Source -> Analyser -> Processor -> Destination
+                        inputSourceRef.current.connect(analyserRef.current);
+                        analyserRef.current.connect(processorRef.current);
                         processorRef.current.connect(inputContextRef.current.destination);
                     },
                     onmessage: async (msg: LiveServerMessage) => {
