@@ -219,19 +219,19 @@ export class PersonalizedLearningSystem {
       const recommendations: LearningRecommendation[] = []
       const availableModules = this.getAvailableModules(userProfile)
 
-      for (const module of availableModules) {
-        const prerequisitesMet = this.checkPrerequisites(module, userProfile)
-        const estimatedImpact = this.calculateEstimatedImpact(module, userProfile)
-        const confidence = this.calculateRecommendationConfidence(module, userProfile)
+      for (const learningModule of availableModules) {
+        const prerequisitesMet = this.checkPrerequisites(learningModule, userProfile)
+        const estimatedImpact = this.calculateEstimatedImpact(learningModule, userProfile)
+        const confidence = this.calculateRecommendationConfidence(learningModule, userProfile)
 
         if (confidence > 0.6) { // Only recommend modules with high confidence
           recommendations.push({
-            moduleId: module.id,
+            moduleId: learningModule.id,
             priority: this.determineRecommendationPriority(estimatedImpact, confidence),
-            reason: this.generateRecommendationReason(module, userProfile),
+            reason: this.generateRecommendationReason(learningModule, userProfile),
             estimatedImpact,
             prerequisitesMet,
-            estimatedCompletionTime: module.duration_minutes,
+            estimatedCompletionTime: learningModule.duration_minutes,
             confidence
           })
         }
@@ -273,14 +273,14 @@ export class PersonalizedLearningSystem {
       const highPriorityGaps = skillGaps.filter(gap => gap.priority === 'high')
 
       for (const gap of highPriorityGaps.slice(0, 3)) { // Focus on top 3 high-priority gaps
-        for (const module of gap.recommendedModules.slice(0, 2)) { // Take top 2 modules per gap
-          if (!path.find(m => m.id === module.id)) {
-            path.push(module)
+        for (const learningModule of gap.recommendedModules.slice(0, 2)) { // Take top 2 modules per gap
+          if (!path.find(m => m.id === learningModule.id)) {
+            path.push(learningModule)
             milestones.push({
-              moduleId: module.id,
-              description: `Complete ${module.title} to improve ${gap.skill.name}`
+              moduleId: learningModule.id,
+              description: `Complete ${learningModule.title} to improve ${gap.skill.name}`
             })
-            estimatedDuration += module.duration_minutes
+            estimatedDuration += learningModule.duration_minutes
           }
         }
       }
@@ -289,14 +289,14 @@ export class PersonalizedLearningSystem {
       const highPriorityRecommendations = recommendations.filter(rec => rec.priority === 'high')
 
       for (const rec of highPriorityRecommendations.slice(0, 2)) {
-        const module = this.learningModules.find(m => m.id === rec.moduleId)
-        if (module && !path.find(m => m.id === module.id)) {
-          path.push(module)
+        const learningModule = this.learningModules.find(m => m.id === rec.moduleId)
+        if (learningModule && !path.find(m => m.id === learningModule.id)) {
+          path.push(learningModule)
           milestones.push({
-            moduleId: module.id,
+            moduleId: learningModule.id,
             description: rec.reason
           })
-          estimatedDuration += module.duration_minutes
+          estimatedDuration += learningModule.duration_minutes
         }
       }
 
@@ -368,11 +368,11 @@ export class PersonalizedLearningSystem {
       }
 
       // Update in-memory module stats (optional, but good for cache)
-      const module = this.learningModules.find(m => m.id === moduleId)
-      if (module) {
+      const learningModule = this.learningModules.find(m => m.id === moduleId)
+      if (learningModule) {
         // This is a global stat, so we probably shouldn't update it based on one user without aggregation
         // But for now we'll leave it as is or remove it if it's misleading
-        // module.completion_rate = progress // Removing this as it's misleading for global stats
+        // learningModule.completion_rate = progress // Removing this as it's misleading for global stats
       }
 
       // Log completion milestone

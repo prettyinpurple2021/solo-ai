@@ -53,8 +53,8 @@ export async function GET(req: NextRequest) {
 
     // Calculate Skills Improved (Estimate based on completed modules)
     const skillsImproved = completedProgress.reduce((acc, curr) => {
-      const module = modulesMap.get(curr.module_id)
-      return acc + ((module?.skills_covered as string[])?.length || 0)
+      const learningModule = modulesMap.get(curr.module_id)
+      return acc + ((learningModule?.skills_covered as string[])?.length || 0)
     }, 0)
 
     // Calculate Current Streak
@@ -100,10 +100,10 @@ export async function GET(req: NextRequest) {
     // Calculate Top Categories
     const categoryStats = new Map<string, { time: number, count: number }>()
     progress.forEach(p => {
-      const module = modulesMap.get(p.module_id)
-      if (module && module.category) {
-        const current = categoryStats.get(module.category) || { time: 0, count: 0 }
-        categoryStats.set(module.category, {
+      const learningModule = modulesMap.get(p.module_id)
+      if (learningModule && learningModule.category) {
+        const current = categoryStats.get(learningModule.category) || { time: 0, count: 0 }
+        categoryStats.set(learningModule.category, {
           time: current.time + (p.time_spent || 0),
           count: current.count + (p.status === 'completed' ? 1 : 0)
         })

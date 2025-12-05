@@ -527,6 +527,8 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
   )
 })
 
+OfflineDataManager.displayName = 'OfflineDataManager'
+
 export default OfflineDataManager
 
 // Hook for offline data management

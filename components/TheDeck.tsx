@@ -148,7 +148,7 @@ export const TheDeck: React.FC = () => {
 
                             <div className="absolute top-0 left-0 w-2 h-full bg-purple-600"></div>
                             <div className="absolute bottom-6 right-8 text-zinc-400 font-mono text-xs uppercase">
-                                Slide {currentSlide + 1}/{deck.slides.length} // {deck.title}
+                                Slide {currentSlide + 1}/{deck.slides.length} {'//'} {deck.title}
                             </div>
 
                             <h1 className="text-4xl font-black tracking-tight mb-2 text-zinc-900">

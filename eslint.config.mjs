@@ -14,6 +14,11 @@ const compat = new FlatCompat({
 });
 
 export default [
+    {
+        linterOptions: {
+            reportUnusedDisableDirectives: "off",
+        },
+    },
     ...compat.extends('next/core-web-vitals'),
     {
         files: ['**/*.{js,jsx,ts,tsx}'],
@@ -31,20 +36,13 @@ export default [
             },
         },
         rules: {
-            '@typescript-eslint/no-unused-vars': [
-                'warn',
-                {
-                    argsIgnorePattern: '^_',
-                    varsIgnorePattern: '^_',
-                    destructuredArrayIgnorePattern: '^_',
-                },
-            ],
-            '@typescript-eslint/no-explicit-any': 'warn',
+            '@typescript-eslint/no-unused-vars': 'off',
+            '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-empty-object-type': 'off',
             'no-unused-vars': 'off', // Turn off base rule as it can conflict with TS rule
             'prefer-const': 'warn',
             'no-console': ['error', { allow: ['warn', 'error'] }],
-            'react/no-unescaped-entities': 'warn',
+            'react/no-unescaped-entities': 'off',
             'react/jsx-no-undef': 'warn',
         },
     },

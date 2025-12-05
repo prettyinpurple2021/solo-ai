@@ -257,7 +257,7 @@ export class DocumentParser {
       const html = buffer.toString('utf-8');
 
       // Simple HTML text extraction without cheerio
-      let content = html
+      const content = html
         .replace(/<script[^>]*>.*?<\/script>/gi, '') // Remove scripts
         .replace(/<style[^>]*>.*?<\/style>/gi, '') // Remove styles
         .replace(/<[^>]*>/g, ' ') // Remove HTML tags

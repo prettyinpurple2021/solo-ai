@@ -225,7 +225,7 @@ export const TheUplink: React.FC = () => {
         // Close Session
         if (sessionRef.current) {
             sessionRef.current.then((session: any) => {
-                try { session.close(); } catch (e) { console.log("Session already closed"); }
+                try { session.close(); } catch (e) { console.warn("Session already closed"); }
             });
         }
 
@@ -317,7 +317,7 @@ export const TheUplink: React.FC = () => {
 
                     {active && (
                         <p className="text-emerald-500 font-mono text-xs uppercase tracking-widest animate-pulse">
-                            Connected to {AGENTS[selectedAgent].name} // 24kHz Secure
+                            Connected to {AGENTS[selectedAgent].name} {'//'} 24kHz Secure
                         </p>
                     )}
                 </div>

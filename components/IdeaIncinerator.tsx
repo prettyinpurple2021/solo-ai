@@ -85,7 +85,7 @@ export const IdeaIncinerator: React.FC = () => {
                                 <Thermometer size={14} /> Heat Level
                             </span>
                             <span className={`text-sm font-black uppercase tracking-widest ${label.color}`}>
-                                {label.text} // {brutality}%
+                                {label.text} {'//'} {brutality}%
                             </span>
                         </div>
                         <input

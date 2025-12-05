@@ -287,7 +287,7 @@ export const WarRoom: React.FC = () => {
                                         <div className={styles.bubble}>
                                             <div className={`flex items-center gap-2 ${isLeft ? '' : 'justify-end'}`}>
                                                 <span className={styles.name}>{agent.name}</span>
-                                                <span className="text-[10px] text-zinc-600 font-mono uppercase mb-1">// {agent.title.split(' ')[0]}</span>
+                                                <span className="text-[10px] text-zinc-600 font-mono uppercase mb-1">{'//'} {agent.title.split(' ')[0]}</span>
                                             </div>
                                             <p className={styles.text}>{entry.text}</p>
                                         </div>

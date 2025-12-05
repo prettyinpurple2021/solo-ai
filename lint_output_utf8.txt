@@ -137,6 +137,9 @@
 ./components/GlobalSearch.tsx
 134:6  Warning: React Hook useEffect has a missing dependency: 'performSearch'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
+./components/IdeaIncinerator.tsx
+88:45  Error: Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
 ./components/integrations/calendar-integration.tsx
 32:6  Warning: React Hook useEffect has a missing dependency: 'checkConnection'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 
@@ -147,6 +150,7 @@
 394:22  Error: React Hook "useAnimation" is called in function "renderWidget" that is neither a React function component nor a custom React Hook function. React component names must start with an uppercase letter. React Hook names must start with the word "use".  react-hooks/rules-of-hooks
 
 ./components/mobile/offline-data-manager.tsx
+54:28  Error: Component definition is missing display name  react/display-name
 228:6  Warning: React Hook useEffect has a missing dependency: 'syncPendingActions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 358:6  Warning: React Hook useCallback has missing dependencies: 'removePendingAction', 'syncStatus.isSyncing', and 'updatePendingActionRetries'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
 
@@ -193,8 +197,15 @@
 108:37  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
 154:45  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
 
+./components/TheDeck.tsx
+151:78  Error: Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
+
 ./components/TheStudio.tsx
 167:29  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+./components/TheUplink.tsx
+228:54  Error: Unexpected console statement. Only these console methods are allowed: warn, error.  no-console
+320:70  Error: Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
 
 ./components/TheVault.tsx
 272:45  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
@@ -214,6 +225,7 @@
 ./components/WarRoom.tsx
 82:8  Warning: React Hook useEffect has a missing dependency: 'displayedDialogue.length'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
 282:49  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+290:118  Error: Comments inside children section of tag should be placed inside braces  react/jsx-no-comment-textnodes
 
 ./components/workflow/workflow-execution-monitor.tsx
 255:6  Warning: React Hook useEffect has a missing dependency: 'refreshExecutions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
