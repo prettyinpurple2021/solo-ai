@@ -53,8 +53,7 @@ docs/
 ├── project-management/
 │   ├── todo-list.md                            # Current development tasks
 │   ├── updated-todo-list.md                    # Recent task updates
-│   ├── implementation-roadmap.md               # Development timeline
-│   └── PRODUCTION_SETUP.md                     # Production deployment guide
+│   └── implementation-roadmap.md               # Development timeline
 ├── requirements/
 │   ├── PRD.md                                  # Product requirements
 │   └── FRD.md                                  # Functional requirements
@@ -81,7 +80,7 @@ docs/
 
 ### **For Development:**
 1. **[Master Features Roadmap](./features/MASTER-FEATURES-ROADMAP.md)** - Single source of truth for all features
-2. **[Production Setup Guide](./project-management/PRODUCTION_SETUP.md)** - Complete deployment guide
+2. **[Production Deployment Guide](../PRODUCTION.md)** - Complete production deployment guide
 3. **[Current Todo List](./project-management/todo-list.md)** - Active development tasks
 
 ### **For Launch:**

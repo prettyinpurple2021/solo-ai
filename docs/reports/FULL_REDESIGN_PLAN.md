@@ -201,14 +201,7 @@ This document outlines the comprehensive plan to redesign **every single page, c
 **Goal:** Ensure application builds successfully before proceeding
 
 **Tasks:**
-1. Fix landing page useContext error
-   - **Issue:** DevCycle SDK trying to use React context during static generation
-   - **Solution:** Ensure landing page is truly dynamic, or conditionally load DevCycle
-   - **Action:** Verify `export const dynamic = 'force-dynamic'` works correctly
-   - **Alternative:** Wrap DevCycle provider to handle null context gracefully
-   - **Test:** Verify landing page builds without errors
-
-2. Fix missing Alert exports
+1. Fix missing Alert exports
    - ✅ **Already fixed:** Added `AlertTitle` and `AlertDescription` exports to `src/components/ui/Alert.tsx`
    - **Verify:** All files importing `AlertDescription` or `AlertTitle` now work
    - **Files affected:** ~20 files need verification
@@ -227,13 +220,7 @@ This document outlines the comprehensive plan to redesign **every single page, c
    - **Solution:** Run `npm install @react-email/render` or update resend usage
    - **Verify:** Email functionality in `app/api/briefcase/files/[id]/invite/route.ts` works
 
-6. Fix DevCycle React import issue
-   - **Issue:** DevCycle SDK can't find `useContext` from React during build
-   - **Possible causes:** React version mismatch, build configuration issue
-   - **Solution:** Ensure React 18+ is installed, check Next.js compatibility
-   - **Alternative:** Conditionally disable DevCycle during build if keys missing
-
-7. Verify successful build
+6. Verify successful build
    - Run `npm run build` and ensure zero errors
    - Fix any remaining TypeScript errors
    - Fix any remaining lint errors

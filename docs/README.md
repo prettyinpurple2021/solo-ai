@@ -6,7 +6,7 @@
 
 ## 🚀 **Quick Start**
 
-- **[Production Setup Guide](./project-management/PRODUCTION_SETUP.md)** - Get your SoloSuccess AI platform running in production
+- **[Production Deployment Guide](../PRODUCTION.md)** - Complete guide for deploying SoloSuccess AI to production
 - **[Master Features Roadmap](./features/MASTER-FEATURES-ROADMAP.md)** - Complete overview of all current and planned features
 - **[Launch Checklist](./launch/launch-checklist.md)** - Ready-to-launch checklist for your platform
 
@@ -36,7 +36,7 @@
 
 ### 🔧 **Technical Documentation**
 
-- **[Production Setup Guide](./project-management/PRODUCTION_SETUP.md)** - Complete production deployment guide
+- **[Production Deployment Guide](../PRODUCTION.md)** - Complete production deployment guide
 - **[Stack Auth Setup](./technical/setup/stack-auth-setup.md)** - Authentication system configuration
 - **[Stripe Setup Guide](./stripe/integration-setup-guide.md)** - Payment processing configuration
 
