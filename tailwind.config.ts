@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss"
+import animate from "tailwindcss-animate"
 
 const config: Config = {
   darkMode: "class",
@@ -235,7 +236,7 @@ const config: Config = {
       // ... (your other extensions like spacing, maxWidth, zIndex are fine)
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animate],
 } satisfies Config
 
 export default config

@@ -29,9 +29,17 @@ export async function GET(request: NextRequest) {
       try {
         const { auth } = await import('@/lib/auth')
         // auth() automatically uses the current request context in server components/API routes
+
         const session = await auth()
         
         if (session?.user) {
+          const expiresValue =
+            typeof session.expires === 'string'
+              ? session.expires
+              : session.expires instanceof Date && typeof session.expires.toISOString === 'function'
+                ? session.expires.toISOString()
+                : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
+
           // Explicitly set all fields with fallbacks - spread operator would overwrite fallbacks
           const user = session.user as any
           return NextResponse.json({
@@ -48,7 +56,7 @@ export async function GET(request: NextRequest) {
               updatedAt: user.updatedAt || null,
             },
             session: {
-              expires: session.expires?.toISOString() || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+              expires: expiresValue,
             }
           })
         }

@@ -122,10 +122,6 @@ async function authenticateRequest(request: NextRequest) {
       token = cookieToken
     }
 
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/14516a68-1bb2-4b59-8efb-d88ef82ca008',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1',location:'app/api/dashboard/route.ts:authenticateRequest',message:'auth header and cookies presence',data:{hasAuthHeader:Boolean(authHeader),hasBearerHeader:Boolean(authHeader?.startsWith('Bearer ')),hasLegacyAuthToken:Boolean(cookieToken),cookieLength:cookieToken?.length || 0},timestamp:Date.now()})}).catch(()=>{})
-    // #endregion agent log
-
     if (token) {
       if (!process.env.JWT_SECRET) {
         logError('Dashboard API: JWT_SECRET is not set')
@@ -134,11 +130,6 @@ async function authenticateRequest(request: NextRequest) {
       try {
         const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
         const { payload: decoded } = await jose.jwtVerify(token, secret)
-
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/14516a68-1bb2-4b59-8efb-d88ef82ca008',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H2',location:'app/api/dashboard/route.ts:authenticateRequest',message:'jwt token verified',data:{userId:decoded.userId ? 'present' : 'missing',email:decoded.email ? 'present' : 'missing'},timestamp:Date.now()})}).catch(()=>{})
-        // #endregion agent log
-
         return {
           user: {
             id: decoded.userId as string, // Treat as string from JWT
@@ -158,10 +149,6 @@ async function authenticateRequest(request: NextRequest) {
     const nextAuthSessionCookie = request.cookies.get('authjs.session-token')?.value ||
                                    request.cookies.get('__Secure-authjs.session-token')?.value
 
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/14516a68-1bb2-4b59-8efb-d88ef82ca008',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1',location:'app/api/dashboard/route.ts:authenticateRequest',message:'nextauth cookie presence',data:{hasSessionCookie:Boolean(nextAuthSessionCookie),sessionCookieLength:nextAuthSessionCookie?.length || 0},timestamp:Date.now()})}).catch(()=>{})
-    // #endregion agent log
-
     if (nextAuthSessionCookie) {
          // Edge-compatible fetch to local session endpoint
         const sessionResponse = await fetch(`${request.nextUrl.origin}/api/auth/session`, {
@@ -170,17 +157,8 @@ async function authenticateRequest(request: NextRequest) {
           },
         })
 
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/14516a68-1bb2-4b59-8efb-d88ef82ca008',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H3',location:'app/api/dashboard/route.ts:authenticateRequest',message:'session endpoint response',data:{status:sessionResponse.status,ok:sessionResponse.ok},timestamp:Date.now()})}).catch(()=>{})
-        // #endregion agent log
-
         if (sessionResponse.ok) {
           const sessionData = await sessionResponse.json()
-
-          // #region agent log
-          fetch('http://127.0.0.1:7242/ingest/14516a68-1bb2-4b59-8efb-d88ef82ca008',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H3',location:'app/api/dashboard/route.ts:authenticateRequest',message:'session endpoint body',data:{hasUser:Boolean(sessionData?.user),userId:sessionData?.user?.id ? 'present' : 'missing'},timestamp:Date.now()})}).catch(()=>{})
-          // #endregion agent log
-
           if (sessionData?.user?.id) {
             return {
               user: {
@@ -209,11 +187,6 @@ export async function GET(request: NextRequest) {
      // 1. Authenticate
      const { user: authUser, error } = await authenticateRequest(request)
      if (error || !authUser) {
-
-       // #region agent log
-       fetch('http://127.0.0.1:7242/ingest/14516a68-1bb2-4b59-8efb-d88ef82ca008',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H1',location:'app/api/dashboard/route.ts:GET',message:'authentication failed',data:{error,hasAuthUser:Boolean(authUser)},timestamp:Date.now()})}).catch(()=>{})
-       // #endregion agent log
-
        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
      }
 
