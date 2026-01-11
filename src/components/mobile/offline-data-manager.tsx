@@ -195,14 +195,23 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
       const store = transaction.objectStore('pendingActions')
       const request = store.getAll()
 
-      request.onsuccess = () => {
-        const actions = request.result || []
-        setPendingActions(actions)
-        setSyncStatus(prev => ({
-          ...prev,
-          pendingActions: actions.length
-        }))
-      }
+      // Wait for the IndexedDB query to complete
+      await new Promise<void>((resolve, reject) => {
+        request.onsuccess = () => {
+          try {
+            const actions = request.result || []
+            setPendingActions(actions)
+            setSyncStatus(prev => ({
+              ...prev,
+              pendingActions: actions.length
+            }))
+            resolve()
+          } catch (error) {
+            reject(error)
+          }
+        }
+        request.onerror = () => reject(request.error)
+      })
     } catch (error) {
       logError('Failed to load pending actions', error as any)
     }
@@ -349,15 +358,14 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
       
       setSyncStatus(prev => ({ ...prev, isOnline: true, error: null }))
       
-      // Load pending actions first
+      // Load pending actions first and wait for state update
       await loadPendingActions()
       
       // Auto-sync when coming back online (only on offline->online transition, not on every state change)
       if (wasOffline) {
-        // Use a small delay to ensure pendingActions state has been updated after loadPendingActions
-        setTimeout(() => {
-          syncPendingActions()
-        }, 150)
+        // syncPendingActions will check pendingActions.length in its guards, so no delay needed
+        // The state update from loadPendingActions is complete since we awaited it
+        syncPendingActions()
       }
     }
 
