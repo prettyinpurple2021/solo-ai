@@ -10,10 +10,12 @@
 
 The `.env.production` file containing real Neon database credentials was committed to git history in commit `34980ff6`. While the file has been removed from git tracking and added to `.gitignore`, the credentials remain in the git history and can be retrieved by anyone with access to the repository.
 
-**Exposed Credentials:**
-- Neon Database Password: `npg_1QLnOg4kKYBr`
-- Database Endpoint: `ep-royal-wave-ahafdikl.c-3.us-east-1.aws.neon.tech`
-- Database Name: `solosuccess-database`
+**⚠️ CRITICAL:** If credentials were exposed, they must be rotated immediately. Check your Neon Console for:
+- Database Password (in Connection Details)
+- Database Endpoint (in Connection Details)
+- Database Name (in Project Settings)
+
+**Never commit actual credential values to any file, including documentation.**
 
 ---
 

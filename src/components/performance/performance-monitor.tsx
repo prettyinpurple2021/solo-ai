@@ -74,7 +74,8 @@ export function PerformanceMonitor() {
     }
   }, [])
 
-  if (!isVisible || !metrics || isClosed) return null
+  if (!isVisible || isClosed) return null
+  if (!metrics) return null
 
   const getScore = (value: number, thresholds: { good: number; poor: number }) => {
     if (value <= thresholds.good) return 'good'
