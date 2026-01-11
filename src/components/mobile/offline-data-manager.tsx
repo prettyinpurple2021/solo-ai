@@ -358,14 +358,111 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
       
       setSyncStatus(prev => ({ ...prev, isOnline: true, error: null }))
       
-      // Load pending actions first and wait for state update
-      await loadPendingActions()
+      // Load pending actions first and get the loaded actions directly
+      // We need the actions directly since React state updates are async
+      let loadedActions: PendingAction[] = []
+      try {
+        const db = await openIndexedDB()
+        const transaction = db.transaction(['pendingActions'], 'readonly')
+        const store = transaction.objectStore('pendingActions')
+        const request = store.getAll()
+
+        // Wait for the IndexedDB query to complete
+        loadedActions = await new Promise<PendingAction[]>((resolve, reject) => {
+          request.onsuccess = () => {
+            try {
+              const actions = request.result || []
+              // Update state for UI (async, but we have the data directly)
+              setPendingActions(actions)
+              setSyncStatus(prev => ({
+                ...prev,
+                pendingActions: actions.length
+              }))
+              resolve(actions)
+            } catch (error) {
+              reject(error)
+            }
+          }
+          request.onerror = () => reject(request.error)
+        })
+      } catch (error) {
+        logError('Failed to load pending actions in handleOnline', error as any)
+        // Fall back to loadPendingActions if direct query fails
+        await loadPendingActions()
+      }
       
       // Auto-sync when coming back online (only on offline->online transition, not on every state change)
-      if (wasOffline) {
-        // syncPendingActions will check pendingActions.length in its guards, so no delay needed
-        // The state update from loadPendingActions is complete since we awaited it
-        syncPendingActions()
+      if (wasOffline && loadedActions.length > 0) {
+        // Perform sync with loaded actions directly to avoid stale closure
+        // Check current sync status before starting
+        setSyncStatus(currentSync => {
+          if (currentSync.isSyncing) {
+            return currentSync
+          }
+
+          // Start syncing (async operation, don't block)
+          const performSync = async () => {
+            setSyncStatus(prev => ({
+              ...prev,
+              isSyncing: true,
+              syncProgress: 0,
+              error: null
+            }))
+
+            const totalActions = loadedActions.length
+            let completedActions = 0
+            const errors: string[] = []
+
+            try {
+              for (const action of loadedActions) {
+                try {
+                  await syncAction(action)
+                  completedActions++
+
+                  // Remove successful action from pending list
+                  await removePendingAction(action.id)
+
+                  setSyncStatus(prev => ({
+                    ...prev,
+                    syncProgress: (completedActions / totalActions) * 100
+                  }))
+                } catch (error) {
+                  logError(`Failed to sync action ${action.id}`, error as any)
+                  errors.push(`${action.type} ${action.resource}: ${error}`)
+
+                  // Increment retry count
+                  await updatePendingActionRetries(action.id, action.retries + 1)
+                }
+              }
+
+              if (errors.length === 0) {
+                setSyncStatus(prev => ({
+                  ...prev,
+                  lastSync: new Date(),
+                  pendingActions: 0,
+                  error: null
+                }))
+                onSyncComplete?.()
+              } else {
+                setSyncStatus(prev => ({
+                  ...prev,
+                  error: `${errors.length} actions failed to sync`
+                }))
+                onSyncError?.(errors.join(', '))
+              }
+            } finally {
+              setSyncStatus(prev => ({
+                ...prev,
+                isSyncing: false,
+                syncProgress: 0
+              }))
+              loadPendingActions() // Refresh the list
+            }
+          }
+
+          performSync()
+          return currentSync
+        })
       }
     }
 
