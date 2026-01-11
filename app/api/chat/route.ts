@@ -17,13 +17,6 @@ import { streamText } from 'ai'
 // Using Node.js runtime for database and complex operations
 export const runtime = 'nodejs'
 
-// Type for Cloudflare service bindings
-interface Env {
-  OPENAI_WORKER: {
-    fetch: (request: Request) => Promise<Response>
-  }
-}
-
 
 
 // Force dynamic rendering

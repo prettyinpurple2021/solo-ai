@@ -11,13 +11,6 @@ export const runtime = 'nodejs'
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
-// Type for Cloudflare service bindings
-interface Env {
-  COMPETITOR_WORKER: {
-    fetch: (request: Request) => Promise<Response>
-  }
-}
-
 // Validation schema for discovery request
 const DiscoveryRequestSchema = z.object({
   businessDescription: z.string().min(1, 'Business description is required').max(500),

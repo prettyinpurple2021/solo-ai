@@ -92,14 +92,14 @@
 
 ### AI Services Status
 **Already Using Real AI:**
-- ✅ Chat API (`app/api/chat/route.ts`) - Uses OpenAI Worker (Cloudflare)
+- ✅ Chat API (`app/api/chat/route.ts`) - Uses OpenAI API
 - ✅ AI Config (`lib/ai-config.ts`) - GPT-4 and Claude configured
 - ✅ Agent Intelligence - All agents use real AI models
 
 **Needs Implementation:**
 - ⏳ Logo Generation API (`app/api/generate-logo/route.ts`) - Replace placeholders with DALL-E 3
 - ⏳ Template Generators (all in `components/templates/`) - Replace hardcoded with real AI
-- ⏳ Competitor Discovery - Verify Cloudflare worker integration complete
+- ⏳ Competitor Discovery - Verify worker integration complete
 
 ### Pages Requiring Military Redesign
 **Critical Pages (High Priority):**

@@ -1,4 +1,4 @@
-# Security headers for CloudFlare Pages
+# Security headers
 /*
 X-Frame-Options: SAMEORIGIN
 X-Content-Type-Options: nosniff

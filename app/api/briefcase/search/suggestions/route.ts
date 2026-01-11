@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
         task: 'search_suggestions'
       };
 
-      // Get worker environment from Cloudflare
+      // Get worker environment
       const env = process.env as any;
       const googleAIWorker = env.GOOGLE_AI_WORKER;
       

@@ -10,12 +10,6 @@ import { rateLimitByIp} from '@/lib/rate-limit'
 import { CompetitiveIntelligenceContextService} from '@/lib/competitive-intelligence-context'
 import { z} from 'zod'
 
-// Type for Cloudflare service bindings
-interface Env {
-  OPENAI_WORKER: {
-    fetch: (request: Request) => Promise<Response>
-  }
-}
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'

@@ -1,4 +1,4 @@
-# Add Edge Runtime export to all API routes for Cloudflare Pages compatibility
+# Add Edge Runtime export to all API routes
 
 # Get all API route files
 $apiFiles = Get-ChildItem -Path "app/api" -Recurse -Include "*.ts", "*.tsx" | Where-Object { $_.Name -eq "route.ts" }

@@ -71,7 +71,7 @@ All vulnerabilities are in **transitive dependencies** that are not directly man
 ### Investigation Results
 1. **Dependency tree analysis**: 
    - `hono` is not a direct dependency, but is present as a transitive dependency.
-   - `esbuild@0.25.10` is present via multiple dev dependencies (drizzle-kit, storybook, tsx, wrangler, cloudflare adapters)
+   - `esbuild@0.25.10` is present via multiple dev dependencies (drizzle-kit, storybook, tsx)
    - Local `npm audit` reports 0 vulnerabilities
 
 2. **Automated Fix Results**:

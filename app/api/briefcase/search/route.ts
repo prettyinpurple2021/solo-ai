@@ -274,7 +274,7 @@ async function performSemanticSearch(query: string, userId: string, sql: any) {
       task: 'semantic_search'
     };
 
-    // Get worker environment from Cloudflare
+    // Get worker environment
     const env = process.env as any;
     const googleAIWorker = env.GOOGLE_AI_WORKER;
     

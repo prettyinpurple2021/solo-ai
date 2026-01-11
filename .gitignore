@@ -16,6 +16,12 @@ dist-ssr
 .env
 .env.local
 .env.*.local
+.env.production
+.env.production.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
 server/.env
 server/.env.local
 

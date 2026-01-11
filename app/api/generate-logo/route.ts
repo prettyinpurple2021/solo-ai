@@ -7,13 +7,6 @@ import { z} from 'zod'
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
 
-// Type for Cloudflare service bindings
-interface Env {
-  OPENAI_WORKER: {
-    fetch: (request: Request) => Promise<Response>
-  }
-}
-
 
 
 // Force dynamic rendering

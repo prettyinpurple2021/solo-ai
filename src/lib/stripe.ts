@@ -1,4 +1,4 @@
-// Lazy import Stripe to prevent bundling issues with Cloudflare
+// Lazy import Stripe to prevent bundling issues
 import { logError } from '@/lib/logger';
 
 let Stripe: typeof import('stripe').default | null = null

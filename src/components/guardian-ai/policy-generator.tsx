@@ -71,7 +71,6 @@ export function PolicyGenerator() {
     "PayPal",
     "Shopify",
     "WordPress",
-    "Cloudflare",
     "AWS",
     "Google Ads"
   ]

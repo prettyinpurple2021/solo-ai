@@ -6,13 +6,6 @@ import { getSql } from '@/lib/api-utils'
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
 
-// Type for Cloudflare service bindings
-interface Env {
-  GOOGLE_AI_WORKER: {
-    fetch: (request: Request) => Promise<Response>
-  }
-}
-
 
 export async function POST(
   request: NextRequest,
