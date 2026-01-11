@@ -9,3 +9,4 @@ alwaysApply: true
 - Keep code maintainable: typed APIs, early returns, clear naming, minimal nesting, meaningful errors.
 - Zero console noise: prefer project logger and structured errors over `console.*`.
 - Never commit broken builds, lint errors, or warnings.
+- **NEVER expose credentials, secrets, API keys, or environment variable values in any file (code, docs, config, etc.).** See [50-security-credentials.mdc](50-security-credentials.mdc).

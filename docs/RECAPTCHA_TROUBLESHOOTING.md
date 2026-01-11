@@ -29,9 +29,9 @@ npm run dev
 #### Step 2: Verify Environment Variables
 Check that these are set in `.env.local`:
 ```bash
-NEXT_PUBLIC_RECAPTCHA_SITE_KEY="6Ldx00YsAAAAADAH1dIWDjnoxT85tc0a46rrY0Fa"
-NEXT_PUBLIC_RECAPTCHA_PROJECT_ID="solosuccess-ai"
-GOOGLE_CLOUD_API_KEY="AIza..."
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY="your-site-key-here"
+NEXT_PUBLIC_RECAPTCHA_PROJECT_ID="your-project-id-here"
+GOOGLE_CLOUD_API_KEY="your-api-key-here"
 ```
 
 #### Step 3: Check Server Logs

@@ -238,8 +238,9 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
                       ✕
                     </Button>
                   </div>
-                  {/* OfflineDataManager widget removed - was cluttering UI */}
-                  {/* <OfflineDataManager /> */}
+                  <div className="p-4">
+                    <OfflineDataManager />
+                  </div>
                 </Card>
               </motion.div>
             </div>

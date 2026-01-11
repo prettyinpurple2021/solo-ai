@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/comp
 import { Badge} from '@/components/ui/badge'
 import { Progress} from '@/components/ui/progress'
 import { Button} from '@/components/ui/button'
-import { Activity, Zap, Clock, TrendingUp, X} from 'lucide-react'
+import { Activity, Zap, Clock, TrendingUp, X, ChevronDown, ChevronUp} from 'lucide-react'
 
 interface PerformanceMetrics {
   fcp: number // First Contentful Paint
@@ -20,6 +20,7 @@ export function PerformanceMonitor() {
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null)
   const [isVisible, setIsVisible] = useState(false)
   const [isClosed, setIsClosed] = useState(false)
+  const [isMinimized, setIsMinimized] = useState(false)
 
   useEffect(() => {
     // Only show in development or when explicitly enabled
@@ -94,11 +95,6 @@ export function PerformanceMonitor() {
   const fidScore = getScore(metrics.fid, { good: 100, poor: 300 })
   const clsScore = getScore(metrics.cls, { good: 0.1, poor: 0.25 })
 
-  // Don't render if closed or not visible
-  if (isClosed || !isVisible) {
-    return null
-  }
-
   return (
     <Card className="fixed bottom-4 right-4 w-80 z-50 bg-white/95 backdrop-blur-sm border-2">
       <CardHeader className="pb-2">
@@ -107,20 +103,35 @@ export function PerformanceMonitor() {
             <Activity className="w-4 h-4" />
             Performance Monitor
           </CardTitle>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setIsClosed(true)}
-            className="h-6 w-6 p-0 hover:bg-gray-100"
-          >
-            <X className="w-3 h-3" />
-          </Button>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsMinimized(!isMinimized)}
+              className="h-6 w-6 p-0 hover:bg-gray-100"
+              title={isMinimized ? "Expand" : "Minimize"}
+            >
+              {isMinimized ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsClosed(true)}
+              className="h-6 w-6 p-0 hover:bg-gray-100"
+              title="Close"
+            >
+              <X className="w-3 h-3" />
+            </Button>
+          </div>
         </div>
-        <CardDescription className="text-xs">
-          Core Web Vitals & Performance Metrics
-        </CardDescription>
+        {!isMinimized && (
+          <CardDescription className="text-xs">
+            Core Web Vitals & Performance Metrics
+          </CardDescription>
+        )}
       </CardHeader>
-      <CardContent className="space-y-3">
+      {!isMinimized && (
+        <CardContent className="space-y-3">
         {/* LCP */}
         <div className="space-y-1">
           <div className="flex items-center justify-between">
@@ -199,6 +210,7 @@ export function PerformanceMonitor() {
           </div>
         </div>
       </CardContent>
+      )}
     </Card>
   )
 }

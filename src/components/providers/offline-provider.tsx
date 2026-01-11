@@ -1,9 +1,8 @@
 "use client"
 
-import React, { createContext, useContext, useState, useEffect } from 'react'
-import { useOfflineData } from '@/components/mobile/offline-data-manager'
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
+import OfflineDataManager, { OfflineDataManagerRef, useOfflineData } from '@/components/mobile/offline-data-manager'
 import { logInfo } from '@/lib/logger'
-// OfflineDataManager widget UI removed - functionality preserved via useOfflineData hook
 
 interface OfflineContextType {
     isOnline: boolean
@@ -15,7 +14,8 @@ interface OfflineContextType {
 const OfflineContext = createContext<OfflineContextType | undefined>(undefined)
 
 export function OfflineProvider({ children }: { children: React.ReactNode }) {
-    const { manager, addPendingAction, cacheData, getCachedData } = useOfflineData()
+    const managerRef = useRef<OfflineDataManagerRef>(null)
+    const { addPendingAction, cacheData, getCachedData } = useOfflineData()
     const [isOnline, setIsOnline] = useState(true) // Default to true, will update on mount
 
     useEffect(() => {
@@ -44,8 +44,16 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
     return (
         <OfflineContext.Provider value={{ isOnline, addPendingAction, cacheData, getCachedData }}>
             {children}
-            {/* OfflineDataManager widget removed - was cluttering UI */}
-            {/* Offline functionality still works, just no visible widget */}
+            <div className="fixed bottom-4 right-4 z-50 pointer-events-none">
+                <div className="pointer-events-auto">
+                    <OfflineDataManager
+                        ref={managerRef}
+                        onSyncComplete={handleSyncComplete}
+                        onSyncError={handleSyncError}
+                        className="w-80 shadow-lg"
+                    />
+                </div>
+            </div>
         </OfflineContext.Provider>
     )
 }

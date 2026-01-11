@@ -6,30 +6,29 @@
 
 ## Step 1: Get Your Values
 
-You need **3 values**:
+You need **3 values** from Google Cloud Console:
 
-1. ✅ **Google Cloud API Key** - You just created this! (starts with `AIza...`)
-2. **Site Key** - Found in Google Cloud Console → reCAPTCHA → Your key "SoloSuccess AI WEB"
-   - It's: `6Ldx00YsAAAAADAH1dIWDjnoxT85tc0a46rrY0Fa`
-3. **Project ID** - This is: `solosuccess-ai`
+1. **Google Cloud API Key** - Create at: APIs & Services → Credentials → Create API Key (starts with `AIza...`)
+2. **Site Key** - Found at: Security → reCAPTCHA → Your reCAPTCHA key
+3. **Project ID** - Your Google Cloud Project ID (found in project settings)
 
 ---
 
 ## Step 2: Add to Local Environment (.env.local)
 
 1. **Open or create `.env.local` file** in your project root folder
-   - Location: `c:\Users\prett\OneDrive\Desktop\projects\SoloSuccess-AI\.env.local`
+   - Location: `.env.local` (in the project root directory)
 
-2. **Add these lines** (replace with your actual API key):
+2. **Add these lines** (replace placeholders with your actual values):
 
 ```bash
 # reCAPTCHA Enterprise Configuration
-NEXT_PUBLIC_RECAPTCHA_SITE_KEY="6Ldx00YsAAAAADAH1dIWDjnoxT85tc0a46rrY0Fa"
-NEXT_PUBLIC_RECAPTCHA_PROJECT_ID="solosuccess-ai"
-GOOGLE_CLOUD_API_KEY="YOUR_API_KEY_HERE"
+NEXT_PUBLIC_RECAPTCHA_SITE_KEY="your-site-key-here"
+NEXT_PUBLIC_RECAPTCHA_PROJECT_ID="your-project-id-here"
+GOOGLE_CLOUD_API_KEY="your-api-key-here"
 ```
 
-**Replace `YOUR_API_KEY_HERE`** with the API key you just created (the one that starts with `AIza...`)
+**Replace placeholders** with your actual values from Google Cloud Console
 
 3. **Save the file**
 
@@ -53,9 +52,9 @@ If you're using Vercel (or another hosting platform):
 2. **Select your project** (SoloSuccess-AI)
 3. **Go to Settings** → **Environment Variables**
 4. **Add each variable** (click "Add New"):
-   - `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` = `6Ldx00YsAAAAADAH1dIWDjnoxT85tc0a46rrY0Fa`
-   - `NEXT_PUBLIC_RECAPTCHA_PROJECT_ID` = `solosuccess-ai`
-   - `GOOGLE_CLOUD_API_KEY` = `YOUR_API_KEY_HERE` (the `AIza...` key)
+   - `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` = Your site key from Google Cloud Console
+   - `NEXT_PUBLIC_RECAPTCHA_PROJECT_ID` = Your project ID from Google Cloud Console
+   - `GOOGLE_CLOUD_API_KEY` = Your API key from Google Cloud Console (starts with `AIza...`)
 
 5. **Make sure to select "Production"** (and optionally "Preview" and "Development")
 6. **Click "Save"**
@@ -77,14 +76,12 @@ If you're using Vercel (or another hosting platform):
 
 ## Quick Reference
 
-### Your Values:
-- **Site Key**: `6Ldx00YsAAAAADAH1dIWDjnoxT85tc0a46rrY0Fa`
-- **Project ID**: `solosuccess-ai`
-- **API Key**: `AIza...` (the one you just created)
+### Where to Find Your Values:
+- **Site Key**: Google Cloud Console → Security → reCAPTCHA → Your reCAPTCHA key
+- **Project ID**: Google Cloud Console → Project Settings → Project ID
+- **API Key**: Google Cloud Console → APIs & Services → Credentials → Your API key (you can't see the value again after creation, but you can create a new one if needed)
 
-### Where to Find Them Again:
-- **Site Key & Project ID**: Google Cloud Console → Security → reCAPTCHA → "SoloSuccess AI WEB" key
-- **API Key**: Google Cloud Console → APIs & Services → Credentials → Your API key (you can't see the value again, but you can create a new one if needed)
+**Note:** Never commit these values to version control. Always use environment variables.
 
 ---
 
@@ -96,7 +93,7 @@ If you're using Vercel (or another hosting platform):
 - Check for typos in the variable name
 
 ### "Project ID not configured"
-- Make sure `NEXT_PUBLIC_RECAPTCHA_PROJECT_ID` is set to `solosuccess-ai`
+- Make sure `NEXT_PUBLIC_RECAPTCHA_PROJECT_ID` is set to your Google Cloud project ID
 - Check for typos
 
 ### Still not working?

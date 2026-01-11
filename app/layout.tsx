@@ -6,19 +6,17 @@ import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/components/auth-provider"
 import { RecaptchaProvider } from "@/components/recaptcha/recaptcha-provider"
-// import { PerformanceMonitor } from "@/components/performance/performance-monitor"
+import { PerformanceMonitor } from "@/components/performance/performance-monitor"
 import { ServiceWorkerRegister } from "@/components/performance/service-worker-register"
 import ExitIntentSurvey from "@/components/marketing/exit-intent-survey"
 import { AccessibilityProvider } from "@/components/ui/accessibility"
 import { ChatProvider } from "@/components/providers/chat-provider"
 import { SmartTipManager } from "@/components/ui/smart-tip"
-// import { FeedbackWidget } from "@/components/feedback/feedback-widget" // Removed - was cluttering UI
+import { FeedbackWidget } from "@/components/feedback/feedback-widget"
 import { CssScriptCleanup } from "@/components/util/css-script-cleanup"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-// Removed GoogleAnalytics component usage; using manual GA4 snippet
 import { OfflineProvider } from "@/components/providers/offline-provider"
-// DevCycle removed - will use PostHog for feature flags after redesign
 
 // Font configuration - Cyberpunk Design System v3 fonts
 const orbitronFont = Orbitron({ 
@@ -151,13 +149,12 @@ export default function RootLayout({
               <ChatProvider>
                 {children}
               </ChatProvider>
-              {/* PerformanceMonitor removed - was cluttering UI */}
-              {/* Ensure this client component that calls useAuth is inside AuthProvider */}
+              <PerformanceMonitor />
               <ServiceWorkerRegister />
               {!exitIntentDisabled && <ExitIntentSurvey />}
               <SmartTipManager />
+              <FeedbackWidget />
               <CssScriptCleanup />
-              {/* FeedbackWidget removed - was cluttering UI */}
             </AccessibilityProvider>
           </OfflineProvider>
         </RecaptchaProvider>

@@ -7,25 +7,23 @@
 
 ## ✅ Environment Variables Verification
 
-All required environment variables are properly set in `.env.local`:
+All required environment variables should be configured in `.env.local`:
 
 ### ✅ Site Key
 - **Variable:** `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`
-- **Value:** `6Ldx00YsAAAAADAH1dIWDjnoxT85tc0a46rrY0Fa`
-- **Status:** ✅ Configured
-- **Source:** Google Cloud Console → reCAPTCHA Enterprise → "SoloSuccess AI WEB" key
+- **Status:** ✅ Should be configured
+- **Source:** Google Cloud Console → reCAPTCHA Enterprise → Your reCAPTCHA key
 
 ### ✅ Project ID
 - **Variable:** `NEXT_PUBLIC_RECAPTCHA_PROJECT_ID`
-- **Value:** `solosuccess-ai`
-- **Status:** ✅ Configured
-- **Source:** Google Cloud Project
+- **Status:** ✅ Should be configured
+- **Source:** Google Cloud Project ID
 
 ### ✅ API Key
 - **Variable:** `GOOGLE_CLOUD_API_KEY`
-- **Value:** `AIzaSyBbpPx2TWoTEM91zIpKtVJz-moQqwGX6CY`
-- **Status:** ✅ Configured
+- **Status:** ✅ Should be configured
 - **Source:** Google Cloud Console → APIs & Services → Credentials
+- **⚠️ SECURITY:** Never commit API keys to version control
 
 ---
 
@@ -51,9 +49,9 @@ All required environment variables are properly set in `.env.local`:
 1. **Frontend** generates token using `grecaptcha.enterprise.execute()`
 2. **Token** sent to `/api/recaptcha/validate` endpoint
 3. **Backend** calls Enterprise REST API with:
-   - Project ID: `solosuccess-ai`
-   - API Key: `GOOGLE_CLOUD_API_KEY`
-   - Site Key: `6Ldx00YsAAAAADAH1dIWDjnoxT85tc0a46rrY0Fa`
+   - Project ID: From `NEXT_PUBLIC_RECAPTCHA_PROJECT_ID` environment variable
+   - API Key: From `GOOGLE_CLOUD_API_KEY` environment variable
+   - Site Key: From `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` environment variable
    - Token: From frontend
    - Action: From frontend (contact, signup, etc.)
 4. **Enterprise API** returns risk score (0.0 to 1.0)
