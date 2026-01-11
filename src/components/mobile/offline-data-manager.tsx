@@ -338,34 +338,45 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
     }
   }, [syncStatus.isOnline, syncStatus.isSyncing, pendingActions, onSyncComplete, onSyncError, loadPendingActions, syncAction, removePendingAction, updatePendingActionRetries])
 
+  // Track previous online state to detect offline->online transitions
+  const prevOnlineRef = React.useRef<boolean>(navigator.onLine)
+
   // Listen for online/offline status
   useEffect(() => {
-    const handleOnline = () => {
+    const handleOnline = async () => {
+      const wasOffline = !prevOnlineRef.current
+      prevOnlineRef.current = true
+      
       setSyncStatus(prev => ({ ...prev, isOnline: true, error: null }))
+      
+      // Load pending actions first
+      await loadPendingActions()
+      
+      // Auto-sync when coming back online (only on offline->online transition, not on every state change)
+      if (wasOffline) {
+        // Use a small delay to ensure pendingActions state has been updated after loadPendingActions
+        setTimeout(() => {
+          syncPendingActions()
+        }, 150)
+      }
     }
 
     const handleOffline = () => {
+      prevOnlineRef.current = false
       setSyncStatus(prev => ({ ...prev, isOnline: false }))
     }
 
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
 
-    // Load pending actions from IndexedDB
+    // Load pending actions from IndexedDB on mount
     loadPendingActions()
 
     return () => {
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
     }
-  }, [loadPendingActions])
-
-  // Auto-sync when coming back online
-  useEffect(() => {
-    if (syncStatus.isOnline && !syncStatus.isSyncing && pendingActions.length > 0) {
-      syncPendingActions()
-    }
-  }, [syncStatus.isOnline, syncStatus.isSyncing, pendingActions, syncPendingActions])
+  }, [loadPendingActions, syncPendingActions])
 
   const formatLastSync = (date: Date | null) => {
     if (!date) return 'Never'
