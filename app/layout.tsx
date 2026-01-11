@@ -5,14 +5,14 @@ import Script from 'next/script'
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/components/auth-provider"
-// import { RecaptchaProvider} from "@/components/recaptcha/recaptcha-provider"
-import { PerformanceMonitor } from "@/components/performance/performance-monitor"
+import { RecaptchaProvider } from "@/components/recaptcha/recaptcha-provider"
+// import { PerformanceMonitor } from "@/components/performance/performance-monitor"
 import { ServiceWorkerRegister } from "@/components/performance/service-worker-register"
 import ExitIntentSurvey from "@/components/marketing/exit-intent-survey"
 import { AccessibilityProvider } from "@/components/ui/accessibility"
 import { ChatProvider } from "@/components/providers/chat-provider"
 import { SmartTipManager } from "@/components/ui/smart-tip"
-import { FeedbackWidget } from "@/components/feedback/feedback-widget"
+// import { FeedbackWidget } from "@/components/feedback/feedback-widget" // Removed - was cluttering UI
 import { CssScriptCleanup } from "@/components/util/css-script-cleanup"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -145,20 +145,22 @@ export default function RootLayout({
   const appShell = (
     <ThemeProvider>
       <AuthProvider>
-        <OfflineProvider>
-          <AccessibilityProvider>
-            <ChatProvider>
-              {children}
-            </ChatProvider>
-            <PerformanceMonitor />
-            {/* Ensure this client component that calls useAuth is inside AuthProvider */}
-            <ServiceWorkerRegister />
-            {!exitIntentDisabled && <ExitIntentSurvey />}
-            <SmartTipManager />
-            <CssScriptCleanup />
-            <FeedbackWidget />
-          </AccessibilityProvider>
-        </OfflineProvider>
+        <RecaptchaProvider>
+          <OfflineProvider>
+            <AccessibilityProvider>
+              <ChatProvider>
+                {children}
+              </ChatProvider>
+              {/* PerformanceMonitor removed - was cluttering UI */}
+              {/* Ensure this client component that calls useAuth is inside AuthProvider */}
+              <ServiceWorkerRegister />
+              {!exitIntentDisabled && <ExitIntentSurvey />}
+              <SmartTipManager />
+              <CssScriptCleanup />
+              {/* FeedbackWidget removed - was cluttering UI */}
+            </AccessibilityProvider>
+          </OfflineProvider>
+        </RecaptchaProvider>
       </AuthProvider>
     </ThemeProvider>
   )

@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
     const { token, action, minScore = 0.5 } = await request.json()
 
     if (!token) {
+      logError('reCAPTCHA validation: token missing')
       return NextResponse.json(
         { success: false, error: 'reCAPTCHA token is required' },
         { status: 400 }
@@ -16,16 +17,20 @@ export async function POST(request: NextRequest) {
     }
 
     if (!action) {
+      logError('reCAPTCHA validation: action missing')
       return NextResponse.json(
         { success: false, error: 'reCAPTCHA action is required' },
         { status: 400 }
       )
     }
 
+    logInfo(`Validating reCAPTCHA token for action: ${action}`)
+
     // Validate reCAPTCHA token
     const isValid = await validateRecaptcha(token, action, minScore)
     
     if (!isValid) {
+      logError(`reCAPTCHA validation failed for action: ${action}`)
       return NextResponse.json(
         { 
           success: false, 
@@ -35,6 +40,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    logInfo(`reCAPTCHA validation successful for action: ${action}`)
     return NextResponse.json({
       success: true,
       message: 'reCAPTCHA validation successful'

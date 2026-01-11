@@ -9,7 +9,9 @@ import { CyberButton } from '@/components/cyber/CyberButton'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { CheckCircle, Send } from 'lucide-react'
+import { CheckCircle, Send, Shield } from 'lucide-react'
+import { useRecaptchaValidation } from '@/hooks/use-recaptcha-validation'
+import { RECAPTCHA_ACTIONS } from '@/components/recaptcha/recaptcha-provider'
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -22,6 +24,8 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState('')
+  
+  const { validateWithRecaptcha, isValidating } = useRecaptchaValidation()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -29,6 +33,18 @@ export default function ContactPage() {
     setError('')
     
     try {
+      // Step 1: Validate with reCAPTCHA
+      const recaptchaResult = await validateWithRecaptcha(RECAPTCHA_ACTIONS.CONTACT, 0.4)
+      
+      if (!recaptchaResult.success) {
+        // Show the actual error message if available
+        const errorMsg = recaptchaResult.error || 'Security verification failed. Please try again.'
+        setError(errorMsg)
+        setIsSubmitting(false)
+        return
+      }
+
+      // Step 2: Submit the form
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -125,6 +141,8 @@ export default function ContactPage() {
                     <SelectItem value="general">General Inquiry</SelectItem>
                     <SelectItem value="support">Technical Support</SelectItem>
                     <SelectItem value="sales">Sales Question</SelectItem>
+                    <SelectItem value="bug">Bug Report</SelectItem>
+                    <SelectItem value="feedback">Feedback & Comments</SelectItem>
                     <SelectItem value="partnership">Partnership</SelectItem>
                   </SelectContent>
                 </Select>
@@ -160,14 +178,20 @@ export default function ContactPage() {
                 </div>
               )}
 
+              {/* Security Notice */}
+              <div className="flex items-center gap-2 text-sm text-gray-400 bg-white/5 p-3 border border-neon-cyan/20">
+                <Shield className="w-4 h-4 text-neon-cyan" />
+                <span>This form is protected by reCAPTCHA Enterprise for security.</span>
+              </div>
+
               <CyberButton
                 type="submit"
                 variant="primary"
                 size="lg"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isValidating}
                 className="w-full"
               >
-                {isSubmitting ? 'TRANSMITTING...' : 'SEND_MESSAGE'}
+                {isValidating ? 'VERIFYING...' : isSubmitting ? 'TRANSMITTING...' : 'SEND_MESSAGE'}
                 <Send className="ml-2 w-5 h-5" />
               </CyberButton>
             </form>

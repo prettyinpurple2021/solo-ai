@@ -79,6 +79,9 @@ const Navbar = () => (
         <Link href="#pricing" className="text-sm font-mono tracking-widest text-gray-400 hover:text-neon-cyan transition-colors uppercase">
           Pricing
         </Link>
+        <Link href="/contact" className="text-sm font-mono tracking-widest text-gray-400 hover:text-neon-cyan transition-colors uppercase">
+          Contact
+        </Link>
         <Link href="/login">
           <button className="px-6 py-2 border-2 border-neon-cyan/50 text-neon-cyan font-mono font-bold uppercase tracking-widest hover:bg-neon-cyan/10 hover:border-neon-cyan transition-all rounded-sm">
             Sign In

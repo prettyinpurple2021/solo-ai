@@ -205,7 +205,7 @@ export const PricingSection = ({ className }: SectionProps) => {
                 ))}
               </ul>
 
-              <Link href="/login" className="block">
+              <Link href={plan.cta === "Contact Sales" ? "/contact" : "/signup"} className="block">
                 <Button 
                   className={`w-full font-sci uppercase tracking-widest ${
                     plan.highlight 
@@ -287,6 +287,7 @@ export const CyberFooter = () => {
               <li><Link href="#features" className="hover:text-neon-cyan">Features</Link></li>
               <li><Link href="#agents" className="hover:text-neon-cyan">AI Squad</Link></li>
               <li><Link href="#pricing" className="hover:text-neon-cyan">Pricing</Link></li>
+              <li><Link href="/contact" className="hover:text-neon-cyan">Contact</Link></li>
             </ul>
           </div>
 

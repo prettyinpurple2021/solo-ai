@@ -39,15 +39,15 @@ export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
 
   const executeRecaptcha = async (action: string): Promise<string | null> => {
     if (!RECAPTCHA_SITE_KEY) {
-      logWarn('reCAPTCHA site key not configured, skipping validation')
+      // Silently return null if reCAPTCHA is not configured (optional feature)
       return null
     }
     
     if (!isReady || !window.grecaptcha?.enterprise) {
-      logError('reCAPTCHA is not ready')
+      logWarn('reCAPTCHA is not ready yet. Please wait and try again.')
       toast({
         title: "reCAPTCHA Error",
-        description: "reCAPTCHA is not ready. Please try again.",
+        description: "Security verification is not ready. Please try again.",
         variant: "destructive"
       })
       return null
@@ -112,14 +112,19 @@ export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
   }
 
   const handleScriptError = () => {
-    logError('Failed to load reCAPTCHA script')
-    logError('reCAPTCHA site key:', RECAPTCHA_SITE_KEY)
+    // Only log errors if site key is configured (prevents noise when reCAPTCHA is optional)
+    if (RECAPTCHA_SITE_KEY) {
+      logError('Failed to load reCAPTCHA script')
+      logWarn('reCAPTCHA site key configured but script failed to load. Check your network connection.')
+      toast({
+        title: "reCAPTCHA Error",
+        description: "Failed to load security verification. Please refresh the page.",
+        variant: "destructive"
+      })
+    } else {
+      logWarn('reCAPTCHA site key not configured - skipping script load')
+    }
     setIsLoading(false)
-    toast({
-      title: "reCAPTCHA Error",
-      description: "Failed to load security verification. Please refresh the page.",
-      variant: "destructive"
-    })
   }
 
   useEffect(() => {
@@ -139,7 +144,7 @@ export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
           src={`https://www.google.com/recaptcha/enterprise.js?render=${RECAPTCHA_SITE_KEY}`}
           onLoad={handleScriptLoad}
           onError={handleScriptError}
-          strategy="lazyOnload"
+          strategy="afterInteractive"
         />
       )}
       <RecaptchaContext.Provider value={contextValue}>

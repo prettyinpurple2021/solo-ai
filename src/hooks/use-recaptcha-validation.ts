@@ -39,9 +39,17 @@ export function useRecaptchaValidation(): UseRecaptchaValidationReturn {
       const token = await executeRecaptcha(action)
       
       if (!token) {
-        const error = 'Failed to generate reCAPTCHA token'
+        const error = 'Failed to generate reCAPTCHA token. Please ensure reCAPTCHA is loaded and try again.'
         setLastValidationError(error)
         setIsValidating(false)
+        
+        // Show user-friendly error
+        toast({
+          title: "Verification Failed",
+          description: "Unable to verify security. Please refresh the page and try again.",
+          variant: "destructive"
+        })
+        
         return { success: false, error }
       }
 

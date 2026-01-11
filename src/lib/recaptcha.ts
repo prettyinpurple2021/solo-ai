@@ -1,8 +1,10 @@
+import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 
-// reCAPTCHA configuration
+// reCAPTCHA Enterprise configuration
 export const RECAPTCHA_CONFIG = {
   siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '',
-  secretKey: process.env.RECAPTCHA_SECRET_KEY || '',
+  apiKey: process.env.GOOGLE_CLOUD_API_KEY || '',
+  projectId: process.env.NEXT_PUBLIC_RECAPTCHA_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT_ID || '',
   actions: {
     signup: 'signup',
     signin: 'signin',
@@ -13,7 +15,7 @@ export const RECAPTCHA_CONFIG = {
 }
 
 /**
- * Verify reCAPTCHA token with Google's verification API
+ * Verify reCAPTCHA Enterprise token using Google Cloud REST API
  * 
  * @param token - The generated token obtained from the client
  * @param action - Action name corresponding to the token
@@ -24,35 +26,98 @@ export async function createAssessment(
   action: string = 'submit'
 ): Promise<number | null> {
   try {
-    if (!RECAPTCHA_CONFIG.secretKey) {
-      logError('reCAPTCHA secret key not configured, validation failed secure')
+    if (!RECAPTCHA_CONFIG.apiKey) {
+      logError('Google Cloud API key not configured for reCAPTCHA Enterprise')
       return null
     }
 
-    const response = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+    if (!RECAPTCHA_CONFIG.projectId) {
+      logError('Google Cloud Project ID not configured for reCAPTCHA Enterprise')
+      return null
+    }
+
+    if (!RECAPTCHA_CONFIG.siteKey) {
+      logError('reCAPTCHA site key not configured')
+      return null
+    }
+
+    const apiUrl = `https://recaptchaenterprise.googleapis.com/v1/projects/${RECAPTCHA_CONFIG.projectId}/assessments?key=${RECAPTCHA_CONFIG.apiKey}`
+    
+    const requestBody = {
+      event: {
+        token: token,
+        siteKey: RECAPTCHA_CONFIG.siteKey,
+        expectedAction: action
+      }
+    }
+
+    logDebug('Creating reCAPTCHA Enterprise assessment', { action, projectId: RECAPTCHA_CONFIG.projectId })
+
+    const response = await fetch(apiUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/json',
       },
-      body: new URLSearchParams({
-        secret: RECAPTCHA_CONFIG.secretKey,
-        response: token,
-      }),
+      body: JSON.stringify(requestBody),
     })
+
+    if (!response.ok) {
+      const errorText = await response.text()
+      let errorMessage = `reCAPTCHA Enterprise API error (${response.status})`
+      
+      // Try to parse error details
+      try {
+        const errorData = JSON.parse(errorText)
+        if (errorData.error?.message) {
+          errorMessage += `: ${errorData.error.message}`
+        }
+        logError(errorMessage, { 
+          status: response.status, 
+          error: errorData,
+          projectId: RECAPTCHA_CONFIG.projectId 
+        })
+      } catch {
+        logError(errorMessage, { 
+          status: response.status, 
+          errorText,
+          projectId: RECAPTCHA_CONFIG.projectId 
+        })
+      }
+      
+      return null
+    }
 
     const data = await response.json()
 
-    if (!data.success) {
-      logError(`reCAPTCHA validation failed: ${data['error-codes']?.join(', ')}`)
+    if (!data.tokenProperties?.valid) {
+      logError(`reCAPTCHA token validation failed:`, data.tokenProperties?.invalidReason)
       return null
     }
 
-    const score = data.score || 0
-    logInfo(`reCAPTCHA score for action '${action}': ${score}`)
+    // Check if action matches
+    if (data.tokenProperties.action !== action) {
+      logWarn(`reCAPTCHA action mismatch. Expected: ${action}, Got: ${data.tokenProperties.action}`)
+      return null
+    }
+
+    const score = data.riskAnalysis?.score ?? null
+    
+    if (score === null) {
+      logError('reCAPTCHA assessment missing risk score')
+      return null
+    }
+
+    logInfo(`reCAPTCHA Enterprise score for action '${action}': ${score}`)
+    logDebug('reCAPTCHA assessment details:', {
+      score,
+      action: data.tokenProperties.action,
+      valid: data.tokenProperties.valid,
+      hostname: data.tokenProperties.hostname
+    })
 
     return score
   } catch (error) {
-    logError('Error verifying reCAPTCHA token:', error)
+    logError('Error verifying reCAPTCHA Enterprise token:', error)
     return null
   }
 }
@@ -109,5 +174,4 @@ export const RECAPTCHA_ACTIONS = {
   SUBSCRIPTION: 'subscription'
 } as const
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 export type RecaptchaAction = typeof RECAPTCHA_ACTIONS[keyof typeof RECAPTCHA_ACTIONS]
