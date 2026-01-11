@@ -34,7 +34,7 @@ declare global {
 
 export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
   const [isReady, setIsReady] = useState(false)
-  const [_isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
 
   const executeRecaptcha = async (action: string): Promise<string | null> => {

@@ -6,7 +6,7 @@ const { auth } = NextAuth(authConfig)
 
 export default auth(async (req) => {
   const { nextUrl } = req
-  // Use req.auth which is populated by NextAuth middleware
+  // Use req.auth which is populated by NextAuth proxy
   // This ensures we check the actual session that was just established
   const isLoggedIn = !!req.auth
   

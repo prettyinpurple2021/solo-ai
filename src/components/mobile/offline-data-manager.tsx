@@ -17,7 +17,10 @@ import {
   Cloud,
   Download,
   Upload,
-  RefreshCw
+  RefreshCw,
+  X,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -67,6 +70,8 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
 
   const [pendingActions, setPendingActions] = useState<PendingAction[]>([])
   const [showDetails, setShowDetails] = useState(false)
+  const [isClosed, setIsClosed] = useState(false)
+  const [isMinimized, setIsMinimized] = useState(false)
 
   // ... (keep existing useEffects and helper functions) ...
 
@@ -203,32 +208,8 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
     }
   }, [openIndexedDB])
 
-  // Listen for online/offline status
-  useEffect(() => {
-    const handleOnline = () => {
-      setSyncStatus(prev => ({ ...prev, isOnline: true, error: null }))
-      // Auto-sync when coming back online
-      syncPendingActions()
-    }
-
-    const handleOffline = () => {
-      setSyncStatus(prev => ({ ...prev, isOnline: false }))
-    }
-
-    window.addEventListener('online', handleOnline)
-    window.addEventListener('offline', handleOffline)
-
-    // Load pending actions from IndexedDB
-    loadPendingActions()
-
-    return () => {
-      window.removeEventListener('online', handleOnline)
-      window.removeEventListener('offline', handleOffline)
-    }
-  }, [loadPendingActions]) // Added loadPendingActions to dependency array
-
   // Sync individual action
-  const syncAction = async (action: PendingAction) => {
+  const syncAction = useCallback(async (action: PendingAction) => {
     const { type, resource, data } = action
 
     switch (type) {
@@ -251,10 +232,10 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
       default:
         throw new Error(`Unknown action type: ${type}`)
     }
-  }
+  }, [])
 
   // Remove pending action
-  const removePendingAction = async (id: string) => {
+  const removePendingAction = useCallback(async (id: string) => {
     try {
       const db = await openIndexedDB()
       const transaction = db.transaction(['pendingActions'], 'readwrite')
@@ -270,10 +251,10 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
     } catch (error) {
       logError('Failed to remove pending action', error as any)
     }
-  }
+  }, [openIndexedDB])
 
   // Update pending action retries
-  const updatePendingActionRetries = async (id: string, retries: number) => {
+  const updatePendingActionRetries = useCallback(async (id: string, retries: number) => {
     try {
       const db = await openIndexedDB()
       const transaction = db.transaction(['pendingActions'], 'readwrite')
@@ -291,7 +272,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
     } catch (error) {
       logError('Failed to update pending action retries', error as any)
     }
-  }
+  }, [openIndexedDB, pendingActions])
 
   // Sync pending actions with server
   const syncPendingActions = useCallback(async () => {
@@ -355,7 +336,36 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
       }))
       loadPendingActions() // Refresh the list
     }
-  }, [syncStatus.isOnline, pendingActions, onSyncComplete, onSyncError, loadPendingActions]) // Added loadPendingActions
+  }, [syncStatus.isOnline, syncStatus.isSyncing, pendingActions, onSyncComplete, onSyncError, loadPendingActions, syncAction, removePendingAction, updatePendingActionRetries])
+
+  // Listen for online/offline status
+  useEffect(() => {
+    const handleOnline = () => {
+      setSyncStatus(prev => ({ ...prev, isOnline: true, error: null }))
+    }
+
+    const handleOffline = () => {
+      setSyncStatus(prev => ({ ...prev, isOnline: false }))
+    }
+
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+
+    // Load pending actions from IndexedDB
+    loadPendingActions()
+
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [loadPendingActions])
+
+  // Auto-sync when coming back online
+  useEffect(() => {
+    if (syncStatus.isOnline && !syncStatus.isSyncing && pendingActions.length > 0) {
+      syncPendingActions()
+    }
+  }, [syncStatus.isOnline, syncPendingActions])
 
   const formatLastSync = (date: Date | null) => {
     if (!date) return 'Never'
@@ -370,6 +380,8 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
     const days = Math.floor(hours / 24)
     return `${days}d ago`
   }
+
+  if (isClosed) return null
 
   return (
     <div className={cn("space-y-4", className)}>
@@ -390,12 +402,14 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                 <CardTitle className="text-lg">
                   {syncStatus.isOnline ? 'Online' : 'Offline'}
                 </CardTitle>
-                <CardDescription>
-                  {syncStatus.pendingActions > 0
-                    ? `${syncStatus.pendingActions} actions pending sync`
-                    : 'All data synced'
-                  }
-                </CardDescription>
+                {!isMinimized && (
+                  <CardDescription>
+                    {syncStatus.pendingActions > 0
+                      ? `${syncStatus.pendingActions} actions pending sync`
+                      : 'All data synced'
+                    }
+                  </CardDescription>
+                )}
               </div>
             </div>
 
@@ -412,64 +426,90 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                 size="sm"
                 onClick={() => setShowDetails(!showDetails)}
                 className="h-8 w-8 p-0"
+                title="Toggle Details"
               >
                 <Database className="w-4 h-4" />
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsMinimized(!isMinimized)}
+                className="h-8 w-8 p-0 hover:bg-gray-100"
+                title={isMinimized ? "Expand" : "Minimize"}
+              >
+                {isMinimized ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setIsClosed(true)}
+                className="h-8 w-8 p-0 hover:bg-gray-100"
+                title="Close"
+              >
+                <X className="w-4 h-4" />
               </Button>
             </div>
           </div>
         </CardHeader>
 
-        {/* Sync Progress */}
-        {syncStatus.isSyncing && (
-          <CardContent className="pt-0">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span>Syncing data...</span>
-                <span>{Math.round(syncStatus.syncProgress)}%</span>
+        {!isMinimized && (
+          <>
+            {/* Sync Progress */}
+            {syncStatus.isSyncing && (
+              <CardContent className="pt-0">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span>Syncing data...</span>
+                    <span>{Math.round(syncStatus.syncProgress)}%</span>
+                  </div>
+                  <Progress value={syncStatus.syncProgress} className="h-2" />
+                </div>
+              </CardContent>
+            )}
+
+            {/* Error Message */}
+            {syncStatus.error && (
+              <CardContent className="pt-0">
+                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-2 rounded">
+                  <AlertTriangle className="w-4 h-4" />
+                  {syncStatus.error}
+                </div>
+              </CardContent>
+            )}
+
+            {/* Action Buttons */}
+            <CardContent className="pt-0">
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  onClick={syncPendingActions}
+                  disabled={!syncStatus.isOnline || syncStatus.isSyncing || syncStatus.pendingActions === 0}
+                  className="flex-1"
+                >
+                  <RefreshCw className={cn("w-4 h-4 mr-2", syncStatus.isSyncing && "animate-spin")} />
+                  Sync Now
+                </Button>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={loadPendingActions}
+                  disabled={syncStatus.isSyncing}
+                >
+                  <RefreshCw className="w-4 h-4" />
+                </Button>
               </div>
-              <Progress value={syncStatus.syncProgress} className="h-2" />
-            </div>
-          </CardContent>
+            </CardContent>
+          </>
         )}
-
-        {/* Error Message */}
-        {syncStatus.error && (
-          <CardContent className="pt-0">
-            <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-2 rounded">
-              <AlertTriangle className="w-4 h-4" />
-              {syncStatus.error}
-            </div>
-          </CardContent>
-        )}
-
-        {/* Action Buttons */}
-        <CardContent className="pt-0">
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              onClick={syncPendingActions}
-              disabled={!syncStatus.isOnline || syncStatus.isSyncing || syncStatus.pendingActions === 0}
-              className="flex-1"
-            >
-              <RefreshCw className={cn("w-4 h-4 mr-2", syncStatus.isSyncing && "animate-spin")} />
-              Sync Now
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={loadPendingActions}
-              disabled={syncStatus.isSyncing}
-            >
-              <RefreshCw className="w-4 h-4" />
-            </Button>
-          </div>
-        </CardContent>
       </Card>
 
       {/* Details Panel */}
-      <AnimatePresence>
-        {showDetails && (
+      {!isMinimized && (
+        <AnimatePresence>
+          {showDetails && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -523,6 +563,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
           </motion.div>
         )}
       </AnimatePresence>
+      )}
     </div>
   )
 })
