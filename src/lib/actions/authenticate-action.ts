@@ -17,6 +17,10 @@ export async function authenticateAction(
   }
   
   try {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/14516a68-1bb2-4b59-8efb-d88ef82ca008',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H4',location:'src/lib/actions/authenticate-action.ts:authenticateAction',message:'credentials sign-in attempt',data:{emailSuffix:email.split('@')[1] || 'missing',redirectTo},timestamp:Date.now()})}).catch(()=>{})
+    // #endregion agent log
+
     await signIn('credentials', { 
       email,
       password,
@@ -31,6 +35,11 @@ export async function authenticateAction(
         errorType: error.type,
         email 
       });
+
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/14516a68-1bb2-4b59-8efb-d88ef82ca008',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sessionId:'debug-session',runId:'pre-fix',hypothesisId:'H4',location:'src/lib/actions/authenticate-action.ts:authenticateAction',message:'credentials sign-in failed',data:{errorType:error.type,emailSuffix:email.split('@')[1] || 'missing'},timestamp:Date.now()})}).catch(()=>{})
+      // #endregion agent log
+
       switch (error.type) {
         case 'CredentialsSignin':
           return 'Invalid credentials.';
