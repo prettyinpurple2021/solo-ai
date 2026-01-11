@@ -393,22 +393,30 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
       
       // Auto-sync when coming back online (only on offline->online transition, not on every state change)
       if (wasOffline && loadedActions.length > 0) {
-        // Perform sync with loaded actions directly to avoid stale closure
-        // Check current sync status before starting
+        // Check current sync status before starting (use state updater to get current value)
+        let shouldStartSync = false
         setSyncStatus(currentSync => {
+          // If already syncing, don't start another sync
           if (currentSync.isSyncing) {
+            shouldStartSync = false
             return currentSync
           }
 
-          // Start syncing (async operation, don't block)
-          const performSync = async () => {
-            setSyncStatus(prev => ({
-              ...prev,
-              isSyncing: true,
-              syncProgress: 0,
-              error: null
-            }))
+          // Mark that we should start sync
+          shouldStartSync = true
+          
+          // Update state to mark as syncing
+          return {
+            ...currentSync,
+            isSyncing: true,
+            syncProgress: 0,
+            error: null
+          }
+        })
 
+        // Perform sync outside state updater to properly manage promise lifecycle
+        if (shouldStartSync) {
+          const performSync = async () => {
             const totalActions = loadedActions.length
             let completedActions = 0
             const errors: string[] = []
@@ -460,9 +468,16 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
             }
           }
 
-          performSync()
-          return currentSync
-        })
+          // Start sync (properly managed promise with error handling, not floating)
+          performSync().catch(error => {
+            logError('Error in performSync', error as any)
+            setSyncStatus(prev => ({
+              ...prev,
+              isSyncing: false,
+              error: 'Sync failed'
+            }))
+          })
+        }
       }
     }
 
@@ -481,7 +496,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
       window.removeEventListener('online', handleOnline)
       window.removeEventListener('offline', handleOffline)
     }
-  }, [loadPendingActions, syncPendingActions])
+  }, [loadPendingActions, syncAction, removePendingAction, updatePendingActionRetries, onSyncComplete, onSyncError])
 
   const formatLastSync = (date: Date | null) => {
     if (!date) return 'Never'
