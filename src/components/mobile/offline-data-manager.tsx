@@ -365,7 +365,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
     if (syncStatus.isOnline && !syncStatus.isSyncing && pendingActions.length > 0) {
       syncPendingActions()
     }
-  }, [syncStatus.isOnline, syncPendingActions])
+  }, [syncStatus.isOnline, syncStatus.isSyncing, pendingActions, syncPendingActions])
 
   const formatLastSync = (date: Date | null) => {
     if (!date) return 'Never'
