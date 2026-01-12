@@ -21,40 +21,44 @@ export default function HowToScaleSoloBusinessPage() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <nav className="border-b bg-white/95 backdrop-blur sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
-          <Link href="/blog" className="text-gray-700 hover:text-purple-600 flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" /> Back to Blog
-          </Link>
-        </div>
-      </nav>
-
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
-          How to Scale a Solo Business
-        </h1>
-        <p className="text-lg text-gray-600 mb-8">
-          Use this lean operating system to reduce context switching, overcome decision fatigue, and scale sustainably.
-        </p>
-
-        <div className="rounded-2xl border p-6 md:p-8">
-          <div className="flex items-center gap-3 mb-4">
-            <ListChecks className="w-5 h-5 text-purple-600" />
-            <h2 className="text-2xl font-semibold">Step-by-step</h2>
+    <div className="min-h-screen bg-dark-bg relative overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#b300ff22,transparent_35%),radial-gradient(circle_at_bottom,#ff006e22,transparent_35%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20 pointer-events-none" />
+      <div className="relative z-10">
+        <nav className="border-b border-neon-cyan/30 bg-dark-bg/95 backdrop-blur-xl sticky top-0 z-40">
+          <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-3">
+            <Link href="/blog" className="text-gray-300 hover:text-neon-purple flex items-center gap-2 font-mono transition-colors">
+              <ArrowLeft className="w-4 h-4" /> Back to Blog
+            </Link>
           </div>
-          <ol className="list-decimal ml-6 space-y-3 text-gray-700">
-            <li>Clarify quarterly outcomes tied to revenue, retention, or throughput.</li>
-            <li>Map your weekly workflows and identify repetitive, rules-based tasks.</li>
-            <li>Automate capture, routing, reminders, and status updates with AI agents.</li>
-            <li>Implement a Friday review and a Monday plan ritual to stay aligned.</li>
-          </ol>
-        </div>
-      </main>
+        </nav>
 
-      <Script id="howto-scale-solo-jsonld" type="application/ld+json">
-        {JSON.stringify(howTo)}
-      </Script>
+        <main className="max-w-4xl mx-auto px-4 py-12">
+          <h1 className="text-4xl md:text-5xl font-bold font-orbitron bg-gradient-to-r from-neon-purple to-neon-magenta bg-clip-text text-transparent mb-4 uppercase tracking-wider">
+            How to Scale a Solo Business
+          </h1>
+          <p className="text-lg text-gray-400 font-mono mb-8">
+            Use this lean operating system to reduce context switching, overcome decision fatigue, and scale sustainably.
+          </p>
+
+          <div className="rounded-sm border border-neon-cyan/30 bg-dark-card p-6 md:p-8 shadow-[0_0_20px_rgba(11,228,236,0.1)]">
+            <div className="flex items-center gap-3 mb-4">
+              <ListChecks className="w-5 h-5 text-neon-purple" />
+              <h2 className="text-2xl font-semibold font-orbitron text-white uppercase tracking-wider">Step-by-step</h2>
+            </div>
+            <ol className="list-decimal ml-6 space-y-3 text-gray-400 font-mono">
+              <li>Clarify quarterly outcomes tied to revenue, retention, or throughput.</li>
+              <li>Map your weekly workflows and identify repetitive, rules-based tasks.</li>
+              <li>Automate capture, routing, reminders, and status updates with AI agents.</li>
+              <li>Implement a Friday review and a Monday plan ritual to stay aligned.</li>
+            </ol>
+          </div>
+        </main>
+
+        <Script id="howto-scale-solo-jsonld" type="application/ld+json">
+          {JSON.stringify(howTo)}
+        </Script>
+      </div>
     </div>
   )
 }

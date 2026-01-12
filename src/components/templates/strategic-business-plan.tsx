@@ -385,7 +385,7 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
           <BossCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-purple-600" />
+                <Building2 className="w-5 h-5 text-neon-purple" />
                 Executive Summary
               </CardTitle>
               <CardDescription>
@@ -547,7 +547,7 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h4 className="font-semibold">Market Segments</h4>
-                    <p className="text-sm text-gray-600">Break down your market into segments</p>
+                    <p className="text-sm text-gray-400 font-mono">Break down your market into segments</p>
                   </div>
                   <BossButton onClick={addMarketSegment} variant="outline" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
@@ -679,7 +679,7 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
           <BossCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-purple-600" />
+                <Target className="w-5 h-5 text-neon-purple" />
                 Products & Services
               </CardTitle>
               <CardDescription>
@@ -849,7 +849,7 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
           <BossCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <DollarSign className="w-5 h-5 text-purple-600" />
+                <DollarSign className="w-5 h-5 text-neon-purple" />
                 Financial Projections
               </CardTitle>
               <CardDescription>
@@ -911,26 +911,26 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                     5-Year Financial Projections
                   </h4>
                   <div className="overflow-x-auto">
-                    <table className="w-full border-collapse border border-gray-300">
+                    <table className="w-full border-collapse border border-neon-cyan/30">
                       <thead>
-                        <tr className="bg-gray-50">
-                          <th className="border border-gray-300 p-3 text-left">Year</th>
-                          <th className="border border-gray-300 p-3 text-right">Revenue</th>
-                          <th className="border border-gray-300 p-3 text-right">Expenses</th>
-                          <th className="border border-gray-300 p-3 text-right">Profit</th>
-                          <th className="border border-gray-300 p-3 text-right">Growth</th>
+                        <tr className="bg-neon-purple/10">
+                          <th className="border border-neon-cyan/30 p-3 text-left font-orbitron text-white uppercase tracking-wider">Year</th>
+                          <th className="border border-neon-cyan/30 p-3 text-right font-orbitron text-white uppercase tracking-wider">Revenue</th>
+                          <th className="border border-neon-cyan/30 p-3 text-right font-orbitron text-white uppercase tracking-wider">Expenses</th>
+                          <th className="border border-neon-cyan/30 p-3 text-right font-orbitron text-white uppercase tracking-wider">Profit</th>
+                          <th className="border border-neon-cyan/30 p-3 text-right font-orbitron text-white uppercase tracking-wider">Growth</th>
                         </tr>
                       </thead>
                       <tbody>
                         {data.financialProjections.map((projection) => (
                           <tr key={projection.year}>
-                            <td className="border border-gray-300 p-3 font-medium">Year {projection.year}</td>
-                            <td className="border border-gray-300 p-3 text-right">${projection.revenue.toLocaleString()}</td>
-                            <td className="border border-gray-300 p-3 text-right">${projection.expenses.toLocaleString()}</td>
-                            <td className={`border border-gray-300 p-3 text-right font-medium ${projection.profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                            <td className="border border-neon-cyan/30 p-3 font-medium font-mono text-white">Year {projection.year}</td>
+                            <td className="border border-neon-cyan/30 p-3 text-right font-mono text-gray-300">${projection.revenue.toLocaleString()}</td>
+                            <td className="border border-neon-cyan/30 p-3 text-right font-mono text-gray-300">${projection.expenses.toLocaleString()}</td>
+                            <td className={`border border-neon-cyan/30 p-3 text-right font-medium font-mono ${projection.profit >= 0 ? 'text-neon-lime' : 'text-red-400'}`}>
                               ${projection.profit.toLocaleString()}
                             </td>
-                            <td className="border border-gray-300 p-3 text-right">
+                            <td className="border border-neon-cyan/30 p-3 text-right font-mono text-gray-300">
                               {projection.growth > 0 && '+'}
                               {projection.growth}%
                             </td>
@@ -988,7 +988,7 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h4 className="font-semibold">Key Milestones</h4>
-                      <p className="text-sm text-gray-600">Define major milestones and deadlines</p>
+                      <p className="text-sm text-gray-400 font-mono">Define major milestones and deadlines</p>
                     </div>
                     <BossButton onClick={addMilestone} variant="outline" size="sm">
                       <Plus className="w-4 h-4 mr-2" />
@@ -1138,7 +1138,7 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
             <BossCard>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Brain className="w-5 h-5 text-purple-600" />
+                  <Brain className="w-5 h-5 text-neon-purple" />
                   AI Business Analysis
                 </CardTitle>
                 <CardDescription>

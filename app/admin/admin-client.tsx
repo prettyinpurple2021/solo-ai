@@ -6,49 +6,20 @@ import { motion } from 'framer-motion'
 import { 
   Crown,
   Shield, 
-  Target, 
-  Users, 
-  TrendingUp, 
   Activity, 
-  Settings, 
   BarChart3, 
   Server, 
   Database, 
-  Zap, 
   AlertTriangle, 
   CheckCircle, 
-  Clock, 
   RefreshCw,
   Eye,
   Play,
   Pause,
   RotateCcw,
-  ArrowRight,
-  Star,
-  Trophy,
-  Sword,
-  Gem,
-  Infinity,
-  Flame,
-  Award,
-  Rocket,
-  Brain,
-  Briefcase,
-  Calendar,
-  MessageCircle,
-  Palette,
-  Focus
 } from 'lucide-react'
-import { 
-  TacticalButton, 
-  GlassCard, 
-  RankStars, 
-  CamoBackground, 
-  SergeantDivider,
-  StatsBadge,
-  TacticalGrid,
-  TacticalGridItem
-} from '@/components/military'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import Link from 'next/link'
 
 type AdminStatus = {
@@ -142,254 +113,267 @@ export default function AdminClient() {
   if (!user || user.role !== 'admin') {
     return (
       <div className="min-h-screen bg-dark-bg flex items-center justify-center">
-        <GlassCard className="p-8 text-center">
-          <Shield className="w-16 h-16 text-red-400 mx-auto mb-4" />
-          <h1 className="font-orbitron text-2xl font-bold text-white mb-2 uppercase tracking-wider">Access Denied</h1>
-          <p className="text-gray-300 font-mono">You don't have permission to access this area.</p>
-        </GlassCard>
+        <Card className="p-8 text-center bg-dark-card border-2 border-neon-magenta/30 shadow-[0_0_30px_rgba(255,0,110,0.2)]">
+          <CardContent>
+            <Shield className="w-16 h-16 text-neon-magenta mx-auto mb-4" />
+            <h1 className="font-orbitron text-2xl font-bold text-white mb-2 uppercase tracking-wider">Access Denied</h1>
+            <p className="text-gray-300 font-mono">You don't have permission to access this area.</p>
+          </CardContent>
+        </Card>
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-dark-bg relative overflow-hidden">
-      <CamoBackground opacity={0.1} withGrid={true} />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,#b300ff22,transparent_35%),radial-gradient(circle_at_bottom,#ff006e22,transparent_35%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20 pointer-events-none" />
       <div className="relative z-10">
         {/* Navigation */}
-        <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/80 backdrop-blur-md border-b-2 border-neon-magenta/30">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-20">
+        <nav className="fixed top-0 left-0 right-0 z-50 bg-dark-bg/80 backdrop-blur-xl border-b-2 border-neon-magenta/30">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="flex items-center justify-between h-16">
               <Link href="/" className="flex items-center gap-3">
                 <motion.div 
-                  className="w-12 h-12 rounded-sm bg-gradient-to-br from-neon-magenta to-neon-purple flex items-center justify-center shadow-[0_0_20px_rgba(255,0,110,0.3)]"
+                  className="w-10 h-10 rounded-sm bg-gradient-to-br from-neon-magenta to-neon-purple flex items-center justify-center shadow-[0_0_20px_rgba(255,0,110,0.3)]"
                   whileHover={{ scale: 1.05 }}
                 >
-                  <Crown className="w-6 h-6 text-white" />
+                  <Crown className="w-5 h-5 text-white" />
                 </motion.div>
-                <span className="font-orbitron text-xl font-bold text-white uppercase tracking-wider">SoloSuccess AI</span>
+                <span className="font-orbitron text-lg font-bold text-white uppercase tracking-wider">SoloSuccess AI</span>
               </Link>
               
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
                 <Link href="/dashboard">
-                  <TacticalButton variant="outline" size="sm">
+                  <Button variant="outline" size="sm" className="border-neon-cyan/40 text-gray-300 hover:text-neon-cyan font-mono">
                     Dashboard
-                  </TacticalButton>
+                  </Button>
                 </Link>
-                <TacticalButton size="sm" onClick={() => window.location.reload()}>
+                <Button size="sm" variant="magenta" onClick={() => window.location.reload()} className="shadow-[0_0_15px_rgba(255,0,110,0.3)] font-orbitron uppercase tracking-wider">
                   <RefreshCw className="w-4 h-4 mr-2" />
                   Refresh
-                </TacticalButton>
+                </Button>
               </div>
             </div>
           </div>
         </nav>
 
         {/* Main Content */}
-        <div className="pt-32 pb-20">
-          <div className="container mx-auto px-4">
+        <div className="pt-28 pb-16">
+          <div className="max-w-7xl mx-auto px-6">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               className="mb-12"
             >
-              <div className="flex items-center gap-2 mb-6">
-                <RankStars count={5} size="lg" />
-                <span className="text-neon-magenta font-orbitron font-bold text-sm uppercase tracking-wider">
-                  Elite Command Center
+              <div className="inline-flex items-center gap-2 px-4 py-1 border border-neon-magenta/30 bg-neon-magenta/10 rounded-sm mb-6">
+                <Shield className="w-4 h-4 text-neon-magenta" />
+                <span className="text-neon-magenta font-orbitron font-bold text-xs uppercase tracking-wider">
+                  Neural Command Center
                 </span>
               </div>
               
-              <h1 className="font-orbitron text-5xl font-bold text-white mb-6 uppercase tracking-wider">
-                Tactical <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-magenta to-neon-purple">Admin</span>
+              <h1 className="font-orbitron text-4xl md:text-5xl font-bold text-white mb-4 uppercase tracking-wider">
+                Cyberpunk <span className="text-neon-magenta">Admin</span>
               </h1>
               
-              <p className="text-xl text-gray-300 max-w-2xl font-mono">
-                Monitor and control your elite AI platform with military precision. 
-                Real-time system status and tactical operations management.
+              <p className="text-lg text-gray-400 max-w-2xl font-mono">
+                Monitor and control your AI platform with neon-grade precision. 
+                Real-time system status and neural operations management.
               </p>
             </motion.div>
 
             {isLoading ? (
               <div className="text-center py-20">
                 <div className="w-8 h-8 border-2 border-neon-magenta border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-                <p className="text-gray-300 font-mono">Loading tactical status...</p>
+                <p className="text-gray-400 font-mono">Loading neural status...</p>
               </div>
             ) : error ? (
-              <GlassCard className="p-8 text-center">
-                <AlertTriangle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-                <h2 className="font-orbitron text-2xl font-bold text-white mb-2">Status Error</h2>
-                <p className="text-military-storm-grey">{error}</p>
-              </GlassCard>
+              <Card className="p-8 text-center bg-dark-card border-2 border-neon-magenta/30 shadow-[0_0_30px_rgba(255,0,110,0.2)]">
+                <CardContent>
+                  <AlertTriangle className="w-16 h-16 text-neon-magenta mx-auto mb-4" />
+                  <h2 className="font-orbitron text-2xl font-bold text-white mb-2 uppercase tracking-wider">Status Error</h2>
+                  <p className="text-gray-400 font-mono">{error}</p>
+                </CardContent>
+              </Card>
             ) : adminStatus ? (
               <>
                 {/* System Status Overview */}
                 <div className="mb-12">
-                  <GlassCard className="p-8">
-                    <h2 className="font-orbitron text-3xl font-bold text-white mb-6 uppercase tracking-wider">System Status</h2>
-                    
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      <div className="text-center">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-gradient-to-br from-neon-magenta to-neon-purple flex items-center justify-center shadow-[0_0_15px_rgba(255,0,110,0.3)]">
-                          <Server className="w-8 h-8 text-white" />
+                  <Card className="p-8 bg-dark-card border-2 border-neon-magenta/30 shadow-[0_0_30px_rgba(255,0,110,0.2)]">
+                    <CardHeader>
+                      <CardTitle className="font-orbitron text-3xl font-bold text-white mb-6 uppercase tracking-wider">System Status</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div className="text-center">
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-gradient-to-br from-neon-magenta to-neon-purple flex items-center justify-center shadow-[0_0_15px_rgba(255,0,110,0.3)]">
+                            <Server className="w-8 h-8 text-white" />
+                          </div>
+                          <h3 className="font-orbitron text-2xl font-bold text-white mb-2 uppercase tracking-wider">
+                            {formatUptime(adminStatus.uptimeSeconds)}
+                          </h3>
+                          <p className="text-gray-400 font-mono">Uptime</p>
                         </div>
-                        <h3 className="font-orbitron text-2xl font-bold text-white mb-2 uppercase tracking-wider">
-                          {formatUptime(adminStatus.uptimeSeconds)}
-                        </h3>
-                        <p className="text-gray-300 font-mono">Uptime</p>
-                      </div>
-                      
-                      <div className="text-center">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-gradient-to-br from-neon-magenta to-neon-purple flex items-center justify-center shadow-[0_0_15px_rgba(255,0,110,0.3)]">
-                          <Activity className="w-8 h-8 text-white" />
+                        
+                        <div className="text-center">
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-gradient-to-br from-neon-cyan to-neon-blue flex items-center justify-center shadow-[0_0_15px_rgba(11,228,236,0.3)]">
+                            <Activity className="w-8 h-8 text-white" />
+                          </div>
+                          <h3 className="font-orbitron text-2xl font-bold text-white mb-2">
+                            {adminStatus.system.cpuUsage}%
+                          </h3>
+                          <p className="text-gray-400 font-mono">CPU Usage</p>
                         </div>
-                        <h3 className="font-orbitron text-2xl font-bold text-white mb-2">
-                          {adminStatus.system.cpuUsage}%
-                        </h3>
-                        <p className="text-gray-300 font-mono">CPU Usage</p>
-                      </div>
-                      
-                      <div className="text-center">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-gradient-to-br from-neon-magenta to-neon-purple flex items-center justify-center shadow-[0_0_15px_rgba(255,0,110,0.3)]">
-                          <Database className="w-8 h-8 text-white" />
+                        
+                        <div className="text-center">
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-gradient-to-br from-neon-orange to-neon-magenta flex items-center justify-center shadow-[0_0_15px_rgba(255,102,0,0.3)]">
+                            <Database className="w-8 h-8 text-white" />
+                          </div>
+                          <h3 className="font-orbitron text-2xl font-bold text-white mb-2">
+                            {adminStatus.system.memoryUsage}%
+                          </h3>
+                          <p className="text-gray-400 font-mono">Memory Usage</p>
                         </div>
-                        <h3 className="font-orbitron text-2xl font-bold text-white mb-2">
-                          {adminStatus.system.memoryUsage}%
-                        </h3>
-                        <p className="text-gray-300 font-mono">Memory Usage</p>
-                      </div>
-                      
-                      <div className="text-center">
-                        <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-gradient-to-br from-neon-magenta to-neon-purple flex items-center justify-center shadow-[0_0_15px_rgba(255,0,110,0.3)]">
-                          <BarChart3 className="w-8 h-8 text-white" />
+                        
+                        <div className="text-center">
+                          <div className="w-16 h-16 mx-auto mb-4 rounded-sm bg-gradient-to-br from-neon-lime to-neon-cyan flex items-center justify-center shadow-[0_0_15px_rgba(57,255,20,0.3)]">
+                            <BarChart3 className="w-8 h-8 text-white" />
+                          </div>
+                          <h3 className="font-orbitron text-2xl font-bold text-white mb-2">
+                            {adminStatus.database.queryCount}
+                          </h3>
+                          <p className="text-gray-400 font-mono">Database Queries</p>
                         </div>
-                        <h3 className="font-orbitron text-2xl font-bold text-white mb-2">
-                          {adminStatus.database.queryCount}
-                        </h3>
-                        <p className="text-gray-300 font-mono">Database Queries</p>
                       </div>
-                    </div>
-                  </GlassCard>
+                    </CardContent>
+                  </Card>
                 </div>
 
                 {/* Service Status */}
                 <div className="mb-12">
                   <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-6">
                     <div>
-                      <GlassCard className="p-8">
-                        <div className="flex items-center justify-between mb-6">
-                          <h3 className="font-orbitron text-2xl font-bold text-white uppercase tracking-wider">Notification Service</h3>
-                          <div className="flex items-center gap-2">
-                            {adminStatus.notifications.status.running ? (
-                              <CheckCircle className="w-5 h-5 text-green-400" />
-                            ) : (
-                              <AlertTriangle className="w-5 h-5 text-red-400" />
-                            )}
-                            <span className={`text-sm font-mono font-bold uppercase tracking-wider ${
-                              adminStatus.notifications.status.running ? 'text-neon-lime' : 'text-neon-magenta'
-                            }`}>
-                              {adminStatus.notifications.status.running ? 'Running' : 'Stopped'}
-                            </span>
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                          <div className="text-center">
-                            <div className="text-2xl font-bold font-orbitron text-neon-magenta mb-1">
-                              {adminStatus.notifications.stats.pending}
+                      <Card className="p-8 bg-dark-card border-2 border-neon-cyan/30 shadow-[0_0_30px_rgba(11,228,236,0.2)]">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="font-orbitron text-2xl font-bold text-white uppercase tracking-wider">Notification Service</CardTitle>
+                            <div className="flex items-center gap-2">
+                              {adminStatus.notifications.status.running ? (
+                                <CheckCircle className="w-5 h-5 text-neon-lime" />
+                              ) : (
+                                <AlertTriangle className="w-5 h-5 text-neon-magenta" />
+                              )}
+                              <span className={`text-sm font-mono font-bold uppercase tracking-wider ${
+                                adminStatus.notifications.status.running ? 'text-neon-lime' : 'text-neon-magenta'
+                              }`}>
+                                {adminStatus.notifications.status.running ? 'Running' : 'Stopped'}
+                              </span>
                             </div>
-                            <div className="text-gray-300 text-sm font-mono">Pending</div>
                           </div>
-                          <div className="text-center">
-                            <div className="text-2xl font-bold font-orbitron text-neon-orange mb-1">
-                              {adminStatus.notifications.stats.processing}
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div className="text-center">
+                              <div className="text-2xl font-bold font-orbitron text-neon-magenta mb-1">
+                                {adminStatus.notifications.stats.pending}
+                              </div>
+                              <div className="text-gray-400 text-sm font-mono">Pending</div>
                             </div>
-                            <div className="text-gray-300 text-sm font-mono">Processing</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-2xl font-bold font-orbitron text-neon-lime mb-1">
-                              {adminStatus.notifications.stats.completed}
+                            <div className="text-center">
+                              <div className="text-2xl font-bold font-orbitron text-neon-orange mb-1">
+                                {adminStatus.notifications.stats.processing}
+                              </div>
+                              <div className="text-gray-400 text-sm font-mono">Processing</div>
                             </div>
-                            <div className="text-gray-300 text-sm font-mono">Completed</div>
+                            <div className="text-center">
+                              <div className="text-2xl font-bold font-orbitron text-neon-lime mb-1">
+                                {adminStatus.notifications.stats.completed}
+                              </div>
+                              <div className="text-gray-400 text-sm font-mono">Completed</div>
+                            </div>
                           </div>
-                        </div>
-                      </GlassCard>
+                        </CardContent>
+                      </Card>
                     </div>
                     
                     <div>
-                      <GlassCard className="p-8">
-                        <div className="flex items-center justify-between mb-6">
-                          <h3 className="font-orbitron text-2xl font-bold text-white uppercase tracking-wider">Scraping Service</h3>
-                          <div className="flex items-center gap-2">
-                            {adminStatus.scraping.running ? (
-                              <CheckCircle className="w-5 h-5 text-neon-lime" />
-                            ) : (
-                              <AlertTriangle className="w-5 h-5 text-neon-magenta" />
-                            )}
-                            <span className={`text-sm font-mono font-bold uppercase tracking-wider ${
-                              adminStatus.scraping.running ? 'text-neon-lime' : 'text-neon-magenta'
-                            }`}>
-                              {adminStatus.scraping.running ? 'Running' : 'Stopped'}
-                            </span>
-                          </div>
-                        </div>
-                        
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                          <div className="text-center">
-                            <div className="text-2xl font-bold font-orbitron text-neon-cyan mb-1">
-                              {adminStatus.scraping.metrics.totalJobs}
+                      <Card className="p-8 bg-dark-card border-2 border-neon-purple/30 shadow-[0_0_30px_rgba(179,0,255,0.2)]">
+                        <CardHeader>
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="font-orbitron text-2xl font-bold text-white uppercase tracking-wider">Scraping Service</CardTitle>
+                            <div className="flex items-center gap-2">
+                              {adminStatus.scraping.running ? (
+                                <CheckCircle className="w-5 h-5 text-neon-lime" />
+                              ) : (
+                                <AlertTriangle className="w-5 h-5 text-neon-magenta" />
+                              )}
+                              <span className={`text-sm font-mono font-bold uppercase tracking-wider ${
+                                adminStatus.scraping.running ? 'text-neon-lime' : 'text-neon-magenta'
+                              }`}>
+                                {adminStatus.scraping.running ? 'Running' : 'Stopped'}
+                              </span>
                             </div>
-                            <div className="text-gray-300 text-sm font-mono">Total Jobs</div>
                           </div>
-                          <div className="text-center">
-                            <div className="text-2xl font-bold font-orbitron text-neon-orange mb-1">
-                              {adminStatus.scraping.metrics.runningJobs}
+                        </CardHeader>
+                        <CardContent>
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div className="text-center">
+                              <div className="text-2xl font-bold font-orbitron text-neon-cyan mb-1">
+                                {adminStatus.scraping.metrics.totalJobs}
+                              </div>
+                              <div className="text-gray-400 text-sm font-mono">Total Jobs</div>
                             </div>
-                            <div className="text-gray-300 text-sm font-mono">Running</div>
-                          </div>
-                          <div className="text-center">
-                            <div className="text-2xl font-bold font-orbitron text-neon-lime mb-1">
-                              {adminStatus.scraping.metrics.completedJobs}
+                            <div className="text-center">
+                              <div className="text-2xl font-bold font-orbitron text-neon-orange mb-1">
+                                {adminStatus.scraping.metrics.runningJobs}
+                              </div>
+                              <div className="text-gray-400 text-sm font-mono">Running</div>
                             </div>
-                            <div className="text-gray-300 text-sm font-mono">Completed</div>
+                            <div className="text-center">
+                              <div className="text-2xl font-bold font-orbitron text-neon-lime mb-1">
+                                {adminStatus.scraping.metrics.completedJobs}
+                              </div>
+                              <div className="text-gray-400 text-sm font-mono">Completed</div>
+                            </div>
                           </div>
-                        </div>
-                      </GlassCard>
+                        </CardContent>
+                      </Card>
                     </div>
                   </div>
                 </div>
 
                 {/* Quick Actions */}
                 <div className="mb-12">
-                  <GlassCard className="p-8">
-                    <h2 className="font-orbitron text-3xl font-bold text-white mb-6 uppercase tracking-wider">Tactical Operations</h2>
-                    
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                      <TacticalButton className="group">
-                        <Play className="w-4 h-4 mr-2" />
-                        Start Services
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </TacticalButton>
-                      
-                      <TacticalButton variant="outline" className="group">
-                        <Pause className="w-4 h-4 mr-2" />
-                        Stop Services
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </TacticalButton>
-                      
-                      <TacticalButton variant="outline" className="group">
-                        <RotateCcw className="w-4 h-4 mr-2" />
-                        Restart System
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </TacticalButton>
-                      
-                      <TacticalButton variant="outline" className="group">
-                        <Eye className="w-4 h-4 mr-2" />
-                        View Logs
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                      </TacticalButton>
-                    </div>
-                  </GlassCard>
+                  <Card className="p-8 bg-dark-card border-2 border-neon-purple/30 shadow-[0_0_30px_rgba(179,0,255,0.2)]">
+                    <CardHeader>
+                      <CardTitle className="font-orbitron text-3xl font-bold text-white mb-6 uppercase tracking-wider">Neural Operations</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Button variant="cyan" className="font-orbitron uppercase tracking-wider shadow-[0_0_15px_rgba(11,228,236,0.3)]">
+                          <Play className="w-4 h-4 mr-2" />
+                          Start Services
+                        </Button>
+                        
+                        <Button variant="outline" className="border-neon-magenta/40 text-gray-300 hover:text-neon-magenta font-orbitron uppercase tracking-wider">
+                          <Pause className="w-4 h-4 mr-2" />
+                          Stop Services
+                        </Button>
+                        
+                        <Button variant="outline" className="border-neon-orange/40 text-gray-300 hover:text-neon-orange font-orbitron uppercase tracking-wider">
+                          <RotateCcw className="w-4 h-4 mr-2" />
+                          Restart System
+                        </Button>
+                        
+                        <Button variant="outline" className="border-neon-purple/40 text-gray-300 hover:text-neon-purple font-orbitron uppercase tracking-wider">
+                          <Eye className="w-4 h-4 mr-2" />
+                          View Logs
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
               </>
             ) : null}
