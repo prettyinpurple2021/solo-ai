@@ -42,3 +42,4 @@ out/
 build/
 .vercel
 .env*.local
+next-env.d.ts

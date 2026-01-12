@@ -1,6 +1,6 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
-import { validateRecaptcha} from '@/lib/recaptcha'
+import { createAssessment, validateRecaptcha} from '@/lib/recaptcha'
 
 
 
@@ -26,11 +26,12 @@ export async function POST(request: NextRequest) {
 
     logInfo(`Validating reCAPTCHA token for action: ${action}`)
 
-    // Validate reCAPTCHA token
-    const isValid = await validateRecaptcha(token, action, minScore)
+    // Step 1: Create assessment with Google Cloud to get the risk score
+    // This is what Google Cloud needs to see to verify the integration is complete
+    const score = await createAssessment(token, action)
     
-    if (!isValid) {
-      logError(`reCAPTCHA validation failed for action: ${action}`)
+    if (score === null) {
+      logError(`reCAPTCHA assessment failed for action: ${action}`)
       return NextResponse.json(
         { 
           success: false, 
@@ -40,10 +41,27 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    logInfo(`reCAPTCHA validation successful for action: ${action}`)
+    // Step 2: Validate that the score meets the minimum threshold
+    if (score < minScore) {
+      logWarn(`reCAPTCHA score ${score} below minimum threshold ${minScore} for action: ${action}`)
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'reCAPTCHA validation failed. Please try again.',
+          score // Include score for debugging
+        },
+        { status: 400 }
+      )
+    }
+
+    logInfo(`reCAPTCHA validation successful for action: ${action} with score: ${score}`)
+    
+    // Return success with the risk score
+    // This allows Google Cloud to verify that the risk score is being used
     return NextResponse.json({
       success: true,
-      message: 'reCAPTCHA validation successful'
+      message: 'reCAPTCHA validation successful',
+      score: score // Include the risk score in the response
     })
 
   } catch (error) {
