@@ -196,4 +196,4 @@ export const RECAPTCHA_ACTIONS = {
   SUBSCRIPTION: 'subscription'
 } as const
 
-export type RecaptchaAction = keyof typeof RECAPTCHA_ACTIONS
+export type RecaptchaAction = typeof RECAPTCHA_ACTIONS[keyof typeof RECAPTCHA_ACTIONS]
