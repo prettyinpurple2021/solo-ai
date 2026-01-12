@@ -499,7 +499,7 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
           <BossCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Settings className="w-5 h-5 text-purple-600" />
+                <Settings className="w-5 h-5 text-neon-purple" />
                 Campaign Setup
               </CardTitle>
               <CardDescription>
@@ -676,7 +676,7 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
               <BossCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <Edit3 className="w-5 h-5 text-purple-600" />
+                    <Edit3 className="w-5 h-5 text-neon-purple" />
                     Email Builder
                   </CardTitle>
                 </CardHeader>
@@ -791,7 +791,7 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
               <BossCard>
                 <CardHeader className="flex-row items-center justify-between space-y-0">
                   <CardTitle className="flex items-center gap-2">
-                    <Eye className="w-5 h-5 text-purple-600" />
+                    <Eye className="w-5 h-5 text-neon-purple" />
                     Email Preview
                   </CardTitle>
                   <div className="flex items-center gap-2">
@@ -823,9 +823,9 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                     </div>
 
                     {/* Email Body */}
-                    <div className="bg-white min-h-[400px]">
+                    <div className="bg-dark-card min-h-[400px]">
                       {_data.blocks.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500">
+                        <div className="p-8 text-center text-gray-400 font-mono">
                           <Mail className="w-16 h-16 mx-auto mb-4 opacity-50" />
                           <p>Start building your email by adding elements</p>
                         </div>
@@ -887,7 +887,7 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h4 className="font-semibold">Personalization Tokens</h4>
-                    <p className="text-sm text-gray-600">Define merge tags for dynamic content</p>
+                    <p className="text-sm text-gray-400 font-mono">Define merge tags for dynamic content</p>
                   </div>
                   <BossButton onClick={addPersonalization} variant="secondary" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
@@ -999,7 +999,7 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
           <BossCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Split className="w-5 h-5 text-purple-600" />
+                <Split className="w-5 h-5 text-neon-purple" />
                 A/B Testing Setup
               </CardTitle>
               <CardDescription>
@@ -1176,7 +1176,7 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
             <BossCard>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Send className="w-5 h-5 text-purple-600" />
+                  <Send className="w-5 h-5 text-neon-purple" />
                   Send Settings
                 </CardTitle>
                 <CardDescription>
@@ -1342,23 +1342,23 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200">
-                  <h4 className="font-bold text-purple-700 mb-2 flex items-center gap-2">
+                <div className="bg-gradient-to-r from-neon-purple/20 via-neon-magenta/20 to-neon-cyan/20 p-6 rounded-sm border-2 border-neon-purple/30 shadow-[0_0_20px_rgba(179,0,255,0.1)]">
+                  <h4 className="font-bold font-orbitron text-neon-purple mb-2 flex items-center gap-2 uppercase tracking-wider">
                     <TrendingUp className="w-5 h-5" />
                     Expected Performance
                   </h4>
                   <div className="grid grid-cols-3 gap-4 text-center">
                     <div>
-                      <div className="text-2xl font-bold text-purple-900">24%</div>
-                      <div className="text-sm text-purple-700">Open Rate</div>
+                      <div className="text-2xl font-bold font-orbitron text-neon-purple">24%</div>
+                      <div className="text-sm text-gray-400 font-mono">Open Rate</div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-purple-900">3.2%</div>
-                      <div className="text-sm text-purple-700">Click Rate</div>
+                      <div className="text-2xl font-bold font-orbitron text-neon-purple">3.2%</div>
+                      <div className="text-sm text-gray-400 font-mono">Click Rate</div>
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-purple-900">{_data.audience.length * 1250}</div>
-                      <div className="text-sm text-purple-700">Recipients</div>
+                      <div className="text-2xl font-bold font-orbitron text-neon-purple">{_data.audience.length * 1250}</div>
+                      <div className="text-sm text-gray-400 font-mono">Recipients</div>
                     </div>
                   </div>
                 </div>

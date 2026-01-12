@@ -248,7 +248,7 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
           <BossCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-purple-600" />
+                <Target className="w-5 h-5 text-neon-purple" />
                 Decision Setup
               </CardTitle>
               <CardDescription>
@@ -324,7 +324,7 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-lg font-semibold">Decision Options</h3>
-              <p className="text-sm text-gray-600">Add and configure your available options</p>
+              <p className="text-sm text-gray-400 font-mono">Add and configure your available options</p>
             </div>
             <BossButton onClick={addOption} variant="secondary" icon={<Plus className="w-4 h-4" />}> 
               Add Option
@@ -469,7 +469,7 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
                             step={5}
                             className="mt-2"
                           />
-                          <p className="text-xs text-gray-500 mt-1">Expected business impact</p>
+                          <p className="text-xs text-gray-400 font-mono mt-1">Expected business impact</p>
                         </div>
 
                         <div>
@@ -493,12 +493,12 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
                             step={5}
                             className="mt-2"
                           />
-                          <p className="text-xs text-gray-500 mt-1">Potential risk involved</p>
+                          <p className="text-xs text-gray-400 font-mono mt-1">Potential risk involved</p>
                         </div>
                       </div>
 
                       <div className="text-center pt-2 border-t">
-                        <div className="text-lg font-bold text-purple-600">
+                        <div className="text-lg font-bold font-orbitron text-neon-purple">
                           Decision Score: {getDecisionScore(option)}/100
                         </div>
                       </div>
@@ -531,7 +531,7 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
           <BossCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Brain className="w-5 h-5 text-purple-600" />
+                <Brain className="w-5 h-5 text-neon-purple" />
                 Decision Analysis
               </CardTitle>
               <CardDescription>
@@ -572,22 +572,22 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
               {/* Option Comparison */}
               <div>
                 <h4 className="font-semibold mb-4 flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-purple-600" />
+                  <BarChart3 className="w-5 h-5 text-neon-purple" />
                   Option Comparison
                 </h4>
                 <div className="space-y-4">
                   {_data.options
                     .sort((a: any, b: any) => getDecisionScore(b) - getDecisionScore(a))
                     .map((option: any, index: number) => (
-                      <div key={option.id} className="flex items-center gap-4 p-4 border rounded-lg">
+                      <div key={option.id} className="flex items-center gap-4 p-4 border border-neon-cyan/30 rounded-sm bg-dark-card">
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-2">
-                            <h5 className="font-medium">{option.title || `Option ${index + 1}`}</h5>
+                            <h5 className="font-medium font-orbitron text-white uppercase tracking-wider">{option.title || `Option ${index + 1}`}</h5>
                             <div className="flex items-center gap-2">
                               {index === 0 && (
-                                <Badge className="bg-green-100 text-green-700">Recommended</Badge>
+                                <Badge className="bg-neon-lime/20 text-neon-lime border-neon-lime/30 font-mono">Recommended</Badge>
                               )}
-                              <span className="font-bold text-purple-600">
+                              <span className="font-bold font-orbitron text-neon-purple">
                                 {getDecisionScore(option)}/100
                               </span>
                             </div>
@@ -608,16 +608,16 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-lg border-2 border-purple-200"
+                  className="bg-gradient-to-r from-neon-purple/20 via-neon-magenta/20 to-neon-cyan/20 p-6 rounded-sm border-2 border-neon-purple/30 shadow-[0_0_20px_rgba(179,0,255,0.1)]"
                 >
-                  <h4 className="font-bold text-purple-700 mb-2 flex items-center gap-2">
+                  <h4 className="font-bold font-orbitron text-neon-purple mb-2 flex items-center gap-2 uppercase tracking-wider">
                     <Crown className="w-5 h-5" />
                     Top Recommendation
                   </h4>
-                  <p className="text-lg font-medium text-purple-900">
+                  <p className="text-lg font-medium font-orbitron text-white">
                     {getTopRecommendation()?.title}
                   </p>
-                  <p className="text-sm text-purple-700 mt-2">
+                  <p className="text-sm text-gray-400 font-mono mt-2">
                     Score: {getDecisionScore(getTopRecommendation()!)}/100
                   </p>
                 </motion.div>

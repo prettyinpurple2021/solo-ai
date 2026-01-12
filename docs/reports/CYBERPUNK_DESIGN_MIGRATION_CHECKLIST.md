@@ -385,13 +385,13 @@ All foundational UI components have been updated to Cyberpunk Design System v3.
 | `templates/customer-journey-mapper.tsx` | 19 + 3 hover | 33 | ✅ DONE |
 | `templates/social-media-strategy.tsx` | 21 + 1 border + 5 hover | 23 | ✅ DONE |
 | `templates/strategic-business-plan.tsx` | 9 + 11 border + 1 hover | 26 | ✅ DONE (Major violations fixed - icons, colors, borders, typography) |
-| `templates/email-campaign-builder.tsx` | 15 + 1 hover | 21 | ⬜ TODO |
+| `templates/email-campaign-builder.tsx` | 15 + 1 hover | 21 | ✅ DONE |
 
 ### 8.2 Medium Violation Templates
 
 | File | Violations | Placeholder | Status |
 |------|------------|-------------|--------|
-| `templates/decision-dashboard.tsx` | 7 | 10 | ⬜ TODO |
+| `templates/decision-dashboard.tsx` | 7 | 10 | ✅ DONE |
 | `templates/pr-pitch-template.tsx` | 1 | 12 | ⬜ TODO |
 | `templates/ai-collab-planner.tsx` | 1 | 11 | ⬜ TODO |
 | `templates/big-leap-planner.tsx` | 1 | 9 | ⬜ TODO |

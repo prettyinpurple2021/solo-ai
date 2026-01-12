@@ -163,7 +163,7 @@ export default function AcceleratorPricingPage() {
                 </div>
                 
                 <Button size="lg" variant="purple" className="font-orbitron uppercase tracking-wider shadow-[0_0_20px_rgba(179,0,255,0.3)]">
-                  <Zap className="w-4 h-4 mr-2" />
+                  <Zap className="w-5 h-5 mr-2" />
                   Start Accelerating Now
                 </Button>
               </motion.div>
@@ -326,6 +326,7 @@ export default function AcceleratorPricingPage() {
           <div className="py-20">
             <div className="container mx-auto px-4">
               <FaqSection />
+            </div>
           </div>
         </div>
       </div>
