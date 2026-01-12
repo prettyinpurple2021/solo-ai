@@ -72,7 +72,7 @@ export function AiCollabPlanner() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">AI Collab Planner</h3>
+        <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">AI Collab Planner</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -87,8 +87,8 @@ export function AiCollabPlanner() {
         </div>
       </div>
 
-      <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
-        <p className="text-sm text-primary">
+      <div className="bg-neon-purple/10 p-4 rounded-sm border border-neon-purple/30 shadow-[0_0_15px_rgba(179,0,255,0.1)]">
+        <p className="text-sm text-neon-purple font-mono">
           <Users className="w-4 h-4 inline mr-2" />
           Plan strategic collaborations that benefit both audiences. Create win-win partnerships with clear value propositions.
         </p>
@@ -180,7 +180,7 @@ export function AiCollabPlanner() {
 
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <h4 className="text-md font-medium">Collaboration Ideas</h4>
+            <h4 className="text-md font-medium font-orbitron text-white uppercase tracking-wider">Collaboration Ideas</h4>
             <Button onClick={addCollabIdea} variant="outline" size="sm">
               <Target className="w-4 h-4 mr-2" />
               Add Idea
@@ -208,7 +208,7 @@ export function AiCollabPlanner() {
                   <Label htmlFor={`collab-type-${index}`}>Collaboration Type</Label>
                   <select
                     id={`collab-type-${index}`}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border border-neon-cyan/30 rounded-sm bg-dark-card text-white font-mono focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan"
                     value={idea.type}
                     onChange={(e) => updateCollabIdea(index, 'type', e.target.value)}
                   >

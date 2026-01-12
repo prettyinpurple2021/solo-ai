@@ -57,7 +57,7 @@ export function PreMortemTemplate() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Pre-Mortem Template</h3>
+        <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">Pre-Mortem Template</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -95,7 +95,7 @@ export function PreMortemTemplate() {
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h4 className="text-md font-medium">Potential Risks & Mitigations</h4>
+          <h4 className="text-md font-medium font-orbitron text-white uppercase tracking-wider">Potential Risks & Mitigations</h4>
           <Button onClick={addRisk} variant="outline" size="sm">
             <Plus className="w-4 h-4 mr-2" />
             Add Risk

@@ -122,21 +122,21 @@ export function UpsellFlowBuilder() {
 
   const getStepIcon = (type: string) => {
     switch (type) {
-      case 'initial-offer': return <DollarSign className="w-4 h-4 text-blue-600" />;
-      case 'upsell': return <TrendingUp className="w-4 h-4 text-green-600" />;
-      case 'downsell': return <ArrowRight className="w-4 h-4 text-orange-600" />;
-      case 'loyalty': return <Badge className="w-4 h-4 text-purple-600" />;
+      case 'initial-offer': return <DollarSign className="w-4 h-4 text-neon-cyan" />;
+      case 'upsell': return <TrendingUp className="w-4 h-4 text-neon-lime" />;
+      case 'downsell': return <ArrowRight className="w-4 h-4 text-neon-orange" />;
+      case 'loyalty': return <Badge className="w-4 h-4 text-neon-purple" />;
       default: return <Plus className="w-4 h-4" />;
     }
   };
 
   const getStepColor = (type: string) => {
     switch (type) {
-      case 'initial-offer': return 'bg-blue-50 border-blue-200';
-      case 'upsell': return 'bg-green-50 border-green-200';
-      case 'downsell': return 'bg-orange-50 border-orange-200';
-      case 'loyalty': return 'bg-purple-50 border-purple-200';
-      default: return 'bg-gray-50 border-gray-200';
+      case 'initial-offer': return 'bg-neon-cyan/10 border-neon-cyan/30';
+      case 'upsell': return 'bg-neon-lime/10 border-neon-lime/30';
+      case 'downsell': return 'bg-neon-orange/10 border-neon-orange/30';
+      case 'loyalty': return 'bg-neon-purple/10 border-neon-purple/30';
+      default: return 'bg-dark-card border-neon-cyan/30';
     }
   };
 
@@ -144,8 +144,8 @@ export function UpsellFlowBuilder() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold">Upsell Flow Builder</h3>
+          <TrendingUp className="w-5 h-5 text-neon-purple" />
+          <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">Upsell Flow Builder</h3>
         </div>
         <div className="flex gap-2">
           <Input
@@ -281,7 +281,7 @@ export function UpsellFlowBuilder() {
 
           {steps.length === 0 && (
             <Card>
-              <CardContent className="p-6 text-center text-muted-foreground">
+              <CardContent className="p-6 text-center text-gray-400 font-mono">
                 Add your business details and click "Generate Suggested Flow" to create your upsell sequence
               </CardContent>
             </Card>

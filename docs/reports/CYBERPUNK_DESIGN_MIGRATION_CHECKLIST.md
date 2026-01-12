@@ -392,22 +392,22 @@ All foundational UI components have been updated to Cyberpunk Design System v3.
 | File | Violations | Placeholder | Status |
 |------|------------|-------------|--------|
 | `templates/decision-dashboard.tsx` | 7 | 10 | ✅ DONE |
-| `templates/pr-pitch-template.tsx` | 1 | 12 | ⬜ TODO |
-| `templates/ai-collab-planner.tsx` | 1 | 11 | ⬜ TODO |
-| `templates/big-leap-planner.tsx` | 1 | 9 | ⬜ TODO |
-| `templates/offer-naming-generator.tsx` | 1 | 9 | ⬜ TODO |
-| `templates/upsell-flow-builder.tsx` | 1 border | 8 | ⬜ TODO |
-| `templates/freebie-funnel-builder.tsx` | - | 8 | ⬜ TODO |
-| `templates/values-aligned-biz-filter.tsx` | 1 | 7 | ⬜ TODO |
-| `templates/reverse-engineer-role-models.tsx` | 1 | 7 | ⬜ TODO |
-| `templates/pre-mortem-template.tsx` | - | 7 | ⬜ TODO |
+| `templates/pr-pitch-template.tsx` | 1 | 12 | ✅ DONE |
+| `templates/ai-collab-planner.tsx` | 1 | 11 | ✅ DONE |
+| `templates/big-leap-planner.tsx` | 1 | 9 | ✅ DONE |
+| `templates/offer-naming-generator.tsx` | 1 | 9 | ✅ DONE |
+| `templates/upsell-flow-builder.tsx` | 1 border | 8 | ✅ DONE |
+| `templates/freebie-funnel-builder.tsx` | - | 8 | ✅ DONE |
+| `templates/values-aligned-biz-filter.tsx` | 1 | 7 | ✅ DONE |
+| `templates/reverse-engineer-role-models.tsx` | 1 | 7 | ✅ DONE |
+| `templates/pre-mortem-template.tsx` | - | 7 | ✅ DONE |
 
 ### 8.3 Lower Violation Templates
 
 | File | Violations | Placeholder | Status |
 |------|------------|-------------|--------|
-| `templates/vision-board-generator.tsx` | 1 | 5 | ⬜ TODO |
-| `templates/viral-hook-generator.tsx` | 2 | 5 | ⬜ TODO |
+| `templates/vision-board-generator.tsx` | 1 | 5 | ✅ DONE |
+| `templates/viral-hook-generator.tsx` | 2 | 5 | ✅ DONE |
 | `templates/brag-bank-template.tsx` | 1 | 5 | ⬜ TODO |
 | `templates/quarterly-biz-review.tsx` | - | 5 | ⬜ TODO |
 | `templates/offer-comparison-matrix.tsx` | - | 5 | ⬜ TODO |

@@ -177,7 +177,7 @@ export function ViralHookGenerator() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Viral Hook Generator</h3>
+        <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">Viral Hook Generator</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -192,8 +192,8 @@ export function ViralHookGenerator() {
         </div>
       </div>
 
-      <div className="bg-accent/10 p-4 rounded-lg border border-accent/20">
-        <p className="text-sm text-accent-foreground">
+      <div className="bg-neon-magenta/10 p-4 rounded-sm border border-neon-magenta/30 shadow-[0_0_15px_rgba(255,0,110,0.1)]">
+        <p className="text-sm text-neon-magenta font-mono">
           <Zap className="w-4 h-4 inline mr-2" />
           Create scroll-stopping hooks that grab attention and drive engagement. Perfect for breaking through the noise!
         </p>
@@ -293,7 +293,7 @@ export function ViralHookGenerator() {
         {generatedHooks.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="text-md font-medium">Generated Hooks</h4>
+              <h4 className="text-md font-medium font-orbitron text-white uppercase tracking-wider">Generated Hooks</h4>
               <span className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold border-transparent bg-secondary text-secondary-foreground">
                 {generatedHooks.length} options
               </span>

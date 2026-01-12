@@ -63,7 +63,7 @@ export function ReverseEngineerRoleModels() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Reverse Engineer Your Role Models</h3>
+        <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">Reverse Engineer Your Role Models</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -78,8 +78,8 @@ export function ReverseEngineerRoleModels() {
         </div>
       </div>
 
-      <div className="bg-primary/10 p-4 rounded-lg border border-primary/20">
-        <p className="text-sm text-primary">
+      <div className="bg-neon-purple/10 p-4 rounded-sm border border-neon-purple/30 shadow-[0_0_15px_rgba(179,0,255,0.1)]">
+        <p className="text-sm text-neon-purple font-mono">
           <Star className="w-4 h-4 inline mr-2" />
           Analyze successful people in your field to identify replicable patterns and strategies you can adapt for your own journey.
         </p>
@@ -87,7 +87,7 @@ export function ReverseEngineerRoleModels() {
 
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h4 className="text-md font-medium">Role Model Analysis</h4>
+          <h4 className="text-md font-medium font-orbitron text-white uppercase tracking-wider">Role Model Analysis</h4>
           <Button onClick={addRoleModel} variant="outline" size="sm">
             <Plus className="w-4 h-4 mr-2" />
             Add Role Model

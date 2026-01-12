@@ -70,9 +70,9 @@ export function ValuesAlignedBizFilter() {
   };
 
   const getAlignmentColor = (score: number) => {
-    if (score >= 8) return 'text-chart-2';
-    if (score >= 6) return 'text-chart-4';
-    return 'text-destructive';
+    if (score >= 8) return 'text-neon-lime';
+    if (score >= 6) return 'text-neon-orange';
+    return 'text-red-400';
   };
 
   const getAlignmentLabel = (score: number) => {
@@ -100,7 +100,7 @@ export function ValuesAlignedBizFilter() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Values-Aligned Biz Filter</h3>
+        <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">Values-Aligned Biz Filter</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -133,7 +133,7 @@ export function ValuesAlignedBizFilter() {
           <CardContent className="space-y-4">
             <div>
               <Label>Core Values</Label>
-              <p className="text-sm text-muted-foreground mb-2">
+              <p className="text-sm text-gray-400 font-mono mb-2">
                 What principles guide your decisions? What matters most to you?
               </p>
               {coreValues.map((value, index) => (
@@ -254,8 +254,8 @@ export function ValuesAlignedBizFilter() {
                 </div>
 
                 {opportunity.alignment >= 8 && (
-                  <div className="bg-chart-2/10 p-3 rounded border border-chart-2/20">
-                    <div className="flex items-center text-chart-2">
+                  <div className="bg-neon-lime/10 p-3 rounded-sm border border-neon-lime/30">
+                    <div className="flex items-center text-neon-lime font-mono">
                       <Shield className="w-4 h-4 mr-2" />
                       <strong>Strong Values Match!</strong>
                     </div>
@@ -266,12 +266,12 @@ export function ValuesAlignedBizFilter() {
                 )}
 
                 {opportunity.alignment <= 4 && (
-                  <div className="bg-destructive/10 p-3 rounded border border-destructive/20">
-                    <div className="flex items-center text-destructive">
+                  <div className="bg-red-400/10 p-3 rounded-sm border border-red-400/30">
+                    <div className="flex items-center text-red-400 font-mono">
                       <AlertTriangle className="w-4 h-4 mr-2" />
                       <strong>Values Conflict Alert</strong>
                     </div>
-                    <p className="text-sm text-destructive/80 mt-1">
+                    <p className="text-sm text-gray-400 font-mono mt-1">
                       Consider if the benefits outweigh the misalignment with your values.
                     </p>
                   </div>
@@ -290,7 +290,7 @@ export function ValuesAlignedBizFilter() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <div className="text-2xl font-bold">{opportunities.length}</div>
-                  <div className="text-sm text-muted-foreground">Total Opportunities</div>
+                  <div className="text-sm text-gray-400 font-mono">Total Opportunities</div>
                 </div>
                 <div>
                   <div className="text-2xl font-bold text-chart-2">
@@ -304,7 +304,7 @@ export function ValuesAlignedBizFilter() {
                       ? Math.round(opportunities.reduce((sum, opp) => sum + opp.alignment, 0) / opportunities.length) 
                       : 0}
                   </div>
-                  <div className="text-sm text-muted-foreground">Avg Alignment</div>
+                  <div className="text-sm text-gray-400 font-mono">Avg Alignment</div>
                 </div>
               </div>
             </CardContent>

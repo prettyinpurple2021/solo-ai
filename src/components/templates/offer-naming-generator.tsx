@@ -136,7 +136,7 @@ export function OfferNamingGenerator() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Offer Naming Generator</h3>
+        <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">Offer Naming Generator</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -217,7 +217,7 @@ export function OfferNamingGenerator() {
         {generatedNames.length > 0 && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="text-md font-medium">Generated Name Options</h4>
+              <h4 className="text-md font-medium font-orbitron text-white uppercase tracking-wider">Generated Name Options</h4>
               <Badge variant="secondary">{generatedNames.length} options</Badge>
             </div>
 

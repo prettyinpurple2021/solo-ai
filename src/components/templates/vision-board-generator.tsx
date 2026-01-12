@@ -30,10 +30,10 @@ export function VisionBoardGenerator() {
   const { saveTemplate, isSaving } = useTemplateSave();
 
   const categories = [
-    { value: 'business', label: 'Business Goals', icon: Target, color: 'text-blue-600' },
-    { value: 'personal', label: 'Personal Growth', icon: Heart, color: 'text-pink-600' },
-    { value: 'financial', label: 'Financial', icon: DollarSign, color: 'text-green-600' },
-    { value: 'lifestyle', label: 'Lifestyle', icon: MapPin, color: 'text-purple-600' },
+    { value: 'business', label: 'Business Goals', icon: Target, color: 'text-neon-cyan' },
+    { value: 'personal', label: 'Personal Growth', icon: Heart, color: 'text-neon-magenta' },
+    { value: 'financial', label: 'Financial', icon: DollarSign, color: 'text-neon-lime' },
+    { value: 'lifestyle', label: 'Lifestyle', icon: MapPin, color: 'text-neon-purple' },
   ];
 
   const addElement = (category: VisionElement['category']) => {
@@ -123,10 +123,10 @@ export function VisionBoardGenerator() {
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return 'bg-red-100 text-red-800 border-red-200';
-      case 'medium': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'low': return 'bg-green-100 text-green-800 border-green-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'high': return 'bg-red-400/20 text-red-400 border-red-400/30';
+      case 'medium': return 'bg-neon-orange/20 text-neon-orange border-neon-orange/30';
+      case 'low': return 'bg-neon-lime/20 text-neon-lime border-neon-lime/30';
+      default: return 'bg-dark-card text-gray-400 border-neon-cyan/30';
     }
   };
 
@@ -134,8 +134,8 @@ export function VisionBoardGenerator() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold">Vision Board Generator</h3>
+          <Sparkles className="w-5 h-5 text-neon-purple" />
+          <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">Vision Board Generator</h3>
         </div>
         <div className="flex gap-2">
           <Input
@@ -269,7 +269,7 @@ export function VisionBoardGenerator() {
                           id={`timeline-${element.id}`}
                           value={element.timeline}
                           onChange={(e) => updateElement(element.id, 'timeline', e.target.value)}
-                          className="flex-1 px-3 py-2 border rounded-md text-sm"
+                          className="flex-1 px-3 py-2 border border-neon-cyan/30 rounded-sm bg-dark-card text-white font-mono text-sm focus:border-neon-cyan focus:ring-1 focus:ring-neon-cyan"
                         >
                           <option value="3 months">3 months</option>
                           <option value="6 months">6 months</option>

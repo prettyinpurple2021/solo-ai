@@ -122,7 +122,7 @@ Business: ${businessDescription}`;
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">PR Pitch Template</h3>
+        <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">PR Pitch Template</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
@@ -137,8 +137,8 @@ Business: ${businessDescription}`;
         </div>
       </div>
 
-      <div className="bg-chart-2/10 p-4 rounded-lg border border-chart-2/20">
-        <p className="text-sm text-chart-2">
+      <div className="bg-neon-cyan/10 p-4 rounded-sm border border-neon-cyan/30 shadow-[0_0_15px_rgba(11,228,236,0.1)]">
+        <p className="text-sm text-neon-cyan font-mono">
           <Megaphone className="w-4 h-4 inline mr-2" />
           Craft compelling PR pitches that get media attention. Include your story, credibility, and clear value for their audience.
         </p>
@@ -170,7 +170,7 @@ Business: ${businessDescription}`;
 
         <div className="space-y-6">
           <div className="flex items-center justify-between">
-            <h4 className="text-md font-medium">PR Pitches</h4>
+            <h4 className="text-md font-medium font-orbitron text-white uppercase tracking-wider">PR Pitches</h4>
             <Button onClick={addPitch} variant="outline" size="sm">
               <Plus className="w-4 h-4 mr-2" />
               Add Pitch
@@ -302,9 +302,9 @@ Business: ${businessDescription}`;
                 </div>
 
                 {pitch.outlet && (
-                  <div className="pt-4 border-t">
-                    <div className="bg-gray-50 p-3 rounded text-sm">
-                      <strong>Email Preview:</strong>
+                  <div className="pt-4 border-t border-neon-cyan/20">
+                    <div className="bg-dark-card p-3 rounded-sm border border-neon-cyan/20 text-sm text-gray-400 font-mono">
+                      <strong className="text-white font-orbitron uppercase tracking-wider">Email Preview:</strong>
                       <div className="mt-2 whitespace-pre-line">
                         {generateEmailTemplate(pitch)}
                       </div>

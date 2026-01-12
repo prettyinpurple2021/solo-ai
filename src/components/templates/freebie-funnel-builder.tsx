@@ -104,8 +104,8 @@ export function FreebieFunnelBuilder() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Zap className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold">Freebie Funnel Builder</h3>
+          <Zap className="w-5 h-5 text-neon-purple" />
+          <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">Freebie Funnel Builder</h3>
         </div>
         <div className="flex gap-2">
           <Input
@@ -223,7 +223,7 @@ export function FreebieFunnelBuilder() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="pt-0">
-                    <p className="text-sm text-muted-foreground">{step.description}</p>
+                    <p className="text-sm text-gray-400 font-mono">{step.description}</p>
                   </CardContent>
                 </Card>
               ))}
