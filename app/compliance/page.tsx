@@ -40,11 +40,11 @@ export default function CompliancePage() {
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
             <div className="inline-flex items-center gap-2 px-3 py-1 border border-cyber-purple/30 bg-cyber-purple/5 rounded-none mb-6">
-              <Shield className="w-4 h-4 text-cyber-purple" />
-              <span className="text-xs font-bold tracking-widest text-cyber-purple uppercase">Compliance Status</span>
+              <Shield className="w-4 h-4 text-neon-purple" />
+              <span className="text-xs font-bold tracking-widest text-neon-purple uppercase">Compliance Status</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold text-white mb-6">
-              COMPLIANCE <span className="text-cyber-purple">STANDARDS</span>
+              COMPLIANCE <span className="text-neon-purple">STANDARDS</span>
             </h1>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto font-mono">
               We maintain the highest standards of compliance and security certifications.
@@ -55,7 +55,7 @@ export default function CompliancePage() {
             {complianceStandards.map((standard, index) => (
               <HudBorder key={index} variant="hover" className="p-6">
                 <div className="flex items-start justify-between mb-4">
-                  <standard.icon className="w-8 h-8 text-cyber-purple" />
+                  <standard.icon className="w-8 h-8 text-neon-purple" />
                   <span className="text-xs font-orbitron text-neon-cyan uppercase tracking-widest">
                     {standard.status}
                   </span>

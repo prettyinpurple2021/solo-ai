@@ -71,7 +71,7 @@ export default function FeaturesPage() {
       <div className="pt-32 pb-20">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <span className="text-cyber-purple font-orbitron text-sm tracking-widest">/// CAPABILITIES</span>
+            <span className="text-neon-purple font-orbitron text-sm tracking-widest">/// CAPABILITIES</span>
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold text-white mt-4">
               INTELLIGENCE_MODULES <span className="text-neon-cyan blinking">_</span>
             </h1>
@@ -87,7 +87,7 @@ export default function FeaturesPage() {
                   <span className="font-orbitron text-2xl font-bold text-white/20 group-hover:text-neon-cyan transition-colors">
                     {feature.number}
                   </span>
-                  <feature.icon className="w-6 h-6 text-cyber-purple" />
+                  <feature.icon className="w-6 h-6 text-neon-purple" />
                 </div>
                 <h3 className="font-orbitron text-lg text-white mb-2">{feature.title}</h3>
                 <p className="text-sm text-gray-400 font-mono leading-relaxed">{feature.description}</p>

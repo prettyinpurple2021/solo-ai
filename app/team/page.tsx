@@ -94,17 +94,17 @@ export default function TeamPage() {
     >
       <div className="min-h-screen bg-dark-bg">
       {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-40">
+      <div className="border-b border-gray-700 bg-dark-card/50 backdrop-blur-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
-              <Crown className="w-8 h-8 text-primary" />
+              <Crown className="w-8 h-8 text-neon-cyan" />
               <div>
-                <h1 className="text-2xl font-bold gradient-text-primary">AI Squad Command Center</h1>
-                <p className="text-sm text-muted-foreground">Manage your 8 specialized AI agents</p>
+                <h1 className="text-2xl font-bold font-orbitron text-white uppercase tracking-wider">AI Squad Command Center</h1>
+                <p className="text-sm text-gray-400 font-mono">Manage your 8 specialized AI agents</p>
               </div>
             </div>
-            <Badge className="bg-gradient-primary text-white border-0">
+            <Badge className="bg-gradient-to-r from-neon-purple to-neon-magenta text-white border-0">
               <Users className="w-4 h-4 mr-2" />8 Agents Active
             </Badge>
           </div>
@@ -117,8 +117,8 @@ export default function TeamPage() {
           <div className="lg:col-span-1">
             <Card className="sticky top-24">
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <Sparkles className="w-5 h-5 mr-2 text-primary" />
+                <CardTitle className="flex items-center font-orbitron text-white uppercase tracking-wider">
+                  <Sparkles className="w-5 h-5 mr-2 text-neon-cyan" />
                   Your AI Squad
                 </CardTitle>
               </CardHeader>
@@ -130,7 +130,7 @@ export default function TeamPage() {
                         key={agent.id}
                         variant={selectedAgent.id === agent.id ? "purple" : "ghost"}
                         className={`w-full justify-start p-4 h-auto ${
-                          selectedAgent.id === agent.id ? "bg-gradient-primary text-white" : "hover:bg-dark-card"
+                          selectedAgent.id === agent.id ? "bg-gradient-to-r from-neon-purple to-neon-magenta text-white shadow-[0_0_15px_rgba(179,0,255,0.3)]" : "hover:bg-dark-hover"
                         }`}
                         onClick={() => setSelectedAgent(agent)}
                       >
@@ -148,9 +148,9 @@ export default function TeamPage() {
                           </div>
                           <div className="text-left">
                             <div className="font-medium">{agent.name}</div>
-                            <div className="text-xs opacity-80">{agent.role}</div>
+                            <div className="text-xs font-mono text-gray-400 opacity-80">{agent.role}</div>
                             {agent.isVoiceEnabled && (
-                              <Badge className="mt-1 bg-green-500/20 text-green-600 dark:text-green-400 border-green-500/30 text-xs">
+                              <Badge className="mt-1 bg-neon-lime/20 text-neon-lime border-neon-lime/30 text-xs font-mono">
                                 🎤 Voice
                               </Badge>
                             )}
@@ -169,7 +169,7 @@ export default function TeamPage() {
             {selectedAgent.id === "lumi" ? (
               // Guardian AI Interface for Lumi
               <Card className="h-[700px] flex flex-col">
-                <CardHeader className="border-b border-border">
+                <CardHeader className="border-b border-gray-700">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${selectedAgent.color} p-0.5`}>
@@ -186,12 +186,12 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
                     </div>
-                    <Badge className="bg-gradient-primary text-white border-0">
+                    <Badge className="bg-gradient-to-r from-neon-purple to-neon-magenta text-white border-0 shadow-[0_0_15px_rgba(179,0,255,0.3)]">
                       <Shield className="w-4 h-4 mr-1" />
                       Guardian AI
                     </Badge>
@@ -246,8 +246,8 @@ export default function TeamPage() {
                                 />
                               </div>
                             </div>
-                            <h3 className="text-lg font-semibold mb-2">Chat with {selectedAgent.name}</h3>
-                            <p className="text-muted-foreground max-w-md">
+                            <h3 className="text-lg font-semibold font-orbitron text-white mb-2 uppercase tracking-wider">Chat with {selectedAgent.name}</h3>
+                            <p className="text-gray-400 font-mono max-w-md">
                               Ask me about compliance, legal requirements, or get help with policy generation.
                             </p>
                           </div>
@@ -256,8 +256,8 @@ export default function TeamPage() {
                             {messages.map((msg) => (
                               <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                 <div
-                                  className={`max-w-[80%] rounded-lg p-3 ${
-                                    msg.role === "user" ? "bg-gradient-primary text-white" : "bg-dark-card"
+                                  className={`max-w-[80%] rounded-sm p-3 ${
+                                    msg.role === "user" ? "bg-gradient-to-r from-neon-cyan to-neon-purple text-white shadow-[0_0_15px_rgba(11,228,236,0.3)]" : "bg-dark-card border border-gray-700"
                                   }`}
                                 >
                                   <p className="text-sm">{msg.content}</p>
@@ -265,7 +265,7 @@ export default function TeamPage() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="mt-2 h-6 px-2 text-xs"
+                                      className="mt-2 h-6 px-2 text-xs font-mono text-gray-400 hover:text-neon-cyan"
                                       onClick={() => handleSpeakResponse(msg.content)}
                                     >
                                       {isSpeaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
@@ -276,11 +276,11 @@ export default function TeamPage() {
                             ))}
                             {isLoading && (
                               <div className="flex justify-start">
-                                <div className="bg-dark-card rounded-lg p-3 max-w-[80%]">
+                                <div className="bg-dark-card rounded-sm p-3 max-w-[80%]">
                                   <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-100"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-200"></div>
                                   </div>
                                 </div>
                               </div>
@@ -289,7 +289,7 @@ export default function TeamPage() {
                         )}
                       </ScrollArea>
 
-                      <div className="border-t border-border p-4">
+                      <div className="border-t border-gray-700 p-4">
                         <div className="flex items-center space-x-2">
                           <Input
                             placeholder={`Message ${selectedAgent.name}...`}
@@ -297,7 +297,7 @@ export default function TeamPage() {
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyPress={handleKeyPress}
                             disabled={isLoading}
-                            className="flex-1"
+                            className="flex-1 bg-dark-bg border-gray-700 focus:border-neon-cyan focus:ring-neon-cyan/20 font-mono"
                           />
                           <Button
                             onClick={handleSendMessage}
@@ -311,12 +311,12 @@ export default function TeamPage() {
 
                         <div className="flex items-center justify-between mt-3">
                           <div className="flex items-center space-x-2">
-                            <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs">
+                            <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs font-mono text-gray-400 hover:text-neon-cyan">
                               Clear Chat
                             </Button>
                           </div>
 
-                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
                             <MessageCircle className="w-3 h-3" />
                             <span>{messages.length} messages</span>
                           </div>
@@ -329,7 +329,7 @@ export default function TeamPage() {
             ) : selectedAgent.id === "blaze" ? (
               // Decision Framework Interface for Blaze
               <Card className="h-[700px] flex flex-col">
-                <CardHeader className="border-b border-border">
+                <CardHeader className="border-b border-gray-700">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${selectedAgent.color} p-0.5`}>
@@ -346,12 +346,12 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
                     </div>
-                    <Badge className="bg-gradient-primary text-white border-0">
+                    <Badge className="bg-gradient-to-r from-neon-purple to-neon-magenta text-white border-0 shadow-[0_0_15px_rgba(179,0,255,0.3)]">
                       <Zap className="w-4 h-4 mr-1" />
                       Decision Framework
                     </Badge>
@@ -390,8 +390,8 @@ export default function TeamPage() {
                                 />
                               </div>
                             </div>
-                            <h3 className="text-lg font-semibold mb-2">Chat with {selectedAgent.name}</h3>
-                            <p className="text-muted-foreground max-w-md">
+                            <h3 className="text-lg font-semibold font-orbitron text-white mb-2 uppercase tracking-wider">Chat with {selectedAgent.name}</h3>
+                            <p className="text-gray-400 font-mono max-w-md">
                               Ask me about strategic decisions, growth strategies, or get help with decision-making frameworks.
                             </p>
                           </div>
@@ -400,8 +400,8 @@ export default function TeamPage() {
                             {messages.map((msg) => (
                               <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                 <div
-                                  className={`max-w-[80%] rounded-lg p-3 ${
-                                    msg.role === "user" ? "bg-gradient-primary text-white" : "bg-dark-card"
+                                  className={`max-w-[80%] rounded-sm p-3 ${
+                                    msg.role === "user" ? "bg-gradient-to-r from-neon-cyan to-neon-purple text-white shadow-[0_0_15px_rgba(11,228,236,0.3)]" : "bg-dark-card border border-gray-700"
                                   }`}
                                 >
                                   <p className="text-sm">{msg.content}</p>
@@ -409,7 +409,7 @@ export default function TeamPage() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="mt-2 h-6 px-2 text-xs"
+                                      className="mt-2 h-6 px-2 text-xs font-mono text-gray-400 hover:text-neon-cyan"
                                       onClick={() => handleSpeakResponse(msg.content)}
                                     >
                                       {isSpeaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
@@ -420,11 +420,11 @@ export default function TeamPage() {
                             ))}
                             {isLoading && (
                               <div className="flex justify-start">
-                                <div className="bg-dark-card rounded-lg p-3 max-w-[80%]">
+                                <div className="bg-dark-card rounded-sm p-3 max-w-[80%]">
                                   <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-100"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-200"></div>
                                   </div>
                                 </div>
                               </div>
@@ -433,7 +433,7 @@ export default function TeamPage() {
                         )}
                       </ScrollArea>
 
-                      <div className="border-t border-border p-4">
+                      <div className="border-t border-gray-700 p-4">
                         <div className="flex items-center space-x-2">
                           <Input
                             placeholder={`Message ${selectedAgent.name}...`}
@@ -441,7 +441,7 @@ export default function TeamPage() {
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyPress={handleKeyPress}
                             disabled={isLoading}
-                            className="flex-1"
+                            className="flex-1 bg-dark-bg border-gray-700 focus:border-neon-cyan focus:ring-neon-cyan/20 font-mono"
                           />
                           <Button
                             onClick={handleSendMessage}
@@ -455,12 +455,12 @@ export default function TeamPage() {
 
                         <div className="flex items-center justify-between mt-3">
                           <div className="flex items-center space-x-2">
-                            <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs">
+                            <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs font-mono text-gray-400 hover:text-neon-cyan">
                               Clear Chat
                             </Button>
                           </div>
 
-                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
                             <MessageCircle className="w-3 h-3" />
                             <span>{messages.length} messages</span>
                           </div>
@@ -473,7 +473,7 @@ export default function TeamPage() {
             ) : selectedAgent.id === "roxy" ? (
               // SPADE Framework Interface for Roxy
               <Card className="h-[700px] flex flex-col">
-                <CardHeader className="border-b border-border">
+                <CardHeader className="border-b border-gray-700">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${selectedAgent.color} p-0.5`}>
@@ -490,12 +490,12 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
                     </div>
-                    <Badge className="bg-gradient-primary text-white border-0">
+                    <Badge className="bg-gradient-to-r from-neon-purple to-neon-magenta text-white border-0 shadow-[0_0_15px_rgba(179,0,255,0.3)]">
                       <Brain className="w-4 h-4 mr-1" />
                       SPADE Framework
                     </Badge>
@@ -534,8 +534,8 @@ export default function TeamPage() {
                                 />
                               </div>
                             </div>
-                            <h3 className="text-lg font-semibold mb-2">Chat with {selectedAgent.name}</h3>
-                            <p className="text-muted-foreground max-w-md">
+                            <h3 className="text-lg font-semibold font-orbitron text-white mb-2 uppercase tracking-wider">Chat with {selectedAgent.name}</h3>
+                            <p className="text-gray-400 font-mono max-w-md">
                               Ask me about Type 1 decisions, strategic planning, or get help with the SPADE framework for irreversible choices.
                             </p>
                           </div>
@@ -544,8 +544,8 @@ export default function TeamPage() {
                             {messages.map((msg) => (
                               <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                 <div
-                                  className={`max-w-[80%] rounded-lg p-3 ${
-                                    msg.role === "user" ? "bg-gradient-primary text-white" : "bg-dark-card"
+                                  className={`max-w-[80%] rounded-sm p-3 ${
+                                    msg.role === "user" ? "bg-gradient-to-r from-neon-cyan to-neon-purple text-white shadow-[0_0_15px_rgba(11,228,236,0.3)]" : "bg-dark-card border border-gray-700"
                                   }`}
                                 >
                                   <p className="text-sm">{msg.content}</p>
@@ -553,7 +553,7 @@ export default function TeamPage() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="mt-2 h-6 px-2 text-xs"
+                                      className="mt-2 h-6 px-2 text-xs font-mono text-gray-400 hover:text-neon-cyan"
                                       onClick={() => handleSpeakResponse(msg.content)}
                                     >
                                       {isSpeaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
@@ -564,11 +564,11 @@ export default function TeamPage() {
                             ))}
                             {isLoading && (
                               <div className="flex justify-start">
-                                <div className="bg-dark-card rounded-lg p-3 max-w-[80%]">
+                                <div className="bg-dark-card rounded-sm p-3 max-w-[80%]">
                                   <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-100"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-200"></div>
                                   </div>
                                 </div>
                               </div>
@@ -577,7 +577,7 @@ export default function TeamPage() {
                         )}
                       </ScrollArea>
 
-                      <div className="border-t border-border p-4">
+                      <div className="border-t border-gray-700 p-4">
                         <div className="flex items-center space-x-2">
                           <Input
                             placeholder={`Message ${selectedAgent.name}...`}
@@ -585,7 +585,7 @@ export default function TeamPage() {
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyPress={handleKeyPress}
                             disabled={isLoading}
-                            className="flex-1"
+                            className="flex-1 bg-dark-bg border-gray-700 focus:border-neon-cyan focus:ring-neon-cyan/20 font-mono"
                           />
                           <Button
                             onClick={handleSendMessage}
@@ -599,12 +599,12 @@ export default function TeamPage() {
 
                         <div className="flex items-center justify-between mt-3">
                           <div className="flex items-center space-x-2">
-                            <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs">
+                            <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs font-mono text-gray-400 hover:text-neon-cyan">
                               Clear Chat
                             </Button>
                           </div>
 
-                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
                             <MessageCircle className="w-3 h-3" />
                             <span>{messages.length} messages</span>
                           </div>
@@ -617,7 +617,7 @@ export default function TeamPage() {
             ) : selectedAgent.id === "glitch" ? (
               // Five Whys Analysis Interface for Glitch
               <Card className="h-[700px] flex flex-col">
-                <CardHeader className="border-b border-border">
+                <CardHeader className="border-b border-gray-700">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${selectedAgent.color} p-0.5`}>
@@ -634,12 +634,12 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
                     </div>
-                    <Badge className="bg-gradient-primary text-white border-0">
+                    <Badge className="bg-gradient-to-r from-neon-purple to-neon-magenta text-white border-0 shadow-[0_0_15px_rgba(179,0,255,0.3)]">
                       <Brain className="w-4 h-4 mr-1" />
                       Five Whys Analysis
                     </Badge>
@@ -678,8 +678,8 @@ export default function TeamPage() {
                                 />
                               </div>
                             </div>
-                            <h3 className="text-lg font-semibold mb-2">Chat with {selectedAgent.name}</h3>
-                            <p className="text-muted-foreground max-w-md">
+                            <h3 className="text-lg font-semibold font-orbitron text-white mb-2 uppercase tracking-wider">Chat with {selectedAgent.name}</h3>
+                            <p className="text-gray-400 font-mono max-w-md">
                               Ask me about problem-solving, root cause analysis, or get help with the Five Whys methodology for systematic investigation.
                             </p>
                           </div>
@@ -688,8 +688,8 @@ export default function TeamPage() {
                             {messages.map((msg) => (
                               <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                                 <div
-                                  className={`max-w-[80%] rounded-lg p-3 ${
-                                    msg.role === "user" ? "bg-gradient-primary text-white" : "bg-dark-card"
+                                  className={`max-w-[80%] rounded-sm p-3 ${
+                                    msg.role === "user" ? "bg-gradient-to-r from-neon-cyan to-neon-purple text-white shadow-[0_0_15px_rgba(11,228,236,0.3)]" : "bg-dark-card border border-gray-700"
                                   }`}
                                 >
                                   <p className="text-sm">{msg.content}</p>
@@ -697,7 +697,7 @@ export default function TeamPage() {
                                     <Button
                                       variant="ghost"
                                       size="sm"
-                                      className="mt-2 h-6 px-2 text-xs"
+                                      className="mt-2 h-6 px-2 text-xs font-mono text-gray-400 hover:text-neon-cyan"
                                       onClick={() => handleSpeakResponse(msg.content)}
                                     >
                                       {isSpeaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
@@ -708,11 +708,11 @@ export default function TeamPage() {
                             ))}
                             {isLoading && (
                               <div className="flex justify-start">
-                                <div className="bg-dark-card rounded-lg p-3 max-w-[80%]">
+                                <div className="bg-dark-card rounded-sm p-3 max-w-[80%]">
                                   <div className="flex items-center space-x-2">
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
-                                    <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-100"></div>
+                                    <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-200"></div>
                                   </div>
                                 </div>
                               </div>
@@ -721,7 +721,7 @@ export default function TeamPage() {
                         )}
                       </ScrollArea>
 
-                      <div className="border-t border-border p-4">
+                      <div className="border-t border-gray-700 p-4">
                         <div className="flex items-center space-x-2">
                           <Input
                             placeholder={`Message ${selectedAgent.name}...`}
@@ -729,7 +729,7 @@ export default function TeamPage() {
                             onChange={(e) => setMessage(e.target.value)}
                             onKeyPress={handleKeyPress}
                             disabled={isLoading}
-                            className="flex-1"
+                            className="flex-1 bg-dark-bg border-gray-700 focus:border-neon-cyan focus:ring-neon-cyan/20 font-mono"
                           />
                           <Button
                             onClick={handleSendMessage}
@@ -743,12 +743,12 @@ export default function TeamPage() {
 
                         <div className="flex items-center justify-between mt-3">
                           <div className="flex items-center space-x-2">
-                            <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs">
+                            <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs font-mono text-gray-400 hover:text-neon-cyan">
                               Clear Chat
                             </Button>
                           </div>
 
-                          <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
                             <MessageCircle className="w-3 h-3" />
                             <span>{messages.length} messages</span>
                           </div>
@@ -762,7 +762,7 @@ export default function TeamPage() {
               // Regular Chat Interface for other agents
               <Card className="h-[700px] flex flex-col">
                 {/* Agent Header */}
-                <CardHeader className="border-b border-border">
+                <CardHeader className="border-b border-gray-700">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${selectedAgent.color} p-0.5`}>
@@ -779,7 +779,7 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
@@ -828,8 +828,8 @@ export default function TeamPage() {
                             />
                           </div>
                         </div>
-                        <h3 className="text-lg font-semibold mb-2">Chat with {selectedAgent.name}</h3>
-                        <p className="text-muted-foreground max-w-md">
+                        <h3 className="text-lg font-semibold font-orbitron text-white mb-2 uppercase tracking-wider">Chat with {selectedAgent.name}</h3>
+                        <p className="text-gray-400 font-mono max-w-md">
                           Start a conversation with your {selectedAgent.role.toLowerCase()}.
                           {selectedAgent.isVoiceEnabled && " You can type or use voice commands."}
                         </p>
@@ -839,8 +839,8 @@ export default function TeamPage() {
                         {messages.map((msg) => (
                           <div key={msg.id} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                             <div
-                              className={`max-w-[80%] rounded-lg p-3 ${
-                                msg.role === "user" ? "bg-gradient-primary text-white" : "bg-dark-card"
+                              className={`max-w-[80%] rounded-sm p-3 ${
+                                msg.role === "user" ? "bg-gradient-to-r from-neon-cyan to-neon-purple text-white shadow-[0_0_15px_rgba(11,228,236,0.3)]" : "bg-dark-card border border-gray-700"
                               }`}
                             >
                               <p className="text-sm">{msg.content}</p>
@@ -848,7 +848,7 @@ export default function TeamPage() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="mt-2 h-6 px-2 text-xs"
+                                  className="mt-2 h-6 px-2 text-xs font-mono text-gray-400 hover:text-neon-cyan"
                                   onClick={() => handleSpeakResponse(msg.content)}
                                 >
                                   {isSpeaking ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
@@ -859,11 +859,11 @@ export default function TeamPage() {
                         ))}
                         {isLoading && (
                           <div className="flex justify-start">
-                            <div className="bg-dark-card rounded-lg p-3 max-w-[80%]">
+                            <div className="bg-dark-card rounded-sm p-3 max-w-[80%]">
                               <div className="flex items-center space-x-2">
-                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-100"></div>
-                                <div className="w-2 h-2 bg-primary rounded-full animate-bounce delay-200"></div>
+                                <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce"></div>
+                                <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-100"></div>
+                                <div className="w-2 h-2 bg-neon-cyan rounded-full animate-bounce delay-200"></div>
                               </div>
                             </div>
                           </div>
@@ -872,7 +872,7 @@ export default function TeamPage() {
                     )}
                   </ScrollArea>
 
-                  <div className="border-t border-border p-4">
+                  <div className="border-t border-gray-700 p-4">
                     <div className="flex items-center space-x-2">
                       <Input
                         placeholder={`Message ${selectedAgent.name}...`}
@@ -880,7 +880,7 @@ export default function TeamPage() {
                         onChange={(e) => setMessage(e.target.value)}
                         onKeyPress={handleKeyPress}
                         disabled={isLoading}
-                        className="flex-1"
+                        className="flex-1 bg-dark-bg border-gray-700 focus:border-neon-cyan focus:ring-neon-cyan/20 font-mono"
                       />
                       <Button
                         onClick={handleSendMessage}
@@ -894,12 +894,12 @@ export default function TeamPage() {
 
                     <div className="flex items-center justify-between mt-3">
                       <div className="flex items-center space-x-2">
-                        <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs">
+                        <Button variant="ghost" size="sm" onClick={clearMessages} className="text-xs font-mono text-gray-400 hover:text-neon-cyan">
                           Clear Chat
                         </Button>
                       </div>
 
-                      <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+                      <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
                         <MessageCircle className="w-3 h-3" />
                         <span>{messages.length} messages</span>
                       </div>

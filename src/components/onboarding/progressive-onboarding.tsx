@@ -250,7 +250,7 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: Pr
   if (!open || !currentStepData) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -258,29 +258,29 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: Pr
         transition={{ duration: 0.3 }}
         className="w-full max-w-2xl"
       >
-        <Card className="boss-card border-2 border-purple-200 shadow-2xl">
+        <Card className="bg-dark-card border-2 border-neon-purple/30 shadow-[0_0_30px_rgba(179,0,255,0.2)]">
           <CardContent className="p-6">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-neon-purple to-neon-magenta flex items-center justify-center shadow-[0_0_15px_rgba(179,0,255,0.3)]">
                   <Lightbulb className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold boss-heading">Interactive Tour</h2>
-                  <p className="text-sm text-muted-foreground">
+                  <h2 className="text-xl font-bold font-orbitron text-white uppercase tracking-wider">Interactive Tour</h2>
+                  <p className="text-sm text-gray-400 font-mono">
                     Step {currentStep + 1} of {totalSteps}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => setShowTips(!showTips)}>
+                <Button variant="ghost" size="sm" onClick={() => setShowTips(!showTips)} className="text-gray-400 hover:text-neon-cyan">
                   <Lightbulb className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={skipAll}>
+                <Button variant="ghost" size="sm" onClick={skipAll} className="text-gray-400 hover:text-neon-orange">
                   <SkipForward className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" size="sm" onClick={onSkip}>
+                <Button variant="ghost" size="sm" onClick={onSkip} className="text-gray-400 hover:text-neon-magenta">
                   <X className="h-4 w-4" />
                 </Button>
               </div>
@@ -288,13 +288,13 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: Pr
 
             {/* Progress Bar */}
             <div className="mb-6">
-              <div className="flex justify-between text-sm text-muted-foreground mb-2">
+              <div className="flex justify-between text-sm text-gray-500 font-mono mb-2">
                 <span>Progress</span>
                 <span>{Math.round(progress)}%</span>
               </div>
-              <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-dark-bg rounded-full h-2 border border-gray-700">
                 <motion.div
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
+                  className="bg-gradient-to-r from-neon-purple to-neon-magenta h-2 rounded-full shadow-[0_0_10px_rgba(179,0,255,0.5)]"
                   initial={{ width: 0 }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.5 }}
@@ -313,10 +313,10 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: Pr
                 className="space-y-4"
               >
                 <div className="text-center">
-                  <h3 className="text-2xl font-bold boss-heading mb-2">
+                  <h3 className="text-2xl font-bold font-orbitron text-white mb-2 uppercase tracking-wider">
                     {currentStepData.title}
                   </h3>
-                  <p className="text-muted-foreground">
+                  <p className="text-gray-400 font-mono">
                     {currentStepData.description}
                   </p>
                 </div>
@@ -327,16 +327,16 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: Pr
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-lg p-4 border border-yellow-200"
+                    className="bg-neon-orange/10 border border-neon-orange/20 rounded-sm p-4"
                   >
-                    <h4 className="font-semibold text-yellow-800 mb-2 flex items-center gap-2">
+                    <h4 className="font-semibold text-neon-orange mb-2 flex items-center gap-2 font-orbitron uppercase tracking-wider">
                       <Star className="h-4 w-4" />
                       Pro Tips
                     </h4>
                     <ul className="space-y-1">
                       {currentStepData.tips.map((tip, index) => (
-                        <li key={index} className="text-sm text-yellow-700 flex items-start gap-2">
-                          <span className="text-yellow-600 mt-1">•</span>
+                        <li key={index} className="text-sm text-gray-300 font-mono flex items-start gap-2">
+                          <span className="text-neon-orange mt-1">•</span>
                           {tip}
                         </li>
                       ))}
@@ -356,12 +356,12 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: Pr
             </AnimatePresence>
 
             {/* Action Buttons */}
-            <div className="flex justify-between items-center mt-8 pt-6 border-t">
+            <div className="flex justify-between items-center mt-8 pt-6 border-t border-gray-700">
               <Button
                 variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 0 || isTransitioning}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 bg-transparent border-gray-700 text-gray-400 hover:text-neon-cyan hover:bg-neon-cyan/10 hover:border-neon-cyan font-mono uppercase tracking-wider"
               >
                 <ArrowLeft className="h-4 w-4" />
                 Previous
@@ -369,14 +369,15 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: Pr
 
               <div className="flex items-center gap-2">
                 {currentStepData.optional && (
-                  <Button variant="ghost" onClick={skipCurrentStep} className="text-sm">
+                  <Button variant="ghost" onClick={skipCurrentStep} className="text-sm text-gray-400 hover:text-neon-lime font-mono">
                     Skip This
                   </Button>
                 )}
                 <Button
                   onClick={currentStepData.action ? currentStepData.action.onClick : nextStep}
                   disabled={isTransitioning}
-                  className="punk-button text-white flex items-center gap-2"
+                  variant="purple"
+                  className="flex items-center gap-2 shadow-[0_0_15px_rgba(179,0,255,0.3)] font-orbitron uppercase tracking-wider"
                 >
                   {currentStepData.action ? (
                     <>
@@ -399,8 +400,8 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: Pr
             </div>
 
             {/* Quick Help */}
-            <div className="mt-4 pt-4 border-t border-gray-100">
-              <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <div className="mt-4 pt-4 border-t border-gray-700">
+              <div className="flex items-center justify-between text-xs text-gray-500 font-mono">
                 <div className="flex items-center gap-4">
                   <span>Press 'H' for tips</span>
                   <span>Use arrow keys to navigate</span>
@@ -408,14 +409,14 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: Pr
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setUserPreferences(prev => ({ ...prev, showAnimations: !prev.showAnimations }))}
-                    className={`flex items-center gap-1 ${userPreferences.showAnimations ? 'text-purple-600' : ''}`}
+                    className={`flex items-center gap-1 transition-colors ${userPreferences.showAnimations ? 'text-neon-cyan' : 'text-gray-500 hover:text-neon-cyan'}`}
                   >
                     <Sparkles className="h-3 w-3" />
                     Animations
                   </button>
                   <button
                     onClick={() => setUserPreferences(prev => ({ ...prev, autoAdvance: !prev.autoAdvance }))}
-                    className={`flex items-center gap-1 ${userPreferences.autoAdvance ? 'text-purple-600' : ''}`}
+                    className={`flex items-center gap-1 transition-colors ${userPreferences.autoAdvance ? 'text-neon-cyan' : 'text-gray-500 hover:text-neon-cyan'}`}
                   >
                     <Play className="h-3 w-3" />
                     Auto-advance

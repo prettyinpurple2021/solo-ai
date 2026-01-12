@@ -5,10 +5,10 @@ import { motion, AnimatePresence} from "framer-motion"
 import { Button} from "@/components/ui/button"
 import { Badge} from "@/components/ui/badge"
 import { Progress} from "@/components/ui/progress"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { 
   Crown, Sparkles, Target, Users, Rocket, Gift, Star, Zap, TrendingUp, Brain, Heart, CheckCircle, ArrowRight, Play, Plus, MessageCircle, FileText, Calendar, Award, Lightbulb} from "lucide-react"
 import Link from "next/link"
-import { GlassCard, CamoBackground, TacticalGrid, StatsBadge } from "@/components/military"
 
 interface WelcomeDashboardProps {
   userData?: any
@@ -26,7 +26,7 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
       title: "Create Your First Goal",
       description: "Set a goal and start your journey",
       icon: Target,
-      color: "from-purple-500 to-pink-500",
+      color: "from-neon-purple to-neon-magenta",
       href: "/dashboard/slaylist"
     },
     {
@@ -34,7 +34,7 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
       title: "Chat with AI",
       description: "Meet your AI squad",
       icon: MessageCircle,
-      color: "from-pink-500 to-purple-500",
+      color: "from-neon-magenta to-neon-purple",
       href: "/dashboard/agents"
     },
     {
@@ -42,7 +42,7 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
       title: "Upload a File",
       description: "Add documents to your briefcase",
       icon: FileText,
-      color: "from-teal-500 to-blue-500",
+      color: "from-neon-cyan to-neon-blue",
       href: "/dashboard/briefcase"
     },
     {
@@ -50,7 +50,7 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
       title: "Explore Features",
       description: "Discover what's possible",
       icon: Lightbulb,
-      color: "from-orange-500 to-red-500",
+      color: "from-neon-orange to-neon-magenta",
       href: "/features"
     }
   ]
@@ -119,9 +119,7 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
   }, [])
 
   return (
-    <div className="min-h-screen bg-military-midnight relative overflow-hidden p-6">
-      <CamoBackground opacity={0.1} withGrid />
-      <TacticalGrid />
+    <div className="min-h-screen bg-dark-bg relative overflow-hidden p-6">
       
       {/* Celebration Animation */}
       <AnimatePresence>
@@ -143,7 +141,7 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
                 repeat: Infinity, 
                 ease: "easeInOut" 
               }}
-              className="w-32 h-32 bg-gradient-to-br from-military-hot-pink to-military-blush-pink rounded-full flex items-center justify-center shadow-2xl border-2 border-white/20"
+              className="w-32 h-32 bg-gradient-to-br from-neon-purple to-neon-magenta rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(179,0,255,0.4)] border-2 border-neon-purple/50"
             >
               <Crown className="h-16 w-16 text-white" />
             </motion.div>
@@ -239,11 +237,11 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
             transition={{ delay: 0.4, duration: 0.5 }}
             className="lg:col-span-2"
           >
-            <GlassCard className="p-6" glow>
-              <div className="space-y-6">
+            <Card className="p-6 bg-dark-card border border-gray-700 shadow-[0_0_15px_rgba(179,0,255,0.1)]">
+              <CardContent className="space-y-6">
                 <div className="flex items-center gap-2 mb-4">
-                  <Rocket className="h-5 w-5 text-military-hot-pink" />
-                  <h2 className="text-xl font-heading font-bold text-military-glass-white">Getting Started Guide</h2>
+                  <Rocket className="h-5 w-5 text-neon-purple" />
+                  <h2 className="text-xl font-orbitron font-bold text-white uppercase tracking-wider">Getting Started Guide</h2>
                 </div>
                 <div className="space-y-6">
                 <div className="space-y-4">
@@ -279,15 +277,16 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
                   ))}
                 </div>
 
-                <div className="pt-4 border-t border-white/10">
+                <div className="pt-4 border-t border-gray-700">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm font-medium text-military-glass-white">Progress: 0 of 4 steps completed</p>
-                      <Progress value={0} className="w-full mt-2" />
+                      <p className="text-sm font-medium font-mono text-white">Progress: 0 of 4 steps completed</p>
+                      <Progress value={0} className="w-full mt-2 bg-dark-bg" indicatorClassName="bg-gradient-to-r from-neon-purple to-neon-magenta" />
                     </div>
                     <Button 
                       onClick={onStartOnboarding}
-                      className="bg-gradient-to-r from-military-hot-pink to-military-blush-pink text-white hover:opacity-90"
+                      variant="purple"
+                      className="shadow-[0_0_15px_rgba(179,0,255,0.3)] font-orbitron uppercase tracking-wider"
                     >
                       <Play className="h-4 w-4 mr-2" />
                       Start Guide
@@ -295,8 +294,8 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
                   </div>
                 </div>
                 </div>
-              </div>
-            </GlassCard>
+              </CardContent>
+            </Card>
           </motion.div>
 
           {/* Sidebar */}
@@ -307,24 +306,26 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.6, duration: 0.5 }}
             >
-              <GlassCard className="p-6" glow>
-                <div className="flex items-center gap-2 mb-4">
-                  <Lightbulb className="h-5 w-5 text-yellow-500" />
-                  <h3 className="text-lg font-heading font-bold text-military-glass-white">Daily Tip</h3>
-                </div>
-                <AnimatePresence mode="wait">
-                  <motion.p
-                    key={currentTip}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ duration: 0.3 }}
-                    className="text-sm text-military-storm-grey"
-                  >
-                    {dailyTips[currentTip]}
-                  </motion.p>
-                </AnimatePresence>
-              </GlassCard>
+              <Card className="p-6 bg-dark-card border border-gray-700 shadow-[0_0_15px_rgba(179,0,255,0.1)]">
+                <CardContent>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Lightbulb className="h-5 w-5 text-neon-orange" />
+                    <h3 className="text-lg font-orbitron font-bold text-white uppercase tracking-wider">Daily Tip</h3>
+                  </div>
+                  <AnimatePresence mode="wait">
+                    <motion.p
+                      key={currentTip}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.3 }}
+                      className="text-sm text-gray-400 font-mono"
+                    >
+                      {dailyTips[currentTip]}
+                    </motion.p>
+                  </AnimatePresence>
+                </CardContent>
+              </Card>
             </motion.div>
 
             {/* Achievements */}
@@ -333,42 +334,48 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.7, duration: 0.5 }}
             >
-              <GlassCard className="p-6" glow>
-                <div className="flex items-center gap-2 mb-4">
-                  <Award className="h-5 w-5 text-orange-500" />
-                  <h3 className="text-lg font-heading font-bold text-military-glass-white">Achievements</h3>
-                </div>
-                <div className="space-y-3">
-                  {achievements.map((achievement, index) => (
-                    <motion.div
-                      key={achievement.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.8 + index * 0.1, duration: 0.3 }}
-                      className={`flex items-center gap-3 p-3 rounded-lg glass-card border ${
-                        achievement.unlocked 
-                          ? 'border-green-500/30' 
-                          : 'border-white/10'
-                      }`}
-                    >
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        achievement.unlocked 
-                          ? 'bg-green-500 text-white' 
-                          : 'bg-military-gunmetal-grey text-military-storm-grey'
-                      }`}>
-                        <achievement.icon className="h-5 w-5" />
-                      </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-sm text-military-glass-white">{achievement.title}</h4>
-                        <p className="text-xs text-military-storm-grey">{achievement.description}</p>
-                      </div>
-                      <StatsBadge variant={achievement.unlocked ? "success" : "default"} size="sm">
-                        {achievement.points} pts
-                      </StatsBadge>
-                    </motion.div>
-                  ))}
-                </div>
-              </GlassCard>
+              <Card className="p-6 bg-dark-card border border-gray-700 shadow-[0_0_15px_rgba(179,0,255,0.1)]">
+                <CardContent>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Award className="h-5 w-5 text-neon-orange" />
+                    <h3 className="text-lg font-orbitron font-bold text-white uppercase tracking-wider">Achievements</h3>
+                  </div>
+                  <div className="space-y-3">
+                    {achievements.map((achievement, index) => (
+                      <motion.div
+                        key={achievement.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.8 + index * 0.1, duration: 0.3 }}
+                        className={`flex items-center gap-3 p-3 rounded-sm bg-dark-bg border ${
+                          achievement.unlocked 
+                            ? 'border-neon-lime/30 shadow-[0_0_10px_rgba(57,255,20,0.2)]' 
+                            : 'border-gray-700'
+                        }`}
+                      >
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                          achievement.unlocked 
+                            ? 'bg-neon-lime text-white shadow-[0_0_10px_rgba(57,255,20,0.5)]' 
+                            : 'bg-dark-card border border-gray-700 text-gray-500'
+                        }`}>
+                          <achievement.icon className="h-5 w-5" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-sm font-mono text-white">{achievement.title}</h4>
+                          <p className="text-xs text-gray-400 font-mono">{achievement.description}</p>
+                        </div>
+                        <Badge className={`font-mono text-xs ${
+                          achievement.unlocked 
+                            ? 'bg-neon-lime/20 text-neon-lime border-neon-lime/40' 
+                            : 'bg-dark-card text-gray-500 border-gray-700'
+                        }`}>
+                          {achievement.points} pts
+                        </Badge>
+                      </motion.div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </motion.div>
 
             {/* Welcome Bonus */}
@@ -377,26 +384,28 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.8, duration: 0.5 }}
             >
-              <GlassCard className="p-6 border-2 border-military-hot-pink/30" glow>
-                <div className="flex items-center gap-2 mb-4">
-                  <Gift className="h-5 w-5 text-military-hot-pink" />
-                  <h3 className="text-lg font-heading font-bold text-military-glass-white">Welcome Bonus</h3>
-                </div>
-                <div className="space-y-3">
-                  <div className="p-3 glass-card rounded-lg border border-white/10">
-                    <p className="text-sm font-medium text-military-glass-white">🎉 7-Day Premium Trial</p>
-                    <p className="text-xs text-military-storm-grey">Access to all features</p>
+              <Card className="p-6 border-2 border-neon-purple/30 bg-dark-card shadow-[0_0_20px_rgba(179,0,255,0.2)]">
+                <CardContent>
+                  <div className="flex items-center gap-2 mb-4">
+                    <Gift className="h-5 w-5 text-neon-purple" />
+                    <h3 className="text-lg font-orbitron font-bold text-white uppercase tracking-wider">Welcome Bonus</h3>
                   </div>
-                  <div className="p-3 glass-card rounded-lg border border-white/10">
-                    <p className="text-sm font-medium text-military-glass-white">🚀 100 AI Credits</p>
-                    <p className="text-xs text-military-storm-grey">Bonus conversations</p>
+                  <div className="space-y-3">
+                    <div className="p-3 bg-dark-bg rounded-sm border border-gray-700">
+                      <p className="text-sm font-medium font-mono text-white">🎉 7-Day Premium Trial</p>
+                      <p className="text-xs text-gray-400 font-mono">Access to all features</p>
+                    </div>
+                    <div className="p-3 bg-dark-bg rounded-sm border border-gray-700">
+                      <p className="text-sm font-medium font-mono text-white">🚀 100 AI Credits</p>
+                      <p className="text-xs text-gray-400 font-mono">Bonus conversations</p>
+                    </div>
+                    <div className="p-3 bg-dark-bg rounded-sm border border-gray-700">
+                      <p className="text-sm font-medium font-mono text-white">📚 Premium Templates</p>
+                      <p className="text-xs text-gray-400 font-mono">50+ business templates</p>
+                    </div>
                   </div>
-                  <div className="p-3 glass-card rounded-lg border border-white/10">
-                    <p className="text-sm font-medium text-military-glass-white">📚 Premium Templates</p>
-                    <p className="text-xs text-military-storm-grey">50+ business templates</p>
-                  </div>
-                </div>
-              </GlassCard>
+                </CardContent>
+              </Card>
             </motion.div>
           </div>
         </div>
@@ -408,16 +417,17 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
           transition={{ delay: 0.9, duration: 0.5 }}
           className="text-center space-y-4"
         >
-          <div className="flex items-center justify-center gap-2 text-lg font-heading font-semibold text-military-glass-white">
-            <Sparkles className="h-5 w-5 text-military-hot-pink" />
+          <div className="flex items-center justify-center gap-2 text-lg font-orbitron font-semibold text-white uppercase tracking-wider">
+            <Sparkles className="h-5 w-5 text-neon-purple" />
             Ready to start building your empire!
-            <Sparkles className="h-5 w-5 text-military-hot-pink" />
+            <Sparkles className="h-5 w-5 text-neon-purple" />
           </div>
           
           <div className="flex items-center justify-center gap-4">
             <Button 
               onClick={onStartOnboarding}
-              className="bg-gradient-to-r from-military-hot-pink to-military-blush-pink text-white hover:opacity-90 text-lg px-8 py-4"
+              variant="purple"
+              className="text-lg px-8 py-4 shadow-[0_0_20px_rgba(179,0,255,0.3)] font-orbitron uppercase tracking-wider"
               size="lg"
             >
               <Rocket className="h-5 w-5 mr-2" />
@@ -426,7 +436,7 @@ export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding
             <Button 
               onClick={onSkipOnboarding}
               variant="outline"
-              className="text-lg px-8 py-4 border-military-storm-grey text-military-glass-white hover:bg-military-tactical-black"
+              className="text-lg px-8 py-4 border-gray-700 text-gray-400 hover:bg-dark-hover hover:text-neon-cyan font-mono uppercase tracking-wider"
               size="lg"
             >
               Do it Later

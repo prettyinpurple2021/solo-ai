@@ -90,12 +90,12 @@ export function EnhancedWelcomeFlow({ open, onComplete, onSkip, userData }: Welc
             transition={{ delay: 0.6, duration: 0.5 }}
             className="grid grid-cols-2 gap-4 font-mono"
           >
-            <div className="p-4 bg-neon-purple/10 border border-neon-purple/20 rounded-xl">
+            <div className="p-4 bg-neon-purple/10 border border-neon-purple/20 rounded-sm">
               <Sparkles className="h-8 w-8 text-neon-cyan mx-auto mb-2" />
               <h3 className="font-semibold text-sm text-neon-cyan">8 AI Agents</h3>
               <p className="text-xs text-gray-400">Your personal team</p>
             </div>
-            <div className="p-4 bg-neon-lime/10 border border-neon-lime/20 rounded-xl">
+            <div className="p-4 bg-neon-lime/10 border border-neon-lime/20 rounded-sm">
               <Target className="h-8 w-8 text-neon-lime mx-auto mb-2" />
               <h3 className="font-semibold text-sm text-neon-lime">Smart Goals</h3>
               <p className="text-xs text-gray-400">AI-powered tracking</p>
@@ -155,7 +155,7 @@ export function EnhancedWelcomeFlow({ open, onComplete, onSkip, userData }: Welc
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.5 }}
-                className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 select-none bg-dark-card ${
+                className={`p-4 border-2 rounded-sm cursor-pointer transition-all duration-200 select-none bg-dark-card ${
                   selectedPersonality === style.id
                     ? "border-neon-cyan bg-neon-cyan/5 shadow-[0_0_15px_rgba(11,228,236,0.2)] scale-[1.02]"
                     : "border-transparent hover:border-neon-cyan/50 hover:shadow-md hover:scale-[1.01]"
@@ -219,7 +219,7 @@ export function EnhancedWelcomeFlow({ open, onComplete, onSkip, userData }: Welc
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.4 }}
-                className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 select-none bg-dark-card ${
+                className={`p-4 border-2 rounded-sm cursor-pointer transition-all duration-200 select-none bg-dark-card ${
                   selectedGoals.includes(goal.id)
                     ? "border-neon-lime bg-neon-lime/5 shadow-[0_0_15px_rgba(57,255,20,0.2)] scale-[1.02]"
                     : "border-transparent hover:border-neon-lime/50 hover:shadow-md hover:scale-[1.01]"
@@ -310,7 +310,7 @@ export function EnhancedWelcomeFlow({ open, onComplete, onSkip, userData }: Welc
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.1, duration: 0.4 }}
-                className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-200 select-none bg-dark-card ${
+                className={`p-4 border-2 rounded-sm cursor-pointer transition-all duration-200 select-none bg-dark-card ${
                   selectedAgents.includes(agent.id)
                     ? "border-neon-orange bg-neon-orange/5 shadow-[0_0_15px_rgba(255,102,0,0.2)] scale-[1.02]"
                     : "border-transparent hover:border-neon-orange/50 hover:shadow-md hover:scale-[1.01]"
@@ -407,7 +407,7 @@ export function EnhancedWelcomeFlow({ open, onComplete, onSkip, userData }: Welc
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1, duration: 0.4 }}
-                className="flex items-center justify-between p-4 border-2 border-transparent hover:border-neon-cyan/50 rounded-xl cursor-pointer transition-all duration-200 bg-dark-card"
+                className="flex items-center justify-between p-4 border-2 border-transparent hover:border-neon-cyan/50 rounded-sm cursor-pointer transition-all duration-200 bg-dark-card"
                 onClick={() => setUserPreferences(prev => ({ ...prev, [pref.id]: !prev[pref.id as keyof typeof prev] }))}
               >
                 <div className="flex items-center space-x-4">

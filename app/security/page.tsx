@@ -46,7 +46,7 @@ export default function SecurityPage() {
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold text-white mb-6">
               QUANTUM-GRADE <span className="text-neon-cyan">SECURITY</span>
             </h1>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto font-tech">
+            <p className="text-lg text-gray-400 max-w-2xl mx-auto font-mono">
               Your data is protected by advanced security protocols and encryption standards.
             </p>
           </div>
@@ -61,7 +61,7 @@ export default function SecurityPage() {
                   </span>
                 </div>
                 <h3 className="font-orbitron text-lg text-white mb-2">{feature.title}</h3>
-                <p className="text-sm text-gray-400 font-tech leading-relaxed">{feature.description}</p>
+                <p className="text-sm text-gray-400 font-mono leading-relaxed">{feature.description}</p>
               </HudBorder>
             ))}
           </div>

@@ -176,18 +176,18 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
         return (
           <div className="space-y-6">
             <div className="text-center space-y-3">
-              <div className="w-20 h-20 mx-auto bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+              <div className="w-20 h-20 mx-auto bg-gradient-to-r from-neon-purple to-neon-magenta rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(179,0,255,0.3)]">
                 <Crown className="h-10 w-10 text-white" />
               </div>
-              <h2 className="text-3xl font-bold boss-heading">Welcome to Your Empire! 👑</h2>
-              <p className="text-lg text-muted-foreground">
+              <h2 className="text-3xl font-bold font-orbitron text-white uppercase tracking-wider">Welcome to Your Empire! 👑</h2>
+              <p className="text-lg text-gray-400 font-mono">
                 Let&apos;s set up your SoloSuccess AI platform to match your unique boss energy!
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="font-semibold">
+                <Label htmlFor="name" className="font-semibold font-mono text-neon-cyan uppercase tracking-wider">
                   What should we call you, boss?
                 </Label>
                 <Input
@@ -195,22 +195,22 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                   placeholder="Your name or business name"
                   value={data.personalInfo.name}
                   onChange={(e) => updateData("personalInfo", { name: e.target.value })}
-                  className="border-2 border-purple-200 focus:border-purple-400"
+                  className="bg-dark-bg border-2 border-gray-700 focus:border-neon-cyan focus:ring-neon-cyan/20 font-mono"
                 />
               </div>
 
               <div className="space-y-2">
-                <Label className="font-semibold">What type of boss are you?</Label>
+                <Label className="font-semibold font-mono text-neon-cyan uppercase tracking-wider">What type of boss are you?</Label>
                 <Select
                   value={data.personalInfo.businessType}
                   onValueChange={(value) => updateData("personalInfo", { businessType: value })}
                 >
-                  <SelectTrigger className="border-2 border-purple-200 focus:border-purple-400">
+                  <SelectTrigger className="bg-dark-bg border-2 border-gray-700 focus:border-neon-cyan focus:ring-neon-cyan/20 font-mono">
                     <SelectValue placeholder="Select your business type" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-dark-card border-gray-700">
                     {businessTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
+                      <SelectItem key={type} value={type} className="text-gray-300 font-mono hover:bg-dark-hover">
                         {type}
                       </SelectItem>
                     ))}
@@ -219,17 +219,17 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
               </div>
 
               <div className="space-y-2">
-                <Label className="font-semibold">What industry do you dominate?</Label>
+                <Label className="font-semibold font-mono text-neon-cyan uppercase tracking-wider">What industry do you dominate?</Label>
                 <Select
                   value={data.personalInfo.industry}
                   onValueChange={(value) => updateData("personalInfo", { industry: value })}
                 >
-                  <SelectTrigger className="border-2 border-purple-200 focus:border-purple-400">
+                  <SelectTrigger className="bg-dark-bg border-2 border-gray-700 focus:border-neon-cyan focus:ring-neon-cyan/20 font-mono">
                     <SelectValue placeholder="Select your industry" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-dark-card border-gray-700">
                     {industries.map((industry) => (
-                      <SelectItem key={industry} value={industry}>
+                      <SelectItem key={industry} value={industry} className="text-gray-300 font-mono hover:bg-dark-hover">
                         {industry}
                       </SelectItem>
                     ))}
@@ -244,7 +244,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
         return (
           <div className="space-y-6">
             <div className="text-center space-y-3">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-r from-pink-500 to-purple-500 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto bg-gradient-to-r from-neon-magenta to-neon-purple rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,0,110,0.3)]">
                 <Target className="h-8 w-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold boss-heading">What are your empire goals? 🎯</h2>
@@ -255,10 +255,10 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
               {goalOptions.map((goal) => (
                 <Card
                   key={goal.id}
-                  className={`cursor-pointer transition-all duration-200 hover:shadow-md select-none active:scale-95 ${
+                  className={`cursor-pointer transition-all duration-200 select-none active:scale-95 bg-dark-card border-2 ${
                     data.goals.primaryGoals.includes(goal.id)
-                      ? "ring-2 ring-purple-500 bg-gradient-to-r from-purple-50 to-pink-50 shadow-md scale-[1.02]"
-                      : "hover:bg-purple-50/50 hover:shadow-sm hover:scale-[1.01]"
+                      ? "border-neon-purple bg-neon-purple/10 shadow-[0_0_15px_rgba(179,0,255,0.3)] scale-[1.02]"
+                      : "border-gray-700 hover:border-neon-purple/50 hover:bg-dark-hover hover:shadow-sm hover:scale-[1.01]"
                   }`}
                   onClick={(e) => {
                     e.preventDefault()
@@ -270,10 +270,10 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                     <div className="flex items-center gap-3">
                       <div className="text-2xl">{goal.emoji}</div>
                       <div className="flex-1">
-                        <h3 className="font-semibold">{goal.label}</h3>
-                        <p className="text-sm text-muted-foreground">{goal.description}</p>
+                        <h3 className="font-semibold font-mono text-white">{goal.label}</h3>
+                        <p className="text-sm text-gray-400 font-mono">{goal.description}</p>
                       </div>
-                      {data.goals.primaryGoals.includes(goal.id) && <CheckCircle className="h-5 w-5 text-purple-600" />}
+                      {data.goals.primaryGoals.includes(goal.id) && <CheckCircle className="h-5 w-5 text-neon-purple" />}
                     </div>
                   </CardContent>
                 </Card>
@@ -298,11 +298,11 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
         return (
           <div className="space-y-6">
             <div className="text-center space-y-3">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-r from-teal-500 to-purple-500 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto bg-gradient-to-r from-neon-cyan to-neon-purple rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(11,228,236,0.3)]">
                 <Brain className="h-8 w-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold boss-heading">How do you work best? 🧠</h2>
-                              <p className="text-muted-foreground">Let&apos;s optimize your AI team for your work style!</p>
+              <h2 className="text-2xl font-bold font-orbitron text-white uppercase tracking-wider">How do you work best? 🧠</h2>
+                              <p className="text-gray-400 font-mono">Let&apos;s optimize your AI team for your work style!</p>
             </div>
 
             <div className="space-y-6">
@@ -392,8 +392,8 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
               <div className="w-16 h-16 mx-auto bg-gradient-to-r from-pink-500 to-teal-500 rounded-full flex items-center justify-center">
                 <Users className="h-8 w-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold boss-heading">Meet Your AI Squad! 👯‍♀️</h2>
-              <p className="text-muted-foreground">Choose your starting team (you can add more later!)</p>
+              <h2 className="text-2xl font-bold font-orbitron text-white uppercase tracking-wider">Meet Your AI Squad! 👯‍♀️</h2>
+              <p className="text-gray-400 font-mono">Choose your starting team (you can add more later!)</p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2">
@@ -447,41 +447,41 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
         return (
           <div className="space-y-6">
             <div className="text-center space-y-3">
-              <div className="w-16 h-16 mx-auto bg-gradient-to-r from-yellow-500 to-pink-500 rounded-full flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto bg-gradient-to-r from-neon-orange to-neon-magenta rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,102,0,0.3)]">
                 <Rocket className="h-8 w-8 text-white" />
               </div>
-                              <h2 className="text-2xl font-bold boss-heading">You&apos;re Ready to Rule! 🚀</h2>
-                              <p className="text-muted-foreground">Here&apos;s your personalized empire setup:</p>
+                              <h2 className="text-2xl font-bold font-orbitron text-white uppercase tracking-wider">You&apos;re Ready to Rule! 🚀</h2>
+                              <p className="text-gray-400 font-mono">Here&apos;s your personalized empire setup:</p>
             </div>
 
             <div className="space-y-4">
-              <Card className="boss-card">
+              <Card className="bg-dark-card border border-gray-700">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Crown className="h-5 w-5 text-purple-600" />
+                  <CardTitle className="flex items-center gap-2 font-orbitron text-white uppercase tracking-wider">
+                    <Crown className="h-5 w-5 text-neon-purple" />
                     Your Boss Profile
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  <p>
-                    <strong>Name:</strong> {data.personalInfo.name || "Boss Babe"}
+                <CardContent className="space-y-2 font-mono">
+                  <p className="text-gray-300">
+                    <strong className="text-neon-cyan">Name:</strong> {data.personalInfo.name || "Boss Babe"}
                   </p>
-                  <p>
-                    <strong>Business Type:</strong> {data.personalInfo.businessType}
+                  <p className="text-gray-300">
+                    <strong className="text-neon-cyan">Business Type:</strong> {data.personalInfo.businessType}
                   </p>
-                  <p>
-                    <strong>Industry:</strong> {data.personalInfo.industry}
+                  <p className="text-gray-300">
+                    <strong className="text-neon-cyan">Industry:</strong> {data.personalInfo.industry}
                   </p>
-                  <p>
-                    <strong>Work Style:</strong> {data.preferences.workStyle}
+                  <p className="text-gray-300">
+                    <strong className="text-neon-cyan">Work Style:</strong> {data.preferences.workStyle}
                   </p>
                 </CardContent>
               </Card>
 
-              <Card className="boss-card">
+              <Card className="bg-dark-card border border-gray-700">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Target className="h-5 w-5 text-pink-600" />
+                  <CardTitle className="flex items-center gap-2 font-orbitron text-white uppercase tracking-wider">
+                    <Target className="h-5 w-5 text-neon-magenta" />
                     Your Goals ({data.goals.primaryGoals.length})
                   </CardTitle>
                 </CardHeader>
@@ -490,7 +490,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                     {data.goals.primaryGoals.map((goalId) => {
                       const goal = goalOptions.find((g) => g.id === goalId)
                       return (
-                        <Badge key={goalId} className="girlboss-badge">
+                        <Badge key={goalId} className="bg-neon-purple/20 text-neon-purple border-neon-purple/40 font-mono">
                           {goal?.emoji} {goal?.label}
                         </Badge>
                       )
@@ -499,10 +499,10 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                 </CardContent>
               </Card>
 
-              <Card className="boss-card">
+              <Card className="bg-dark-card border border-gray-700">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-teal-600" />
+                  <CardTitle className="flex items-center gap-2 font-orbitron text-white uppercase tracking-wider">
+                    <Users className="h-5 w-5 text-neon-cyan" />
                     Your AI Squad ({data.aiTeam.selectedAgents.length})
                   </CardTitle>
                 </CardHeader>
@@ -515,9 +515,9 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                           <img
                             src={agent?.avatar || "/default-user.svg"}
                             alt={agent?.name}
-                            className="w-8 h-8 rounded-full object-cover"
+                            className="w-8 h-8 rounded-full object-cover border border-neon-cyan/50"
                           />
-                          <span className="font-medium">{agent?.name}</span>
+                          <span className="font-medium font-mono text-white">{agent?.name}</span>
                         </div>
                       )
                     })}
@@ -527,12 +527,12 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
             </div>
 
             <div className="text-center space-y-3">
-              <div className="flex items-center justify-center gap-2 text-lg font-semibold empowering-text">
+              <div className="flex items-center justify-center gap-2 text-lg font-semibold font-orbitron text-neon-lime uppercase tracking-wider">
                 <Sparkles className="h-5 w-5" />
                 Ready to start building your empire!
                 <Sparkles className="h-5 w-5" />
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-400 font-mono">
                 Your AI team is ready to help you crush your goals and build the business of your dreams! 💪
               </p>
             </div>
@@ -546,30 +546,30 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
 
   return (
     <Dialog open={open} onOpenChange={(newOpen) => !newOpen && onSkip()}>
-      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto boss-card border-2 border-purple-200" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto bg-dark-card border-2 border-neon-purple/30 shadow-[0_0_30px_rgba(179,0,255,0.2)]" onPointerDownOutside={(e) => e.preventDefault()} onEscapeKeyDown={(e) => e.preventDefault()}>
         <DialogHeader>
           <div className="flex items-center justify-between">
             <div>
-              <DialogTitle className="boss-heading text-xl">SoloSuccess AI Setup</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="font-orbitron text-xl text-white uppercase tracking-wider">SoloSuccess AI Setup</DialogTitle>
+              <DialogDescription className="text-gray-400 font-mono">
                 Step {currentStep + 1} of {totalSteps} - Let&apos;s build your empire!
               </DialogDescription>
             </div>
-            <Button variant="ghost" onClick={onSkip} className="text-sm">
+            <Button variant="ghost" onClick={onSkip} className="text-sm text-gray-400 hover:text-neon-magenta font-mono">
               Skip Setup
             </Button>
           </div>
-          <Progress value={progress} className="w-full" />
+          <Progress value={progress} className="w-full bg-dark-bg" indicatorClassName="bg-gradient-to-r from-neon-purple to-neon-magenta shadow-[0_0_10px_rgba(179,0,255,0.5)]" />
         </DialogHeader>
 
         <div className="py-4">{renderStep()}</div>
 
-        <div className="flex justify-between pt-4 border-t">
+        <div className="flex justify-between pt-4 border-t border-gray-700">
           <Button
             variant="outline"
             onClick={prevStep}
             disabled={currentStep === 0}
-            className="flex items-center gap-2 bg-transparent"
+            className="flex items-center gap-2 bg-transparent border-gray-700 text-gray-400 hover:text-neon-cyan hover:bg-neon-cyan/10 hover:border-neon-cyan font-mono uppercase tracking-wider"
           >
             <ArrowLeft className="h-4 w-4" />
             Back
@@ -577,7 +577,8 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
 
           <Button
             onClick={nextStep}
-            className="punk-button text-white flex items-center gap-2"
+            variant="purple"
+            className="flex items-center gap-2 shadow-[0_0_15px_rgba(179,0,255,0.3)] font-orbitron uppercase tracking-wider"
             disabled={
               (currentStep === 0 && !data.personalInfo.name) ||
               (currentStep === 1 && data.goals.primaryGoals.length === 0) ||

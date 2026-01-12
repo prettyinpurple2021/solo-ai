@@ -214,7 +214,7 @@ export function FeatureDiscovery({ open, onComplete, onSkip, userPreferences }: 
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -222,28 +222,28 @@ export function FeatureDiscovery({ open, onComplete, onSkip, userPreferences }: 
         transition={{ duration: 0.3 }}
         className="w-full max-w-5xl max-h-[90vh] overflow-y-auto"
       >
-        <Card className="boss-card border-2 border-purple-200 shadow-2xl">
-          <CardHeader className="pb-4">
+        <Card className="bg-dark-card border-2 border-neon-purple/30 shadow-[0_0_30px_rgba(179,0,255,0.2)]">
+          <CardHeader className="pb-4 border-b border-gray-700">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="boss-heading text-2xl flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${currentFeatureData.color} flex items-center justify-center`}>
+                <CardTitle className="font-orbitron text-2xl font-bold text-white uppercase tracking-wider flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-full bg-gradient-to-r ${currentFeatureData.color} flex items-center justify-center shadow-[0_0_15px_rgba(179,0,255,0.3)]`}>
                     <currentFeatureData.icon className="h-5 w-5 text-white" />
                   </div>
                   {currentFeatureData.title}
                 </CardTitle>
-                <p className="text-muted-foreground mt-1">{currentFeatureData.subtitle}</p>
+                <p className="text-gray-400 font-mono mt-1">{currentFeatureData.subtitle}</p>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="ghost" size="sm" onClick={() => setShowTips(!showTips)}>
+                <Button variant="ghost" size="sm" onClick={() => setShowTips(!showTips)} className="text-gray-400 hover:text-neon-cyan">
                   <Lightbulb className="h-4 w-4" />
                 </Button>
-                <Button variant="ghost" onClick={onSkip} className="text-sm">
+                <Button variant="ghost" onClick={onSkip} className="text-sm text-gray-400 hover:text-neon-magenta font-mono">
                   Skip Tour
                 </Button>
               </div>
             </div>
-            <Progress value={progress} className="w-full mt-4" />
+            <Progress value={progress} className="w-full mt-4 bg-dark-bg" indicatorClassName="bg-gradient-to-r from-neon-purple to-neon-magenta shadow-[0_0_10px_rgba(179,0,255,0.5)]" />
           </CardHeader>
 
           <CardContent className="py-6">
@@ -256,22 +256,22 @@ export function FeatureDiscovery({ open, onComplete, onSkip, userPreferences }: 
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4 }}
                 >
-                  <p className="text-lg text-muted-foreground mb-6">
+                  <p className="text-lg text-gray-400 font-mono mb-6">
                     {currentFeatureData.description}
                   </p>
 
                   <div className="space-y-4">
-                    <h3 className="text-lg font-semibold">Key Features:</h3>
+                    <h3 className="text-lg font-semibold font-orbitron text-white uppercase tracking-wider">Key Features:</h3>
                     {currentFeatureData.highlights.map((highlight, index) => (
                       <motion.div
                         key={index}
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1, duration: 0.3 }}
-                        className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg"
+                        className="flex items-center gap-3 p-3 bg-neon-purple/10 border border-neon-purple/20 rounded-sm"
                       >
-                        <CheckCircle className="h-5 w-5 text-purple-600 flex-shrink-0" />
-                        <span className="text-sm">{highlight}</span>
+                        <CheckCircle className="h-5 w-5 text-neon-purple flex-shrink-0" />
+                        <span className="text-sm text-gray-300 font-mono">{highlight}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -285,11 +285,11 @@ export function FeatureDiscovery({ open, onComplete, onSkip, userPreferences }: 
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.4 }}
-                  className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border-2 border-dashed border-gray-300"
+                  className="bg-dark-card border-2 border-dashed border-gray-700 rounded-sm p-6"
                 >
                   <div className="text-center mb-4">
-                    <h3 className="text-lg font-semibold mb-2">Quick Start Guide</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <h3 className="text-lg font-semibold font-orbitron text-white mb-2 uppercase tracking-wider">Quick Start Guide</h3>
+                    <p className="text-sm text-gray-400 font-mono">
                       {currentFeatureData.demo.type === "interactive" && "Click around to explore"}
                       {currentFeatureData.demo.type === "conversation" && "Start a conversation"}
                       {currentFeatureData.demo.type === "creation" && "Create something new"}
@@ -306,12 +306,12 @@ export function FeatureDiscovery({ open, onComplete, onSkip, userPreferences }: 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.2, duration: 0.3 }}
-                        className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm"
+                        className="flex items-center gap-3 p-3 bg-dark-bg border border-gray-700 rounded-sm"
                       >
-                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                        <div className="w-6 h-6 rounded-full bg-gradient-to-r from-neon-purple to-neon-magenta flex items-center justify-center text-white text-xs font-bold shadow-[0_0_10px_rgba(179,0,255,0.5)]">
                           {index + 1}
                         </div>
-                        <span className="text-sm">{step}</span>
+                        <span className="text-sm text-gray-300 font-mono">{step}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -319,7 +319,8 @@ export function FeatureDiscovery({ open, onComplete, onSkip, userPreferences }: 
                   <div className="mt-6 text-center">
                     <Button
                       onClick={() => markFeatureComplete(currentFeatureData.id)}
-                      className="punk-button text-white"
+                      variant="purple"
+                      className="shadow-[0_0_15px_rgba(179,0,255,0.3)]"
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
                       I've Completed This Step
@@ -333,16 +334,16 @@ export function FeatureDiscovery({ open, onComplete, onSkip, userPreferences }: 
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.3 }}
-                    className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-4 border border-yellow-200"
+                    className="bg-neon-orange/10 border border-neon-orange/20 rounded-sm p-4"
                   >
-                    <h4 className="font-semibold text-yellow-800 mb-3 flex items-center gap-2">
+                    <h4 className="font-semibold text-neon-orange mb-3 flex items-center gap-2 font-orbitron uppercase tracking-wider">
                       <Star className="h-4 w-4" />
                       Pro Tips
                     </h4>
                     <ul className="space-y-2">
                       {currentFeatureData.tips.map((tip, index) => (
-                        <li key={index} className="text-sm text-yellow-700 flex items-start gap-2">
-                          <span className="text-yellow-600 mt-1">•</span>
+                        <li key={index} className="text-sm text-gray-300 font-mono flex items-start gap-2">
+                          <span className="text-neon-orange mt-1">•</span>
                           {tip}
                         </li>
                       ))}
@@ -353,24 +354,25 @@ export function FeatureDiscovery({ open, onComplete, onSkip, userPreferences }: 
             </div>
           </CardContent>
 
-          <div className="flex justify-between items-center p-6 border-t">
+          <div className="flex justify-between items-center p-6 border-t border-gray-700">
             <Button
               variant="outline"
               onClick={prevFeature}
               disabled={currentFeature === 0}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 bg-transparent border-gray-700 text-gray-400 hover:text-neon-cyan hover:bg-neon-cyan/10 hover:border-neon-cyan font-mono uppercase tracking-wider"
             >
               <ArrowLeft className="h-4 w-4" />
               Previous
             </Button>
 
             <div className="flex items-center gap-4">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-gray-500 font-mono">
                 {completedFeatures.size} of {totalFeatures} features explored
               </div>
               <Button
                 onClick={nextFeature}
-                className="punk-button text-white flex items-center gap-2"
+                variant="purple"
+                className="flex items-center gap-2 shadow-[0_0_15px_rgba(179,0,255,0.3)] font-orbitron uppercase tracking-wider"
               >
                 {currentFeature === totalFeatures - 1 ? (
                   <>

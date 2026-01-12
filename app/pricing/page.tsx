@@ -43,7 +43,7 @@ export default function PricingPage() {
         <div className="max-w-5xl mx-auto px-6">
           <div className="text-center mb-16">
             <h1 className="text-3xl md:text-5xl font-orbitron font-bold text-white">CHOOSE YOUR PLAN</h1>
-            <p className="text-neon-cyan mt-4 font-tech tracking-widest uppercase">
+            <p className="text-neon-cyan mt-4 font-mono tracking-widest uppercase">
               Join the network of innovative founders.
             </p>
             <div className="w-24 h-1 bg-neon-purple mx-auto mt-4 shadow-[0_0_15px_#bd00ff]"></div>
@@ -67,13 +67,13 @@ export default function PricingPage() {
                   {plan.title}
                 </h3>
                 <div className="text-4xl font-orbitron font-bold text-white mt-4 mb-2">{plan.price}</div>
-                <span className={`text-xs font-tech uppercase tracking-widest mb-8 ${
+                <span className={`text-xs font-mono uppercase tracking-widest mb-8 ${
                   plan.popular ? 'text-neon-purple' : 'text-neon-cyan'
                 }`}>
                   {plan.subtitle}
                 </span>
                 
-                <ul className="space-y-3 mb-8 text-sm font-tech text-gray-400 w-full text-left pl-8">
+                <ul className="space-y-3 mb-8 text-sm font-mono text-gray-400 w-full text-left pl-8">
                   {plan.features.map((feature) => (
                     <li key={feature} className="flex items-center">
                       <span className={`mr-2 ${plan.popular ? 'text-neon-purple' : 'text-neon-cyan'}`}>
