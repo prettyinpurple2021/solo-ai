@@ -259,7 +259,7 @@ export function ValuesAlignedBizFilter() {
                       <Shield className="w-4 h-4 mr-2" />
                       <strong>Strong Values Match!</strong>
                     </div>
-                    <p className="text-sm text-chart-2/80 mt-1">
+                    <p className="text-sm text-neon-lime/80 font-mono mt-1">
                       This opportunity aligns well with your core values and vision.
                     </p>
                   </div>
@@ -271,7 +271,7 @@ export function ValuesAlignedBizFilter() {
                       <AlertTriangle className="w-4 h-4 mr-2" />
                       <strong>Values Conflict Alert</strong>
                     </div>
-                    <p className="text-sm text-gray-400 font-mono mt-1">
+                    <p className="text-sm text-red-400/80 font-mono mt-1">
                       Consider if the benefits outweigh the misalignment with your values.
                     </p>
                   </div>
