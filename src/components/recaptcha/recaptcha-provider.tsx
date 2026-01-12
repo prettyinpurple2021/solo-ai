@@ -96,19 +96,32 @@ export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
     logInfo('reCAPTCHA site key:', RECAPTCHA_SITE_KEY)
     setIsLoading(false)
     
-    if (window.grecaptcha?.enterprise) {
-      window.grecaptcha.enterprise.ready(() => {
-        setIsReady(true)
-        logInfo('reCAPTCHA is ready')
-      })
-    } else {
-      logError('reCAPTCHA enterprise not available after script load')
-      toast({
-        title: "reCAPTCHA Error",
-        description: "Security verification failed to initialize. Please refresh the page.",
-        variant: "destructive"
-      })
+    // Check if grecaptcha is available, with retry logic
+    const checkReady = (attempt = 0) => {
+      if (window.grecaptcha?.enterprise) {
+        // grecaptcha is available, use ready() callback
+        window.grecaptcha.enterprise.ready(() => {
+          setIsReady(true)
+          logInfo('reCAPTCHA is ready')
+        })
+      } else if (attempt < 5) {
+        // Retry after a short delay (up to 5 attempts)
+        setTimeout(() => {
+          checkReady(attempt + 1)
+        }, 100)
+      } else {
+        // Failed after multiple retries
+        logError('reCAPTCHA enterprise not available after script load and retries')
+        toast({
+          title: "reCAPTCHA Error",
+          description: "Security verification failed to initialize. Please refresh the page.",
+          variant: "destructive"
+        })
+      }
     }
+    
+    // Start checking for grecaptcha availability
+    checkReady()
   }
 
   const handleScriptError = () => {
