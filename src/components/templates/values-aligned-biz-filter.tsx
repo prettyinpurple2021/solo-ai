@@ -271,7 +271,7 @@ export function ValuesAlignedBizFilter() {
                       <AlertTriangle className="w-4 h-4 mr-2" />
                       <strong>Values Conflict Alert</strong>
                     </div>
-                    <p className="text-sm text-red-400/80 font-mono mt-1">
+                    <p className="text-sm text-red-400 font-mono mt-1">
                       Consider if the benefits outweigh the misalignment with your values.
                     </p>
                   </div>
