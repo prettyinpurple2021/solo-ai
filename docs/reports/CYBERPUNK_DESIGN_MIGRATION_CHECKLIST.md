@@ -256,10 +256,10 @@ All foundational UI components have been updated to Cyberpunk Design System v3.
 
 | File | Violations | Status |
 |------|------------|--------|
-| `auth/neon-auth.tsx` | 6 | ⬜ TODO |
+| `auth/neon-auth.tsx` | 6 | ✅ DONE (Deleted - unused component) |
 | `auth/register-form.tsx` | 4 | ✅ Mostly OK |
 | `auth/login-form.tsx` | 3 | ✅ Mostly OK |
-| `auth/forgot-password-form.tsx` | 1 | ✅ Mostly OK |
+| `auth/forgot-password-form.tsx` | 1 | ✅ DONE (Now calls API, Cyberpunk styled) |
 
 ### 4.3 Onboarding Components
 
@@ -288,7 +288,7 @@ All foundational UI components have been updated to Cyberpunk Design System v3.
 | `app/team/page.tsx` | 10 | ✅ DONE |
 | `app/reset-password/page.tsx` | 9 | ✅ DONE |
 | `app/pricing/launch/page.tsx` | 8 | ✅ DONE |
-| `app/account-recovery/account-recovery-client.tsx` | 2 | ✅ DONE |
+| `app/account-recovery/page.tsx` | 3 | ✅ DONE (Redirects to /forgot-password) |
 | `app/auth/device-approval/page.tsx` | 7 | ✅ DONE |
 | `app/custom-agents/page.tsx` | 7 | ✅ DONE |
 
@@ -338,7 +338,7 @@ All foundational UI components have been updated to Cyberpunk Design System v3.
 | `app/pricing/page.tsx` | 2 | ✅ DONE |
 | `app/pricing/accelerator/page.tsx` | 2 | ⬜ TODO |
 | `app/templates/[templateSlug]/page.tsx` | 2 | ⬜ TODO |
-| `app/forgot-password/page.tsx` | 2 | ⬜ TODO |
+| `app/forgot-password/page.tsx` | 2 | ✅ DONE |
 | `app/register/page.tsx` | 2 | ✅ DONE |
 | `app/login/page.tsx` | 1 | ✅ DONE |
 | `app/user/page.tsx` | 1 | ⬜ TODO |

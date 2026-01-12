@@ -70,7 +70,7 @@ export default function ResetPasswordPage() {
       if (response.ok) {
         setMessage('Password reset successful. Redirecting to login...')
         setTimeout(() => {
-          router.push('/signin')
+          router.push('/login')
         }, 2000)
       } else {
         setError(data.error || 'Password reset failed. Please try again.')
@@ -185,7 +185,7 @@ export default function ResetPasswordPage() {
             )}
 
             <div className="mt-6 text-center">
-              <Link href="/signin" className="text-sm text-neon-cyan hover:text-neon-purple font-mono transition-colors">
+              <Link href="/login" className="text-sm text-neon-cyan hover:text-neon-purple font-mono transition-colors">
                 Back to login
               </Link>
             </div>

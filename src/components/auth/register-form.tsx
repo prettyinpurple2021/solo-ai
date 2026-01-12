@@ -17,13 +17,24 @@ export function RegisterForm() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsPending(true);
     setError(null);
+    setPasswordError(null);
 
     const formData = new FormData(event.currentTarget);
+    const password = formData.get('password') as string;
+    const confirmPassword = formData.get('confirmPassword') as string;
+    
+    // Validate password confirmation
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      setIsPending(false);
+      return;
+    }
     
     try {
       const result = await registerUser(null, formData);
@@ -36,7 +47,7 @@ export function RegisterForm() {
 
       const logIn = await signIn('credentials', {
         email: formData.get('email') as string,
-        password: formData.get('password') as string,
+        password: password,
         redirect: false,
       });
 
@@ -64,42 +75,45 @@ export function RegisterForm() {
          <form onSubmit={onSubmit} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="firstName" className="text-pink-400 font-mono uppercase text-xs">First Name</Label>
-                <Input id="firstName" name="firstName" required className="bg-black/50 border-white/10 focus:border-pink-500/50" />
+                <Label htmlFor="firstName" className="text-neon-purple font-mono uppercase text-xs tracking-wider">First Name</Label>
+                <Input id="firstName" name="firstName" required className="bg-dark-bg/50 border-white/10 text-white focus:border-neon-purple focus:ring-neon-purple/20 transition-all font-mono" />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="lastName" className="text-pink-400 font-mono uppercase text-xs">Last Name</Label>
-                <Input id="lastName" name="lastName" required className="bg-black/50 border-white/10 focus:border-pink-500/50" />
+                <Label htmlFor="lastName" className="text-neon-purple font-mono uppercase text-xs tracking-wider">Last Name</Label>
+                <Input id="lastName" name="lastName" required className="bg-dark-bg/50 border-white/10 text-white focus:border-neon-purple focus:ring-neon-purple/20 transition-all font-mono" />
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="dateOfBirth" className="text-pink-400 font-mono uppercase text-xs">Date of Birth (18+)</Label>
-              <Input id="dateOfBirth" name="dateOfBirth" type="date" required className="bg-black/50 border-white/10 focus:border-pink-500/50 text-white" />
+              <Label htmlFor="dateOfBirth" className="text-neon-purple font-mono uppercase text-xs tracking-wider">Date of Birth (18+)</Label>
+              <Input id="dateOfBirth" name="dateOfBirth" type="date" required className="bg-dark-bg/50 border-white/10 text-white focus:border-neon-purple focus:ring-neon-purple/20 transition-all font-mono" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-pink-400 font-mono uppercase text-xs">Email Address</Label>
-              <Input id="email" name="email" type="email" required className="bg-black/50 border-white/10 focus:border-pink-500/50" />
+              <Label htmlFor="email" className="text-neon-purple font-mono uppercase text-xs tracking-wider">Email Address</Label>
+              <Input id="email" name="email" type="email" required className="bg-dark-bg/50 border-white/10 text-white focus:border-neon-purple focus:ring-neon-purple/20 transition-all font-mono" />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-pink-400 font-mono uppercase text-xs">Password</Label>
-              <Input id="password" name="password" type="password" required minLength={8} className="bg-black/50 border-white/10 focus:border-pink-500/50" />
+              <Label htmlFor="password" className="text-neon-purple font-mono uppercase text-xs tracking-wider">Password</Label>
+              <Input id="password" name="password" type="password" required minLength={8} className="bg-dark-bg/50 border-white/10 text-white focus:border-neon-purple focus:ring-neon-purple/20 transition-all font-mono" />
               <p className="text-[10px] text-gray-500 font-mono">Must be 8+ characters.</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword" className="text-pink-400 font-mono uppercase text-xs">Confirm Password</Label>
-              <Input id="confirmPassword" name="confirmPassword" type="password" required minLength={8} className="bg-black/50 border-white/10 focus:border-pink-500/50" />
+              <Label htmlFor="confirmPassword" className="text-neon-purple font-mono uppercase text-xs tracking-wider">Confirm Password</Label>
+              <Input id="confirmPassword" name="confirmPassword" type="password" required minLength={8} className="bg-dark-bg/50 border-white/10 text-white focus:border-neon-purple focus:ring-neon-purple/20 transition-all font-mono" />
+              {passwordError && (
+                <p className="text-xs text-neon-magenta font-mono">{passwordError}</p>
+              )}
             </div>
 
             <div className="flex items-start gap-3 pt-2">
               <div className="flex items-center h-5">
-                <Checkbox id="terms" name="terms" required className="border-pink-500 data-[state=checked]:bg-pink-600" />
+                <Checkbox id="terms" name="terms" required className="border-neon-purple data-[state=checked]:bg-neon-purple" />
               </div>
-              <Label htmlFor="terms" className="text-sm font-normal text-gray-400 leading-tight">
-                I agree to the <Link href="/terms" className="text-pink-400 hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-pink-400 hover:underline">Privacy Policy</Link>.
+              <Label htmlFor="terms" className="text-sm font-normal text-gray-400 leading-tight font-mono">
+                I agree to the <Link href="/terms" className="text-neon-purple hover:text-neon-magenta transition-colors underline">Terms of Service</Link> and <Link href="/privacy" className="text-neon-purple hover:text-neon-magenta transition-colors underline">Privacy Policy</Link>.
               </Label>
             </div>
 
@@ -107,8 +121,23 @@ export function RegisterForm() {
               <Alert variant="error" description={error} />
             )}
 
-            <PrimaryButton className="w-full btn-boss bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 border-none mt-4" disabled={isPending}>
-              {isPending ? <Loader2 className="animate-spin mr-2" /> : 'Register Now V2'}
+            <PrimaryButton 
+              variant="purple"
+              size="lg"
+              className="w-full shadow-[0_0_15px_rgba(179,0,255,0.3)] font-orbitron uppercase tracking-wider" 
+              disabled={isPending}
+              type="submit"
+            >
+              {isPending ? (
+                <span className="flex items-center gap-2">
+                  <Loader2 className="animate-spin h-4 w-4" />
+                  Creating Account...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center gap-2 tracking-widest uppercase">
+                  Create Account
+                </span>
+              )}
             </PrimaryButton>
          </form>
 
