@@ -91,13 +91,13 @@ export function BragBankTemplate() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Brag Bank Template</h3>
+        <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">Brag Bank Template</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-48"
+            className="w-48 bg-dark-card border-gray-700 text-white placeholder:text-gray-500"
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
@@ -106,8 +106,8 @@ export function BragBankTemplate() {
         </div>
       </div>
 
-      <div className="bg-chart-4/10 p-4 rounded-lg border border-chart-4/20">
-        <p className="text-sm text-chart-4">
+      <div className="bg-dark-card p-4 rounded-sm border border-neon-cyan shadow-[0_0_15px_rgba(11,228,236,0.2)]">
+        <p className="text-sm text-neon-cyan font-mono">
           <Star className="w-4 h-4 inline mr-2" />
           Store your wins, praise, and accomplishments here. Perfect for updating your portfolio, pitch decks, or when you need a confidence boost!
         </p>
@@ -115,7 +115,7 @@ export function BragBankTemplate() {
 
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h4 className="text-md font-medium">Your Accomplishments</h4>
+          <h4 className="text-md font-orbitron font-bold uppercase tracking-wider text-white">Your Accomplishments</h4>
           <Button onClick={addEntry} variant="outline" size="sm">
             <Plus className="w-4 h-4 mr-2" />
             Add Entry
@@ -123,10 +123,10 @@ export function BragBankTemplate() {
         </div>
 
         {entries.map((entry, index) => (
-          <Card key={index}>
+          <Card key={index} className="bg-dark-card border-gray-700">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-sm">Entry #{index + 1}</CardTitle>
+                <CardTitle className="text-sm font-mono font-bold text-white">Entry #{index + 1}</CardTitle>
                 <div className="flex gap-2">
                   <Button
                     variant="ghost"
@@ -154,7 +154,7 @@ export function BragBankTemplate() {
                   <Label htmlFor={`entry-type-${index}`}>Type</Label>
                   <select
                     id={`entry-type-${index}`}
-                    className="w-full p-2 border rounded-md"
+                    className="w-full p-2 border border-gray-700 rounded-sm bg-dark-card text-white font-mono"
                     value={entry.type}
                     onChange={(e) => updateEntry(index, 'type', e.target.value)}
                     aria-label="Select entry type"
@@ -225,7 +225,7 @@ export function BragBankTemplate() {
                     }
                   }}
                 />
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-gray-500 font-mono mt-1">
                   Suggested: client-work, social-media, speaking, awards, revenue, team, product
                 </p>
               </div>
@@ -235,21 +235,21 @@ export function BragBankTemplate() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
+        <Card className="bg-dark-card border-gray-700">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Total Entries</CardTitle>
+            <CardTitle className="text-sm font-mono font-bold text-white">Total Entries</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{entries.length}</div>
+            <div className="text-2xl font-bold text-neon-cyan font-mono">{entries.length}</div>
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="bg-dark-card border-gray-700">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">This Month</CardTitle>
+            <CardTitle className="text-sm font-mono font-bold text-white">This Month</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-neon-cyan font-mono">
               {entries.filter(e => {
                 const entryDate = new Date(e.date);
                 const now = new Date();
@@ -259,12 +259,12 @@ export function BragBankTemplate() {
           </CardContent>
         </Card>
         
-        <Card>
+        <Card className="bg-dark-card border-gray-700">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Categories</CardTitle>
+            <CardTitle className="text-sm font-mono font-bold text-white">Categories</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-2xl font-bold text-neon-cyan font-mono">
               {new Set(entries.map(e => e.type)).size}
             </div>
           </CardContent>

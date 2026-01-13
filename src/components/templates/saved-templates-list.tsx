@@ -85,20 +85,20 @@ export function SavedTemplatesList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold boss-text-gradient">Saved Templates</h3>
-        <span className="text-sm text-muted-foreground">{savedTemplates.length} templates</span>
+        <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">Saved Templates</h3>
+        <span className="text-sm text-gray-500 font-mono">{savedTemplates.length} templates</span>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {savedTemplates.map((template) => (
-          <Card key={template.id} className="boss-card">
+          <Card key={template.id} className="bg-dark-card border-gray-700">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">{getTemplateIcon(template.template_slug)}</span>
                   <div>
-                    <CardTitle className="text-base gradient-text-secondary">{template.title}</CardTitle>
-                    <p className="text-sm text-muted-foreground">
+                    <CardTitle className="text-base font-mono font-bold text-white">{template.title}</CardTitle>
+                    <p className="text-sm text-gray-500 font-mono">
                       {formatDate(template.created_at)}
                     </p>
                   </div>
@@ -107,7 +107,7 @@ export function SavedTemplatesList() {
             </CardHeader>
             <CardContent className="pt-0">
               {template.description && (
-                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                <p className="text-sm text-gray-500 font-mono mb-3 line-clamp-2">
                   {template.description}
                 </p>
               )}
@@ -124,15 +124,15 @@ export function SavedTemplatesList() {
                       View
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-dark-card border-gray-700">
                     <DialogHeader>
-                      <DialogTitle className="boss-text-gradient">{template.title}</DialogTitle>
-                      <DialogDescription>
+                      <DialogTitle className="font-orbitron font-bold uppercase tracking-wider text-white">{template.title}</DialogTitle>
+                      <DialogDescription className="text-gray-500 font-mono">
                         Template data from {formatDate(template.created_at)}
                       </DialogDescription>
                     </DialogHeader>
                     <div className="space-y-4">
-                      <pre className="bg-muted p-4 rounded text-sm overflow-x-auto">
+                      <pre className="bg-dark-bg border border-gray-700 p-4 rounded-sm text-sm overflow-x-auto text-gray-300 font-mono">
                         {JSON.stringify(template.template_data, null, 2)}
                       </pre>
                     </div>

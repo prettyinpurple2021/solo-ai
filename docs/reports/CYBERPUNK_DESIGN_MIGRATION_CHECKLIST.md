@@ -408,16 +408,16 @@ All foundational UI components have been updated to Cyberpunk Design System v3.
 |------|------------|-------------|--------|
 | `templates/vision-board-generator.tsx` | 1 | 5 | ✅ DONE |
 | `templates/viral-hook-generator.tsx` | 2 | 5 | ✅ DONE |
-| `templates/brag-bank-template.tsx` | 1 | 5 | ⬜ TODO |
-| `templates/quarterly-biz-review.tsx` | - | 5 | ⬜ TODO |
-| `templates/offer-comparison-matrix.tsx` | - | 5 | ⬜ TODO |
-| `templates/dm-sales-script-generator.tsx` | - | 5 | ⬜ TODO |
-| `templates/live-launch-tracker.tsx` | 1 | 4 | ⬜ TODO |
-| `templates/founder-feelings-tracker.tsx` | - | 4 | ⬜ TODO |
-| `templates/base-template.tsx` | 4 | - | ⬜ TODO |
-| `templates/i-hate-this-tracker.tsx` | - | 2 | ⬜ TODO |
-| `templates/delegation-list-builder.tsx` | - | 2 | ⬜ TODO |
-| `templates/saved-templates-list.tsx` | 1 border | - | ⬜ TODO |
+| `templates/brag-bank-template.tsx` | 1 | 5 | ✅ DONE |
+| `templates/quarterly-biz-review.tsx` | - | 5 | ✅ DONE |
+| `templates/offer-comparison-matrix.tsx` | - | 5 | ✅ DONE |
+| `templates/dm-sales-script-generator.tsx` | - | 5 | ✅ DONE |
+| `templates/live-launch-tracker.tsx` | 1 | 4 | ✅ DONE |
+| `templates/founder-feelings-tracker.tsx` | - | 4 | ✅ DONE |
+| `templates/base-template.tsx` | 4 | - | ✅ DONE |
+| `templates/i-hate-this-tracker.tsx` | - | 2 | ✅ DONE |
+| `templates/delegation-list-builder.tsx` | - | 2 | ✅ DONE |
+| `templates/saved-templates-list.tsx` | 1 border | - | ✅ DONE |
 
 ---
 
@@ -427,7 +427,7 @@ All foundational UI components have been updated to Cyberpunk Design System v3.
 
 | File | Violations | Placeholder | Status |
 |------|------------|-------------|--------|
-| `intelligence/intelligence-results.tsx` | 22 + 1 border | 1 | ⬜ TODO |
+| `intelligence/intelligence-results.tsx` | 22 + 1 border | 1 | ✅ DONE |
 | `intelligence/intelligence-search.tsx` | 9 + 2 hover | 7 | ⬜ TODO |
 | `intelligence/briefing-dashboard.tsx` | 7 | - | ⬜ TODO |
 | `intelligence/agent-briefing-dashboard.tsx` | 5 | - | ⬜ TODO |

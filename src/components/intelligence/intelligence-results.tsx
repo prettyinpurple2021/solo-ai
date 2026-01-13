@@ -128,17 +128,17 @@ const sourceTypeIcons = {
 }
 
 const importanceColors = {
-  low: 'bg-green-100 text-green-800 border-green-200',
-  medium: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-  high: 'bg-orange-100 text-orange-800 border-orange-200',
-  critical: 'bg-red-100 text-red-800 border-red-200',
+  low: 'bg-dark-card text-neon-lime border-neon-lime',
+  medium: 'bg-dark-card text-neon-orange border-neon-orange',
+  high: 'bg-dark-card text-neon-orange border-neon-orange',
+  critical: 'bg-dark-card text-neon-magenta border-neon-magenta',
 }
 
 const threatLevelColors = {
-  low: 'bg-green-100 text-green-800',
-  medium: 'bg-yellow-100 text-yellow-800',
-  high: 'bg-orange-100 text-orange-800',
-  critical: 'bg-red-100 text-red-800',
+  low: 'bg-dark-card text-neon-lime',
+  medium: 'bg-dark-card text-neon-orange',
+  high: 'bg-dark-card text-neon-orange',
+  critical: 'bg-dark-card text-neon-magenta',
 }
 
 const agentColors: Record<string, string> = {
@@ -207,11 +207,11 @@ export function IntelligenceResults({
 
   const getUrgencyColor = (urgency: string) => {
     switch (urgency) {
-      case 'critical': return 'text-red-600 bg-red-100'
-      case 'high': return 'text-orange-600 bg-orange-100'
-      case 'medium': return 'text-yellow-600 bg-yellow-100'
-      case 'low': return 'text-green-600 bg-green-100'
-      default: return 'text-gray-600 bg-gray-100'
+      case 'critical': return 'text-neon-magenta bg-dark-card'
+      case 'high': return 'text-neon-orange bg-dark-card'
+      case 'medium': return 'text-neon-orange bg-dark-card'
+      case 'low': return 'text-neon-lime bg-dark-card'
+      default: return 'text-gray-500 bg-dark-card'
     }
   }
 
@@ -269,7 +269,7 @@ export function IntelligenceResults({
           {/* Bulk Actions */}
           {selectedItems.length > 0 && (
             <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">
+              <span className="text-sm text-gray-500 font-mono">
                 {selectedItems.length} selected
               </span>
               <Button
@@ -350,7 +350,7 @@ export function IntelligenceResults({
                 <BossCard
                   variant="default"
                   interactive
-                  className={`${isSelected ? 'ring-2 ring-purple-500 bg-purple-50 dark:bg-purple-900/20' : ''}`}
+                  className={`${isSelected ? 'ring-2 ring-neon-purple bg-dark-card' : ''}`}
                 >
                   <div className="space-y-4">
                     {/* Header */}
@@ -394,7 +394,7 @@ export function IntelligenceResults({
 
                           {/* Content Preview */}
                           {item.extractedData.content && (
-                            <p className="text-gray-700 dark:text-gray-300 line-clamp-2">
+                            <p className="text-gray-300 font-mono line-clamp-2">
                               {item.extractedData.content}
                             </p>
                           )}
@@ -466,14 +466,14 @@ export function IntelligenceResults({
                           </h5>
                           
                           {item.analysisResults.slice(0, 2).map((analysis, idx) => (
-                            <div key={idx} className="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 space-y-2">
+                            <div key={idx} className="bg-dark-card border border-gray-700 rounded-sm p-3 space-y-2">
                               <div className="flex items-center justify-between">
-                                <span className={`font-medium capitalize ${agentColors[analysis.agentId] || 'text-gray-600'}`}>
+                                <span className={`font-mono font-bold capitalize ${agentColors[analysis.agentId] || 'text-gray-500'}`}>
                                   {analysis.agentId}
                                 </span>
                                 <div className="flex items-center gap-2">
                                   <Progress value={analysis.confidence * 100} className="w-16 h-2" />
-                                  <span className="text-xs text-gray-500">
+                                  <span className="text-xs text-gray-500 font-mono">
                                     {Math.round(analysis.confidence * 100)}%
                                   </span>
                                 </div>
@@ -518,8 +518,8 @@ export function IntelligenceResults({
                     )}
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-gray-700">
-                      <div className="flex items-center gap-4 text-sm text-gray-500">
+                    <div className="flex items-center justify-between pt-2 border-t border-gray-700">
+                      <div className="flex items-center gap-4 text-sm text-gray-500 font-mono">
                         <div className="flex items-center gap-1">
                           <Clock className="w-4 h-4" />
                           <span>{formatTimeAgo(item.collectedAt)}</span>
@@ -571,7 +571,7 @@ export function IntelligenceResults({
       {pagination.totalPages > 1 && (
         <EmpowermentCard>
           <div className="flex items-center justify-between">
-            <div className="text-sm text-gray-600 dark:text-gray-400">
+            <div className="text-sm text-gray-500 font-mono">
               Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
               {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
               {pagination.total.toLocaleString()} results

@@ -73,9 +73,9 @@ export default function BaseTemplate({
   const progressPercentage = showProgress ? (currentStep / totalSteps) * 100 : 0
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 ${className}`}>
+    <div className={`min-h-screen bg-dark-bg ${className}`}>
       {/* Header Section */}
-      <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b">
+      <div className="sticky top-0 z-40 bg-dark-card/80 backdrop-blur-md border-b border-gray-700">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Back & Title */}
@@ -86,10 +86,10 @@ export default function BaseTemplate({
                 </BossButton>
               </Link>
               <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <h1 className="text-2xl font-orbitron font-bold uppercase tracking-wider text-white">
                   {template.title}
                 </h1>
-                <p className="text-sm text-gray-600">{template.category}</p>
+                <p className="text-sm text-gray-500 font-mono">{template.category}</p>
               </div>
             </div>
 
@@ -139,13 +139,13 @@ export default function BaseTemplate({
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+              <div className="flex items-center justify-between text-sm text-gray-500 font-mono mb-2">
                 <span>Step {currentStep} of {totalSteps}</span>
                 <span>{Math.round(progressPercentage)}% Complete</span>
               </div>
               <Progress 
                 value={progressPercentage} 
-                className="h-2 bg-gradient-to-r from-purple-200 to-pink-200"
+                className="h-2 bg-gray-800"
               />
             </motion.div>
           )}
@@ -153,7 +153,7 @@ export default function BaseTemplate({
           {/* Save Status */}
           {lastSaved && (
             <motion.p 
-              className="text-xs text-green-600 mt-2"
+              className="text-xs text-neon-lime font-mono mt-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
             >
@@ -172,11 +172,11 @@ export default function BaseTemplate({
           transition={{ duration: 0.6 }}
         >
           {/* Template Description Card */}
-          <BossCard className="mb-8" variant="empowerment">
+          <BossCard className="mb-8 bg-dark-card border-gray-700" variant="empowerment">
             <div className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
-                  <p className="text-gray-700 leading-relaxed mb-4">
+                  <p className="text-gray-300 leading-relaxed mb-4 font-mono">
                     {template.description}
                   </p>
                   <div className="flex items-center gap-2 flex-wrap">
@@ -199,7 +199,7 @@ export default function BaseTemplate({
                   }}
                   className="ml-4"
                 >
-                  <Crown className="w-8 h-8 text-purple-500" />
+                  <Crown className="w-8 h-8 text-neon-purple" />
                 </motion.div>
               </div>
             </div>

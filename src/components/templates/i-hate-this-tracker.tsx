@@ -41,15 +41,15 @@ export function IHateThisTracker() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5 text-chart-5" />
-          <h3 className="text-lg font-semibold">&quot;I Hate This&quot; Tracker</h3>
+          <AlertTriangle className="w-5 h-5 text-neon-magenta" />
+          <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">&quot;I Hate This&quot; Tracker</h3>
         </div>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-48"
+            className="w-48 bg-dark-card border-gray-700 text-white placeholder:text-gray-500"
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
@@ -70,16 +70,16 @@ export function IHateThisTracker() {
       
       <div className="space-y-2">
         {items.length === 0 ? (
-          <p className="text-muted-foreground text-center py-8">No energy drainers tracked yet. Add your first one above!</p>
+          <p className="text-gray-500 font-mono text-center py-8">No energy drainers tracked yet. Add your first one above!</p>
         ) : (
           items.map((item, index) => (
-            <div key={index} className="flex items-center space-x-2 p-2 border rounded bg-chart-5/10">
-              <span className="flex-1">{item}</span>
+            <div key={index} className="flex items-center space-x-2 p-2 border border-neon-magenta rounded-sm bg-dark-card shadow-[0_0_15px_rgba(255,0,110,0.2)]">
+              <span className="flex-1 text-white font-mono">{item}</span>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => removeItem(index)}
-                className="text-chart-5 hover:text-chart-5/80"
+                className="text-neon-magenta hover:text-neon-magenta/80"
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
@@ -89,8 +89,8 @@ export function IHateThisTracker() {
       </div>
 
       {items.length > 0 && (
-        <div className="flex justify-between items-center pt-4 border-t">
-          <div className="text-sm text-muted-foreground">
+        <div className="flex justify-between items-center pt-4 border-t border-gray-700">
+          <div className="text-sm text-gray-500 font-mono">
             {items.length} energy-draining activities tracked
           </div>
           <Button variant="outline" onClick={handleSave} disabled={isSaving}>

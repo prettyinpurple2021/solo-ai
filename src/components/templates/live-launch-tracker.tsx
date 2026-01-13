@@ -84,15 +84,15 @@ export function LiveLaunchTracker() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Rocket className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold">Live Launch Tracker</h3>
+          <Rocket className="w-5 h-5 text-neon-cyan" />
+          <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">Live Launch Tracker</h3>
         </div>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-48"
+            className="w-48 bg-dark-card border-gray-700 text-white placeholder:text-gray-500"
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
@@ -135,12 +135,12 @@ export function LiveLaunchTracker() {
             />
           </div>
 
-          <div className="text-center p-4 bg-primary/10 rounded-lg">
-            <div className="text-2xl font-bold text-primary">{completedCount}/{tasks.length}</div>
-            <div className="text-sm text-muted-foreground">Tasks Completed</div>
-            <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
+          <div className="text-center p-4 bg-dark-card border border-neon-cyan rounded-sm shadow-[0_0_15px_rgba(11,228,236,0.2)]">
+            <div className="text-2xl font-bold text-neon-cyan font-mono">{completedCount}/{tasks.length}</div>
+            <div className="text-sm text-gray-500 font-mono">Tasks Completed</div>
+            <div className="w-full bg-gray-800 rounded-full h-2 mt-2">
               <div 
-                className="bg-primary h-2 rounded-full transition-all duration-300" 
+                className="bg-neon-cyan h-2 rounded-full transition-all duration-300" 
                 style={{ width: `${progressPercentage}%` }}
               />
             </div>
@@ -157,7 +157,7 @@ export function LiveLaunchTracker() {
 
           <div className="space-y-3">
             {tasks.map((task, index) => (
-              <Card key={index} className={task.completed ? 'border-green-200 bg-green-50' : ''}>
+              <Card key={index} className={task.completed ? 'border-neon-lime bg-dark-card shadow-[0_0_15px_rgba(57,255,20,0.2)]' : 'bg-dark-card border-gray-700'}>
                 <CardHeader className="pb-2">
                   <div className="flex items-center gap-3">
                     <Checkbox
@@ -166,15 +166,15 @@ export function LiveLaunchTracker() {
                     />
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4 text-muted-foreground" />
-                        <span className="font-medium">Day {task.day}</span>
-                        <Badge variant="outline">{task.platform}</Badge>
-                        {task.completed && <CheckCircle className="w-4 h-4 text-green-600" />}
+                        <Calendar className="w-4 h-4 text-gray-500" />
+                        <span className="font-mono font-bold text-white">Day {task.day}</span>
+                        <Badge variant="outline" className="border-gray-700 text-gray-300">{task.platform}</Badge>
+                        {task.completed && <CheckCircle className="w-4 h-4 text-neon-lime" />}
                       </div>
                       <Input
                         value={task.task}
                         onChange={(e) => updateTask(index, 'task', e.target.value)}
-                        className="font-medium border-none p-0 h-auto mt-1"
+                        className="font-mono font-bold border-none p-0 h-auto mt-1 bg-transparent text-white"
                       />
                     </div>
                   </div>
@@ -183,7 +183,7 @@ export function LiveLaunchTracker() {
                   <Textarea
                     value={task.description}
                     onChange={(e) => updateTask(index, 'description', e.target.value)}
-                    className="text-sm border-none p-0 resize-none"
+                    className="text-sm border-none p-0 resize-none bg-transparent text-gray-300 font-mono"
                     rows={2}
                   />
                 </CardContent>

@@ -121,15 +121,15 @@ export function OfferComparisonMatrix() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Grid3X3 className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold">Offer Comparison Matrix</h3>
+          <Grid3X3 className="w-5 h-5 text-neon-cyan" />
+          <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">Offer Comparison Matrix</h3>
         </div>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-48"
+            className="w-48 bg-dark-card border-gray-700 text-white placeholder:text-gray-500"
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
@@ -150,14 +150,14 @@ export function OfferComparisonMatrix() {
           </Button>
         </div>
 
-        <Card>
+        <Card className="bg-dark-card border-gray-700">
           <CardHeader>
-            <CardTitle>Package Details</CardTitle>
+            <CardTitle className="font-orbitron font-bold uppercase tracking-wider text-white">Package Details</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid gap-4 md:grid-cols-3">
               {offers.map((offer, index) => (
-                <div key={index} className="space-y-2 p-3 border rounded">
+                <div key={index} className="space-y-2 p-3 border border-gray-700 rounded-sm bg-dark-bg">
                   <div className="flex items-center justify-between">
                     <Badge variant="outline">Package {index + 1}</Badge>
                     {offers.length > 1 && (
@@ -191,20 +191,20 @@ export function OfferComparisonMatrix() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-dark-card border-gray-700">
           <CardHeader>
-            <CardTitle>Comparison Matrix</CardTitle>
+            <CardTitle className="font-orbitron font-bold uppercase tracking-wider text-white">Comparison Matrix</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-[200px]">Feature</TableHead>
+                  <TableRow className="border-gray-700">
+                    <TableHead className="w-[200px] font-mono font-bold text-white">Feature</TableHead>
                     {offers.map((offer, index) => (
-                      <TableHead key={index} className="text-center">
-                        <div className="font-medium">{offer.name}</div>
-                        <div className="text-sm text-muted-foreground">{offer.price}</div>
+                      <TableHead key={index} className="text-center border-gray-700">
+                        <div className="font-mono font-bold text-white">{offer.name}</div>
+                        <div className="text-sm text-gray-500 font-mono">{offer.price}</div>
                       </TableHead>
                     ))}
                     <TableHead className="w-[50px]"></TableHead>
@@ -212,26 +212,26 @@ export function OfferComparisonMatrix() {
                 </TableHeader>
                 <TableBody>
                   {features.map((feature, featureIndex) => (
-                    <TableRow key={featureIndex}>
-                      <TableCell>
+                    <TableRow key={featureIndex} className="border-gray-700">
+                      <TableCell className="border-gray-700">
                         <Input
                           value={feature.name}
                           onChange={(e) => updateFeature(featureIndex, 'name', e.target.value)}
-                          className="border-none p-0 font-medium"
+                          className="border-none p-0 font-mono font-bold text-white bg-transparent"
                         />
                       </TableCell>
                       {feature.values.map((value, valueIndex) => (
-                        <TableCell key={valueIndex} className="text-center">
+                        <TableCell key={valueIndex} className="text-center border-gray-700">
                           <div className="flex items-center justify-center">
                             {isCheckValue(value) ? (
-                              <Check className="w-5 h-5 text-green-600" />
+                              <Check className="w-5 h-5 text-neon-lime" />
                             ) : isXValue(value) ? (
-                              <X className="w-5 h-5 text-red-600" />
+                              <X className="w-5 h-5 text-neon-magenta" />
                             ) : (
                               <Input
                                 value={value}
                                 onChange={(e) => updateFeatureValue(featureIndex, valueIndex, e.target.value)}
-                                className="text-center border-none p-1 h-8"
+                                className="text-center border-none p-1 h-8 bg-dark-bg text-white font-mono placeholder:text-gray-500"
                                 placeholder="Enter value"
                               />
                             )}
@@ -253,7 +253,7 @@ export function OfferComparisonMatrix() {
               </Table>
             </div>
             
-            <div className="mt-4 text-sm text-muted-foreground">
+            <div className="mt-4 text-sm text-gray-500 font-mono">
               <p><strong>Tip:</strong> Type &quot;✓&quot;, &quot;yes&quot;, or &quot;included&quot; for checkmarks. Type &quot;✗&quot;, &quot;no&quot;, or &quot;not included&quot; for X marks.</p>
             </div>
           </CardContent>

@@ -41,13 +41,13 @@ export function DelegationListBuilder() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Delegation List Builder</h3>
+        <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">Delegation List Builder</h3>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-48"
+            className="w-48 bg-dark-card border-gray-700 text-white placeholder:text-gray-500"
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
@@ -68,10 +68,10 @@ export function DelegationListBuilder() {
       
       <div className="space-y-2">
         {tasks.length === 0 ? (
-          <p className="text-muted-foreground text-center py-8">No tasks yet. Add your first task above!</p>
+          <p className="text-gray-500 font-mono text-center py-8">No tasks yet. Add your first task above!</p>
         ) : (
           tasks.map((task, index) => (
-            <div key={index} className="flex items-center space-x-2 p-2 border rounded">
+            <div key={index} className="flex items-center space-x-2 p-2 border border-gray-700 rounded-sm bg-dark-card">
               <Checkbox
                 checked={task.done}
                 onCheckedChange={(checked) => {
@@ -80,7 +80,7 @@ export function DelegationListBuilder() {
                   setTasks(newTasks);
                 }}
               />
-              <span className={task.done ? 'line-through text-muted-foreground' : ''}>
+              <span className={task.done ? 'line-through text-gray-500 font-mono' : 'text-white font-mono'}>
                 {task.text}
               </span>
               <Button
@@ -97,8 +97,8 @@ export function DelegationListBuilder() {
       </div>
 
       {tasks.length > 0 && (
-        <div className="flex justify-between items-center pt-4 border-t">
-          <div className="text-sm text-muted-foreground">
+        <div className="flex justify-between items-center pt-4 border-t border-gray-700">
+          <div className="text-sm text-gray-500 font-mono">
             {tasks.filter(task => task.done).length} of {tasks.length} tasks completed
           </div>
           <Button variant="outline" onClick={handleSave} disabled={isSaving}>

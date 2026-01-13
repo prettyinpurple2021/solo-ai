@@ -45,15 +45,15 @@ export function QuarterlyBizReview() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold">Quarterly Business Review</h3>
+          <Calendar className="w-5 h-5 text-neon-cyan" />
+          <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">Quarterly Business Review</h3>
         </div>
         <div className="flex gap-2">
           <Input
             placeholder="Save as..."
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-48"
+            className="w-48 bg-dark-card border-gray-700 text-white placeholder:text-gray-500"
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
@@ -101,8 +101,8 @@ export function QuarterlyBizReview() {
         </div>
       </div>
 
-      <div className="flex justify-between items-center pt-4 border-t">
-        <div className="text-sm text-muted-foreground">
+      <div className="flex justify-between items-center pt-4 border-t border-gray-700">
+        <div className="text-sm text-gray-500 font-mono">
           Quarter {getCurrentQuarter()} Review
         </div>
         <Button onClick={handleSave} disabled={isSaving}>

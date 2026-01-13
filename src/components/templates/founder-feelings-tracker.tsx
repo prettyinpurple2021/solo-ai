@@ -96,13 +96,13 @@ export function FounderFeelingsTracker() {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Founder Feelings Tracker</h3>
+        <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">Founder Feelings Tracker</h3>
         <div className="flex items-center gap-2">
           <Input
             placeholder="Template title (optional)"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-48"
+            className="w-48 bg-dark-card border-gray-700 text-white placeholder:text-gray-500"
           />
           <Button onClick={handleSave} disabled={isSaving}>
             <Save className="w-4 h-4 mr-2" />
@@ -112,10 +112,10 @@ export function FounderFeelingsTracker() {
       </div>
 
       {/* Average Scores Display */}
-      <Card>
+      <Card className="bg-dark-card border-gray-700">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <TrendingDown className="w-5 h-5" />
+          <CardTitle className="flex items-center gap-2 font-orbitron font-bold uppercase tracking-wider text-white">
+            <TrendingDown className="w-5 h-5 text-neon-cyan" />
             Overall Averages
           </CardTitle>
         </CardHeader>
@@ -123,24 +123,24 @@ export function FounderFeelingsTracker() {
           <div className="grid grid-cols-3 gap-4">
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Zap className="w-4 h-4 text-yellow-500" />
-                <span className="font-medium">Energy</span>
+                <Zap className="w-4 h-4 text-neon-orange" />
+                <span className="font-mono font-bold text-white">Energy</span>
               </div>
-              <div className="text-2xl font-bold text-yellow-600">{averages.energy}/10</div>
+              <div className="text-2xl font-bold text-neon-orange font-mono">{averages.energy}/10</div>
             </div>
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Brain className="w-4 h-4 text-blue-500" />
-                <span className="font-medium">Focus</span>
+                <Brain className="w-4 h-4 text-neon-cyan" />
+                <span className="font-mono font-bold text-white">Focus</span>
               </div>
-              <div className="text-2xl font-bold text-blue-600">{averages.focus}/10</div>
+              <div className="text-2xl font-bold text-neon-cyan font-mono">{averages.focus}/10</div>
             </div>
             <div className="text-center">
               <div className="flex items-center justify-center gap-2 mb-2">
-                <Heart className="w-4 h-4 text-red-500" />
-                <span className="font-medium">Motivation</span>
+                <Heart className="w-4 h-4 text-neon-magenta" />
+                <span className="font-mono font-bold text-white">Motivation</span>
               </div>
-              <div className="text-2xl font-bold text-red-600">{averages.motivation}/10</div>
+              <div className="text-2xl font-bold text-neon-magenta font-mono">{averages.motivation}/10</div>
             </div>
           </div>
         </CardContent>
@@ -149,10 +149,10 @@ export function FounderFeelingsTracker() {
       {/* Entries */}
       <div className="space-y-4">
         {entries.map((entry, index) => (
-          <Card key={index}>
+          <Card key={index} className="bg-dark-card border-gray-700">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">Entry {index + 1}</CardTitle>
+                <CardTitle className="text-lg font-mono font-bold text-white">Entry {index + 1}</CardTitle>
                 <Button 
                   variant="ghost" 
                   size="sm" 
