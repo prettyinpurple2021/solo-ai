@@ -142,14 +142,14 @@ const threatLevelColors = {
 }
 
 const agentColors: Record<string, string> = {
-  echo: 'text-pink-600',
-  blaze: 'text-orange-600',
-  nova: 'text-blue-600',
-  lexi: 'text-purple-600',
-  roxy: 'text-red-600',
-  glitch: 'text-green-600',
-  vex: 'text-indigo-600',
-  lumi: 'text-yellow-600',
+  echo: 'text-neon-purple',
+  blaze: 'text-neon-orange',
+  nova: 'text-neon-cyan',
+  lexi: 'text-neon-purple',
+  roxy: 'text-neon-magenta',
+  glitch: 'text-neon-lime',
+  vex: 'text-neon-purple',
+  lumi: 'text-neon-orange',
 }
 
 export function IntelligenceResults({
@@ -197,10 +197,10 @@ export function IntelligenceResults({
 
   const getInsightIcon = (type: string) => {
     switch (type) {
-      case 'opportunity': return <Target className="w-4 h-4 text-green-500" />
-      case 'threat': return <AlertTriangle className="w-4 h-4 text-red-500" />
-      case 'trend': return <TrendingUp className="w-4 h-4 text-blue-500" />
-      case 'recommendation': return <Lightbulb className="w-4 h-4 text-yellow-500" />
+      case 'opportunity': return <Target className="w-4 h-4 text-neon-lime" />
+      case 'threat': return <AlertTriangle className="w-4 h-4 text-neon-magenta" />
+      case 'trend': return <TrendingUp className="w-4 h-4 text-neon-cyan" />
+      case 'recommendation': return <Lightbulb className="w-4 h-4 text-neon-orange" />
       default: return <Activity className="w-4 h-4 text-gray-500" />
     }
   }
@@ -222,14 +222,14 @@ export function IntelligenceResults({
           <BossCard key={i} className="animate-pulse">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <div className="h-4 bg-gray-200 rounded w-1/3"></div>
-                <div className="h-6 bg-gray-200 rounded w-16"></div>
+                <div className="h-4 bg-gray-800 rounded-sm w-1/3"></div>
+                <div className="h-6 bg-gray-800 rounded-sm w-16"></div>
               </div>
-              <div className="h-3 bg-gray-200 rounded w-full"></div>
-              <div className="h-3 bg-gray-200 rounded w-2/3"></div>
+              <div className="h-3 bg-gray-800 rounded-sm w-full"></div>
+              <div className="h-3 bg-gray-800 rounded-sm w-2/3"></div>
               <div className="flex gap-2">
-                <div className="h-5 bg-gray-200 rounded w-12"></div>
-                <div className="h-5 bg-gray-200 rounded w-16"></div>
+                <div className="h-5 bg-gray-800 rounded-sm w-12"></div>
+                <div className="h-5 bg-gray-800 rounded-sm w-16"></div>
               </div>
             </div>
           </BossCard>
@@ -326,7 +326,7 @@ export function IntelligenceResults({
             <h3 className="text-2xl font-bold text-gradient mb-4">
               No intelligence data found
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
+            <p className="text-gray-500 font-mono mb-6">
               Try adjusting your search criteria or filters to find relevant intelligence data.
             </p>
             <BossButton onClick={() => window.location.reload()}>
@@ -402,14 +402,14 @@ export function IntelligenceResults({
                           {/* Key Insights */}
                           {item.extractedData.keyInsights && item.extractedData.keyInsights.length > 0 && (
                             <div className="space-y-1">
-                              <span className="text-sm font-medium text-gray-600 dark:text-gray-400">
+                              <span className="text-sm font-mono font-bold text-gray-500">
                                 Key Insights:
                               </span>
                               <div className="space-y-1">
                                 {item.extractedData.keyInsights.slice(0, 2).map((insight, idx) => (
-                                  <div key={idx} className="flex items-start gap-2 text-sm">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-purple-500 mt-2 flex-shrink-0" />
-                                    <span className="text-gray-700 dark:text-gray-300">{insight}</span>
+                                  <div key={idx} className="flex items-start gap-2 text-sm font-mono">
+                                    <div className="w-1.5 h-1.5 rounded-full bg-neon-purple mt-2 flex-shrink-0" />
+                                    <span className="text-gray-300">{insight}</span>
                                   </div>
                                 ))}
                                 {item.extractedData.keyInsights.length > 2 && (
@@ -447,7 +447,7 @@ export function IntelligenceResults({
                             <Edit className="w-4 h-4 mr-2" />
                             Edit Tags
                           </DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-600">
+                          <DropdownMenuItem className="text-neon-magenta">
                             <Trash2 className="w-4 h-4 mr-2" />
                             Delete
                           </DropdownMenuItem>
@@ -493,7 +493,7 @@ export function IntelligenceResults({
                                         {insight.urgency}
                                       </Badge>
                                     </div>
-                                    <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-1">
+                                    <p className="text-sm text-gray-500 font-mono line-clamp-1">
                                       {insight.description}
                                     </p>
                                   </div>
@@ -535,7 +535,7 @@ export function IntelligenceResults({
                             href={item.sourceUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                            className="flex items-center gap-1 text-neon-cyan hover:text-neon-cyan/80 font-mono"
                           >
                             <ExternalLink className="w-4 h-4" />
                             Source
