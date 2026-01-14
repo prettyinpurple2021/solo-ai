@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
@@ -54,6 +54,9 @@ export default function SettingsPage() {
   const [isDeleting, setIsDeleting] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [activeTab, setActiveTab] = useState('profile')
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
+  const [deleteConfirmText, setDeleteConfirmText] = useState('')
+  const [deletePassword, setDeletePassword] = useState('')
 
   const [formData, setFormData] = useState({
     displayName: (user as any)?.name || "",
@@ -84,12 +87,56 @@ export default function SettingsPage() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
+  useEffect(() => {
+    if (!user) return
+    setFormData((prev) => ({
+      ...prev,
+      displayName: (user as any)?.name || prev.displayName || "",
+      email: user?.email || prev.email || "",
+    }))
+  }, [user])
+
+  useEffect(() => {
+    if (loading || !user) return
+
+    // Hydrate saved preferences (privacy + notification toggles)
+    const loadPreferences = async () => {
+      try {
+        const res = await fetch('/api/preferences')
+        if (!res.ok) return
+        const data = await res.json().catch(() => ({}))
+        const prefs = data?.preferences || {}
+
+        const normalize = (val: unknown) => {
+          if (typeof val === 'string') {
+            try { return JSON.parse(val) } catch { return val }
+          }
+          return val
+        }
+
+        const savedNotificationSettings = normalize(prefs.notificationSettings)
+        if (savedNotificationSettings && typeof savedNotificationSettings === 'object') {
+          setNotificationSettings((prev) => ({ ...prev, ...(savedNotificationSettings as any) }))
+        }
+
+        const savedPrivacySettings = normalize(prefs.privacySettings)
+        if (savedPrivacySettings && typeof savedPrivacySettings === 'object') {
+          setPrivacySettings((prev) => ({ ...prev, ...(savedPrivacySettings as any) }))
+        }
+      } catch (err) {
+        logError('Failed to load preferences', err)
+      }
+    }
+
+    loadPreferences()
+  }, [loading, user])
+
   const handleSave = async () => {
     setIsLoading(true)
     try {
       // 1) Update basic profile (name/email-like display)
       const profileResponse = await fetch('/api/profile', {
-        method: 'PUT',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
@@ -103,7 +150,24 @@ export default function SettingsPage() {
         throw new Error(data.error || 'Failed to update profile information')
       }
 
-      // 2) If password fields are filled, change password via dedicated endpoint
+      // 2) Persist notification + privacy settings (so switches don't reset)
+      const prefResponse = await fetch('/api/preferences', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          preferences: {
+            notificationSettings,
+            privacySettings,
+          },
+        }),
+      })
+
+      if (!prefResponse.ok) {
+        const data = await prefResponse.json().catch(() => ({}))
+        throw new Error(data.error || 'Failed to save notification/privacy settings')
+      }
+
+      // 3) If password fields are filled, change password via dedicated endpoint
       if (formData.newPassword || formData.confirmPassword || formData.currentPassword) {
         if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
           throw new Error('Please fill out current, new, and confirmation password fields.')
@@ -148,14 +212,21 @@ export default function SettingsPage() {
   const handleDeleteAccount = async () => {
     setIsDeleting(true)
     try {
+      if (deleteConfirmText !== 'DELETE') {
+        throw new Error('Please type DELETE to confirm account deletion.')
+      }
+      if (!deletePassword) {
+        throw new Error('Password is required to delete account.')
+      }
+
       const response = await fetch('/api/auth/delete-account', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          password: formData.currentPassword,
-          confirmation: 'DELETE',
+          password: deletePassword,
+          confirmation: deleteConfirmText,
         }),
       })
 
@@ -420,7 +491,13 @@ export default function SettingsPage() {
                               <h5 className="text-white font-bold font-orbitron">Delete Account</h5>
                               <p className="text-gray-400 text-sm font-mono">Permanently delete your account and all data</p>
                             </div>
-                            <Dialog>
+                            <Dialog open={deleteDialogOpen} onOpenChange={(open) => {
+                              setDeleteDialogOpen(open)
+                              if (!open) {
+                                setDeleteConfirmText('')
+                                setDeletePassword('')
+                              }
+                            }}>
                               <DialogTrigger asChild>
                                 <CyberButton variant="ghost" size="sm" className="bg-neon-magenta hover:bg-neon-magenta/90 text-white">
                                   <Trash2 className="w-4 h-4 mr-2" />
@@ -434,12 +511,42 @@ export default function SettingsPage() {
                                     This action cannot be undone. This will permanently delete your account and remove your data from our servers.
                                   </DialogDescription>
                                 </DialogHeader>
+                                <div className="space-y-4 pt-2">
+                                  <div className="space-y-2">
+                                    <Label className="text-neon-magenta font-mono uppercase text-xs">Type DELETE to confirm</Label>
+                                    <Input
+                                      value={deleteConfirmText}
+                                      onChange={(e) => setDeleteConfirmText(e.target.value)}
+                                      placeholder="DELETE"
+                                      className="bg-dark-bg border-neon-magenta/30 text-white focus:border-neon-magenta font-mono"
+                                    />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Label className="text-neon-magenta font-mono uppercase text-xs">Password</Label>
+                                    <Input
+                                      type="password"
+                                      value={deletePassword}
+                                      onChange={(e) => setDeletePassword(e.target.value)}
+                                      placeholder="Enter your password"
+                                      className="bg-dark-bg border-neon-magenta/30 text-white focus:border-neon-magenta font-mono"
+                                    />
+                                  </div>
+                                  <p className="text-xs text-gray-400 font-mono">
+                                    This is to confirm you are the owner of this account.
+                                  </p>
+                                </div>
                                 <DialogFooter>
-                                  <CyberButton variant="ghost" className="border-neon-cyan/30 text-neon-cyan hover:bg-neon-cyan/10">Cancel</CyberButton>
+                                  <CyberButton
+                                    variant="ghost"
+                                    className="border-neon-cyan/30 text-neon-cyan hover:bg-neon-cyan/10"
+                                    onClick={() => setDeleteDialogOpen(false)}
+                                  >
+                                    Cancel
+                                  </CyberButton>
                                   <CyberButton
                                     variant="ghost"
                                     onClick={handleDeleteAccount}
-                                    disabled={isDeleting}
+                                    disabled={isDeleting || deleteConfirmText !== 'DELETE' || !deletePassword}
                                     className="bg-neon-magenta hover:bg-neon-magenta/90 text-white"
                                   >
                                     {isDeleting ? "Deleting..." : "Yes, delete account"}

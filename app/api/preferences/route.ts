@@ -2,6 +2,7 @@ import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } 
 import { NextRequest, NextResponse } from 'next/server'
 import { neon } from '@neondatabase/serverless'
 import * as jose from 'jose'
+import { authenticateRequest } from '@/lib/auth-server'
 
 // Edge runtime enabled after refactoring to jose and Neon HTTP
 export const runtime = 'edge'
@@ -26,7 +27,9 @@ async function getUserIdFromToken(request: NextRequest): Promise<string | null> 
       return null
     }
     const token = authHeader.substring(7)
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET!)
+    const jwtSecret = process.env.JWT_SECRET
+    if (!jwtSecret) return null
+    const secret = new TextEncoder().encode(jwtSecret)
     const { payload: decoded } = await jose.jwtVerify(token, secret)
     return (decoded?.userId as string) || null
   } catch {
@@ -34,10 +37,21 @@ async function getUserIdFromToken(request: NextRequest): Promise<string | null> 
   }
 }
 
+async function getUserId(request: NextRequest): Promise<string | null> {
+  // Prefer modern session/cookie auth (NextAuth). Fall back to legacy Bearer token for backward compatibility.
+  try {
+    const { user } = await authenticateRequest()
+    if (user?.id) return user.id
+  } catch {
+    // ignore and fall back
+  }
+  return await getUserIdFromToken(request)
+}
+
 export async function GET(req: NextRequest) {
   try {
     const sql = getSql()
-    const userId = await getUserIdFromToken(req)
+    const userId = await getUserId(req)
 
     // Get specific preference key from query params
     const url = new URL(req.url)
@@ -84,7 +98,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const sql = getSql()
-    const userId = await getUserIdFromToken(req)
+    const userId = await getUserId(req)
 
     if (!userId) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
@@ -150,7 +164,7 @@ export async function POST(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     const sql = getSql()
-    const userId = await getUserIdFromToken(req)
+    const userId = await getUserId(req)
 
     if (!userId) {
       return NextResponse.json({ error: 'Authentication required' }, { status: 401 })
