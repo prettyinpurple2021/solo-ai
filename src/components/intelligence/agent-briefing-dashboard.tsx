@@ -210,8 +210,8 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
                       className={`p-3 rounded-sm border cursor-pointer transition-colors ${
                         selectedBriefing?.agentId === briefing.agentId && 
                         selectedBriefing?.generatedAt === briefing.generatedAt
-                          ? 'bg-primary/10 border-primary'
-                          : 'hover:bg-dark-bg'
+                          ? 'bg-dark-card border-neon-cyan shadow-[0_0_15px_rgba(11,228,236,0.2)]'
+                          : 'hover:bg-dark-bg border-gray-700'
                       }`}
                       onClick={() => setSelectedBriefing(briefing)}
                     >
