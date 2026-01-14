@@ -1,11 +1,14 @@
 "use client"
 
 import type { ReactNode } from 'react'
+import { useState } from 'react'
 import { AppSidebar } from "@/components/app-sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import DashboardHeader from "@/components/DashboardHeader"
 import MobileNavigation from "@/components/mobile/mobile-navigation"
 import { useAuth } from "@/hooks/use-auth"
+import { ProfileModal } from "@/components/profile/profile-modal"
+import { EnhancedProfileModal } from "@/components/profile/enhanced-profile-modal"
 
 export const dynamic = 'force-dynamic'
 
@@ -15,6 +18,7 @@ export default function DashboardLayout({
   children: ReactNode
 }) {
   const { user } = useAuth()
+  const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   // Transform user data for MobileNavigation
   const mobileNavUser = user ? {
@@ -25,15 +29,31 @@ export default function DashboardLayout({
     points: (user as any).points || 0
   } : undefined
 
+  const subscriptionTier = (user as any)?.subscription_tier || 'free'
+  const isPaidTier = subscriptionTier !== 'free'
+
   return (
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset className="min-h-screen bg-cyber-black border-0">
-        <DashboardHeader />
+        <DashboardHeader onOpenProfile={() => setIsProfileOpen(true)} />
         <main className="flex-1 p-0 pb-20 lg:pb-0">
           {children}
         </main>
         <MobileNavigation user={mobileNavUser} />
+        {user && (
+          isPaidTier ? (
+            <EnhancedProfileModal
+              _open={isProfileOpen}
+              onOpenChangeAction={setIsProfileOpen}
+            />
+          ) : (
+            <ProfileModal
+              open={isProfileOpen}
+              onOpenChange={setIsProfileOpen}
+            />
+          )
+        )}
       </SidebarInset>
     </SidebarProvider>
   )

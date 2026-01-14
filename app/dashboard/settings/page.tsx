@@ -45,6 +45,7 @@ import Link from 'next/link'
 import { SocialMediaIntegration } from '@/components/integrations/social-media-integration'
 import { CalendarIntegration } from '@/components/integrations/calendar-integration'
 import { RevenueIntegration } from '@/components/integrations/revenue-integration'
+import { logError } from '@/lib/logger'
 
 export default function SettingsPage() {
   const { user, signOut, loading } = useAuth()
@@ -86,41 +87,58 @@ export default function SettingsPage() {
   const handleSave = async () => {
     setIsLoading(true)
     try {
-      // Call API to update profile
-      const token = localStorage.getItem('auth_token')
-      const response = await fetch('/api/auth/update-profile', {
+      // 1) Update basic profile (name/email-like display)
+      const profileResponse = await fetch('/api/profile', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({
-          name: formData.displayName,
-          email: formData.email,
-          // Only send password if it's being changed
-          ...(formData.newPassword ? {
-            currentPassword: formData.currentPassword,
-            newPassword: formData.newPassword
-          } : {}),
-          notifications: notificationSettings,
-          privacy: privacySettings
-        })
+          full_name: formData.displayName,
+        }),
       })
 
-      if (response.ok) {
-        toast({
-          title: "Settings Saved",
-          description: "Your profile has been updated successfully.",
-        })
-      } else {
-        throw new Error('Failed to update profile')
+      if (!profileResponse.ok) {
+        const data = await profileResponse.json().catch(() => ({}))
+        throw new Error(data.error || 'Failed to update profile information')
       }
+
+      // 2) If password fields are filled, change password via dedicated endpoint
+      if (formData.newPassword || formData.confirmPassword || formData.currentPassword) {
+        if (!formData.currentPassword || !formData.newPassword || !formData.confirmPassword) {
+          throw new Error('Please fill out current, new, and confirmation password fields.')
+        }
+        if (formData.newPassword !== formData.confirmPassword) {
+          throw new Error('New passwords do not match')
+        }
+
+        const passwordResponse = await fetch('/api/auth/change-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            currentPassword: formData.currentPassword,
+            newPassword: formData.newPassword,
+          }),
+        })
+
+        const pwdData = await passwordResponse.json().catch(() => ({}))
+        if (!passwordResponse.ok) {
+          throw new Error(pwdData.error || 'Failed to change password')
+        }
+      }
+
+      toast({
+        title: "Settings Saved",
+        description: "Your profile and security settings have been updated.",
+      })
     } catch (error) {
       logError('Error saving settings:', error)
       toast({
         title: "Error",
-        description: "Failed to save settings. Please try again.",
-        variant: "destructive"
+        description: error instanceof Error ? error.message : "Failed to save settings. Please try again.",
+        variant: "destructive",
       })
     } finally {
       setIsLoading(false)
@@ -130,30 +148,35 @@ export default function SettingsPage() {
   const handleDeleteAccount = async () => {
     setIsDeleting(true)
     try {
-      const token = localStorage.getItem('auth_token')
       const response = await fetch('/api/auth/delete-account', {
-        method: 'DELETE',
+        method: 'POST',
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password: formData.currentPassword,
+          confirmation: 'DELETE',
+        }),
       })
 
-      if (response.ok) {
-        toast({
-          title: "Account Deleted",
-          description: "Your account has been permanently deleted.",
-          variant: "destructive"
-        })
-        signOut()
-      } else {
-        throw new Error('Failed to delete account')
+      const data = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete account')
       }
+
+      toast({
+        title: "Account Deleted",
+        description: "Your account has been permanently deleted.",
+        variant: "destructive",
+      })
+      await signOut()
     } catch (error) {
       logError('Error deleting account:', error)
       toast({
         title: "Error",
-        description: "Failed to delete account. Please contact support.",
-        variant: "destructive"
+        description: error instanceof Error ? error.message : "Failed to delete account. Please contact support.",
+        variant: "destructive",
       })
     } finally {
       setIsDeleting(false)

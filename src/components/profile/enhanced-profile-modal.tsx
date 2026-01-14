@@ -197,20 +197,19 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
       return
     }
 
+    if (!deletePassword) {
+      setError("Password is required to delete account")
+      return
+    }
+
     setError(null)
     setIsDeletingAccount(true)
     try {
-      const password = prompt("Enter your password to confirm account deletion:")
-      if (!password) {
-        setIsDeletingAccount(false)
-        return
-      }
-
       const response = await fetch('/api/auth/delete-account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          password,
+          password: deletePassword,
           confirmation: deleteConfirmText,
         }),
       })

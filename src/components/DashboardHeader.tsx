@@ -30,13 +30,15 @@ interface DashboardHeaderProps {
   subtitle?: string
   className?: string
   showSearch?: boolean
+  onOpenProfile?: () => void
 }
 
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   title,
   subtitle,
   className = '',
-  showSearch = true
+  showSearch = true,
+  onOpenProfile,
 }) => {
   const { user, signOut } = useAuth()
   const router = useRouter()
@@ -52,6 +54,10 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const unreadCount = notifications.filter(n => n.unread).length
   
   const handleProfileSettings = () => {
+    if (onOpenProfile) {
+      onOpenProfile()
+      return
+    }
     router.push('/dashboard/settings')
   }
   
