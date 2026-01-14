@@ -88,7 +88,7 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
           (voiceButton as HTMLElement).click()
         }
       },
-      color: 'bg-purple-500'
+      color: 'bg-neon-purple'
     },
     {
       id: 'focus-session',
@@ -97,7 +97,7 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
       action: () => {
         window.location.href = '/dashboard/focus'
       },
-      color: 'bg-blue-500'
+      color: 'bg-neon-cyan'
     },
     {
       id: 'ai-chat',
@@ -106,7 +106,7 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
       action: () => {
         window.location.href = '/dashboard/agents'
       },
-      color: 'bg-pink-500'
+      color: 'bg-neon-purple'
     },
     {
       id: 'analytics',
@@ -115,34 +115,34 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
       action: () => {
         window.location.href = '/dashboard/analytics'
       },
-      color: 'bg-green-500'
+      color: 'bg-neon-lime'
     }
   ]
   return (
-    <div className={cn("min-h-screen bg-gradient-to-br from-purple-50 to-pink-50", className)}>
+    <div className={cn("min-h-screen bg-dark-bg", className)}>
       {/* Enhanced Status Bar */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-200 sticky top-0 z-30">
+      <div className="bg-dark-bg/90 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-30">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-dark-card border border-neon-purple rounded-sm flex items-center justify-center">
               <Crown className="w-4 h-4 text-white" />
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">Dashboard</h1>
+              <h1 className="text-lg font-bold font-orbitron uppercase tracking-wider text-white">Dashboard</h1>
               <div className="flex items-center gap-2">
                 {isOnline ? (
-                  <div className="flex items-center gap-1 text-xs text-green-600">
+                  <div className="flex items-center gap-1 text-xs text-neon-lime font-mono">
                     <Wifi className="w-3 h-3" />
                     <span>Online</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1 text-xs text-red-600">
+                  <div className="flex items-center gap-1 text-xs text-neon-magenta font-mono">
                     <WifiOff className="w-3 h-3" />
                     <span>Offline</span>
                   </div>
                 )}
                 {isInstalled && (
-                  <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                  <Badge variant="outline" className="text-xs bg-dark-card text-neon-lime border border-neon-lime font-mono">
                     PWA
                   </Badge>
                 )}
@@ -163,7 +163,7 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
               <Button
                 size="sm"
                 onClick={handleInstall}
-                className="h-8 px-3 text-xs bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                className="h-8 px-3 text-xs bg-neon-purple hover:bg-neon-purple/80 font-mono font-bold uppercase tracking-wider"
               >
                 <Download className="w-3 h-3 mr-1" />
                 Install
@@ -176,14 +176,14 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
       <div className="p-4 space-y-4">
         <div className="grid grid-cols-2 gap-3">
           {/* Tasks Progress */}
-          <Card className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50">
+          <Card className="border border-neon-purple bg-dark-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-purple-600" />
-                  <span className="text-sm font-medium text-gray-700">Tasks</span>
+                  <CheckCircle className="w-4 h-4 text-neon-purple" />
+                  <span className="text-sm font-medium text-gray-300 font-mono">Tasks</span>
                 </div>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs font-mono">
                   {dashboardData?.todaysStats.tasks_completed || 0}/{dashboardData?.todaysStats.total_tasks || 0}
                 </Badge>
               </div>
@@ -194,31 +194,31 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
             </CardContent>
           </Card>
           {/* Focus Time */}
-          <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-cyan-50">
+          <Card className="border border-neon-cyan bg-dark-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-blue-600" />
-                  <span className="text-sm font-medium text-gray-700">Focus</span>
+                  <Clock className="w-4 h-4 text-neon-cyan" />
+                  <span className="text-sm font-medium text-gray-300 font-mono">Focus</span>
                 </div>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs font-mono">
                   {dashboardData?.todaysStats.focus_minutes || 0}m
                 </Badge>
               </div>
-              <div className="text-xs text-gray-600">
+              <div className="text-xs text-gray-300 font-mono">
                 {dashboardData?.todaysStats.focus_minutes || 0} minutes today
               </div>
             </CardContent>
           </Card>
           {/* Productivity Score */}
-          <Card className="border-2 border-green-200 bg-gradient-to-br from-green-50 to-emerald-50">
+          <Card className="border border-neon-lime bg-dark-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <TrendingUp className="w-4 h-4 text-green-600" />
-                  <span className="text-sm font-medium text-gray-700">Score</span>
+                  <TrendingUp className="w-4 h-4 text-neon-lime" />
+                  <span className="text-sm font-medium text-gray-300 font-mono">Score</span>
                 </div>
-                <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                <Badge variant="outline" className="text-xs bg-dark-card text-neon-lime border border-neon-lime font-mono">
                   {dashboardData?.todaysStats.productivity_score || 0}%
                 </Badge>
               </div>
@@ -229,28 +229,28 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
             </CardContent>
           </Card>
           {/* AI Interactions */}
-          <Card className="border-2 border-pink-200 bg-gradient-to-br from-pink-50 to-rose-50">
+          <Card className="border border-neon-purple bg-dark-card">
             <CardContent className="p-4">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-pink-600" />
-                  <span className="text-sm font-medium text-gray-700">AI Chat</span>
+                  <Sparkles className="w-4 h-4 text-neon-purple" />
+                  <span className="text-sm font-medium text-gray-300 font-mono">AI Chat</span>
                 </div>
-                <Badge variant="outline" className="text-xs">
+                <Badge variant="outline" className="text-xs font-mono">
                   {dashboardData?.todaysStats.ai_interactions || 0}
                 </Badge>
               </div>
-              <div className="text-xs text-gray-600">
+              <div className="text-xs text-gray-300 font-mono">
                 Conversations today
               </div>
             </CardContent>
           </Card>
         </div>
         {/* Quick Actions */}
-        <Card className="border-2 border-gray-200">
+        <Card className="border border-gray-700 bg-dark-card">
           <CardHeader className="pb-3">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <Zap className="w-5 h-5 text-purple-600" />
+            <CardTitle className="text-lg flex items-center gap-2 font-orbitron uppercase tracking-wider text-white">
+              <Zap className="w-5 h-5 text-neon-purple" />
               Quick Actions
             </CardTitle>
           </CardHeader>
@@ -261,7 +261,7 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
                   key={action.id}
                   variant="outline"
                   onClick={action.action}
-                  className="h-16 flex flex-col items-center justify-center gap-2 hover:scale-105 transition-transform"
+                  className="h-16 flex flex-col items-center justify-center gap-2 hover:scale-105 transition-transform font-mono"
                 >
                   <div className={cn("w-8 h-8 rounded-full flex items-center justify-center text-white", action.color)}>
                     <action.icon className="w-4 h-4" />
@@ -286,7 +286,7 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
             recentConversations: [], // Add default or map if available
             insights: [] // Add default or map if available
           } : undefined}
-          className="border-2 border-gray-200"
+          className="border border-gray-700"
         />
       </div>
       {/* Floating Quick Actions */}
@@ -325,7 +325,7 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
       <Button
         size="lg"
         onClick={() => setShowQuickActions(!showQuickActions)}
-        className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-2xl bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+        className="fixed bottom-4 right-4 z-50 h-14 w-14 rounded-full shadow-[0_0_20px_rgba(11,228,236,0.3)] bg-neon-purple hover:bg-neon-purple/80"
       >
         <Zap className="w-6 h-6" />
       </Button>

@@ -61,9 +61,9 @@ export function GuardianAiDashboard() {
   }, [])
 
   const getTrustScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600"
-    if (score >= 60) return "text-yellow-600"
-    return "text-red-600"
+    if (score >= 80) return "text-neon-lime"
+    if (score >= 60) return "text-neon-orange"
+    return "text-neon-magenta"
   }
 
   const getTrustScoreStatus = (score: number) => {
@@ -77,11 +77,11 @@ export function GuardianAiDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Guardian AI</h1>
-          <p className="text-gray-600">Your proactive compliance & ethics co-pilot</p>
+          <h1 className="text-3xl font-bold font-orbitron uppercase tracking-wider text-white">Guardian AI</h1>
+          <p className="text-gray-300 font-mono">Your proactive compliance & ethics co-pilot</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge className="bg-green-100 text-green-800">
+          <Badge className="bg-dark-card text-neon-lime border border-neon-lime">
             <Shield className="w-3 h-3 mr-1" />
             Guardian AI Certified
           </Badge>
@@ -89,18 +89,18 @@ export function GuardianAiDashboard() {
       </div>
 
       {/* Trust Score Banner */}
-      <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+      <Card className="bg-dark-card border border-neon-purple">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Compliance Trust Score</h2>
-              <p className="text-gray-600">Your current compliance status and recommendations</p>
+              <h2 className="text-2xl font-bold font-orbitron uppercase tracking-wider text-white mb-2">Compliance Trust Score</h2>
+              <p className="text-gray-300 font-mono">Your current compliance status and recommendations</p>
             </div>
             <div className="text-center">
-              <div className={`text-5xl font-bold ${getTrustScoreColor(metrics.trustScore)}`}>
+              <div className={`text-5xl font-bold font-mono ${getTrustScoreColor(metrics.trustScore)}`}>
                 {metrics.trustScore}/100
               </div>
-              <div className="text-sm text-gray-600">{getTrustScoreStatus(metrics.trustScore)}</div>
+              <div className="text-sm text-gray-300 font-mono">{getTrustScoreStatus(metrics.trustScore)}</div>
             </div>
           </div>
         </CardContent>
@@ -123,10 +123,10 @@ export function GuardianAiDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Total Scans</p>
-                    <p className="text-2xl font-bold">{metrics.totalScans}</p>
+                    <p className="text-sm font-medium text-gray-300 font-mono">Total Scans</p>
+                    <p className="text-2xl font-bold font-mono">{metrics.totalScans}</p>
                   </div>
-                  <Shield className="w-8 h-8 text-purple-600" />
+                  <Shield className="w-8 h-8 text-neon-purple" />
                 </div>
               </CardContent>
             </Card>
@@ -135,10 +135,10 @@ export function GuardianAiDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Issues Resolved</p>
-                    <p className="text-2xl font-bold text-green-600">{metrics.issuesResolved}</p>
+                    <p className="text-sm font-medium text-gray-300 font-mono">Issues Resolved</p>
+                    <p className="text-2xl font-bold text-neon-lime font-mono">{metrics.issuesResolved}</p>
                   </div>
-                  <CheckCircle className="w-8 h-8 text-green-600" />
+                  <CheckCircle className="w-8 h-8 text-neon-lime" />
                 </div>
               </CardContent>
             </Card>
@@ -147,10 +147,10 @@ export function GuardianAiDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Policies Generated</p>
-                    <p className="text-2xl font-bold">{metrics.policiesGenerated}</p>
+                    <p className="text-sm font-medium text-gray-300 font-mono">Policies Generated</p>
+                    <p className="text-2xl font-bold font-mono">{metrics.policiesGenerated}</p>
                   </div>
-                  <FileText className="w-8 h-8 text-blue-600" />
+                  <FileText className="w-8 h-8 text-neon-cyan" />
                 </div>
               </CardContent>
             </Card>
@@ -206,25 +206,25 @@ export function GuardianAiDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                  <CheckCircle className="w-5 h-5 text-green-600" />
+                <div className="flex items-center gap-3 p-3 bg-dark-card border border-neon-lime rounded-sm">
+                  <CheckCircle className="w-5 h-5 text-neon-lime" />
                   <div>
-                    <p className="font-medium">Privacy Policy Updated</p>
-                    <p className="text-sm text-gray-600">2 hours ago</p>
+                    <p className="font-medium font-mono">Privacy Policy Updated</p>
+                    <p className="text-sm text-gray-300 font-mono">2 hours ago</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-                  <Shield className="w-5 h-5 text-blue-600" />
+                <div className="flex items-center gap-3 p-3 bg-dark-card border border-neon-cyan rounded-sm">
+                  <Shield className="w-5 h-5 text-neon-cyan" />
                   <div>
-                    <p className="font-medium">Website Scan Completed</p>
-                    <p className="text-sm text-gray-600">1 day ago</p>
+                    <p className="font-medium font-mono">Website Scan Completed</p>
+                    <p className="text-sm text-gray-300 font-mono">1 day ago</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
-                  <AlertTriangle className="w-5 h-5 text-yellow-600" />
+                <div className="flex items-center gap-3 p-3 bg-dark-card border border-neon-orange rounded-sm">
+                  <AlertTriangle className="w-5 h-5 text-neon-orange" />
                   <div>
-                    <p className="font-medium">New Data Request Received</p>
-                    <p className="text-sm text-gray-600">2 days ago</p>
+                    <p className="font-medium font-mono">New Data Request Received</p>
+                    <p className="text-sm text-gray-300 font-mono">2 days ago</p>
                   </div>
                 </div>
               </div>

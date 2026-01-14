@@ -239,9 +239,9 @@ export function NotificationPreferences({ className }: NotificationPreferencesPr
     return (
       <Card className={className}>
         <CardContent className="p-6">
-          <div className="text-center text-red-600">
+                  <div className="text-center text-neon-magenta">
             <AlertCircle className="h-8 w-8 mx-auto mb-2" />
-            <p>Failed to load notification preferences</p>
+            <p className="font-mono">Failed to load notification preferences</p>
             <Button onClick={fetchPreferences} className="mt-2">
               Try Again
             </Button>
@@ -255,8 +255,8 @@ export function NotificationPreferences({ className }: NotificationPreferencesPr
     <div className={className}>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold">Notification Preferences</h2>
-          <p className="text-gray-600">Configure how you receive competitor alerts</p>
+          <h2 className="text-2xl font-bold font-orbitron uppercase tracking-wider">Notification Preferences</h2>
+          <p className="text-gray-300 font-mono">Configure how you receive competitor alerts</p>
         </div>
         <Button onClick={savePreferences} disabled={saving}>
           {saving ? 'Saving...' : 'Save Changes'}
@@ -283,13 +283,13 @@ export function NotificationPreferences({ className }: NotificationPreferencesPr
                 const Icon = channelIcons[channel.type];
                 
                 return (
-                  <div key={channel.id} className="border rounded-lg p-4 space-y-4">
+                  <div key={channel.id} className="border border-gray-700 rounded-sm p-4 space-y-4">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <Icon className="h-5 w-5" />
                         <div>
-                          <h4 className="font-medium">{channel.name}</h4>
-                          <p className="text-sm text-gray-600 capitalize">{channel.type}</p>
+                          <h4 className="font-medium font-mono">{channel.name}</h4>
+                          <p className="text-sm text-gray-300 capitalize font-mono">{channel.type}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
@@ -517,8 +517,8 @@ export function NotificationPreferences({ className }: NotificationPreferencesPr
             <CardContent className="space-y-6">
               <div className="space-y-4">
                 <div>
-                  <Label className="text-base font-medium">Immediate Delivery</Label>
-                  <p className="text-sm text-gray-600 mb-2">
+                  <Label className="text-base font-medium font-mono">Immediate Delivery</Label>
+                  <p className="text-sm text-gray-300 mb-2 font-mono">
                     These alert severities will be delivered immediately
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -550,8 +550,8 @@ export function NotificationPreferences({ className }: NotificationPreferencesPr
                 <Separator />
 
                 <div>
-                  <Label className="text-base font-medium">Batched Delivery</Label>
-                  <p className="text-sm text-gray-600 mb-2">
+                  <Label className="text-base font-medium font-mono">Batched Delivery</Label>
+                  <p className="text-sm text-gray-300 mb-2 font-mono">
                     These alert severities will be batched and sent periodically
                   </p>
                   <div className="flex flex-wrap gap-2 mb-4">

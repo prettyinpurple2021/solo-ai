@@ -94,11 +94,11 @@ export function SecurityDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'full': return 'bg-green-500'
-      case 'partial': return 'bg-blue-500'
-      case 'restricted': return 'bg-yellow-500'
-      case 'none': return 'bg-red-500'
-      default: return 'bg-gray-500'
+      case 'full': return 'bg-neon-lime'
+      case 'partial': return 'bg-neon-cyan'
+      case 'restricted': return 'bg-neon-orange'
+      case 'none': return 'bg-neon-magenta'
+      default: return 'bg-gray-700'
     }
   }
 
@@ -115,7 +115,7 @@ export function SecurityDashboard() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neon-purple"></div>
       </div>
     )
   }
@@ -170,7 +170,7 @@ export function SecurityDashboard() {
               <AlertTriangle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-red-600">{metrics.failedAuthAttempts}</div>
+              <div className="text-2xl font-bold text-neon-magenta font-mono">{metrics.failedAuthAttempts}</div>
               <p className="text-xs text-muted-foreground">
                 In the last 24 hours
               </p>
@@ -183,7 +183,7 @@ export function SecurityDashboard() {
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-yellow-600">{metrics.rateLimitHits}</div>
+              <div className="text-2xl font-bold text-neon-orange font-mono">{metrics.rateLimitHits}</div>
               <p className="text-xs text-muted-foreground">
                 Rate limit exceeded
               </p>
@@ -233,7 +233,7 @@ export function SecurityDashboard() {
                       </span>
                     </div>
                     {currentPermission.expiresAt && (
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-gray-300 font-mono">
                         Expires: {new Date(currentPermission.expiresAt).toLocaleDateString()}
                       </div>
                     )}
@@ -343,13 +343,13 @@ export function SecurityDashboard() {
                     </div>
                     <div>
                       <span className="text-sm font-medium">Allowed Origins</span>
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-gray-300 font-mono">
                         {config.allowedOrigins.length} configured
                       </div>
                     </div>
                     <div>
-                      <span className="text-sm font-medium">Blocked IPs</span>
-                      <div className="text-sm text-gray-600">
+                      <span className="text-sm font-medium font-mono">Blocked IPs</span>
+                      <div className="text-sm text-gray-300 font-mono">
                         {config.blockedIPs.length} blocked
                       </div>
                     </div>

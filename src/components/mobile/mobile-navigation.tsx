@@ -81,7 +81,7 @@ const navigationItems: NavigationItem[] = [
     label: 'SlayList',
     icon: CheckSquare,
     href: '/dashboard/slaylist',
-    color: 'text-green-600',
+    color: 'text-neon-lime',
     quickActions: [
       { id: 'add_task', label: 'New Task', icon: Plus, action: () => { } },
       { id: 'today', label: "Today's Tasks", icon: Calendar, action: () => { } }
@@ -103,7 +103,7 @@ const navigationItems: NavigationItem[] = [
     label: 'AI Squad',
     icon: Users,
     href: '/dashboard/agents',
-    color: 'text-blue-600',
+    color: 'text-neon-cyan',
     badge: 2,
     quickActions: [
       { id: 'roxy', label: 'Chat Roxy', icon: MessageCircle, action: () => { } },
@@ -126,7 +126,7 @@ const navigationItems: NavigationItem[] = [
     label: 'Incinerator',
     icon: Target,
     href: '/dashboard/incinerator',
-    color: 'text-red-600',
+    color: 'text-neon-magenta',
     quickActions: [
       { id: 'new_idea', label: 'New Idea', icon: Plus, action: () => { } }
     ]
@@ -278,7 +278,7 @@ export default function MobileNavigation({
             >
               <Bell className="h-5 w-5" />
               {notifications > 0 && (
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-red-500 text-white rounded-full flex items-center justify-center">
+                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-neon-magenta text-white rounded-sm flex items-center justify-center font-mono">
                   {notifications > 9 ? '9+' : notifications}
                 </Badge>
               )}
@@ -333,21 +333,21 @@ export default function MobileNavigation({
             animate="open"
             exit="closed"
             variants={navVariants}
-            className="lg:hidden fixed left-0 top-0 z-50 h-full w-80 bg-white shadow-2xl"
+            className="lg:hidden fixed left-0 top-0 z-50 h-full w-80 bg-dark-bg border-r border-gray-800 shadow-[0_0_20px_rgba(11,228,236,0.2)]"
           >
             <div className="flex flex-col h-full">
               {/* Header */}
-              <div className="flex items-center justify-between p-6 border-b bg-gradient-to-r from-neon-purple to-neon-cyan text-white">
+              <div className="flex items-center justify-between p-6 border-b border-gray-800 bg-dark-card text-white">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-10 w-10">
                     <AvatarImage src={user?.avatar} alt={user?.name} />
-                    <AvatarFallback className="bg-white/20 text-white">
+                    <AvatarFallback className="bg-dark-hover text-white font-mono">
                       {user?.name?.charAt(0) || <User className="h-5 w-5" />}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <div className="font-semibold">{user?.name || 'Welcome!'}</div>
-                    <div className="text-xs opacity-90">
+                    <div className="font-semibold font-orbitron uppercase tracking-wider">{user?.name || 'Welcome!'}</div>
+                    <div className="text-xs text-gray-300 font-mono">
                       Level {user?.level || 1} • {user?.points || 0} points
                     </div>
                   </div>
@@ -369,26 +369,26 @@ export default function MobileNavigation({
                     <div key={item.id} className="space-y-1">
                       <motion.button
                         className={cn(
-                          "w-full flex items-center gap-3 px-3 py-3 rounded-lg text-left transition-colors touch-target",
+                          "w-full flex items-center gap-3 px-3 py-3 rounded-sm text-left transition-colors touch-target",
                           activeItem === item.id
-                            ? "bg-neon-purple/10 text-neon-purple border-l-4 border-neon-purple"
-                            : "text-gray-700 hover:bg-gray-50",
+                            ? "bg-dark-card text-neon-purple border-l-4 border-neon-purple"
+                            : "text-gray-300 hover:bg-dark-hover",
                           item.isNew && "relative"
                         )}
                         onClick={() => handleItemClick(item)}
                         whileTap={{ scale: 0.98 }}
                       >
                         <item.icon className={cn("h-5 w-5", item.color)} />
-                        <span className="flex-1 font-medium">{item.label}</span>
+                        <span className="flex-1 font-medium font-mono">{item.label}</span>
 
                         {item.badge && (
-                          <Badge className="h-5 px-2 text-xs bg-red-500 text-white">
+                          <Badge className="h-5 px-2 text-xs bg-neon-magenta text-white font-mono">
                             {item.badge}
                           </Badge>
                         )}
 
                         {item.isNew && (
-                          <Badge className="h-5 px-2 text-xs bg-green-500 text-white">
+                          <Badge className="h-5 px-2 text-xs bg-neon-lime text-white font-mono">
                             New
                           </Badge>
                         )}
@@ -414,7 +414,7 @@ export default function MobileNavigation({
                             {item.quickActions.map((action) => (
                               <motion.button
                                 key={action.id}
-                                className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors touch-target"
+                                className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-dark-hover rounded-sm transition-colors touch-target font-mono"
                                 onClick={() => handleQuickAction(action)}
                                 whileTap={{ scale: 0.98 }}
                               >
@@ -446,17 +446,17 @@ export default function MobileNavigation({
 
                 {/* Quick Stats */}
                 <div className="grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="p-2 bg-gray-50 rounded">
-                    <div className="font-bold text-neon-purple">12</div>
-                    <div className="text-gray-600">Tasks</div>
+                  <div className="p-2 bg-dark-card border border-gray-700 rounded-sm">
+                    <div className="font-bold text-neon-purple font-mono">12</div>
+                    <div className="text-gray-300 font-mono">Tasks</div>
                   </div>
-                  <div className="p-2 bg-gray-50 rounded">
-                    <div className="font-bold text-green-600">87%</div>
-                    <div className="text-gray-600">Progress</div>
+                  <div className="p-2 bg-dark-card border border-gray-700 rounded-sm">
+                    <div className="font-bold text-neon-lime font-mono">87%</div>
+                    <div className="text-gray-300 font-mono">Progress</div>
                   </div>
-                  <div className="p-2 bg-gray-50 rounded">
-                    <div className="font-bold text-blue-600">5</div>
-                    <div className="text-gray-600">Goals</div>
+                  <div className="p-2 bg-dark-card border border-gray-700 rounded-sm">
+                    <div className="font-bold text-neon-cyan font-mono">5</div>
+                    <div className="text-gray-300 font-mono">Goals</div>
                   </div>
                 </div>
               </div>
@@ -467,7 +467,7 @@ export default function MobileNavigation({
 
       {/* Bottom Navigation for Mobile */}
       <motion.div
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 safe-area-pb"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-dark-bg border-t border-gray-800 safe-area-pb"
         initial={false}
       >
         <div className="grid grid-cols-5 gap-1 p-2">
@@ -475,10 +475,10 @@ export default function MobileNavigation({
             <motion.button
               key={item.id}
               className={cn(
-                "flex flex-col items-center gap-1 p-2 rounded-lg transition-colors touch-target",
+                "flex flex-col items-center gap-1 p-2 rounded-sm transition-colors touch-target",
                 activeItem === item.id
-                  ? "bg-neon-purple/10 text-neon-purple"
-                  : "text-gray-600 hover:bg-gray-50"
+                  ? "bg-dark-card text-neon-purple"
+                  : "text-gray-300 hover:bg-dark-hover"
               )}
               onClick={() => {
                 router.push(item.href)
@@ -488,10 +488,10 @@ export default function MobileNavigation({
               <div className="relative">
                 <item.icon className="h-5 w-5" />
                 {item.badge && (
-                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full" />
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-neon-magenta rounded-sm" />
                 )}
               </div>
-              <span className="text-xs font-medium truncate w-full text-center">
+              <span className="text-xs font-medium truncate w-full text-center font-mono">
                 {item.label.split(' ')[0]}
               </span>
             </motion.button>

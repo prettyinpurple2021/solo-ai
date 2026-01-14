@@ -214,7 +214,7 @@ const SessionControlPanel: React.FC<{ sessionId: string }> = ({ sessionId }) => 
             {controlState.status}
           </Badge>
           {controlState.isOwner && (
-            <Badge variant="outline" className="text-amber-600">
+            <Badge variant="outline" className="text-neon-orange border-neon-orange">
               <Crown className="w-3 h-3 mr-1" />
               Owner
             </Badge>
@@ -491,11 +491,11 @@ const ContextManagement: React.FC<{ sessionId: string }> = ({ sessionId }) => {
   // Get priority color
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'critical': return 'text-red-600 bg-red-50'
-      case 'high': return 'text-orange-600 bg-orange-50'
-      case 'medium': return 'text-blue-600 bg-blue-50'
-      case 'low': return 'text-gray-600 bg-gray-50'
-      default: return 'text-gray-600 bg-gray-50'
+      case 'critical': return 'text-neon-magenta bg-dark-card border border-neon-magenta'
+      case 'high': return 'text-neon-orange bg-dark-card border border-neon-orange'
+      case 'medium': return 'text-neon-cyan bg-dark-card border border-neon-cyan'
+      case 'low': return 'text-gray-300 bg-dark-card border border-gray-700'
+      default: return 'text-gray-300 bg-dark-card border border-gray-700'
     }
   }
 

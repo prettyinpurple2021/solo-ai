@@ -28,26 +28,26 @@ interface NotificationAlert extends CompetitorAlert {
 const severityConfig = {
   critical: {
     icon: AlertTriangle,
-    color: 'text-red-500',
-    bgColor: 'bg-red-50 border-red-500',
+    color: 'text-neon-magenta',
+    bgColor: 'bg-dark-card border-neon-magenta',
     duration: 0, // Don't auto-hide critical alerts
   },
   urgent: {
     icon: AlertCircle,
-    color: 'text-orange-500',
-    bgColor: 'bg-orange-50 border-orange-500',
+    color: 'text-neon-orange',
+    bgColor: 'bg-dark-card border-neon-orange',
     duration: 10000, // 10 seconds
   },
   warning: {
     icon: AlertCircle,
-    color: 'text-yellow-500',
-    bgColor: 'bg-yellow-50 border-yellow-500',
+    color: 'text-neon-orange',
+    bgColor: 'bg-dark-card border-neon-orange',
     duration: 8000, // 8 seconds
   },
   info: {
     icon: Info,
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-50 border-blue-500',
+    color: 'text-neon-cyan',
+    bgColor: 'bg-dark-card border-neon-cyan',
     duration: 6000, // 6 seconds
   },
 } as const;
@@ -200,16 +200,16 @@ export function AlertNotifications({
                     >
                       {alert.severity.toUpperCase()}
                     </Badge>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-gray-500 font-mono">
                       {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true })}
                     </span>
                   </div>
                   
-                  <h4 className="font-medium text-sm mb-1 line-clamp-1">
+                  <h4 className="font-medium text-sm mb-1 line-clamp-1 font-mono">
                     {alert.title}
                   </h4>
                   
-                  <p className="text-xs text-gray-600 mb-2 line-clamp-2">
+                  <p className="text-xs text-gray-300 mb-2 line-clamp-2 font-mono">
                     {alert.competitor_name}: {alert.description}
                   </p>
                   
@@ -278,16 +278,16 @@ export function AlertBell({ className, onClick }: AlertBellProps) {
     >
       <Bell className={cn(
         'h-5 w-5',
-        hasUrgent && 'text-red-500 animate-pulse'
+        hasUrgent && 'text-neon-magenta animate-pulse'
       )} />
       
       {unreadCount > 0 && (
         <span className={cn(
-          'absolute -top-1 -right-1 h-5 w-5 rounded-full text-xs font-medium',
+          'absolute -top-1 -right-1 h-5 w-5 rounded-full text-xs font-medium font-mono',
           'flex items-center justify-center',
           hasUrgent 
-            ? 'bg-red-500 text-white animate-pulse' 
-            : 'bg-blue-500 text-white'
+            ? 'bg-neon-magenta text-white animate-pulse' 
+            : 'bg-neon-cyan text-white'
         )}>
           {unreadCount > 99 ? '99+' : unreadCount}
         </span>

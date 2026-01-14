@@ -72,18 +72,18 @@ const JOB_TYPE_ICONS = {
 }
 
 const STATUS_COLORS = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  running: 'bg-blue-100 text-blue-800',
-  completed: 'bg-green-100 text-green-800',
-  failed: 'bg-red-100 text-red-800',
-  paused: 'bg-gray-100 text-gray-800',
+  pending: 'bg-dark-card text-neon-orange border border-neon-orange',
+  running: 'bg-dark-card text-neon-cyan border border-neon-cyan',
+  completed: 'bg-dark-card text-neon-lime border border-neon-lime',
+  failed: 'bg-dark-card text-neon-magenta border border-neon-magenta',
+  paused: 'bg-dark-card text-gray-500 border border-gray-700',
 }
 
 const PRIORITY_COLORS = {
-  low: 'bg-gray-100 text-gray-800',
-  medium: 'bg-blue-100 text-blue-800',
-  high: 'bg-orange-100 text-orange-800',
-  critical: 'bg-red-100 text-red-800',
+  low: 'bg-dark-card text-gray-500 border border-gray-700',
+  medium: 'bg-dark-card text-neon-cyan border border-neon-cyan',
+  high: 'bg-dark-card text-neon-orange border border-neon-orange',
+  critical: 'bg-dark-card text-neon-magenta border border-neon-magenta',
 }
 
 export function ScrapingManager({ competitorId, competitorName, competitorDomain }: ScrapingManagerProps) {
@@ -286,11 +286,11 @@ export function ScrapingManager({ competitorId, competitorName, competitorDomain
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider">
               <Activity className="h-5 w-5" />
               Web Scraping
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="font-mono">
               Monitor {competitorName} across multiple channels
             </CardDescription>
           </div>
@@ -526,12 +526,12 @@ export function ScrapingManager({ competitorId, competitorName, competitorDomain
                       <div className="text-sm font-medium mb-2">Recent Executions</div>
                       <div className="space-y-1">
                         {job.history.slice(-3).map((result, index) => (
-                          <div key={index} className="flex items-center justify-between text-sm">
+                          <div key={index} className="flex items-center justify-between text-sm font-mono">
                             <div className="flex items-center gap-2">
                               {result.success ? (
-                                <CheckCircle className="h-3 w-3 text-green-500" />
+                                <CheckCircle className="h-3 w-3 text-neon-lime" />
                               ) : (
-                                <XCircle className="h-3 w-3 text-red-500" />
+                                <XCircle className="h-3 w-3 text-neon-magenta" />
                               )}
                               <span>{new Date(result.completedAt).toLocaleString()}</span>
                             </div>

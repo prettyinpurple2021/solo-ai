@@ -517,24 +517,24 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
   return (
     <div className={cn("space-y-4", className)}>
       {/* Status Card */}
-      <Card className="border-2 border-gray-200">
+      <Card className="border border-gray-700 bg-dark-card">
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className={cn(
                 "w-10 h-10 rounded-full flex items-center justify-center",
                 syncStatus.isOnline
-                  ? "bg-green-100 text-green-600"
-                  : "bg-red-100 text-red-600"
+                  ? "bg-dark-card border border-neon-lime text-neon-lime"
+                  : "bg-dark-card border border-neon-magenta text-neon-magenta"
               )}>
                 {syncStatus.isOnline ? <Wifi className="w-5 h-5" /> : <WifiOff className="w-5 h-5" />}
               </div>
               <div>
-                <CardTitle className="text-lg">
+                <CardTitle className="text-lg font-orbitron uppercase tracking-wider text-white">
                   {syncStatus.isOnline ? 'Online' : 'Offline'}
                 </CardTitle>
                 {!isMinimized && (
-                  <CardDescription>
+                  <CardDescription className="font-mono">
                     {syncStatus.pendingActions > 0
                       ? `${syncStatus.pendingActions} actions pending sync`
                       : 'All data synced'
@@ -546,7 +546,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
 
             <div className="flex items-center gap-2">
               {syncStatus.pendingActions > 0 && (
-                <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
+                <Badge variant="outline" className="bg-dark-card text-neon-orange border border-neon-orange font-mono">
                   <Clock className="w-3 h-3 mr-1" />
                   {syncStatus.pendingActions}
                 </Badge>
@@ -566,7 +566,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsMinimized(!isMinimized)}
-                className="h-8 w-8 p-0 hover:bg-gray-100"
+                className="h-8 w-8 p-0 hover:bg-dark-hover"
                 title={isMinimized ? "Expand" : "Minimize"}
               >
                 {isMinimized ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -576,7 +576,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                 variant="ghost"
                 size="sm"
                 onClick={() => setIsClosed(true)}
-                className="h-8 w-8 p-0 hover:bg-gray-100"
+                className="h-8 w-8 p-0 hover:bg-dark-hover"
                 title="Close"
               >
                 <X className="w-4 h-4" />
@@ -603,8 +603,8 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
             {/* Error Message */}
             {syncStatus.error && (
               <CardContent className="pt-0">
-                <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 p-2 rounded">
-                  <AlertTriangle className="w-4 h-4" />
+                <div className="flex items-center gap-2 text-sm text-neon-magenta bg-dark-card border border-neon-magenta p-2 rounded-sm font-mono">
+                  <AlertTriangle className="w-4 h-4 text-neon-magenta" />
                   {syncStatus.error}
                 </div>
               </CardContent>
@@ -649,7 +649,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
           >
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Sync Details</CardTitle>
+                <CardTitle className="text-lg font-orbitron uppercase tracking-wider text-white">Sync Details</CardTitle>
                 <CardDescription>
                   Manage offline data and pending actions
                 </CardDescription>
@@ -658,8 +658,8 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
               <CardContent className="space-y-4">
                 {/* Last Sync Info */}
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Last sync:</span>
-                  <span className="font-medium">{formatLastSync(syncStatus.lastSync)}</span>
+                  <span className="text-gray-300 font-mono">Last sync:</span>
+                  <span className="font-medium font-mono text-gray-300">{formatLastSync(syncStatus.lastSync)}</span>
                 </div>
 
                 {/* Pending Actions List */}
@@ -668,16 +668,16 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                     <h4 className="font-medium text-sm">Pending Actions:</h4>
                     <div className="space-y-1 max-h-32 overflow-y-auto">
                       {pendingActions.map((action) => (
-                        <div key={action.id} className="flex items-center justify-between text-xs bg-gray-50 p-2 rounded">
+                        <div key={action.id} className="flex items-center justify-between text-xs bg-dark-card border border-gray-700 p-2 rounded-sm font-mono text-gray-300">
                           <div className="flex items-center gap-2">
                             <div className={cn(
-                              "w-2 h-2 rounded-full",
-                              action.type === 'create' && "bg-green-500",
-                              action.type === 'update' && "bg-blue-500",
-                              action.type === 'delete' && "bg-red-500"
+                              "w-2 h-2 rounded-sm",
+                              action.type === 'create' && "bg-neon-lime",
+                              action.type === 'update' && "bg-neon-cyan",
+                              action.type === 'delete' && "bg-neon-magenta"
                             )} />
                             <span className="capitalize">{action.type}</span>
-                            <span className="text-gray-600">{action.resource}</span>
+                            <span className="text-gray-500">{action.resource}</span>
                           </div>
                           {action.retries > 0 && (
                             <Badge variant="outline" className="text-xs">

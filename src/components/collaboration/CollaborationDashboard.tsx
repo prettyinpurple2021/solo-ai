@@ -239,20 +239,20 @@ const CollaborationDashboard: React.FC = () => {
   // Status color mapping
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'active': return 'bg-green-100 text-green-800 border-green-200'
-      case 'paused': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      case 'completed': return 'bg-blue-100 text-blue-800 border-blue-200'
-      case 'cancelled': return 'bg-gray-100 text-gray-800 border-gray-200'
-      default: return 'bg-gray-100 text-gray-800 border-gray-200'
+      case 'active': return 'bg-dark-card text-neon-lime border border-neon-lime'
+      case 'paused': return 'bg-dark-card text-neon-orange border border-neon-orange'
+      case 'completed': return 'bg-dark-card text-neon-cyan border border-neon-cyan'
+      case 'cancelled': return 'bg-dark-card text-gray-500 border border-gray-700'
+      default: return 'bg-dark-card text-gray-500 border border-gray-700'
     }
   }
 
   const getAgentStatusColor = (status: string) => {
     switch (status) {
-      case 'available': return 'bg-green-100 text-green-800'
-      case 'busy': return 'bg-red-100 text-red-800'
-      case 'offline': return 'bg-gray-100 text-gray-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'available': return 'bg-dark-card text-neon-lime border border-neon-lime'
+      case 'busy': return 'bg-dark-card text-neon-magenta border border-neon-magenta'
+      case 'offline': return 'bg-dark-card text-gray-500 border border-gray-700'
+      default: return 'bg-dark-card text-gray-500 border border-gray-700'
     }
   }
 
@@ -284,7 +284,7 @@ const CollaborationDashboard: React.FC = () => {
   if (error) {
     return (
       <div className="space-y-4">
-        <div className="p-4 rounded-lg bg-red-50 border border-red-200 text-red-800">{error}</div>
+        <div className="p-4 rounded-sm bg-dark-card border border-neon-magenta text-neon-magenta font-mono">{error}</div>
         <Button onClick={() => { location.reload() }}>Retry</Button>
       </div>
     )
@@ -295,8 +295,8 @@ const CollaborationDashboard: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Collaboration Hub</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold font-orbitron uppercase tracking-wider text-white">Collaboration Hub</h1>
+          <p className="text-gray-300 font-mono">
             Manage and participate in multi-agent collaboration sessions
           </p>
         </div>
@@ -310,60 +310,60 @@ const CollaborationDashboard: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <Card className="p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Activity className="w-4 h-4 text-green-600" />
+            <div className="p-2 bg-dark-card border border-neon-lime rounded-sm">
+              <Activity className="w-4 h-4 text-neon-lime" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Active Sessions</p>
-              <p className="text-2xl font-bold">{stats.activeSessions}</p>
+              <p className="text-sm font-medium text-gray-300 font-mono">Active Sessions</p>
+              <p className="text-2xl font-bold font-mono">{stats.activeSessions}</p>
             </div>
           </div>
         </Card>
 
         <Card className="p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <FileText className="w-4 h-4 text-blue-600" />
+            <div className="p-2 bg-dark-card border border-neon-cyan rounded-sm">
+              <FileText className="w-4 h-4 text-neon-cyan" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Total Sessions</p>
-              <p className="text-2xl font-bold">{stats.totalSessions}</p>
+              <p className="text-sm font-medium text-gray-300 font-mono">Total Sessions</p>
+              <p className="text-2xl font-bold font-mono">{stats.totalSessions}</p>
             </div>
           </div>
         </Card>
 
         <Card className="p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-purple-100 rounded-lg">
-              <Users className="w-4 h-4 text-purple-600" />
+            <div className="p-2 bg-dark-card border border-neon-purple rounded-sm">
+              <Users className="w-4 h-4 text-neon-purple" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Available Agents</p>
-              <p className="text-2xl font-bold">{stats.availableAgents}</p>
+              <p className="text-sm font-medium text-gray-300 font-mono">Available Agents</p>
+              <p className="text-2xl font-bold font-mono">{stats.availableAgents}</p>
             </div>
           </div>
         </Card>
 
         <Card className="p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-orange-100 rounded-lg">
-              <MessageSquare className="w-4 h-4 text-orange-600" />
+            <div className="p-2 bg-dark-card border border-neon-orange rounded-sm">
+              <MessageSquare className="w-4 h-4 text-neon-orange" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Total Messages</p>
-              <p className="text-2xl font-bold">{stats.totalMessages}</p>
+              <p className="text-sm font-medium text-gray-300 font-mono">Total Messages</p>
+              <p className="text-2xl font-bold font-mono">{stats.totalMessages}</p>
             </div>
           </div>
         </Card>
 
         <Card className="p-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-teal-100 rounded-lg">
-              <Settings className="w-4 h-4 text-teal-600" />
+            <div className="p-2 bg-dark-card border border-neon-cyan rounded-sm">
+              <Settings className="w-4 h-4 text-neon-cyan" />
             </div>
             <div>
-              <p className="text-sm font-medium text-muted-foreground">Avg Duration</p>
-              <p className="text-2xl font-bold">{stats.avgSessionDuration}m</p>
+              <p className="text-sm font-medium text-gray-300 font-mono">Avg Duration</p>
+              <p className="text-2xl font-bold font-mono">{stats.avgSessionDuration}m</p>
             </div>
           </div>
         </Card>
@@ -440,7 +440,7 @@ const CollaborationDashboard: React.FC = () => {
                     </Badge>
                   </div>
 
-                  <div className="flex items-center justify-between text-sm text-muted-foreground">
+                  <div className="flex items-center justify-between text-sm text-gray-300 font-mono">
                     <div className="flex items-center gap-1">
                       <Users className="w-4 h-4" />
                       {session.participatingAgents.length} agents
@@ -495,8 +495,8 @@ const CollaborationDashboard: React.FC = () => {
               <Card key={agent.id} className="p-4">
                 <div className="flex items-start justify-between mb-3">
                   <div>
-                    <h3 className="font-semibold">{agent.name}</h3>
-                    <p className="text-sm text-muted-foreground">{agent.specialization}</p>
+                    <h3 className="font-semibold font-mono">{agent.name}</h3>
+                    <p className="text-sm text-gray-300 font-mono">{agent.specialization}</p>
                   </div>
                   <Badge className={cn("text-xs", getAgentStatusColor(agent.status))}>
                     {agent.status}
@@ -535,21 +535,21 @@ const CollaborationDashboard: React.FC = () => {
         <TabsContent value="analytics" className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Session Activity</h3>
-              <div className="h-64 flex items-center justify-center text-muted-foreground">
+              <h3 className="text-lg font-semibold mb-4 font-orbitron uppercase tracking-wider text-white">Session Activity</h3>
+              <div className="h-64 flex items-center justify-center text-gray-300">
                 <div className="text-center">
                   <Activity className="w-12 h-12 mx-auto mb-2" />
-                  <p>Analytics dashboard coming soon</p>
+                  <p className="font-mono">Analytics dashboard coming soon</p>
                 </div>
               </div>
             </Card>
 
             <Card className="p-6">
-              <h3 className="text-lg font-semibold mb-4">Agent Performance</h3>
-              <div className="h-64 flex items-center justify-center text-muted-foreground">
+              <h3 className="text-lg font-semibold mb-4 font-orbitron uppercase tracking-wider text-white">Agent Performance</h3>
+              <div className="h-64 flex items-center justify-center text-gray-300">
                 <div className="text-center">
                   <Users className="w-12 h-12 mx-auto mb-2" />
-                  <p>Performance metrics coming soon</p>
+                  <p className="font-mono">Performance metrics coming soon</p>
                 </div>
               </div>
             </Card>

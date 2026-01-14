@@ -220,15 +220,15 @@ export function MobileGestureDemo() {
 
   return (
     <div className="space-y-6">
-      <Card className="boss-card border-2 border-purple-200">
+      <Card className="boss-card border border-neon-purple bg-dark-card">
         <CardContent className="p-6">
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-2">
-              <Smartphone className="h-6 w-6 text-purple-600" />
-              <h3 className="text-xl font-bold boss-heading">Mobile Gesture Controls</h3>
-              <Sparkles className="h-6 w-6 text-pink-500" />
+              <Smartphone className="h-6 w-6 text-neon-purple" />
+              <h3 className="text-xl font-bold font-orbitron uppercase tracking-wider text-white">Mobile Gesture Controls</h3>
+              <Sparkles className="h-6 w-6 text-neon-purple" />
             </div>
-            <p className="text-muted-foreground font-medium">Experience boss-level mobile interactions! 📱✨</p>
+            <p className="text-gray-300 font-mono">Experience boss-level mobile interactions! 📱✨</p>
           </div>
         </CardContent>
       </Card>
@@ -239,7 +239,7 @@ export function MobileGestureDemo() {
         onLongPress={handleLongPress}
         className="min-h-[300px]"
       >
-        <Card className="boss-card h-full bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-dashed border-purple-300 relative overflow-hidden">
+        <Card className="boss-card h-full bg-dark-bg border border-dashed border-neon-purple relative overflow-hidden">
           <CardContent className="p-8 h-full flex flex-col items-center justify-center text-center space-y-6">
             {showCelebration && (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-purple-500/20 to-pink-500/20 animate-pulse">
@@ -252,33 +252,33 @@ export function MobileGestureDemo() {
               <h4 className="text-2xl font-bold boss-heading">Try These Gestures!</h4>
 
               <div className="grid grid-cols-2 gap-4 text-sm">
-                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
-                  <Swipe className="h-4 w-4 text-purple-500" />
-                  <span className="font-medium">Swipe any direction</span>
+                <div className="flex items-center gap-2 p-2 bg-dark-card border border-gray-700 rounded-sm">
+                  <Swipe className="h-4 w-4 text-neon-purple" />
+                  <span className="font-medium font-mono text-gray-300">Swipe any direction</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
-                  <TouchpadOff className="h-4 w-4 text-pink-500" />
-                  <span className="font-medium">Double tap</span>
+                <div className="flex items-center gap-2 p-2 bg-dark-card border border-gray-700 rounded-sm">
+                  <TouchpadOff className="h-4 w-4 text-neon-purple" />
+                  <span className="font-medium font-mono text-gray-300">Double tap</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
-                  <Heart className="h-4 w-4 text-red-500" />
-                  <span className="font-medium">Long press</span>
+                <div className="flex items-center gap-2 p-2 bg-dark-card border border-gray-700 rounded-sm">
+                  <Heart className="h-4 w-4 text-neon-magenta" />
+                  <span className="font-medium font-mono text-gray-300">Long press</span>
                 </div>
-                <div className="flex items-center gap-2 p-2 bg-white rounded-lg">
-                  <Star className="h-4 w-4 text-yellow-500" />
-                  <span className="font-medium">Multi-touch</span>
+                <div className="flex items-center gap-2 p-2 bg-dark-card border border-gray-700 rounded-sm">
+                  <Star className="h-4 w-4 text-neon-orange" />
+                  <span className="font-medium font-mono text-gray-300">Multi-touch</span>
                 </div>
               </div>
             </div>
 
             {lastGesture && (
               <div className="space-y-2">
-                <Badge className="girlboss-badge text-lg px-4 py-2">Last Gesture: {lastGesture}</Badge>
-                <p className="text-sm text-muted-foreground font-medium">Total gestures: {gestureCount} 🔥</p>
+                <Badge className="girlboss-badge text-lg px-4 py-2 font-mono">Last Gesture: {lastGesture}</Badge>
+                <p className="text-sm text-gray-300 font-mono">Total gestures: {gestureCount} 🔥</p>
               </div>
             )}
 
-            <div className="text-xs text-muted-foreground space-y-1">
+            <div className="text-xs text-gray-300 font-mono space-y-1">
               <p>💡 Swipe up/down to navigate</p>
               <p>💡 Double tap for quick actions</p>
               <p>💡 Long press for context menus</p>
@@ -288,39 +288,39 @@ export function MobileGestureDemo() {
       </TouchGestureWrapper>
 
       {/* Gesture Guide */}
-      <Card className="boss-card">
+      <Card className="boss-card bg-dark-card border border-gray-700">
         <CardContent className="p-6">
-          <h4 className="font-bold boss-heading mb-4 flex items-center gap-2">
-            <Zap className="h-5 w-5 text-purple-600" />
+          <h4 className="font-bold font-orbitron uppercase tracking-wider text-white mb-4 flex items-center gap-2">
+            <Zap className="h-5 w-5 text-neon-purple" />
             Boss Gesture Commands
           </h4>
           <div className="grid gap-3 md:grid-cols-2">
-            <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-              <ArrowUp className="h-5 w-5 text-purple-600" />
+            <div className="flex items-center gap-3 p-3 bg-dark-bg border border-neon-purple rounded-sm">
+              <ArrowUp className="h-5 w-5 text-neon-purple" />
               <div>
-                <div className="font-semibold">Swipe Up</div>
-                <div className="text-sm text-muted-foreground">Quick actions menu</div>
+                <div className="font-semibold font-mono text-white">Swipe Up</div>
+                <div className="text-sm text-gray-300 font-mono">Quick actions menu</div>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-              <ArrowDown className="h-5 w-5 text-pink-600" />
+            <div className="flex items-center gap-3 p-3 bg-dark-bg border border-neon-cyan rounded-sm">
+              <ArrowDown className="h-5 w-5 text-neon-cyan" />
               <div>
-                <div className="font-semibold">Swipe Down</div>
-                <div className="text-sm text-muted-foreground">Refresh content</div>
+                <div className="font-semibold font-mono text-white">Swipe Down</div>
+                <div className="text-sm text-gray-300 font-mono">Refresh content</div>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-              <ArrowLeft className="h-5 w-5 text-teal-600" />
+            <div className="flex items-center gap-3 p-3 bg-dark-bg border border-neon-orange rounded-sm">
+              <ArrowLeft className="h-5 w-5 text-neon-orange" />
               <div>
-                <div className="font-semibold">Swipe Left</div>
-                <div className="text-sm text-muted-foreground">Previous page/task</div>
+                <div className="font-semibold font-mono text-white">Swipe Left</div>
+                <div className="text-sm text-gray-300 font-mono">Previous page/task</div>
               </div>
             </div>
-            <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-              <ArrowRight className="h-5 w-5 text-orange-600" />
+            <div className="flex items-center gap-3 p-3 bg-dark-bg border border-neon-magenta rounded-sm">
+              <ArrowRight className="h-5 w-5 text-neon-magenta" />
               <div>
-                <div className="font-semibold">Swipe Right</div>
-                <div className="text-sm text-muted-foreground">Next page/complete task</div>
+                <div className="font-semibold font-mono text-white">Swipe Right</div>
+                <div className="text-sm text-gray-300 font-mono">Next page/complete task</div>
               </div>
             </div>
           </div>

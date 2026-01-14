@@ -204,31 +204,31 @@ export function TrainingDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'completed': return 'bg-green-500'
-      case 'training': return 'bg-blue-500'
-      case 'failed': return 'bg-red-500'
-      case 'pending': return 'bg-yellow-500'
-      default: return 'bg-gray-500'
+      case 'completed': return 'bg-neon-lime'
+      case 'training': return 'bg-neon-cyan'
+      case 'failed': return 'bg-neon-magenta'
+      case 'pending': return 'bg-neon-orange'
+      default: return 'bg-gray-700'
     }
   }
 
   const getInsightIcon = (type: string) => {
     switch (type) {
-      case 'success': return <CheckCircle className="h-4 w-4 text-green-500" />
-      case 'warning': return <AlertTriangle className="h-4 w-4 text-yellow-500" />
-      case 'error': return <AlertTriangle className="h-4 w-4 text-red-500" />
-      case 'optimization': return <Lightbulb className="h-4 w-4 text-blue-500" />
+      case 'success': return <CheckCircle className="h-4 w-4 text-neon-lime" />
+      case 'warning': return <AlertTriangle className="h-4 w-4 text-neon-orange" />
+      case 'error': return <AlertTriangle className="h-4 w-4 text-neon-magenta" />
+      case 'optimization': return <Lightbulb className="h-4 w-4 text-neon-cyan" />
       default: return <Target className="h-4 w-4" />
     }
   }
 
   const getInsightColor = (type: string) => {
     switch (type) {
-      case 'success': return 'border-green-200 bg-green-50'
-      case 'warning': return 'border-yellow-200 bg-yellow-50'
-      case 'error': return 'border-red-200 bg-red-50'
-      case 'optimization': return 'border-blue-200 bg-blue-50'
-      default: return 'border-gray-200 bg-gray-50'
+      case 'success': return 'border-neon-lime bg-dark-card'
+      case 'warning': return 'border-neon-orange bg-dark-card'
+      case 'error': return 'border-neon-magenta bg-dark-card'
+      case 'optimization': return 'border-neon-cyan bg-dark-card'
+      default: return 'border-gray-700 bg-dark-card'
     }
   }
 
@@ -246,8 +246,8 @@ export function TrainingDashboard() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold">Agent Training Dashboard</h2>
-          <p className="text-gray-600">Monitor and optimize your AI agents&apos; performance</p>
+          <h2 className="text-2xl font-bold font-orbitron uppercase tracking-wider text-white">Agent Training Dashboard</h2>
+          <p className="text-gray-300 font-mono">Monitor and optimize your AI agents&apos; performance</p>
         </div>
         <Button onClick={loadTrainingData} variant="outline">
           <TrendingUp className="h-4 w-4 mr-2" />
@@ -336,12 +336,12 @@ export function TrainingDashboard() {
                         <Badge variant="outline">#{index + 1}</Badge>
                         <div>
                           <p className="font-medium capitalize">{agent.agentId}</p>
-                          <p className="text-sm text-gray-600">{agent.totalInteractions} interactions</p>
+                          <p className="text-sm text-gray-300 font-mono">{agent.totalInteractions} interactions</p>
                         </div>
                       </div>
                       <div className="text-right">
-                        <p className="font-medium">{agent.successRate.toFixed(1)}%</p>
-                        <p className="text-sm text-gray-600">{agent.averageRating.toFixed(1)}★</p>
+                        <p className="font-medium font-mono">{agent.successRate.toFixed(1)}%</p>
+                        <p className="text-sm text-gray-300 font-mono">{agent.averageRating.toFixed(1)}★</p>
                       </div>
                     </div>
                   ))}
@@ -409,13 +409,13 @@ export function TrainingDashboard() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="text-center">
-                      <div className="text-4xl font-bold text-purple-600">
+                      <div className="text-4xl font-bold text-neon-purple font-mono">
                         {currentAgent.overallScore.toFixed(0)}
                       </div>
-                      <p className="text-sm text-gray-600">out of 100</p>
+                      <p className="text-sm text-gray-300 font-mono">out of 100</p>
                     </div>
                     <Progress value={currentAgent.overallScore} className="h-2" />
-                    <div className="text-center text-sm text-gray-600">
+                    <div className="text-center text-sm text-gray-300 font-mono">
                       {currentAgent.benchmarkComparison.percentile.toFixed(0)}th percentile
                     </div>
                   </div>
@@ -533,7 +533,7 @@ export function TrainingDashboard() {
                   </Button>
                   
                   {(!metrics || metrics.totalInteractions < 5) && (
-                    <p className="text-sm text-gray-500 text-center">
+                    <p className="text-sm text-gray-300 text-center font-mono">
                       Need at least 5 interactions to start training. 
                       <br />
                       Current: {metrics?.totalInteractions || 0} interactions
@@ -559,10 +559,10 @@ export function TrainingDashboard() {
                     </div>
                   ) : (
                     fineTuningJobs.map((job) => (
-                      <div key={job.id} className="flex items-center justify-between p-3 border rounded-lg">
+                      <div key={job.id} className="flex items-center justify-between p-3 border border-gray-700 rounded-sm">
                         <div>
-                          <p className="font-medium capitalize">{job.agentId}</p>
-                          <p className="text-sm text-gray-600">
+                          <p className="font-medium capitalize font-mono">{job.agentId}</p>
+                          <p className="text-sm text-gray-300 font-mono">
                             {job.trainingDataSize} samples • {new Date(job.createdAt).toLocaleDateString()}
                           </p>
                         </div>

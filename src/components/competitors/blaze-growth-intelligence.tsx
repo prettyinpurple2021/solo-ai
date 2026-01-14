@@ -182,19 +182,19 @@ export function BlazeGrowthIntelligence({
 
   const getThreatLevelColor = (level: string) => {
     switch (level) {
-      case 'critical': return 'bg-red-500'
-      case 'high': return 'bg-orange-500'
-      case 'medium': return 'bg-yellow-500'
-      case 'low': return 'bg-green-500'
-      default: return 'bg-gray-500'
+      case 'critical': return 'bg-neon-magenta'
+      case 'high': return 'bg-neon-orange'
+      case 'medium': return 'bg-neon-orange'
+      case 'low': return 'bg-neon-lime'
+      default: return 'bg-gray-700'
     }
   }
 
   const getPriorityIcon = (priority: string) => {
     switch (priority) {
-      case 'high': return <AlertTriangle className="h-4 w-4 text-red-500" />
-      case 'medium': return <Clock className="h-4 w-4 text-yellow-500" />
-      case 'low': return <CheckCircle className="h-4 w-4 text-green-500" />
+      case 'high': return <AlertTriangle className="h-4 w-4 text-neon-magenta" />
+      case 'medium': return <Clock className="h-4 w-4 text-neon-orange" />
+      case 'low': return <CheckCircle className="h-4 w-4 text-neon-lime" />
       default: return <CheckCircle className="h-4 w-4 text-gray-500" />
     }
   }
@@ -204,11 +204,11 @@ export function BlazeGrowthIntelligence({
       <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-purple-500" />
+            <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider">
+              <Zap className="h-5 w-5 text-neon-purple" />
               Blaze Growth Intelligence
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="font-mono">
               Pricing and growth strategy analysis for {competitorName}
             </CardDescription>
           </div>
@@ -253,7 +253,7 @@ export function BlazeGrowthIntelligence({
 
           <TabsContent value="pricing" className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Pricing Intelligence</h3>
+              <h3 className="text-lg font-semibold font-orbitron uppercase tracking-wider">Pricing Intelligence</h3>
               <Button 
                 onClick={analyzePricingStrategy}
                 disabled={loading}
@@ -292,11 +292,11 @@ export function BlazeGrowthIntelligence({
                           {pricingAnalysis.competitivePricing.marketPosition}
                         </Badge>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm">Price Advantage:</span>
-                          <span className={`text-sm font-medium ${
+                          <span className="text-sm font-mono">Price Advantage:</span>
+                          <span className={`text-sm font-medium font-mono ${
                             pricingAnalysis.competitivePricing.priceAdvantage > 0 
-                              ? 'text-green-600' 
-                              : 'text-red-600'
+                              ? 'text-neon-lime' 
+                              : 'text-neon-magenta'
                           }`}>
                             {pricingAnalysis.competitivePricing.priceAdvantage > 0 ? '+' : ''}
                             {pricingAnalysis.competitivePricing.priceAdvantage}%
@@ -323,8 +323,8 @@ export function BlazeGrowthIntelligence({
                               <h4 className="font-medium">{gap.segment}</h4>
                               <Badge variant="outline">${gap.recommendedPrice}</Badge>
                             </div>
-                            <p className="text-sm text-muted-foreground mb-1">{gap.opportunity}</p>
-                            <p className="text-sm font-medium text-green-600">{gap.potentialRevenue}</p>
+                            <p className="text-sm text-muted-foreground mb-1 font-mono">{gap.opportunity}</p>
+                            <p className="text-sm font-medium text-neon-lime font-mono">{gap.potentialRevenue}</p>
                           </div>
                         ))}
                       </div>
@@ -420,7 +420,7 @@ export function BlazeGrowthIntelligence({
 
           <TabsContent value="revenue" className="space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold">Revenue Optimization</h3>
+              <h3 className="text-lg font-semibold font-orbitron uppercase tracking-wider">Revenue Optimization</h3>
               <Button 
                 onClick={generateRevenueOptimization}
                 disabled={loading}
@@ -447,9 +447,9 @@ export function BlazeGrowthIntelligence({
                     <CardContent>
                       <p className="text-sm mb-3">{optimization.description}</p>
                       <div className="space-y-2">
-                        <div className="flex items-center justify-between text-sm">
+                        <div className="flex items-center justify-between text-sm font-mono">
                           <span>Expected Impact:</span>
-                          <span className="font-medium text-green-600">{optimization.revenueImpact}</span>
+                          <span className="font-medium text-neon-lime">{optimization.revenueImpact}</span>
                         </div>
                         <div className="flex items-center justify-between text-sm">
                           <span>Risk Level:</span>

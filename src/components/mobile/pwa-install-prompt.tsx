@@ -112,25 +112,25 @@ export default function PWAInstallPrompt({
         transition={{ duration: 0.3, ease: "easeOut" }}
         className={cn("fixed bottom-4 left-4 right-4 z-50", className)}
       >
-        <Card className="relative overflow-hidden border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-pink-50 shadow-2xl">
+        <Card className="relative overflow-hidden border border-neon-purple bg-dark-card shadow-[0_0_20px_rgba(11,228,236,0.3)]">
           {/* Holographic overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-cyan-500/10 opacity-50" />
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500" />
+          <div className="absolute inset-0 bg-gradient-to-r from-neon-purple/10 via-neon-magenta/10 to-neon-cyan/10 opacity-50" />
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neon-purple via-neon-magenta to-neon-cyan" />
           {/* Sparkle effects */}
           <div className="absolute top-2 right-2">
-            <Sparkles className="w-4 h-4 text-purple-500 animate-pulse" />
+            <Sparkles className="w-4 h-4 text-neon-purple animate-pulse" />
           </div>
           <CardHeader className="relative pb-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 bg-dark-bg border border-neon-purple rounded-sm flex items-center justify-center shadow-[0_0_15px_rgba(11,228,236,0.2)]">
                   <Smartphone className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <CardTitle className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  <CardTitle className="text-lg font-bold font-orbitron uppercase tracking-wider text-white">
                     Install SoloSuccess AI
                   </CardTitle>
-                  <CardDescription className="text-sm text-gray-600">
+                  <CardDescription className="text-sm text-gray-300 font-mono">
                     Get the full mobile experience
                   </CardDescription>
                 </div>
@@ -139,7 +139,7 @@ export default function PWAInstallPrompt({
                 variant="ghost"
                 size="sm"
                 onClick={handleDismiss}
-                className="h-8 w-8 p-0 hover:bg-gray-100"
+                className="h-8 w-8 p-0 hover:bg-dark-hover"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -149,27 +149,27 @@ export default function PWAInstallPrompt({
             {/* Benefits */}
             <div className="grid grid-cols-2 gap-3">
               <div className="flex items-center gap-2 text-sm">
-                <Wifi className="w-4 h-4 text-green-500" />
-                <span className="text-gray-700">Offline access</span>
+                <Wifi className="w-4 h-4 text-neon-lime" />
+                <span className="text-gray-300 font-mono">Offline access</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Zap className="w-4 h-4 text-yellow-500" />
-                <span className="text-gray-700">Faster loading</span>
+                <Zap className="w-4 h-4 text-neon-orange" />
+                <span className="text-gray-300 font-mono">Faster loading</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <Crown className="w-4 h-4 text-purple-500" />
-                <span className="text-gray-700">Full features</span>
+                <Crown className="w-4 h-4 text-neon-purple" />
+                <span className="text-gray-300 font-mono">Full features</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <CheckCircle className="w-4 h-4 text-blue-500" />
-                <span className="text-gray-700">Push notifications</span>
+                <CheckCircle className="w-4 h-4 text-neon-cyan" />
+                <span className="text-gray-300 font-mono">Push notifications</span>
               </div>
             </div>
             {/* Install button */}
             <Button
               onClick={handleInstall}
               disabled={isInstalling}
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 rounded-xl shadow-lg transition-all duration-200 transform hover:scale-105"
+              className="w-full bg-neon-purple hover:bg-neon-purple/80 text-white font-mono font-bold uppercase tracking-wider py-3 rounded-sm shadow-[0_0_20px_rgba(11,228,236,0.3)] transition-all duration-200 transform hover:scale-105"
             >
               {isInstalling ? (
                 <div className="flex items-center gap-2">
@@ -183,7 +183,7 @@ export default function PWAInstallPrompt({
                 </div>
               )}
             </Button>
-            <div className="text-xs text-gray-500 text-center">
+            <div className="text-xs text-gray-300 text-center font-mono">
               💡 Get instant access to your AI business platform
             </div>
           </CardContent>

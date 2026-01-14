@@ -98,10 +98,10 @@ export default function MobileDashboardWidgets({
   const renderStatsWidget = (widget: Widget) => {
     const stats = widget.data
     return (
-      <Card className="touch-friendly-card bg-gradient-to-br from-purple-50 to-blue-50 border-purple-200">
+      <Card className="touch-friendly-card bg-dark-card border border-neon-purple">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">Today's Progress</CardTitle>
+            <CardTitle className="text-sm font-medium font-orbitron uppercase tracking-wider text-white">Today's Progress</CardTitle>
             <Badge variant="outline" className="text-xs">
               {stats.completion_rate}%
             </Badge>
@@ -109,24 +109,24 @@ export default function MobileDashboardWidgets({
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div className="text-center p-3 bg-white/50 rounded-lg touch-target">
-              <div className="text-2xl font-bold text-purple-600">
+            <div className="text-center p-3 bg-dark-hover rounded-sm touch-target border border-gray-700">
+              <div className="text-2xl font-bold text-neon-purple font-mono">
                 {stats.tasks_completed}
               </div>
-              <div className="text-xs text-gray-600">Tasks Done</div>
+              <div className="text-xs text-gray-300 font-mono">Tasks Done</div>
             </div>
-            <div className="text-center p-3 bg-white/50 rounded-lg touch-target">
-              <div className="text-2xl font-bold text-blue-600">
+            <div className="text-center p-3 bg-dark-hover rounded-sm touch-target border border-gray-700">
+              <div className="text-2xl font-bold text-neon-cyan font-mono">
                 {stats.focus_minutes}
               </div>
-              <div className="text-xs text-gray-600">Focus Mins</div>
+              <div className="text-xs text-gray-300 font-mono">Focus Mins</div>
             </div>
           </div>
           
           <div className="space-y-2">
             <div className="flex justify-between text-xs">
-              <span>Daily Goal</span>
-              <span>{stats.tasks_completed}/{stats.total_tasks}</span>
+              <span className="font-mono text-gray-300">Daily Goal</span>
+              <span className="font-mono text-gray-300">{stats.tasks_completed}/{stats.total_tasks}</span>
             </div>
             <Progress value={stats.completion_rate} className="h-2" />
           </div>
@@ -138,10 +138,10 @@ export default function MobileDashboardWidgets({
   const renderTasksWidget = (widget: Widget) => {
     const tasks = widget.data
     return (
-      <Card className="touch-friendly-card bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+      <Card className="touch-friendly-card bg-dark-card border border-neon-lime">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">Quick Tasks</CardTitle>
+            <CardTitle className="text-sm font-medium font-orbitron uppercase tracking-wider text-white">Quick Tasks</CardTitle>
             <Button 
               size="sm" 
               className="h-6 w-6 p-0 touch-target"
@@ -155,25 +155,25 @@ export default function MobileDashboardWidgets({
           {tasks.slice(0, 3).map((task: any, index: number) => (
             <motion.div
               key={task.id}
-              className="flex items-center gap-3 p-2 bg-white/50 rounded-lg touch-target"
+              className="flex items-center gap-3 p-2 bg-dark-hover border border-gray-700 rounded-sm touch-target"
               whileTap={{ scale: 0.98 }}
               onTap={() => onWidgetAction(widget.id, 'complete_task', task.id)}
             >
               <div className={cn(
                 "w-4 h-4 rounded-full border-2 flex-shrink-0",
-                task.completed ? "bg-green-500 border-green-500" : "border-gray-300"
+                task.completed ? "bg-neon-lime border-neon-lime" : "border-gray-700"
               )}>
                 {task.completed && <CheckCircle className="w-4 h-4 text-white" />}
               </div>
               <div className="flex-1 min-w-0">
                 <div className={cn(
-                  "text-xs font-medium truncate",
+                  "text-xs font-medium truncate font-mono text-gray-300",
                   task.completed && "line-through text-gray-500"
                 )}>
                   {task.title}
                 </div>
                 {task.priority === 'high' && (
-                  <Badge variant="destructive" className="text-xs h-4">
+                  <Badge className="text-xs h-4 bg-dark-card text-neon-magenta border border-neon-magenta font-mono">
                     High
                   </Badge>
                 )}
@@ -185,7 +185,7 @@ export default function MobileDashboardWidgets({
             <Button 
               variant="ghost" 
               size="sm" 
-              className="w-full text-xs touch-target"
+              className="w-full text-xs touch-target font-mono text-gray-300"
               onClick={() => onWidgetAction(widget.id, 'view_all')}
             >
               View {tasks.length - 3} more tasks
@@ -200,10 +200,10 @@ export default function MobileDashboardWidgets({
   const renderGoalsWidget = (widget: Widget) => {
     const goals = widget.data
     return (
-      <Card className="touch-friendly-card bg-gradient-to-br from-orange-50 to-red-50 border-orange-200">
+      <Card className="touch-friendly-card bg-dark-card border border-neon-orange">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">Active Goals</CardTitle>
+            <CardTitle className="text-sm font-medium font-orbitron uppercase tracking-wider text-white">Active Goals</CardTitle>
             <Button 
               size="sm" 
               className="h-6 w-6 p-0 touch-target"
@@ -217,15 +217,15 @@ export default function MobileDashboardWidgets({
           {goals.slice(0, 2).map((goal: any, index: number) => (
             <motion.div
               key={goal.id}
-              className="p-3 bg-white/50 rounded-lg touch-target"
+              className="p-3 bg-dark-hover border border-gray-700 rounded-sm touch-target"
               whileTap={{ scale: 0.98 }}
               onTap={() => onWidgetAction(widget.id, 'view_goal', goal.id)}
             >
               <div className="flex items-center justify-between mb-2">
-                <div className="text-xs font-medium truncate flex-1">
+                <div className="text-xs font-medium truncate flex-1 font-mono text-gray-300">
                   {goal.title}
                 </div>
-                <div className="text-xs text-orange-600 font-bold">
+                <div className="text-xs text-neon-orange font-bold font-mono">
                   {goal.progress}%
                 </div>
               </div>
@@ -233,7 +233,7 @@ export default function MobileDashboardWidgets({
               {goal.due_date && (
                 <div className="flex items-center gap-1 mt-2">
                   <Calendar className="h-3 w-3 text-gray-500" />
-                  <span className="text-xs text-gray-500">
+                  <span className="text-xs text-gray-300 font-mono">
                     Due {new Date(goal.due_date).toLocaleDateString()}
                   </span>
                 </div>
@@ -248,10 +248,10 @@ export default function MobileDashboardWidgets({
   const renderAgentsWidget = (widget: Widget) => {
     const agents = widget.data
     return (
-      <Card className="touch-friendly-card bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+      <Card className="touch-friendly-card bg-dark-card border border-neon-purple">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">AI Squad</CardTitle>
+            <CardTitle className="text-sm font-medium font-orbitron uppercase tracking-wider text-white">AI Squad</CardTitle>
             <Badge variant="outline" className="text-xs">
               {agents.length} Active
             </Badge>
@@ -262,23 +262,23 @@ export default function MobileDashboardWidgets({
             {agents.map((agent: any, index: number) => (
               <motion.div
                 key={agent.id}
-                className="flex-shrink-0 p-3 bg-white/50 rounded-lg touch-target min-w-[80px] text-center"
+                className="flex-shrink-0 p-3 bg-dark-hover border border-gray-700 rounded-sm touch-target min-w-[80px] text-center"
                 whileTap={{ scale: 0.95 }}
                 onTap={() => onWidgetAction(widget.id, 'chat_agent', agent.id)}
               >
                 <Avatar className="w-8 h-8 mx-auto mb-2">
                   <AvatarFallback 
                     style={{ backgroundColor: `var(--bg-color-${Math.random().toString(36).substr(2, 9)})`}}
-                    className="text-white text-xs"
+                    className="text-white text-xs font-mono"
                   >
                     {agent.display_name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                <div className="text-xs font-medium truncate">
+                <div className="text-xs font-medium truncate font-mono text-gray-300">
                   {agent.display_name}
                 </div>
                 {agent.has_new_messages && (
-                  <div className="w-2 h-2 bg-red-500 rounded-full mx-auto mt-1" />
+                  <div className="w-2 h-2 bg-neon-magenta rounded-sm mx-auto mt-1" />
                 )}
               </motion.div>
             ))}
@@ -291,10 +291,10 @@ export default function MobileDashboardWidgets({
   const renderInsightsWidget = (widget: Widget) => {
     const insights = widget.data
     return (
-      <Card className="touch-friendly-card bg-gradient-to-br from-teal-50 to-cyan-50 border-teal-200">
+      <Card className="touch-friendly-card bg-dark-card border border-neon-cyan">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">AI Insights</CardTitle>
+            <CardTitle className="text-sm font-medium font-orbitron uppercase tracking-wider text-white">AI Insights</CardTitle>
             <Button 
               size="sm" 
               className="h-6 w-6 p-0 touch-target"
@@ -308,15 +308,15 @@ export default function MobileDashboardWidgets({
           {insights.slice(0, 2).map((insight: any, index: number) => (
             <motion.div
               key={index}
-              className="p-3 bg-white/50 rounded-lg touch-target"
+              className="p-3 bg-dark-hover border border-gray-700 rounded-sm touch-target"
               whileTap={{ scale: 0.98 }}
               onTap={() => onWidgetAction(widget.id, 'view_insight', insight)}
             >
               <div className="flex items-start gap-2">
-                <div className="w-2 h-2 bg-teal-500 rounded-full mt-2 flex-shrink-0" />
+                <div className="w-2 h-2 bg-neon-cyan rounded-sm mt-2 flex-shrink-0" />
                 <div>
-                  <div className="text-xs font-medium mb-1">{insight.title}</div>
-                  <div className="text-xs text-gray-600 line-clamp-2">
+                  <div className="text-xs font-medium mb-1 font-mono text-gray-300">{insight.title}</div>
+                  <div className="text-xs text-gray-300 font-mono line-clamp-2">
                     {insight.description}
                   </div>
                 </div>
@@ -331,10 +331,10 @@ export default function MobileDashboardWidgets({
   const renderFocusWidget = (widget: Widget) => {
     const focus = widget.data
     return (
-      <Card className="touch-friendly-card bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-200">
+      <Card className="touch-friendly-card bg-dark-card border border-neon-orange">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <CardTitle className="text-sm font-medium">Focus Session</CardTitle>
+            <CardTitle className="text-sm font-medium font-orbitron uppercase tracking-wider text-white">Focus Session</CardTitle>
             <Badge variant="outline" className="text-xs">
               {focus.is_active ? 'Active' : 'Ready'}
             </Badge>
@@ -348,7 +348,7 @@ export default function MobileDashboardWidgets({
                 cy="48"
                 r="40"
                 fill="transparent"
-                stroke="#f3f4f6"
+                stroke="#30363d"
                 strokeWidth="6"
               />
               <circle
@@ -356,7 +356,7 @@ export default function MobileDashboardWidgets({
                 cy="48"
                 r="40"
                 fill="transparent"
-                stroke="#f59e0b"
+                stroke="#ff8a00"
                 strokeWidth="6"
                 strokeDasharray={`${2 * Math.PI * 40}`}
                 strokeDashoffset={`${2 * Math.PI * 40 * (1 - focus.progress / 100)}`}
@@ -365,10 +365,10 @@ export default function MobileDashboardWidgets({
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-lg font-bold text-yellow-600">
+                <div className="text-lg font-bold text-neon-orange font-mono">
                   {focus.remaining_time}
                 </div>
-                <div className="text-xs text-gray-500">mins</div>
+                <div className="text-xs text-gray-300 font-mono">mins</div>
               </div>
             </div>
           </div>
@@ -377,8 +377,9 @@ export default function MobileDashboardWidgets({
             className={cn(
               "w-full touch-target",
               focus.is_active 
-                ? "bg-red-500 hover:bg-red-600" 
-                : "bg-yellow-500 hover:bg-yellow-600"
+                ? "bg-neon-magenta hover:bg-neon-magenta/80" 
+                : "bg-neon-orange hover:bg-neon-orange/80",
+              "font-mono font-bold uppercase tracking-wider"
             )}
             onClick={() => onWidgetAction(widget.id, focus.is_active ? 'stop_focus' : 'start_focus')}
           >
@@ -435,9 +436,9 @@ export default function MobileDashboardWidgets({
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-200"
+          className="flex items-center justify-between p-3 bg-dark-card rounded-sm border border-neon-cyan"
         >
-          <div className="text-sm font-medium text-blue-800">
+          <div className="text-sm font-medium text-neon-cyan font-mono">
             Drag widgets to reorder
           </div>
           <Button 
@@ -459,7 +460,7 @@ export default function MobileDashboardWidgets({
 
       {/* Quick Actions Footer */}
       <motion.div
-        className="sticky bottom-0 bg-white/90 backdrop-blur-sm border-t p-4 -mx-4"
+        className="sticky bottom-0 bg-dark-bg/90 backdrop-blur-sm border-t border-gray-800 p-4 -mx-4"
         initial={false}
       >
         <div className="grid grid-cols-4 gap-3">
@@ -470,7 +471,7 @@ export default function MobileDashboardWidgets({
             onClick={() => onWidgetAction('quick', 'add_task')}
           >
             <Plus className="h-4 w-4 mb-1" />
-            <span className="text-xs">Task</span>
+            <span className="text-xs font-mono">Task</span>
           </Button>
           <Button 
             variant="outline" 
@@ -479,7 +480,7 @@ export default function MobileDashboardWidgets({
             onClick={() => onWidgetAction('quick', 'chat_ai')}
           >
             <Users className="h-4 w-4 mb-1" />
-            <span className="text-xs">AI Chat</span>
+            <span className="text-xs font-mono">AI Chat</span>
           </Button>
           <Button 
             variant="outline" 
@@ -488,7 +489,7 @@ export default function MobileDashboardWidgets({
             onClick={() => onWidgetAction('quick', 'start_focus')}
           >
             <Clock className="h-4 w-4 mb-1" />
-            <span className="text-xs">Focus</span>
+            <span className="text-xs font-mono">Focus</span>
           </Button>
           <Button 
             variant="outline" 
@@ -497,7 +498,7 @@ export default function MobileDashboardWidgets({
             onClick={() => onWidgetAction('quick', 'view_analytics')}
           >
             <BarChart3 className="h-4 w-4 mb-1" />
-            <span className="text-xs">Stats</span>
+            <span className="text-xs font-mono">Stats</span>
           </Button>
         </div>
       </motion.div>

@@ -135,9 +135,9 @@ export function CompensationModeler() {
   }
 
   const getRunwayColor = (runway: number) => {
-    if (runway >= 12) return "text-green-600"
-    if (runway >= 6) return "text-yellow-600"
-    return "text-red-600"
+    if (runway >= 12) return "text-neon-lime"
+    if (runway >= 6) return "text-neon-orange"
+    return "text-neon-magenta"
   }
 
   const getRunwayStatus = (runway: number) => {
@@ -171,11 +171,11 @@ export function CompensationModeler() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calculator className="w-5 h-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider">
+            <Calculator className="w-5 h-5 text-neon-purple" />
             Compensation & Equity Modeler
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="font-mono">
             Model the financial impact of hiring and experiment with different compensation structures
           </CardDescription>
         </CardHeader>
@@ -248,7 +248,7 @@ export function CompensationModeler() {
                             {businessMetrics.runway.toFixed(1)} months
                           </span>
                         </div>
-                        <Badge className={getRunwayColor(businessMetrics.runway).replace('text-', 'bg-').replace('-600', '-100')}>
+                        <Badge className={`bg-dark-card border ${getRunwayColor(businessMetrics.runway).replace('text-', 'border-')}`}>
                           {getRunwayStatus(businessMetrics.runway)}
                         </Badge>
                       </div>
@@ -413,11 +413,11 @@ export function CompensationModeler() {
                       </div>
                       <div className="flex justify-between">
                         <span>Change:</span>
-                        <span className={`font-semibold ${financialImpact.runwayChange < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                        <span className={`font-semibold font-mono ${financialImpact.runwayChange < 0 ? 'text-neon-magenta' : 'text-neon-lime'}`}>
                           {financialImpact.runwayChange > 0 ? '+' : ''}{financialImpact.runwayChange.toFixed(1)} months
                         </span>
                       </div>
-                      <Badge className={getRunwayColor(financialImpact.newRunway).replace('text-', 'bg-').replace('-600', '-100')}>
+                      <Badge className={`bg-dark-card border ${getRunwayColor(financialImpact.newRunway).replace('text-', 'border-')}`}>
                         {getRunwayStatus(financialImpact.newRunway)}
                       </Badge>
                     </CardContent>
@@ -463,21 +463,21 @@ export function CompensationModeler() {
                     </CardHeader>
                     <CardContent className="space-y-2">
                       {financialImpact.newRunway < 6 && (
-                        <div className="p-2 bg-red-50 rounded border border-red-200">
+                        <div className="p-2 bg-dark-card border border-neon-magenta rounded-sm font-mono">
                           <strong>⚠️ Low Runway Warning:</strong> Consider raising additional funding or reducing costs.
                         </div>
                       )}
                       {financialImpact.newRunway >= 6 && financialImpact.newRunway < 12 && (
-                        <div className="p-2 bg-yellow-50 rounded border border-yellow-200">
+                        <div className="p-2 bg-dark-card border border-neon-orange rounded-sm font-mono">
                           <strong>📈 Growth Opportunity:</strong> Focus on revenue growth to extend runway.
                         </div>
                       )}
                       {financialImpact.newRunway >= 12 && (
-                        <div className="p-2 bg-green-50 rounded border border-green-200">
+                        <div className="p-2 bg-dark-card border border-neon-lime rounded-sm font-mono">
                           <strong>✅ Strong Position:</strong> You have sufficient runway for this hire.
                         </div>
                       )}
-                      <div className="p-2 bg-blue-50 rounded border border-blue-200">
+                      <div className="p-2 bg-dark-card border border-neon-cyan rounded-sm font-mono">
                         <strong>💡 Tip:</strong> Consider performance-based equity vesting to align incentives.
                       </div>
                     </CardContent>

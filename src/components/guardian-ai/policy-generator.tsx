@@ -146,11 +146,11 @@ export function PolicyGenerator() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="w-5 h-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider">
+            <FileText className="w-5 h-5 text-neon-purple" />
             Automated Policy Generator
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="font-mono">
             Generate customized Privacy Policy, Terms of Service, and Cookie Policy based on your business needs
           </CardDescription>
         </CardHeader>
@@ -249,7 +249,7 @@ export function PolicyGenerator() {
           <Button 
             onClick={generatePolicies}
             disabled={!policyData.businessName || !policyData.websiteUrl || !policyData.contactEmail || isGenerating}
-            className="w-full bg-purple-600 hover:bg-purple-700"
+            className="w-full bg-neon-purple hover:bg-neon-purple/80 font-mono font-bold uppercase tracking-wider"
           >
             {isGenerating ? "Generating Policies..." : "Generate All Policies"}
           </Button>
@@ -280,7 +280,7 @@ export function PolicyGenerator() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Badge variant="outline">Version {policy.version}</Badge>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-sm text-gray-500 font-mono">
                         Generated: {policy.lastGenerated.toLocaleDateString()}
                       </span>
                     </div>
@@ -303,8 +303,8 @@ export function PolicyGenerator() {
                       </Button>
                     </div>
                   </div>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <pre className="whitespace-pre-wrap text-sm font-mono">{policy.content}</pre>
+                  <div className="bg-dark-card border border-gray-700 p-4 rounded-sm">
+                    <pre className="whitespace-pre-wrap text-sm font-mono text-gray-300">{policy.content}</pre>
                   </div>
                 </TabsContent>
               ))}

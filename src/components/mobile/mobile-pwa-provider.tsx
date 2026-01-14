@@ -156,13 +156,13 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
         className={cn("min-h-screen", className)}
       >
         {/* Mobile Status Bar */}
-        <div className="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-200">
+        <div className="fixed top-0 left-0 right-0 z-40 bg-dark-bg/90 backdrop-blur-sm border-b border-gray-800">
           <div className="flex items-center justify-between px-4 py-2">
             <div className="flex items-center gap-2">
-              <Smartphone className="w-4 h-4 text-purple-600" />
-              <span className="text-sm font-medium text-gray-900">SoloSuccess AI</span>
+              <Smartphone className="w-4 h-4 text-neon-purple" />
+              <span className="text-sm font-medium font-orbitron uppercase tracking-wider text-white">SoloSuccess AI</span>
               {isInstalled && (
-                <Badge variant="outline" className="text-xs bg-green-50 text-green-700 border-green-200">
+                <Badge variant="outline" className="text-xs bg-dark-card text-neon-lime border border-neon-lime font-mono">
                   Installed
                 </Badge>
               )}
@@ -172,7 +172,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
               {/* Connection Status */}
               <div className={cn(
                 "w-6 h-6 rounded-full flex items-center justify-center",
-                isOnline ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
+                isOnline ? "bg-dark-card border border-neon-lime text-neon-lime" : "bg-dark-card border border-neon-magenta text-neon-magenta"
               )}>
                 {isOnline ? <Wifi className="w-3 h-3" /> : <WifiOff className="w-3 h-3" />}
               </div>
@@ -254,7 +254,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
               size="sm"
               variant="outline"
               onClick={() => setShowOfflineManager(true)}
-              className="h-10 w-10 p-0 bg-white/90 backdrop-blur-sm shadow-lg"
+              className="h-10 w-10 p-0 bg-dark-bg/90 backdrop-blur-sm shadow-[0_0_20px_rgba(11,228,236,0.2)]"
             >
               <Settings className="w-4 h-4" />
             </Button>
@@ -263,7 +263,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
 
         {/* Quick Actions Bar */}
         <div className="fixed bottom-4 left-4 right-4 z-30">
-          <Card className="bg-white/90 backdrop-blur-sm shadow-lg border-gray-200">
+          <Card className="bg-dark-bg/90 backdrop-blur-sm shadow-[0_0_20px_rgba(11,228,236,0.2)] border border-gray-800">
             <CardContent className="p-3">
               <div className="flex items-center justify-around">
                 <Button
@@ -273,7 +273,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
                   className="flex flex-col items-center gap-1 h-auto py-2"
                 >
                   <Home className="w-5 h-5" />
-                  <span className="text-xs">Home</span>
+                  <span className="text-xs font-mono">Home</span>
                 </Button>
                 
                 <Button
@@ -283,7 +283,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
                   className="flex flex-col items-center gap-1 h-auto py-2"
                 >
                   <RefreshCw className="w-5 h-5" />
-                  <span className="text-xs">Refresh</span>
+                  <span className="text-xs font-mono">Refresh</span>
                 </Button>
                 
                 <Button
@@ -293,7 +293,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
                   className="flex flex-col items-center gap-1 h-auto py-2"
                 >
                   <Bell className="w-5 h-5" />
-                  <span className="text-xs">Sync</span>
+                  <span className="text-xs font-mono">Sync</span>
                 </Button>
                 
                 {canInstall && !isInstalled && (

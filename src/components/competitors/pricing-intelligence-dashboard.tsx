@@ -148,21 +148,21 @@ export function PricingIntelligenceDashboard() {
 
   const getThreatLevelColor = (level: string) => {
     switch (level) {
-      case 'critical': return 'bg-red-500 text-white'
-      case 'high': return 'bg-orange-500 text-white'
-      case 'medium': return 'bg-yellow-500 text-black'
-      case 'low': return 'bg-green-500 text-white'
-      default: return 'bg-gray-500 text-white'
+      case 'critical': return 'bg-neon-magenta text-white'
+      case 'high': return 'bg-neon-orange text-white'
+      case 'medium': return 'bg-neon-orange text-white'
+      case 'low': return 'bg-neon-lime text-white'
+      default: return 'bg-gray-700 text-white'
     }
   }
 
   const getMarketPositionColor = (position: string) => {
     switch (position) {
-      case 'premium': return 'text-purple-600'
-      case 'mid_market': return 'text-blue-600'
-      case 'value': return 'text-green-600'
-      case 'budget': return 'text-orange-600'
-      default: return 'text-gray-600'
+      case 'premium': return 'text-neon-purple'
+      case 'mid_market': return 'text-neon-cyan'
+      case 'value': return 'text-neon-lime'
+      case 'budget': return 'text-neon-orange'
+      default: return 'text-gray-300'
     }
   }
 
@@ -170,11 +170,11 @@ export function PricingIntelligenceDashboard() {
     switch (availability) {
       case 'sufficient':
       case 'comprehensive':
-        return <CheckCircle className="h-4 w-4 text-green-500" />
+        return <CheckCircle className="h-4 w-4 text-neon-lime" />
       case 'insufficient':
-        return <AlertTriangle className="h-4 w-4 text-yellow-500" />
+        return <AlertTriangle className="h-4 w-4 text-neon-orange" />
       case 'error':
-        return <AlertTriangle className="h-4 w-4 text-red-500" />
+        return <AlertTriangle className="h-4 w-4 text-neon-magenta" />
       default:
         return <AlertTriangle className="h-4 w-4 text-gray-500" />
     }
@@ -185,11 +185,11 @@ export function PricingIntelligenceDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
-            <Zap className="h-6 w-6 text-purple-500" />
+          <h2 className="text-2xl font-bold font-orbitron uppercase tracking-wider flex items-center gap-2">
+            <Zap className="h-6 w-6 text-neon-purple" />
             Pricing Intelligence Dashboard
           </h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground font-mono">
             Blaze's competitive pricing and growth analysis across your monitored competitors
           </p>
         </div>
@@ -243,8 +243,8 @@ export function PricingIntelligenceDashboard() {
               <Target className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-600">{summary.market_opportunities}</div>
-              <p className="text-xs text-muted-foreground">
+              <div className="text-2xl font-bold text-neon-lime">{summary.market_opportunities}</div>
+              <p className="text-xs text-muted-foreground font-mono">
                 Pricing gaps identified
               </p>
             </CardContent>
@@ -307,11 +307,11 @@ export function PricingIntelligenceDashboard() {
                 <p className="text-sm text-muted-foreground">Average positioning</p>
               </div>
               <div>
-                <h4 className="font-medium mb-2">Pricing Gaps</h4>
-                <div className="text-2xl font-bold text-green-600">
+                <h4 className="font-medium mb-2 font-mono">Pricing Gaps</h4>
+                <div className="text-2xl font-bold text-neon-lime">
                   {marketInsights.total_pricing_gaps}
                 </div>
-                <p className="text-sm text-muted-foreground">Opportunities found</p>
+                <p className="text-sm text-muted-foreground font-mono">Opportunities found</p>
               </div>
               <div>
                 <h4 className="font-medium mb-2">Opportunity Score</h4>
@@ -338,13 +338,13 @@ export function PricingIntelligenceDashboard() {
         <CardContent>
           {loading ? (
             <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-4"></div>
-              <p>Analyzing competitor pricing strategies...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-neon-purple mx-auto mb-4"></div>
+              <p className="font-mono">Analyzing competitor pricing strategies...</p>
             </div>
           ) : pricingData.length > 0 ? (
             <div className="space-y-4">
               {pricingData.map((item, index) => (
-                <Card key={item.competitor.id} className="border-l-4 border-l-purple-500">
+                <Card key={item.competitor.id} className="border-l-4 border-l-neon-purple">
                   <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
@@ -382,14 +382,14 @@ export function PricingIntelligenceDashboard() {
                             </div>
                             <div className="flex items-center gap-1 mt-1">
                               {item.pricing_analysis.competitivePricing.priceAdvantage > 0 ? (
-                                <ArrowUpRight className="h-3 w-3 text-green-500" />
+                                <ArrowUpRight className="h-3 w-3 text-neon-lime" />
                               ) : (
-                                <ArrowDownRight className="h-3 w-3 text-red-500" />
+                                <ArrowDownRight className="h-3 w-3 text-neon-magenta" />
                               )}
-                              <span className={`text-sm ${
+                              <span className={`text-sm font-mono ${
                                 item.pricing_analysis.competitivePricing.priceAdvantage > 0 
-                                  ? 'text-green-600' 
-                                  : 'text-red-600'
+                                  ? 'text-neon-lime' 
+                                  : 'text-neon-magenta'
                               }`}>
                                 {item.pricing_analysis.competitivePricing.priceAdvantage > 0 ? '+' : ''}
                                 {item.pricing_analysis.competitivePricing.priceAdvantage}%
@@ -397,11 +397,11 @@ export function PricingIntelligenceDashboard() {
                             </div>
                           </div>
                           <div>
-                            <h4 className="font-medium mb-2">Opportunities</h4>
-                            <div className="text-lg font-bold text-green-600">
+                            <h4 className="font-medium mb-2 font-mono">Opportunities</h4>
+                            <div className="text-lg font-bold text-neon-lime">
                               {item.pricing_analysis.competitivePricing.pricingGaps.length}
                             </div>
-                            <div className="text-sm text-muted-foreground">
+                            <div className="text-sm text-muted-foreground font-mono">
                               Pricing gaps found
                             </div>
                           </div>
@@ -412,15 +412,15 @@ export function PricingIntelligenceDashboard() {
                             <h4 className="font-medium mb-2">Key Opportunities</h4>
                             <div className="space-y-2">
                               {item.pricing_analysis.competitivePricing.pricingGaps.slice(0, 2).map((gap, gapIndex) => (
-                                <div key={gapIndex} className="bg-green-50 border border-green-200 rounded-lg p-3">
+                                <div key={gapIndex} className="bg-dark-card border border-neon-lime rounded-sm p-3">
                                   <div className="flex items-center justify-between mb-1">
-                                    <span className="font-medium text-sm">{gap.segment}</span>
-                                    <Badge variant="outline" className="text-green-700">
+                                    <span className="font-medium text-sm font-mono">{gap.segment}</span>
+                                    <Badge variant="outline" className="text-neon-lime border-neon-lime">
                                       ${gap.recommendedPrice}
                                     </Badge>
                                   </div>
-                                  <p className="text-sm text-green-700">{gap.opportunity}</p>
-                                  <p className="text-xs text-green-600 mt-1">{gap.potentialRevenue}</p>
+                                  <p className="text-sm text-neon-lime font-mono">{gap.opportunity}</p>
+                                  <p className="text-xs text-neon-lime mt-1 font-mono">{gap.potentialRevenue}</p>
                                 </div>
                               ))}
                             </div>

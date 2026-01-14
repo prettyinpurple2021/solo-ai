@@ -279,11 +279,11 @@ export function FirstHireArchitect() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="w-5 h-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider">
+            <Users className="w-5 h-5 text-neon-purple" />
             First Hire Role Architect
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="font-mono">
             Self-analysis tool to identify business gaps and design the perfect first hire role
           </CardDescription>
         </CardHeader>
@@ -299,7 +299,7 @@ export function FirstHireArchitect() {
             <TabsContent value="0" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <Label className="text-lg font-semibold">Your Strengths</Label>
+                  <Label className="text-lg font-semibold font-orbitron uppercase tracking-wider">Your Strengths</Label>
                   <div className="space-y-2 mt-2">
                     {strengthOptions.map((strength) => (
                       <div key={strength} className="flex items-center space-x-2">
@@ -332,7 +332,7 @@ export function FirstHireArchitect() {
               </div>
 
               <div>
-                <Label className="text-lg font-semibold">Time Allocation (Hours per Week)</Label>
+                <Label className="text-lg font-semibold font-orbitron uppercase tracking-wider">Time Allocation (Hours per Week)</Label>
                 <div className="space-y-4 mt-2">
                   {timeSpentCategories.map((category) => (
                     <div key={category} className="space-y-2">
@@ -373,7 +373,7 @@ export function FirstHireArchitect() {
               </div>
 
               <div>
-                <Label className="text-lg font-semibold">Business Priorities (Next 6 Months)</Label>
+                <Label className="text-lg font-semibold font-orbitron uppercase tracking-wider">Business Priorities (Next 6 Months)</Label>
                 <div className="space-y-2 mt-2">
                   {selfAnalysis.priorities.map((priority, index) => (
                     <div key={index} className="flex gap-2">
@@ -418,7 +418,7 @@ export function FirstHireArchitect() {
                 <Button 
                   onClick={generateRoleProfile}
                   disabled={isGenerating}
-                  className="bg-purple-600 hover:bg-purple-700"
+                  className="bg-neon-purple hover:bg-neon-purple/80 font-mono font-bold uppercase tracking-wider"
                 >
                   {isGenerating ? "Generating..." : "Generate Role Profile"}
                 </Button>
@@ -567,7 +567,7 @@ export function FirstHireArchitect() {
             {/* Interview Prep Tab */}
             <TabsContent value="2" className="space-y-6">
               <div className="flex justify-between items-center">
-                <Label className="text-lg font-semibold">Interview Scorecard</Label>
+                <Label className="text-lg font-semibold font-orbitron uppercase tracking-wider">Interview Scorecard</Label>
                 <Button onClick={generateInterviewScorecard} variant="outline">
                   Generate Scorecard
                 </Button>
@@ -583,7 +583,7 @@ export function FirstHireArchitect() {
                       <div className="space-y-2">
                         <Label>Interview Questions</Label>
                         {interviewScorecard.questions[criterion]?.map((question, qIndex) => (
-                          <div key={qIndex} className="p-2 bg-gray-50 rounded">
+                          <div key={qIndex} className="p-2 bg-dark-card border border-gray-700 rounded-sm font-mono">
                             {question}
                           </div>
                         ))}

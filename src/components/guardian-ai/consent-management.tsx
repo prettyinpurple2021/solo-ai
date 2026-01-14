@@ -112,10 +112,10 @@ export function ConsentManagement() {
 
   const getStatusBadge = (status: string) => {
     const colors = {
-      pending: "bg-yellow-100 text-yellow-800",
-      processing: "bg-blue-100 text-blue-800",
-      completed: "bg-green-100 text-green-800",
-      rejected: "bg-red-100 text-red-800"
+      pending: "bg-dark-card text-neon-orange border border-neon-orange",
+      processing: "bg-dark-card text-neon-cyan border border-neon-cyan",
+      completed: "bg-dark-card text-neon-lime border border-neon-lime",
+      rejected: "bg-dark-card text-neon-magenta border border-neon-magenta"
     }
     return <Badge className={colors[status as keyof typeof colors]}>{status}</Badge>
   }
@@ -138,13 +138,13 @@ export function ConsentManagement() {
   const getConsentActionColor = (action: string) => {
     switch (action) {
       case "granted":
-        return "text-green-600"
+        return "text-neon-lime"
       case "denied":
-        return "text-red-600"
+        return "text-neon-magenta"
       case "withdrawn":
-        return "text-yellow-600"
+        return "text-neon-orange"
       default:
-        return "text-gray-600"
+        return "text-gray-300"
     }
   }
 
@@ -170,11 +170,11 @@ export function ConsentManagement() {
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider">
+            <Shield className="w-5 h-5 text-neon-purple" />
             Consent Management Hub
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="font-mono">
             Manage cookie banners, user consent, and data requests with full audit trail
           </CardDescription>
         </CardHeader>
@@ -271,12 +271,12 @@ export function ConsentManagement() {
                     </div>
                   </div>
 
-                  <div className="p-4 bg-gray-50 rounded-lg">
-                    <h4 className="font-semibold mb-2">Preview</h4>
-                    <div className={`p-4 rounded border ${cookieBanner.theme === 'dark' ? 'bg-gray-800 text-white' : 'bg-white'}`}>
-                      <p className="text-sm mb-3">{cookieBanner.message}</p>
+                  <div className="p-4 bg-dark-card border border-gray-700 rounded-sm">
+                    <h4 className="font-semibold mb-2 font-mono">Preview</h4>
+                    <div className={`p-4 rounded-sm border border-gray-700 ${cookieBanner.theme === 'dark' ? 'bg-dark-bg text-white' : 'bg-dark-card text-white'}`}>
+                      <p className="text-sm mb-3 font-mono">{cookieBanner.message}</p>
                       <div className="flex gap-2">
-                        <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                        <Button size="sm" className="bg-neon-lime hover:bg-neon-lime/80 font-mono font-bold uppercase tracking-wider">
                           {cookieBanner.acceptButtonText}
                         </Button>
                         <Button size="sm" variant="outline">
@@ -306,7 +306,7 @@ export function ConsentManagement() {
             {/* Data Requests Management */}
             <TabsContent value="requests" className="space-y-6">
               <div className="flex justify-between items-center">
-                <h3 className="text-lg font-semibold">Data Subject Requests</h3>
+                <h3 className="text-lg font-semibold font-orbitron uppercase tracking-wider">Data Subject Requests</h3>
                 <Button variant="outline" size="sm">
                   <Download className="w-4 h-4 mr-2" />
                   Export Requests
@@ -399,30 +399,30 @@ export function ConsentManagement() {
                 <Card>
                   <CardContent className="p-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-green-600">
+                      <div className="text-2xl font-bold text-neon-lime font-mono">
                         {consentLogs.filter(log => log.action === 'granted').length}
                       </div>
-                      <div className="text-sm text-gray-600">Consents Granted</div>
+                      <div className="text-sm text-gray-300 font-mono">Consents Granted</div>
                     </div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-red-600">
+                      <div className="text-2xl font-bold text-neon-magenta font-mono">
                         {consentLogs.filter(log => log.action === 'denied').length}
                       </div>
-                      <div className="text-sm text-gray-600">Consents Denied</div>
+                      <div className="text-sm text-gray-300 font-mono">Consents Denied</div>
                     </div>
                   </CardContent>
                 </Card>
                 <Card>
                   <CardContent className="p-4">
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-blue-600">
+                      <div className="text-2xl font-bold text-neon-cyan font-mono">
                         {dataRequests.filter(req => req.status === 'pending').length}
                       </div>
-                      <div className="text-sm text-gray-600">Pending Requests</div>
+                      <div className="text-sm text-gray-300 font-mono">Pending Requests</div>
                     </div>
                   </CardContent>
                 </Card>

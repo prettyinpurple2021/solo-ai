@@ -29,14 +29,14 @@ interface CustomAgentChatProps {
 }
 
 const AGENT_COLORS = {
-  roxy: "bg-purple-500",
-  blaze: "bg-orange-500", 
-  echo: "bg-pink-500",
-  lumi: "bg-green-500",
-  vex: "bg-blue-500",
-  lexi: "bg-indigo-500",
-  nova: "bg-cyan-500",
-  glitch: "bg-red-500"
+  roxy: "bg-neon-purple",
+  blaze: "bg-neon-orange", 
+  echo: "bg-neon-purple",
+  lumi: "bg-neon-lime",
+  vex: "bg-neon-cyan",
+  lexi: "bg-neon-purple",
+  nova: "bg-neon-cyan",
+  glitch: "bg-neon-magenta"
 }
 
 const AGENT_NAMES = {
@@ -190,7 +190,7 @@ export function CustomAgentChat({ className = "" }: CustomAgentChatProps) {
               )}
             </div>
           </div>
-          <CardDescription>
+          <CardDescription className="font-mono">
             Your 8 specialized AI agents working together as a team
           </CardDescription>
         </CardHeader>
@@ -226,14 +226,14 @@ export function CustomAgentChat({ className = "" }: CustomAgentChatProps) {
 
       {/* Active Workflow */}
       {activeWorkflow && (
-        <Card className="mb-4 border-orange-200 bg-orange-50">
+        <Card className="mb-4 border-neon-orange bg-dark-card">
           <CardContent className="pt-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <WorkflowIcon className="h-5 w-5 text-orange-600" />
+                <WorkflowIcon className="h-5 w-5 text-neon-orange" />
                 <div>
-                  <p className="font-medium text-orange-900">{activeWorkflow.name}</p>
-                  <p className="text-sm text-orange-700">
+                  <p className="font-medium text-neon-orange font-mono">{activeWorkflow.name}</p>
+                  <p className="text-sm text-gray-300 font-mono">
                     {activeWorkflow.steps.length} steps • {activeWorkflow.status}
                   </p>
                 </div>
@@ -242,7 +242,7 @@ export function CustomAgentChat({ className = "" }: CustomAgentChatProps) {
                 onClick={handleExecuteWorkflow}
                 disabled={isLoading}
                 size="sm"
-                className="bg-orange-600 hover:bg-orange-700"
+                className="bg-neon-orange hover:bg-neon-orange/80 font-mono font-bold uppercase tracking-wider"
               >
                 {isLoading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -289,22 +289,22 @@ export function CustomAgentChat({ className = "" }: CustomAgentChatProps) {
                         </div>
                       )}
                       
-                      <div className={`rounded-lg p-3 ${
+                      <div className={`rounded-sm p-3 ${
                         message.role === "user" 
-                          ? "bg-purple-600 text-white" 
+                          ? "bg-neon-purple text-white" 
                           : message.role === "collaboration"
-                          ? "bg-blue-50 border border-blue-200"
-                          : "bg-gray-100"
+                          ? "bg-dark-card border border-neon-cyan"
+                          : "bg-dark-card border border-gray-700"
                       }`}>
                         <p className="whitespace-pre-wrap">{message.content}</p>
                         
                         {message.suggestedActions && message.suggestedActions.length > 0 && (
-                          <div className="mt-3 pt-3 border-t border-gray-200">
-                            <p className="text-sm font-medium text-gray-700 mb-2">Suggested Actions:</p>
+                          <div className="mt-3 pt-3 border-t border-gray-700">
+                            <p className="text-sm font-medium text-gray-300 mb-2 font-mono">Suggested Actions:</p>
                             <div className="space-y-1">
                               {message.suggestedActions.map((action, index) => (
-                                <div key={index} className="flex items-center space-x-2 text-sm text-gray-600">
-                                  <CheckCircle className="h-3 w-3 text-green-500" />
+                                <div key={index} className="flex items-center space-x-2 text-sm text-gray-300 font-mono">
+                                  <CheckCircle className="h-3 w-3 text-neon-lime" />
                                   <span>{action}</span>
                                 </div>
                               ))}
@@ -361,7 +361,7 @@ export function CustomAgentChat({ className = "" }: CustomAgentChatProps) {
             <Button 
               onClick={handleSendMessage}
               disabled={!input.trim() || isLoading}
-              className="bg-purple-600 hover:bg-purple-700"
+              className="bg-neon-purple hover:bg-neon-purple/80 font-mono font-bold uppercase tracking-wider"
             >
               {isLoading ? (
                 <Loader2 className="h-4 w-4 animate-spin" />

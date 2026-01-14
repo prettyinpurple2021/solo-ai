@@ -87,10 +87,10 @@ const AgentStatusIndicator: React.FC<{ status: Agent['status']; size?: 'sm' | 'm
   }
 
   const statusConfig = {
-    available: { color: 'bg-green-500', pulse: true, label: 'Available' },
-    busy: { color: 'bg-orange-500', pulse: true, label: 'Busy' },
-    offline: { color: 'bg-gray-400', pulse: false, label: 'Offline' },
-    error: { color: 'bg-red-500', pulse: true, label: 'Error' }
+    available: { color: 'bg-neon-lime', pulse: true, label: 'Available' },
+    busy: { color: 'bg-neon-orange', pulse: true, label: 'Busy' },
+    offline: { color: 'bg-gray-500', pulse: false, label: 'Offline' },
+    error: { color: 'bg-neon-magenta', pulse: true, label: 'Error' }
   }
 
   const config = statusConfig[status]
@@ -228,18 +228,18 @@ const AgentCard: React.FC<{ agent: Agent; onSelect?: (agent: Agent) => void; com
 
         {/* Performance Metrics */}
         {agent.performance && (
-          <div className="grid grid-cols-2 gap-3 pt-2 border-t">
+          <div className="grid grid-cols-2 gap-3 pt-2 border-t border-gray-700">
             <div className="text-center">
-              <div className="text-lg font-semibold text-green-600">
+              <div className="text-lg font-semibold text-neon-lime font-mono">
                 {agent.performance.successRate}%
               </div>
-              <div className="text-xs text-muted-foreground">Success Rate</div>
+              <div className="text-xs text-gray-300 font-mono">Success Rate</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold">
+              <div className="text-lg font-semibold font-mono">
                 {agent.performance.avgResponseTime}s
               </div>
-              <div className="text-xs text-muted-foreground">Avg Response</div>
+              <div className="text-xs text-gray-300 font-mono">Avg Response</div>
             </div>
           </div>
         )}
@@ -419,43 +419,43 @@ const AgentDetailsView: React.FC<{ agent: Agent }> = ({ agent }) => {
         {agent.performance ? (
           <div className="grid grid-cols-2 gap-4">
             <Card className="p-4">
-              <h4 className="font-semibold mb-2">Success Rate</h4>
-              <div className="text-3xl font-bold text-green-600 mb-2">
+              <h4 className="font-semibold mb-2 font-mono">Success Rate</h4>
+              <div className="text-3xl font-bold text-neon-lime mb-2 font-mono">
                 {agent.performance.successRate}%
               </div>
               <Progress value={agent.performance.successRate} className="h-2" />
             </Card>
 
             <Card className="p-4">
-              <h4 className="font-semibold mb-2">Average Response Time</h4>
-              <div className="text-3xl font-bold mb-2">
+              <h4 className="font-semibold mb-2 font-mono">Average Response Time</h4>
+              <div className="text-3xl font-bold mb-2 font-mono">
                 {agent.performance.avgResponseTime}s
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-300 font-mono">
                 Below 5s is considered excellent
               </p>
             </Card>
 
             <Card className="p-4">
-              <h4 className="font-semibold mb-2">Tasks Completed</h4>
-              <div className="text-3xl font-bold text-blue-600">
+              <h4 className="font-semibold mb-2 font-mono">Tasks Completed</h4>
+              <div className="text-3xl font-bold text-neon-cyan font-mono">
                 {agent.performance.tasksCompleted}
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-gray-300 font-mono">
                 Total successful completions
               </p>
             </Card>
 
             <Card className="p-4">
-              <h4 className="font-semibold mb-2">User Rating</h4>
-              <div className="text-3xl font-bold text-yellow-600">
+              <h4 className="font-semibold mb-2 font-mono">User Rating</h4>
+              <div className="text-3xl font-bold text-neon-orange font-mono">
                 {agent.performance.userRating}/5
               </div>
               <div className="flex gap-1 mt-2">
                 {[1,2,3,4,5].map(star => (
                   <div key={star} className={cn(
                     "w-4 h-4",
-                    star <= agent.performance!.userRating ? "text-yellow-500" : "text-gray-300"
+                    star <= agent.performance!.userRating ? "text-neon-orange" : "text-gray-500"
                   )}>
                     ★
                   </div>

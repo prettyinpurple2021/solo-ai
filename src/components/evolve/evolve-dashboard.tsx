@@ -33,11 +33,11 @@ export function EvolveDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Evolve</h1>
-          <p className="text-gray-600">Your comprehensive scaling & first hire playbook</p>
+          <h1 className="text-3xl font-bold font-orbitron uppercase tracking-wider text-white">Evolve</h1>
+          <p className="text-gray-300 font-mono">Your comprehensive scaling & first hire playbook</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge className="bg-purple-100 text-purple-800">
+          <Badge className="bg-dark-card text-neon-purple border border-neon-purple">
             <Users className="w-3 h-3 mr-1" />
             Scaling Mode
           </Badge>
@@ -45,18 +45,18 @@ export function EvolveDashboard() {
       </div>
 
       {/* Scaling Overview Banner */}
-      <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+      <Card className="bg-dark-card border border-neon-purple">
         <CardContent className="p-6">
           <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">Ready to Scale?</h2>
-              <p className="text-gray-600">Transform from solo founder to team leader with confidence</p>
+              <h2 className="text-2xl font-bold font-orbitron uppercase tracking-wider text-white mb-2">Ready to Scale?</h2>
+              <p className="text-gray-300 font-mono">Transform from solo founder to team leader with confidence</p>
             </div>
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-600">
+              <div className="text-3xl font-bold text-neon-purple font-mono">
                 {metrics.currentTeamSize} → {metrics.targetTeamSize}
               </div>
-              <div className="text-sm text-gray-600">Team Growth</div>
+              <div className="text-sm text-gray-300 font-mono">Team Growth</div>
             </div>
           </div>
         </CardContent>
@@ -79,10 +79,10 @@ export function EvolveDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Current Team</p>
-                    <p className="text-2xl font-bold">{metrics.currentTeamSize} person</p>
+                    <p className="text-sm font-medium text-gray-300 font-mono">Current Team</p>
+                    <p className="text-2xl font-bold font-mono">{metrics.currentTeamSize} person</p>
                   </div>
-                  <Users className="w-8 h-8 text-purple-600" />
+                  <Users className="w-8 h-8 text-neon-purple" />
                 </div>
               </CardContent>
             </Card>
@@ -91,10 +91,10 @@ export function EvolveDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Hiring Budget</p>
-                    <p className="text-2xl font-bold">${metrics.hiringBudget.toLocaleString()}</p>
+                    <p className="text-sm font-medium text-gray-300 font-mono">Hiring Budget</p>
+                    <p className="text-2xl font-bold font-mono">${metrics.hiringBudget.toLocaleString()}</p>
                   </div>
-                  <Calculator className="w-8 h-8 text-green-600" />
+                  <Calculator className="w-8 h-8 text-neon-lime" />
                 </div>
               </CardContent>
             </Card>
@@ -103,10 +103,10 @@ export function EvolveDashboard() {
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-gray-600">Success Rate</p>
-                    <p className="text-2xl font-bold text-green-600">{metrics.successRate}%</p>
+                    <p className="text-sm font-medium text-gray-300 font-mono">Success Rate</p>
+                    <p className="text-2xl font-bold text-neon-lime font-mono">{metrics.successRate}%</p>
                   </div>
-                  <TrendingUp className="w-8 h-8 text-green-600" />
+                  <TrendingUp className="w-8 h-8 text-neon-lime" />
                 </div>
               </CardContent>
             </Card>
@@ -162,49 +162,49 @@ export function EvolveDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                <div className="flex items-center gap-3 p-3 bg-dark-card border border-neon-lime rounded-sm">
+                  <div className="w-5 h-5 bg-neon-lime rounded-sm flex items-center justify-center">
                     <span className="text-white text-xs">✓</span>
                   </div>
                   <div>
-                    <p className="font-medium">Business Model Validated</p>
-                    <p className="text-sm text-gray-600">Consistent revenue and product-market fit</p>
+                    <p className="font-medium font-mono">Business Model Validated</p>
+                    <p className="text-sm text-gray-300 font-mono">Consistent revenue and product-market fit</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-green-50 rounded-lg">
-                  <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+                <div className="flex items-center gap-3 p-3 bg-dark-card border border-neon-lime rounded-sm">
+                  <div className="w-5 h-5 bg-neon-lime rounded-sm flex items-center justify-center">
                     <span className="text-white text-xs">✓</span>
                   </div>
                   <div>
-                    <p className="font-medium">Processes Documented</p>
-                    <p className="text-sm text-gray-600">Key workflows and systems in place</p>
+                    <p className="font-medium font-mono">Processes Documented</p>
+                    <p className="text-sm text-gray-300 font-mono">Key workflows and systems in place</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-yellow-50 rounded-lg">
-                  <div className="w-5 h-5 bg-yellow-500 rounded-full flex items-center justify-center">
+                <div className="flex items-center gap-3 p-3 bg-dark-card border border-neon-orange rounded-sm">
+                  <div className="w-5 h-5 bg-neon-orange rounded-sm flex items-center justify-center">
                     <span className="text-white text-xs">!</span>
                   </div>
                   <div>
-                    <p className="font-medium">Financial Planning</p>
-                    <p className="text-sm text-gray-600">Budget and runway analysis needed</p>
+                    <p className="font-medium font-mono">Financial Planning</p>
+                    <p className="text-sm text-gray-300 font-mono">Budget and runway analysis needed</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-5 h-5 bg-gray-300 rounded-full flex items-center justify-center">
-                    <span className="text-gray-600 text-xs">○</span>
+                <div className="flex items-center gap-3 p-3 bg-dark-card border border-gray-700 rounded-sm">
+                  <div className="w-5 h-5 bg-gray-700 rounded-sm flex items-center justify-center">
+                    <span className="text-gray-300 text-xs">○</span>
                   </div>
                   <div>
-                    <p className="font-medium">Role Definition</p>
-                    <p className="text-sm text-gray-600">Clear job descriptions and responsibilities</p>
+                    <p className="font-medium font-mono">Role Definition</p>
+                    <p className="text-sm text-gray-300 font-mono">Clear job descriptions and responsibilities</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                  <div className="w-5 h-5 bg-gray-300 rounded-full flex items-center justify-center">
-                    <span className="text-gray-600 text-xs">○</span>
+                <div className="flex items-center gap-3 p-3 bg-dark-card border border-gray-700 rounded-sm">
+                  <div className="w-5 h-5 bg-gray-700 rounded-sm flex items-center justify-center">
+                    <span className="text-gray-300 text-xs">○</span>
                   </div>
                   <div>
-                    <p className="font-medium">Onboarding Plan</p>
-                    <p className="text-sm text-gray-600">30-60-90 day success framework</p>
+                    <p className="font-medium font-mono">Onboarding Plan</p>
+                    <p className="text-sm text-gray-300 font-mono">30-60-90 day success framework</p>
                   </div>
                 </div>
               </div>
@@ -258,22 +258,22 @@ export function EvolveDashboard() {
         <TabsContent value="onboarding" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-purple-600" />
+              <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider">
+                <FileText className="w-5 h-5 text-neon-purple" />
                 30-60-90 Day Onboarding Plan Generator
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="font-mono">
                 Create structured onboarding plans with clear objectives and success metrics
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="text-center py-12">
-                <FileText className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">Onboarding Plan Generator</h3>
-                <p className="text-gray-600 mb-4">
+                <FileText className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold font-orbitron uppercase tracking-wider text-white mb-2">Onboarding Plan Generator</h3>
+                <p className="text-gray-300 mb-4 font-mono">
                   Coming soon! This tool will help you create comprehensive onboarding plans with:
                 </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-600">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-300 font-mono">
                   <div>
                     <strong>30 Days:</strong> Learning & orientation
                   </div>

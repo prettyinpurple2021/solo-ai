@@ -107,26 +107,26 @@ export function CollaborationHub() {
 
   const getAgentColor = (agent: string) => {
     const colors: Record<string, string> = {
-      roxy: "bg-blue-500",
-      blaze: "bg-red-500",
-      echo: "bg-pink-500",
-      lumi: "bg-purple-500",
-      vex: "bg-indigo-500",
-      lexi: "bg-green-500",
-      nova: "bg-orange-500",
-      glitch: "bg-teal-500",
+      roxy: "bg-neon-cyan",
+      blaze: "bg-neon-magenta",
+      echo: "bg-neon-purple",
+      lumi: "bg-neon-purple",
+      vex: "bg-neon-purple",
+      lexi: "bg-neon-lime",
+      nova: "bg-neon-orange",
+      glitch: "bg-neon-cyan",
     }
-    return colors[agent] || "bg-gray-500"
+    return colors[agent] || "bg-gray-700"
   }
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "completed":
-        return <CheckCircle className="h-4 w-4 text-green-500" />
+        return <CheckCircle className="h-4 w-4 text-neon-lime" />
       case "in-progress":
-        return <Play className="h-4 w-4 text-blue-500" />
+        return <Play className="h-4 w-4 text-neon-cyan" />
       default:
-        return <Clock className="h-4 w-4 text-gray-400" />
+        return <Clock className="h-4 w-4 text-gray-500" />
     }
   }
 
@@ -135,11 +135,11 @@ export function CollaborationHub() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold flex items-center gap-2">
+          <h2 className="text-2xl font-bold font-orbitron uppercase tracking-wider text-white flex items-center gap-2">
             <Users className="h-6 w-6" />
             Agent Collaboration Hub
           </h2>
-          <p className="text-muted-foreground">Coordinate complex multi-agent tasks and workflows</p>
+          <p className="text-gray-300 font-mono">Coordinate complex multi-agent tasks and workflows</p>
         </div>
 
         <Dialog>
@@ -210,8 +210,8 @@ export function CollaborationHub() {
       </div>
 
       {error && (
-        <Alert className="border-red-200 bg-red-50">
-          <AlertDescription className="text-red-800">{error}</AlertDescription>
+        <Alert className="border-neon-magenta bg-dark-card">
+          <AlertDescription className="text-neon-magenta font-mono">{error}</AlertDescription>
         </Alert>
       )}
 
@@ -432,7 +432,7 @@ function TaskDetails({
             <ScrollArea className="h-64">
               <div className="space-y-3">
                 {handoffs.map((handoff, index) => (
-                  <div key={index} className="p-3 border rounded-lg">
+                  <div key={index} className="p-3 border border-gray-700 rounded-sm">
                     <div className="flex items-center gap-2 mb-2">
                       {/* Update the handoff displays: */}
                       <Image
@@ -442,7 +442,7 @@ function TaskDetails({
                         height={20}
                         className="rounded-full object-cover border border-white"
                       />
-                      <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                      <ArrowRight className="h-4 w-4 text-gray-500" />
                       <Image
                         src={getAgentAvatar(handoff.toAgent) || "/default-user.svg"}
                         alt={handoff.toAgent}
@@ -450,11 +450,11 @@ function TaskDetails({
                         height={20}
                         className="rounded-full object-cover border border-white"
                       />
-                      <span className="text-sm font-medium">
+                      <span className="text-sm font-medium font-mono">
                         {handoff.fromAgent} → {handoff.toAgent}
                       </span>
                     </div>
-                    <p className="text-sm text-muted-foreground">{handoff.context}</p>
+                    <p className="text-sm text-gray-300 font-mono">{handoff.context}</p>
                   </div>
                 ))}
               </div>

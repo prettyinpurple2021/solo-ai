@@ -288,7 +288,7 @@ const SessionManager: React.FC = () => {
                     onClick={() => selectTemplate(template)}
                   >
                     <div className="text-center space-y-3">
-                      <div className="mx-auto w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center text-primary">
+                      <div className="mx-auto w-12 h-12 bg-dark-card border border-neon-purple rounded-sm flex items-center justify-center text-neon-purple">
                         {template.icon}
                       </div>
                       <div>

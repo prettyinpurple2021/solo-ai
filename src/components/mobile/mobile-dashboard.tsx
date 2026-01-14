@@ -254,7 +254,7 @@ export default function MobileDashboard({
   }
 
   return (
-    <div className={cn("min-h-screen bg-gray-50", className)}>
+    <div className={cn("min-h-screen bg-dark-bg", className)}>
       {/* Mobile Navigation */}
       <MobileNavigation
         user={user || (resolvedData?.user ? { name: resolvedData.user.full_name || 'Boss', email: resolvedData.user.email } : undefined)}
@@ -274,14 +274,14 @@ export default function MobileDashboard({
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className={cn(
-                "w-2 h-2 rounded-full",
-                isOnline ? "bg-green-500" : "bg-red-500"
+                "w-2 h-2 rounded-sm",
+                isOnline ? "bg-neon-lime" : "bg-neon-magenta"
               )} />
-              <span className="text-xs text-gray-600">
+              <span className="text-xs text-gray-300 font-mono">
                 {isOnline ? 'Online' : 'Offline'}
               </span>
             </div>
-            <div className="text-xs text-gray-500">
+            <div className="text-xs text-gray-500 font-mono">
               Last sync: {lastSync.toLocaleTimeString()}
             </div>
           </div>
@@ -292,14 +292,14 @@ export default function MobileDashboard({
             animate={{ opacity: 1, y: 0 }}
             className="mb-6"
           >
-            <Card className="bg-gradient-to-r from-purple-500 to-blue-500 text-white border-0">
+            <Card className="bg-dark-card border border-neon-purple text-white">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h2 className="text-lg font-bold">
+                    <h2 className="text-lg font-bold font-orbitron uppercase tracking-wider">
                       {dashboardLoading ? 'Loading your dashboard…' : `Welcome back, ${user?.name || resolvedData?.user?.full_name || 'Boss'}! 👑`}
                     </h2>
-                    <p className="text-sm opacity-90">
+                    <p className="text-sm text-gray-300 font-mono">
                       {dashboardLoading
                         ? 'Fetching stats…'
                         : `Level ${user?.level || (resolvedData?.user ? resolvedData.user.level : 1)} • ${user?.points || (resolvedData?.user ? resolvedData.user.total_points : 0)} points`}
@@ -346,22 +346,22 @@ export default function MobileDashboard({
               <CardContent className="p-4">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-purple-600">
+                    <div className="text-2xl font-bold text-neon-purple font-mono">
                       {resolvedData?.todaysStats.tasks_completed || 0}
                     </div>
-                    <div className="text-xs text-gray-600">Tasks Done</div>
+                    <div className="text-xs text-gray-300 font-mono">Tasks Done</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-blue-600">
+                    <div className="text-2xl font-bold text-neon-cyan font-mono">
                       {resolvedData?.todaysStats.focus_minutes || 0}
                     </div>
-                    <div className="text-xs text-gray-600">Focus Mins</div>
+                    <div className="text-xs text-gray-300 font-mono">Focus Mins</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-green-600">
+                    <div className="text-2xl font-bold text-neon-lime font-mono">
                       {resolvedData?.todaysStats.goals_achieved || 0}
                     </div>
-                    <div className="text-xs text-gray-600">Goals Hit</div>
+                    <div className="text-xs text-gray-300 font-mono">Goals Hit</div>
                   </div>
                 </div>
               </CardContent>
@@ -379,7 +379,7 @@ export default function MobileDashboard({
       >
         <Button
           onClick={() => setShowVoiceCreator(true)}
-          className="h-14 w-14 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg"
+          className="h-14 w-14 rounded-full bg-neon-purple hover:bg-neon-purple/80 shadow-[0_0_20px_rgba(11,228,236,0.3)]"
         >
           <Mic className="h-6 w-6" />
         </Button>

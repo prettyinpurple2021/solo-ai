@@ -159,7 +159,7 @@ export default function MobileChatInterface({
         )}
       >
         {/* Header */}
-        <SheetHeader className="flex-shrink-0 p-4 border-b bg-white/80 backdrop-blur-sm">
+        <SheetHeader className="flex-shrink-0 p-4 border-b border-gray-800 bg-dark-bg/90 backdrop-blur-sm">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {selectedAgent && (
@@ -176,10 +176,10 @@ export default function MobileChatInterface({
                 </Avatar>
               )}
               <div className="flex-1">
-                <SheetTitle className="text-lg">
+                <SheetTitle className="text-lg font-orbitron uppercase tracking-wider text-white">
                   {selectedAgent ? selectedAgent.display_name : 'AI Agents'}
                 </SheetTitle>
-                <SheetDescription className="text-xs">
+                <SheetDescription className="text-xs text-gray-300 font-mono">
                   {selectedAgent ? selectedAgent.description : 'Choose an AI agent to chat with'}
                 </SheetDescription>
               </div>
@@ -214,7 +214,7 @@ export default function MobileChatInterface({
                         key={agent.id}
                         variant={selectedAgent?.id === agent.id ? "default" : "ghost"}
                         size="sm"
-                        className="w-full justify-start h-auto p-2 text-left"
+                        className="w-full justify-start h-auto p-2 text-left font-mono"
                         onClick={() => {
                           setSelectedAgent(agent)
                           setShowAgentSelector(false)
@@ -230,7 +230,7 @@ export default function MobileChatInterface({
                         </Avatar>
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-xs">{agent.display_name}</div>
-                          <div className="text-xs text-gray-500 truncate">{agent.description}</div>
+                          <div className="text-xs text-gray-300 truncate">{agent.description}</div>
                         </div>
                       </Button>
                     ))}
@@ -247,10 +247,10 @@ export default function MobileChatInterface({
             {getAgentMessages().length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-8">
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center mb-4">
-                  <MessageSquare className="w-8 h-8 text-purple-600" />
+                  <MessageSquare className="w-8 h-8 text-neon-purple" />
                 </div>
-                <h3 className="font-medium text-gray-900 mb-2">Start a conversation</h3>
-                <p className="text-sm text-gray-500 mb-4">
+                <h3 className="font-medium font-orbitron uppercase tracking-wider text-white mb-2">Start a conversation</h3>
+                <p className="text-sm text-gray-300 font-mono mb-4">
                   {selectedAgent ? `Ask ${selectedAgent.display_name} anything!` : 'Select an agent to begin chatting'}
                 </p>
                 {selectedAgent && (
@@ -294,11 +294,14 @@ export default function MobileChatInterface({
                       <Card className={cn(
                         "relative",
                         message.role === 'user' 
-                          ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white" 
-                          : "bg-white border border-gray-200"
+                          ? "bg-neon-purple text-white" 
+                          : "bg-dark-card border border-gray-700"
                       )}>
                         <CardContent className="p-3">
-                          <p className="text-sm whitespace-pre-wrap break-words">
+                          <p className={cn(
+                            "text-sm whitespace-pre-wrap break-words font-mono",
+                            message.role === "user" ? "text-white" : "text-gray-300"
+                          )}>
                             {message.content}
                           </p>
                         </CardContent>
@@ -309,7 +312,7 @@ export default function MobileChatInterface({
                           size="sm"
                           className={cn(
                             "absolute -top-2 -right-2 w-6 h-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity",
-                            message.role === 'user' ? "text-white hover:bg-white/20" : "text-gray-500 hover:bg-gray-100"
+                            message.role === 'user' ? "text-white hover:bg-white/20" : "text-gray-300 hover:bg-dark-hover"
                           )}
                           onClick={() => copyMessage(message.content)}
                         >
@@ -317,7 +320,7 @@ export default function MobileChatInterface({
                         </Button>
                       </Card>
                       
-                      <span className="text-xs text-gray-500 mt-1 px-1">
+                      <span className="text-xs text-gray-500 mt-1 px-1 font-mono">
                         {formatTime(message.timestamp)}
                       </span>
                     </div>
@@ -349,15 +352,15 @@ export default function MobileChatInterface({
                         </AvatarFallback>
                       </Avatar>
                     )}
-                    <Card className="bg-white border border-gray-200">
+                    <Card className="bg-dark-card border border-gray-700">
                       <CardContent className="p-3">
                         <div className="flex items-center gap-2">
                           <div className="flex space-x-1">
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-gray-500 rounded-sm animate-bounce [animation-delay:-0.3s]"></div>
+                            <div className="w-2 h-2 bg-gray-500 rounded-sm animate-bounce [animation-delay:-0.15s]"></div>
+                            <div className="w-2 h-2 bg-gray-500 rounded-sm animate-bounce"></div>
                           </div>
-                          <span className="text-xs text-gray-500">Typing...</span>
+                          <span className="text-xs text-gray-300 font-mono">Typing...</span>
                         </div>
                       </CardContent>
                     </Card>
@@ -368,7 +371,7 @@ export default function MobileChatInterface({
           </ScrollArea>
 
           {/* Input Area */}
-          <div className="flex-shrink-0 p-4 border-t bg-white/80 backdrop-blur-sm">
+          <div className="flex-shrink-0 p-4 border-t border-gray-800 bg-dark-bg/90 backdrop-blur-sm">
             <div className="flex gap-2 items-end">
               <div className="flex-1 relative">
                 <Textarea
@@ -387,7 +390,7 @@ export default function MobileChatInterface({
                 onClick={handleSendMessage}
                 disabled={!input.trim() || !selectedAgent || isLoading}
                 size="sm"
-                className="h-11 w-11 p-0 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                className="h-11 w-11 p-0 bg-neon-purple hover:bg-neon-purple/80"
               >
                 <Send className="w-4 h-4" />
               </Button>
@@ -404,7 +407,7 @@ export default function MobileChatInterface({
                 ))}
               </div>
               
-              <div className="flex items-center gap-2 text-xs text-gray-500">
+              <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
                 <span>Enter to send</span>
               </div>
             </div>

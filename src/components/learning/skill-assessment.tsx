@@ -83,51 +83,51 @@ export default function SkillAssessment({ skills, onComplete }: SkillAssessmentP
 
   if (isComplete) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6">
+      <div className="min-h-screen bg-dark-bg p-6">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-black/20 backdrop-blur-sm rounded-xl p-8 text-center"
+            className="bg-dark-card backdrop-blur-sm rounded-sm p-8 text-center border border-gray-700"
           >
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             >
-              <CheckCircle className="w-24 h-24 text-green-400 mx-auto mb-6" />
+              <CheckCircle className="w-24 h-24 text-neon-lime mx-auto mb-6" />
             </motion.div>
             
-            <h2 className="text-3xl font-bold text-white mb-4">
+            <h2 className="text-3xl font-bold font-orbitron uppercase tracking-wider text-white mb-4">
               Assessment Complete!
             </h2>
             
-            <p className="text-gray-300 text-lg mb-8">
+            <p className="text-gray-300 text-lg mb-8 font-mono">
               Thank you for completing the skill assessment. We&apos;ll use this information to create personalized learning recommendations for you.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <div className="bg-white/5 rounded-lg p-4">
-                <div className="text-2xl font-bold text-blue-400 mb-1">{skills.length}</div>
-                <div className="text-gray-300 text-sm">Skills Assessed</div>
+              <div className="bg-dark-hover rounded-sm p-4 border border-gray-700">
+                <div className="text-2xl font-bold text-neon-cyan mb-1 font-mono">{skills.length}</div>
+                <div className="text-gray-300 text-sm font-mono">Skills Assessed</div>
               </div>
-              <div className="bg-white/5 rounded-lg p-4">
-                <div className="text-2xl font-bold text-green-400 mb-1">
+              <div className="bg-dark-hover rounded-sm p-4 border border-gray-700">
+                <div className="text-2xl font-bold text-neon-lime mb-1 font-mono">
                   {Math.round(assessments.reduce((sum, a) => sum + a.current_level, 0) / assessments.length)}%
                 </div>
-                <div className="text-gray-300 text-sm">Average Level</div>
+                <div className="text-gray-300 text-sm font-mono">Average Level</div>
               </div>
-              <div className="bg-white/5 rounded-lg p-4">
-                <div className="text-2xl font-bold text-purple-400 mb-1">
+              <div className="bg-dark-hover rounded-sm p-4 border border-gray-700">
+                <div className="text-2xl font-bold text-neon-purple mb-1 font-mono">
                   {Math.round(assessments.reduce((sum, a) => sum + a.confidence_score, 0) / assessments.length)}%
                 </div>
-                <div className="text-gray-300 text-sm">Average Confidence</div>
+                <div className="text-gray-300 text-sm font-mono">Average Confidence</div>
               </div>
             </div>
 
             <button
               onClick={() => window.location.href = '/dashboard/learning'}
-              className="px-8 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all duration-200 font-medium"
+              className="px-8 py-3 bg-gradient-to-r from-neon-purple to-neon-cyan text-white rounded-sm hover:shadow-[0_0_15px_rgba(11,228,236,0.2)] transition-all duration-200 font-mono font-bold uppercase tracking-wider"
             >
               View Learning Dashboard
             </button>
@@ -138,17 +138,17 @@ export default function SkillAssessment({ skills, onComplete }: SkillAssessmentP
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 p-6">
+    <div className="min-h-screen bg-dark-bg p-6">
       <div className="max-w-4xl mx-auto">
         {/* Progress Bar */}
         <div className="mb-8">
-          <div className="flex justify-between text-sm text-gray-300 mb-2">
+          <div className="flex justify-between text-sm text-gray-300 mb-2 font-mono">
             <span>Skill Assessment Progress</span>
             <span>{currentSkillIndex + 1} of {skills.length}</span>
           </div>
-          <div className="w-full bg-gray-700 rounded-full h-2">
+          <div className="w-full bg-gray-700 rounded-sm h-2">
             <div 
-              className="bg-gradient-to-r from-pink-500 to-purple-500 h-2 rounded-full transition-all duration-300"
+              className="bg-gradient-to-r from-neon-purple to-neon-cyan h-2 rounded-sm transition-all duration-300"
               style={{ width: `${((currentSkillIndex + 1) / skills.length) * 100}%` }}
             />
           </div>
@@ -160,24 +160,24 @@ export default function SkillAssessment({ skills, onComplete }: SkillAssessmentP
           initial={{ opacity: 0, x: 50 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -50 }}
-          className="bg-black/20 backdrop-blur-sm rounded-xl p-8 mb-8"
+          className="bg-dark-card backdrop-blur-sm rounded-sm p-8 mb-8 border border-gray-700"
         >
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-xl flex items-center justify-center">
+            <div className="w-16 h-16 bg-gradient-to-r from-neon-purple to-neon-cyan rounded-sm flex items-center justify-center border border-neon-purple">
               <Brain className="w-8 h-8 text-white" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold text-white mb-1">{currentSkill.name}</h2>
-              <p className="text-gray-300">{currentSkill.category} • {currentSkill.difficulty_level}</p>
+              <h2 className="text-2xl font-bold font-orbitron uppercase tracking-wider text-white mb-1">{currentSkill.name}</h2>
+              <p className="text-gray-300 font-mono">{currentSkill.category} • {currentSkill.difficulty_level}</p>
             </div>
           </div>
 
-          <p className="text-gray-300 text-lg mb-8">{currentSkill.description}</p>
+          <p className="text-gray-300 text-lg mb-8 font-mono">{currentSkill.description}</p>
 
           {/* Current Level Assessment */}
           <div className="mb-8">
-            <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-              <Target className="w-5 h-5 text-blue-400" />
+            <h3 className="text-xl font-semibold font-orbitron uppercase tracking-wider text-white mb-4 flex items-center gap-2">
+              <Target className="w-5 h-5 text-neon-cyan" />
               What&apos;s your current skill level?
             </h3>
             
@@ -190,10 +190,10 @@ export default function SkillAssessment({ skills, onComplete }: SkillAssessmentP
                   <button
                     key={level}
                     onClick={() => handleAssessment(level, currentAssessment?.confidence_score || 50)}
-                    className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+                    className={`p-4 rounded-sm border-2 transition-all duration-200 font-mono ${
                       isSelected
-                        ? 'border-blue-400 bg-blue-400/20 text-blue-400'
-                        : 'border-gray-600 bg-white/5 text-gray-300 hover:border-gray-500 hover:text-white'
+                        ? 'border-neon-cyan bg-dark-card text-neon-cyan'
+                        : 'border-gray-700 bg-dark-hover text-gray-300 hover:border-gray-600 hover:text-white'
                     }`}
                   >
                     <div className="text-2xl font-bold mb-1">{level}%</div>
@@ -211,8 +211,8 @@ export default function SkillAssessment({ skills, onComplete }: SkillAssessmentP
               animate={{ opacity: 1, y: 0 }}
               className="mb-8"
             >
-              <h3 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <Star className="w-5 h-5 text-yellow-400" />
+              <h3 className="text-xl font-semibold font-orbitron uppercase tracking-wider text-white mb-4 flex items-center gap-2">
+                <Star className="w-5 h-5 text-neon-orange" />
                 How confident are you in this assessment?
               </h3>
               
@@ -228,10 +228,10 @@ export default function SkillAssessment({ skills, onComplete }: SkillAssessmentP
                         currentAssessment?.current_level || 0, 
                         confidence
                       )}
-                      className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+                      className={`p-4 rounded-sm border-2 transition-all duration-200 font-mono ${
                         isSelected
-                          ? 'border-yellow-400 bg-yellow-400/20 text-yellow-400'
-                          : 'border-gray-600 bg-white/5 text-gray-300 hover:border-gray-500 hover:text-white'
+                          ? 'border-neon-orange bg-dark-card text-neon-orange'
+                          : 'border-gray-700 bg-dark-hover text-gray-300 hover:border-gray-600 hover:text-white'
                       }`}
                     >
                       <div className="text-2xl font-bold mb-1">{confidence}%</div>
@@ -248,19 +248,19 @@ export default function SkillAssessment({ skills, onComplete }: SkillAssessmentP
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="bg-white/5 rounded-lg p-4 mb-8"
+              className="bg-dark-hover rounded-sm p-4 mb-8 border border-gray-700"
             >
-              <h4 className="text-lg font-semibold text-white mb-2">Your Assessment:</h4>
+              <h4 className="text-lg font-semibold font-orbitron uppercase tracking-wider text-white mb-2">Your Assessment:</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <div className="text-sm text-gray-300">Current Level</div>
-                  <div className="text-lg font-semibold text-blue-400">
+                  <div className="text-sm text-gray-300 font-mono">Current Level</div>
+                  <div className="text-lg font-semibold text-neon-cyan font-mono">
                     {getCurrentAssessment()?.current_level}% - {getLevelDescription(getCurrentAssessment()?.current_level || 0)}
                   </div>
                 </div>
                 <div>
-                  <div className="text-sm text-gray-300">Confidence</div>
-                  <div className="text-lg font-semibold text-yellow-400">
+                  <div className="text-sm text-gray-300 font-mono">Confidence</div>
+                  <div className="text-lg font-semibold text-neon-orange font-mono">
                     {getCurrentAssessment()?.confidence_score}% - {getConfidenceDescription(getCurrentAssessment()?.confidence_score || 0)}
                   </div>
                 </div>
@@ -274,7 +274,7 @@ export default function SkillAssessment({ skills, onComplete }: SkillAssessmentP
           <button
             onClick={handlePrevious}
             disabled={currentSkillIndex === 0}
-            className="px-6 py-3 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-dark-hover text-white rounded-sm hover:bg-dark-card transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-mono font-bold uppercase tracking-wider border border-gray-700"
           >
             Previous
           </button>
@@ -282,7 +282,7 @@ export default function SkillAssessment({ skills, onComplete }: SkillAssessmentP
           <button
             onClick={handleNext}
             disabled={!getCurrentAssessment()}
-            className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-6 py-3 bg-gradient-to-r from-neon-purple to-neon-cyan text-white rounded-sm hover:shadow-[0_0_15px_rgba(11,228,236,0.2)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-mono font-bold uppercase tracking-wider"
           >
             {currentSkillIndex === skills.length - 1 ? 'Complete Assessment' : 'Next'}
             <ArrowRight className="w-4 h-4" />

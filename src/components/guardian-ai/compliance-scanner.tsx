@@ -119,19 +119,19 @@ export function ComplianceScanner() {
   }
 
   const getTrustScoreColor = (score: number) => {
-    if (score >= 80) return "text-green-600"
-    if (score >= 60) return "text-yellow-600"
-    return "text-red-600"
+    if (score >= 80) return "text-neon-lime"
+    if (score >= 60) return "text-neon-orange"
+    return "text-neon-magenta"
   }
 
   const getIssueIcon = (type: string) => {
     switch (type) {
       case "critical":
-        return <AlertTriangle className="w-4 h-4 text-red-500" />
+        return <AlertTriangle className="w-4 h-4 text-neon-magenta" />
       case "warning":
-        return <AlertTriangle className="w-4 h-4 text-yellow-500" />
+        return <AlertTriangle className="w-4 h-4 text-neon-orange" />
       case "info":
-        return <Eye className="w-4 h-4 text-blue-500" />
+        return <Eye className="w-4 h-4 text-neon-cyan" />
       default:
         return <Eye className="w-4 h-4 text-gray-500" />
     }
@@ -243,11 +243,11 @@ This report does not constitute legal advice. Consult with qualified legal profe
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Shield className="w-5 h-5 text-purple-600" />
+          <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider">
+            <Shield className="w-5 h-5 text-neon-purple" />
             Guardian AI Compliance Scanner
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="font-mono">
             Scan your website or app for GDPR/CCPA compliance issues and get automated recommendations
           </CardDescription>
         </CardHeader>
@@ -289,8 +289,8 @@ This report does not constitute legal advice. Consult with qualified legal profe
           {/* Trust Score */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600" />
+              <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider">
+                <CheckCircle className="w-5 h-5 text-neon-lime" />
                 Compliance Trust Score
               </CardTitle>
             </CardHeader>
@@ -299,13 +299,13 @@ This report does not constitute legal advice. Consult with qualified legal profe
                 <div className={`text-4xl font-bold ${getTrustScoreColor(scanResults.trustScore)}`}>
                   {scanResults.trustScore}/100
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-300 font-mono">
                   {scanResults.trustScore >= 80 ? "Excellent compliance" : 
                    scanResults.trustScore >= 60 ? "Good compliance with room for improvement" : 
                    "Needs immediate attention"}
                 </div>
                 {scanResults.trustScore >= 80 && (
-                  <Badge className="bg-green-100 text-green-800">
+                  <Badge className="bg-dark-card text-neon-lime border border-neon-lime">
                     <Shield className="w-3 h-3 mr-1" />
                     Guardian AI Certified
                   </Badge>
@@ -335,13 +335,13 @@ This report does not constitute legal advice. Consult with qualified legal profe
                             {issue.type.toUpperCase()}
                           </Badge>
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{issue.description}</p>
-                        <div className="bg-gray-50 p-3 rounded">
-                          <p className="text-sm font-medium mb-1">Recommendation:</p>
-                          <p className="text-sm">{issue.recommendation}</p>
+                        <p className="text-sm text-gray-300 mb-2 font-mono">{issue.description}</p>
+                        <div className="bg-dark-hover p-3 rounded-sm border border-gray-700">
+                          <p className="text-sm font-medium mb-1 font-mono">Recommendation:</p>
+                          <p className="text-sm font-mono">{issue.recommendation}</p>
                         </div>
                         {(issue.gdpr_article || issue.ccpa_section) && (
-                          <div className="flex gap-4 mt-2 text-xs text-gray-500">
+                          <div className="flex gap-4 mt-2 text-xs text-gray-500 font-mono">
                             {issue.gdpr_article && <span>GDPR: {issue.gdpr_article}</span>}
                             {issue.ccpa_section && <span>CCPA: {issue.ccpa_section}</span>}
                           </div>
@@ -361,20 +361,20 @@ This report does not constitute legal advice. Consult with qualified legal profe
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="text-center p-4 bg-blue-50 rounded">
-                  <Database className="w-8 h-8 mx-auto mb-2 text-blue-600" />
-                  <div className="font-semibold">{scanResults.dataCollectionPoints.length}</div>
-                  <div className="text-sm text-gray-600">Data Collection Points</div>
+                <div className="text-center p-4 bg-dark-card border border-neon-cyan rounded-sm">
+                  <Database className="w-8 h-8 mx-auto mb-2 text-neon-cyan" />
+                  <div className="font-semibold font-mono">{scanResults.dataCollectionPoints.length}</div>
+                  <div className="text-sm text-gray-300 font-mono">Data Collection Points</div>
                 </div>
-                <div className="text-center p-4 bg-green-50 rounded">
-                  <Cookie className="w-8 h-8 mx-auto mb-2 text-green-600" />
-                  <div className="font-semibold">{scanResults.cookieTypes.length}</div>
-                  <div className="text-sm text-gray-600">Cookie Types</div>
+                <div className="text-center p-4 bg-dark-card border border-neon-lime rounded-sm">
+                  <Cookie className="w-8 h-8 mx-auto mb-2 text-neon-lime" />
+                  <div className="font-semibold font-mono">{scanResults.cookieTypes.length}</div>
+                  <div className="text-sm text-gray-300 font-mono">Cookie Types</div>
                 </div>
-                <div className="text-center p-4 bg-purple-50 rounded">
-                  <User className="w-8 h-8 mx-auto mb-2 text-purple-600" />
-                  <div className="font-semibold">{scanResults.consentMechanisms.length}</div>
-                  <div className="text-sm text-gray-600">Consent Mechanisms</div>
+                <div className="text-center p-4 bg-dark-card border border-neon-purple rounded-sm">
+                  <User className="w-8 h-8 mx-auto mb-2 text-neon-purple" />
+                  <div className="font-semibold font-mono">{scanResults.consentMechanisms.length}</div>
+                  <div className="text-sm text-gray-300 font-mono">Consent Mechanisms</div>
                 </div>
               </div>
             </CardContent>
@@ -383,7 +383,7 @@ This report does not constitute legal advice. Consult with qualified legal profe
           {/* Action Buttons */}
           <div className="flex gap-4">
             <Button 
-              className="bg-purple-600 hover:bg-purple-700"
+              className="bg-neon-purple hover:bg-neon-purple/80 font-mono font-bold uppercase tracking-wider"
               onClick={generateComplianceReport}
             >
               <Download className="w-4 h-4 mr-2" />
@@ -413,39 +413,39 @@ This report does not constitute legal advice. Consult with qualified legal profe
                       <div className="grid grid-cols-2 gap-4 text-sm">
                         <div>
                           <p className="font-medium">Page Title:</p>
-                          <p className="text-gray-600">{scanResults?.pageTitle || 'N/A'}</p>
+                          <p className="text-gray-300 font-mono">{scanResults?.pageTitle || 'N/A'}</p>
                         </div>
                         <div>
-                          <p className="font-medium">Scan Date:</p>
-                          <p className="text-gray-600">{scanResults?.scanDate.toLocaleString()}</p>
+                          <p className="font-medium font-mono">Scan Date:</p>
+                          <p className="text-gray-300 font-mono">{scanResults?.scanDate.toLocaleString()}</p>
                         </div>
                         <div>
-                          <p className="font-medium">Privacy Policy:</p>
-                          <p className={scanResults?.hasPrivacyPolicy ? 'text-green-600' : 'text-red-600'}>
+                          <p className="font-medium font-mono">Privacy Policy:</p>
+                          <p className={`font-mono ${scanResults?.hasPrivacyPolicy ? 'text-neon-lime' : 'text-neon-magenta'}`}>
                             {scanResults?.hasPrivacyPolicy ? 'Detected' : 'Not Found'}
                           </p>
                         </div>
                         <div>
-                          <p className="font-medium">Cookie Banner:</p>
-                          <p className={scanResults?.hasCookieBanner ? 'text-green-600' : 'text-red-600'}>
+                          <p className="font-medium font-mono">Cookie Banner:</p>
+                          <p className={`font-mono ${scanResults?.hasCookieBanner ? 'text-neon-lime' : 'text-neon-magenta'}`}>
                             {scanResults?.hasCookieBanner ? 'Detected' : 'Not Found'}
                           </p>
                         </div>
                         <div>
-                          <p className="font-medium">Contact Form:</p>
-                          <p className={scanResults?.hasContactForm ? 'text-blue-600' : 'text-gray-600'}>
+                          <p className="font-medium font-mono">Contact Form:</p>
+                          <p className={`font-mono ${scanResults?.hasContactForm ? 'text-neon-cyan' : 'text-gray-500'}`}>
                             {scanResults?.hasContactForm ? 'Detected' : 'Not Found'}
                           </p>
                         </div>
                         <div>
-                          <p className="font-medium">Newsletter Signup:</p>
-                          <p className={scanResults?.hasNewsletterSignup ? 'text-blue-600' : 'text-gray-600'}>
+                          <p className="font-medium font-mono">Newsletter Signup:</p>
+                          <p className={`font-mono ${scanResults?.hasNewsletterSignup ? 'text-neon-cyan' : 'text-gray-500'}`}>
                             {scanResults?.hasNewsletterSignup ? 'Detected' : 'Not Found'}
                           </p>
                         </div>
                         <div>
-                          <p className="font-medium">Analytics Tracking:</p>
-                          <p className={scanResults?.hasAnalytics ? 'text-orange-600' : 'text-gray-600'}>
+                          <p className="font-medium font-mono">Analytics Tracking:</p>
+                          <p className={`font-mono ${scanResults?.hasAnalytics ? 'text-neon-orange' : 'text-gray-500'}`}>
                             {scanResults?.hasAnalytics ? 'Detected' : 'Not Found'}
                           </p>
                         </div>
@@ -520,7 +520,7 @@ This report does not constitute legal advice. Consult with qualified legal profe
                     <CardContent>
                       <div className="space-y-2">
                         {scanResults?.issues.length === 0 ? (
-                          <p className="text-green-600">
+                          <p className="text-neon-lime font-mono">
                             ✓ Your website appears to be compliant. Continue monitoring for any changes.
                           </p>
                         ) : (

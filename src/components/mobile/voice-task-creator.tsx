@@ -289,7 +289,7 @@ export default function VoiceTaskCreator({
           exit={{ y: 100, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
           className={cn(
-            "w-full max-w-md bg-white rounded-t-2xl lg:rounded-2xl shadow-2xl",
+            "w-full max-w-md bg-dark-bg border border-gray-800 rounded-sm shadow-[0_0_20px_rgba(11,228,236,0.2)]",
             className
           )}
           onClick={(e) => e.stopPropagation()}
@@ -297,10 +297,10 @@ export default function VoiceTaskCreator({
           <Card className="border-0 shadow-none">
             <CardHeader className="pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                  <Mic className="h-5 w-5 text-purple-600" />
+                <CardTitle className="flex items-center gap-2 font-orbitron uppercase tracking-wider text-white">
+                  <Mic className="h-5 w-5 text-neon-purple" />
                   Voice Task Creator
-                  <Sparkles className="h-4 w-4 text-pink-500" />
+                  <Sparkles className="h-4 w-4 text-neon-purple" />
                 </CardTitle>
                 <Button
                   variant="ghost"
@@ -321,8 +321,8 @@ export default function VoiceTaskCreator({
                     className={cn(
                       "w-24 h-24 mx-auto rounded-full flex items-center justify-center transition-all duration-300",
                       voiceState.isRecording
-                        ? "bg-red-500 animate-pulse"
-                        : "bg-purple-100 hover:bg-purple-200"
+                        ? "bg-neon-magenta animate-pulse"
+                        : "bg-dark-card border border-neon-purple hover:bg-dark-hover"
                     )}
                     animate={voiceState.isRecording ? { scale: [1, 1.1, 1] } : {}}
                     transition={{ duration: 0.5, repeat: voiceState.isRecording ? Infinity : 0 }}
@@ -330,13 +330,13 @@ export default function VoiceTaskCreator({
                     {voiceState.isRecording ? (
                       <Square className="h-8 w-8 text-white" />
                     ) : (
-                      <Mic className="h-8 w-8 text-purple-600" />
+                      <Mic className="h-8 w-8 text-neon-purple" />
                     )}
                   </motion.div>
 
                   {voiceState.isRecording && (
                     <motion.div
-                      className="absolute inset-0 rounded-full border-4 border-red-300"
+                      className="absolute inset-0 rounded-full border-4 border-neon-magenta/50"
                       animate={{ scale: [1, 1.5, 1], opacity: [1, 0, 1] }}
                       transition={{ duration: 1, repeat: Infinity }}
                     />
@@ -351,8 +351,9 @@ export default function VoiceTaskCreator({
                       className={cn(
                         "touch-target",
                         voiceState.isRecording
-                          ? "bg-red-500 hover:bg-red-600"
-                          : "bg-purple-500 hover:bg-purple-600"
+                          ? "bg-neon-magenta hover:bg-neon-magenta/80"
+                          : "bg-neon-purple hover:bg-neon-purple/80",
+                        "font-mono font-bold uppercase tracking-wider"
                       )}
                     >
                       {voiceState.isRecording ? (
@@ -370,7 +371,7 @@ export default function VoiceTaskCreator({
                   </div>
 
                   {voiceState.duration > 0 && (
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-gray-300 font-mono">
                       Duration: {formatDuration(voiceState.duration)}
                     </div>
                   )}
@@ -381,10 +382,10 @@ export default function VoiceTaskCreator({
               {voiceState.transcript && (
                 <div className="space-y-2">
                   <label className="text-sm font-medium">Voice Transcript:</label>
-                  <div className="p-3 bg-gray-50 rounded-lg border">
-                    <div className="text-sm">{voiceState.transcript}</div>
+                  <div className="p-3 bg-dark-card border border-gray-700 rounded-sm">
+                    <div className="text-sm font-mono text-gray-300">{voiceState.transcript}</div>
                     {voiceState.confidence > 0 && (
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-xs text-gray-500 mt-1 font-mono">
                         Confidence: {Math.round(voiceState.confidence * 100)}%
                       </div>
                     )}
@@ -448,8 +449,8 @@ export default function VoiceTaskCreator({
                 <label className="text-sm font-medium">Voice Commands:</label>
                 <div className="grid grid-cols-1 gap-2">
                   {VOICE_COMMANDS.map((cmd, index) => (
-                    <div key={index} className="flex items-center gap-2 text-xs text-gray-600">
-                      <Badge variant="outline" className="text-xs">
+                    <div key={index} className="flex items-center gap-2 text-xs text-gray-300 font-mono">
+                      <Badge variant="outline" className="text-xs font-mono">
                         "{cmd.command}"
                       </Badge>
                       <span>{cmd.description}</span>
@@ -460,9 +461,9 @@ export default function VoiceTaskCreator({
 
               {/* Error Display */}
               {error && (
-                <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
-                  <AlertCircle className="h-4 w-4 text-red-500" />
-                  <span className="text-sm text-red-700">{error}</span>
+                <div className="flex items-center gap-2 p-3 bg-dark-card border border-neon-magenta rounded-sm">
+                  <AlertCircle className="h-4 w-4 text-neon-magenta" />
+                  <span className="text-sm text-neon-magenta font-mono">{error}</span>
                 </div>
               )}
 
@@ -478,7 +479,7 @@ export default function VoiceTaskCreator({
                 <Button
                   onClick={handleCreateTask}
                   disabled={!taskData.title.trim()}
-                  className="flex-1 bg-purple-500 hover:bg-purple-600 touch-target"
+                  className="flex-1 bg-neon-purple hover:bg-neon-purple/80 touch-target font-mono font-bold uppercase tracking-wider"
                 >
                   <CheckCircle className="h-4 w-4 mr-2" />
                   Create Task
