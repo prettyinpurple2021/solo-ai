@@ -18,16 +18,35 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [ageError, setAgeError] = useState<string | null>(null);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsPending(true);
     setError(null);
     setPasswordError(null);
+    setAgeError(null);
 
     const formData = new FormData(event.currentTarget);
     const password = formData.get('password') as string;
     const confirmPassword = formData.get('confirmPassword') as string;
+    const dateOfBirth = formData.get('dateOfBirth') as string;
+    
+    // Validate age (18+)
+    if (dateOfBirth) {
+      const birthDate = new Date(dateOfBirth);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      if (age < 18) {
+        setAgeError('You must be 18 years or older to create an account.');
+        setIsPending(false);
+        return;
+      }
+    }
     
     // Validate password confirmation
     if (password !== confirmPassword) {

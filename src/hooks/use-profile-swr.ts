@@ -1,5 +1,4 @@
 import { logError } from '@/lib/logger'
-// @ts-nocheck
 'use client'
 
 import useSWR from 'swr'
@@ -11,16 +10,18 @@ export interface UserProfile {
   id: string
   email: string
   full_name?: string
-  avatar_url?: string | null
+  image?: string | null
   subscription_tier?: string
   subscription_status?: string
   level?: number
   total_points?: number
+  onboarding_completed?: boolean
 }
 
 interface ProfileUpdateData {
   full_name?: string
-  avatar_url?: string | null
+  image?: string | null
+  onboarding_completed?: boolean
 }
 
 const fetcher = (url: string) => fetch(url).then(res => {
@@ -29,7 +30,7 @@ const fetcher = (url: string) => fetch(url).then(res => {
 })
 
 export function useProfile() {
-  const { data, error, isLoading, mutate } = useSWR<{ user: UserProfile }>('/api/profile', fetcher)
+  const { data, error, isLoading, mutate } = useSWR<UserProfile>('/api/profile', fetcher)
   const [isUpdating, setIsUpdating] = useState(false)
 
   const updateProfile = async (profileData: ProfileUpdateData) => {
@@ -54,12 +55,12 @@ export function useProfile() {
       mutate((prev) => {
         if (!prev) return prev
         const nextUser: UserProfile = {
-          ...prev.user,
+          ...prev,
           ...profileData,
-          id: prev.user.id,
-          email: prev.user.email,
+          id: prev.id,
+          email: prev.email,
         }
-        return { user: nextUser }
+        return nextUser
       }, { revalidate: false })
       
       toast.success("Profile updated!", { 
@@ -106,7 +107,7 @@ export function useProfile() {
       
       // Update the profile with the new avatar URL
       if (data.url) {
-        await updateProfile({ avatar_url: data.url })
+        await updateProfile({ image: data.url })
       }
       
       toast.success("Avatar uploaded!", { 
@@ -130,7 +131,7 @@ export function useProfile() {
     
     try {
       // Update profile with null avatar_url
-      await updateProfile({ avatar_url: null })
+      await updateProfile({ image: null })
       
       toast.success("Avatar removed", { 
         description: "Your profile picture has been removed." 
@@ -146,7 +147,7 @@ export function useProfile() {
   }
 
   return {
-    profile: data?.user,
+    profile: data,
     isLoading,
     isError: !!error,
     error,

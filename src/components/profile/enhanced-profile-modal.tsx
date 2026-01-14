@@ -2,21 +2,22 @@
 
 import type React from "react"
 
-import { useState, useRef} from "react"
+import { useEffect, useRef, useState } from "react"
 import { logError } from '@/lib/logger'
-import { Button} from "@/components/ui/button"
-import { Input} from "@/components/ui/input"
-import { Label} from "@/components/ui/label"
-import { Textarea} from "@/components/ui/textarea"
-import { Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
-import { Badge} from "@/components/ui/badge"
-import { Switch} from "@/components/ui/switch"
-import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
-import { useAuth} from "@/hooks/use-auth"
-import { useProfile} from "@/hooks/use-profile-swr"
-import { User, Camera, Upload, Crown, Sparkles, Bell, Settings, Shield, X, Save, Trash2} from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useAuth } from "@/hooks/use-auth"
+import { useProfile } from "@/hooks/use-profile-swr"
+import { User, Camera, Upload, Crown, Shield, X, Save, Trash2, Key, Mail, AlertTriangle, Loader2 } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+import { signOut as nextAuthSignOut } from "next-auth/react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 
 
 interface EnhancedProfileModalProps {
@@ -27,81 +28,36 @@ interface EnhancedProfileModalProps {
 export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProfileModalProps) {
   const { user } = useAuth()
   const { profile, updateProfile, uploadAvatar, removeAvatar } = useProfile()
+  const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const [formData, setFormData] = useState({
-    full_name: (user as any)?.displayName || profile?.full_name || "",
-    company_name: "",
-    industry: "",
-    business_type: "",
-    phone: "",
-    website: "",
-    bio: "",
-    timezone: "",
-    avatar_url: profile?.avatar_url || "",
-  })
-
-  const [notifications, setNotifications] = useState({
-    email_notifications: true,
-    push_notifications: true,
-    marketing_emails: false,
-    weekly_digest: true,
-    achievement_alerts: true,
-    ai_suggestions: true,
-  })
-
-  const [preferences, setPreferences] = useState({
-    dark_mode: false,
-    compact_view: false,
-    auto_save: true,
-    show_tips: true,
-    analytics_tracking: true,
+  const [formData, setFormData] = useState<{ full_name: string; image: string | null }>({
+    full_name: "",
+    image: null,
   })
 
   const [isUploading, setIsUploading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState<string | null>(null)
+  
+  // Account management states
+  const [showChangePassword, setShowChangePassword] = useState(false)
+  const [showChangeEmail, setShowChangeEmail] = useState(false)
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [changePasswordData, setChangePasswordData] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" })
+  const [changeEmailData, setChangeEmailData] = useState({ newEmail: "", password: "" })
+  const [deleteConfirmText, setDeleteConfirmText] = useState("")
+  const [deletePassword, setDeletePassword] = useState("")
+  const [isChangingPassword, setIsChangingPassword] = useState(false)
+  const [isChangingEmail, setIsChangingEmail] = useState(false)
+  const [isDeletingAccount, setIsDeletingAccount] = useState(false)
 
-  const industries = [
-    "Technology",
-    "E-commerce",
-    "Consulting",
-    "Marketing & Advertising",
-    "Health & Wellness",
-    "Education",
-    "Finance",
-    "Real Estate",
-    "Creative Services",
-    "Food & Beverage",
-    "Fashion & Beauty",
-    "Travel & Tourism",
-    "Other",
-  ]
-
-  const businessTypes = [
-    "Solopreneur",
-    "Freelancer",
-    "Small Business Owner",
-    "Startup Founder",
-    "Content Creator",
-    "Coach/Consultant",
-    "E-commerce Store",
-    "Service Provider",
-    "Digital Nomad",
-    "Other",
-  ]
-
-  const timezones = [
-    "America/New_York",
-    "America/Chicago",
-    "America/Denver",
-    "America/Los_Angeles",
-    "Europe/London",
-    "Europe/Paris",
-    "Europe/Berlin",
-    "Asia/Tokyo",
-    "Asia/Shanghai",
-    "Australia/Sydney",
-  ]
+  useEffect(() => {
+    const nextName = profile?.full_name || (user as any)?.displayName || ""
+    const nextImage = profile?.image ?? null
+    setFormData({ full_name: nextName, image: nextImage })
+  }, [profile?.full_name, profile?.image, user])
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -115,7 +71,7 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
     try {
       const avatarUrl = await uploadAvatar(file)
       if (avatarUrl) {
-        setFormData((prev) => ({ ...prev, avatar_url: avatarUrl }))
+        setFormData((prev) => ({ ...prev, image: avatarUrl }))
       }
     } catch (err) {
       logError('Avatar upload error:', err)
@@ -125,10 +81,10 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
   }
 
   const handleRemoveImage = async () => {
-    if (formData.avatar_url) {
+    if (formData.image) {
       try {
         await removeAvatar()
-        setFormData((prev) => ({ ...prev, avatar_url: "" }))
+        setFormData((prev) => ({ ...prev, image: null }))
       } catch (err) {
         logError('Avatar removal error:', err)
       }
@@ -139,45 +95,164 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
     if (!user) return
 
     setIsSaving(true)
+    setError(null)
+    setSuccess(null)
     try {
       await updateProfile({ full_name: formData.full_name })
-      onOpenChangeAction(false)
+      setSuccess("Profile updated successfully")
+      setTimeout(() => onOpenChangeAction(false), 1000)
     } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to update profile")
       logError('Profile update error:', err)
     } finally {
       setIsSaving(false)
     }
   }
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setSuccess(null)
+
+    if (changePasswordData.newPassword !== changePasswordData.confirmPassword) {
+      setError("New passwords do not match")
+      return
+    }
+
+    setIsChangingPassword(true)
+    try {
+      const response = await fetch('/api/auth/change-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          currentPassword: changePasswordData.currentPassword,
+          newPassword: changePasswordData.newPassword,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to change password')
+      }
+
+      setSuccess("Password changed successfully. Please sign in again.")
+      setShowChangePassword(false)
+      setChangePasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" })
+      
+      setTimeout(() => {
+        nextAuthSignOut({ callbackUrl: '/login' })
+      }, 2000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to change password")
+    } finally {
+      setIsChangingPassword(false)
+    }
+  }
+
+  const handleChangeEmail = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    setSuccess(null)
+
+    if (changeEmailData.newEmail === profile?.email) {
+      setError("New email must be different from current email")
+      return
+    }
+
+    setIsChangingEmail(true)
+    try {
+      const response = await fetch('/api/auth/change-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          newEmail: changeEmailData.newEmail,
+          password: changeEmailData.password,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to change email')
+      }
+
+      setSuccess("Email changed successfully. Please sign in again with your new email.")
+      setShowChangeEmail(false)
+      setChangeEmailData({ newEmail: "", password: "" })
+      
+      setTimeout(() => {
+        nextAuthSignOut({ callbackUrl: '/login' })
+      }, 2000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to change email")
+    } finally {
+      setIsChangingEmail(false)
+    }
+  }
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmText !== 'DELETE') {
+      setError("Please type DELETE to confirm account deletion")
+      return
+    }
+
+    setError(null)
+    setIsDeletingAccount(true)
+    try {
+      const password = prompt("Enter your password to confirm account deletion:")
+      if (!password) {
+        setIsDeletingAccount(false)
+        return
+      }
+
+      const response = await fetch('/api/auth/delete-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          password,
+          confirmation: deleteConfirmText,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to delete account')
+      }
+
+      setSuccess("Your account has been permanently deleted.")
+      setShowDeleteConfirm(false)
+      
+      setTimeout(() => {
+        nextAuthSignOut({ callbackUrl: '/' })
+      }, 2000)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to delete account")
+      setIsDeletingAccount(false)
+    }
+  }
+
   return (
     <Dialog open={_open} onOpenChange={onOpenChangeAction}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto boss-card">
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-dark-card border border-neon-cyan shadow-[0_0_20px_rgba(11,228,236,0.2)]">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-bold boss-heading flex items-center gap-2">
-            <Crown className="h-6 w-6 text-purple-600" />
-            Boss Profile Settings
-            <Sparkles className="h-6 w-6 text-pink-500" />
+          <DialogTitle className="text-2xl font-orbitron font-bold uppercase tracking-wider text-white flex items-center gap-2">
+            <Crown className="h-6 w-6 text-neon-purple" />
+            Profile Settings
           </DialogTitle>
-          <DialogDescription className="font-medium">
-            Customize your empire settings and make your profile legendary! 👑✨
+          <DialogDescription className="font-mono text-gray-300">
+            Update your name and profile image. Changes are saved to your account.
           </DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="profile" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 bg-gradient-to-r from-purple-100 to-pink-100">
-            <TabsTrigger value="profile" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-2 bg-dark-bg border border-gray-800">
+            <TabsTrigger value="profile" className="flex items-center gap-2 font-mono data-[state=active]:bg-dark-card data-[state=active]:text-neon-cyan">
               <User className="h-4 w-4" />
               Profile
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex items-center gap-2">
-              <Bell className="h-4 w-4" />
-              Notifications
-            </TabsTrigger>
-            <TabsTrigger value="preferences" className="flex items-center gap-2">
-              <Settings className="h-4 w-4" />
-              Preferences
-            </TabsTrigger>
-            <TabsTrigger value="account" className="flex items-center gap-2">
+            <TabsTrigger value="account" className="flex items-center gap-2 font-mono data-[state=active]:bg-dark-card data-[state=active]:text-neon-cyan">
               <Shield className="h-4 w-4" />
               Account
             </TabsTrigger>
@@ -187,18 +262,19 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
             {/* Profile Image Section */}
             <div className="flex flex-col items-center space-y-4">
               <div className="relative">
-                <Avatar className="h-32 w-32 border-4 border-gradient-to-r from-purple-400 to-pink-400">
-                  <AvatarImage src={formData.avatar_url || "/default-user.svg"} className="object-cover" />
-                  <AvatarFallback className="text-4xl bg-gradient-to-r from-purple-400 to-pink-400 text-white">
-                    {formData.full_name?.charAt(0) || (user as any)?.primaryEmail?.charAt(0) || (user as any)?.email?.charAt(0) || "B"}
+                <Avatar className="h-28 w-28 border-2 border-neon-purple shadow-[0_0_15px_rgba(179,0,255,0.25)]">
+                  <AvatarImage src={formData.image || "/default-user.svg"} className="object-cover" />
+                  <AvatarFallback className="text-3xl bg-dark-bg text-white font-mono">
+                    {formData.full_name?.trim()?.charAt(0) || (profile?.email || (user as any)?.email || "U").charAt(0)}
                   </AvatarFallback>
                 </Avatar>
-                {formData.avatar_url && (
+                {formData.image && (
                   <Button
                     size="sm"
                     variant="destructive"
                     className="absolute -top-2 -right-2 h-8 w-8 rounded-full p-0"
                     onClick={handleRemoveImage}
+                    aria-label="Remove profile image"
                   >
                     <X className="h-4 w-4" />
                   </Button>
@@ -210,7 +286,8 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
                   variant="outline"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
-                  className="bg-gradient-to-r from-purple-100 to-pink-100 border-purple-200 hover:from-purple-200 hover:to-pink-200"
+                  className="bg-dark-bg border border-gray-700 hover:bg-dark-hover font-mono"
+                  aria-label="Upload profile image"
                 >
                   {isUploading ? (
                     <>
@@ -233,349 +310,267 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
                   aria-label="Upload profile photo"
                 />
               </div>
-              <p className="text-xs text-gray-500 text-center">Upload a boss-level photo! Max 2MB, JPG/PNG format 📸</p>
+              <p className="text-xs text-gray-500 text-center font-mono">Max 2MB. JPG/PNG recommended.</p>
             </div>
 
             {/* Profile Form */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="full_name" className="font-semibold empowering-text">
-                  Full Name *
+                <Label htmlFor="full_name" className="font-mono text-gray-300">
+                  Full Name
                 </Label>
                 <Input
                   id="full_name"
                   value={formData.full_name}
                   onChange={(e) => handleInputChange("full_name", e.target.value)}
-                  placeholder="Your boss name"
-                  className="border-purple-200 focus:border-purple-400"
+                  placeholder="Your name"
+                  className="font-mono"
                 />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="company_name" className="font-semibold empowering-text">
-                  Company Name
-                </Label>
-                <Input
-                  id="company_name"
-                  value={formData.company_name}
-                  onChange={(e) => handleInputChange("company_name", e.target.value)}
-                  placeholder="Your empire name"
-                  className="border-purple-200 focus:border-purple-400"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="industry" className="font-semibold empowering-text">
-                  Industry
-                </Label>
-                <Select value={formData.industry} onValueChange={(value) => handleInputChange("industry", value)}>
-                  <SelectTrigger className="border-purple-200 focus:border-purple-400">
-                    <SelectValue placeholder="Select your industry" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {industries.map((industry) => (
-                      <SelectItem key={industry} value={industry}>
-                        {industry}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="business_type" className="font-semibold empowering-text">
-                  Business Type
-                </Label>
-                <Select
-                  value={formData.business_type}
-                  onValueChange={(value) => handleInputChange("business_type", value)}
-                >
-                  <SelectTrigger className="border-purple-200 focus:border-purple-400">
-                    <SelectValue placeholder="Select business type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {businessTypes.map((type) => (
-                      <SelectItem key={type} value={type}>
-                        {type}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone" className="font-semibold empowering-text">
-                  Phone Number
-                </Label>
-                <Input
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange("phone", e.target.value)}
-                  placeholder="+1 (555) 123-4567"
-                  className="border-purple-200 focus:border-purple-400"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="website" className="font-semibold empowering-text">
-                  Website
-                </Label>
-                <Input
-                  id="website"
-                  value={formData.website}
-                  onChange={(e) => handleInputChange("website", e.target.value)}
-                  placeholder="https://yourbosswebsite.com"
-                  className="border-purple-200 focus:border-purple-400"
-                />
-              </div>
-
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="timezone" className="font-semibold empowering-text">
-                  Timezone
-                </Label>
-                <Select value={formData.timezone} onValueChange={(value) => handleInputChange("timezone", value)}>
-                  <SelectTrigger className="border-purple-200 focus:border-purple-400">
-                    <SelectValue placeholder="Select your timezone" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {timezones.map((tz) => (
-                      <SelectItem key={tz} value={tz}>
-                        {tz.replace("_", " ")}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2 md:col-span-2">
-                <Label htmlFor="bio" className="font-semibold empowering-text">
-                  Bio
-                </Label>
-                <Textarea
-                  id="bio"
-                  value={formData.bio}
-                  onChange={(e) => handleInputChange("bio", e.target.value)}
-                  placeholder="Tell the world about your boss journey and empire goals! 👑"
-                  className="border-purple-200 focus:border-purple-400 min-h-[100px]"
-                  maxLength={500}
-                />
-                <p className="text-xs text-gray-500">{formData.bio.length}/500 characters</p>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="notifications" className="space-y-6 mt-6">
-            <div className="space-y-6">
-              <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-                <h3 className="font-bold empowering-text mb-4 flex items-center gap-2">
-                  <Bell className="h-5 w-5 text-purple-600" />
-                  Notification Preferences
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Email Notifications</Label>
-                      <p className="text-sm text-gray-600">Receive important updates via email</p>
-                    </div>
-                    <Switch
-                      checked={notifications.email_notifications}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({ ...prev, email_notifications: checked }))
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Push Notifications</Label>
-                      <p className="text-sm text-gray-600">Get real-time alerts in your browser</p>
-                    </div>
-                    <Switch
-                      checked={notifications.push_notifications}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({ ...prev, push_notifications: checked }))
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Marketing Emails</Label>
-                      <p className="text-sm text-gray-600">Boss tips, updates, and special offers</p>
-                    </div>
-                    <Switch
-                      checked={notifications.marketing_emails}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({ ...prev, marketing_emails: checked }))
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Weekly Digest</Label>
-                      <p className="text-sm text-gray-600">Summary of your boss achievements</p>
-                    </div>
-                    <Switch
-                      checked={notifications.weekly_digest}
-                      onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, weekly_digest: checked }))}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Achievement Alerts</Label>
-                      <p className="text-sm text-gray-600">Celebrate your wins with notifications</p>
-                    </div>
-                    <Switch
-                      checked={notifications.achievement_alerts}
-                      onCheckedChange={(checked) =>
-                        setNotifications((prev) => ({ ...prev, achievement_alerts: checked }))
-                      }
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">AI Suggestions</Label>
-                      <p className="text-sm text-gray-600">Smart recommendations from your AI squad</p>
-                    </div>
-                    <Switch
-                      checked={notifications.ai_suggestions}
-                      onCheckedChange={(checked) => setNotifications((prev) => ({ ...prev, ai_suggestions: checked }))}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="preferences" className="space-y-6 mt-6">
-            <div className="space-y-6">
-              <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-                <h3 className="font-bold empowering-text mb-4 flex items-center gap-2">
-                  <Settings className="h-5 w-5 text-purple-600" />
-                  Interface Preferences
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Dark Mode</Label>
-                      <p className="text-sm text-gray-600">Switch to dark theme for late-night boss sessions</p>
-                    </div>
-                    <Switch
-                      checked={preferences.dark_mode}
-                      onCheckedChange={(checked) => setPreferences((prev) => ({ ...prev, dark_mode: checked }))}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Compact View</Label>
-                      <p className="text-sm text-gray-600">Show more content in less space</p>
-                    </div>
-                    <Switch
-                      checked={preferences.compact_view}
-                      onCheckedChange={(checked) => setPreferences((prev) => ({ ...prev, compact_view: checked }))}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Auto-Save</Label>
-                      <p className="text-sm text-gray-600">Automatically save your work as you type</p>
-                    </div>
-                    <Switch
-                      checked={preferences.auto_save}
-                      onCheckedChange={(checked) => setPreferences((prev) => ({ ...prev, auto_save: checked }))}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Show Tips</Label>
-                      <p className="text-sm text-gray-600">Display helpful boss tips and tutorials</p>
-                    </div>
-                    <Switch
-                      checked={preferences.show_tips}
-                      onCheckedChange={(checked) => setPreferences((prev) => ({ ...prev, show_tips: checked }))}
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="font-medium">Analytics Tracking</Label>
-                      <p className="text-sm text-gray-600">Help us improve by sharing usage data</p>
-                    </div>
-                    <Switch
-                      checked={preferences.analytics_tracking}
-                      onCheckedChange={(checked) =>
-                        setPreferences((prev) => ({ ...prev, analytics_tracking: checked }))
-                      }
-                    />
-                  </div>
-                </div>
               </div>
             </div>
           </TabsContent>
 
           <TabsContent value="account" className="space-y-6 mt-6">
-            <div className="space-y-6">
-              {/* Account Info */}
-              <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-                <h3 className="font-bold empowering-text mb-4 flex items-center gap-2">
-                  <Shield className="h-5 w-5 text-purple-600" />
-                  Account Information
-                </h3>
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">Email:</span>
-                    <span className="text-gray-600">{(user as any)?.primaryEmail || user?.email}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">Account Created:</span>
-                    <span className="text-gray-600">
-                      {"Unknown"}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">Subscription:</span>
-                    <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white">Boss Pro 👑</Badge>
-                  </div>
+            <div className="space-y-4">
+              <div className="p-4 rounded-sm border border-gray-700 bg-dark-bg">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-gray-500">Email</span>
+                  <span className="font-mono text-gray-300">{profile?.email || (user as any)?.primaryEmail || user?.email || "—"}</span>
+                </div>
+                <div className="mt-3 flex items-center justify-between">
+                  <span className="font-mono text-gray-500">Subscription</span>
+                  <Badge className={cn("font-mono", profile?.subscription_status === "active" ? "bg-dark-card border border-neon-lime text-neon-lime" : "bg-dark-card border border-neon-orange text-neon-orange")}>
+                    {profile?.subscription_tier || "Free"}
+                  </Badge>
                 </div>
               </div>
 
+              <div className="space-y-3">
+                <h3 className="flex items-center gap-2 text-white font-orbitron font-bold uppercase tracking-wider text-sm">
+                  <Shield className="h-4 w-4 text-neon-cyan" />
+                  Security
+                </h3>
+                
+                {/* Change Password */}
+                {!showChangePassword ? (
+                  <div className="flex justify-between items-center p-3 border border-gray-700 rounded-sm bg-dark-bg">
+                    <div>
+                      <p className="font-mono text-gray-300">Change Password</p>
+                      <p className="text-sm font-mono text-gray-500">Update your account password</p>
+                    </div>
+                    <Button variant="outline" onClick={() => setShowChangePassword(true)} className="font-mono">
+                      <Key className="h-4 w-4 mr-2" />
+                      Change
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleChangePassword} className="p-4 border border-gray-700 rounded-sm bg-dark-bg space-y-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="currentPassword" className="font-mono text-gray-300">Current Password</Label>
+                      <Input
+                        id="currentPassword"
+                        type="password"
+                        value={changePasswordData.currentPassword}
+                        onChange={(e) => setChangePasswordData({ ...changePasswordData, currentPassword: e.target.value })}
+                        className="font-mono"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="newPassword" className="font-mono text-gray-300">New Password</Label>
+                      <Input
+                        id="newPassword"
+                        type="password"
+                        value={changePasswordData.newPassword}
+                        onChange={(e) => setChangePasswordData({ ...changePasswordData, newPassword: e.target.value })}
+                        className="font-mono"
+                        required
+                        minLength={8}
+                      />
+                      <p className="text-xs font-mono text-gray-500">Must be 8+ characters with uppercase, lowercase, and number</p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="confirmPassword" className="font-mono text-gray-300">Confirm New Password</Label>
+                      <Input
+                        id="confirmPassword"
+                        type="password"
+                        value={changePasswordData.confirmPassword}
+                        onChange={(e) => setChangePasswordData({ ...changePasswordData, confirmPassword: e.target.value })}
+                        className="font-mono"
+                        required
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button type="submit" disabled={isChangingPassword} className="flex-1 bg-neon-purple hover:bg-neon-purple/80 font-mono">
+                        {isChangingPassword ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Password"}
+                      </Button>
+                      <Button type="button" variant="outline" onClick={() => {
+                        setShowChangePassword(false)
+                        setChangePasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" })
+                      }} className="font-mono">
+                        Cancel
+                      </Button>
+                    </div>
+                  </form>
+                )}
+
+                {/* Change Email */}
+                {!showChangeEmail ? (
+                  <div className="flex justify-between items-center p-3 border border-gray-700 rounded-sm bg-dark-bg">
+                    <div>
+                      <p className="font-mono text-gray-300">Change Email</p>
+                      <p className="text-sm font-mono text-gray-500">Update your email address</p>
+                    </div>
+                    <Button variant="outline" onClick={() => setShowChangeEmail(true)} className="font-mono">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Change
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleChangeEmail} className="p-4 border border-gray-700 rounded-sm bg-dark-bg space-y-3">
+                    <div className="space-y-2">
+                      <Label htmlFor="newEmail" className="font-mono text-gray-300">New Email Address</Label>
+                      <Input
+                        id="newEmail"
+                        type="email"
+                        value={changeEmailData.newEmail}
+                        onChange={(e) => setChangeEmailData({ ...changeEmailData, newEmail: e.target.value })}
+                        className="font-mono"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="emailPassword" className="font-mono text-gray-300">Current Password</Label>
+                      <Input
+                        id="emailPassword"
+                        type="password"
+                        value={changeEmailData.password}
+                        onChange={(e) => setChangeEmailData({ ...changeEmailData, password: e.target.value })}
+                        className="font-mono"
+                        required
+                      />
+                      <p className="text-xs font-mono text-gray-500">Enter your current password to confirm</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button type="submit" disabled={isChangingEmail} className="flex-1 bg-neon-purple hover:bg-neon-purple/80 font-mono">
+                        {isChangingEmail ? <Loader2 className="h-4 w-4 animate-spin" /> : "Update Email"}
+                      </Button>
+                      <Button type="button" variant="outline" onClick={() => {
+                        setShowChangeEmail(false)
+                        setChangeEmailData({ newEmail: "", password: "" })
+                      }} className="font-mono">
+                        Cancel
+                      </Button>
+                    </div>
+                  </form>
+                )}
+              </div>
+
               {/* Danger Zone */}
-              <div className="p-4 bg-red-50 rounded-lg border border-red-200">
-                <h3 className="font-bold text-red-800 mb-4 flex items-center gap-2">
-                  <Trash2 className="h-5 w-5" />
+              <div className="space-y-3 pt-4 border-t border-gray-800">
+                <h3 className="flex items-center gap-2 text-white font-orbitron font-bold uppercase tracking-wider text-sm text-neon-magenta">
+                  <Trash2 className="h-4 w-4" />
                   Danger Zone
                 </h3>
-                <div className="space-y-3">
-                  <p className="text-sm text-red-700">
-                    These actions are permanent and cannot be undone. Please proceed with caution.
-                  </p>
-                  <div className="flex gap-3">
-                    <Button variant="outline" className="border-red-300 text-red-700 hover:bg-red-50 bg-transparent">
-                      Change Password
-                    </Button>
-                    <Button variant="destructive">Delete Account</Button>
+                
+                {!showDeleteConfirm ? (
+                  <div className="p-4 border border-neon-magenta/60 rounded-sm bg-dark-bg">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-mono text-gray-300 font-bold">Delete Account</p>
+                        <p className="text-sm font-mono text-gray-500 mt-1">
+                          Permanently delete your account and all associated data. This action cannot be undone.
+                        </p>
+                      </div>
+                      <Button variant="destructive" onClick={() => setShowDeleteConfirm(true)} className="font-mono">
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete
+                      </Button>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="p-4 border border-neon-magenta/60 rounded-sm bg-dark-bg space-y-3">
+                    <p className="font-mono text-gray-300 text-sm">
+                      This will permanently delete your account and all data. Type <span className="text-neon-magenta font-bold">DELETE</span> to confirm:
+                    </p>
+                    <div className="space-y-2">
+                      <Input
+                        type="text"
+                        value={deleteConfirmText}
+                        onChange={(e) => setDeleteConfirmText(e.target.value)}
+                        placeholder="Type DELETE to confirm"
+                        className="font-mono"
+                      />
+                      <Input
+                        type="password"
+                        value={deletePassword}
+                        onChange={(e) => setDeletePassword(e.target.value)}
+                        placeholder="Enter your password"
+                        className="font-mono"
+                        required
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="destructive"
+                        onClick={handleDeleteAccount}
+                        disabled={isDeletingAccount || deleteConfirmText !== 'DELETE' || !deletePassword}
+                        className="flex-1 font-mono"
+                      >
+                        {isDeletingAccount ? (
+                          <>
+                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                            Deleting...
+                          </>
+                        ) : (
+                          <>
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            Permanently Delete Account
+                          </>
+                        )}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setShowDeleteConfirm(false)
+                          setDeleteConfirmText("")
+                          setDeletePassword("")
+                        }}
+                        className="font-mono"
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </TabsContent>
         </Tabs>
 
+        {/* Error/Success Messages */}
+        {error && (
+          <Alert className="bg-dark-card border border-neon-magenta/60">
+            <AlertTriangle className="h-4 w-4 text-neon-magenta" />
+            <AlertDescription className="text-gray-300 font-mono">{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {success && (
+          <Alert className="bg-dark-card border border-neon-lime/60">
+            <AlertDescription className="text-gray-300 font-mono">{success}</AlertDescription>
+          </Alert>
+        )}
+
         {/* Action Buttons */}
-        <div className="flex justify-end gap-3 pt-6 border-t">
-          <Button variant="outline" onClick={() => onOpenChangeAction(false)} className="bg-transparent">
+        <div className="flex justify-end gap-3 pt-6 border-t border-gray-800">
+          <Button variant="outline" onClick={() => onOpenChangeAction(false)} className="bg-transparent font-mono">
             Cancel
           </Button>
           <Button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+            className="bg-neon-purple hover:bg-neon-purple/80 text-white font-mono"
           >
             {isSaving ? (
               <>
