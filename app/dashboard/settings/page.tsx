@@ -102,8 +102,11 @@ export default function SettingsPage() {
     // Hydrate saved preferences (privacy + notification toggles)
     const loadPreferences = async () => {
       try {
-        const res = await fetch('/api/preferences')
-        if (!res.ok) return
+        const res = await fetch('/api/preferences', { credentials: 'include' })
+        if (!res.ok) {
+          logError('Failed to load preferences', { status: res.status })
+          return
+        }
         const data = await res.json().catch(() => ({}))
         const prefs = data?.preferences || {}
 
@@ -154,6 +157,7 @@ export default function SettingsPage() {
       const prefResponse = await fetch('/api/preferences', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           preferences: {
             notificationSettings,

@@ -4,8 +4,8 @@ import { neon } from '@neondatabase/serverless'
 import * as jose from 'jose'
 import { authenticateRequest } from '@/lib/auth-server'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+// NOTE: This route must run on Node.js because authenticateRequest() relies on NextAuth/server-side auth.
+export const runtime = 'nodejs'
 
 
 
