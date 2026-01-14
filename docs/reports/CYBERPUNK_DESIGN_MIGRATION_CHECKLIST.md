@@ -428,15 +428,15 @@ All foundational UI components have been updated to Cyberpunk Design System v3.
 | File | Violations | Placeholder | Status |
 |------|------------|-------------|--------|
 | `intelligence/intelligence-results.tsx` | 22 + 1 border | 1 | ✅ DONE |
-| `intelligence/intelligence-search.tsx` | 9 + 2 hover | 7 | ⬜ TODO |
-| `intelligence/briefing-dashboard.tsx` | 7 | - | ⬜ TODO |
-| `intelligence/agent-briefing-dashboard.tsx` | 5 | - | ⬜ TODO |
+| `intelligence/intelligence-search.tsx` | 9 + 2 hover | 7 | ✅ DONE |
+| `intelligence/briefing-dashboard.tsx` | 7 | - | ✅ DONE |
+| `intelligence/agent-briefing-dashboard.tsx` | 5 | - | ✅ DONE |
 
 ### 9.2 Competitors Components
 
 | File | Violations | Placeholder | Status |
 |------|------------|-------------|--------|
-| `competitors/alert-dashboard.tsx` | 9 | - | ⬜ TODO |
+| `competitors/alert-dashboard.tsx` | 9 | - | ✅ DONE |
 | `competitors/notification-preferences.tsx` | 7 + 2 border | 3 | ⬜ TODO |
 | `competitors/pricing-intelligence-dashboard.tsx` | 3 | 1 | ⬜ TODO |
 | `competitors/alert-notifications.tsx` | 3 | - | ⬜ TODO |

@@ -24,42 +24,42 @@ interface AlertDashboardProps {
 const severityConfig = {
   critical: {
     icon: AlertTriangle,
-    color: 'text-red-500',
-    bgColor: 'bg-red-50 border-red-200',
+    color: 'text-neon-magenta',
+    bgColor: 'bg-dark-card border-neon-magenta shadow-[0_0_15px_rgba(255,0,110,0.2)]',
     badge: 'destructive',
   },
   urgent: {
     icon: AlertCircle,
-    color: 'text-orange-500',
-    bgColor: 'bg-orange-50 border-orange-200',
+    color: 'text-neon-orange',
+    bgColor: 'bg-dark-card border-neon-orange shadow-[0_0_15px_rgba(255,102,0,0.2)]',
     badge: 'secondary',
   },
   warning: {
     icon: AlertCircle,
-    color: 'text-yellow-500',
-    bgColor: 'bg-yellow-50 border-yellow-200',
+    color: 'text-neon-orange',
+    bgColor: 'bg-dark-card border-neon-orange shadow-[0_0_15px_rgba(255,102,0,0.2)]',
     badge: 'outline',
   },
   info: {
     icon: Info,
-    color: 'text-blue-500',
-    bgColor: 'bg-blue-50 border-blue-200',
+    color: 'text-neon-cyan',
+    bgColor: 'bg-dark-card border-neon-cyan shadow-[0_0_15px_rgba(11,228,236,0.2)]',
     badge: 'secondary',
   },
 } as const;
 
 const alertTypeConfig = {
-  pricing_change: { icon: DollarSign, label: 'Pricing Change', color: 'text-green-600' },
-  product_launch: { icon: TrendingUp, label: 'Product Launch', color: 'text-purple-600' },
-  funding_announcement: { icon: DollarSign, label: 'Funding News', color: 'text-blue-600' },
-  key_hire: { icon: Users, label: 'Key Hire', color: 'text-indigo-600' },
-  negative_news: { icon: Newspaper, label: 'Negative News', color: 'text-red-600' },
-  website_change: { icon: Globe, label: 'Website Change', color: 'text-gray-600' },
-  social_activity: { icon: Bell, label: 'Social Activity', color: 'text-pink-600' },
-  job_posting: { icon: Users, label: 'Job Posting', color: 'text-teal-600' },
-  partnership: { icon: Users, label: 'Partnership', color: 'text-cyan-600' },
-  acquisition: { icon: TrendingUp, label: 'Acquisition', color: 'text-orange-600' },
-  market_expansion: { icon: Globe, label: 'Market Expansion', color: 'text-emerald-600' },
+  pricing_change: { icon: DollarSign, label: 'Pricing Change', color: 'text-neon-lime' },
+  product_launch: { icon: TrendingUp, label: 'Product Launch', color: 'text-neon-purple' },
+  funding_announcement: { icon: DollarSign, label: 'Funding News', color: 'text-neon-cyan' },
+  key_hire: { icon: Users, label: 'Key Hire', color: 'text-neon-purple' },
+  negative_news: { icon: Newspaper, label: 'Negative News', color: 'text-neon-magenta' },
+  website_change: { icon: Globe, label: 'Website Change', color: 'text-gray-500' },
+  social_activity: { icon: Bell, label: 'Social Activity', color: 'text-neon-purple' },
+  job_posting: { icon: Users, label: 'Job Posting', color: 'text-neon-cyan' },
+  partnership: { icon: Users, label: 'Partnership', color: 'text-neon-cyan' },
+  acquisition: { icon: TrendingUp, label: 'Acquisition', color: 'text-neon-orange' },
+  market_expansion: { icon: Globe, label: 'Market Expansion', color: 'text-neon-lime' },
 } as const;
 
 export function AlertDashboard({ className }: AlertDashboardProps) {
@@ -109,9 +109,9 @@ export function AlertDashboard({ className }: AlertDashboardProps) {
       <Card 
         key={alert.id} 
         className={cn(
-          'transition-all duration-200 hover:shadow-md',
+          'transition-all duration-200 hover:shadow-[0_0_15px_rgba(11,228,236,0.2)]',
           severityInfo.bgColor,
-          !alert.is_read && 'ring-2 ring-blue-200'
+          !alert.is_read && 'ring-2 ring-neon-cyan'
         )}
       >
         <CardHeader className="pb-3">
@@ -147,13 +147,13 @@ export function AlertDashboard({ className }: AlertDashboardProps) {
               </Button>
             </div>
           </div>
-          <CardTitle className="text-sm font-medium">{alert.title}</CardTitle>
-          <CardDescription className="text-xs">
+          <CardTitle className="text-sm font-mono font-bold text-white">{alert.title}</CardTitle>
+          <CardDescription className="text-xs text-gray-500 font-mono">
             {alert.competitor_name} • {formatDistanceToNow(new Date(alert.created_at), { addSuffix: true })}
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-          <p className="text-sm text-gray-600 line-clamp-2">{alert.description}</p>
+          <p className="text-sm text-gray-300 font-mono line-clamp-2">{alert.description}</p>
         </CardContent>
       </Card>
     );
@@ -188,22 +188,22 @@ export function AlertDashboard({ className }: AlertDashboardProps) {
       <Card>
         <CardContent className="p-4">
           <div className="flex items-center gap-2">
-            <AlertTriangle className="h-4 w-4 text-red-500" />
+            <AlertTriangle className="h-4 w-4 text-neon-magenta" />
             <div>
-              <p className="text-2xl font-bold">{stats.critical}</p>
-              <p className="text-xs text-gray-500">Critical</p>
+              <p className="text-2xl font-bold text-neon-magenta font-mono">{stats.critical}</p>
+              <p className="text-xs text-gray-500 font-mono">Critical</p>
             </div>
           </div>
         </CardContent>
       </Card>
       
-      <Card>
+      <Card className="bg-dark-card border-gray-700">
         <CardContent className="p-4">
           <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 text-yellow-500" />
+            <AlertCircle className="h-4 w-4 text-neon-orange" />
             <div>
-              <p className="text-2xl font-bold">{stats.urgent}</p>
-              <p className="text-xs text-gray-500">Urgent</p>
+              <p className="text-2xl font-bold text-neon-orange font-mono">{stats.urgent}</p>
+              <p className="text-xs text-gray-500 font-mono">Urgent</p>
             </div>
           </div>
         </CardContent>
@@ -213,9 +213,9 @@ export function AlertDashboard({ className }: AlertDashboardProps) {
 
   if (error) {
     return (
-      <Card className={className}>
+      <Card className={`${className} bg-dark-card border-neon-magenta`}>
         <CardContent className="p-6">
-          <div className="text-center text-red-600">
+          <div className="text-center text-neon-magenta font-mono">
             <AlertTriangle className="h-8 w-8 mx-auto mb-2" />
             <p>Error loading alerts: {error}</p>
             <Button onClick={refreshAlerts} className="mt-2">
@@ -231,8 +231,8 @@ export function AlertDashboard({ className }: AlertDashboardProps) {
     <div className={className}>
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-2xl font-bold">Competitor Alerts</h2>
-          <p className="text-gray-600">Real-time intelligence notifications</p>
+          <h2 className="text-2xl font-orbitron font-bold uppercase tracking-wider text-white">Competitor Alerts</h2>
+          <p className="text-gray-500 font-mono">Real-time intelligence notifications</p>
         </div>
         <Button
           onClick={refreshAlerts}
@@ -279,7 +279,7 @@ export function AlertDashboard({ className }: AlertDashboardProps) {
               <CardContent className="p-8 text-center">
                 <Bell className="h-12 w-12 mx-auto mb-4 text-gray-400" />
                 <h3 className="text-lg font-medium mb-2">No alerts found</h3>
-                <p className="text-gray-600">
+                <p className="text-gray-500 font-mono">
                   {showUnreadOnly 
                     ? "You're all caught up! No unread alerts."
                     : "No competitor alerts at the moment. We'll notify you when something important happens."

@@ -90,21 +90,21 @@ const sourceTypeOptions = [
 ]
 
 const importanceOptions = [
-  { value: 'low', label: 'Low', color: 'bg-green-100 text-green-800' },
-  { value: 'medium', label: 'Medium', color: 'bg-yellow-100 text-yellow-800' },
-  { value: 'high', label: 'High', color: 'bg-orange-100 text-orange-800' },
-  { value: 'critical', label: 'Critical', color: 'bg-red-100 text-red-800' },
+  { value: 'low', label: 'Low', color: 'bg-dark-card text-neon-lime border-neon-lime' },
+  { value: 'medium', label: 'Medium', color: 'bg-dark-card text-neon-orange border-neon-orange' },
+  { value: 'high', label: 'High', color: 'bg-dark-card text-neon-orange border-neon-orange' },
+  { value: 'critical', label: 'Critical', color: 'bg-dark-card text-neon-magenta border-neon-magenta' },
 ]
 
 const agentOptions = [
-  { value: 'echo', label: 'Echo', color: 'text-pink-600' },
-  { value: 'blaze', label: 'Blaze', color: 'text-orange-600' },
-  { value: 'nova', label: 'Nova', color: 'text-blue-600' },
-  { value: 'lexi', label: 'Lexi', color: 'text-purple-600' },
-  { value: 'roxy', label: 'Roxy', color: 'text-red-600' },
-  { value: 'glitch', label: 'Glitch', color: 'text-green-600' },
-  { value: 'vex', label: 'Vex', color: 'text-indigo-600' },
-  { value: 'lumi', label: 'Lumi', color: 'text-yellow-600' },
+  { value: 'echo', label: 'Echo', color: 'text-neon-purple' },
+  { value: 'blaze', label: 'Blaze', color: 'text-neon-orange' },
+  { value: 'nova', label: 'Nova', color: 'text-neon-cyan' },
+  { value: 'lexi', label: 'Lexi', color: 'text-neon-purple' },
+  { value: 'roxy', label: 'Roxy', color: 'text-neon-magenta' },
+  { value: 'glitch', label: 'Glitch', color: 'text-neon-lime' },
+  { value: 'vex', label: 'Vex', color: 'text-neon-purple' },
+  { value: 'lumi', label: 'Lumi', color: 'text-neon-orange' },
 ]
 
 const sortOptions = [
@@ -330,12 +330,12 @@ export function IntelligenceSearch({
         <div className="space-y-4">
           {/* Search Input */}
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-5 h-5" />
             <Input
               placeholder="Search intelligence data... (e.g., 'pricing changes', 'product launch', 'hiring')"
               value={filters.query || ""}
               onChange={(e) => handleFilterChange('query', e.target.value)}
-              className="pl-12 pr-4 h-12 text-lg"
+              className="pl-12 pr-4 h-12 text-lg bg-dark-card border-gray-700 text-white placeholder:text-gray-500 font-mono"
             />
             {filters.query && (
               <Button
@@ -524,7 +524,7 @@ export function IntelligenceSearch({
             <EmpowermentCard>
               <div className="space-y-6">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-semibold text-gradient">Advanced Filters</h3>
+                  <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">Advanced Filters</h3>
                   {activeFilterCount > 0 && (
                     <Button
                       variant="outline"
@@ -578,11 +578,11 @@ export function IntelligenceSearch({
                                   </div>
                                   <Badge
                                     variant="outline"
-                                    className={`text-xs ${
-                                      competitor.threatLevel === 'critical' ? 'border-red-200 text-red-800' :
-                                      competitor.threatLevel === 'high' ? 'border-orange-200 text-orange-800' :
-                                      competitor.threatLevel === 'medium' ? 'border-yellow-200 text-yellow-800' :
-                                      'border-green-200 text-green-800'
+                                    className={`text-xs font-mono ${
+                                      competitor.threatLevel === 'critical' ? 'border-neon-magenta text-neon-magenta' :
+                                      competitor.threatLevel === 'high' ? 'border-neon-orange text-neon-orange' :
+                                      competitor.threatLevel === 'medium' ? 'border-neon-orange text-neon-orange' :
+                                      'border-neon-lime text-neon-lime'
                                     }`}
                                   >
                                     {competitor.threatLevel}
@@ -915,14 +915,14 @@ export function IntelligenceSearch({
         <EmpowermentCard>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium text-gray-900 dark:text-gray-100">
+              <h4 className="font-mono font-bold text-white">
                 Active Filters ({activeFilterCount})
               </h4>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={clearFilters}
-                className="text-gray-500 hover:text-gray-700"
+                className="text-gray-500 hover:text-gray-400 font-mono"
               >
                 Clear All
               </Button>
@@ -1021,26 +1021,26 @@ export function IntelligenceSearch({
                   <Loader2 className="w-6 h-6 animate-spin" />
                 </div>
               ) : savedSearches.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
+                <div className="text-center py-8 text-gray-500 font-mono">
                   No saved searches yet. Create your first saved search by applying filters and clicking "Save Search".
                 </div>
               ) : (
                 savedSearches.map((search) => (
                   <div
                     key={search.id}
-                    className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800"
+                    className="flex items-center justify-between p-3 border border-gray-700 rounded-sm hover:bg-dark-card bg-dark-bg"
                   >
                     <div className="flex-1 cursor-pointer" onClick={() => loadSavedSearch(search.id)}>
                       <div className="flex items-center gap-2">
-                        <h4 className="font-medium">{search.name}</h4>
-                        {search.isFavorite && <Star className="w-4 h-4 text-yellow-500 fill-current" />}
+                        <h4 className="font-mono font-bold text-white">{search.name}</h4>
+                        {search.isFavorite && <Star className="w-4 h-4 text-neon-orange fill-current" />}
                       </div>
                       {search.description && (
-                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                        <p className="text-sm text-gray-500 font-mono mt-1">
                           {search.description}
                         </p>
                       )}
-                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
+                      <div className="flex items-center gap-4 mt-2 text-xs text-gray-500 font-mono">
                         <span className="flex items-center gap-1">
                           <History className="w-3 h-3" />
                           Used {search.useCount} times
@@ -1057,7 +1057,7 @@ export function IntelligenceSearch({
                       variant="ghost"
                       size="sm"
                       onClick={() => deleteSavedSearch(search.id)}
-                      className="text-red-500 hover:text-red-700"
+                      className="text-neon-magenta hover:text-neon-magenta/80"
                     >
                       <Trash2 className="w-4 h-4" />
                     </Button>

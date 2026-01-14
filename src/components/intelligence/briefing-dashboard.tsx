@@ -62,15 +62,15 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
   const getThreatLevelColor = (level: string) => {
     switch (level) {
       case 'critical':
-        return 'bg-red-500'
+        return 'bg-neon-magenta'
       case 'high':
-        return 'bg-orange-500'
+        return 'bg-neon-orange'
       case 'medium':
-        return 'bg-yellow-500'
+        return 'bg-neon-orange'
       case 'low':
-        return 'bg-green-500'
+        return 'bg-neon-lime'
       default:
-        return 'bg-gray-500'
+        return 'bg-gray-700'
     }
   }
   
@@ -94,8 +94,8 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Intelligence Briefings</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-3xl font-orbitron font-bold uppercase tracking-wider text-white">Intelligence Briefings</h2>
+          <p className="text-gray-500 font-mono">
             AI-powered competitive intelligence reports and analysis
           </p>
         </div>
@@ -115,9 +115,9 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
       
       {/* Error Display */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-neon-magenta bg-dark-card shadow-[0_0_15px_rgba(255,0,110,0.2)]">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-red-800">
+            <div className="flex items-center gap-2 text-neon-magenta font-mono">
               <AlertTriangle className="h-4 w-4" />
               <span>{error}</span>
             </div>
@@ -194,33 +194,33 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                 {briefings.map((briefing) => (
                   <div
                     key={briefing.id}
-                    className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                    className={`p-3 rounded-sm border border-gray-700 cursor-pointer transition-colors bg-dark-card ${
                       selectedBriefing?.id === briefing.id
-                        ? 'bg-primary/10 border-primary'
-                        : 'hover:bg-muted/50'
+                        ? 'bg-dark-card border-neon-cyan shadow-[0_0_15px_rgba(11,228,236,0.2)]'
+                        : 'hover:bg-dark-bg'
                     }`}
                     onClick={() => setSelectedBriefing(briefing)}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs border-gray-700 text-gray-300 font-mono">
                         {briefing.briefingType}
                       </Badge>
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-gray-500 font-mono">
                         {format(new Date(briefing.generatedAt), 'MMM dd')}
                       </span>
                     </div>
                     
-                    <h4 className="font-medium text-sm mb-1 line-clamp-2">
+                    <h4 className="font-mono font-bold text-white text-sm mb-1 line-clamp-2">
                       {briefing.title}
                     </h4>
                     
-                    <p className="text-xs text-muted-foreground line-clamp-2">
+                    <p className="text-xs text-gray-500 font-mono line-clamp-2">
                       {briefing.summary}
                     </p>
                     
                     <div className="flex items-center gap-2 mt-2">
                       <div className={`w-2 h-2 rounded-full ${getThreatLevelColor(briefing.threatAssessment.overallThreatLevel)}`} />
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-gray-500 font-mono">
                         {briefing.threatAssessment.overallThreatLevel} threat
                       </span>
                     </div>
@@ -228,7 +228,7 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                 ))}
                 
                 {briefings.length === 0 && !isGenerating && (
-                  <div className="text-center py-8 text-muted-foreground">
+                  <div className="text-center py-8 text-gray-500 font-mono">
                     <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
                     <p className="text-sm">No briefings yet</p>
                     <p className="text-xs">Generate your first briefing to get started</p>
@@ -264,21 +264,21 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                 
                 <TabsContent value="overview" className="space-y-4">
                   <div>
-                    <h4 className="font-medium mb-2">Executive Summary</h4>
-                    <p className="text-sm text-muted-foreground">
+                    <h4 className="font-mono font-bold text-white mb-2">Executive Summary</h4>
+                    <p className="text-sm text-gray-300 font-mono">
                       {selectedBriefing.summary}
                     </p>
                   </div>
                   
-                  <Separator />
+                  <Separator className="bg-gray-700" />
                   
                   <div>
-                    <h4 className="font-medium mb-3">Key Insights</h4>
+                    <h4 className="font-mono font-bold text-white mb-3">Key Insights</h4>
                     <div className="space-y-2">
                       {selectedBriefing.keyInsights.map((insight, index) => (
                         <div key={index} className="flex items-start gap-2">
-                          <TrendingUp className="h-4 w-4 mt-0.5 text-primary" />
-                          <span className="text-sm">{insight}</span>
+                          <TrendingUp className="h-4 w-4 mt-0.5 text-neon-cyan" />
+                          <span className="text-sm text-gray-300 font-mono">{insight}</span>
                         </div>
                       ))}
                     </div>
@@ -286,24 +286,24 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                   
                   {selectedBriefing.trendAnalysis.length > 0 && (
                     <>
-                      <Separator />
+                      <Separator className="bg-gray-700" />
                       <div>
-                        <h4 className="font-medium mb-3">Market Trends</h4>
+                        <h4 className="font-mono font-bold text-white mb-3">Market Trends</h4>
                         <div className="space-y-3">
                           {selectedBriefing.trendAnalysis.map((trend, index) => (
-                            <div key={index} className="p-3 bg-muted/50 rounded-lg">
+                            <div key={index} className="p-3 bg-dark-card border border-gray-700 rounded-sm">
                               <div className="flex items-center justify-between mb-2">
-                                <h5 className="font-medium text-sm">{trend.trend}</h5>
-                                <Badge variant="outline" className="text-xs">
+                                <h5 className="font-mono font-bold text-white text-sm">{trend.trend}</h5>
+                                <Badge variant="outline" className="text-xs border-gray-700 text-gray-300 font-mono">
                                   {Math.round(trend.confidence * 100)}% confidence
                                 </Badge>
                               </div>
-                              <p className="text-xs text-muted-foreground mb-2">
+                              <p className="text-xs text-gray-500 font-mono mb-2">
                                 {trend.description}
                               </p>
                               <div className="space-y-1">
                                 {trend.implications.map((implication, idx) => (
-                                  <div key={idx} className="text-xs text-muted-foreground">
+                                  <div key={idx} className="text-xs text-gray-500 font-mono">
                                     • {implication}
                                   </div>
                                 ))}
@@ -325,13 +325,13 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                         {competitor.updates.length > 0 ? (
                           <div className="space-y-2">
                             {competitor.updates.map((update, index) => (
-                              <div key={index} className="flex items-start gap-3 p-2 bg-muted/30 rounded">
+                              <div key={index} className="flex items-start gap-3 p-2 bg-dark-card/30 rounded">
                                 <Badge variant="outline" className="text-xs">
                                   {update.type}
                                 </Badge>
                                 <div className="flex-1">
                                   <h5 className="font-medium text-sm">{update.title}</h5>
-                                  <p className="text-xs text-muted-foreground mt-1">
+                                  <p className="text-xs text-gray-500 font-mono mt-1">
                                     {update.description}
                                   </p>
                                   <div className="flex items-center gap-2 mt-2">
@@ -341,7 +341,7 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                                     >
                                       {update.impact} impact
                                     </Badge>
-                                    <span className="text-xs text-muted-foreground">
+                                    <span className="text-xs text-gray-500 font-mono">
                                       {update.source}
                                     </span>
                                   </div>
@@ -350,7 +350,7 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                             ))}
                           </div>
                         ) : (
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-sm text-gray-500 font-mono">
                             No updates in this period
                           </p>
                         )}
@@ -370,18 +370,18 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                           </Badge>
                         </div>
                         
-                        <p className="text-sm text-muted-foreground mb-3">
+                        <p className="text-sm text-gray-500 font-mono mb-3">
                           {action.description}
                         </p>
                         
                         <div className="grid grid-cols-2 gap-4 text-xs">
                           <div>
                             <span className="font-medium">Effort: </span>
-                            <span className="text-muted-foreground">{action.estimatedEffort}</span>
+                            <span className="text-gray-500 font-mono">{action.estimatedEffort}</span>
                           </div>
                           <div>
                             <span className="font-medium">Impact: </span>
-                            <span className="text-muted-foreground">{action.potentialImpact}</span>
+                            <span className="text-gray-500 font-mono">{action.potentialImpact}</span>
                           </div>
                         </div>
                       </div>
@@ -405,20 +405,20 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                                   </Badge>
                                 </div>
                                 
-                                <p className="text-xs text-muted-foreground mb-2">
+                                <p className="text-xs text-gray-500 font-mono mb-2">
                                   {opportunity.description}
                                 </p>
                                 
                                 <div className="text-xs">
                                   <span className="font-medium">Timeframe: </span>
-                                  <span className="text-muted-foreground">{opportunity.timeframe}</span>
+                                  <span className="text-gray-500 font-mono">{opportunity.timeframe}</span>
                                 </div>
                                 
                                 <div className="mt-2">
                                   <span className="font-medium text-xs">Required Actions:</span>
                                   <ul className="mt-1 space-y-1">
                                     {opportunity.requiredActions.map((action, idx) => (
-                                      <li key={idx} className="text-xs text-muted-foreground">
+                                      <li key={idx} className="text-xs text-gray-500 font-mono">
                                         • {action}
                                       </li>
                                     ))}
@@ -462,7 +462,7 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                               </div>
                             </div>
                             
-                            <div className="text-xs text-muted-foreground">
+                            <div className="text-xs text-gray-500 font-mono">
                               <span className="font-medium">Timeframe: </span>
                               {threat.timeframe}
                             </div>
@@ -478,7 +478,7 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                       <div className="space-y-2">
                         {selectedBriefing.threatAssessment.marketChanges.map((change, index) => (
                           <div key={index} className="flex items-start gap-2">
-                            <TrendingUp className="h-4 w-4 mt-0.5 text-orange-500" />
+                            <TrendingUp className="h-4 w-4 mt-0.5 text-neon-orange" />
                             <span className="text-sm">{change}</span>
                           </div>
                         ))}
@@ -488,7 +488,7 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
                 </TabsContent>
               </Tabs>
             ) : (
-              <div className="text-center py-12 text-muted-foreground">
+              <div className="text-center py-12 text-gray-500 font-mono">
                 <FileText className="h-12 w-12 mx-auto mb-4 opacity-50" />
                 <h3 className="font-medium mb-2">No Briefing Selected</h3>
                 <p className="text-sm">

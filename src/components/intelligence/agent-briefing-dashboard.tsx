@@ -22,35 +22,35 @@ const agentConfig = {
   echo: {
     name: 'Echo',
     icon: User,
-    color: 'bg-pink-500',
+    color: 'bg-neon-purple',
     description: 'Marketing Maven',
     personality: 'Creative, trend-savvy marketing expert'
   },
   lexi: {
     name: 'Lexi',
     icon: Brain,
-    color: 'bg-purple-500',
+    color: 'bg-neon-purple',
     description: 'Strategy Analyst',
     personality: 'Analytical, strategic thinker'
   },
   nova: {
     name: 'Nova',
     icon: Palette,
-    color: 'bg-blue-500',
+    color: 'bg-neon-cyan',
     description: 'Product Designer',
     personality: 'Creative, user-focused designer'
   },
   blaze: {
     name: 'Blaze',
     icon: TrendingUp,
-    color: 'bg-orange-500',
+    color: 'bg-neon-orange',
     description: 'Growth Strategist',
     personality: 'Results-driven growth expert'
   },
   collaborative: {
     name: 'Team',
     icon: Users,
-    color: 'bg-green-500',
+    color: 'bg-neon-lime',
     description: 'Collaborative Analysis',
     personality: 'Multi-agent perspective'
   }
@@ -131,8 +131,8 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">Agent Intelligence Briefings</h2>
-          <p className="text-muted-foreground">
+          <h2 className="text-3xl font-orbitron font-bold uppercase tracking-wider text-white">Agent Intelligence Briefings</h2>
+          <p className="text-gray-500 font-mono">
             Specialized intelligence analysis from your AI agent team
           </p>
         </div>
@@ -140,9 +140,9 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
       
       {/* Error Display */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-neon-magenta bg-dark-card shadow-[0_0_15px_rgba(255,0,110,0.2)]">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-2 text-red-800">
+            <div className="flex items-center gap-2 text-neon-magenta font-mono">
               <AlertTriangle className="h-4 w-4" />
               <span>{error}</span>
             </div>
@@ -207,11 +207,11 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
                   return (
                     <div
                       key={briefing.agentId + briefing.generatedAt}
-                      className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                      className={`p-3 rounded-sm border cursor-pointer transition-colors ${
                         selectedBriefing?.agentId === briefing.agentId && 
                         selectedBriefing?.generatedAt === briefing.generatedAt
                           ? 'bg-primary/10 border-primary'
-                          : 'hover:bg-muted/50'
+                          : 'hover:bg-dark-bg'
                       }`}
                       onClick={() => setSelectedBriefing(briefing)}
                     >
@@ -297,7 +297,7 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
                 </TabsList>
                 
                 <TabsContent value="overview" className="space-y-4">
-                  <div className="p-3 bg-muted/30 rounded-lg">
+                  <div className="p-3 bg-muted/30 rounded-sm">
                     <h4 className="font-medium mb-2 flex items-center gap-2">
                       <User className="h-4 w-4" />
                       Agent Personality
@@ -341,7 +341,7 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
                     <div className="space-y-2">
                       {selectedBriefing.nextSteps.map((step, index) => (
                         <div key={index} className="flex items-start gap-2">
-                          <div className="w-5 h-5 rounded-full bg-primary/20 text-primary text-xs flex items-center justify-center mt-0.5">
+                          <div className="w-5 h-5 rounded-full bg-neon-cyan/20 text-neon-cyan text-xs flex items-center justify-center mt-0.5">
                             {index + 1}
                           </div>
                           <span className="text-sm">{step}</span>
@@ -354,7 +354,7 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
                 <TabsContent value="insights" className="space-y-4">
                   <div className="space-y-4">
                     {selectedBriefing.insights.map((insight, index) => (
-                      <div key={index} className="p-4 border rounded-lg">
+                      <div key={index} className="p-4 border rounded-sm">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-medium">{insight.category}</h4>
                           <Badge variant="outline" className="text-xs">
@@ -399,7 +399,7 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
                 <TabsContent value="recommendations" className="space-y-4">
                   <div className="space-y-4">
                     {selectedBriefing.recommendations.map((rec, index) => (
-                      <div key={index} className="p-4 border rounded-lg">
+                      <div key={index} className="p-4 border rounded-sm">
                         <div className="flex items-center justify-between mb-2">
                           <h4 className="font-medium">{rec.title}</h4>
                           <div className="flex items-center gap-2">
@@ -440,7 +440,7 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
                       <h4 className="font-medium mb-3">Action Items</h4>
                       <div className="space-y-3">
                         {selectedBriefing.actionItems.map((action, index) => (
-                          <div key={index} className="p-3 bg-muted/30 rounded-lg">
+                          <div key={index} className="p-3 bg-muted/30 rounded-sm">
                             <div className="flex items-center justify-between mb-2">
                               <h5 className="font-medium text-sm">{action.action}</h5>
                               <Badge variant={getPriorityColor(action.priority)}>

@@ -34,10 +34,10 @@ const channelIcons = {
 };
 
 const severityOptions: { value: AlertSeverity; label: string; color: string }[] = [
-  { value: 'critical', label: 'Critical', color: 'text-red-600' },
-  { value: 'urgent', label: 'Urgent', color: 'text-orange-600' },
-  { value: 'warning', label: 'Warning', color: 'text-yellow-600' },
-  { value: 'info', label: 'Info', color: 'text-blue-600' },
+  { value: 'critical', label: 'Critical', color: 'text-neon-magenta' },
+  { value: 'urgent', label: 'Urgent', color: 'text-neon-orange' },
+  { value: 'warning', label: 'Warning', color: 'text-neon-orange' },
+  { value: 'info', label: 'Info', color: 'text-neon-cyan' },
 ];
 
 const alertTypeOptions: { value: AlertType; label: string }[] = [
