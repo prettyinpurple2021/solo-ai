@@ -1,7 +1,7 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import React, { useEffect, useMemo, useState } from 'react'
+import { motion } from 'framer-motion'
 import { useIsMobile } from '@/hooks/use-mobile'
 import MobileDashboardWidgets from './mobile-dashboard-widgets'
 import MobileNavigation from './mobile-navigation'
@@ -9,20 +9,10 @@ import VoiceTaskCreator from './voice-task-creator'
 import { TouchGestureWrapper } from './mobile-gestures'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
 import { logInfo } from '@/lib/logger'
 import { useDashboardData } from '@/hooks/use-dashboard-data'
 import {
   Mic,
-  Plus,
-  Bell,
-  Search,
-  Settings,
-  Zap,
-  Target,
-  Users,
-  BarChart3,
-  Clock,
   Sparkles,
   Crown
 } from 'lucide-react'
@@ -109,57 +99,61 @@ export default function MobileDashboard({
   const resolvedData = dashboardData || fetchedDashboard || null
 
   // Create widgets from data
-  const widgets: Widget[] = [
+  const widgets: Widget[] = useMemo(() => ([
     {
       id: 'stats',
       type: 'stats',
-      title: 'Today\'s Progress',
+      title: "Today's Progress",
       priority: 1,
       data: {
-        completion_rate: resolvedData ? Math.round((resolvedData.todaysStats.tasks_completed / Math.max(1, resolvedData.todaysStats.total_tasks)) * 100) : 0,
+        completion_rate: resolvedData
+          ? Math.round(
+              (resolvedData.todaysStats.tasks_completed / Math.max(1, resolvedData.todaysStats.total_tasks)) * 100
+            )
+          : 0,
         tasks_completed: resolvedData?.todaysStats.tasks_completed || 0,
         focus_minutes: resolvedData?.todaysStats.focus_minutes || 0,
-        total_tasks: resolvedData?.todaysStats.total_tasks || 0
-      }
+        total_tasks: resolvedData?.todaysStats.total_tasks || 0,
+      },
     },
     {
       id: 'tasks',
       type: 'tasks',
       title: 'Quick Tasks',
       priority: 2,
-      data: (resolvedData?.todaysTasks || []).map(task => ({
+      data: (resolvedData?.todaysTasks || []).map((task) => ({
         ...task,
-        completed: task.status === 'completed'
-      }))
+        completed: task.status === 'completed',
+      })),
     },
     {
       id: 'goals',
       type: 'goals',
       title: 'Active Goals',
       priority: 3,
-      data: (resolvedData?.activeGoals || []).map(goal => ({
+      data: (resolvedData?.activeGoals || []).map((goal) => ({
         ...goal,
         progress: goal.progress_percentage,
-        due_date: goal.target_date
-      }))
+        due_date: goal.target_date,
+      })),
     },
     {
       id: 'agents',
       type: 'agents',
       title: 'AI Squad',
       priority: 4,
-      data: (resolvedData?.recentConversations || []).map(conv => ({
+      data: (resolvedData?.recentConversations || []).map((conv) => ({
         id: conv.id,
         display_name: conv.agent.display_name,
-        has_new_messages: false
-      }))
+        has_new_messages: false,
+      })),
     },
     {
       id: 'insights',
       type: 'insights',
       title: 'AI Insights',
       priority: 5,
-      data: resolvedData?.insights || []
+      data: resolvedData?.insights || [],
     },
     {
       id: 'focus',
@@ -169,10 +163,10 @@ export default function MobileDashboard({
       data: {
         is_active: false,
         progress: 0,
-        remaining_time: 25
-      }
-    }
-  ]
+        remaining_time: 25,
+      },
+    },
+  ]), [resolvedData])
 
   // Handle widget actions
   const handleWidgetAction = (widgetId: string, action: string, data?: any) => {
@@ -271,7 +265,7 @@ export default function MobileDashboard({
       >
         <div className="pb-20 pt-4 px-4">
           {/* Status Bar */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-4" aria-live="polite">
             <div className="flex items-center gap-2">
               <div className={cn(
                 "w-2 h-2 rounded-sm",
@@ -297,7 +291,9 @@ export default function MobileDashboard({
                 <div className="flex items-center justify-between">
                   <div>
                     <h2 className="text-lg font-bold font-orbitron uppercase tracking-wider">
-                      {dashboardLoading ? 'Loading your dashboard…' : `Welcome back, ${user?.name || resolvedData?.user?.full_name || 'Boss'}! 👑`}
+                      {dashboardLoading
+                        ? 'Loading your dashboard…'
+                        : `Welcome back, ${user?.name || resolvedData?.user?.full_name || 'Boss'}!`}
                     </h2>
                     <p className="text-sm text-gray-300 font-mono">
                       {dashboardLoading
@@ -316,13 +312,13 @@ export default function MobileDashboard({
 
           {/* Dashboard Widgets */}
           {dashboardLoading ? (
-            <Card>
+            <Card className="bg-dark-card border border-gray-700">
               <CardContent className="p-6">
                 <div className="animate-pulse space-y-4">
-                  <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                  <div className="h-4 bg-dark-hover rounded-sm w-1/3"></div>
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="h-24 bg-gray-200 rounded"></div>
-                    <div className="h-24 bg-gray-200 rounded"></div>
+                    <div className="h-24 bg-dark-hover rounded-sm"></div>
+                    <div className="h-24 bg-dark-hover rounded-sm"></div>
                   </div>
                 </div>
               </CardContent>
@@ -342,7 +338,7 @@ export default function MobileDashboard({
             transition={{ delay: 0.2 }}
             className="mt-6"
           >
-            <Card>
+            <Card className="bg-dark-card border border-gray-700">
               <CardContent className="p-4">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
@@ -379,7 +375,8 @@ export default function MobileDashboard({
       >
         <Button
           onClick={() => setShowVoiceCreator(true)}
-          className="h-14 w-14 rounded-full bg-neon-purple hover:bg-neon-purple/80 shadow-[0_0_20px_rgba(11,228,236,0.3)]"
+          aria-label="Open voice task creator"
+          className="h-14 w-14 rounded-full bg-neon-purple hover:bg-neon-purple/80 shadow-[0_0_20px_rgba(11,228,236,0.3)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
         >
           <Mic className="h-6 w-6" />
         </Button>
@@ -399,12 +396,12 @@ export default function MobileDashboard({
         transition={{ delay: 1 }}
         className="fixed bottom-2 left-2 right-2 z-20"
       >
-        <Card className="bg-black/80 text-white border-0">
+        <Card className="bg-black/80 text-white border border-gray-800">
           <CardContent className="p-2">
-            <div className="text-center text-xs">
-              <span className="mr-4">👆 Double tap for voice</span>
-              <span className="mr-4">👆 Long press to reorder</span>
-              <span>👆 Swipe to navigate</span>
+            <div className="text-center text-xs font-mono text-gray-300">
+              <span className="mr-4">Double tap: voice</span>
+              <span className="mr-4">Long press: reorder</span>
+              <span>Swipe: navigate</span>
             </div>
           </CardContent>
         </Card>

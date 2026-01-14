@@ -72,8 +72,13 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
   const [showDetails, setShowDetails] = useState(false)
   const [isClosed, setIsClosed] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
-
-  // ... (keep existing useEffects and helper functions) ...
+  
+  // Ensure we reflect real online status on mount (avoid SSR mismatch)
+  useEffect(() => {
+    setSyncStatus((prev) => ({ ...prev, isOnline: navigator.onLine }))
+    // Keep ref in sync so transitions are detected correctly
+    prevOnlineRef.current = navigator.onLine
+  }, [])
 
   // Open IndexedDB connection
   const openIndexedDB = useCallback(() => {
@@ -557,7 +562,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                 size="sm"
                 onClick={() => setShowDetails(!showDetails)}
                 className="h-8 w-8 p-0"
-                title="Toggle Details"
+                aria-label="Toggle sync details"
               >
                 <Database className="w-4 h-4" />
               </Button>
@@ -567,7 +572,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                 size="sm"
                 onClick={() => setIsMinimized(!isMinimized)}
                 className="h-8 w-8 p-0 hover:bg-dark-hover"
-                title={isMinimized ? "Expand" : "Minimize"}
+                aria-label={isMinimized ? "Expand offline manager" : "Minimize offline manager"}
               >
                 {isMinimized ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
               </Button>
@@ -577,7 +582,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                 size="sm"
                 onClick={() => setIsClosed(true)}
                 className="h-8 w-8 p-0 hover:bg-dark-hover"
-                title="Close"
+                aria-label="Close offline manager"
               >
                 <X className="w-4 h-4" />
               </Button>
@@ -592,8 +597,8 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
               <CardContent className="pt-0">
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span>Syncing data...</span>
-                    <span>{Math.round(syncStatus.syncProgress)}%</span>
+                    <span className="font-mono text-gray-300">Syncing data…</span>
+                    <span className="font-mono text-gray-300">{Math.round(syncStatus.syncProgress)}%</span>
                   </div>
                   <Progress value={syncStatus.syncProgress} className="h-2" />
                 </div>
@@ -618,6 +623,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                   onClick={syncPendingActions}
                   disabled={!syncStatus.isOnline || syncStatus.isSyncing || syncStatus.pendingActions === 0}
                   className="flex-1"
+                  aria-label="Sync pending actions now"
                 >
                   <RefreshCw className={cn("w-4 h-4 mr-2", syncStatus.isSyncing && "animate-spin")} />
                   Sync Now
@@ -628,6 +634,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                   size="sm"
                   onClick={loadPendingActions}
                   disabled={syncStatus.isSyncing}
+                  aria-label="Reload pending actions"
                 >
                   <RefreshCw className="w-4 h-4" />
                 </Button>
@@ -647,10 +654,10 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
           >
-            <Card>
+            <Card className="bg-dark-card border border-gray-700">
               <CardHeader>
                 <CardTitle className="text-lg font-orbitron uppercase tracking-wider text-white">Sync Details</CardTitle>
-                <CardDescription>
+                <CardDescription className="font-mono text-gray-300">
                   Manage offline data and pending actions
                 </CardDescription>
               </CardHeader>
@@ -665,7 +672,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                 {/* Pending Actions List */}
                 {pendingActions.length > 0 && (
                   <div className="space-y-2">
-                    <h4 className="font-medium text-sm">Pending Actions:</h4>
+                    <h4 className="font-orbitron font-bold uppercase tracking-wider text-sm text-white">Pending Actions</h4>
                     <div className="space-y-1 max-h-32 overflow-y-auto">
                       {pendingActions.map((action) => (
                         <div key={action.id} className="flex items-center justify-between text-xs bg-dark-card border border-gray-700 p-2 rounded-sm font-mono text-gray-300">
@@ -680,7 +687,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
                             <span className="text-gray-500">{action.resource}</span>
                           </div>
                           {action.retries > 0 && (
-                            <Badge variant="outline" className="text-xs">
+                            <Badge variant="outline" className="text-xs bg-dark-card border border-neon-orange text-neon-orange font-mono">
                               {action.retries} retries
                             </Badge>
                           )}

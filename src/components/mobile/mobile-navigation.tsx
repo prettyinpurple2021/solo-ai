@@ -355,8 +355,9 @@ export default function MobileNavigation({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 text-white hover:bg-white/20"
+                  className="h-8 w-8 p-0 text-white hover:bg-dark-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
                   onClick={() => setIsOpen(false)}
+                  aria-label="Close navigation"
                 >
                   <X className="h-5 w-5" />
                 </Button>

@@ -14,11 +14,9 @@ import {
   Wifi, 
   WifiOff, 
   Download, 
-  Zap,
   Settings,
   Bell,
   RefreshCw,
-  Menu,
   Home
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -227,13 +225,14 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="w-full max-w-md"
               >
-                <Card className="max-h-[80vh] overflow-y-auto">
-                  <div className="flex items-center justify-between p-4 border-b">
-                    <h3 className="text-lg font-semibold">Mobile Settings</h3>
+                <Card className="max-h-[80vh] overflow-y-auto bg-dark-card border border-neon-cyan shadow-[0_0_20px_rgba(11,228,236,0.2)]">
+                  <div className="flex items-center justify-between p-4 border-b border-gray-800">
+                    <h3 className="text-lg font-orbitron font-bold uppercase tracking-wider text-white">Mobile Settings</h3>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowOfflineManager(false)}
+                      aria-label="Close mobile settings"
                     >
                       ✕
                     </Button>
@@ -255,6 +254,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
               variant="outline"
               onClick={() => setShowOfflineManager(true)}
               className="h-10 w-10 p-0 bg-dark-bg/90 backdrop-blur-sm shadow-[0_0_20px_rgba(11,228,236,0.2)]"
+              aria-label="Open offline settings"
             >
               <Settings className="w-4 h-4" />
             </Button>
@@ -271,6 +271,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
                   size="sm"
                   onClick={() => window.location.href = '/dashboard'}
                   className="flex flex-col items-center gap-1 h-auto py-2"
+                  aria-label="Go to dashboard"
                 >
                   <Home className="w-5 h-5" />
                   <span className="text-xs font-mono">Home</span>
@@ -281,6 +282,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
                   size="sm"
                   onClick={refresh}
                   className="flex flex-col items-center gap-1 h-auto py-2"
+                  aria-label="Refresh"
                 >
                   <RefreshCw className="w-5 h-5" />
                   <span className="text-xs font-mono">Refresh</span>
@@ -291,6 +293,7 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
                   size="sm"
                   onClick={() => setShowOfflineManager(true)}
                   className="flex flex-col items-center gap-1 h-auto py-2"
+                  aria-label="Open sync and offline manager"
                 >
                   <Bell className="w-5 h-5" />
                   <span className="text-xs font-mono">Sync</span>
@@ -302,9 +305,10 @@ export function MobilePWAProvider({ children, className = "" }: MobilePWAProvide
                     size="sm"
                     onClick={() => setShowInstallPrompt(true)}
                     className="flex flex-col items-center gap-1 h-auto py-2"
+                    aria-label="Install app"
                   >
                     <Download className="w-5 h-5" />
-                    <span className="text-xs">Install</span>
+                    <span className="text-xs font-mono">Install</span>
                   </Button>
                 )}
               </div>

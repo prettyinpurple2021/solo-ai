@@ -422,7 +422,8 @@ export default function VoiceTaskCreator({
                     <select
                       value={taskData.priority}
                       onChange={(e) => setTaskData(prev => ({ ...prev, priority: e.target.value as any }))}
-                      className="w-full p-2 border rounded-lg touch-target"
+                      className="w-full p-2 border border-gray-700 rounded-sm bg-dark-card text-gray-300 font-mono touch-target focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neon-cyan"
+                      aria-label="Task priority"
                     >
                       <option value="low">Low</option>
                       <option value="medium">Medium</option>
