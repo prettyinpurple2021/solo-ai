@@ -107,7 +107,6 @@ export default function IncineratorPage() {
                                     type="text"
                                     value={formData.title}
                                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                    placeholder="e.g., Uber for Dog Walking"
                                     className="bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20"
                                 />
                             </div>
@@ -118,7 +117,6 @@ export default function IncineratorPage() {
                                     id="problemSolved"
                                     value={formData.problemSolved}
                                     onChange={(e) => setFormData({ ...formData, problemSolved: e.target.value })}
-                                    placeholder="What specific pain point are you addressing?"
                                     rows={3}
                                     className="bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20 resize-none"
                                 />
@@ -133,7 +131,6 @@ export default function IncineratorPage() {
                                         type="text"
                                         value={formData.targetAudience}
                                         onChange={(e) => setFormData({ ...formData, targetAudience: e.target.value })}
-                                        placeholder="Who is desperate for this?"
                                         className="pl-10 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20"
                                     />
                                 </div>
@@ -145,7 +142,6 @@ export default function IncineratorPage() {
                                     id="description"
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                    placeholder="How does it work? Be specific."
                                     rows={4}
                                     className="bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20 resize-none"
                                 />

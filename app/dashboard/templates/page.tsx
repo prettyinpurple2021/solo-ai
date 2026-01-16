@@ -322,17 +322,24 @@ export default function TemplatesDashboard() {
           {/* Search and Filters */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <div className="relative flex-1">
+              <label htmlFor="template-library-search" className="sr-only">
+                Search templates
+              </label>
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
               <Input
-                placeholder="Search templates..."
+                id="template-library-search"
                 value={searchQuery}
                 onChange={(e: any) => setSearchQuery(e.target.value)}
+                aria-label="Search templates"
                 className="pl-10 bg-dark-card border-neon-cyan/30 text-white placeholder:text-gray-500 focus:border-neon-cyan rounded-none font-mono"
               />
             </div>
             <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-              <SelectTrigger className="w-full md:w-48 bg-dark-card border-neon-cyan/30 text-white rounded-none font-mono focus:ring-neon-cyan/50">
-                <SelectValue placeholder="Category" />
+              <SelectTrigger
+                className="w-full md:w-48 bg-dark-card border-neon-cyan/30 text-white rounded-none font-mono focus:ring-neon-cyan/50"
+                aria-label="Filter templates by category"
+              >
+                <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-dark-card border-neon-cyan/30 rounded-none">
                 {categories.map(category => (
@@ -346,8 +353,11 @@ export default function TemplatesDashboard() {
               </SelectContent>
             </Select>
             <Select value={selectedTier} onValueChange={setSelectedTier}>
-              <SelectTrigger className="w-full md:w-48 bg-dark-card border-neon-cyan/30 text-white rounded-none font-mono focus:ring-neon-cyan/50">
-                <SelectValue placeholder="Tier" />
+              <SelectTrigger
+                className="w-full md:w-48 bg-dark-card border-neon-cyan/30 text-white rounded-none font-mono focus:ring-neon-cyan/50"
+                aria-label="Filter templates by tier"
+              >
+                <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-dark-card border-neon-cyan/30 rounded-none">
                 {tiers.map(tier => (

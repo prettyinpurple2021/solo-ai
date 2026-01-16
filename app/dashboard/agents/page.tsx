@@ -602,10 +602,14 @@ export default function AgentsPage() {
                   {/* Input */}
                   <div className="p-4 border-t border-neon-cyan/30">
                     <div className="flex gap-2">
+                      <label htmlFor="agent-message-input" className="sr-only">
+                        Message {selectedAgent.display_name}
+                      </label>
                       <Textarea
+                        id="agent-message-input"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
-                        placeholder={`Message ${selectedAgent.display_name}...`}
+                        aria-label={`Message ${selectedAgent.display_name}`}
                         className="flex-1 min-h-[60px] max-h-[120px] resize-none bg-dark-bg border-neon-cyan/30 text-white placeholder:text-gray-500 focus:border-neon-cyan font-mono rounded-none"
                         onKeyDown={(e) => {
                           if (e.key === 'Enter' && !e.shiftKey) {
@@ -658,7 +662,6 @@ export default function AgentsPage() {
                   id="fileName"
                   value={saveForm.fileName}
                   onChange={(e) => setSaveForm(prev => ({ ...prev, fileName: e.target.value }))}
-                  placeholder="Enter filename..."
                   className="bg-dark-bg border-neon-cyan/30 text-white focus:border-neon-cyan"
                 />
               </div>
@@ -669,7 +672,6 @@ export default function AgentsPage() {
                   id="description"
                   value={saveForm.description}
                   onChange={(e) => setSaveForm(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Brief description of the content..."
                   className="bg-dark-bg border-neon-cyan/30 text-white focus:border-neon-cyan"
                 />
               </div>
@@ -711,7 +713,6 @@ export default function AgentsPage() {
                   id="tags"
                   value={saveForm.tags}
                   onChange={(e) => setSaveForm(prev => ({ ...prev, tags: e.target.value }))}
-                  placeholder="comma, separated, tags"
                   className="bg-dark-bg border-neon-cyan/30 text-white focus:border-neon-cyan"
                 />
               </div>

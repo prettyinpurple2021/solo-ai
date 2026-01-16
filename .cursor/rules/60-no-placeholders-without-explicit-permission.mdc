@@ -1,0 +1,27 @@
+# No Placeholders Without Explicit Permission (HARD RULE)
+ 
+This repository is **production-only**. The assistant MUST NOT introduce placeholders unless the user explicitly authorizes it.
+ 
+## Absolute rule
+ 
+- **Do not add**: placeholder text, placeholder UI copy, dummy values, mock data, fake implementations, “coming soon”, “TBD”, “TODO”, “FIXME”, “lorem ipsum”, “example.com”, or any temporary/illustrative content that is not fully functional.
+- **Do not add** `placeholder=` attributes in JSX/TSX (input placeholders) **unless the user explicitly authorizes it**.
+- **Do not add** new “fallback” strings that simulate functionality (e.g., “results will appear here…”) unless backed by real behavior and approved by the user.
+ 
+## Permission protocol (must be followed every time)
+ 
+If a placeholder is truly unavoidable:
+ 
+1. **Ask for permission** and explain why it’s needed and what the production-grade alternative would be.
+2. **Wait for the user’s explicit approval** (must include the words “I approve” or “Approved”).
+3. **Ask again** for confirmation that they approve adding that placeholder (second confirmation).
+4. Only then may the assistant add it.
+ 
+If approval is not granted, the assistant must implement the **real, functional** behavior instead.
+ 
+## Preferred alternatives (use these instead of placeholders)
+ 
+- Use real data (wired to real state, real API calls, real persistence) or hide the UI until data exists.
+- Use labels + helper text instead of input placeholders.
+- Use feature gating only when the feature is fully implemented; otherwise remove the feature/UI entirely (no “coming soon”).
+ 

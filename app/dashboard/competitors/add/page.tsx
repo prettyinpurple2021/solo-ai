@@ -178,7 +178,6 @@ export default function AddCompetitorPage() {
             <Label htmlFor="name" className="text-neon-cyan font-mono">Competitor Name *</Label>
             <Input
               id="name"
-              placeholder="e.g., TechRival Corp"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -189,7 +188,6 @@ export default function AddCompetitorPage() {
             <Label htmlFor="domain" className="text-neon-cyan font-mono">Website Domain</Label>
             <Input
               id="domain"
-              placeholder="e.g., techrival.com"
               value={formData.domain}
               onChange={(e) => handleInputChange('domain', e.target.value)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -200,7 +198,6 @@ export default function AddCompetitorPage() {
             <Label htmlFor="description" className="text-neon-cyan font-mono">Description</Label>
             <Textarea
               id="description"
-              placeholder="Brief description of what this competitor does..."
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -212,7 +209,7 @@ export default function AddCompetitorPage() {
             <Label htmlFor="industry" className="text-neon-cyan font-mono">Industry</Label>
             <Select value={formData.industry} onValueChange={(value) => handleInputChange('industry', value)}>
               <SelectTrigger className="mt-1 bg-dark-bg border-neon-purple/30 text-white font-mono rounded-none focus:border-neon-purple">
-                <SelectValue placeholder="Select industry" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-dark-card border-neon-purple/30 text-white font-mono rounded-none">
                 <SelectItem value="technology">Technology</SelectItem>
@@ -245,7 +242,6 @@ export default function AddCompetitorPage() {
             <Label htmlFor="headquarters" className="text-neon-cyan font-mono">Headquarters</Label>
             <Input
               id="headquarters"
-              placeholder="e.g., San Francisco, CA"
               value={formData.headquarters}
               onChange={(e) => handleInputChange('headquarters', e.target.value)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -257,7 +253,6 @@ export default function AddCompetitorPage() {
             <Input
               id="foundedYear"
               type="number"
-              placeholder="e.g., 2020"
               value={formData.foundedYear || ""}
               onChange={(e) => handleInputChange('foundedYear', e.target.value ? parseInt(e.target.value) : null)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -269,7 +264,6 @@ export default function AddCompetitorPage() {
             <Input
               id="employeeCount"
               type="number"
-              placeholder="e.g., 150"
               value={formData.employeeCount || ""}
               onChange={(e) => handleInputChange('employeeCount', e.target.value ? parseInt(e.target.value) : null)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -280,7 +274,7 @@ export default function AddCompetitorPage() {
             <Label htmlFor="fundingStage" className="text-neon-cyan font-mono">Funding Stage</Label>
             <Select value={formData.fundingStage} onValueChange={(value) => handleInputChange('fundingStage', value)}>
               <SelectTrigger className="mt-1 bg-dark-bg border-neon-purple/30 text-white font-mono rounded-none focus:border-neon-purple">
-                <SelectValue placeholder="Select funding stage" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-dark-card border-neon-purple/30 text-white font-mono rounded-none">
                 <SelectItem value="seed">Seed</SelectItem>
@@ -299,7 +293,7 @@ export default function AddCompetitorPage() {
           <div className="mt-2 space-y-2">
             <Select value={formData.threatLevel} onValueChange={(value) => handleInputChange('threatLevel', value)}>
               <SelectTrigger className="bg-dark-bg border-neon-purple/30 text-white font-mono rounded-none focus:border-neon-purple">
-                <SelectValue placeholder="Select threat level" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-dark-card border-neon-purple/30 text-white font-mono rounded-none">
                 <SelectItem value="low">Low Threat</SelectItem>
@@ -338,7 +332,6 @@ export default function AddCompetitorPage() {
             <Label htmlFor="linkedin" className="text-neon-cyan font-mono">LinkedIn</Label>
             <Input
               id="linkedin"
-              placeholder="https://linkedin.com/company/competitor"
               value={formData.socialMediaHandles.linkedin}
               onChange={(e) => handleSocialMediaChange('linkedin', e.target.value)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -349,7 +342,6 @@ export default function AddCompetitorPage() {
             <Label htmlFor="twitter" className="text-neon-cyan font-mono">Twitter/X</Label>
             <Input
               id="twitter"
-              placeholder="https://twitter.com/competitor"
               value={formData.socialMediaHandles.twitter}
               onChange={(e) => handleSocialMediaChange('twitter', e.target.value)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -360,7 +352,6 @@ export default function AddCompetitorPage() {
             <Label htmlFor="facebook" className="text-neon-cyan font-mono">Facebook</Label>
             <Input
               id="facebook"
-              placeholder="https://facebook.com/competitor"
               value={formData.socialMediaHandles.facebook}
               onChange={(e) => handleSocialMediaChange('facebook', e.target.value)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -371,7 +362,6 @@ export default function AddCompetitorPage() {
             <Label htmlFor="instagram" className="text-neon-cyan font-mono">Instagram</Label>
             <Input
               id="instagram"
-              placeholder="https://instagram.com/competitor"
               value={formData.socialMediaHandles.instagram}
               onChange={(e) => handleSocialMediaChange('instagram', e.target.value)}
               className="mt-1 bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
@@ -480,7 +470,7 @@ export default function AddCompetitorPage() {
               onValueChange={(value) => handleMonitoringConfigChange('monitoringFrequency', value)}
             >
               <SelectTrigger className="mt-1 bg-dark-bg border-neon-purple/30 text-white font-mono rounded-none focus:border-neon-purple">
-                <SelectValue placeholder="Select frequency" />
+                <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-dark-card border-neon-purple/30 text-white font-mono rounded-none">
                 <SelectItem value="hourly">Hourly (Premium)</SelectItem>

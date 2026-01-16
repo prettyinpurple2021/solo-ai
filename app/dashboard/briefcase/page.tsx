@@ -354,11 +354,15 @@ export default function BriefcasePage() {
       {/* Filters and Search */}
       <div className="flex items-center gap-4">
         <div className="relative flex-1">
+          <label htmlFor="briefcase-document-search" className="sr-only">
+            Search documents
+          </label>
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
           <Input
-            placeholder="Search documents..."
+            id="briefcase-document-search"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            aria-label="Search documents"
             className="pl-10 bg-dark-card border-neon-cyan/30 text-white placeholder:text-gray-500 focus:border-neon-cyan rounded-none font-mono"
           />
         </div>

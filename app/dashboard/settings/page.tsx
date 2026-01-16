@@ -388,8 +388,10 @@ export default function SettingsPage() {
                           <Label htmlFor="bio" className="text-neon-cyan font-mono uppercase text-xs">Bio</Label>
                           <Input
                             id="bio"
+                            name="bio"
+                            value={formData.bio ?? ""}
+                            onChange={handleInputChange}
                             className="bg-dark-bg border-neon-cyan/30 text-white focus:border-neon-cyan font-mono"
-                            placeholder="Tell us about your mission..."
                           />
                         </div>
                       </div>
@@ -521,7 +523,6 @@ export default function SettingsPage() {
                                     <Input
                                       value={deleteConfirmText}
                                       onChange={(e) => setDeleteConfirmText(e.target.value)}
-                                      placeholder="DELETE"
                                       className="bg-dark-bg border-neon-magenta/30 text-white focus:border-neon-magenta font-mono"
                                     />
                                   </div>
@@ -531,7 +532,6 @@ export default function SettingsPage() {
                                       type="password"
                                       value={deletePassword}
                                       onChange={(e) => setDeletePassword(e.target.value)}
-                                      placeholder="Enter your password"
                                       className="bg-dark-bg border-neon-magenta/30 text-white focus:border-neon-magenta font-mono"
                                     />
                                   </div>

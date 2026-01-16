@@ -214,7 +214,6 @@ export default function CompetitorDiscoveryPage() {
                 <Label htmlFor="businessDescription" className="text-neon-cyan">Business Description *</Label>
                 <Textarea
                   id="businessDescription"
-                  placeholder="Describe what your business does, your main products/services, and your value proposition..."
                   value={businessDescription}
                   onChange={(e) => setBusinessDescription(e.target.value)}
                   className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20 min-h-[120px]"
@@ -226,7 +225,6 @@ export default function CompetitorDiscoveryPage() {
                   <Label htmlFor="targetMarket" className="text-neon-cyan">Target Market</Label>
                   <Input
                     id="targetMarket"
-                    placeholder="e.g., Solo entrepreneurs, Small businesses, Enterprise"
                     value={targetMarket}
                     onChange={(e) => setTargetMarket(e.target.value)}
                     className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan"
@@ -237,7 +235,6 @@ export default function CompetitorDiscoveryPage() {
                   <Label htmlFor="keyProducts" className="text-neon-cyan">Key Products/Features</Label>
                   <Input
                     id="keyProducts"
-                    placeholder="e.g., Task management, AI automation, Analytics"
                     value={keyProducts}
                     onChange={(e) => setKeyProducts(e.target.value)}
                     className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan"

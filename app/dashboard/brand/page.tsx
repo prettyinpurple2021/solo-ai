@@ -506,7 +506,6 @@ export default function BrandStudioPage() {
                       id="companyName"
                       value={brandSettings.companyName}
                       onChange={(e) => updateBrandSettings({ companyName: e.target.value })}
-                      placeholder="Enter your company name"
                       className="bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
                     />
                   </div>
@@ -516,7 +515,6 @@ export default function BrandStudioPage() {
                       id="tagline"
                       value={brandSettings.tagline}
                       onChange={(e) => updateBrandSettings({ tagline: e.target.value })}
-                      placeholder="Your brand's tagline"
                       className="bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
                     />
                   </div>
@@ -526,7 +524,6 @@ export default function BrandStudioPage() {
                       id="description"
                       value={brandSettings.description}
                       onChange={(e) => updateBrandSettings({ description: e.target.value })}
-                      placeholder="Describe your brand, what you do, and what makes you unique"
                       rows={4}
                       className="bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
                     />
@@ -537,8 +534,11 @@ export default function BrandStudioPage() {
                       value={brandSettings.industry}
                       onValueChange={(value) => updateBrandSettings({ industry: value })}
                     >
-                      <SelectTrigger className="bg-dark-bg border-neon-purple/30 text-white font-mono rounded-none">
-                        <SelectValue placeholder="Select your industry" />
+                      <SelectTrigger
+                        className="bg-dark-bg border-neon-purple/30 text-white font-mono rounded-none"
+                        aria-label="Select industry"
+                      >
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-dark-card border-neon-purple/30 text-white font-mono rounded-none">
                         {INDUSTRY_OPTIONS.map(industry => (
@@ -553,7 +553,6 @@ export default function BrandStudioPage() {
                       id="targetAudience"
                       value={brandSettings.targetAudience}
                       onChange={(e) => updateBrandSettings({ targetAudience: e.target.value })}
-                      placeholder="Describe your ideal customers"
                       rows={3}
                       className="bg-dark-bg border-neon-purple/30 text-white placeholder:text-gray-500 font-mono rounded-none focus:border-neon-purple"
                     />

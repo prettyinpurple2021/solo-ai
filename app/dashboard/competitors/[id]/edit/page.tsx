@@ -533,7 +533,7 @@ export default function EditCompetitorPage() {
                       <Label htmlFor="industry" className="text-neon-cyan">Industry</Label>
                       <Select value={formData.industry} onValueChange={(value) => handleInputChange('industry', value)}>
                         <SelectTrigger className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20">
-                          <SelectValue placeholder="Select industry" />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-dark-card border-neon-cyan/30 text-gray-300">
                           <SelectItem value="technology">Technology</SelectItem>
@@ -596,7 +596,7 @@ export default function EditCompetitorPage() {
                       <Label htmlFor="fundingStage" className="text-neon-cyan">Funding Stage</Label>
                       <Select value={formData.fundingStage} onValueChange={(value) => handleInputChange('fundingStage', value)}>
                         <SelectTrigger className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20">
-                          <SelectValue placeholder="Select funding stage" />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-dark-card border-neon-cyan/30 text-gray-300">
                           <SelectItem value="seed">Seed</SelectItem>
@@ -627,7 +627,7 @@ export default function EditCompetitorPage() {
                     <Label htmlFor="threatLevel" className="text-neon-cyan">Threat Level</Label>
                     <Select value={formData.threatLevel} onValueChange={(value) => handleInputChange('threatLevel', value)}>
                       <SelectTrigger className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20">
-                        <SelectValue placeholder="Select threat level" />
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-dark-card border-neon-cyan/30 text-gray-300">
                         <SelectItem value="low">Low Threat</SelectItem>
@@ -651,7 +651,7 @@ export default function EditCompetitorPage() {
                     <Label htmlFor="monitoringStatus" className="text-neon-cyan">Monitoring Status</Label>
                     <Select value={formData.monitoringStatus} onValueChange={(value) => handleInputChange('monitoringStatus', value)}>
                       <SelectTrigger className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20">
-                        <SelectValue placeholder="Select status" />
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-dark-card border-neon-cyan/30 text-gray-300">
                         <SelectItem value="active">Active</SelectItem>
@@ -675,7 +675,6 @@ export default function EditCompetitorPage() {
                     <Label htmlFor="linkedin" className="text-neon-cyan">LinkedIn</Label>
                     <Input
                       id="linkedin"
-                      placeholder="https://linkedin.com/company/competitor"
                       value={formData.socialMediaHandles.linkedin}
                       onChange={(e) => handleSocialMediaChange('linkedin', e.target.value)}
                       className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20"
@@ -686,7 +685,6 @@ export default function EditCompetitorPage() {
                     <Label htmlFor="twitter" className="text-neon-cyan">Twitter/X</Label>
                     <Input
                       id="twitter"
-                      placeholder="https://twitter.com/competitor"
                       value={formData.socialMediaHandles.twitter}
                       onChange={(e) => handleSocialMediaChange('twitter', e.target.value)}
                       className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20"
@@ -697,7 +695,6 @@ export default function EditCompetitorPage() {
                     <Label htmlFor="facebook" className="text-neon-cyan">Facebook</Label>
                     <Input
                       id="facebook"
-                      placeholder="https://facebook.com/competitor"
                       value={formData.socialMediaHandles.facebook}
                       onChange={(e) => handleSocialMediaChange('facebook', e.target.value)}
                       className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20"
@@ -708,7 +705,6 @@ export default function EditCompetitorPage() {
                     <Label htmlFor="instagram" className="text-neon-cyan">Instagram</Label>
                     <Input
                       id="instagram"
-                      placeholder="https://instagram.com/competitor"
                       value={formData.socialMediaHandles.instagram}
                       onChange={(e) => handleSocialMediaChange('instagram', e.target.value)}
                       className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300 focus:border-neon-cyan focus:ring-neon-cyan/20"
@@ -735,19 +731,19 @@ export default function EditCompetitorPage() {
                     <div key={index} className="p-4 bg-dark-bg rounded-lg border border-neon-cyan/20">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <Input
-                          placeholder="Full Name"
+                          aria-label="Full name"
                           value={person.name}
                           onChange={(e) => updateKeyPerson(index, 'name', e.target.value)}
                           className="bg-dark-card border-neon-cyan/30 text-gray-300"
                         />
                         <Input
-                          placeholder="Role/Title"
+                          aria-label="Role or title"
                           value={person.role}
                           onChange={(e) => updateKeyPerson(index, 'role', e.target.value)}
                           className="bg-dark-card border-neon-cyan/30 text-gray-300"
                         />
                         <Input
-                          placeholder="LinkedIn Profile URL"
+                          aria-label="LinkedIn profile URL"
                           value={person.linkedinProfile}
                           onChange={(e) => updateKeyPerson(index, 'linkedinProfile', e.target.value)}
                           className="bg-dark-card border-neon-cyan/30 text-gray-300"
@@ -755,7 +751,7 @@ export default function EditCompetitorPage() {
                         <div className="flex items-center space-x-2">
                           <Input
                             type="date"
-                            placeholder="Join Date"
+                            aria-label="Join date"
                             value={person.joinedDate}
                             onChange={(e) => updateKeyPerson(index, 'joinedDate', e.target.value)}
                             className="bg-dark-card border-neon-cyan/30 text-gray-300"
@@ -790,20 +786,20 @@ export default function EditCompetitorPage() {
                     <div key={index} className="p-4 bg-dark-bg rounded-lg border border-neon-cyan/20">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <Input
-                          placeholder="Product Name"
+                          aria-label="Product name"
                           value={product.name}
                           onChange={(e) => updateProduct(index, 'name', e.target.value)}
                           className="bg-dark-card border-neon-cyan/30 text-gray-300"
                         />
                         <Input
-                          placeholder="Category"
+                          aria-label="Product category"
                           value={product.category}
                           onChange={(e) => updateProduct(index, 'category', e.target.value)}
                           className="bg-dark-card border-neon-cyan/30 text-gray-300"
                         />
                       </div>
                       <Textarea
-                        placeholder="Product Description"
+                        aria-label="Product description"
                         value={product.description}
                         onChange={(e) => updateProduct(index, 'description', e.target.value)}
                         rows={2}
@@ -855,7 +851,7 @@ export default function EditCompetitorPage() {
                     {formData.competitiveAdvantages.map((advantage, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <Input
-                          placeholder="Competitive advantage..."
+                          aria-label="Competitive advantage"
                           value={advantage}
                           onChange={(e) => updateAdvantage(index, e.target.value)}
                           className="bg-dark-bg border-neon-cyan/30 text-gray-300"
@@ -887,7 +883,7 @@ export default function EditCompetitorPage() {
                     {formData.vulnerabilities.map((vulnerability, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <Input
-                          placeholder="Vulnerability or weakness..."
+                          aria-label="Vulnerability or weakness"
                           value={vulnerability}
                           onChange={(e) => updateVulnerability(index, e.target.value)}
                           className="bg-dark-bg border-neon-cyan/30 text-gray-300"
@@ -997,7 +993,7 @@ export default function EditCompetitorPage() {
                       onValueChange={(value) => handleMonitoringConfigChange('monitoringFrequency', value)}
                     >
                       <SelectTrigger className="mt-1 bg-dark-bg border-neon-cyan/30 text-gray-300">
-                        <SelectValue placeholder="Select frequency" />
+                        <SelectValue />
                       </SelectTrigger>
                       <SelectContent className="bg-dark-card border-neon-cyan/30 text-gray-300">
                         <SelectItem value="hourly">Hourly (Premium)</SelectItem>

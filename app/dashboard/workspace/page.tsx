@@ -99,11 +99,15 @@ export default function WorkspacePage() {
 
           {/* Search */}
           <div className="relative max-w-md">
+            <label htmlFor="workspace-template-search" className="sr-only">
+              Search templates
+            </label>
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
             <Input
-              placeholder="Search your templates..."
+              id="workspace-template-search"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              aria-label="Search templates"
               className="pl-10 bg-dark-bg border-neon-cyan/30 text-white placeholder:text-gray-500 focus:border-neon-cyan focus:ring-neon-cyan/20"
             />
           </div>

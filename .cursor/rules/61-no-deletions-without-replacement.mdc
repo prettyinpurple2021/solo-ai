@@ -1,0 +1,24 @@
+# No Deletions Without Production Replacement (HARD RULE)
+
+This repo is **production-only**. The assistant must not “delete to make the problem disappear.”
+
+## Absolute rule
+
+- If the assistant **removes** any UI, logic, route, feature, or user-facing behavior, it must be replaced with a **real, functional, production-quality implementation** that preserves the original capability.
+- The assistant must **never** delete code as a shortcut to “fix” errors, reduce counts, or silence audits.
+
+## Allowed exceptions (must be explicit)
+
+The assistant may remove something only if:
+
+- The user explicitly approves the removal, **or**
+- The assistant proves it is truly unused/dead code **and** documents the evidence (imports/usage search + reasoning) in the PR/commit notes.
+
+## Replacement requirements
+
+When removal is necessary (refactor/cleanup):
+
+- Provide an equivalent implementation (same feature outcome) in the same PR/change-set.
+- Keep behavior stable unless the user explicitly requests a behavior change.
+- Update tests and docs so the system remains launch-ready.
+

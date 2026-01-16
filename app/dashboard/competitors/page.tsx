@@ -469,18 +469,25 @@ export default function CompetitorDashboardPage() {
             <div className="flex flex-col lg:flex-row gap-4 items-center justify-between">
               <div className="flex flex-col sm:flex-row gap-4 flex-1">
                 <div className="relative flex-1 max-w-md">
+                  <label htmlFor="competitor-search" className="sr-only">
+                    Search competitors
+                  </label>
                   <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 w-4 h-4" />
                   <Input
-                    placeholder="Search competitors..."
+                    id="competitor-search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    aria-label="Search competitors"
                     className="pl-10 bg-dark-bg border-neon-cyan/30 text-white placeholder:text-gray-500 focus:border-neon-cyan"
                   />
                 </div>
 
                 <Select value={threatFilter} onValueChange={setThreatFilter}>
-                  <SelectTrigger className="w-full sm:w-[180px] bg-dark-bg border-neon-cyan/30 text-white">
-                    <SelectValue placeholder="Threat Level" />
+                  <SelectTrigger
+                    className="w-full sm:w-[180px] bg-dark-bg border-neon-cyan/30 text-white"
+                    aria-label="Filter by threat level"
+                  >
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-dark-card border-neon-cyan/30">
                     <SelectItem value="all" className="text-white">All Threats</SelectItem>
@@ -492,8 +499,11 @@ export default function CompetitorDashboardPage() {
                 </Select>
 
                 <Select value={industryFilter} onValueChange={setIndustryFilter}>
-                  <SelectTrigger className="w-full sm:w-[180px] bg-dark-bg border-neon-cyan/30 text-white">
-                    <SelectValue placeholder="Industry" />
+                  <SelectTrigger
+                    className="w-full sm:w-[180px] bg-dark-bg border-neon-cyan/30 text-white"
+                    aria-label="Filter by industry"
+                  >
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-dark-card border-neon-cyan/30">
                     <SelectItem value="all" className="text-white">All Industries</SelectItem>
@@ -508,8 +518,11 @@ export default function CompetitorDashboardPage() {
 
               <div className="flex items-center gap-2">
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-[160px] bg-dark-bg border-neon-cyan/30 text-white">
-                    <SelectValue placeholder="Sort by" />
+                  <SelectTrigger
+                    className="w-[160px] bg-dark-bg border-neon-cyan/30 text-white"
+                    aria-label="Sort competitors by"
+                  >
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="bg-dark-card border-neon-cyan/30">
                     <SelectItem value="threat_level" className="text-white">Threat Level</SelectItem>

@@ -355,9 +355,9 @@ export default function IntelligencePage() {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-400 w-4 h-4" />
                     <Input
                       id="search"
-                      placeholder="Search insights, competitors, or trends..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
+                      aria-label="Search intelligence"
                       className="pl-10 bg-dark-bg border-neon-cyan/30 text-white placeholder:text-gray-500 focus:border-neon-cyan"
                     />
                   </div>

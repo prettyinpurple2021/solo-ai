@@ -1,5 +1,6 @@
-import { logError } from '@/lib/logger'
 'use client'
+
+import { logError } from '@/lib/logger'
 
 import useSWR from 'swr'
 import { useState } from 'react'

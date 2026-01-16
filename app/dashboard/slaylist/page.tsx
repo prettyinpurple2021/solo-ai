@@ -425,7 +425,6 @@ export default function SlaylistPage() {
                       className="bg-black/50 border-neon-purple/30 text-white focus:border-neon-purple rounded-none font-mono"
                       value={goalForm.title}
                       onChange={(e) => setGoalForm({ ...goalForm, title: e.target.value })}
-                      placeholder="e.g. Market Dominance Phase I"
                     />
                   </div>
                   <div className="space-y-2">
@@ -435,7 +434,6 @@ export default function SlaylistPage() {
                       className="bg-black/50 border-neon-purple/30 text-white focus:border-neon-purple rounded-none font-mono"
                       value={goalForm.description}
                       onChange={(e) => setGoalForm({ ...goalForm, description: e.target.value })}
-                      placeholder="Define completion criteria..."
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-4">
@@ -502,7 +500,6 @@ export default function SlaylistPage() {
                       className="bg-black/50 border-neon-magenta/30 text-white rounded-none font-mono"
                       value={taskForm.title}
                       onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
-                      placeholder="e.g. Exploit Competitor Weakness"
                     />
                   </div>
                   <div className="space-y-2">
@@ -533,7 +530,7 @@ export default function SlaylistPage() {
                       <Label className="font-orbitron text-xs uppercase text-neon-magenta">Parent Objective</Label>
                       <Select value={taskForm.goal_id} onValueChange={(value) => setTaskForm({ ...taskForm, goal_id: value })}>
                         <SelectTrigger className="bg-black/50 border-neon-magenta/30 rounded-none font-mono">
-                          <SelectValue placeholder="Select linkage" />
+                          <SelectValue />
                         </SelectTrigger>
                         <SelectContent className="bg-dark-card border-neon-magenta/30 text-white font-mono">
                           {goals.map((goal) => (
