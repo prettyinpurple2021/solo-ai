@@ -61,6 +61,7 @@ export default function SettingsPage() {
   const [formData, setFormData] = useState({
     displayName: (user as any)?.name || "",
     email: user?.email || "",
+    bio: "",
     currentPassword: "",
     newPassword: "",
     confirmPassword: ""
@@ -95,6 +96,30 @@ export default function SettingsPage() {
       email: user?.email || prev.email || "",
     }))
   }, [user])
+
+  useEffect(() => {
+    if (loading || !user) return
+
+    const loadProfile = async () => {
+      try {
+        const res = await fetch('/api/profile', { credentials: 'include' })
+        if (!res.ok) {
+          logError('Failed to load profile', { status: res.status })
+          return
+        }
+        const data = await res.json().catch(() => ({}))
+        setFormData((prev) => ({
+          ...prev,
+          displayName: typeof data?.full_name === 'string' && data.full_name.trim().length > 0 ? data.full_name : prev.displayName,
+          bio: typeof data?.bio === 'string' ? data.bio : (data?.bio === null ? '' : prev.bio),
+        }))
+      } catch (err) {
+        logError('Failed to load profile', err)
+      }
+    }
+
+    loadProfile()
+  }, [loading, user])
 
   useEffect(() => {
     if (loading || !user) return
@@ -145,6 +170,7 @@ export default function SettingsPage() {
         },
         body: JSON.stringify({
           full_name: formData.displayName,
+          bio: formData.bio,
         }),
       })
 

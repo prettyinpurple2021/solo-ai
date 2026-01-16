@@ -30,6 +30,7 @@ export async function GET(request: NextRequest) {
       id: users.id,
       email: users.email,
       full_name: users.full_name,
+      bio: users.bio,
       image: users.image,
       subscription_tier: users.subscription_tier,
       subscription_status: users.subscription_status,
@@ -91,6 +92,7 @@ export async function PATCH(request: NextRequest) {
 
     const BodySchema = z.object({
       full_name: z.string().min(1).max(200).nullable().optional(),
+      bio: z.string().max(2000).nullable().optional(),
       image: z.string().url().nullable().optional(),
       onboarding_completed: z.boolean().optional(),
     })
@@ -107,7 +109,7 @@ export async function PATCH(request: NextRequest) {
       })
       return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
-    const { full_name, image, onboarding_completed } = parsed.data
+    const { full_name, bio, image, onboarding_completed } = parsed.data
 
     // Prepare update object
     const updateData: any = {
@@ -115,6 +117,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     if (full_name !== undefined) updateData.full_name = full_name
+    if (bio !== undefined) updateData.bio = bio
     if (image !== undefined) updateData.image = image
     if (onboarding_completed !== undefined) {
       updateData.onboarding_completed = onboarding_completed
@@ -128,6 +131,7 @@ export async function PATCH(request: NextRequest) {
         id: users.id,
         email: users.email,
         full_name: users.full_name,
+        bio: users.bio,
         image: users.image,
         subscription_tier: users.subscription_tier,
         subscription_status: users.subscription_status,
@@ -141,6 +145,7 @@ export async function PATCH(request: NextRequest) {
       meta: {
         updatedFields: {
           full_name: full_name !== undefined,
+          bio: bio !== undefined,
           image: image !== undefined,
           onboarding_completed: onboarding_completed !== undefined
         },

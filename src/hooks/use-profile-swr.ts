@@ -11,6 +11,7 @@ export interface UserProfile {
   id: string
   email: string
   full_name?: string
+  bio?: string | null
   image?: string | null
   subscription_tier?: string
   subscription_status?: string
@@ -21,6 +22,7 @@ export interface UserProfile {
 
 interface ProfileUpdateData {
   full_name?: string
+  bio?: string | null
   image?: string | null
   onboarding_completed?: boolean
 }

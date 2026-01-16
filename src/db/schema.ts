@@ -13,6 +13,7 @@ export const users = pgTable('users', {
   password: text('password'), // For Credentials provider
   username: text('username'),
   full_name: text('full_name'),
+  bio: text('bio'),
   role: text('role').default('user'),
   xp: integer('xp').default(0),
   level: integer('level').default(1),
