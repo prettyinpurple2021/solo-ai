@@ -111,6 +111,16 @@ const navigationItems: NavigationItem[] = [
     ]
   },
   {
+    id: 'nexus',
+    label: 'The Nexus',
+    icon: Users,
+    href: '/dashboard/nexus',
+    color: 'text-neon-purple',
+    quickActions: [
+      { id: 'new_post', label: 'Broadcast', icon: Plus, action: () => { } } // 'Plus' needs to be verified if available or imported
+    ]
+  },
+  {
     id: 'briefcase',
     label: 'Briefcase',
     icon: Briefcase,

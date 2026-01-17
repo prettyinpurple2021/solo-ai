@@ -249,12 +249,104 @@ export const productivityInsights = pgTable('productivity_insights', {
   created_at: timestamp('created_at').defaultNow(),
 });
 
-// Posts table (existing)
+// Posts table (Enhanced for Nexus)
 export const posts = pgTable('posts', {
   id: text('id').primaryKey().$defaultFn(() => uuidv4()),
-  title: varchar('title', { length: 255 }).notNull(),
-  content: text('content').notNull().default(''),
-});
+  author_id: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  content: text('content').notNull(),
+  image: varchar('image', { length: 1000 }),
+  likes_count: integer('likes_count').default(0),
+    comments_count: integer('comments_count').default(0),
+    shares_count: integer('shares_count').default(0),
+    tags: jsonb('tags').default('[]'),
+    // Achievement data linked to post (optional)
+    achievement_context: jsonb('achievement_context'),
+    created_at: timestamp('created_at').defaultNow(),
+    updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+    authorIdIdx: index('posts_author_id_idx').on(table.author_id),
+    createdAtIdx: index('posts_created_at_idx').on(table.created_at),
+}));
+
+export const postsRelations = relations(posts, ({ one, many }) => ({
+    author: one(users, {
+        fields: [posts.author_id],
+        references: [users.id],
+    }),
+    comments: many(postComments),
+    reactions: many(postReactions),
+}));
+
+export const postComments = pgTable('post_comments', {
+    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    post_id: text('post_id').notNull().references(() => posts.id, { onDelete: 'cascade' }),
+    author_id: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    content: text('content').notNull(),
+    likes_count: integer('likes_count').default(0),
+    created_at: timestamp('created_at').defaultNow(),
+    updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+    postIdIdx: index('post_comments_post_id_idx').on(table.post_id),
+    authorIdIdx: index('post_comments_author_id_idx').on(table.author_id),
+}));
+
+export const postCommentsRelations = relations(postComments, ({ one }) => ({
+    post: one(posts, {
+        fields: [postComments.post_id],
+        references: [posts.id],
+    }),
+    author: one(users, {
+        fields: [postComments.author_id],
+        references: [users.id],
+    }),
+}));
+
+// ... (previous code)
+
+export const follows = pgTable('follows', {
+  follower_id: text('follower_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  following_id: text('following_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  created_at: timestamp('created_at').defaultNow(),
+}, (table) => ({
+  pk: primaryKey({ columns: [table.follower_id, table.following_id] }),
+  followerIdx: index('follows_follower_idx').on(table.follower_id),
+  followingIdx: index('follows_following_idx').on(table.following_id),
+}));
+
+export const followsRelations = relations(follows, ({ one }) => ({
+  follower: one(users, {
+    fields: [follows.follower_id],
+    references: [users.id],
+    relationName: 'following',
+  }),
+  following: one(users, {
+    fields: [follows.following_id],
+    references: [users.id],
+    relationName: 'followers',
+  }),
+}));
+
+export const postReactions = pgTable('post_reactions', {
+    post_id: text('post_id').notNull().references(() => posts.id, { onDelete: 'cascade' }),
+    user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    type: varchar('type', { length: 20 }).default('like').notNull(), // like, dislike, love, fire, party
+    created_at: timestamp('created_at').defaultNow(),
+}, (table) => ({
+    pk: primaryKey({ columns: [table.post_id, table.user_id] }),
+    postIdIdx: index('post_reactions_post_id_idx').on(table.post_id),
+    userIdIdx: index('post_reactions_user_id_idx').on(table.user_id),
+}));
+
+export const postReactionsRelations = relations(postReactions, ({ one }) => ({
+    post: one(posts, {
+        fields: [postReactions.post_id],
+        references: [posts.id],
+    }),
+    user: one(users, {
+        fields: [postReactions.user_id],
+        references: [users.id],
+    }),
+}));
 
 // User Competitive Stats table for gamification
 export const userCompetitiveStats = pgTable('user_competitive_stats', {

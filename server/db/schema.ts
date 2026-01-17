@@ -346,3 +346,34 @@ export const agentInstructions = pgTable('agent_instructions', {
     instructions: text('instructions'),
     updatedAt: timestamp('updated_at').defaultNow(),
 });
+
+// ========================================
+// COMMUNITY
+// ========================================
+
+export const communityPosts = pgTable('community_posts', {
+    id: serial('id').primaryKey(),
+    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    content: text('content').notNull(),
+    image: text('image'),
+    likes: integer('likes').default(0),
+    comments: integer('comments').default(0),
+    shares: integer('shares').default(0),
+    tags: text('tags').array(),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const communityComments = pgTable('community_comments', {
+    id: serial('id').primaryKey(),
+    postId: integer('post_id').notNull().references(() => communityPosts.id, { onDelete: 'cascade' }),
+    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    content: text('content').notNull(),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const communityLikes = pgTable('community_likes', {
+    id: serial('id').primaryKey(),
+    postId: integer('post_id').notNull().references(() => communityPosts.id, { onDelete: 'cascade' }),
+    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: timestamp('created_at').defaultNow(),
+});

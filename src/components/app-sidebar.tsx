@@ -2,7 +2,7 @@
 
 import type * as React from "react"
 import {
-  AudioWaveform, Bot, Command, GalleryVerticalEnd, SquareTerminal, Briefcase, Palette, Target, Shield, CheckSquare, FileText, Eye, Focus,
+  Bot, GalleryVerticalEnd, SquareTerminal, Briefcase, Palette, Target, Shield, CheckSquare, FileText, Eye, Focus, Users,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -38,6 +38,11 @@ const data = {
       title: "AI Squad",
       url: "/dashboard/agents",
       icon: Bot,
+    },
+    {
+      title: "The Nexus",
+      url: "/dashboard/nexus",
+      icon: Users,
     },
     {
       title: "Competitor Intel",
