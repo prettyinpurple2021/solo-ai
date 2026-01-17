@@ -1,9 +1,9 @@
-import { Nexus } from "@/components/social/nexus"
+import { NexusHub } from "@/components/social/nexus-hub"
 
 export default function NexusPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)]">
-      <Nexus />
+      <NexusHub />
     </div>
   )
 }

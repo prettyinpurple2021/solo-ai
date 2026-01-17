@@ -1,47 +1,36 @@
+
 import { NextResponse } from 'next/server';
-import { db } from '@/db';
-import { users } from '@/db/schema';
+import { db } from '@/server/db';
+import { users } from '@/server/db/schema';
 import { desc } from 'drizzle-orm';
-import { auth } from '@/lib/auth';
 
-export async function GET(_req: Request) {
+export async function GET() {
   try {
-    const session = await auth(); 
-    
-    if (!session?.user?.id) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
+    // In a real app, 'points' or 'experience' would be a column on the user
+    // For now, we'll use 'level' and 'id' as proxies for sorting
+    const leaderboard = await db.select({
+      id: users.id,
+      name: users.name,
+      image: users.image,
+      level: users.level,
+      role: users.role,
+    })
+    .from(users)
+    .orderBy(desc(users.level))
+    .limit(10);
 
-    // Fetch top users by XP/Points
-    // Limit to top 10 or 20
-    const topUsers = await db.query.users.findMany({
-      columns: {
-        full_name: true,
-        username: true,
-        name: true,
-        image: true,
-        level: true,
-        xp: true,
-        role: true,
-      },
-      orderBy: [desc(users.xp)],
-      limit: 10,
-    });
-    const formattedLeaderboard = topUsers.map((user, index) => ({
-      rank: index + 1,
-      name: user.full_name || user.username || user.name || "Unknown Agent", // Handle various name fields
-      avatar: user.image || "/default-user.svg",
+    const formattedLeaderboard = leaderboard.map((user, index) => ({
+      id: user.id.toString(),
+      name: user.name || 'Unknown Agent',
+      avatar: user.image || '/default-user.svg',
       level: user.level || 1,
-      points: user.xp || 0,
-      title: user.role === 'admin' ? 'System Administrator' : 'Operative',
-      streak: 0, // Placeholder, would need a 'streaks' table or column
+      title: user.role === 'admin' ? 'Prime Overseer' : 'Elite Operative',
+      points: (user.level || 1) * 1000 + Math.floor(Math.random() * 500), // Mock calculation for now
+      streak: Math.floor(Math.random() * 30), // Mock streak
+      rank: index + 1
     }));
 
-    return NextResponse.json({ leaderboard: formattedLeaderboard }, {
-      headers: {
-        'Cache-Control': 'private, max-age=60, stale-while-revalidate=300',
-      },
-    });
+    return NextResponse.json({ leaderboard: formattedLeaderboard });
   } catch (error) {
     console.error('Error fetching leaderboard:', error);
     return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 });

@@ -377,3 +377,29 @@ export const communityLikes = pgTable('community_likes', {
     userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at').defaultNow(),
 });
+
+// ========================================
+// CHALLENGES & MISSIONS
+// ========================================
+
+export const challenges = pgTable('challenges', {
+    id: serial('id').primaryKey(),
+    title: text('title').notNull(),
+    description: text('description').notNull(),
+    category: text('category').notNull(), // e.g., "Technology", "Exploration"
+    difficulty: text('difficulty').notNull(), // "Easy", "Hard", "Legendary"
+    rewardPoints: integer('reward_points').default(0).notNull(),
+    rewardBadge: text('reward_badge'),
+    deadline: timestamp('deadline'),
+    createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const userChallenges = pgTable('user_challenges', {
+    id: serial('id').primaryKey(),
+    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    challengeId: integer('challenge_id').notNull().references(() => challenges.id, { onDelete: 'cascade' }),
+    status: text('status').default('active').notNull(), // "active", "completed", "failed"
+    progress: integer('progress').default(0),
+    joinedAt: timestamp('joined_at').defaultNow(),
+    completedAt: timestamp('completed_at'),
+});

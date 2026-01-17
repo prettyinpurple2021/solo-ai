@@ -79,7 +79,7 @@ interface LeaderboardEntry {
   streak: number
 }
 
-export function Nexus() {
+export function NexusHub() {
   const [activeTab, setActiveTab] = useState("feed")
   const [newPostContent, setNewPostContent] = useState("")
   const [showNewPost, setShowNewPost] = useState(false)
@@ -128,7 +128,8 @@ export function Nexus() {
 
   const fetchChallenges = async () => {
     try {
-      const response = await fetch('/api/community/challenges')
+      const url = user?.id ? `/api/community/challenges?userId=${user.id}` : '/api/community/challenges';
+      const response = await fetch(url)
       if (response.ok) {
         const data = await response.json()
         setChallenges(data.challenges)
@@ -175,7 +176,11 @@ export function Nexus() {
     ))
 
     try {
-        const res = await fetch(`/api/community/challenges/${challengeId}/join`, { method: 'POST' })
+        const res = await fetch(`/api/community/challenges/${challengeId}/join`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id })
+        })
         if (!res.ok) {
             // Revert if failed
             setChallenges(previousChallenges)
