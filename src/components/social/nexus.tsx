@@ -37,7 +37,7 @@ interface NexusPost {
     rarity: string
   }
   isLiked: boolean
-  userReaction?: string // 'like', 'dislike', 'love', 'fire', 'party'
+  userReaction?: string 
   tags: string[]
 }
 
@@ -66,6 +66,7 @@ interface NexusChallenge {
   }
   difficulty: "easy" | "medium" | "hard" | "legendary"
   category: string
+  userStatus?: string
 }
 
 export function Nexus() {
@@ -82,17 +83,23 @@ export function Nexus() {
   const [loadingComments, setLoadingComments] = useState(false)
   const [editingPost, setEditingPost] = useState<{id: string, content: string} | null>(null)
   
+  // New State for Challenges and Leaderboard
+  const [challenges, setChallenges] = useState<NexusChallenge[]>([])
+  const [topOperatives, setTopOperatives] = useState<any[]>([])
+  const [loadingChallenges, setLoadingChallenges] = useState(true)
+
   const reactionIcons: Record<string, any> = {
     like: Heart,
     dislike: ThumbsDown,
-    love: Heart, // Use different color/fill
+    love: Heart, 
     fire: Flame,
     party: Sparkles
   }
 
-  // Fetch posts from API
   useEffect(() => {
     fetchPosts()
+    fetchChallenges()
+    fetchLeaderboard()
   }, [])
 
   const fetchPosts = async () => {
@@ -109,77 +116,52 @@ export function Nexus() {
     }
   }
 
-  const challenges: NexusChallenge[] = [
-    {
-      id: "1",
-      title: "Revenue Override Protocol",
-      description: "Amplify monthly revenue streams by 25% via automated systems.",
-      emoji: "🚀",
-      participants: 234,
-      deadline: "30 days",
-      reward: {
-        points: 500,
-        badge: "Revenue Rocket",
-      },
-      difficulty: "hard",
-      category: "Growth Hacking",
-    },
-    {
-      id: "2",
-      title: "System Stability Week",
-      description: "Maintain optimal performance and work-life equilibrium for 7 cycles.",
-      emoji: "⚖️",
-      participants: 189,
-      deadline: "7 days",
-      reward: {
-        points: 200,
-        badge: "Equilibrium Core",
-      },
-      difficulty: "medium",
-      category: "Optimization",
-    },
-    {
-      id: "3",
-      title: "Agent Deployment",
-      description: "Initialize and train 3 autonomous agents for business operations.",
-      emoji: "🤖",
-      participants: 156,
-      deadline: "14 days",
-      reward: {
-        points: 750,
-        badge: "Cyber Commander",
-      },
-      difficulty: "legendary",
-      category: "Automation",
-    },
-  ]
+  const fetchChallenges = async () => {
+    try {
+      const response = await fetch('/api/community/challenges')
+      if (response.ok) {
+        const data = await response.json()
+        setChallenges(data.challenges)
+      }
+    } catch (error) {
+      console.error('Failed to fetch challenges:', error)
+    } finally {
+        setLoadingChallenges(false)
+    }
+  }
 
-  const topOperatives = [
-    {
-      name: "Victoria Cipher",
-      avatar: "/default-user.svg",
-      level: 25,
-      points: 15420,
-      title: "Master Architect",
-      streak: 89,
-    },
-    {
-      name: "Diana Mainframe",
-      avatar: "/default-user.svg",
-      level: 23,
-      points: 14230,
-      title: "System Admin",
-      streak: 67,
-    },
-    {
-      name: "Luna Logic",
-      avatar: "/default-user.svg",
-      level: 21,
-      points: 13890,
-      title: "Data Strategist",
-      streak: 45,
-    },
-  ]
+  const fetchLeaderboard = async () => {
+    try {
+      const response = await fetch('/api/community/leaderboard')
+      if (response.ok) {
+        const data = await response.json()
+        setTopOperatives(data.leaderboard)
+      }
+    } catch (error) {
+      console.error('Failed to fetch leaderboard:', error)
+    }
+  }
+
+  const handleJoinChallenge = async (challengeId: string) => {
+    if (!user?.id) return
+    
+    // Optimistic UI Update
+    setChallenges(challenges.map(c => 
+        c.id === challengeId 
+        ? { ...c, participants: c.participants + 1, userStatus: 'joined' } 
+        : c
+    ))
+
+    try {
+        const res = await fetch(`/api/community/challenges/${challengeId}/join`, { method: 'POST' })
+        if (!res.ok) {
+            // Revert if failed
+             fetchChallenges()
+        }
+    } catch (error) {
+        console.error("Failed to join challenge:", error)
+    }
+  }
 
   const handleReaction = async (postId: string, type: string = 'like') => {
     if (!user?.id) return
@@ -195,7 +177,7 @@ export function Nexus() {
             if (type === 'like') {
                 if (isRemoving) newLikes--
                 if (!post.userReaction) newLikes++
-                if (isSwitching && post.userReaction !== 'like') newLikes++ // Simplified logic
+                if (isSwitching && post.userReaction !== 'like') newLikes++ 
             } else if (post.userReaction === 'like' && isSwitching) {
                 newLikes--
             }
@@ -203,7 +185,7 @@ export function Nexus() {
             return { 
                 ...post, 
                 likes: newLikes, 
-                isLiked: type === 'like' ? !post.isLiked : post.isLiked, // Legacy compatibility
+                isLiked: type === 'like' ? !post.isLiked : post.isLiked, 
                 userReaction: isRemoving ? undefined : type
             }
         }
@@ -254,11 +236,8 @@ export function Nexus() {
   }
   
   const handleFollow = async (userId: string) => {
-      // Optimistic or just simple alert for now as we don't store "isFollowing" in post author yet (need to update GET /posts for that)
-      // For now, let's implement the API call
       try {
           await fetch(`/api/community/users/${userId}/follow`, { method: 'POST' })
-          // Ideally update UI to show "Following"
       } catch (error) {
           console.error("Failed to follow:", error)
       }
@@ -297,7 +276,7 @@ export function Nexus() {
 
     setExpandedPostId(postId)
     
-    // Fetch comments if not already loaded or force refresh
+    // Fetch comments if not already loaded
     if (!postComments[postId]) {
       setLoadingComments(true)
       try {
@@ -336,7 +315,6 @@ export function Nexus() {
       if (response.ok) {
         const newComment = await response.json()
         
-        // Update local comments state
         const formattedComment: NexusComment = {
             id: newComment.id.toString(),
             content: newComment.content,
@@ -344,7 +322,7 @@ export function Nexus() {
             author: {
                 name: user.full_name || user.username || "User",
                 avatar: user.image || "/default-user.svg",
-                level: 1, // Default for now
+                level: 1, 
                 title: "Operative"
             }
         }
@@ -354,7 +332,6 @@ export function Nexus() {
             [postId]: [formattedComment, ...(prev[postId] || [])]
         }))
 
-        // Update comment count in posts
         setPosts(posts.map(p => 
             p.id === postId 
             ? { ...p, comments: p.comments + 1 }
@@ -723,51 +700,67 @@ export function Nexus() {
 
         <TabsContent value="challenges" className="space-y-6">
           <div className="grid gap-6 md:grid-cols-2">
-            {challenges.map((challenge) => (
-              <Card key={challenge.id} className="nexus-card bg-zinc-950 border-purple-900/40 hover:border-purple-500/60 transition-colors">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2">
-                      <CardTitle className="nexus-heading flex items-center gap-2 text-white">
-                        <span className="text-2xl">{challenge.emoji}</span>
-                        {challenge.title}
-                      </CardTitle>
-                      <div className="flex items-center gap-2">
-                        <Badge className={`text-[10px] px-2 py-0.5 rounded border ${getDifficultyColor(challenge.difficulty)}`}>
-                          {challenge.difficulty.toUpperCase()}
-                        </Badge>
-                        <Badge className="text-[10px] border-cyan-800 text-cyan-400 bg-cyan-900/20">
-                          {challenge.category}
-                        </Badge>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-bold text-purple-400 font-mono">{challenge.participants}</div>
-                      <div className="text-[10px] text-gray-500 uppercase">agents</div>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <CardDescription className="text-gray-400">{challenge.description}</CardDescription>
+            {loadingChallenges ? (
+                 <div className="col-span-2 text-center py-10 text-cyan-400/60 font-mono animate-pulse">Loading protocols...</div>
+            ) : challenges.length === 0 ? (
+                 <div className="col-span-2 text-center py-10 text-muted-foreground">No active protocols available.</div>
+            ) : (
+                challenges.map((challenge) => (
+                    <Card key={challenge.id} className="nexus-card bg-zinc-950 border-purple-900/40 hover:border-purple-500/60 transition-colors">
+                        <CardHeader>
+                        <div className="flex items-start justify-between">
+                            <div className="space-y-2">
+                            <CardTitle className="nexus-heading flex items-center gap-2 text-white">
+                                <span className="text-2xl">{challenge.emoji}</span>
+                                {challenge.title}
+                            </CardTitle>
+                            <div className="flex items-center gap-2">
+                                <Badge className={`text-[10px] px-2 py-0.5 rounded border ${getDifficultyColor(challenge.difficulty)}`}>
+                                {challenge.difficulty.toUpperCase()}
+                                </Badge>
+                                <Badge className="text-[10px] border-cyan-800 text-cyan-400 bg-cyan-900/20">
+                                {challenge.category}
+                                </Badge>
+                            </div>
+                            </div>
+                            <div className="text-right">
+                            <div className="text-sm font-bold text-purple-400 font-mono">{challenge.participants}</div>
+                            <div className="text-[10px] text-gray-500 uppercase">agents</div>
+                            </div>
+                        </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                        <CardDescription className="text-gray-400">{challenge.description}</CardDescription>
 
-                  <div className="flex items-center justify-between text-sm border-t border-white/5 pt-4">
-                    <div className="flex items-center gap-1 text-gray-400">
-                      <Target className="h-4 w-4 text-pink-500" />
-                      <span className="font-medium font-mono text-xs">deadline: {challenge.deadline}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-yellow-500">
-                      <Award className="h-4 w-4" />
-                      <span className="font-bold font-mono">{challenge.reward.points} PTS</span>
-                    </div>
-                  </div>
+                        <div className="flex items-center justify-between text-sm border-t border-white/5 pt-4">
+                            <div className="flex items-center gap-1 text-gray-400">
+                            <Target className="h-4 w-4 text-pink-500" />
+                            <span className="font-medium font-mono text-xs">deadline: {challenge.deadline}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-yellow-500">
+                            <Award className="h-4 w-4" />
+                            <span className="font-bold font-mono">{challenge.reward.points} PTS</span>
+                            </div>
+                        </div>
 
-                  <Button className="w-full bg-purple-900/50 hover:bg-purple-800 text-purple-100 border border-purple-700/50">
-                    <Rocket className="mr-2 h-4 w-4" />
-                    INITIATE PROTOCOL
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                        {challenge.userStatus === 'joined' ? (
+                            <Button className="w-full bg-green-900/50 text-green-100 border border-green-700/50 cursor-default hover:bg-green-900/50">
+                                <Trophy className="mr-2 h-4 w-4" />
+                                PROTOCOL ACTIVE
+                            </Button>
+                        ) : (
+                            <Button 
+                                onClick={() => handleJoinChallenge(challenge.id)}
+                                className="w-full bg-purple-900/50 hover:bg-purple-800 text-purple-100 border border-purple-700/50"
+                            >
+                                <Rocket className="mr-2 h-4 w-4" />
+                                INITIATE PROTOCOL
+                            </Button>
+                        )}
+                        </CardContent>
+                    </Card>
+                ))
+            )}
           </div>
         </TabsContent>
 
@@ -784,47 +777,51 @@ export function Nexus() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {topOperatives.map((op, index) => (
-                  <div
-                    key={op.name}
-                    className="flex items-center gap-4 p-4 bg-gradient-to-r from-yellow-950/20 to-black rounded border border-yellow-900/20 hover:border-yellow-500/40 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-8 h-8 rounded flex items-center justify-center font-bold text-black font-mono ${
-                          index === 0 ? "bg-yellow-500" : index === 1 ? "bg-gray-400" : "bg-orange-700"
-                        }`}
-                      >
-                        {index + 1}
-                      </div>
-                      <Avatar className="h-12 w-12 ring-1 ring-yellow-500/30">
-                        <AvatarImage src={op.avatar || "/default-user.svg"} />
-                        <AvatarFallback className="bg-zinc-900 text-yellow-500">
-                          {op.name.charAt(0)}
-                        </AvatarFallback>
-                      </Avatar>
-                    </div>
+                {topOperatives.length === 0 ? (
+                    <div className="text-center py-4 text-gray-500">No data available.</div>
+                ) : (
+                    topOperatives.map((op, index) => (
+                    <div
+                        key={index}
+                        className="flex items-center gap-4 p-4 bg-gradient-to-r from-yellow-950/20 to-black rounded border border-yellow-900/20 hover:border-yellow-500/40 transition-colors"
+                    >
+                        <div className="flex items-center gap-3">
+                        <div
+                            className={`w-8 h-8 rounded flex items-center justify-center font-bold text-black font-mono ${
+                            index === 0 ? "bg-yellow-500" : index === 1 ? "bg-gray-400" : "bg-orange-700"
+                            }`}
+                        >
+                            {index + 1}
+                        </div>
+                        <Avatar className="h-12 w-12 ring-1 ring-yellow-500/30">
+                            <AvatarImage src={op.avatar || "/default-user.svg"} />
+                            <AvatarFallback className="bg-zinc-900 text-yellow-500">
+                            {op.name.charAt(0)}
+                            </AvatarFallback>
+                        </Avatar>
+                        </div>
 
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-gray-200">{op.name}</h4>
-                        <Badge className="bg-yellow-900/20 text-yellow-600 border-yellow-900 text-[10px]">Level {op.level}</Badge>
-                      </div>
-                      <p className="text-sm text-gray-500 font-mono">{op.title}</p>
-                    </div>
+                        <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                            <h4 className="font-bold text-gray-200">{op.name}</h4>
+                            <Badge className="bg-yellow-900/20 text-yellow-600 border-yellow-900 text-[10px]">Level {op.level}</Badge>
+                        </div>
+                        <p className="text-sm text-gray-500 font-mono">{op.title}</p>
+                        </div>
 
-                    <div className="text-right space-y-1">
-                      <div className="flex items-center gap-1 justify-end">
-                        <Star className="h-4 w-4 text-yellow-500" />
-                        <span className="font-bold text-sm text-yellow-100 font-mono">{op.points.toLocaleString()}</span>
-                      </div>
-                      <div className="flex items-center gap-1 justify-end">
-                        <Flame className="h-3 w-3 text-orange-500" />
-                        <span className="text-[10px] text-orange-400/80 font-mono capitalize">{op.streak} day streak</span>
-                      </div>
+                        <div className="text-right space-y-1">
+                        <div className="flex items-center gap-1 justify-end">
+                            <Star className="h-4 w-4 text-yellow-500" />
+                            <span className="font-bold text-sm text-yellow-100 font-mono">{op.points.toLocaleString()}</span>
+                        </div>
+                        <div className="flex items-center gap-1 justify-end">
+                            <Flame className="h-3 w-3 text-orange-500" />
+                            <span className="text-[10px] text-orange-400/80 font-mono capitalize">{op.streak} day streak</span>
+                        </div>
+                        </div>
                     </div>
-                  </div>
-                ))}
+                    ))
+                )}
               </div>
             </CardContent>
           </Card>

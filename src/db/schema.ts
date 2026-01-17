@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uuid, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
+import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -760,6 +760,56 @@ export const feedback = pgTable('feedback', {
   userIdIdx: index('feedback_user_id_idx').on(table.user_id),
   typeIdx: index('feedback_type_idx').on(table.type),
   statusIdx: index('feedback_status_idx').on(table.status),
+}));
+
+// Challenges table for Nexus
+export const challenges = pgTable('challenges', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  emoji: varchar('emoji', { length: 10 }).default('🏆'),
+  participants_count: integer('participants_count').default(0),
+  deadline: timestamp('deadline'),
+  reward_points: integer('reward_points').default(0),
+  reward_badge: varchar('reward_badge', { length: 100 }),
+  difficulty: varchar('difficulty', { length: 20 }).default('medium'), // easy, medium, hard, legendary
+  category: varchar('category', { length: 50 }).default('general'),
+  created_by: text('created_by').references(() => users.id, { onDelete: 'set null' }),
+  is_active: boolean('is_active').default(true),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  isActiveIdx: index('challenges_is_active_idx').on(table.is_active),
+}));
+
+// Challenge Participants table
+export const challengeParticipants = pgTable('challenge_participants', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  challenge_id: text('challenge_id').notNull().references(() => challenges.id, { onDelete: 'cascade' }),
+  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  status: varchar('status', { length: 20 }).default('joined'), // joined, completed, failed
+  progress: integer('progress').default(0), // 0-100
+  joined_at: timestamp('joined_at').defaultNow(),
+  completed_at: timestamp('completed_at'),
+}, (table) => ({
+  challengeIdIdx: index('challenge_participants_challenge_id_idx').on(table.challenge_id),
+  userIdIdx: index('challenge_participants_user_id_idx').on(table.user_id),
+  uniqueParticipant: index('challenge_participants_unique_idx').on(table.challenge_id, table.user_id),
+}));
+
+export const challengesRelations = relations(challenges, ({ many }) => ({
+  participants: many(challengeParticipants),
+}));
+
+export const challengeParticipantsRelations = relations(challengeParticipants, ({ one }) => ({
+  challenge: one(challenges, {
+    fields: [challengeParticipants.challenge_id],
+    references: [challenges.id],
+  }),
+  user: one(users, {
+    fields: [challengeParticipants.user_id],
+    references: [users.id],
+  }),
 }));
 
 
