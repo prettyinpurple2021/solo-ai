@@ -1,13 +1,12 @@
-import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
+import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
 
-// Users table - matches actual database structure
 // Users table - NextAuth compatible
 export const users = pgTable('users', {
   id: text('id').primaryKey().$defaultFn(() => uuidv4()),
   name: text('name'),
-  email: text('email').notNull(),
+  email: text('email').notNull().unique(),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
   password: text('password'), // For Credentials provider
@@ -656,7 +655,9 @@ export const documentVersions = pgTable('document_versions', {
   name: varchar('name', { length: 255 }).notNull(),
   file_type: varchar('file_type', { length: 50 }).notNull(),
   size: integer('size').notNull(),
-  file_data: text('file_data').notNull(), // Store file content directly in database
+  file_url: varchar('file_url', { length: 2048 }).notNull(),
+  storage_provider: varchar('storage_provider', { length: 50 }),
+  checksum: varchar('checksum', { length: 128 }),
   change_summary: text('change_summary'),
   created_by: text('created_by').notNull().references(() => users.id),
   created_at: timestamp('created_at').defaultNow(),
@@ -780,6 +781,8 @@ export const challenges = pgTable('challenges', {
   updated_at: timestamp('updated_at').defaultNow(),
 }, (table) => ({
   isActiveIdx: index('challenges_is_active_idx').on(table.is_active),
+  deadlineIdx: index('challenges_deadline_idx').on(table.deadline),
+  categoryIdx: index('challenges_category_idx').on(table.category),
 }));
 
 // Challenge Participants table
@@ -794,7 +797,7 @@ export const challengeParticipants = pgTable('challenge_participants', {
 }, (table) => ({
   challengeIdIdx: index('challenge_participants_challenge_id_idx').on(table.challenge_id),
   userIdIdx: index('challenge_participants_user_id_idx').on(table.user_id),
-  uniqueParticipant: index('challenge_participants_unique_idx').on(table.challenge_id, table.user_id),
+  uniqueParticipant: uniqueIndex('challenge_participants_unique_idx').on(table.challenge_id, table.user_id),
 }));
 
 export const challengesRelations = relations(challenges, ({ many }) => ({
@@ -1076,6 +1079,7 @@ export const documentActivityRelations = relations(documentActivity, ({ one }) =
 }));
 
 // Calendar Connections table
+// Tokens must be encrypted at application layer
 export const calendarConnections = pgTable('calendar_connections', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -1095,6 +1099,7 @@ export const calendarConnections = pgTable('calendar_connections', {
 }));
 
 // Social Media Connections table - for users to connect their own accounts
+// Tokens must be encrypted at application layer
 export const socialMediaConnections = pgTable('social_media_connections', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -1119,6 +1124,7 @@ export const socialMediaConnections = pgTable('social_media_connections', {
 }));
 
 // Payment Provider Connections table - for users to connect their own payment processors
+// Tokens must be encrypted at application layer
 export const paymentProviderConnections = pgTable('payment_provider_connections', {
   id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
@@ -1441,7 +1447,9 @@ export const userAchievements = pgTable('user_achievements', {
   achievement_id: integer('achievement_id').notNull().references(() => achievements.id, { onDelete: 'cascade' }),
   earned_at: timestamp('earned_at').defaultNow(),
   metadata: jsonb('metadata').default('{}'),
-});
+}, (table) => ({
+    uniqueUserAchievement: uniqueIndex('user_achievements_unique_idx').on(table.user_id, table.achievement_id),
+}));
 
 // Focus sessions table
 export const focusSessions = pgTable('focus_sessions', {

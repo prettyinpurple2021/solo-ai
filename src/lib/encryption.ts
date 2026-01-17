@@ -5,7 +5,11 @@ const IV_LENGTH = 16;
 const AUTH_TAG_LENGTH = 16;
 
 // Validate the encryption key only when actually needed at runtime to avoid build-time failures
+let cachedKey: Buffer | null = null;
+
 function getKey(): Buffer {
+  if (cachedKey) return cachedKey;
+
   const encryptionKey = process.env.ENCRYPTION_KEY;
   if (!encryptionKey) {
     throw new Error('ENCRYPTION_KEY is not set in the environment variables.');
@@ -14,6 +18,8 @@ function getKey(): Buffer {
   if (key.length !== 32) {
     throw new Error('Invalid ENCRYPTION_KEY. Must be a 32-byte, base64-encoded string.');
   }
+  
+  cachedKey = key;
   return key;
 }
 /**
@@ -37,6 +43,11 @@ export function encrypt(text: string): string {
  */
 export function decrypt(encryptedText: string): string {
   const buffer = Buffer.from(encryptedText, 'base64');
+  
+  if (buffer.length < IV_LENGTH + AUTH_TAG_LENGTH + 1) {
+    throw new Error("Invalid encrypted text: too short or malformed");
+  }
+
   const iv = buffer.slice(0, IV_LENGTH);
   const authTag = buffer.slice(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH);
   const encrypted = buffer.slice(IV_LENGTH + AUTH_TAG_LENGTH);
@@ -46,4 +57,32 @@ export function decrypt(encryptedText: string): string {
 
   const decrypted = Buffer.concat([decipher.update(encrypted), decipher.final()]);
   return decrypted.toString('utf8');
+}
+
+export function encryptMfaField(text: string | null | undefined): string | null {
+  // Treat null/undefined as no-op return
+  if (text === null || text === undefined) return null;
+  // Treat empty string as actual value
+  try {
+      return encrypt(text);
+  } catch (error: any) {
+    // Throw descriptive error
+    throw new Error(`MFA encryption failed: ${error.message || 'Unknown error'}`);
+  }
+}
+
+export type DecryptMfaResult = 
+  | { success: true; value: string } 
+  | { success: false; error: 'missing' | 'failed' };
+
+export function decryptMfaField(text: string | null | undefined): DecryptMfaResult {
+  if (text === null || text === undefined) return { success: false, error: 'missing' };
+  try {
+      const value = decrypt(text);
+      return { success: true, value };
+  } catch (error) {
+    // Log only generic message
+    console.error('MFA decryption failed');
+    return { success: false, error: 'failed' };
+  }
 }

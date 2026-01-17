@@ -11,7 +11,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} fr
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
-  Users, Heart, MessageCircle, Share2, Trophy, Flame, Star, Sparkles, Plus, Send, Award, Target, Zap, Coffee, Rocket, Activity, Radio, Layers, MoreVertical, Trash2, Edit, UserPlus, ThumbsDown
+  Users, Heart, MessageCircle, Share2, Trophy, Flame, Star, Sparkles, Plus, Send, Award, Target, Zap, Coffee, Rocket, Activity, Radio, Layers, MoreVertical, Trash2, Edit, UserPlus, ThumbsDown, XCircle
 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 
@@ -66,7 +66,17 @@ interface NexusChallenge {
   }
   difficulty: "easy" | "medium" | "hard" | "legendary"
   category: string
-  userStatus?: string
+  userStatus?: 'not_joined' | 'joined' | 'completed' | 'failed'
+}
+
+interface LeaderboardEntry {
+  id: string
+  name: string
+  avatar: string
+  level: number
+  title: string
+  points: number
+  streak: number
 }
 
 export function Nexus() {
@@ -85,7 +95,7 @@ export function Nexus() {
   
   // New State for Challenges and Leaderboard
   const [challenges, setChallenges] = useState<NexusChallenge[]>([])
-  const [topOperatives, setTopOperatives] = useState<any[]>([])
+  const [topOperatives, setTopOperatives] = useState<LeaderboardEntry[]>([])
   const [loadingChallenges, setLoadingChallenges] = useState(true)
 
   const reactionIcons: Record<string, any> = {
@@ -135,7 +145,16 @@ export function Nexus() {
       const response = await fetch('/api/community/leaderboard')
       if (response.ok) {
         const data = await response.json()
-        setTopOperatives(data.leaderboard)
+        const typedLeaderboard: LeaderboardEntry[] = data.leaderboard.map((user: any) => ({
+            id: user.id || "0", // Fallback if id missing
+            name: user.name,
+            avatar: user.avatar,
+            level: Number(user.level) || 1,
+            title: user.title || "Operative",
+            points: Number(user.points) || 0,
+            streak: Number(user.streak) || 0
+        }));
+        setTopOperatives(typedLeaderboard)
       }
     } catch (error) {
       console.error('Failed to fetch leaderboard:', error)
@@ -145,6 +164,9 @@ export function Nexus() {
   const handleJoinChallenge = async (challengeId: string) => {
     if (!user?.id) return
     
+    // Save previous state
+    const previousChallenges = [...challenges];
+
     // Optimistic UI Update
     setChallenges(challenges.map(c => 
         c.id === challengeId 
@@ -156,16 +178,19 @@ export function Nexus() {
         const res = await fetch(`/api/community/challenges/${challengeId}/join`, { method: 'POST' })
         if (!res.ok) {
             // Revert if failed
-             fetchChallenges()
+            setChallenges(previousChallenges)
         }
     } catch (error) {
         console.error("Failed to join challenge:", error)
+        // Revert on error
+        setChallenges(previousChallenges)
     }
   }
 
   const handleReaction = async (postId: string, type: string = 'like') => {
     if (!user?.id) return
 
+    const previousPosts = posts;
     // Optimistic UI update
     setPosts(
       posts.map((post) => {
@@ -194,12 +219,18 @@ export function Nexus() {
     )
 
     try {
-        await fetch(`/api/community/posts/${postId}/react`, {
+        const res = await fetch(`/api/community/posts/${postId}/react`, {
             method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ type })
         })
+
+        if (!res.ok) {
+            setPosts(previousPosts)
+        }
     } catch (error) {
         console.error('Failed to react to post:', error)
+        setPosts(previousPosts)
     }
   }
 
@@ -747,6 +778,16 @@ export function Nexus() {
                             <Button className="w-full bg-green-900/50 text-green-100 border border-green-700/50 cursor-default hover:bg-green-900/50">
                                 <Trophy className="mr-2 h-4 w-4" />
                                 PROTOCOL ACTIVE
+                            </Button>
+                        ) : challenge.userStatus === 'completed' ? (
+                            <Button className="w-full bg-yellow-900/50 text-yellow-100 border border-yellow-700/50 cursor-default hover:bg-yellow-900/50">
+                                <Award className="mr-2 h-4 w-4" />
+                                PROTOCOL COMPLETED
+                            </Button>
+                        ) : challenge.userStatus === 'failed' ? (
+                            <Button className="w-full bg-red-900/50 text-red-100 border border-red-700/50 cursor-default hover:bg-red-900/50">
+                                <XCircle className="mr-2 h-4 w-4" />
+                                PROTOCOL FAILED
                             </Button>
                         ) : (
                             <Button 
