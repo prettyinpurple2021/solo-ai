@@ -451,7 +451,7 @@ export class LexiStrategicAnalysis {
       competitorIds.map(async (id) => {
         const competitor = await this.getCompetitorProfile(id)
         const recentIntelligence = await this.getAllIntelligenceData(id, days)
-        const threatLevel = (competitor as any).threatLevel ?? (competitor as any).threat_level
+        const threatLevel = competitor.threatLevel
         return { competitor, intelligence: recentIntelligence, threatLevel }
       })
     )
@@ -481,7 +481,34 @@ export class LexiStrategicAnalysis {
       throw new Error(`Competitor profile not found: ${competitorId}`)
     }
 
-    return (result[0] as unknown) as CompetitorProfile
+    const raw = result[0];
+    
+    // Map snake_case DB fields to camelCase interface
+    return {
+      id: raw.id,
+      userId: raw.user_id,
+      name: raw.name,
+      domain: raw.domain ?? undefined,
+      description: raw.description ?? undefined,
+      industry: raw.industry ?? undefined,
+      headquarters: raw.headquarters ?? undefined,
+      foundedYear: raw.founded_year ?? undefined,
+      employeeCount: raw.employee_count ?? undefined,
+      fundingAmount: raw.funding_amount ? Number(raw.funding_amount) : undefined,
+      fundingStage: raw.funding_stage as any, // Cast specific enum/union types if needed
+      threatLevel: raw.threat_level as any,
+      monitoringStatus: raw.monitoring_status as any,
+      socialMediaHandles: raw.social_media_handles as any,
+      keyPersonnel: raw.key_personnel as any,
+      products: raw.products as any,
+      marketPosition: raw.market_position as any,
+      competitiveAdvantages: raw.competitive_advantages as any,
+      vulnerabilities: raw.vulnerabilities as any,
+      monitoringConfig: raw.monitoring_config as any,
+      lastAnalyzed: raw.last_analyzed ?? undefined,
+      createdAt: raw.created_at!,
+      updatedAt: raw.updated_at!,
+    } as CompetitorProfile
   }
 
   private async getAllIntelligenceData(competitorId: string, days: number): Promise<IntelligenceData[]> {
@@ -598,9 +625,9 @@ Analyze the competitive positioning for: ${competitor.name}
 COMPETITOR PROFILE:
 - Company: ${competitor.name}
 - Industry: ${competitor.industry}
-- Threat Level: ${(competitor as any).threatLevel}
-- Market Position: ${JSON.stringify((competitor as any).marketPosition)}
-- Competitive Advantages: ${(competitor as any).competitiveAdvantages?.join(', ')}
+- Threat Level: ${competitor.threatLevel}
+- Market Position: ${JSON.stringify(competitor.marketPosition)}
+- Competitive Advantages: ${competitor.competitiveAdvantages?.join(', ')}
 - Vulnerabilities: ${competitor.vulnerabilities?.join(', ')}
 - Products: ${competitor.products?.map(p => `${p.name}: ${p.description}`).join('; ')}
 
@@ -647,7 +674,7 @@ Analyze market trends based on competitor activities and industry data.
 COMPETITORS ANALYZED:
 ${competitors.map((comp, index) => `
 ${index + 1}. ${comp.name} (${comp.industry})
-   - Threat Level: ${(comp as any).threatLevel}
+   - Threat Level: ${comp.threatLevel}
    - Recent Activities: ${competitorIntelligence[index]?.length || 0} data points
    - Key Intelligence: ${JSON.stringify(competitorIntelligence[index]?.slice(0, 2)).substring(0, 300)}
 `).join('\n')}
@@ -729,10 +756,10 @@ COMPETITIVE THREAT ASSESSMENT REQUEST:
 Assess competitive threats from: ${competitor.name}
 
 COMPETITOR PROFILE:
-- Threat Level: ${(competitor as any).threatLevel}
-- Competitive Advantages: ${(competitor as any).competitiveAdvantages?.join(', ')}
-- Market Position: ${JSON.stringify((competitor as any).marketPosition)}
-- Recent Funding: $${(competitor as any).fundingAmount} (${(competitor as any).fundingStage})
+- Threat Level: ${competitor.threatLevel}
+- Competitive Advantages: ${competitor.competitiveAdvantages?.join(', ')}
+- Market Position: ${JSON.stringify(competitor.marketPosition)}
+- Recent Funding: $${competitor.fundingAmount} (${competitor.fundingStage})
 
 RECENT INTELLIGENCE:
 ${intelligence.slice(0, 15).map(data => `
@@ -768,9 +795,9 @@ Identify market opportunities based on competitor gap analysis.
 COMPETITOR LANDSCAPE:
 ${competitors.map((comp, index) => `
 ${comp.name}:
-- Market Position: ${JSON.stringify((comp as any).marketPosition)}
+- Market Position: ${JSON.stringify(comp.marketPosition)}
 - Products: ${comp.products?.map(p => p.name).join(', ')}
-- Vulnerabilities: ${(comp as any).vulnerabilities?.join(', ')}
+- Vulnerabilities: ${comp.vulnerabilities?.join(', ')}
 - Recent Intelligence: ${JSON.stringify(competitorIntelligence[index]?.slice(0, 2)).substring(0, 400)}
 `).join('\n\n')}
 

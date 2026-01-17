@@ -150,7 +150,7 @@ export class TaskIntelligenceEngine {
       })
 
       const { text } = await generateText({
-        model: this.taskAgent.model as any,
+        model: this.taskAgent.model,
         messages: [
           { role: 'system', content: this.taskAgent.systemPrompt },
           {
@@ -333,7 +333,7 @@ ${prompt}
    * Generate workload recommendations
    */
   private generateWorkloadRecommendations(
-    totalTasks: number,
+    _totalTasks: number,
     estimatedTime: number,
     highPriorityTasks: number,
     overdueTasks: number,
@@ -407,7 +407,7 @@ ${prompt}
    * Generate productivity tips using AI
    */
   async generateProductivityTips(
-    tasks: TaskIntelligenceData[], 
+    _tasks: TaskIntelligenceData[], 
     workloadAnalysis: WorkloadAnalysis
   ): Promise<string[]> {
     try {

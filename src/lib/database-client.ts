@@ -55,8 +55,11 @@ export function getDb() {
 /**
  * Database transaction helper
  */
+// Helper type for the transaction object
+type Tx = Parameters<Parameters<NeonHttpDatabase<typeof schema>['transaction']>[0]>[0]
+
 export async function withTransaction<T>(
-  callback: (tx: any) => Promise<T>
+  callback: (tx: Tx) => Promise<T>
 ): Promise<T> {
   const db = getDb()
   return await db.transaction(async (tx) => {
@@ -82,7 +85,7 @@ export async function checkDatabaseHealth(): Promise<{ healthy: boolean; error?:
 
 // Export db for backward compatibility, but it will only be created when first accessed
 export const db = new Proxy({} as NeonHttpDatabase<typeof schema>, {
-  get(target, prop) {
+  get(_target, prop) {
     return getDb()[prop as keyof NeonHttpDatabase<typeof schema>]
   }
 })
@@ -95,7 +98,7 @@ export async function ensureSchema(): Promise<void> {
     const db = getDb()
     // This would typically run migrations
     // Verify connectivity via simple query execution
-    await this.execute('SELECT 1');
+    await db.execute('SELECT 1');
     await checkDatabaseHealth()
     logger.info('Database schema verified')
   } catch (error) {
@@ -103,5 +106,3 @@ export async function ensureSchema(): Promise<void> {
     throw new Error('Database schema verification failed')
   }
 }
-
-

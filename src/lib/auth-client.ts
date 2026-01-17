@@ -96,8 +96,8 @@ interface DenyDeviceParams {
   deviceFingerprint: string;
 }
 
-export async function approveDevice(data?: ApproveDeviceParams) { return { data: true, error: null } } 
-export async function denyDevice(data: DenyDeviceParams) { return { data: true, error: null } } 
+export async function approveDevice(_data?: ApproveDeviceParams) { return { data: true, error: null } } 
+export async function denyDevice(_data: DenyDeviceParams) { return { data: true, error: null } } 
 export async function getSessions() { return { data: { sessions: [] }, error: null } }
 export async function revokeSession() { return { data: true, error: null } }
 export async function revokeOtherSessions() { return { data: true, error: null } }

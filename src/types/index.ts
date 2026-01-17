@@ -27,7 +27,7 @@ export interface BrandDNA {
     audience?: string;
     style?: string;
     onboardingStatus?: 'draft' | 'completed';
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export interface BusinessContext {

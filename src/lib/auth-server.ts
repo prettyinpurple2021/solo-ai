@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth"
 import { NextRequest, NextResponse } from "next/server"
-import { logger } from "@/lib/logger"
+
 
 /**
  * Authenticate request using NextAuth

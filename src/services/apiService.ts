@@ -1,4 +1,8 @@
-// API Service for communicating with backend
+import { logError } from '@/lib/logger';
+
+// ... (imports)
+
+// ... (imports)
 // This abstracts all backend API calls
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
@@ -39,7 +43,7 @@ export const apiService = {
             const data: GenerateResponse = await response.json();
             return data.text;
         } catch (error) {
-            console.error('API Service Error:', error);
+            logError('API Service Error:', error);
             throw error;
         }
     },
@@ -53,11 +57,11 @@ export const apiService = {
             const data = await response.json();
             return data.status === 'ok';
         } catch (error) {
-            console.error('Health check failed:', error);
+            logError('Health check failed:', error);
             return false;
         }
     },
-    async post(endpoint: string, body: any): Promise<any> {
+    async post<T = unknown>(endpoint: string, body: unknown): Promise<T> {
         try {
             const response = await fetch(`${API_BASE_URL}/api${endpoint}`, {
                 method: 'POST',
@@ -74,11 +78,11 @@ export const apiService = {
 
             return await response.json();
         } catch (error) {
-            console.error('API Service Error:', error);
+            logError('API Service Error:', error);
             throw error;
         }
     },
-    async get(endpoint: string): Promise<any> {
+    async get<T = unknown>(endpoint: string): Promise<T> {
         try {
             const response = await fetch(`${API_BASE_URL}/api${endpoint}`, {
                 method: 'GET',
@@ -94,7 +98,7 @@ export const apiService = {
 
             return await response.json();
         } catch (error) {
-            console.error('API Service Error:', error);
+            logError('API Service Error:', error);
             throw error;
         }
     },

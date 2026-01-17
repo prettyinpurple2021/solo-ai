@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { postComments, posts, users } from '@/db/schema';
+import { postComments, posts } from '@/db/schema';
 import { auth } from '@/lib/auth';
 import { desc, eq, sql } from 'drizzle-orm';
 
 export async function GET(
-  req: Request,
-  { params }: { params: { postId: string } }
+  _req: Request,
+  props: { params: Promise<{ postId: string }> }
 ) {
+  const params = await props.params;
   try {
     const { postId } = params;
 
@@ -40,8 +41,9 @@ export async function GET(
 
 export async function POST(
   req: Request,
-  { params }: { params: { postId: string } }
+  props: { params: Promise<{ postId: string }> }
 ) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {

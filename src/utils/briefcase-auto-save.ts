@@ -87,7 +87,7 @@ class BriefcaseAutoSaver {
   async saveTemplateProgress(
     templateSlug: string,
     title: string,
-    content: any,
+    content: unknown,
     progress: number
   ) {
     try {
@@ -128,7 +128,7 @@ class BriefcaseAutoSaver {
    */
   async saveBrandWork(
     title: string,
-    brandData: any
+    brandData: unknown
   ) {
     try {
       const response = await fetch('/api/unified-briefcase', {
@@ -211,6 +211,6 @@ export const briefcaseAutoSaver = new BriefcaseAutoSaver()
 // Export class for custom instances
 export { BriefcaseAutoSaver }
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 // Export types
 export type { ChatMessage, AutoSaveOptions }

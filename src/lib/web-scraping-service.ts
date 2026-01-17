@@ -1,5 +1,5 @@
 // import { z } from 'zod'
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn } from '@/lib/logger'
 import * as cheerio from 'cheerio'
 import robotsParser from 'robots-parser'
 
@@ -18,7 +18,7 @@ export interface WebsiteData {
   title?: string
   description?: string
   content: string
-  metadata: Record<string, any>
+  metadata: Record<string, unknown>
   scrapedAt: Date
   responseTime: number
   statusCode: number
@@ -77,7 +77,7 @@ export interface JobPosting {
   strategicImportance: 'low' | 'medium' | 'high' | 'critical'
 }
 
-export interface ScrapingResult<T = any> {
+export interface ScrapingResult<T = unknown> {
   success: boolean
   data?: T
   error?: string
@@ -107,11 +107,11 @@ const DEFAULT_CONFIG: ScrapingConfig = {
  */
 export class WebScrapingService {
   private config: ScrapingConfig
-  private robotsCache: Map<string, any> = new Map()
+  // robots-parser doesn't export a named type easily, so we define a minimal shape or use object
+  private robotsCache: Map<string, { isAllowed: (url: string, ua?: string) => boolean | undefined }> = new Map()
   private rateLimitTracker: Map<string, number> = new Map()
-  private requestQueue: Array<() => Promise<any>> = []
-  private activeRequests = 0
-  private contentCache: Map<string, { data: any; timestamp: number }> = new Map()
+
+  private contentCache: Map<string, { data: unknown; timestamp: number }> = new Map()
   private readonly CACHE_TTL = 5 * 60 * 1000 // 5 minutes
 
   constructor(config: Partial<ScrapingConfig> = {}) {
@@ -476,8 +476,10 @@ export class WebScrapingService {
       
       // Check cache first
       if (this.robotsCache.has(domain)) {
-        const robots = this.robotsCache.get(domain)
-        return robots.isAllowed(url, this.config.userAgent)
+        const cachedRobots = this.robotsCache.get(domain)
+        if (!cachedRobots) return true
+        const allowed = cachedRobots.isAllowed(url, this.config.userAgent)
+        return allowed ?? true
       }
 
       // Fetch and parse robots.txt
@@ -586,8 +588,8 @@ export class WebScrapingService {
     }
   }
 
-  private extractSimpleMetadata(html: string): Record<string, any> {
-    const metadata: Record<string, any> = {}
+  private extractSimpleMetadata(html: string): Record<string, unknown> {
+    const metadata: Record<string, unknown> = {}
     
     // Extract basic meta tags with regex
     const metaRegex = /<meta[^>]*(?:name|property)=["']([^"']+)["'][^>]*content=["']([^"']*)["'][^>]*/gi
@@ -600,19 +602,23 @@ export class WebScrapingService {
     // Try to extract JSON-LD structured data
     const structuredDataRegex = /<script[^>]*type=["']application\/ld\+json["'][^>]*>([^<]*)<\/script>/gi
     const structuredDataMatches = html.match(structuredDataRegex)
+    
     if (structuredDataMatches) {
-      metadata.structuredData = []
+      const structuredData: unknown[] = []
       structuredDataMatches.forEach(match => {
         try {
           const jsonMatch = match.match(/>([^<]*)</)
           if (jsonMatch) {
             const jsonData = JSON.parse(jsonMatch[1])
-            metadata.structuredData.push(jsonData)
+            structuredData.push(jsonData)
           }
         } catch {
           // Ignore invalid JSON
         }
       })
+      if (structuredData.length > 0) {
+        metadata.structuredData = structuredData
+      }
     }
     
     return metadata

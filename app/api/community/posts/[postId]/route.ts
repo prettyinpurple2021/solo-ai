@@ -5,9 +5,10 @@ import { auth } from '@/lib/auth';
 import { eq, and } from 'drizzle-orm';
 
 export async function DELETE(
-  req: Request,
-  { params }: { params: { postId: string } }
+  _req: Request,
+  props: { params: Promise<{ postId: string }> }
 ) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -37,8 +38,9 @@ export async function DELETE(
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { postId: string } }
+  props: { params: Promise<{ postId: string }> }
 ) {
+  const params = await props.params;
   try {
     const session = await auth();
     if (!session?.user?.id) {

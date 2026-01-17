@@ -925,7 +925,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
           <div className="flex justify-between">
             <BossButton 
               onClick={() => setCurrentStep(1)}
-              variant="secondary"
+              variant="outline"
             >
               Previous
             </BossButton>
@@ -958,7 +958,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                     <h4 className="font-semibold">Project Tasks</h4>
                     <p className="text-sm text-gray-600">Break down your project into manageable tasks</p>
                   </div>
-                  <BossButton onClick={addTask} variant="secondary" size="sm">
+                  <BossButton onClick={addTask} variant="outline" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Task
                   </BossButton>
@@ -1100,7 +1100,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                             const assignee = data.resources.find((r: ProjectResource) => r.id === assigneeId)
                             if (!assignee) return null
                             return (
-                              <Badge key={assigneeId} variant="secondary" className="text-xs">
+                              <Badge key={assigneeId} variant="outline" className="text-xs">
                                 {assignee.name}
                                 <Button
                                   variant="ghost"
@@ -1184,7 +1184,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                     <h4 className="font-semibold">Milestones</h4>
                     <p className="text-sm text-gray-600">Mark important checkpoints in your project</p>
                   </div>
-                  <BossButton onClick={addMilestone} variant="secondary" size="sm">
+                  <BossButton onClick={addMilestone} variant="outline" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Milestone
                   </BossButton>
@@ -1299,7 +1299,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
           <div className="flex justify-between">
             <BossButton 
               onClick={() => setCurrentStep(2)}
-              variant="secondary"
+              variant="outline"
             >
               Previous
             </BossButton>
@@ -1330,7 +1330,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                   <h4 className="font-semibold">Milestones</h4>
                   <p className="text-sm text-gray-600">Track important project checkpoints and deliverables</p>
                 </div>
-                <BossButton onClick={addMilestone} variant="secondary" size="sm">
+                <BossButton onClick={addMilestone} variant="outline" size="sm">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Milestone
                 </BossButton>
@@ -1446,7 +1446,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
           <div className="flex justify-between">
             <BossButton 
               onClick={() => setCurrentStep(3)}
-              variant="secondary"
+              variant="outline"
             >
               Previous
             </BossButton>
@@ -1477,7 +1477,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                   <h4 className="font-semibold">Project Risks</h4>
                   <p className="text-sm text-gray-600">Identify potential issues and mitigation strategies</p>
                 </div>
-                <BossButton onClick={addRisk} variant="secondary" size="sm">
+                <BossButton onClick={addRisk} variant="outline" size="sm">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Risk
                 </BossButton>
@@ -1619,7 +1619,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
 
                       <div className="flex items-center justify-between pt-3 border-t">
                         <div className="flex items-center gap-2">
-                          <Badge variant="secondary" className={`${riskScore >= 20 ? 'text-red-600 border-red-200' : riskScore >= 12 ? 'text-orange-600 border-orange-200' : riskScore >= 6 ? 'text-yellow-600 border-yellow-200' : 'text-green-600 border-green-200'}`}>
+                          <Badge variant="outline" className={`${riskScore >= 20 ? 'text-red-600 border-red-200' : riskScore >= 12 ? 'text-orange-600 border-orange-200' : riskScore >= 6 ? 'text-yellow-600 border-yellow-200' : 'text-green-600 border-green-200'}`}>
                             {riskLevel} Risk
                           </Badge>
                           <span className="text-sm text-gray-500">Score: {riskScore}/25</span>
@@ -1639,7 +1639,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
               )}
 
               {data.risks.length > 0 && (
-                <div className="bg-gradient-to-r from-neon-magenta/10 to-neon-orange/10 border-2 border-neon-magenta/50 p-4 rounded-sm border">
+                <div className="bg-gradient-to-r from-neon-magenta/10 to-neon-orange/10 border-2 border-neon-magenta/50 p-4 rounded-sm">
                   <h4 className="font-semibold mb-2">Risk Summary</h4>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                     <div>
@@ -1667,7 +1667,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
           <div className="flex justify-between">
             <BossButton 
               onClick={() => setCurrentStep(4)}
-              variant="secondary"
+              variant="outline"
             >
               Previous
             </BossButton>
@@ -1774,7 +1774,7 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                             </div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <Badge variant="secondary" className={getStatusColor(task.status)}>
+                            <Badge variant="outline" className={getStatusColor(task.status)}>
                               {task.status}
                             </Badge>
                             <div className="w-16 text-right text-sm">{task.progress}%</div>
@@ -1847,21 +1847,21 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
           <div className="flex justify-between">
             <BossButton 
               onClick={() => setCurrentStep(5)}
-              variant="secondary"
+              variant="outline"
             >
               Previous
             </BossButton>
             <div className="flex gap-2">
               <BossButton 
                 onClick={handleSave}
-                variant="empowerment"
+                variant="purple"
                 crown
               >
                 Save Project
               </BossButton>
               <BossButton 
                 onClick={() => handleExport('pdf')}
-                variant="accent"
+                variant="cyan"
               >
                 Export Timeline
               </BossButton>

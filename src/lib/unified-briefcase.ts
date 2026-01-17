@@ -3,9 +3,11 @@ import { uploadFile, deleteFile } from '@/lib/file-storage'
 import { logInfo, logWarn } from '@/lib/logger'
 
 // Helper for direct query execution
-async function query(text: string, params: any[] = []): Promise<any[]> {
+// Helper for direct query execution
+async function query(text: string, params: unknown[] = []): Promise<any[]> {
   const sql = getSql()
-  return await (sql as any)(text, params)
+  // @ts-ignore - neon client call signature mismatch with dynamic params
+  return await sql(text, params)
 }
 
 export interface UserBriefcase {
@@ -25,12 +27,12 @@ export interface BriefcaseItem {
   type: 'avatar' | 'chat' | 'brand' | 'template_save' | 'document' | 'ai_interaction'
   title: string
   description?: string
-  content?: Record<string, any>
+  content?: Record<string, unknown>
   blobUrl?: string
   fileSize?: number
   mimeType?: string
   tags: string[]
-  metadata: Record<string, any>
+  metadata: Record<string, unknown>
   isPrivate: boolean
   createdAt: Date
   updatedAt: Date
@@ -40,7 +42,7 @@ export interface TemplateSave {
   id: string
   templateSlug: string
   title: string
-  content: Record<string, any>
+  content: Record<string, unknown>
   progress: number // 0-100
   lastSaved: Date
 }
@@ -110,7 +112,8 @@ export class UnifiedBriefcaseManager {
   async getDefaultBriefcase(userId: string): Promise<UserBriefcase> {
     // Check if user has a default briefcase
     const sql = getSql()
-    const result = await (sql as any)(`
+    // @ts-ignore - neon client typing issue
+    const result = await sql(`
       SELECT * FROM user_briefcases 
       WHERE user_id = $1 AND is_default = true
       LIMIT 1
@@ -396,7 +399,7 @@ export class UnifiedBriefcaseManager {
     search?: string
   ): Promise<{ items: BriefcaseItem[], total: number }> {
     let whereClause = 'user_id = $1'
-    const params: any[] = [userId]
+    const params: unknown[] = [userId]
     let paramIndex = 2
 
     if (type) {
@@ -458,7 +461,8 @@ export class UnifiedBriefcaseManager {
    */
   async getUserAvatar(userId: string): Promise<BriefcaseItem | null> {
     const sql = getSql()
-    const result = await (sql as any)(`
+    // @ts-ignore - neon client typing issue
+    const result = await sql(`
       SELECT * FROM briefcase_items 
       WHERE user_id = $1 AND type = 'avatar'
       ORDER BY created_at DESC

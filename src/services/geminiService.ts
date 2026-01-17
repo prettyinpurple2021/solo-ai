@@ -1,3 +1,4 @@
+import { logError } from '@/lib/logger';
 import { apiService } from './apiService';
 import { AgentId, CompetitorReport, WarRoomResponse, FinancialContext } from '../types';
 
@@ -17,7 +18,7 @@ export interface WarRoomDebate {
 
 export const geminiService = {
     // Generic generation
-    async generateContent(prompt: string, options: any = {}): Promise<string> {
+    async generateContent(prompt: string, options: Record<string, unknown> = {}): Promise<string> {
         return apiService.generate({
             prompt,
             systemInstruction: "You are the SoloSuccess AI Executive Team. Provide high-level strategic intelligence.",
@@ -28,10 +29,10 @@ export const geminiService = {
     // Chat
     async getAgentResponse(agentId: string, history: ChatMessage[], newMessage: string): Promise<string> {
         try {
-            const response = await apiService.post('/ai/chat', { agentId, history, message: newMessage });
+            const response = await apiService.post<{ text: string }>('/ai/chat', { agentId, history, message: newMessage });
             return response.text;
         } catch (error) {
-            console.error('Chat Error:', error);
+            logError('Chat Error:', error);
             return "I'm having trouble connecting right now. Please try again.";
         }
     },
@@ -39,9 +40,9 @@ export const geminiService = {
     // Competitor Analysis
     async generateCompetitorReport(url: string, name: string): Promise<CompetitorReport | null> {
         try {
-            return await apiService.post('/ai/competitor-report', { url, name });
+            return await apiService.post<CompetitorReport>('/ai/competitor-report', { url, name });
         } catch (error) {
-            console.error('Competitor Report Error:', error);
+            logError('Competitor Report Error:', error);
             return null;
         }
     },
@@ -49,214 +50,214 @@ export const geminiService = {
     // War Room
     async generateWarRoomDebate(topic: string, previousSessionId?: string): Promise<WarRoomResponse | null> {
         try {
-            return await apiService.post('/ai/war-room', { topic, previousSessionId });
+            return await apiService.post<WarRoomResponse>('/ai/war-room', { topic, previousSessionId });
         } catch (error) {
-            console.error('War Room Error:', error);
+            logError('War Room Error:', error);
             return null;
         }
     },
 
     // Daily Briefing
-    async generateDailyBriefing(): Promise<any> {
+    async generateDailyBriefing(): Promise<unknown> {
         try {
             return await apiService.post('/ai/briefing', {});
         } catch (error) {
-            console.error('Briefing Error:', error);
+            logError('Briefing Error:', error);
             return null;
         }
     },
 
     // Tactical Plan
-    async generateTacticalPlan(goal: string | string[]): Promise<any> {
+    async generateTacticalPlan(goal: string | string[]): Promise<unknown> {
         try {
             return await apiService.post('/ai/tactical-plan', { goal });
         } catch (error) {
-            console.error('Tactical Plan Error:', error);
+            logError('Tactical Plan Error:', error);
             return null;
         }
     },
 
     // Marketing & Strategy
-    async generateIncineratorFeedback(idea: string, type?: string, context?: string): Promise<any> {
+    async generateIncineratorFeedback(idea: string, type?: string, context?: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/incinerator', { idea, type, context });
         } catch (error) {
-            console.error('Incinerator Error:', error);
+            logError('Incinerator Error:', error);
             return null;
         }
     },
 
-    async generatePitchDeck(businessName?: string, description?: string): Promise<any> {
+    async generatePitchDeck(businessName?: string, description?: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/pitch-deck', { businessName, description });
         } catch (error) {
-            console.error('Pitch Deck Error:', error);
+            logError('Pitch Deck Error:', error);
             return null;
         }
     },
 
-    async findBlueOceans(industry?: string): Promise<any> {
+    async findBlueOceans(industry?: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/blue-oceans', { industry });
         } catch (error) {
-            console.error('Blue Ocean Error:', error);
+            logError('Blue Ocean Error:', error);
             return null;
         }
     },
 
-    async generateTribeBlueprint(audience: string, manifesto?: string): Promise<any> {
+    async generateTribeBlueprint(audience: string, manifesto?: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/tribe-blueprint', { audience, manifesto });
         } catch (error) {
-            console.error('Tribe Blueprint Error:', error);
+            logError('Tribe Blueprint Error:', error);
             return null;
         }
     },
 
-    async generateAmplifiedContent(content: string, platforms?: string[]): Promise<any> {
+    async generateAmplifiedContent(content: string, platforms?: string[]): Promise<unknown> {
         try {
             return await apiService.post('/ai/amplified-content', { content, platforms });
         } catch (error) {
-            console.error('Content Amplifier Error:', error);
+            logError('Content Amplifier Error:', error);
             return null;
         }
     },
 
-    async generateSocialStrategy(platform?: string, goal?: string): Promise<any> {
+    async generateSocialStrategy(platform?: string, goal?: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/social-strategy', { platform, goal });
         } catch (error) {
-            console.error('Social Strategy Error:', error);
+            logError('Social Strategy Error:', error);
             return null;
         }
     },
 
-    async generateLaunchStrategy(product: string, context?: string): Promise<any> {
+    async generateLaunchStrategy(product: string, context?: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/launch-strategy', { product, context });
         } catch (error) {
-            console.error('Launch Strategy Error:', error);
+            logError('Launch Strategy Error:', error);
             return null;
         }
     },
 
     // Ops & HR
-    async generateJobDescription(role: string, culture: string): Promise<any> {
+    async generateJobDescription(role: string, culture: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/job-description', { role, culture });
         } catch (error) {
-            console.error('JD Error:', error);
+            logError('JD Error:', error);
             return null;
         }
     },
 
-    async generateInterviewGuide(role: string, focus?: string): Promise<any> {
+    async generateInterviewGuide(role: string, focus?: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/interview-guide', { role, focus });
         } catch (error) {
-            console.error('Interview Guide Error:', error);
+            logError('Interview Guide Error:', error);
             return null;
         }
     },
 
-    async generateSOP(processName: string, goal?: string): Promise<any> {
+    async generateSOP(processName: string, goal?: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/sop', { processName, goal });
         } catch (error) {
-            console.error('SOP Error:', error);
+            logError('SOP Error:', error);
             return null;
         }
     },
 
-    async generateBoardReport(period: any, metrics?: any, reports?: any, contacts?: any): Promise<any> {
+    async generateBoardReport(period: unknown, metrics?: unknown, reports?: unknown, contacts?: unknown): Promise<unknown> {
         try {
             return await apiService.post('/ai/board-report', { period, metrics, reports, contacts });
         } catch (error) {
-            console.error('Board Report Error:', error);
+            logError('Board Report Error:', error);
             return null;
         }
     },
 
-    async conductFinancialAudit(data: string | FinancialContext): Promise<any> {
+    async conductFinancialAudit(data: string | FinancialContext): Promise<unknown> {
         try {
             return await apiService.post('/ai/financial-audit', { data });
         } catch (error) {
-            console.error('Financial Audit Error:', error);
+            logError('Financial Audit Error:', error);
             return null;
         }
     },
 
-    async conductTechAudit(stack: string): Promise<any> {
+    async conductTechAudit(stack: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/tech-audit', { stack });
         } catch (error) {
-            console.error('Tech Audit Error:', error);
+            logError('Tech Audit Error:', error);
             return null;
         }
     },
 
     // Legal & Sales
-    async generateColdEmail(contact: any): Promise<any> {
+    async generateColdEmail(contact: unknown): Promise<unknown> {
         try {
             return await apiService.post('/ai/cold-email', { contact });
         } catch (error) {
-            console.error('Cold Email Error:', error);
+            logError('Cold Email Error:', error);
             return null;
         }
     },
 
-    async generateNegotiationPrep(contact: any): Promise<any> {
+    async generateNegotiationPrep(contact: unknown): Promise<unknown> {
         try {
             return await apiService.post('/ai/negotiation-prep', { contact });
         } catch (error) {
-            console.error('Negotiation Prep Error:', error);
+            logError('Negotiation Prep Error:', error);
             return null;
         }
     },
 
-    async draftLegalDoc(type: string, details: string): Promise<any> {
+    async draftLegalDoc(type: string, details: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/legal-doc', { type, details });
         } catch (error) {
-            console.error('Legal Doc Error:', error);
+            logError('Legal Doc Error:', error);
             return null;
         }
     },
 
-    async analyzeContract(text: string): Promise<any> {
+    async analyzeContract(text: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/contract-analysis', { text });
         } catch (error) {
-            console.error('Contract Analysis Error:', error);
+            logError('Contract Analysis Error:', error);
             return null;
         }
     },
 
     // Mental & Roleplay
-    async generateStoicCoaching(mood: string | any, stressLevel?: number, primaryBlocker?: string): Promise<any> {
+    async generateStoicCoaching(mood: string | unknown, stressLevel?: number, primaryBlocker?: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/stoic-coaching', { mood, stressLevel, primaryBlocker });
         } catch (error) {
-            console.error('Stoic Coaching Error:', error);
+            logError('Stoic Coaching Error:', error);
             return null;
         }
     },
 
-    async getRoleplayReply(scenario: any, history: any[], userInput: string): Promise<string> {
+    async getRoleplayReply(scenario: unknown, history: unknown[], userInput: string): Promise<string> {
         try {
-            const response = await apiService.post('/ai/roleplay-reply', { scenario, history, userInput });
+            const response = await apiService.post<{ text: string }>('/ai/roleplay-reply', { scenario, history, userInput });
             return response.text;
         } catch (error) {
-            console.error('Roleplay Reply Error:', error);
+            logError('Roleplay Reply Error:', error);
             return "...";
         }
     },
 
-    async evaluateRoleplaySession(scenario: any, history: any[]): Promise<any> {
+    async evaluateRoleplaySession(scenario: unknown, history: unknown[]): Promise<unknown> {
         try {
             return await apiService.post('/ai/roleplay-feedback', { scenario, history });
         } catch (error) {
-            console.error('Roleplay Feedback Error:', error);
+            logError('Roleplay Feedback Error:', error);
             return null;
         }
     },
@@ -264,46 +265,46 @@ export const geminiService = {
     // Misc
     async generateBrandImage(promptUser: string, styleDesc: string): Promise<string | null> {
         try {
-            const response = await apiService.post('/ai/brand-image', { promptUser, styleDesc });
+            const response = await apiService.post<{ image: string }>('/ai/brand-image', { promptUser, styleDesc });
             return response.image;
         } catch (error) {
-            console.error('Image Gen Error:', error);
+            logError('Image Gen Error:', error);
             return null;
         }
     },
 
-    async generateCodeSolution(problem: string): Promise<any> {
+    async generateCodeSolution(problem: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/code-solution', { problem });
         } catch (error) {
-            console.error('Code Solution Error:', error);
+            logError('Code Solution Error:', error);
             return null;
         }
     },
 
-    async runSimulation(scenario: string): Promise<any> {
+    async runSimulation(scenario: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/simulation', { scenario });
         } catch (error) {
-            console.error('Simulation Error:', error);
+            logError('Simulation Error:', error);
             return null;
         }
     },
 
-    async generateMarketPulse(context?: any): Promise<any> {
+    async generateMarketPulse(context?: unknown): Promise<unknown> {
         try {
             return await apiService.post('/ai/market-pulse', { context });
         } catch (error) {
-            console.error('Market Pulse Error:', error);
+            logError('Market Pulse Error:', error);
             return null;
         }
     },
 
-    async generateProductSpec(idea: string): Promise<any> {
+    async generateProductSpec(idea: string): Promise<unknown> {
         try {
             return await apiService.post('/ai/product-spec', { idea });
         } catch (error) {
-            console.error('Product Spec Error:', error);
+            logError('Product Spec Error:', error);
             return null;
         }
     }

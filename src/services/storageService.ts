@@ -1,11 +1,9 @@
-// Storage Service - Production Version
-// Now uses backend APIs with localStorage as offline fallback
-
+import { logError, logWarn, logInfo } from '@/lib/logger';
 import {
     UserProgress, Task, ChatMessage, CompetitorReport, BusinessContext, BrandDNA,
     PitchDeck, CreativeAsset, Contact, LaunchStrategy, TribeBlueprint,
     SOP, JobDescription, InterviewGuide, ProductSpec, PivotAnalysis,
-    BoardMeetingReport, SavedCodeSnippet, SavedWarRoomSession, LegalDocType,
+    BoardMeetingReport, SavedCodeSnippet, SavedWarRoomSession,
     RoleplayFeedback, ContentAmplification, SimulationResult
 } from '../types';
 
@@ -49,7 +47,7 @@ const get = <T>(key: string, defaultVal: T): T => {
         const item = localStorage.getItem(key);
         return item ? JSON.parse(item) : defaultVal;
     } catch (e) {
-        console.error(`Error reading ${key}`, e);
+        logError(`Error reading ${key}`, e);
         return defaultVal;
     }
 };
@@ -58,7 +56,7 @@ const set = <T>(key: string, value: T): void => {
     try {
         localStorage.setItem(key, JSON.stringify(value));
     } catch (e) {
-        console.error(`Error writing ${key}`, e);
+        logError(`Error writing ${key}`, e);
     }
 };
 
@@ -66,7 +64,7 @@ const set = <T>(key: string, value: T): void => {
 async function apiCall<T>(
     method: string,
     endpoint: string,
-    body?: any,
+    body?: unknown,
     fallbackKey?: string,
     fallbackValue?: T
 ): Promise<T> {
@@ -84,7 +82,7 @@ async function apiCall<T>(
 
     try {
         // Get Stack Auth user ID
-        const stackApp = (window as any).stackApp;
+        const stackApp = (window as unknown as { stackApp?: { user?: { id?: string } } }).stackApp;
         const userId = stackApp?.user?.id || '';
 
         const options: RequestInit = {
@@ -114,7 +112,7 @@ async function apiCall<T>(
 
         return data as T;
     } catch (error) {
-        console.warn(`API call failed, using localStorage fallback:`, error);
+        logWarn(`API call failed, using localStorage fallback:`, error);
         // Fallback to localStorage
         if (fallbackKey) {
             return get<T>(fallbackKey, fallbackValue as T);
@@ -133,15 +131,15 @@ export const storageService = {
         };
 
         try {
-            const user = await apiCall<any>('GET', '/api/user', undefined, KEYS.PROGRESS, defaultProgress);
+            const user = await apiCall<Record<string, unknown>>('GET', '/api/user', undefined, KEYS.PROGRESS, defaultProgress as unknown as Record<string, unknown>);
             // Map backend user to UserProgress format
             return {
-                level: user.level || 1,
-                currentXP: user.xp || 0,
-                nextLevelXP: user.nextLevelXP || 100,
-                rankTitle: user.rankTitle || 'Garage Hacker',
-                totalActions: user.totalActions || 0,
-                achievements: user.achievements || []
+                level: Number(user.level) || 1,
+                currentXP: Number(user.xp) || 0,
+                nextLevelXP: Number(user.nextLevelXP) || 100,
+                rankTitle: String(user.rankTitle || 'Garage Hacker'),
+                totalActions: Number(user.totalActions) || 0,
+                achievements: Array.isArray(user.achievements) ? user.achievements as string[] : []
             };
         } catch (error) {
             return defaultProgress;
@@ -153,7 +151,7 @@ export const storageService = {
             xp: progress.currentXP,
             level: progress.level,
             totalActions: progress.totalActions
-        }, KEYS.PROGRESS, progress);
+        } as unknown, KEYS.PROGRESS, progress);
     },
 
     // --- Tasks ---
@@ -195,12 +193,12 @@ export const storageService = {
     // --- Chat History ---
     async getChatHistory(agentId: string): Promise<ChatMessage[]> {
         try {
-            const history = await apiCall<any[]>('GET', `/api/chat/${agentId}`, undefined, `${KEYS.CHAT_PREFIX}${agentId}`, []);
+            const history = await apiCall<Record<string, unknown>[]>('GET', `/api/chat/${agentId}`, undefined, `${KEYS.CHAT_PREFIX}${agentId}`, []);
             // Map backend format to ChatMessage
             return history.map(h => ({
-                role: h.role,
-                text: h.text,
-                timestamp: parseInt(h.timestamp)
+                role: (h.role as 'user' | 'model') || 'user',
+                text: String(h.text || ''),
+                timestamp: parseInt(String(h.timestamp || '0'))
             }));
         } catch (error) {
             return [];
@@ -240,6 +238,7 @@ export const storageService = {
             industry: '',
             description: '',
             brandDna: dna,
+            goals: [],
             updatedAt: new Date().toISOString()
         };
         context.brandDna = dna;
@@ -375,7 +374,7 @@ export const storageService = {
         // Log any failures
         const failures = results.filter(r => r.status === 'rejected');
         if (failures.length > 0) {
-            console.error(`Failed to save ${failures.length} product specs`, failures);
+            logError(`Failed to save ${failures.length} product specs`, failures);
             throw new Error(`Batch save failed for ${failures.length} items`);
         }
     },
@@ -429,11 +428,11 @@ export const storageService = {
     },
 
     // --- Legal Docs ---
-    async getLegalDocs(): Promise<any[]> {
-        return apiCall<any[]>('GET', '/api/resources/legal-docs', undefined, KEYS.LEGAL_DOCS, []);
+    async getLegalDocs(): Promise<unknown[]> {
+        return apiCall<unknown[]>('GET', '/api/resources/legal-docs', undefined, KEYS.LEGAL_DOCS, []);
     },
 
-    async saveLegalDoc(doc: any): Promise<void> {
+    async saveLegalDoc(doc: unknown): Promise<void> {
         await apiCall('POST', '/api/resources/legal-docs', doc, KEYS.LEGAL_DOCS);
         const items = await this.getLegalDocs();
         items.unshift(doc);
@@ -456,8 +455,8 @@ export const storageService = {
     async getSystemInstructions(agentId: string): Promise<string | null> {
         // Fetch from agent-instructions table
         try {
-            const instructions = await apiCall<any[]>('GET', '/api/resources/agent-instructions', undefined, `solo_agent_prompt_${agentId}`, []);
-            const agentInstruction = instructions.find((i: any) => i.agentId === agentId);
+            const instructions = await apiCall<{ agentId: string, instruction: string }[]>('GET', '/api/resources/agent-instructions', undefined, `solo_agent_prompt_${agentId}`, []);
+            const agentInstruction = instructions.find((i) => i.agentId === agentId);
             return agentInstruction ? agentInstruction.instruction : null;
         } catch (e) {
             return null;
@@ -470,9 +469,9 @@ export const storageService = {
         localStorage.clear();
     },
 
-    async exportData(): Promise<Record<string, any>> {
+    async exportData(): Promise<Record<string, unknown>> {
         await delay();
-        const allData: Record<string, any> = {};
+        const allData: Record<string, unknown> = {};
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key && key.startsWith('solo_')) {
@@ -482,11 +481,14 @@ export const storageService = {
         return allData;
     },
 
-    async importData(data: Record<string, any>): Promise<void> {
+    async importData(data: Record<string, unknown>): Promise<void> {
         await delay();
         Object.keys(data).forEach(key => {
             if (key.startsWith('solo_')) {
-                localStorage.setItem(key, data[key]);
+                const value = data[key];
+                if (typeof value === 'string') {
+                    localStorage.setItem(key, value);
+                }
             }
         });
     },
@@ -518,147 +520,147 @@ export const storageService = {
     // --- Migration ---
     async migrateLocalToBackend(): Promise<void> {
         if (!USE_BACKEND) {
-            console.log('Migration skipped: Backend not enabled');
+            logInfo('Migration skipped: Backend not enabled');
             return;
         }
 
-        console.log('Starting migration to backend...');
+        logInfo('Starting migration to backend...');
 
         // Progress
         const progress = get<UserProgress | null>(KEYS.PROGRESS, null);
         if (progress) {
-            console.log('Migrating Progress...');
+            logInfo('Migrating Progress...');
             await this.saveUserProgress(progress);
         }
 
         // Tasks
         const tasks = get<Task[]>(KEYS.TASKS, []);
         if (tasks.length) {
-            console.log(`Migrating ${tasks.length} Tasks...`);
+            logInfo(`Migrating ${tasks.length} Tasks...`);
             await this.saveTasks(tasks);
         }
 
         // Context
         const context = get<BusinessContext | null>(KEYS.CONTEXT, null);
         if (context) {
-            console.log('Migrating Context...');
+            logInfo('Migrating Context...');
             await this.saveContext(context);
         }
 
         // Competitor Reports
         const reports = get<CompetitorReport[]>(KEYS.REPORTS, []);
         if (reports.length) {
-            console.log(`Migrating ${reports.length} Reports...`);
+            logInfo(`Migrating ${reports.length} Reports...`);
             for (const r of reports) await this.saveCompetitorReport(r);
         }
 
         // Pitch Decks
         const decks = get<PitchDeck[]>(KEYS.PITCH_DECKS, []);
         if (decks.length) {
-            console.log(`Migrating ${decks.length} Pitch Decks...`);
+            logInfo(`Migrating ${decks.length} Pitch Decks...`);
             for (const d of decks) await this.savePitchDeck(d);
         }
 
         // Creative Assets
         const assets = get<CreativeAsset[]>(KEYS.CREATIVE_ASSETS, []);
         if (assets.length) {
-            console.log(`Migrating ${assets.length} Assets...`);
+            logInfo(`Migrating ${assets.length} Assets...`);
             for (const a of assets) await this.saveCreativeAsset(a);
         }
 
         // Contacts
         const contacts = get<Contact[]>(KEYS.CONTACTS, []);
         if (contacts.length) {
-            console.log(`Migrating ${contacts.length} Contacts...`);
+            logInfo(`Migrating ${contacts.length} Contacts...`);
             for (const c of contacts) await this.saveContact(c);
         }
 
         // Launch Strategies
         const launches = get<LaunchStrategy[]>(KEYS.LAUNCH_STRATEGIES, []);
         if (launches.length) {
-            console.log(`Migrating ${launches.length} Launch Strategies...`);
+            logInfo(`Migrating ${launches.length} Launch Strategies...`);
             for (const l of launches) await this.saveLaunchStrategy(l);
         }
 
         // Tribe Blueprints
         const tribes = get<TribeBlueprint[]>(KEYS.TRIBE_BLUEPRINTS, []);
         if (tribes.length) {
-            console.log(`Migrating ${tribes.length} Tribe Blueprints...`);
+            logInfo(`Migrating ${tribes.length} Tribe Blueprints...`);
             for (const t of tribes) await this.saveTribeBlueprint(t);
         }
 
         // SOPs
         const sops = get<SOP[]>(KEYS.SOPS, []);
         if (sops.length) {
-            console.log(`Migrating ${sops.length} SOPs...`);
+            logInfo(`Migrating ${sops.length} SOPs...`);
             for (const s of sops) await this.saveSOP(s);
         }
 
         // Job Descriptions
         const jds = get<JobDescription[]>(KEYS.JOB_DESCRIPTIONS, []);
         if (jds.length) {
-            console.log(`Migrating ${jds.length} JDs...`);
+            logInfo(`Migrating ${jds.length} JDs...`);
             for (const j of jds) await this.saveJobDescription(j);
         }
 
         // Interview Guides
         const guides = get<InterviewGuide[]>(KEYS.INTERVIEW_GUIDES, []);
         if (guides.length) {
-            console.log(`Migrating ${guides.length} Interview Guides...`);
+            logInfo(`Migrating ${guides.length} Interview Guides...`);
             for (const g of guides) await this.saveInterviewGuide(g);
         }
 
         // Product Specs
         const specs = get<ProductSpec[]>(KEYS.PRODUCT_SPECS, []);
         if (specs.length) {
-            console.log(`Migrating ${specs.length} Product Specs...`);
+            logInfo(`Migrating ${specs.length} Product Specs...`);
             for (const s of specs) await this.saveProductSpec(s);
         }
 
         // Pivot Analyses
         const pivots = get<PivotAnalysis[]>(KEYS.PIVOT_ANALYSES, []);
         if (pivots.length) {
-            console.log(`Migrating ${pivots.length} Pivot Analyses...`);
+            logInfo(`Migrating ${pivots.length} Pivot Analyses...`);
             for (const p of pivots) await this.savePivotAnalysis(p);
         }
 
         // Board Reports
         const boardReports = get<BoardMeetingReport[]>(KEYS.BOARD_REPORTS, []);
         if (boardReports.length) {
-            console.log(`Migrating ${boardReports.length} Board Reports...`);
+            logInfo(`Migrating ${boardReports.length} Board Reports...`);
             for (const b of boardReports) await this.saveBoardReport(b);
         }
 
         // Code Snippets
         const snippets = get<SavedCodeSnippet[]>(KEYS.CODE_SNIPPETS, []);
         if (snippets.length) {
-            console.log(`Migrating ${snippets.length} Snippets...`);
+            logInfo(`Migrating ${snippets.length} Snippets...`);
             for (const s of snippets) await this.saveCodeSnippet(s);
         }
 
         // War Room
         const warRooms = get<SavedWarRoomSession[]>(KEYS.WAR_ROOM_SESSIONS, []);
         if (warRooms.length) {
-            console.log(`Migrating ${warRooms.length} War Room Sessions...`);
+            logInfo(`Migrating ${warRooms.length} War Room Sessions...`);
             for (const w of warRooms) await this.saveWarRoomSession(w);
         }
 
         // Legal Docs
-        const legalDocs = get<any[]>(KEYS.LEGAL_DOCS, []);
+        const legalDocs = get<unknown[]>(KEYS.LEGAL_DOCS, []);
         if (legalDocs.length) {
-            console.log(`Migrating ${legalDocs.length} Legal Docs...`);
+            logInfo(`Migrating ${legalDocs.length} Legal Docs...`);
             for (const l of legalDocs) await this.saveLegalDoc(l);
         }
 
         // Training History
         const training = get<RoleplayFeedback[]>(KEYS.TRAINING_HISTORY, []);
         if (training.length) {
-            console.log(`Migrating ${training.length} Training Records...`);
+            logInfo(`Migrating ${training.length} Training Records...`);
             for (const t of training) await this.saveTrainingResult(t);
         }
 
-        console.log('Migration Complete!');
+        logInfo('Migration Complete!');
     }
 };
 
-console.log(`📦 Storage Service: ${USE_BACKEND ? '✅ Using backend database' : '⚠️ Using localStorage only'}`);
+logInfo(`📦 Storage Service: ${USE_BACKEND ? '✅ Using backend database' : '⚠️ Using localStorage only'}`);
