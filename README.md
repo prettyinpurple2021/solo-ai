@@ -30,13 +30,17 @@ SoloSuccess AI is a comprehensive platform designed to empower solopreneurs with
 
 ### Installation
 
+### Installation
+
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd SoloSuccess-AI
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
@@ -45,6 +49,7 @@ SoloSuccess AI is a comprehensive platform designed to empower solopreneurs with
    Copy `.env.example` to `.env.local` and fill in the required keys.
 
 4. Run the development server:
+
    ```bash
    npm run dev
    ```
@@ -54,9 +59,13 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Documentation
 
 For more detailed information, please refer to the following:
+
 - [Production Quality Guidelines](PRODUCTION_QUALITY_GUIDELINES.md)
 - [Production Readiness Report](docs/reports/PRODUCTION_READINESS_REPORT.md)
-- [User Guides](docs/user-guides/)
+- [User Handbook & Guides](docs/user-guides/app-usage/README.md)
+- [Integrations Setup](docs/user-guides/integrations/)
+- [Developer & Technical Docs](docs/technical/)
+- [Design System](docs/design-system/)
 - [Implementation Gaps](docs/IMPLEMENTATION_GAPS.md)
 
 ---
