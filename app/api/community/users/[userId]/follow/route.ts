@@ -3,13 +3,14 @@ import { db } from '@/db';
 import { follows } from '@/db/schema';
 import { auth } from '@/lib/auth';
 import { eq, and } from 'drizzle-orm';
+import { logError } from '@/lib/logger';
 
 export async function POST(
   _req: Request,
   props: { params: Promise<{ userId: string }> }
 ) {
-  const params = await props.params;
   try {
+    const params = await props.params;
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -37,7 +38,7 @@ export async function POST(
 
     return NextResponse.json({ followed: true });
   } catch (error) {
-    console.error('Error following user:', error);
+    logError('Error following user:', error);
     return NextResponse.json({ error: 'Failed to follow user' }, { status: 500 });
   }
 }
@@ -46,8 +47,8 @@ export async function DELETE(
   _req: Request,
   props: { params: Promise<{ userId: string }> }
 ) {
-  const params = await props.params;
   try {
+    const params = await props.params;
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -61,7 +62,7 @@ export async function DELETE(
 
     return NextResponse.json({ followed: false });
   } catch (error) {
-    console.error('Error unfollowing user:', error);
+    logError('Error unfollowing user:', error);
     return NextResponse.json({ error: 'Failed to unfollow user' }, { status: 500 });
   }
 }

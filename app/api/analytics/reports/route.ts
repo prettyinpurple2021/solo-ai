@@ -5,6 +5,7 @@ import { customReports } from '@/db/schema';
 import { auth } from '@/lib/auth';
 import { eq, desc } from 'drizzle-orm';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 const reportSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -13,7 +14,7 @@ const reportSchema = z.object({
   schedule: z.object({}).optional(),
 });
 
-export async function GET(req: Request) {
+export async function GET(_req: Request) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -28,7 +29,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(reports);
   } catch (error) {
-    console.error('[REPORTS_GET]', error);
+    logError('[REPORTS_GET]', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

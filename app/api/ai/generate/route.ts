@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { OpenAI } from 'openai';
+import { logError } from '@/lib/logger';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -36,7 +37,7 @@ export async function POST(req: Request) {
     return new NextResponse('Invalid Type', { status: 400 });
 
   } catch (error) {
-    console.error('[AI_GENERATE]', error);
+    logError('AI Generation Error:', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

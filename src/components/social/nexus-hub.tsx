@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, ChangeEvent } from "react"
+import { logError } from "@/lib/logger"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import { Button} from "@/components/ui/button"
 import { Badge} from "@/components/ui/badge"
@@ -120,7 +121,7 @@ export function NexusHub() {
         setPosts(data.posts)
       }
     } catch (error) {
-      console.error('Failed to fetch posts:', error)
+      logError('Failed to fetch posts:', error)
     } finally {
       setLoading(false)
     }
@@ -135,7 +136,7 @@ export function NexusHub() {
         setChallenges(data.challenges)
       }
     } catch (error) {
-      console.error('Failed to fetch challenges:', error)
+      logError('Failed to fetch challenges:', error)
     } finally {
         setLoadingChallenges(false)
     }
@@ -158,7 +159,7 @@ export function NexusHub() {
         setTopOperatives(typedLeaderboard)
       }
     } catch (error) {
-      console.error('Failed to fetch leaderboard:', error)
+      logError('Failed to fetch leaderboard:', error)
     }
   }
 
@@ -186,7 +187,7 @@ export function NexusHub() {
             setChallenges(previousChallenges)
         }
     } catch (error) {
-        console.error("Failed to join challenge:", error)
+        logError("Failed to join challenge:", error)
         // Revert on error
         setChallenges(previousChallenges)
     }
@@ -234,7 +235,7 @@ export function NexusHub() {
             setPosts(previousPosts)
         }
     } catch (error) {
-        console.error('Failed to react to post:', error)
+        logError('Failed to react to post:', error)
         setPosts(previousPosts)
     }
   }
@@ -248,7 +249,7 @@ export function NexusHub() {
               setPosts(posts.filter(p => p.id !== postId))
           }
       } catch (error) {
-          console.error("Failed to delete post:", error)
+          logError("Failed to delete post:", error)
       }
   }
 
@@ -267,7 +268,7 @@ export function NexusHub() {
               setEditingPost(null)
           }
       } catch (error) {
-          console.error("Failed to edit post:", error)
+          logError("Failed to edit post:", error)
       }
   }
   
@@ -275,7 +276,7 @@ export function NexusHub() {
       try {
           await fetch(`/api/community/users/${userId}/follow`, { method: 'POST' })
       } catch (error) {
-          console.error("Failed to follow:", error)
+          logError("Failed to follow:", error)
       }
   }
 
@@ -300,7 +301,7 @@ export function NexusHub() {
             fetchPosts() // Refresh feed
         }
     } catch (error) {
-        console.error('Failed to create post:', error)
+        logError('Failed to create post:', error)
     }
   }
 
@@ -328,7 +329,7 @@ export function NexusHub() {
           }))
         }
       } catch (error) {
-        console.error("Failed to fetch comments:", error)
+        logError("Failed to fetch comments:", error)
       } finally {
         setLoadingComments(false)
       }
@@ -377,7 +378,7 @@ export function NexusHub() {
         setNewCommentContent("")
       }
     } catch (error) {
-      console.error("Failed to post comment:", error)
+      logError("Failed to post comment:", error)
     }
   }
 

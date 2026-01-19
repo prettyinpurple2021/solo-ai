@@ -1,8 +1,10 @@
+
 import { generateText } from "ai"
+import { logError } from '@/lib/logger'
 import { getTeamMemberConfig } from "./ai-config"
 import { db } from '@/db'
 import { intelligenceData, competitorProfiles } from '@/db/schema'
-import { eq, and, gte, desc, like } from 'drizzle-orm'
+import { eq, desc, and, gte } from 'drizzle-orm'
 import type {
   CompetitorProfile,
   IntelligenceData,
@@ -613,7 +615,7 @@ Format your response as a professional marketing briefing document (Markdown).`
         analyzedAt: new Date()
       }
     } catch (error) {
-      console.error('Failed to parse content strategy analysis:', error)
+      logError('Failed to parse content strategy analysis:', error)
       return {
         competitorId,
         contentThemes: [],
@@ -646,7 +648,7 @@ Format your response as a professional marketing briefing document (Markdown).`
         analyzedAt: new Date()
       }
     } catch (error) {
-      console.error('Failed to parse brand positioning analysis:', error)
+      logError('Failed to parse brand positioning analysis:', error)
       return {
         competitorId,
         positioningStatement: 'Analysis parsing failed.',
@@ -679,7 +681,7 @@ Format your response as a professional marketing briefing document (Markdown).`
         analyzedAt: new Date()
       }
     } catch (error) {
-      console.error('Failed to parse campaign effectiveness analysis:', error)
+      logError('Failed to parse campaign effectiveness analysis:', error)
       return {
         competitorId,
         campaigns: [],
@@ -700,7 +702,7 @@ Format your response as a professional marketing briefing document (Markdown).`
       const parsed = JSON.parse(jsonString)
       return Array.isArray(parsed) ? parsed : []
     } catch (error) {
-      console.error('Failed to parse content gap analysis:', error)
+      logError('Failed to parse content gap analysis:', error)
       return []
     }
   }

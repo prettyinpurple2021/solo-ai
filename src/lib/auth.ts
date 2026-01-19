@@ -1,7 +1,9 @@
-import NextAuth from "next-auth"
+
+import { logInfo, logWarn, logError } from "@/lib/logger"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { db, getDb } from "@/db"
 import { users, accounts, sessions, verificationTokens } from "@/db/schema"
+import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import Google from "next-auth/providers/google"
 import GitHub from "next-auth/providers/github"
@@ -21,12 +23,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         sessionsTable: sessions,
         verificationTokensTable: verificationTokens,
       });
-      console.log("NextAuth DrizzleAdapter initialized successfully.");
+      logInfo("NextAuth DrizzleAdapter initialized successfully.");
       return adapter;
     } catch (e) {
       // During build time or if DB is not available, return a partial/mock adapter
       // This prevents the "Unsupported database type" error from crashing the build
-      console.error("CRITICAL: Failed to initialize NextAuth adapter:", e);
+      logError("CRITICAL: Failed to initialize NextAuth adapter:", e);
       return undefined;
     }
   })(),
@@ -46,42 +48,48 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("[Auth] Authorize attempt for email:", credentials?.email);
+        logInfo("[Auth] Authorize attempt for email:", credentials?.email);
         try {
           const parsedCredentials = z
             .object({ email: z.string().email(), password: z.string().min(8) })
             .safeParse(credentials)
 
           if (!parsedCredentials.success) {
-            console.warn("[Auth] Credential validation failed:", parsedCredentials.error.format());
+            logWarn("[Auth] Credential validation failed:", parsedCredentials.error.format());
             return null;
           }
 
           const { email, password } = parsedCredentials.data
-          console.log("[Auth] Querying user from database...");
+          logInfo("[Auth] Querying user from database...");
           
           const userResult = await db.select().from(users).where(eq(users.email, email))
           const user = userResult[0]
           
           if (!user) {
-            console.log("[Auth] User not found:", email);
+            logInfo("[Auth] User not found:", email);
             return null
           }
           
-          console.log("[Auth] User found, comparing passwords...");
+          logInfo("[Auth] User found, comparing passwords...");
           // @ts-ignore
           const passwordsMatch = await bcrypt.compare(password, user.password || "")
           
           if (passwordsMatch) {
-            console.log("[Auth] Authentication successful for:", email);
+            logInfo("[Auth] Authentication successful for:", email);
+            // Return user object without password for security
             // Return user object without password for security
             const { password: _, ...userWithoutPassword } = user;
-            return userWithoutPassword;
+            return {
+              ...userWithoutPassword,
+              role: userWithoutPassword.role ?? undefined,
+              image: userWithoutPassword.image ?? undefined,
+              // Add other nullable fields if necessary for strict type compliance
+            };
           }
 
-          console.log("[Auth] Password mismatch for:", email);
+          logInfo("[Auth] Password mismatch for:", email);
         } catch (error) {
-          console.error("[Auth] CRITICAL ERROR in authorize callback:", error);
+          logError("[Auth] CRITICAL ERROR in authorize callback:", error);
           // Return null instead of letting it bubble up to potentially cause a 500
           return null;
         }

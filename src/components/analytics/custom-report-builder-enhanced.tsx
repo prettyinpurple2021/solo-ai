@@ -1,8 +1,7 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { logError } from '@/lib/logger'
-import { motion, AnimatePresence } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -10,24 +9,16 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
-import { Textarea } from '@/components/ui/textarea'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   BarChart3, 
   PieChart, 
   LineChart, 
   Table, 
-  Download, 
-  Plus, 
   Trash2, 
   Eye,
-  Settings,
-  Calendar,
-  Filter,
   Save,
-  Share,
   Zap,
-  Brain,
   Target,
   TrendingUp,
   Users,
@@ -91,13 +82,13 @@ interface CustomReport {
 interface CustomReportBuilderEnhancedProps {
   className?: string
   onSave?: (report: CustomReport) => void
-  onExport?: (report: CustomReport, format: 'pdf' | 'excel' | 'csv') => void
+
 }
 
 export default function CustomReportBuilderEnhanced({ 
   className = "",
   onSave,
-  onExport 
+ 
 }: CustomReportBuilderEnhancedProps) {
   const [report, setReport] = useState<Partial<CustomReport>>({
     name: '',
@@ -113,7 +104,6 @@ export default function CustomReportBuilderEnhanced({
   })
 
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([])
-  const [selectedFilters, setSelectedFilters] = useState<ReportFilter[]>([])
   const [selectedVisualizations, setSelectedVisualizations] = useState<ReportVisualization[]>([])
   const [previewData, setPreviewData] = useState<any>(null)
   const [loading, setLoading] = useState(false)
@@ -224,7 +214,7 @@ export default function CustomReportBuilderEnhanced({
       type,
       title: `${type.charAt(0).toUpperCase() + type.slice(1)} Chart`,
       metrics: selectedMetrics,
-      filters: selectedFilters.map(f => f.id),
+      filters: report.filters!.map(f => f.id),
       config: {
         color: '#8B5CF6',
         showLegend: true,
@@ -275,7 +265,7 @@ export default function CustomReportBuilderEnhanced({
       description: report.description || '',
       timeframe: report.timeframe!,
       metrics: selectedMetrics,
-      filters: selectedFilters,
+      filters: report.filters!,
       visualizations: selectedVisualizations,
       isPublic: false,
       createdAt: new Date().toISOString(),
@@ -432,7 +422,7 @@ export default function CustomReportBuilderEnhanced({
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Badge variant="outline" className={getCategoryColor(metric.category)}>
+                      <Badge className={getCategoryColor(metric.category)}>
                         {getCategoryIcon(metric.category)}
                         <span className="ml-1">{metric.category}</span>
                       </Badge>

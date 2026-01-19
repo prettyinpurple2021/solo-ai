@@ -1,3 +1,5 @@
+import { logError } from "@/lib/logger";
+
 const API_URL = '/api';
 
 export const api = {
@@ -7,7 +9,7 @@ export const api = {
             if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
             return await res.json();
         } catch (e) {
-            console.error(`GET ${endpoint} failed`, e);
+            logError(`GET ${endpoint} failed`, e);
             return null;
         }
     },
@@ -22,7 +24,7 @@ export const api = {
             if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
             return await res.json();
         } catch (e) {
-            console.error(`POST ${endpoint} failed`, e);
+            logError(`POST ${endpoint} failed`, e);
             return null;
         }
     },
@@ -35,7 +37,7 @@ export const api = {
             if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
             return await res.json();
         } catch (e) {
-            console.error(`DELETE ${endpoint} failed`, e);
+            logError(`DELETE ${endpoint} failed`, e);
             return null;
         }
     }

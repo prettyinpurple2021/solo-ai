@@ -4,7 +4,7 @@ import { db } from '@/db'
 import { logError } from '@/lib/logger'
 import { workflowExecutions, workflows } from '@/db/schema'
 import { auth } from '@/lib/auth'
-import { desc, eq, and, like, sql } from 'drizzle-orm'
+import { desc, eq, and, like } from 'drizzle-orm'
 
 export async function GET(req: Request) {
   try {
@@ -49,7 +49,7 @@ export async function GET(req: Request) {
       .offset(offset)
       .orderBy(desc(workflowExecutions.started_at))
 
-    const results = await baseQuery
+
 
     // Filter by query manually if needed (search workflow name) since complex joins+search in where can be tricky with partial implementation
     // But better to use drizzle filter if possible. 

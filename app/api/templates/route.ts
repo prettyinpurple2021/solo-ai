@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/db'
+import { db } from '@/server/db'
+import { logError } from '@/lib/logger'
 import { templates } from '@/db/schema'
 import { eq, desc, or } from 'drizzle-orm'
 import { verifyAuth } from '@/lib/auth-server'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: Request) {
   try {
     const authResult = await verifyAuth()
     if (!authResult.user) {
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(allTemplates)
   } catch (error) {
-    console.error('Error fetching templates:', error)
+    logError('Error fetching templates:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }
@@ -68,7 +69,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(newTemplate[0])
   } catch (error) {
-    console.error('Error creating template:', error)
+    logError('Error creating template:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

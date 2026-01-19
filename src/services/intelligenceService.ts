@@ -1,5 +1,7 @@
 // Daily Intelligence Service
 import { geminiService } from './geminiService';
+
+import { logError } from '@/lib/logger';
 import { storageService } from './storageService';
 
 export interface PriorityAction {
@@ -147,7 +149,7 @@ Respond ONLY with valid JSON.`;
 
             return intelligence;
         } catch (error) {
-            console.error('Intelligence generation error:', error);
+            logError('Intelligence generation error:', error);
 
             // Return fallback intelligence
             return this.getFallbackIntelligence();

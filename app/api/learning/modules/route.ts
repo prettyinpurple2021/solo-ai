@@ -1,12 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/db'
+
+import { NextResponse } from 'next/server'
+import { db } from '@/server/db'
+import { logError } from '@/lib/logger'
 import { learningModules } from '@/db/schema'
 import { eq, desc } from 'drizzle-orm'
 import { verifyAuth } from '@/lib/auth-server'
 
 export const dynamic = 'force-dynamic'
 
-export async function GET(req: NextRequest) {
+export async function GET(_req: Request) {
   try {
     const authResult = await verifyAuth()
     if (!authResult.user) {
@@ -21,7 +23,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(modules)
   } catch (error) {
-    console.error('Error fetching learning modules:', error)
+    logError('Error fetching learning modules:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

@@ -1,6 +1,6 @@
-import { logger, logInfo } from '@/lib/logger'
+import { logInfo, logError } from '@/lib/logger'
 import { NextRequest } from 'next/server'
-import { db } from '@/db'
+import { db } from '@/server/db'
 import { analyticsEvents, users, paymentProviderConnections } from '@/db/schema'
 import { desc, eq, sql, and, gte } from 'drizzle-orm'
 import { RevenueTrackingService } from './revenue-tracking'
@@ -114,7 +114,7 @@ class AnalyticsService {
         logInfo('📊 Analytics Event', { event, properties })
       }
     } catch (error) {
-      console.error('Failed to track analytics event:', error)
+      logError('Failed to track analytics event:', error)
     }
   }
 
@@ -156,11 +156,11 @@ class AnalyticsService {
       averageSessionDuration: 0, // Todo: Implement session tracking middleware
       retentionScore: 0, // Todo: Implement cohort analysis
       revenue: await RevenueTrackingService.calculateRevenue(userId, new Date(Date.now() - REVENUE_WINDOW_DAYS * MS_PER_DAY), new Date()).catch(err => {
-        console.error('Failed to calculate revenue for user:', userId, err)
+        logError('Failed to calculate revenue for user:', userId, err)
         return 0
       }),
       mrr: await RevenueTrackingService.calculateMRR(userId).catch(err => {
-        console.error('Failed to calculate MRR for user:', userId, err)
+        logError('Failed to calculate MRR for user:', userId, err)
         return 0
       })
     }

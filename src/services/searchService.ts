@@ -1,5 +1,5 @@
 // Universal Search Service
-import { api as apiService } from './api';
+import { logError } from '@/lib/logger';
 
 export interface SearchResult {
     id: string;
@@ -41,7 +41,7 @@ class SearchService {
 
             return await response.json();
         } catch (error) {
-            console.error('Search error:', error);
+            logError('Search error:', error);
             return [];
         }
     }
@@ -63,7 +63,7 @@ class SearchService {
                 body: JSON.stringify({ type, id, title, content, tags })
             });
         } catch (error) {
-            console.error('Indexing error:', error);
+            logError('Indexing error:', error);
         }
     }
 
@@ -78,7 +78,7 @@ class SearchService {
                 body: JSON.stringify({ type, id })
             });
         } catch (error) {
-            console.error('Remove from index error:', error);
+            logError('Remove from index error:', error);
         }
     }
 

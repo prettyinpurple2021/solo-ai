@@ -7,7 +7,7 @@ import { logger, logError, logInfo } from '@/lib/logger'
 import { z } from 'zod'
 import { db } from '@/db'
 import { workflows, workflowExecutions, users } from '@/db/schema'
-import { eq, desc, and } from 'drizzle-orm'
+import { eq, desc, and, count, sql, avg } from 'drizzle-orm'
 import { Parser } from 'expr-eval-fork'
 
 // Static parser for high-throughput evaluation
@@ -934,13 +934,20 @@ export class WorkflowEngine {
     const allWorkflows = await this.getAllWorkflows()
     // const allExecutions = await db.select().from(workflowExecutions) // Too heavy
 
-    // Simplified stats
+    const executionStats = await db.select({
+      total: count(),
+      successful: count(sql`CASE WHEN ${workflowExecutions.status} = 'completed' THEN 1 END`),
+      avgTime: avg(workflowExecutions.duration)
+    }).from(workflowExecutions)
+
+    const stats = executionStats[0]
+
     return {
       totalWorkflows: allWorkflows.length,
       activeWorkflows: allWorkflows.filter(w => w.status === 'active').length,
-      totalExecutions: 0, // TODO: Implement count query
-      successfulExecutions: 0,
-      averageExecutionTime: 0
+      totalExecutions: stats.total,
+      successfulExecutions: stats.successful,
+      averageExecutionTime: Number(stats.avgTime) || 0
     }
   }
 }

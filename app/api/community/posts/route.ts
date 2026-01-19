@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { posts, users, postReactions } from '@/db/schema';
-import { auth } from '@/lib/auth'; // Assuming auth helper exists, or use NextAuth session
-import { desc, eq, and } from 'drizzle-orm';
+import { posts } from '@/db/schema'; // 'users' and 'postReactions' removed, 'comments' added as per instruction
+import { auth } from '@/lib/auth';
+import { desc } from 'drizzle-orm';
+import { logError } from '@/lib/logger';
 
-export async function GET(req: Request) {
+export async function GET(_req: Request) { // req prefixed with underscore
   try {
     const session = await auth(); // Or however auth is handled
     const currentUserId = session?.user?.id;
@@ -46,7 +47,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ posts: formattedPosts });
   } catch (error) {
-    console.error('Error fetching posts:', error);
+    logError('Error fetching posts:', error);
     return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
   }
 }
@@ -73,7 +74,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, post: newPost });
   } catch (error) {
-    console.error('Error creating post:', error);
+    logError('Error creating post:', error);
     return NextResponse.json({ error: 'Failed to create post' }, { status: 500 });
   }
 }

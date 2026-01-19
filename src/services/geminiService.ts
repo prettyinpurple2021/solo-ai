@@ -1,3 +1,4 @@
+
 import { logError } from '@/lib/logger';
 import { apiService } from './apiService';
 import {
@@ -18,7 +19,7 @@ import {
     SocialStrategy,
     ContentAmplification,
     TribeBlueprint,
-    PivotAnalysis,
+
     TechStackAudit
 } from '../types';
 

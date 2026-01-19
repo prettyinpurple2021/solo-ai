@@ -2,16 +2,34 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/server/db';
 import { challenges, userChallenges } from '@/server/db/schema';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 
 import { auth } from '@/lib/auth';
+import { logError } from '@/lib/logger';
 
 export async function GET(_req: Request) {
   try {
     const session = await auth();
     const userId = session?.user?.id ? parseInt(session.user.id) : undefined;
 
-    const allChallenges = await db.select().from(challenges).orderBy(desc(challenges.createdAt));
+    // Fetch challenges with participant count
+    const challengesWithCounts = await db
+        .select({
+            id: challenges.id,
+            title: challenges.title,
+            description: challenges.description,
+            category: challenges.category,
+            difficulty: challenges.difficulty,
+            rewardPoints: challenges.rewardPoints,
+            rewardBadge: challenges.rewardBadge,
+            deadline: challenges.deadline,
+            createdAt: challenges.createdAt,
+            participantCount: sql<number>`count(${userChallenges.userId})`.mapWith(Number)
+        })
+        .from(challenges)
+        .leftJoin(userChallenges, eq(challenges.id, userChallenges.challengeId))
+        .groupBy(challenges.id)
+        .orderBy(desc(challenges.createdAt));
 
     // If userId is provided, fetch their status for each challenge
     let userStatuses: Record<number, string> = {};
@@ -28,12 +46,12 @@ export async function GET(_req: Request) {
         });
     }
 
-    const formattedChallenges = allChallenges.map(c => ({
+    const formattedChallenges = challengesWithCounts.map(c => ({
         id: c.id.toString(),
         title: c.title,
         description: c.description,
         emoji: "🚀", // Default, could be a column
-        participants: Math.floor(Math.random() * 50) + 1, // Mock count for now
+        participants: c.participantCount,
         deadline: c.deadline ? new Date(c.deadline).toLocaleDateString() : 'Indefinite',
         reward: {
             points: c.rewardPoints,
@@ -46,7 +64,7 @@ export async function GET(_req: Request) {
 
     return NextResponse.json({ challenges: formattedChallenges });
   } catch (error) {
-    console.error('Error fetching challenges:', error);
+    logError('Error fetching challenges:', error);
     return NextResponse.json({ error: 'Failed to fetch challenges' }, { status: 500 });
   }
 }
@@ -71,7 +89,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json(newChallenge);
     } catch (error) {
-        console.error('Error creating challenge:', error);
+        logError('Error creating challenge:', error);
         return NextResponse.json({ error: 'Failed to create challenge' }, { status: 500 });
     }
 }

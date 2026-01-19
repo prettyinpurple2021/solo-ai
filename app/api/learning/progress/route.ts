@@ -3,6 +3,7 @@ import { db } from '@/db'
 import { userProgress } from '@/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { verifyAuth } from '@/lib/auth-server'
+import { logError } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -22,18 +23,18 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json(progress)
     } catch (error) {
-        console.error('Error fetching user progress:', error)
+        logError('Error fetching user progress:', error)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 }
 
-export async function POST(req: NextRequest) {
+
+export async function POST(req: Request) {
     try {
         const authResult = await verifyAuth()
         if (!authResult.user) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
-
         const userId = authResult.user.id
         const body = await req.json()
         const { moduleId, completionPercentage, status, data, timeSpent } = body
@@ -83,7 +84,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json(result[0])
     } catch (error) {
-        console.error('Error saving user progress:', error)
+        logError('Error saving user progress:', error)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 }

@@ -2,21 +2,21 @@ import { drizzle } from 'drizzle-orm/neon-http'
 import type { NeonHttpDatabase } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
 import * as schema from '@/db/schema'
-import { logger, logError } from './logger'
+import { logger, logError, logInfo } from './logger'
 
 /**
  * Centralized database client using Drizzle ORM
  * This replaces all raw SQL usage across the application
  */
 
-let _db: ReturnType<typeof drizzle> | null = null
+let _db: NeonHttpDatabase<typeof schema> | null = null
 
 /**
  * Get the centralized database client
  * Uses lazy initialization to avoid build-time database calls
  */
 export function getDb() {
-  // console.log("[DB] getDb() called"); // Verbose
+  // logInfo("[DB] getDb() called"); // Verbose
   // Prevent DB usage during build - check multiple build indicators
   const isBuildTime = 
     process.env.NEXT_PHASE === 'phase-production-build' ||
@@ -36,7 +36,7 @@ export function getDb() {
     }
 
     try {
-      console.log('[DB] Initializing new database client...');
+      logInfo('[DB] Initializing new database client...');
       const client = neon(url)
       _db = drizzle({
         schema,

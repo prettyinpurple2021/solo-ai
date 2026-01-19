@@ -1,6 +1,7 @@
 
 import { NextResponse } from 'next/server';
-import { db } from '@/db';
+import { db } from '@/server/db';
+import { logError } from '@/lib/logger';
 import { tasks, goals } from '@/db/schema';
 import { auth } from '@/lib/auth';
 import { eq, sql, count, and, gte, desc } from 'drizzle-orm';
@@ -87,7 +88,7 @@ export async function POST(req: Request) {
     });
 
   } catch (error) {
-    console.error('[QUERY_POST]', error);
+    logError('Error executing analytics query:', error);
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

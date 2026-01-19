@@ -2,6 +2,7 @@
 // Handles WebSocket connections for live updates
 
 import { io, Socket } from 'socket.io-client';
+import { logInfo, logError } from '@/lib/logger';
 
 type UpdateCallback = (data: any) => void;
 
@@ -52,25 +53,25 @@ class RealtimeService {
         });
 
         this.socket.on('context:updated', (data) => {
-            console.log('Real-time: Context updated');
+            logInfo('Real-time: Context updated');
             this.emit('context:updated', data);
         });
 
         this.socket.on('report:created', (data) => {
-            console.log('Real-time: Report created');
+            logInfo('Real-time: Report created');
             this.emit('report:created', data);
         });
 
         this.socket.on('disconnect', () => {
-            console.log('⚠️ Disconnected from real-time server');
+            logInfo('⚠️ Disconnected from real-time server');
         });
 
         this.socket.on('reconnect', (attemptNumber) => {
-            console.log(`✅ Reconnected after ${attemptNumber} attempts`);
+            logInfo(`✅ Reconnected after ${attemptNumber} attempts`);
         });
 
         this.socket.on('connect_error', (error) => {
-            console.error('Real-time connection error:', error.message);
+            logError('Real-time connection error:', error.message);
         });
     }
 
@@ -79,7 +80,7 @@ class RealtimeService {
             this.socket.disconnect();
             this.socket = null;
             this.listeners.clear();
-            console.log('Disconnected from real-time service');
+            logInfo('Disconnected from real-time service');
         }
     }
 

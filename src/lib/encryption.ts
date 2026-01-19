@@ -1,4 +1,5 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'crypto';
+import { logError } from '@/lib/logger';
 
 const ALGORITHM = 'aes-256-gcm';
 const IV_LENGTH = 16;
@@ -82,7 +83,7 @@ export function decryptMfaField(text: string | null | undefined): DecryptMfaResu
       return { success: true, value };
   } catch (error) {
     // Log only generic message
-    console.error('MFA decryption failed');
+    logError('MFA decryption failed');
     return { success: false, error: 'failed' };
   }
 }
