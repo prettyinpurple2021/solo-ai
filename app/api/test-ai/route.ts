@@ -2,7 +2,7 @@ import { logError, logInfo, logWarn } from '@/lib/logger'
 import { NextResponse } from 'next/server'
 import { AgentCollaborationSystem } from '@/lib/custom-ai-agents/agent-collaboration-system'
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 export async function GET() {
   try {

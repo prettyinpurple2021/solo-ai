@@ -111,11 +111,12 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
 
       abortControllerRef.current = new AbortController()
 
+      // Step 1: Submit the job
       const response = await fetch("/api/custom-agents", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-user-id": "default-user", // Add user ID header for security middleware
+          "x-user-id": "default-user", 
         },
         body: JSON.stringify({
           message,
@@ -130,32 +131,91 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
         throw new Error(`HTTP error! status: ${response.status}`)
       }
 
-      const result = await response.json()
+      const initialResult = await response.json()
       
-      if (!result.success) {
-        throw new Error(result.error || "Failed to process message")
+      // Handle immediate success (shouldn't happen with current backend, but good for robustness)
+      if (initialResult.success && initialResult.primaryResponse) {
+        return {
+          primaryResponse: initialResult.primaryResponse as CustomAgentResponse,
+          collaborationResponses: initialResult.collaborationResponses as CollaborationResponse[] || [],
+          workflow: initialResult.workflow as Workflow | undefined
+        }
       }
 
-      // Update insights
-      if (result.insights) {
-        setInsights(result.insights)
-      }
+      // Handle Async Job (Standard Path)
+      if (response.status === 202 && initialResult.job) {
+        const jobId = initialResult.job.id
+        
+        // POLLING LOOP
+        let attempts = 0
+        const maxAttempts = 60 // 1 minute timeout (1s interval)
+        
+        while (attempts < maxAttempts) {
+            // Check for cancellation
+            if (abortControllerRef.current?.signal.aborted) {
+                throw new Error("AbortError")
+            }
 
-      // Notify about workflow creation
-      if (result.workflow && onWorkflowCreated) {
-        onWorkflowCreated(result.workflow)
+            // Wait 1 second
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            
+            // Poll status
+            const pollResponse = await fetch(`/api/custom-agents?jobId=${jobId}`, {
+                headers: { "x-user-id": "default-user" },
+                signal: abortControllerRef.current.signal
+            })
+            
+            if (!pollResponse.ok) {
+                throw new Error(`Polling failed! status: ${pollResponse.status}`)
+            }
+            
+            const pollData = await pollResponse.json()
+            const job = pollData.job
+            
+            if (job.status === 'completed' && job.result) {
+                // Job Done! Return result
+                 // Notify about workflow creation if present in result
+                if (job.result.workflow && onWorkflowCreated) {
+                    onWorkflowCreated(job.result.workflow)
+                }
+                
+                return {
+                    primaryResponse: job.result.primaryResponse as CustomAgentResponse,
+                    collaborationResponses: job.result.collaborationResponses as CollaborationResponse[] || [],
+                    workflow: job.result.workflow as Workflow | undefined
+                }
+            }
+            
+            if (job.status === 'failed') {
+                throw new Error(job.error?.message || "Agent job failed processing")
+            }
+            
+            attempts++
+        }
+        
+        throw new Error("Agent request timed out")
       }
-
-      return {
-        primaryResponse: result.primaryResponse as CustomAgentResponse,
-        collaborationResponses: result.collaborationResponses as CollaborationResponse[],
-        workflow: result.workflow as Workflow | undefined
-      }
+      
+      throw new Error(initialResult.error || "Failed to process message")
 
     } catch (error) {
-      if (error instanceof Error && error.name === "AbortError") {
+      if (error instanceof Error && error.message === "AbortError") {
         return {
-          primaryResponse: {
+           primaryResponse: {
+            content: "Request cancelled",
+            confidence: 0,
+            reasoning: "Request was cancelled",
+            suggestedActions: [],
+            collaborationRequests: [],
+            followUpTasks: []
+          },
+          collaborationResponses: [],
+          workflow: undefined
+        }
+      }
+       if (error instanceof Error && error.name === "AbortError") {
+        return {
+           primaryResponse: {
             content: "Request cancelled",
             confidence: 0,
             reasoning: "Request was cancelled",

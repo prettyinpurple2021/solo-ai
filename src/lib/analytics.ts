@@ -310,6 +310,117 @@ class AnalyticsService {
   }
 
   /**
+   * Calculate trend using linear regression
+   */
+  private calculateTrend(data: number[]): { slope: number, forecast: number } {
+    if (data.length < 2) return { slope: 0, forecast: data[0] || 0 }
+
+    const n = data.length
+    let sumX = 0
+    let sumY = 0
+    let sumXY = 0
+    let sumXX = 0
+
+    for (let i = 0; i < n; i++) {
+        sumX += i
+        sumY += data[i]
+        sumXY += i * data[i]
+        sumXX += i * i
+    }
+
+    const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX)
+    const intercept = (sumY - slope * sumX) / n
+    const forecast = slope * n + intercept
+
+    return { slope, forecast }
+  }
+
+  /**
+   * Get predictive metrics
+   */
+  async getPredictiveMetrics(): Promise<{
+    revenueForecast: number
+    userGrowthForecast: number
+    churnRate: number
+    seasonalTrends: string[]
+  }> {
+    // 1. Calculate Revenue Forecast
+    // Get last 6 months of revenue
+    const now = new Date()
+    const monthlyRevenue: number[] = []
+    
+    for (let i = 5; i >= 0; i--) {
+        const start = new Date(now.getFullYear(), now.getMonth() - i, 1)
+        const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 0)
+        const rev = await RevenueTrackingService.calculateGlobalRevenue(start, end).catch(() => 0)
+        monthlyRevenue.push(rev)
+    }
+    
+    const revenueTrend = this.calculateTrend(monthlyRevenue)
+
+    // 2. Calculate User Growth Forecast
+    const weeklyUserCounts: number[] = []
+    for (let i = 3; i >= 0; i--) {
+         const start = new Date(now.getTime() - (i + 1) * 7 * 24 * 60 * 60 * 1000)
+         
+         // New users per week trend
+         const usersResult = await db.select({ count: sql<number>`count(*)` })
+            .from(users)
+            .where(and(
+                gte(users.created_at, start),
+                sql`${users.created_at} < ${new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000)}`
+            ))
+         weeklyUserCounts.push(Number(usersResult[0]?.count || 0))
+    }
+    
+    const userGrowthTrend = this.calculateTrend(weeklyUserCounts)
+
+    // 3. Calculate Churn Rate (simplified)
+    // Users active last month but not this month
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+    const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
+    
+    const activeLastMonth = await db.select({ id: analyticsEvents.user_id })
+        .from(analyticsEvents)
+        .where(and(
+            gte(analyticsEvents.timestamp, lastMonthStart),
+            sql`${analyticsEvents.timestamp} < ${thisMonthStart}`
+        ))
+        .groupBy(analyticsEvents.user_id)
+        
+    const activeThisMonth = await db.select({ id: analyticsEvents.user_id })
+        .from(analyticsEvents)
+        .where(gte(analyticsEvents.timestamp, thisMonthStart))
+        .groupBy(analyticsEvents.user_id)
+        
+    const lastMonthIds = new Set(activeLastMonth.map(u => u.id))
+    const thisMonthIds = new Set(activeThisMonth.map(u => u.id))
+    
+    let churnedCount = 0
+    if (lastMonthIds.size > 0) {
+        lastMonthIds.forEach(id => {
+            if (!thisMonthIds.has(id)) churnedCount++
+        })
+    }
+    
+    const churnRate = lastMonthIds.size > 0 ? (churnedCount / lastMonthIds.size) * 100 : 0
+    
+    // 4. Identify Trends
+    const trends: string[] = []
+    if (revenueTrend.slope > 0) trends.push("Revenue is trending upward")
+    if (revenueTrend.slope < 0) trends.push("Revenue is declining")
+    if (userGrowthTrend.slope > 0) trends.push("User acquisition is accelerating")
+    if (churnRate > 5) trends.push("High churn rate detected")
+
+    return {
+        revenueForecast: Math.max(0, revenueTrend.forecast),
+        userGrowthForecast: Math.max(0, userGrowthTrend.forecast),
+        churnRate,
+        seasonalTrends: trends
+    }
+  }
+
+  /**
    * Clear old data (for memory management) - No longer needed for DB, but could be a cleanup job
    */
   async clearOldData(): Promise<void> {

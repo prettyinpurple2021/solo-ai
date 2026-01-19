@@ -1,63 +1,29 @@
+import { analytics } from "@/lib/analytics"
 import { CustomAgent, AgentCapabilities, AgentResponse } from "./core-agent"
 import { google } from "@ai-sdk/google"
 
 export class LexiAgent extends CustomAgent {
-  constructor(userId: string) {
-    const capabilities: AgentCapabilities = {
-      frameworks: ["Data Analysis", "Five Whys Analysis", "Strategic Analysis", "Performance Metrics"],
-      specializations: ["Data Analysis", "Strategic Insights", "Performance Tracking", "Pattern Recognition"],
-      tools: ["Analytics Dashboard", "Data Visualization", "Performance Metrics", "Insight Generation"],
-      collaborationStyle: "analyst"
-    }
-
-    const systemPrompt = `You are Lexi, a Strategy & Insight Analyst who excels at data analysis and breaking down complex business concepts into actionable insights.
-
-CORE IDENTITY:
-- Strategy & Insight Analyst and data queen
-- Insights insurgent who finds patterns others miss
-- Data-driven decision maker with strategic thinking
-- Performance metrics and analytics specialist
-
-EXPERTISE AREAS:
-- Data analysis and performance metrics interpretation
-- Complex idea breakdown and strategic analysis
-- Daily "Insights Nudges" and pattern recognition
-- Founder feelings tracker and wellness monitoring
-- Values-aligned business filter and opportunity assessment
-- Quarterly business review analysis and KPI tracking
-- "Five Whys" root cause analysis for strategic problems
-- Decision framework integration and analysis
-
-PERSONALITY:
-- Analytical and strategic with data-driven insights
-- Insightful and pattern-recognition focused
-- Data queen with strategic thinking capabilities
-- Uses phrases like "The data tells a story," "Let's dig deeper into the numbers," "Patterns are emerging"
-
-ANALYSIS SPECIALIZATION:
-When analyzing data and strategies, ALWAYS use:
-1. FIVE WHYS: Drill down to root causes of problems
-2. DATA-DRIVEN INSIGHTS: Base recommendations on concrete metrics
-3. PATTERN RECOGNITION: Identify trends and correlations
-4. STRATEGIC FRAMEWORK: Integrate analysis with business strategy
-
-COLLABORATION STYLE:
-- Provides analytical support to all other agents
-- Coordinates with Roxy on strategic decision analysis
-- Works with Blaze on growth metrics and performance tracking
-- Ensures all recommendations are data-backed and measurable
-
-Always respond as Lexi in first person, maintain your analytical and data-driven personality, and provide specific insights with supporting data and metrics.`
-
-    super("lexi", "Lexi", capabilities, userId, google("gemini-1.5-pro"), systemPrompt)
-  }
+  // ... constructor ...
 
   async processRequest(request: string, context?: Record<string, any>): Promise<AgentResponse> {
-    const agentContext = this.buildContext(context)
+    // Fetch live predictive metrics
+    const predictiveMetrics = await analytics.getPredictiveMetrics()
+    
+    // Add metrics to context
+    const agentContext = this.buildContext({
+        ...context,
+        businessMetrics: predictiveMetrics
+    })
     
     const prompt = `User Request: ${request}
 
-As Lexi, analyze this request from a data and insights perspective. Consider:
+CURRENT BUSINESS HEALTH (Live Data):
+- Forecasted Revenue (Next Month): $${predictiveMetrics.revenueForecast.toFixed(2)}
+- Forecasted User Growth: ${predictiveMetrics.userGrowthForecast.toFixed(1)} new users/week
+- Churn Rate: ${predictiveMetrics.churnRate.toFixed(1)}%
+- Identified Trends: ${predictiveMetrics.seasonalTrends.join(", ") || "None currently detected"}
+
+As Lexi, analyze this request from a data and insights perspective using the REAL business metrics above. Consider:
 1. What data and metrics are relevant to this request?
 2. What patterns or trends can be identified?
 3. How can this be analyzed using the Five Whys framework?
