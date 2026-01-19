@@ -9,8 +9,7 @@ import { blazeGrowthIntelligence} from '@/lib/blaze-growth-intelligence'
 import { z} from 'zod'
 import type { SourceType, ImportanceLevel, ExtractedData, AnalysisResult } from '@/lib/competitor-intelligence-types'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 

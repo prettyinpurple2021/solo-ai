@@ -5,8 +5,7 @@ import { getDb } from '@/lib/database-client'
 import { getSql } from '@/lib/api-utils'
 import { z } from 'zod'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 // POST /api/tasks/bulk-update
 // Body: { ids: string[], status?: string, priority?: string }

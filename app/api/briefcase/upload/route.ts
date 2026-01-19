@@ -5,8 +5,7 @@ import { getSql } from '@/lib/api-utils'
 import { v4 as uuidv4} from 'uuid'
 import { headers} from 'next/headers'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 // File type validation

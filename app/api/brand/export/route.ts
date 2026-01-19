@@ -8,8 +8,7 @@ import { documents, userBrandSettings, documentFolders } from '@/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
 import JSZip from 'jszip'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 export const dynamic = 'force-dynamic'

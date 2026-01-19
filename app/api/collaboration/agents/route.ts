@@ -8,8 +8,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { CollaborationHub } from '@/lib/collaboration-hub'
 import { verifyAuth } from '@/lib/auth-server'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 // Initialize collaboration hub

@@ -8,8 +8,7 @@ import {
   parseDocumentTags
 } from '@/lib/api-utils'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 export const POST = withDocumentAuth(
   async (request: NextRequest, user: any, documentId: string) => {

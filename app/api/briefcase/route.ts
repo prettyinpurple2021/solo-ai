@@ -4,8 +4,7 @@ import { createErrorResponse } from '@/lib/api-response'
 import { neon} from '@neondatabase/serverless'
 import * as jose from 'jose'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 function getSql() {

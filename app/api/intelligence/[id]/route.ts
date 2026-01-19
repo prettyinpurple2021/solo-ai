@@ -6,8 +6,7 @@ import { authenticateRequest} from '@/lib/auth-server'
 import { z} from 'zod'
 import { eq, and} from 'drizzle-orm'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 import type {
   SourceType, 

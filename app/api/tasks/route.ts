@@ -6,8 +6,7 @@ import { getSql } from '@/lib/api-utils'
 import { authenticateRequest } from '@/lib/auth-server'
 import { z } from 'zod'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 export async function GET(request: NextRequest) {
   try {

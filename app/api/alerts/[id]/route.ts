@@ -7,8 +7,7 @@ import { CompetitiveIntelligenceGamificationTriggers} from '@/lib/competitive-in
 import { z} from 'zod'
 import { eq, and} from 'drizzle-orm'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 import type { 
   AlertSeverity,

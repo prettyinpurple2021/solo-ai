@@ -3,8 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import * as jose from 'jose'
 import { unifiedBriefcase } from '@/lib/unified-briefcase'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 // JWT authentication helper

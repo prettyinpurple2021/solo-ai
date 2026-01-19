@@ -2,8 +2,7 @@ import { NextRequest, NextResponse} from 'next/server'
 import * as jose from 'jose'
 import { neon} from '@neondatabase/serverless'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 // function getSql() {

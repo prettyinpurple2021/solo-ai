@@ -7,8 +7,7 @@ import { competitorProfiles, intelligenceData} from '@/db/schema';
 import { eq, and, desc, gte} from 'drizzle-orm';
 import { z} from 'zod';
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 

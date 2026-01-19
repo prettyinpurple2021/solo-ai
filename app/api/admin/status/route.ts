@@ -3,8 +3,7 @@ import { authenticateRequest } from '@/lib/auth-server'
 import { notificationJobQueue } from '@/lib/notification-job-queue'
 import { scrapingScheduler } from '@/lib/scraping-scheduler'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 export const dynamic = 'force-dynamic'

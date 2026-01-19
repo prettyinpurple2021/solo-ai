@@ -5,8 +5,7 @@ import { rateLimitByIp } from '@/lib/rate-limit'
 import { z } from 'zod'
 import OpenAI from 'openai'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 export const dynamic = 'force-dynamic'
 

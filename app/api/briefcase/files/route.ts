@@ -4,8 +4,7 @@ import { authenticateRequest } from '@/lib/auth-server'
 import { neon } from '@neondatabase/serverless'
 import { uploadFile } from '@/lib/file-storage'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 export const dynamic = 'force-dynamic'
 
 function getSql() {

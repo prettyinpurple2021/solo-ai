@@ -6,8 +6,7 @@ import { notificationDelivery} from '@/lib/notification-delivery-system';
 import { CompetitorAlert} from '@/hooks/use-competitor-alerts';
 import { z} from 'zod';
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 const testNotificationSchema = z.object({

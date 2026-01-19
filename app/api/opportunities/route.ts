@@ -6,8 +6,7 @@ import { opportunityRecommendationSystem} from '@/lib/opportunity-recommendation
 import { competitiveOpportunityDetector} from '@/lib/competitive-opportunity-detection'
 import { z} from 'zod'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 

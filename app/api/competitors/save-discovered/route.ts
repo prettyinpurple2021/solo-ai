@@ -5,8 +5,7 @@ import { rateLimitByIp } from '@/lib/rate-limit'
 import { z } from 'zod'
 import { neon } from '@neondatabase/serverless'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 

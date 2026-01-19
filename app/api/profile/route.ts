@@ -6,8 +6,7 @@ import { logger, logError, logInfo } from '@/lib/logger'
 import { eq } from 'drizzle-orm'
 import { users } from '@/db/schema'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'

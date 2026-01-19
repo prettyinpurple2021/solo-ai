@@ -8,8 +8,7 @@ import { chatConversations, chatMessages } from '@/db/schema'
 import { eq, desc, and } from 'drizzle-orm'
 import { v4 as uuidv4 } from 'uuid'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 

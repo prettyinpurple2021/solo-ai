@@ -5,8 +5,7 @@ import { rateLimitByIp} from '@/lib/rate-limit'
 import { CompetitiveIntelligenceAutomation} from '@/lib/competitive-intelligence-automation'
 import { z} from 'zod'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 

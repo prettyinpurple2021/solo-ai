@@ -3,8 +3,7 @@ import { LearningEngine } from '@/lib/learning-engine'
 import { logError } from '@/lib/logger'
 import * as jose from 'jose'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 export const dynamic = 'force-dynamic'
 
 export async function GET(request: NextRequest) {

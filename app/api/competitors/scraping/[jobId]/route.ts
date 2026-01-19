@@ -7,8 +7,7 @@ import { db} from '@/db'
 import { scrapingJobs, scrapingJobResults} from '@/db/schema'
 import { eq, and, desc} from 'drizzle-orm'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 

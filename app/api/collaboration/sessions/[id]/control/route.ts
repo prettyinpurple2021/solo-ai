@@ -11,8 +11,7 @@ import { MessageRouter } from '@/lib/message-router'
 import { SessionManager } from '@/lib/session-manager'
 import { verifyAuth } from '@/lib/auth-server'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 
 // Initialize collaboration system components

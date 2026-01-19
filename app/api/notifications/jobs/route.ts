@@ -7,8 +7,7 @@ import { getFeatureFlags } from '@/lib/feature-flags'
 import { z } from 'zod'
 import { getSql } from '@/lib/api-utils'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'

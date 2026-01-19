@@ -9,8 +9,7 @@ import { z} from 'zod'
 import { eq, and} from 'drizzle-orm'
 import type { ThreatLevel, MonitoringStatus, FundingStage, MarketPosition, SocialMediaHandles } from '@/lib/competitor-intelligence-types'
 
-// Edge runtime enabled after refactoring to jose and Neon HTTP
-export const runtime = 'edge'
+
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
