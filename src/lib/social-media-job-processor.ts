@@ -1,11 +1,57 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { socialMediaScheduler } from './social-media-scheduler';
 // import { socialMediaMonitor } from './social-media-monitor';
-import { socialMediaAnalysisEngine } from './social-media-analysis-engine';
+import { 
+  socialMediaAnalysisEngine, 
+  EngagementPatternAnalysis, 
+  PostingFrequencyAnalysis, 
+  AudienceAnalysis 
+} from './social-media-analysis-engine';
 import { db } from '@/db';
 import { competitorProfiles, competitorAlerts } from '@/db/schema';
 import { eq } from 'drizzle-orm';
+import { CompetitorProfile } from '@/types/api';
 
+interface AnalysisCollection {
+  engagement: EngagementPatternAnalysis[];
+  frequency: PostingFrequencyAnalysis[];
+  audience: AudienceAnalysis[];
+}
+
+interface Insight {
+  platform: string;
+  type: string;
+  recommendation?: string;
+  description?: string;
+  impact?: 'high' | 'medium' | 'low' | 'positive';
+  severity?: 'high' | 'medium' | 'low' | 'info' | 'warning';
+  data: unknown;
+}
+
+interface InsightsCollection {
+  engagement_trends: Insight[];
+  content_opportunities: Insight[];
+  timing_insights: Insight[];
+  audience_changes: Insight[];
+  competitive_advantages: Insight[];
+  risk_factors: Insight[];
+}
+
+interface ProcessorStatus {
+  is_running: boolean;
+  is_processing: boolean;
+  interval_minutes: number;
+  last_processed: string;
+}
+
+interface AlertableEvent {
+    type: string;
+    severity: 'info' | 'warning' | 'error';
+    title: string;
+    description: string;
+    data: unknown;
+    actionItems: string[];
+}
 
 /**
  * Social Media Job Processor
@@ -111,7 +157,8 @@ export class SocialMediaJobProcessor {
 
       for (const competitor of activeCompetitors) {
         try {
-          await this.runCompetitorAnalysis(competitor);
+          // Cast to CompetitorProfile since db schema might differ slightly from API type
+          await this.runCompetitorAnalysis(competitor as unknown as CompetitorProfile);
         } catch (error) {
           logError(`Error analyzing competitor ${competitor.id}:`, error);
         }
@@ -125,8 +172,8 @@ export class SocialMediaJobProcessor {
   /**
    * Run comprehensive analysis for a single competitor
    */
-  private async runCompetitorAnalysis(competitor: any): Promise<void> {
-    const competitorId = competitor.id;
+  private async runCompetitorAnalysis(competitor: CompetitorProfile): Promise<void> {
+    const competitorId = String(competitor.id);
     
     try {
       // Run engagement pattern analysis (last 7 days)
@@ -165,7 +212,7 @@ export class SocialMediaJobProcessor {
   /**
    * Process analysis results and generate actionable insights
    */
-  private async processAnalysisResults(competitor: any, analyses: any): Promise<void> {
+  private async processAnalysisResults(competitor: CompetitorProfile, analyses: AnalysisCollection): Promise<void> {
     const insights = this.generateInsights(analyses);
     const alerts = this.identifyAlertableEvents(competitor, analyses, insights);
 
@@ -187,19 +234,19 @@ export class SocialMediaJobProcessor {
   /**
    * Generate insights from analysis results
    */
-  private generateInsights(analyses: any): any {
-    const insights = {
-      engagement_trends: [] as any[],
-      content_opportunities: [] as any[],
-      timing_insights: [] as any[],
-      audience_changes: [] as any[],
-      competitive_advantages: [] as any[],
-      risk_factors: [] as any[]
+  private generateInsights(analyses: AnalysisCollection): InsightsCollection {
+    const insights: InsightsCollection = {
+      engagement_trends: [],
+      content_opportunities: [],
+      timing_insights: [],
+      audience_changes: [],
+      competitive_advantages: [],
+      risk_factors: []
     };
 
     // Process engagement analysis
     if (analyses.engagement && analyses.engagement.length > 0) {
-      analyses.engagement.forEach((analysis: any) => {
+      analyses.engagement.forEach((analysis) => {
         // Identify high-performing content patterns
         if (analysis.patterns.contentType.length > 0) {
           const topContent = analysis.patterns.contentType[0];
@@ -228,7 +275,7 @@ export class SocialMediaJobProcessor {
 
     // Process frequency analysis
     if (analyses.frequency && analyses.frequency.length > 0) {
-      analyses.frequency.forEach((analysis: any) => {
+      analyses.frequency.forEach((analysis) => {
         // Identify consistency issues
         if (analysis.consistency.score < 70) {
           insights.risk_factors.push({
@@ -255,7 +302,7 @@ export class SocialMediaJobProcessor {
 
     // Process audience analysis
     if (analyses.audience && analyses.audience.length > 0) {
-      analyses.audience.forEach((analysis: any) => {
+      analyses.audience.forEach((analysis) => {
         // Identify engagement trends
         if (analysis.engagement.engagementTrend === 'growing') {
           insights.competitive_advantages.push({
@@ -283,11 +330,11 @@ export class SocialMediaJobProcessor {
   /**
    * Identify events that should trigger alerts
    */
-  private identifyAlertableEvents(competitor: any, analyses: any, insights: any): any[] {
-    const alerts: any[] = [];
+  private identifyAlertableEvents(competitor: CompetitorProfile, analyses: AnalysisCollection, insights: InsightsCollection): AlertableEvent[] {
+    const alerts: AlertableEvent[] = [];
 
     // High-impact insights become alerts
-    insights.competitive_advantages.forEach((advantage: any) => {
+    insights.competitive_advantages.forEach((advantage) => {
       if (advantage.impact === 'high') {
         alerts.push({
           type: 'competitive_advantage',
@@ -305,7 +352,7 @@ export class SocialMediaJobProcessor {
     });
 
     // Risk factors become warning alerts
-    insights.risk_factors.forEach((risk: any) => {
+    insights.risk_factors.forEach((risk) => {
       if (risk.severity === 'high') {
         alerts.push({
           type: 'competitive_opportunity',
@@ -323,13 +370,13 @@ export class SocialMediaJobProcessor {
     });
 
     // Content opportunities become actionable alerts
-    insights.content_opportunities.forEach((opportunity: any) => {
+    insights.content_opportunities.forEach((opportunity) => {
       if (opportunity.impact === 'high' || opportunity.impact === 'medium') {
         alerts.push({
           type: 'content_insight',
           severity: 'info',
           title: `Content strategy insight for ${competitor.name}`,
-          description: opportunity.recommendation,
+          description: opportunity.recommendation || 'No specific recommendation',
           data: opportunity,
           actionItems: [
             'Analyze their content approach',
@@ -346,7 +393,7 @@ export class SocialMediaJobProcessor {
   /**
    * Create an alert in the database
    */
-  private async createAlert(competitor: any, alertData: any): Promise<void> {
+  private async createAlert(competitor: CompetitorProfile, alertData: AlertableEvent): Promise<void> {
     try {
       await db.insert(competitorAlerts).values({
         competitor_id: competitor.id,
@@ -355,7 +402,7 @@ export class SocialMediaJobProcessor {
         severity: alertData.severity,
         title: alertData.title,
         description: alertData.description,
-        source_data: alertData.data,
+        source_data: alertData.data as Record<string, unknown>,
         action_items: alertData.actionItems,
         recommended_actions: alertData.actionItems.map((item: string) => ({
           action: item,
@@ -406,7 +453,7 @@ export class SocialMediaJobProcessor {
   /**
    * Get processing status and statistics
    */
-  getStatus(): any {
+  getStatus(): ProcessorStatus {
     return {
       is_running: this.processingInterval !== null,
       is_processing: this.isProcessing,
@@ -426,25 +473,28 @@ export class SocialMediaJobProcessor {
   /**
    * Run analysis for a specific competitor manually
    */
-  async analyzeCompetitorManually(competitorId: string): Promise<any> {
+  async analyzeCompetitorManually(competitorId: string): Promise<ProcessorStatus | { error: string }> {
     try {
-      const [competitor] = await db
+      const results = await db
         .select()
         .from(competitorProfiles)
-        .where(eq(competitorProfiles.id, competitorId))
+        .where(eq(competitorProfiles.id, Number(competitorId)))
         .limit(1);
+
+      const competitor = results[0];
 
       if (!competitor) {
         throw new Error(`Competitor ${competitorId} not found`);
       }
 
       logInfo(`Manual analysis triggered for competitor ${competitorId}`);
-      await this.runCompetitorAnalysis(competitor);
+      await this.runCompetitorAnalysis(competitor as unknown as CompetitorProfile);
       
       return {
-        success: true,
-        competitor_id: competitorId,
-        analyzed_at: new Date().toISOString()
+        is_running: this.processingInterval !== null,
+        is_processing: this.isProcessing,
+        interval_minutes: this.processingInterval ? 15 : 0,
+        last_processed: new Date().toISOString()
       };
 
     } catch (error) {

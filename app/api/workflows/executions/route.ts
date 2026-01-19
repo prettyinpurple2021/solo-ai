@@ -1,6 +1,7 @@
 
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
+import { logError } from '@/lib/logger'
 import { workflowExecutions, workflows } from '@/db/schema'
 import { auth } from '@/lib/auth'
 import { desc, eq, and, like, sql } from 'drizzle-orm'
@@ -96,7 +97,7 @@ export async function GET(req: Request) {
     })
 
   } catch (error) {
-    console.error('Failed to fetch workflow executions:', error)
+    logError('Failed to fetch workflow executions:', error)
     return NextResponse.json(
       { success: false, error: 'Internal Server Error' },
       { status: 500 }

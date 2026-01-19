@@ -3,6 +3,7 @@ import { db } from '@/db';
 import { posts } from '@/db/schema';
 import { auth } from '@/lib/auth';
 import { eq, and } from 'drizzle-orm';
+import { logError } from '@/lib/logger';
 
 export async function DELETE(
   _req: Request,
@@ -31,7 +32,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true, message: 'Post deleted' });
   } catch (error) {
-    console.error('Error deleting post:', error);
+    logError('Error deleting post:', error);
     return NextResponse.json({ error: 'Failed to delete post' }, { status: 500 });
   }
 }
@@ -71,7 +72,7 @@ export async function PATCH(
 
     return NextResponse.json({ success: true, post: updatedPost });
   } catch (error) {
-    console.error('Error updating post:', error);
+    logError('Error updating post:', error);
     return NextResponse.json({ error: 'Failed to update post' }, { status: 500 });
   }
 }

@@ -1,0 +1,2 @@
+﻿src/lib/lexi-strategic-analysis.ts(3,20): error TS2307: Cannot find module '@/db' or its corresponding type declarations.
+src/lib/lexi-strategic-analysis.ts(4,54): error TS2307: Cannot find module '@/db/schema' or its corresponding type declarations.

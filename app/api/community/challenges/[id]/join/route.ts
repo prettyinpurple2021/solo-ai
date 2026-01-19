@@ -2,6 +2,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/server/db';
 import { userChallenges } from '@/server/db/schema';
+import { logError } from '@/lib/logger';
 import { eq, and } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 
@@ -42,7 +43,7 @@ export async function POST(_req: Request, props: { params: Promise<{ id: string 
 
         return NextResponse.json(entry);
     } catch (error) {
-        console.error('Error joining challenge:', error);
+        logError('Error joining challenge:', error);
         return NextResponse.json({ error: 'Failed to join challenge' }, { status: 500 });
     }
 }

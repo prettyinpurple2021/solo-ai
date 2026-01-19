@@ -2,7 +2,7 @@ import { generateText } from "ai"
 import { getTeamMemberConfig } from "./ai-config"
 import { db } from '@/db'
 import { intelligenceData, competitorProfiles } from '@/db/schema'
-import { eq, and, gte, desc, inArray } from 'drizzle-orm'
+import { eq, and, gte, desc, inArray, InferSelectModel } from 'drizzle-orm'
 import type { 
   CompetitorProfile, 
   IntelligenceData, 
@@ -481,7 +481,11 @@ export class LexiStrategicAnalysis {
       throw new Error(`Competitor profile not found: ${competitorId}`)
     }
 
-    const raw = result[0];
+    if (!result[0]) {
+      throw new Error(`Competitor profile not found: ${competitorId}`)
+    }
+
+    const raw: InferSelectModel<typeof competitorProfiles> = result[0];
     
     // Map snake_case DB fields to camelCase interface
     return {
@@ -495,16 +499,16 @@ export class LexiStrategicAnalysis {
       foundedYear: raw.founded_year ?? undefined,
       employeeCount: raw.employee_count ?? undefined,
       fundingAmount: raw.funding_amount ? Number(raw.funding_amount) : undefined,
-      fundingStage: raw.funding_stage as any, // Cast specific enum/union types if needed
-      threatLevel: raw.threat_level as any,
-      monitoringStatus: raw.monitoring_status as any,
-      socialMediaHandles: raw.social_media_handles as any,
-      keyPersonnel: raw.key_personnel as any,
-      products: raw.products as any,
-      marketPosition: raw.market_position as any,
-      competitiveAdvantages: raw.competitive_advantages as any,
-      vulnerabilities: raw.vulnerabilities as any,
-      monitoringConfig: raw.monitoring_config as any,
+      fundingStage: raw.funding_stage as CompetitorProfile['fundingStage'],
+      threatLevel: raw.threat_level as CompetitorProfile['threatLevel'],
+      monitoringStatus: raw.monitoring_status as CompetitorProfile['monitoringStatus'],
+      socialMediaHandles: raw.social_media_handles as unknown as CompetitorProfile['socialMediaHandles'],
+      keyPersonnel: raw.key_personnel as unknown as CompetitorProfile['keyPersonnel'],
+      products: raw.products as unknown as CompetitorProfile['products'],
+      marketPosition: raw.market_position as unknown as CompetitorProfile['marketPosition'],
+      competitiveAdvantages: raw.competitive_advantages as unknown as CompetitorProfile['competitiveAdvantages'],
+      vulnerabilities: raw.vulnerabilities as unknown as CompetitorProfile['vulnerabilities'],
+      monitoringConfig: raw.monitoring_config as unknown as CompetitorProfile['monitoringConfig'],
       lastAnalyzed: raw.last_analyzed ?? undefined,
       createdAt: raw.created_at!,
       updatedAt: raw.updated_at!,
@@ -747,7 +751,7 @@ STRATEGIC MOVE ANALYSIS:`
   private buildThreatAssessmentPrompt(
     competitor: CompetitorProfile, 
     intelligence: IntelligenceData[], 
-    profile: CompetitorProfile
+    _profile: CompetitorProfile
   ): string {
     return `${this.lexiConfig.systemPrompt}
 
@@ -759,7 +763,7 @@ COMPETITOR PROFILE:
 - Threat Level: ${competitor.threatLevel}
 - Competitive Advantages: ${competitor.competitiveAdvantages?.join(', ')}
 - Market Position: ${JSON.stringify(competitor.marketPosition)}
-- Recent Funding: $${competitor.fundingAmount} (${competitor.fundingStage})
+${competitor.fundingAmount ? `- Recent Funding: $${competitor.fundingAmount} (${competitor.fundingStage || 'N/A'})` : ''}
 
 RECENT INTELLIGENCE:
 ${intelligence.slice(0, 15).map(data => `
@@ -853,7 +857,7 @@ STRATEGIC INTELLIGENCE BRIEFING:`
 
   // Parsing methods (simplified for implementation)
 
-  private parsePositioningAnalysis(analysisText: string, competitorId: string): CompetitivePositioningAnalysis {
+  private parsePositioningAnalysis(_analysisText: string, competitorId: string): CompetitivePositioningAnalysis {
     return {
       competitorId,
       marketPosition: {
@@ -885,7 +889,7 @@ STRATEGIC INTELLIGENCE BRIEFING:`
     }
   }
 
-  private parseMarketTrendAnalysis(analysisText: string): MarketTrendAnalysis {
+  private parseMarketTrendAnalysis(_analysisText: string): MarketTrendAnalysis {
     return {
       industryTrends: [],
       competitorTrends: [],
@@ -897,7 +901,7 @@ STRATEGIC INTELLIGENCE BRIEFING:`
     }
   }
 
-  private parseStrategicMoveAnalysis(analysisText: string, competitorId: string): StrategicMoveAnalysis {
+  private parseStrategicMoveAnalysis(_analysisText: string, competitorId: string): StrategicMoveAnalysis {
     return {
       competitorId,
       detectedMoves: [],
@@ -908,7 +912,7 @@ STRATEGIC INTELLIGENCE BRIEFING:`
     }
   }
 
-  private parseThreatAssessment(analysisText: string, competitorId: string): ThreatAssessment {
+  private parseThreatAssessment(_analysisText: string, competitorId: string): ThreatAssessment {
     return {
       competitorId,
       overallThreatLevel: 'medium',
@@ -920,7 +924,7 @@ STRATEGIC INTELLIGENCE BRIEFING:`
     }
   }
 
-  private parseOpportunityAnalysis(analysisText: string): EmergingOpportunity[] {
+  private parseOpportunityAnalysis(_analysisText: string): EmergingOpportunity[] {
     return []
   }
 
@@ -953,7 +957,7 @@ STRATEGIC INTELLIGENCE BRIEFING:`
         topics: [analysisType, 'strategic', 'competitive_intelligence'],
         keyInsights: []
       },
-      analysis_results: [analysisResult] as any,
+      analysis_results: [analysisResult] as unknown,
       confidence: '0.85',
       importance: 'high',
       tags: ['lexi', 'strategic', analysisType],

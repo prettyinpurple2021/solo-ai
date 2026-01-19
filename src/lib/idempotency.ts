@@ -31,7 +31,7 @@ export function getIdempotencyKeyFromRequest(req: Request): string | null {
 
 // Edge-safe Neon variant for idempotency using SQL template tag
 export async function reserveIdempotencyKeyNeon(
-  sql: any,
+  sql: <T = any>(strings: TemplateStringsArray, ...values: any[]) => Promise<T[]>,
   key: string
 ): Promise<boolean> {
   // Ensure table exists (safe to run repeatedly)

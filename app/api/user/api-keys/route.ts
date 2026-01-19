@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth-server';
-import { db } from '@/db';
+import { db } from '@/server/db';
+import { logError } from '@/lib/logger';
 import { userApiKeys } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
@@ -41,7 +42,7 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json({ keys: maskedKeys });
     } catch (error) {
-        console.error('Error fetching API keys:', error);
+        logError('Error fetching API keys:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }
@@ -89,7 +90,7 @@ export async function POST(request: NextRequest) {
 
         return NextResponse.json({ success: true });
     } catch (error) {
-        console.error('Error saving API keys:', error);
+        logError('Error saving API keys:', error);
         return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
     }
 }

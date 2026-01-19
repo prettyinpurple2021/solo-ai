@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/db'
+import { db } from '@/server/db'
+import { logError } from '@/lib/logger'
 import { templates } from '@/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { verifyAuth } from '@/lib/auth-server'
@@ -43,7 +44,7 @@ export async function PUT(
 
     return NextResponse.json(updatedTemplate[0])
   } catch (error) {
-    console.error('Error updating template:', error)
+    logError('Error updating template:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }
@@ -76,7 +77,7 @@ export async function DELETE(
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting template:', error)
+    logError('Error deleting template:', error)
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

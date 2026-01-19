@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/server/db';
 import { users } from '@/server/db/schema';
 import { desc } from 'drizzle-orm';
+import { logError } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -32,7 +33,7 @@ export async function GET() {
 
     return NextResponse.json({ leaderboard: formattedLeaderboard });
   } catch (error) {
-    console.error('Error fetching leaderboard:', error);
+    logError('Error fetching leaderboard:', error);
     return NextResponse.json({ error: 'Failed to fetch leaderboard' }, { status: 500 });
   }
 }

@@ -1,8 +1,6 @@
 import { logError } from '@/lib/logger';
 
-// ... (imports)
 
-// ... (imports)
 // This abstracts all backend API calls
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';

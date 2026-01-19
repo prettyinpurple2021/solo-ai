@@ -1,7 +1,9 @@
 import { db } from '@/db';
 import { intelligenceData, competitorProfiles } from '@/db/schema';
-import { eq, and, gte, desc } from 'drizzle-orm';
+import { eq, and, gte, desc, InferSelectModel } from 'drizzle-orm';
 import type { SocialMediaPost, EngagementMetrics, SentimentScore } from './social-media-monitor';
+
+type IntelligenceData = InferSelectModel<typeof intelligenceData>;
 
 // Analysis result interfaces
 export interface EngagementPatternAnalysis {
@@ -17,7 +19,6 @@ export interface EngagementPatternAnalysis {
   recommendations: string[];
   analyzedAt: Date;
 }
-
 export interface EngagementTimePattern {
   hour: number;
   avgEngagement: number;
@@ -475,8 +476,8 @@ export class SocialMediaAnalysisEngine {
       .orderBy(desc(intelligenceData.collected_at));
   }
 
-  private groupDataByPlatform(data: any[]): Record<string, any[]> {
-    const grouped: Record<string, any[]> = {};
+  private groupDataByPlatform(data: IntelligenceData[]): Record<string, IntelligenceData[]> {
+    const grouped: Record<string, IntelligenceData[]> = {};
     
     data.forEach(item => {
       const platform = item.data_type?.replace('_analysis', '') || 'unknown';
@@ -489,17 +490,55 @@ export class SocialMediaAnalysisEngine {
     return grouped;
   }
 
-  private extractPostsFromData(data: any[]): SocialMediaPost[] {
+  private extractPostsFromData(data: IntelligenceData[]): SocialMediaPost[] {
     const posts: SocialMediaPost[] = [];
     
     data.forEach(item => {
-      const rawContent = item.raw_content;
+      // Cast raw_content as unknown first, then check if it's an array of posts
+      const rawContent = item.raw_content as unknown;
       if (Array.isArray(rawContent)) {
-        posts.push(...rawContent);
+        posts.push(...(rawContent as SocialMediaPost[]));
       }
     });
 
     return posts.sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime());
+  }
+
+  private analyzeContentTypePatterns(posts: SocialMediaPost[]): ContentTypePattern[] {
+    const typeData: Record<string, { count: number; engagement: number; examples: string[] }> = {};
+
+    posts.forEach(post => {
+      const type = this.detectContentType(post);
+      const engagement = this.calculateTotalEngagement(post.engagement);
+
+      if (!typeData[type]) {
+        typeData[type] = { count: 0, engagement: 0, examples: [] };
+      }
+
+      typeData[type].count += 1;
+      typeData[type].engagement += engagement;
+      typeData[type].examples.push(post.content.substring(0, 100));
+    });
+
+    return Object.entries(typeData).map(([type, data]) => ({
+      type: type as ContentTypePattern['type'],
+      count: data.count,
+      avgEngagement: data.engagement / data.count,
+      engagementRate: data.engagement / (data.count * 1000),
+      examples: data.examples.slice(0, 3)
+    })).sort((a, b) => b.avgEngagement - a.avgEngagement);
+  }
+
+  private detectContentType(post: SocialMediaPost): ContentTypePattern['type'] {
+    if (post.mediaUrls && post.mediaUrls.length > 0) {
+      if (post.mediaUrls.length > 1) return 'carousel';
+      const url = post.mediaUrls[0];
+      if (url.includes('video') || url.includes('.mp4')) return 'video';
+      if (url.includes('image') || url.includes('.jpg') || url.includes('.png')) return 'image';
+    }
+    
+    if (post.content.includes('http')) return 'link';
+    return 'text';
   }
 
   private analyzeTimeOfDayPatterns(posts: SocialMediaPost[]): EngagementTimePattern[] {
@@ -564,31 +603,6 @@ export class SocialMediaAnalysisEngine {
         peakHours
       };
     }).sort((a, b) => b.avgEngagement - a.avgEngagement);
-  }
-
-  private analyzeContentTypePatterns(posts: SocialMediaPost[]): ContentTypePattern[] {
-    const typeData: Record<string, { count: number; engagement: number; examples: string[] }> = {};
-
-    posts.forEach(post => {
-      const type = this.detectContentType(post);
-      const engagement = this.calculateTotalEngagement(post.engagement);
-
-      if (!typeData[type]) {
-        typeData[type] = { count: 0, engagement: 0, examples: [] };
-      }
-
-      typeData[type].count += 1;
-      typeData[type].engagement += engagement;
-      typeData[type].examples.push(post.content.substring(0, 100));
-    });
-
-    return Object.entries(typeData).map(([type, data]) => ({
-      type: type as any,
-      count: data.count,
-      avgEngagement: data.engagement / data.count,
-      engagementRate: data.engagement / (data.count * 1000),
-      examples: data.examples.slice(0, 3)
-    })).sort((a, b) => b.avgEngagement - a.avgEngagement);
   }
 
   private analyzeHashtagPatterns(posts: SocialMediaPost[]): HashtagPattern[] {
@@ -696,18 +710,6 @@ export class SocialMediaAnalysisEngine {
 
   private calculateTotalEngagement(engagement: EngagementMetrics): number {
     return (engagement.likes || 0) + (engagement.shares || 0) + (engagement.comments || 0);
-  }
-
-  private detectContentType(post: SocialMediaPost): string {
-    if (post.mediaUrls && post.mediaUrls.length > 0) {
-      if (post.mediaUrls.length > 1) return 'carousel';
-      const url = post.mediaUrls[0];
-      if (url.includes('video') || url.includes('.mp4')) return 'video';
-      if (url.includes('image') || url.includes('.jpg') || url.includes('.png')) return 'image';
-    }
-    
-    if (post.content.includes('http')) return 'link';
-    return 'text';
   }
 
   private calculateEngagementBoost(hashtag: string, posts: SocialMediaPost[]): number {

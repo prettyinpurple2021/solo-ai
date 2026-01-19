@@ -368,6 +368,15 @@ export interface LegalAnalysis {
 
 export type LegalDocType = 'NDA' | 'Contractor Agreement' | 'SaaS Terms of Service' | 'Privacy Policy' | 'Offer Letter';
 
+export interface LegalDoc {
+    id: string;
+    title: string;
+    type: LegalDocType;
+    content: string;
+    generatedAt: string;
+    metadata?: Record<string, unknown>;
+}
+
 export interface MarketGap {
     name: string;
     description: string;

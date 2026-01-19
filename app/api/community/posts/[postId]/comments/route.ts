@@ -1,8 +1,10 @@
+
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { postComments, posts } from '@/db/schema';
 import { auth } from '@/lib/auth';
 import { desc, eq, sql } from 'drizzle-orm';
+import { logError } from '@/lib/logger';
 
 export async function GET(
   _req: Request,
@@ -34,7 +36,7 @@ export async function GET(
 
     return NextResponse.json({ comments: formattedComments });
   } catch (error) {
-    console.error('Error fetching comments:', error);
+    logError('Error fetching comments:', error);
     return NextResponse.json({ error: 'Failed to fetch comments' }, { status: 500 });
   }
 }
@@ -57,16 +59,20 @@ export async function POST(
       return NextResponse.json({ error: 'Content is required' }, { status: 400 });
     }
 
-    const [newComment] = await db.insert(postComments).values({
-      post_id: postId,
-      author_id: session.user.id,
-      content,
-    }).returning();
+    const newComment = await db.transaction(async (tx) => {
+      const [comment] = await tx.insert(postComments).values({
+        post_id: postId,
+        author_id: session.user.id,
+        content,
+      }).returning();
 
-    // Increment comment count
-    await db.update(posts)
-      .set({ comments_count: sql`${posts.comments_count} + 1` })
-      .where(eq(posts.id, postId));
+      // Increment comment count
+      await tx.update(posts)
+        .set({ comments_count: sql`${posts.comments_count} + 1` })
+        .where(eq(posts.id, postId));
+      
+      return comment;
+    });
 
     return NextResponse.json({
         id: newComment.id,
@@ -77,7 +83,7 @@ export async function POST(
         // For now, simpler response.
     });
   } catch (error) {
-    console.error('Error creating comment:', error);
+    logError('Error creating comment:', error);
     return NextResponse.json({ error: 'Failed to create comment' }, { status: 500 });
   }
 }

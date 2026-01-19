@@ -1,6 +1,26 @@
 import { logError } from '@/lib/logger';
 import { apiService } from './apiService';
-import { AgentId, CompetitorReport, WarRoomResponse, FinancialContext } from '../types';
+import {
+    AgentId,
+    CompetitorReport,
+    WarRoomResponse,
+    FinancialContext,
+    Contact,
+    RoleplayScenario,
+    RoleplayTurn,
+    RoleplayFeedback,
+    JobDescription,
+    InterviewGuide,
+    SOP,
+    ProductSpec,
+    LegalDoc,
+    LaunchStrategy,
+    SocialStrategy,
+    ContentAmplification,
+    TribeBlueprint,
+    PivotAnalysis,
+    TechStackAudit
+} from '../types';
 
 // Types
 export interface ChatMessage {
@@ -105,36 +125,36 @@ export const geminiService = {
         }
     },
 
-    async generateTribeBlueprint(audience: string, manifesto?: string): Promise<unknown> {
+    async generateTribeBlueprint(audience: string, manifesto?: string): Promise<TribeBlueprint | null> {
         try {
-            return await apiService.post('/ai/tribe-blueprint', { audience, manifesto });
+            return await apiService.post<TribeBlueprint>('/ai/tribe-blueprint', { audience, manifesto });
         } catch (error) {
             logError('Tribe Blueprint Error:', error);
             return null;
         }
     },
 
-    async generateAmplifiedContent(content: string, platforms?: string[]): Promise<unknown> {
+    async generateAmplifiedContent(content: string, platforms?: string[]): Promise<ContentAmplification | null> {
         try {
-            return await apiService.post('/ai/amplified-content', { content, platforms });
+            return await apiService.post<ContentAmplification>('/ai/amplified-content', { content, platforms });
         } catch (error) {
             logError('Content Amplifier Error:', error);
             return null;
         }
     },
 
-    async generateSocialStrategy(platform?: string, goal?: string): Promise<unknown> {
+    async generateSocialStrategy(platform?: string, goal?: string): Promise<SocialStrategy | null> {
         try {
-            return await apiService.post('/ai/social-strategy', { platform, goal });
+            return await apiService.post<SocialStrategy>('/ai/social-strategy', { platform, goal });
         } catch (error) {
             logError('Social Strategy Error:', error);
             return null;
         }
     },
 
-    async generateLaunchStrategy(product: string, context?: string): Promise<unknown> {
+    async generateLaunchStrategy(product: string, context?: string): Promise<LaunchStrategy | null> {
         try {
-            return await apiService.post('/ai/launch-strategy', { product, context });
+            return await apiService.post<LaunchStrategy>('/ai/launch-strategy', { product, context });
         } catch (error) {
             logError('Launch Strategy Error:', error);
             return null;
@@ -142,39 +162,45 @@ export const geminiService = {
     },
 
     // Ops & HR
-    async generateJobDescription(role: string, culture: string): Promise<unknown> {
+    async generateJobDescription(role: string, culture: string): Promise<JobDescription | null> {
         try {
-            return await apiService.post('/ai/job-description', { role, culture });
+            return await apiService.post<JobDescription>('/ai/job-description', { role, culture });
         } catch (error) {
             logError('JD Error:', error);
             return null;
         }
     },
 
-    async generateInterviewGuide(role: string, focus?: string): Promise<unknown> {
+    async generateInterviewGuide(role: string, focus?: string): Promise<InterviewGuide | null> {
         try {
-            return await apiService.post('/ai/interview-guide', { role, focus });
+            return await apiService.post<InterviewGuide>('/ai/interview-guide', { role, focus });
         } catch (error) {
             logError('Interview Guide Error:', error);
             return null;
         }
     },
 
-    async generateSOP(processName: string, goal?: string): Promise<unknown> {
+    async generateSOP(processName: string, goal?: string): Promise<SOP | null> {
         try {
-            return await apiService.post('/ai/sop', { processName, goal });
+            return await apiService.post<SOP>('/ai/sop', { processName, goal });
         } catch (error) {
             logError('SOP Error:', error);
             return null;
         }
     },
 
-    async generateBoardReport(period: unknown, metrics?: unknown, reports?: unknown, contacts?: unknown): Promise<unknown> {
+    async generateBoardReport(
+        period: string,
+        metrics?: Record<string, unknown>,
+        reports?: Record<string, unknown>,
+        contacts?: Contact[]
+    ): Promise<string> {
         try {
-            return await apiService.post('/ai/board-report', { period, metrics, reports, contacts });
+            const response = await apiService.post<{ text: string }>('/ai/board-report', { period, metrics, reports, contacts });
+            return response.text;
         } catch (error) {
             logError('Board Report Error:', error);
-            return null;
+            return 'Failed to generate report.';
         }
     },
 
@@ -187,9 +213,9 @@ export const geminiService = {
         }
     },
 
-    async conductTechAudit(stack: string): Promise<unknown> {
+    async conductTechAudit(stack: string): Promise<TechStackAudit | null> {
         try {
-            return await apiService.post('/ai/tech-audit', { stack });
+            return await apiService.post<TechStackAudit>('/ai/tech-audit', { stack });
         } catch (error) {
             logError('Tech Audit Error:', error);
             return null;
@@ -197,27 +223,29 @@ export const geminiService = {
     },
 
     // Legal & Sales
-    async generateColdEmail(contact: unknown): Promise<unknown> {
+    async generateColdEmail(contact: Contact): Promise<string> {
         try {
-            return await apiService.post('/ai/cold-email', { contact });
+            const response = await apiService.post<{ text: string }>('/ai/cold-email', { contact });
+            return response.text;
         } catch (error) {
             logError('Cold Email Error:', error);
-            return null;
+            return 'Failed to generate email.';
         }
     },
 
-    async generateNegotiationPrep(contact: unknown): Promise<unknown> {
+    async generateNegotiationPrep(contact: Contact): Promise<string> {
         try {
-            return await apiService.post('/ai/negotiation-prep', { contact });
+            const response = await apiService.post<{ text: string }>('/ai/negotiation-prep', { contact });
+            return response.text;
         } catch (error) {
             logError('Negotiation Prep Error:', error);
-            return null;
+            return 'Failed to generate prep.';
         }
     },
 
-    async draftLegalDoc(type: string, details: string): Promise<unknown> {
+    async draftLegalDoc(type: string, details: string): Promise<LegalDoc | null> {
         try {
-            return await apiService.post('/ai/legal-doc', { type, details });
+            return await apiService.post<LegalDoc>('/ai/legal-doc', { type, details });
         } catch (error) {
             logError('Legal Doc Error:', error);
             return null;
@@ -234,16 +262,17 @@ export const geminiService = {
     },
 
     // Mental & Roleplay
-    async generateStoicCoaching(mood: string | unknown, stressLevel?: number, primaryBlocker?: string): Promise<unknown> {
+    async generateStoicCoaching(mood: string, stressLevel?: number, primaryBlocker?: string): Promise<string> {
         try {
-            return await apiService.post('/ai/stoic-coaching', { mood, stressLevel, primaryBlocker });
+            const response = await apiService.post<{ text: string }>('/ai/stoic-coaching', { mood, stressLevel, primaryBlocker });
+            return response.text;
         } catch (error) {
             logError('Stoic Coaching Error:', error);
-            return null;
+            return 'Stay stoic. System offline.';
         }
     },
 
-    async getRoleplayReply(scenario: unknown, history: unknown[], userInput: string): Promise<string> {
+    async getRoleplayReply(scenario: RoleplayScenario, history: RoleplayTurn[], userInput: string): Promise<string> {
         try {
             const response = await apiService.post<{ text: string }>('/ai/roleplay-reply', { scenario, history, userInput });
             return response.text;
@@ -253,9 +282,9 @@ export const geminiService = {
         }
     },
 
-    async evaluateRoleplaySession(scenario: unknown, history: unknown[]): Promise<unknown> {
+    async evaluateRoleplaySession(scenario: RoleplayScenario, history: RoleplayTurn[]): Promise<RoleplayFeedback | null> {
         try {
-            return await apiService.post('/ai/roleplay-feedback', { scenario, history });
+            return await apiService.post<RoleplayFeedback>('/ai/roleplay-feedback', { scenario, history });
         } catch (error) {
             logError('Roleplay Feedback Error:', error);
             return null;
@@ -300,9 +329,9 @@ export const geminiService = {
         }
     },
 
-    async generateProductSpec(idea: string): Promise<unknown> {
+    async generateProductSpec(idea: string): Promise<ProductSpec | null> {
         try {
-            return await apiService.post('/ai/product-spec', { idea });
+            return await apiService.post<ProductSpec>('/ai/product-spec', { idea });
         } catch (error) {
             logError('Product Spec Error:', error);
             return null;

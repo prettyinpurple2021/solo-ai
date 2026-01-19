@@ -422,7 +422,7 @@ Overdue Tasks: ${workloadAnalysis.overdueTasks}
 Provide specific, actionable tips that would help improve productivity and task management. Keep each tip under 100 characters.`
 
       const { text } = await generateText({
-        model: this.taskAgent.model as any,
+        model: this.taskAgent.model,
         messages: [
           { role: 'system', content: this.taskAgent.systemPrompt },
           { role: 'user', content: prompt },

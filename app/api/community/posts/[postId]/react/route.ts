@@ -3,13 +3,15 @@ import { db } from '@/db';
 import { posts, postReactions } from '@/db/schema';
 import { auth } from '@/lib/auth';
 import { eq, and, sql } from 'drizzle-orm';
+import { logError } from '@/lib/logger';
 
 export async function POST(
   req: Request,
   props: { params: Promise<{ postId: string }> }
 ) {
-  const params = await props.params;
+
   try {
+    const params = await props.params;
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -75,7 +77,7 @@ export async function POST(
     }
 
   } catch (error) {
-    console.error('Error toggling reaction:', error);
+    logError('Error toggling reaction:', error);
     return NextResponse.json({ error: 'Failed to toggle reaction' }, { status: 500 });
   }
 }

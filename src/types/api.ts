@@ -4,7 +4,7 @@
  */
 
 // Base API response structure
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean
   data?: T
   error?: string
@@ -70,8 +70,8 @@ export interface Task {
   actual_minutes?: number | null
   energy_level: 'low' | 'medium' | 'high'
   is_recurring: boolean
-  recurrence_pattern?: any
-  ai_suggestions?: any
+  recurrence_pattern?: Record<string, unknown>
+  ai_suggestions?: unknown
   completed_at?: string | null
   created_at: string
   updated_at: string
@@ -99,7 +99,7 @@ export interface Briefcase {
   title: string
   description?: string | null
   status: 'active' | 'archived' | 'deleted'
-  metadata?: any
+  metadata?: Record<string, unknown>
   created_at: string
   updated_at: string
 }
@@ -134,7 +134,7 @@ export interface DashboardStats {
 
 // Competitor types
 export interface CompetitorProfile {
-  id: number
+  id: string
   user_id: string
   name: string
   domain?: string | null
@@ -143,17 +143,17 @@ export interface CompetitorProfile {
   headquarters?: string | null
   founded_year?: number | null
   employee_count?: number | null
-  funding_amount?: string | null
+  funding_amount?: string | number | null
   funding_stage?: string | null
   threat_level: 'low' | 'medium' | 'high' | 'critical'
   monitoring_status: 'active' | 'paused' | 'inactive'
-  social_media_handles?: any
-  key_personnel?: any[]
-  products?: any[]
-  market_position?: any
-  competitive_advantages?: string[]
-  vulnerabilities?: string[]
-  monitoring_config?: any
+  social_media_handles?: Record<string, string> | null
+  key_personnel?: unknown[] | null
+  products?: unknown[] | null
+  market_position?: Record<string, unknown> | null
+  competitive_advantages?: unknown[] | null
+  vulnerabilities?: unknown[] | null
+  monitoring_config?: Record<string, unknown> | null
   last_analyzed?: string | null
   created_at: string
   updated_at: string
@@ -167,9 +167,9 @@ export interface IntelligenceData {
   source_type: string
   source_url?: string | null
   data_type: string
-  raw_content?: any
-  extracted_data?: any
-  analysis_results?: any[]
+  raw_content?: unknown
+  extracted_data?: unknown
+  analysis_results?: unknown[]
   confidence?: number
   importance: 'low' | 'medium' | 'high' | 'critical'
   tags: string[]
@@ -195,8 +195,8 @@ export interface Document {
   category: string
   description?: string | null
   tags: string[]
-  metadata?: any
-  ai_insights?: any
+  metadata?: Record<string, unknown>
+  ai_insights?: unknown
   is_favorite: boolean
   is_public: boolean
   download_count: number
@@ -217,7 +217,7 @@ export interface ChatConversation {
   last_message_at?: string | null
   message_count: number
   is_archived: boolean
-  metadata?: any
+  metadata?: Record<string, unknown>
   created_at: string
   updated_at: string
 }
@@ -228,7 +228,7 @@ export interface ChatMessage {
   user_id: string
   role: 'user' | 'assistant'
   content: string
-  metadata?: any
+  metadata?: Record<string, unknown>
   created_at: string
 }
 
@@ -287,5 +287,3 @@ export interface ApiError {
 // Utility types
 export type ApiResult<T> = ApiResponse<T> | ApiError
 export type PaginatedApiResult<T> = PaginatedResponse<T> | ApiError
-
-

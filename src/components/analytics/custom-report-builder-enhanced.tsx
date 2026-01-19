@@ -242,43 +242,25 @@ export default function CustomReportBuilderEnhanced({
   const generatePreview = async () => {
     setLoading(true)
     try {
-      // Simulate API call to generate preview data
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // Mock preview data
-      setPreviewData({
-        metrics: selectedMetrics.map(metricId => {
-          const metric = availableMetrics.find(m => m.id === metricId)
-          return {
-            id: metricId,
-            name: metric?.name || metricId,
-            value: Math.floor(Math.random() * 1000),
-            change: Math.floor(Math.random() * 20) - 10,
-            changePercent: Math.floor(Math.random() * 40) - 20
-          }
-        }),
-        charts: selectedVisualizations.map(viz => ({
-          id: viz.id,
-          type: viz.type,
-          data: generateMockChartData(viz.type)
-        }))
-      })
+      const response = await fetch('/api/analytics/preview', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          metrics: selectedMetrics,
+          timeframe: report.timeframe,
+          visualizations: selectedVisualizations // ensuring API has context if needed later
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed to generate preview');
+
+      const data = await response.json();
+      setPreviewData(data);
     } catch (error) {
       logError('Error generating preview:', error)
     } finally {
       setLoading(false)
     }
-  }
-
-  const generateMockChartData = (type: string) => {
-    const data = []
-    for (let i = 0; i < 7; i++) {
-      data.push({
-        date: new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        value: Math.floor(Math.random() * 100)
-      })
-    }
-    return data
   }
 
   const saveReport = () => {

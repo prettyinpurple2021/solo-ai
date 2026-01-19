@@ -108,6 +108,7 @@ export async function checkUsageLimit(
   limitType: 'agents' | 'conversations' | 'teamMembers'
 ): Promise<{ allowed: boolean; current: number; limit: number }> {
   const subscription = await getUserSubscription(userId)
+  const sql = getSql();
 
   // Get current usage from database
   let current = 0
@@ -116,29 +117,20 @@ export async function checkUsageLimit(
   switch (limitType) {
     case 'agents':
       // Count distinct agents chatted with today
-      const agentsResult = await query(
-        `SELECT COUNT(DISTINCT agent_id) AS count FROM conversations 
-         WHERE user_id = $1 AND created_at >= CURRENT_DATE`,
-        [userId]
-      )
+      const agentsResult = await sql`SELECT COUNT(DISTINCT agent_id) AS count FROM conversations 
+         WHERE user_id = ${userId} AND created_at >= CURRENT_DATE`
       current = parseInt(agentsResult[0]?.count || '0')
       limit = subscription.features.maxAgents
       break
     case 'conversations':
       // Check conversations today
-      const conversationResult = await query(
-        `SELECT COUNT(*) as count FROM conversations 
-         WHERE user_id = $1 AND created_at >= CURRENT_DATE`,
-        [userId]
-      )
+      const conversationResult = await sql`SELECT COUNT(*) as count FROM conversations 
+         WHERE user_id = ${userId} AND created_at >= CURRENT_DATE`
       current = parseInt(conversationResult[0]?.count || '0')
       limit = subscription.features.maxConversationsPerDay
       break
     case 'teamMembers':
-      const teamResult = await query(
-        `SELECT COUNT(*) AS count FROM team_members WHERE user_id = $1`,
-        [userId]
-      )
+      const teamResult = await sql`SELECT COUNT(*) AS count FROM team_members WHERE user_id = ${userId}`
       current = parseInt(teamResult[0]?.count || '0')
       limit = subscription.features.maxTeamMembers
       break
@@ -159,8 +151,6 @@ export async function updateSubscriptionStatus(
   tier: string,
   status: string
 ): Promise<void> {
-  await query(
-    'UPDATE users SET subscription_tier = $1, subscription_status = $2, updated_at = NOW() WHERE id = $3',
-    [tier, status, userId]
-  )
+  const sql = getSql();
+  await sql`UPDATE users SET subscription_tier = ${tier}, subscription_status = ${status}, updated_at = NOW() WHERE id = ${userId}`
 }

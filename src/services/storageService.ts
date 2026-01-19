@@ -4,7 +4,7 @@ import {
     PitchDeck, CreativeAsset, Contact, LaunchStrategy, TribeBlueprint,
     SOP, JobDescription, InterviewGuide, ProductSpec, PivotAnalysis,
     BoardMeetingReport, SavedCodeSnippet, SavedWarRoomSession,
-    RoleplayFeedback, ContentAmplification, SimulationResult
+    RoleplayFeedback, ContentAmplification, SimulationResult, LegalDoc
 } from '../types';
 
 // Configuration
@@ -60,6 +60,36 @@ const set = <T>(key: string, value: T): void => {
     }
 };
 
+// Stack App Interfaces
+interface StackUser {
+    id?: string;
+    // Add other properties as needed
+}
+
+interface StackApp {
+    user?: StackUser;
+}
+
+interface WindowWithStack {
+    stackApp?: StackApp;
+}
+
+// Validator for Stack App context
+function validateStackApp(): { id: string } {
+    if (typeof window === 'undefined') {
+        throw new Error('Window object not available');
+    }
+
+    const win = window as unknown as WindowWithStack;
+    
+    if (!win.stackApp?.user?.id) {
+        throw new Error('Stack App user context missing or invalid');
+    }
+    
+    // safe because we checked existence above
+    return { id: win.stackApp.user.id };
+}
+
 // API helper with fallback and authentication
 async function apiCall<T>(
     method: string,
@@ -81,9 +111,16 @@ async function apiCall<T>(
     }
 
     try {
-        // Get Stack Auth user ID
-        const stackApp = (window as unknown as { stackApp?: { user?: { id?: string } } }).stackApp;
-        const userId = stackApp?.user?.id || '';
+
+        // Get Stack Auth user ID securely
+        let userId: string;
+        try {
+            const user = validateStackApp();
+            userId = user.id;
+        } catch (authError) {
+            logWarn('Authentication check failed:', authError);
+            throw new Error('User not authenticated - request aborted');
+        }
 
         const options: RequestInit = {
             method,
@@ -428,11 +465,11 @@ export const storageService = {
     },
 
     // --- Legal Docs ---
-    async getLegalDocs(): Promise<unknown[]> {
-        return apiCall<unknown[]>('GET', '/api/resources/legal-docs', undefined, KEYS.LEGAL_DOCS, []);
+    async getLegalDocs(): Promise<LegalDoc[]> {
+        return apiCall<LegalDoc[]>('GET', '/api/resources/legal-docs', undefined, KEYS.LEGAL_DOCS, []);
     },
 
-    async saveLegalDoc(doc: unknown): Promise<void> {
+    async saveLegalDoc(doc: LegalDoc): Promise<void> {
         await apiCall('POST', '/api/resources/legal-docs', doc, KEYS.LEGAL_DOCS);
         const items = await this.getLegalDocs();
         items.unshift(doc);
@@ -646,7 +683,7 @@ export const storageService = {
         }
 
         // Legal Docs
-        const legalDocs = get<unknown[]>(KEYS.LEGAL_DOCS, []);
+        const legalDocs = get<LegalDoc[]>(KEYS.LEGAL_DOCS, []);
         if (legalDocs.length) {
             logInfo(`Migrating ${legalDocs.length} Legal Docs...`);
             for (const l of legalDocs) await this.saveLegalDoc(l);
