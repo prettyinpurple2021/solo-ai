@@ -1,12 +1,13 @@
 import { logInfo, logError } from '@/lib/logger'
 import { NextRequest } from 'next/server'
-import { db } from '@/server/db'
+import { db } from '@/db'
 import { analyticsEvents, users, paymentProviderConnections } from '@/db/schema'
 import { desc, eq, sql, and, gte } from 'drizzle-orm'
 import { RevenueTrackingService } from './revenue-tracking'
 
 const REVENUE_WINDOW_DAYS = 30
 const MS_PER_DAY = 24 * 60 * 60 * 1000
+const CHURN_RATE_THRESHOLD = 5
 
 // Analytics event types
 export type AnalyticsEvent =
@@ -322,10 +323,10 @@ class AnalyticsService {
     let sumXX = 0
 
     for (let i = 0; i < n; i++) {
-        sumX += i
-        sumY += data[i]
-        sumXY += i * data[i]
-        sumXX += i * i
+      sumX += i
+      sumY += data[i]
+      sumXY += i * data[i]
+      sumXX += i * i
     }
 
     const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX)
@@ -345,22 +346,27 @@ class AnalyticsService {
     seasonalTrends: string[]
   }> {
     // 1. Calculate Revenue Forecast
-    // Get last 6 months of revenue
+    // Get last 6 months of revenue (parallel)
     const now = new Date()
-    const monthlyRevenue: number[] = []
+    const months = [5, 4, 3, 2, 1, 0] // 5 months ago to current month
     
-    for (let i = 5; i >= 0; i--) {
+    const revenuePromises = months.map(async (i) => {
         const start = new Date(now.getFullYear(), now.getMonth() - i, 1)
         const end = new Date(now.getFullYear(), now.getMonth() - i + 1, 0)
-        const rev = await RevenueTrackingService.calculateGlobalRevenue(start, end).catch(() => 0)
-        monthlyRevenue.push(rev)
-    }
-    
+        try {
+            return await RevenueTrackingService.calculateGlobalRevenue(start, end)
+        } catch (error) {
+            logError('Failed to calculate revenue for forecast', { error, start, end })
+            return 0
+        }
+    })
+
+    const monthlyRevenue = await Promise.all(revenuePromises)
     const revenueTrend = this.calculateTrend(monthlyRevenue)
 
     // 2. Calculate User Growth Forecast
-    const weeklyUserCounts: number[] = []
-    for (let i = 3; i >= 0; i--) {
+
+    const userGrowthPromises = [3, 2, 1, 0].map(async (i) => {
          const start = new Date(now.getTime() - (i + 1) * 7 * 24 * 60 * 60 * 1000)
          
          // New users per week trend
@@ -370,31 +376,40 @@ class AnalyticsService {
                 gte(users.created_at, start),
                 sql`${users.created_at} < ${new Date(start.getTime() + 7 * 24 * 60 * 60 * 1000)}`
             ))
-         weeklyUserCounts.push(Number(usersResult[0]?.count || 0))
-    }
+         return Number(usersResult[0]?.count || 0)
+    })
+    
+    const weeklyUserCounts = await Promise.all(userGrowthPromises)
     
     const userGrowthTrend = this.calculateTrend(weeklyUserCounts)
 
     // 3. Calculate Churn Rate (simplified)
     // Users active last month but not this month
+    // Note: This calculation compares the previous full month vs current partial month.
+    // For mid-month runs, this may over-report churn as users simply haven't logged in *yet* this month.
     const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1)
     const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
     
+    // Filter out null user_ids to ensure accurate counts
     const activeLastMonth = await db.select({ id: analyticsEvents.user_id })
         .from(analyticsEvents)
         .where(and(
             gte(analyticsEvents.timestamp, lastMonthStart),
-            sql`${analyticsEvents.timestamp} < ${thisMonthStart}`
+            sql`${analyticsEvents.timestamp} < ${thisMonthStart}`,
+            sql`${analyticsEvents.user_id} IS NOT NULL`
         ))
         .groupBy(analyticsEvents.user_id)
         
     const activeThisMonth = await db.select({ id: analyticsEvents.user_id })
         .from(analyticsEvents)
-        .where(gte(analyticsEvents.timestamp, thisMonthStart))
+        .where(and(
+            gte(analyticsEvents.timestamp, thisMonthStart),
+            sql`${analyticsEvents.user_id} IS NOT NULL`
+        ))
         .groupBy(analyticsEvents.user_id)
         
-    const lastMonthIds = new Set(activeLastMonth.map(u => u.id))
-    const thisMonthIds = new Set(activeThisMonth.map(u => u.id))
+    const lastMonthIds = new Set(activeLastMonth.map(u => u.id!)) // u.id is guaranteed not null by query, but TS might need !
+    const thisMonthIds = new Set(activeThisMonth.map(u => u.id!))
     
     let churnedCount = 0
     if (lastMonthIds.size > 0) {
@@ -410,7 +425,7 @@ class AnalyticsService {
     if (revenueTrend.slope > 0) trends.push("Revenue is trending upward")
     if (revenueTrend.slope < 0) trends.push("Revenue is declining")
     if (userGrowthTrend.slope > 0) trends.push("User acquisition is accelerating")
-    if (churnRate > 5) trends.push("High churn rate detected")
+    if (churnRate > CHURN_RATE_THRESHOLD) trends.push("High churn rate detected")
 
     return {
         revenueForecast: Math.max(0, revenueTrend.forecast),

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useCallback, useRef, useEffect } from "react"
+import { useState, useCallback, useRef, useEffect } from "react"
 
 export interface CustomAgentResponse {
   content: string
@@ -149,10 +149,11 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
         // POLLING LOOP
         let attempts = 0
         const maxAttempts = 60 // 1 minute timeout (1s interval)
+        const controller = abortControllerRef.current
         
         while (attempts < maxAttempts) {
             // Check for cancellation
-            if (abortControllerRef.current?.signal.aborted) {
+            if (controller?.signal.aborted) {
                 throw new Error("AbortError")
             }
 
@@ -162,7 +163,7 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
             // Poll status
             const pollResponse = await fetch(`/api/custom-agents?jobId=${jobId}`, {
                 headers: { "x-user-id": "default-user" },
-                signal: abortControllerRef.current.signal
+                signal: controller?.signal
             })
             
             if (!pollResponse.ok) {
@@ -170,6 +171,15 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
             }
             
             const pollData = await pollResponse.json()
+            
+            if (!pollData || !pollData.job) {
+                // If job data is missing, we can't proceed. Retrying might work if it's an eventual consistency issue,
+                // but usually it means a bad response. Let's retry a few times before failing? 
+                // For now, let's treat it as a transient error and continue polling allowed by maxAttempts
+                attempts++
+                continue 
+            }
+
             const job = pollData.job
             
             if (job.status === 'completed' && job.result) {
@@ -199,21 +209,7 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
       throw new Error(initialResult.error || "Failed to process message")
 
     } catch (error) {
-      if (error instanceof Error && error.message === "AbortError") {
-        return {
-           primaryResponse: {
-            content: "Request cancelled",
-            confidence: 0,
-            reasoning: "Request was cancelled",
-            suggestedActions: [],
-            collaborationRequests: [],
-            followUpTasks: []
-          },
-          collaborationResponses: [],
-          workflow: undefined
-        }
-      }
-       if (error instanceof Error && error.name === "AbortError") {
+      if (error instanceof Error && (error.message === "AbortError" || error.name === "AbortError")) {
         return {
            primaryResponse: {
             content: "Request cancelled",

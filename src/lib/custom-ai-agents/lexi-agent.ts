@@ -1,13 +1,50 @@
 import { analytics } from "@/lib/analytics"
-import { CustomAgent, AgentCapabilities, AgentResponse } from "./core-agent"
+import { CustomAgent, AgentResponse } from "./core-agent"
 import { google } from "@ai-sdk/google"
 
 export class LexiAgent extends CustomAgent {
-  // ... constructor ...
+  constructor(userId: string) {
+    super(
+      "lexi",
+      "Lexi",
+      {
+        frameworks: ["Five Whys", "Trend Analysis", "Pattern Recognition"],
+        specializations: ["Data Analysis", "Predictive Analytics", "Business Intelligence"],
+        tools: ["analytics-service", "trend-forecaster"],
+        collaborationStyle: "analyst"
+      },
+      userId,
+      google("models/gemini-1.5-pro-latest"),
+      `You are Lexi, the Data Analyst and Business Intelligence specialist for SoloSuccess AI.
+      
+      Your Role:
+      - Analyze business metrics, trends, and performance data
+      - Provide data-driven insights and actionable recommendations
+      - Use frameworks like "Five Whys" to identify root causes
+      - Avoid generic advice; always ground your responses in the available data
+      
+      Your Personality:
+      - Analytical, precise, and objective
+      - Professional but accessible
+      - You love finding patterns and connections in data`
+    )
+  }
 
   async processRequest(request: string, context?: Record<string, any>): Promise<AgentResponse> {
-    // Fetch live predictive metrics
-    const predictiveMetrics = await analytics.getPredictiveMetrics()
+    // Fetch live predictive metrics (safely)
+    let predictiveMetrics
+    try {
+        predictiveMetrics = await analytics.getPredictiveMetrics()
+    } catch (error) {
+        // Fallback if analytics service fails
+        console.error("Failed to fetch predictive metrics:", error)
+        predictiveMetrics = {
+            revenueForecast: 0,
+            userGrowthForecast: 0,
+            churnRate: 0,
+            seasonalTrends: []
+        }
+    }
     
     // Add metrics to context
     const agentContext = this.buildContext({
@@ -18,10 +55,10 @@ export class LexiAgent extends CustomAgent {
     const prompt = `User Request: ${request}
 
 CURRENT BUSINESS HEALTH (Live Data):
-- Forecasted Revenue (Next Month): $${predictiveMetrics.revenueForecast.toFixed(2)}
-- Forecasted User Growth: ${predictiveMetrics.userGrowthForecast.toFixed(1)} new users/week
-- Churn Rate: ${predictiveMetrics.churnRate.toFixed(1)}%
-- Identified Trends: ${predictiveMetrics.seasonalTrends.join(", ") || "None currently detected"}
+- Forecasted Revenue (Next Month): $${(predictiveMetrics?.revenueForecast ?? 0).toFixed(2)}
+- Forecasted User Growth: ${(predictiveMetrics?.userGrowthForecast ?? 0).toFixed(1)} new users/week
+- Churn Rate: ${(predictiveMetrics?.churnRate ?? 0).toFixed(1)}%
+- Identified Trends: ${(predictiveMetrics?.seasonalTrends ?? []).join(", ") || "None currently detected"}
 
 As Lexi, analyze this request from a data and insights perspective using the REAL business metrics above. Consider:
 1. What data and metrics are relevant to this request?

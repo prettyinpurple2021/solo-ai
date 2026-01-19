@@ -16,7 +16,12 @@ const conditionParser = new Parser()
 // Workflow Types
 export const WorkflowNodeSchema = z.object({
   id: z.string().uuid(),
-  type: z.enum(['trigger', 'action', 'condition', 'delay', 'webhook', 'ai_task', 'email', 'notification']),
+  type: z.enum([
+    'manual_trigger', 'scheduled_trigger', 'webhook_trigger', 
+    'ai_task', 'send_email', 'condition', 'delay', 'transform_data',
+    // Legacy support (though execution might fail without mapping)
+    'trigger', 'action', 'webhook', 'email', 'notification'
+  ]),
   name: z.string(),
   description: z.string().optional(),
   position: z.object({
@@ -159,6 +164,7 @@ interface NodePort {
 interface ExecutionContext {
   workflowId: string | number
   executionId: string | number
+  userId?: string
   variables: Record<string, unknown>
   nodeResults: Map<string, unknown>
   logger: typeof logger
@@ -286,19 +292,52 @@ export class WorkflowEngine {
       inputs: [{ id: 'input', name: 'Input Data', type: 'object', required: true }],
       outputs: [{ id: 'output', name: 'AI Result', type: 'object', required: true }],
       configSchema: z.object({
-        task: z.enum(['analyze', 'generate', 'summarize', 'translate', 'classify']),
+        task: z.enum(['analyze', 'generate', 'summarize', 'translate', 'classify', 'custom']),
         prompt: z.string(),
+        agentId: z.string().default('roxy'),
         model: z.string().default('gpt-4'),
         temperature: z.number().min(0).max(2).default(0.7)
       }),
-      execute: async (config: unknown, _context) => {
-        const configTyped = config as { task: string; prompt: string; model: string; temperature: number }
-        logInfo('Executing AI task', { task: configTyped.task, model: configTyped.model })
-        // In production, integrate with OpenAI/Anthropic
-        return {
-          result: `AI ${configTyped.task} completed (Simulated)`,
-          confidence: 0.95,
-          processingTime: 100
+      execute: async (config: unknown, context) => {
+        const configTyped = config as { task: string; prompt: string; agentId: string; model: string; temperature: number }
+        logInfo('Executing AI task', { task: configTyped.task, agentId: configTyped.agentId })
+        
+        try {
+          // Dynamic import to avoid circular dependencies
+          const { AgentCollaborationSystem } = await import('@/lib/custom-ai-agents/agent-collaboration-system')
+          
+          if (!context.userId) {
+             throw new Error("User ID is required for AI tasks")
+          }
+
+          const system = new AgentCollaborationSystem(context.userId)
+          
+          // Interpolate variables into prompt
+          let processedPrompt = configTyped.prompt
+          if (context.variables) {
+             Object.entries(context.variables).forEach(([key, value]) => {
+                const placeholder = `{{${key}}}`
+                if (processedPrompt.includes(placeholder)) {
+                   processedPrompt = processedPrompt.replace(new RegExp(placeholder, 'g'), String(value))
+                }
+             })
+          }
+
+          const response = await system.processRequest(
+            processedPrompt, 
+            { ...context.variables, workflowId: context.workflowId, executionId: context.executionId },
+            configTyped.agentId
+          )
+
+          return {
+            result: response.primaryResponse.content,
+            fullResponse: response,
+            confidence: response.primaryResponse.confidence,
+            processingTime: 0 // Tracked inside system
+          }
+        } catch (error) {
+           logError("AI Task failed", error)
+           throw error
         }
       }
     })
@@ -558,6 +597,7 @@ export class WorkflowEngine {
       nodeResults: new Map(),
       variables: { ...workflow.variables, ...inputData },
       executionTime: 0,
+      startedBy: userId,
       logs: []
     }
   }
@@ -580,7 +620,10 @@ export class WorkflowEngine {
       logInfo('Starting workflow execution run', { workflowId: workflow.id, executionId: execution.id })
 
       // Find trigger nodes
-      const triggerNodes = workflow.nodes.filter(node => node.type === 'trigger')
+      const triggerNodes = workflow.nodes.filter(node => {
+         const nodeType = this.nodeTypes.get(node.type)
+         return nodeType?.category === 'trigger' || node.type === 'trigger'
+      })
       if (triggerNodes.length === 0) {
         throw new Error('No trigger nodes found in workflow')
       }
@@ -646,7 +689,10 @@ export class WorkflowEngine {
     const pendingNodes = new Set(workflow.nodes.map(node => node.id))
 
     // Start with trigger nodes
-    const triggerNodes = workflow.nodes.filter(node => node.type === 'trigger')
+    const triggerNodes = workflow.nodes.filter(node => {
+       const nodeType = this.nodeTypes.get(node.type)
+       return nodeType?.category === 'trigger' || node.type === 'trigger'
+    })
 
     for (const triggerNode of triggerNodes) {
       await this.executeNode(workflow, triggerNode, execution, executedNodes)
@@ -701,6 +747,7 @@ export class WorkflowEngine {
       const context: ExecutionContext = {
         workflowId: workflow.id,
         executionId: execution.id,
+        userId: execution.startedBy, // Populate userId from execution
         variables: execution.variables,
         nodeResults: execution.nodeResults,
         logger
@@ -845,6 +892,7 @@ export class WorkflowEngine {
       startedAt: execution.started_at!,
       completedAt: execution.completed_at,
       executionTime: execution.duration || 0,
+      startedBy: execution.user_id,
       nodeResults: new Map(Object.entries(execution.output as Record<string, unknown> || {})),
       variables: execution.variables as any,
       logs: execution.logs as any
@@ -867,6 +915,7 @@ export class WorkflowEngine {
       startedAt: e.started_at!,
       completedAt: e.completed_at,
       executionTime: e.duration || 0,
+      startedBy: e.user_id,
       nodeResults: new Map(Object.entries(e.output as Record<string, unknown> || {})),
       variables: e.variables as any,
       logs: e.logs as any
