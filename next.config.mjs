@@ -316,4 +316,19 @@ const nextConfig = {
   },
 };
 
-export default nextConfig;
+const withPWA = (await import("@ducanh2912/next-pwa")).default({
+  dest: "public",
+  disable: process.env.NODE_ENV === "development",
+  register: true,
+  scope: "/",
+  sw: "sw.js",
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+  sourcemap: false,
+  workboxOptions: {
+    disableDevLogs: true,
+  },
+});
+
+export default withPWA(nextConfig);
