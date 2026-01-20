@@ -3,37 +3,19 @@
 import { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { 
-  Workflow as WorkflowIcon,
-  Play,
-  Eye,
-  Settings,
-  BarChart3,
-  Zap,
-  Sparkles,
-  Crown,
-  Activity,
-  TrendingUp,
-  Target,
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Brain,
-  Users,
-  Calendar,
-  Filter,
-  Search,
-  Plus,
+import {  Plus,
   Download,
   Upload,
-  RefreshCw,
   Info,
   Star,
-  Bookmark,
-  Share2,
-  MoreHorizontal,
-  ChevronRight,
-  ChevronDown
+  Activity,
+  CheckCircle,
+  AlertCircle,
+  BarChart3,
+  Workflow as WorkflowIcon,
+  Zap,
+  Clock,
+  Eye
 } from 'lucide-react'
 import { BossButton } from '@/components/ui/boss-button'
 import { Badge } from '@/components/ui/badge'
@@ -43,15 +25,7 @@ import { WorkflowExecutionMonitor } from './workflow-execution-monitor'
 import { cn } from '@/lib/utils'
 import { logInfo, logError } from '@/lib/logger'
 import { useToast } from '@/hooks/use-toast'
-
-// Define types locally if not exported elsewhere
-export interface Workflow {
-  id: string
-  name: string
-  nodes: any[]
-  edges: any[]
-}
-
+import type { Workflow } from '@/lib/workflow-engine'
 interface WorkflowStats {
   totalWorkflows: number
   activeWorkflows: number
@@ -88,8 +62,6 @@ export function WorkflowDashboard({ className = "" }: WorkflowDashboardProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'builder' | 'templates' | 'executions'>('overview')
   const [stats, setStats] = useState<WorkflowStats>(INITIAL_STATS)
   const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null)
-  const [isCreatingWorkflow, setIsCreatingWorkflow] = useState(false)
-  const [loading, setLoading] = useState(false)
   
   const { toast } = useToast()
 
@@ -150,15 +122,36 @@ export function WorkflowDashboard({ className = "" }: WorkflowDashboardProps) {
   }, [toast])
 
   // Handle workflow execution
-  const handleExecuteWorkflow = useCallback((workflow: Workflow) => {
-    logInfo('Workflow execution started', { workflowId: workflow.id })
-    setActiveTab('executions')
-    
-    toast({
-      title: 'Workflow Started',
-      description: `${workflow.name} is now executing`,
-      variant: 'success'
-    })
+  const handleExecuteWorkflow = useCallback(async (workflow: Workflow) => {
+    try {
+        logInfo('Workflow execution started', { workflowId: workflow.id })
+        
+        const response = await fetch('/api/workflows/execute', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ workflowId: workflow.id })
+        })
+
+        const data = await response.json()
+
+        if (data.success) {
+             toast({
+              title: 'Workflow Started',
+              description: `${workflow.name} is now executing`,
+              variant: 'success'
+            })
+            setActiveTab('executions')
+        } else {
+            throw new Error(data.error || 'Failed to start execution')
+        }
+    } catch (error) {
+        logError('Failed to execute workflow', error)
+        toast({
+            title: 'Execution Failed',
+            description: 'Could not start workflow execution',
+            variant: 'destructive'
+        })
+    }
   }, [toast])
 
   // Format duration

@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from 'react'
-import { z } from 'zod'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,7 +28,6 @@ import {
 } from 'lucide-react'
 import { PrimaryButton } from '@/components/ui/button'
 import { Loading } from '@/components/ui/loading'
-import { cn } from '@/lib/utils'
 import { useToast } from '@/hooks/use-toast'
 import { logError, logInfo } from '@/lib/logger'
 import type { Workflow, WorkflowNode, WorkflowEdge, NodeType } from '@/lib/workflow-engine'
@@ -134,6 +132,10 @@ export function VisualWorkflowBuilder({
   const [nodeTypes, setNodeTypes] = React.useState<NodeType[]>([])
   const [isLoadingNodeTypes, setIsLoadingNodeTypes] = React.useState(true)
 
+  // Fetch agents from API
+  const [agents, setAgents] = React.useState<any[]>([])
+  const [isLoadingAgents, setIsLoadingAgents] = React.useState(true)
+
   React.useEffect(() => {
     async function fetchNodeTypes() {
       try {
@@ -153,7 +155,23 @@ export function VisualWorkflowBuilder({
         setIsLoadingNodeTypes(false)
       }
     }
+
+    async function fetchAgents() {
+        try {
+            const response = await fetch('/api/agents')
+            const data = await response.json()
+            if (data.success && Array.isArray(data.data)) {
+                setAgents(data.data)
+            }
+        } catch (error) {
+            logError('Failed to fetch agents', error)
+        } finally {
+            setIsLoadingAgents(false)
+        }
+    }
+
     fetchNodeTypes()
+    fetchAgents()
   },   [toast])
 
   // Add new node
@@ -217,6 +235,7 @@ export function VisualWorkflowBuilder({
   }, [selectedNode])
 
   // Add edge between nodes
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _addEdge = React.useCallback((sourceId: string, targetId: string, sourceHandle?: string, targetHandle?: string) => {
     const newEdge: WorkflowEdge = {
       id: crypto.randomUUID(),
@@ -236,7 +255,7 @@ export function VisualWorkflowBuilder({
   }, [])
 
   // Delete edge
-  const _deleteEdge = React.useCallback((edgeId: string) => {
+  const deleteEdge = React.useCallback((edgeId: string) => {
     setWorkflow((prev: Workflow) => ({
       ...prev,
       edges: prev.edges.filter((edge: WorkflowEdge) => edge.id !== edgeId)
@@ -248,6 +267,10 @@ export function VisualWorkflowBuilder({
 
     logInfo('Edge deleted from workflow', { edgeId })
   }, [selectedEdge])
+
+
+
+
 
   // Save workflow
   const handleSave = React.useCallback(async () => {
@@ -522,6 +545,99 @@ export function VisualWorkflowBuilder({
     )
   }, [workflow.nodes, selectedEdge])
 
+  // Render node configuration form based on type
+  const renderNodeConfig = (node: WorkflowNode) => {
+    switch (node.type) {
+      case 'ai_task':
+        return (
+          <>
+            {/* Select Agent - Show loading state */}
+            {isLoadingAgents ? (
+                <div className="flex items-center gap-2 p-2 text-sm text-gray-400">
+                    <Loading size="sm" /> 
+                    <span>Loading agents...</span>
+                </div>
+            ) : (
+                <>
+                  <div>
+                    <Label className="mb-2 block">Select Agent</Label>
+                    <Select
+                      value={node.config.agentId as string || ''}
+                      onValueChange={(value) => _updateNodeConfig(node.id, { agentId: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Choose an agent..." />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {agents.map(agent => (
+                          <SelectItem key={agent.id} value={agent.id}>
+                            {agent.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {node.config.agentId && (
+                      <div className="text-xs text-purple-300 mt-1">
+                          {agents.find(a => a.id === node.config.agentId)?.description}
+                      </div>
+                  )}
+                </>
+            )}
+            
+            <div>
+              <Label className="mb-2 block">Prompt</Label>
+              <Textarea 
+                value={node.config.prompt as string || ''}
+                onChange={(e) => _updateNodeConfig(node.id, { prompt: e.target.value })}
+                placeholder="Describe what you want the agent to do..."
+                rows={5}
+                className="text-sm"
+              />
+            </div>
+            
+             <div>
+              <Label className="mb-2 block">Task Type</Label>
+               <Select
+                value={node.config.task as string || 'custom'}
+                onValueChange={(value) => _updateNodeConfig(node.id, { task: value })}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                    <SelectItem value="custom">Custom Instruction</SelectItem>
+                    <SelectItem value="analysis">Analysis</SelectItem>
+                    <SelectItem value="generation">Content Generation</SelectItem>
+                    <SelectItem value="decision">Decision Making</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )
+      
+      case 'manual_trigger':
+        return (
+             <div className="space-y-2">
+                <p className="text-xs text-gray-400">
+                    This workflow is triggered manually. You can define expected inputs here.
+                </p>
+                {/* Future: Add dynamic input field definition here */}
+                 <div className="bg-purple-900/20 p-3 rounded text-xs">
+                    No configuration options available yet.
+                 </div>
+            </div>
+        )
+
+      default:
+        return (
+             <div className="text-xs text-gray-500 italic">
+                No specific configuration for this node type.
+             </div>
+        )
+    }
+  }
+
   return (
     <div className={`h-full flex flex-col ${className}`}>
       {/* Header */}
@@ -646,6 +762,29 @@ export function VisualWorkflowBuilder({
                 </div>
               </div>
 
+              {selectedEdge && (
+                <div>
+                    <h3 className="font-semibold mb-2">Edge Configuration</h3>
+                    <div className="p-3 border border-purple-800/30 rounded-lg">
+                        <div className="flex items-center justify-between">
+                             <div className="text-sm">Connection ID:</div>
+                             <div className="text-xs text-gray-400 font-mono">{selectedEdge.id.slice(0, 8)}...</div>
+                        </div>
+                        <div className="mt-4">
+                             <Button 
+                                variant="destructive" 
+                                size="sm" 
+                                className="w-full"
+                                onClick={() => deleteEdge(selectedEdge.id)}
+                            >
+                                <Trash2 className="h-4 w-4 mr-2" />
+                                Delete Connection
+                            </Button>
+                        </div>
+                    </div>
+                </div>
+              )}
+
               {selectedNode && (
                 <div>
                   <h3 className="font-semibold mb-2">Node Configuration</h3>
@@ -688,7 +827,10 @@ export function VisualWorkflowBuilder({
                         />
                       </div>
 
-                      {/* Node-specific configuration would go here */}
+                      {/* Node-specific configuration */}
+                      <div className="pt-4 border-t border-purple-800/30 space-y-4">
+                        {renderNodeConfig(selectedNode)}
+                      </div>
                       <div className="text-xs text-gray-500">
                         Node type: {selectedNode.type}
                       </div>
