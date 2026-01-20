@@ -300,7 +300,91 @@ export const postCommentsRelations = relations(postComments, ({ one }) => ({
     }),
 }));
 
-// ... (previous code)
+// Collaboration Sessions table
+export const collaborationSessions = pgTable('collaboration_sessions', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  name: varchar('name', { length: 255 }).notNull(),
+  goal: text('goal').notNull(),
+  status: varchar('status', { length: 50 }).default('active'), // active, paused, completed, archived
+  configuration: jsonb('configuration').default('{}'),
+  metadata: jsonb('metadata').default('{}'),
+  created_at: timestamp('created_at').defaultNow(),
+  updated_at: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  userIdIdx: index('collaboration_sessions_user_id_idx').on(table.user_id),
+}));
+
+export const collaborationSessionsRelations = relations(collaborationSessions, ({ one, many }) => ({
+  user: one(users, {
+    fields: [collaborationSessions.user_id],
+    references: [users.id],
+  }),
+  participants: many(collaborationParticipants),
+  messages: many(collaborationMessages),
+}));
+
+// Collaboration Participants table
+export const collaborationParticipants = pgTable('collaboration_participants', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  session_id: text('session_id').notNull().references(() => collaborationSessions.id, { onDelete: 'cascade' }),
+  agent_id: varchar('agent_id', { length: 50 }).notNull(), // e.g., 'roxy', 'echo'
+  role: varchar('role', { length: 50 }).default('member'),
+  joined_at: timestamp('joined_at').defaultNow(),
+}, (table) => ({
+  sessionIdIdx: index('collaboration_participants_session_id_idx').on(table.session_id),
+  agentIdIdx: index('collaboration_participants_agent_id_idx').on(table.agent_id),
+}));
+
+export const collaborationParticipantsRelations = relations(collaborationParticipants, ({ one }) => ({
+  session: one(collaborationSessions, {
+    fields: [collaborationParticipants.session_id],
+    references: [collaborationSessions.id],
+  }),
+}));
+
+// Collaboration Messages table
+export const collaborationMessages = pgTable('collaboration_messages', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  session_id: text('session_id').notNull().references(() => collaborationSessions.id, { onDelete: 'cascade' }),
+  from_agent_id: varchar('from_agent_id', { length: 50 }).notNull(), // 'user' or agent_id
+  content: text('content').notNull(),
+  message_type: varchar('message_type', { length: 50 }).default('text'), // text, tool_use, tool_result, system
+  metadata: jsonb('metadata').default('{}'),
+  created_at: timestamp('created_at').defaultNow(),
+}, (table) => ({
+  sessionIdIdx: index('collaboration_messages_session_id_idx').on(table.session_id),
+  createdAtIdx: index('collaboration_messages_created_at_idx').on(table.created_at),
+}));
+
+// ... existing code ...
+
+export const collaborationMessagesRelations = relations(collaborationMessages, ({ one }) => ({
+  session: one(collaborationSessions, {
+    fields: [collaborationMessages.session_id],
+    references: [collaborationSessions.id],
+  }),
+}));
+
+// Collaboration Checkpoints table
+export const collaborationCheckpoints = pgTable('collaboration_checkpoints', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  session_id: text('session_id').notNull().references(() => collaborationSessions.id, { onDelete: 'cascade' }),
+  timestamp: timestamp('timestamp').defaultNow(),
+  state: jsonb('state').notNull(),
+  description: text('description'),
+  created_at: timestamp('created_at').defaultNow(),
+}, (table) => ({
+  sessionIdIdx: index('collaboration_checkpoints_session_id_idx').on(table.session_id),
+}));
+
+export const collaborationCheckpointsRelations = relations(collaborationCheckpoints, ({ one }) => ({
+  session: one(collaborationSessions, {
+    fields: [collaborationCheckpoints.session_id],
+    references: [collaborationSessions.id],
+  }),
+}));
+
 
 export const follows = pgTable('follows', {
   follower_id: text('follower_id').notNull().references(() => users.id, { onDelete: 'cascade' }),

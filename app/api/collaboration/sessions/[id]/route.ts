@@ -3,7 +3,7 @@
  * Handles operations on specific collaboration sessions
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { CollaborationHub } from '@/lib/collaboration-hub'
@@ -40,7 +40,7 @@ const UpdateSessionSchema = z.object({
  * Get details of a specific collaboration session
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -57,7 +57,7 @@ export async function GET(
     const sessionId = resolvedParams.id
 
     // Get session from collaboration hub
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Collaboration session not found' },
@@ -74,7 +74,7 @@ export async function GET(
     }
 
     // Get session state and context
-    const sessionState = sessionManager.getSessionState(sessionId)
+    const sessionState = await sessionManager.getSessionStateAsync(sessionId)
     const conversationContext = await contextManager.getConversationContext(sessionId)
 
     // Get agent details
@@ -155,7 +155,7 @@ export async function PATCH(
     const sessionId = resolvedParams.id
 
     // Get session from collaboration hub
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Collaboration session not found' },
@@ -180,7 +180,7 @@ export async function PATCH(
     let message = 'Session updated successfully'
 
     if (validatedData.status) {
-      const currentState = sessionManager.getSessionState(sessionId)
+      const currentState = await sessionManager.getSessionStateAsync(sessionId)
       const currentStatus = currentState?.status
 
       switch (validatedData.status) {
@@ -218,7 +218,7 @@ export async function PATCH(
     }
 
     // Get updated session state
-    const updatedSessionState = sessionManager.getSessionState(sessionId)
+    const updatedSessionState = await sessionManager.getSessionStateAsync(sessionId)
 
     return NextResponse.json({
       success: true,
@@ -255,7 +255,7 @@ export async function PATCH(
  * Archive a collaboration session
  */
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -272,7 +272,7 @@ export async function DELETE(
     const sessionId = resolvedParams.id
 
     // Get session from collaboration hub
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Collaboration session not found' },

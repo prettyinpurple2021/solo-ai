@@ -3,7 +3,7 @@
  * Handles session lifecycle operations: join, leave, pause, resume, transfer
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { CollaborationHub } from '@/lib/collaboration-hub'
@@ -57,7 +57,12 @@ const SessionControlSchema = z.discriminatedUnion('action', [
   LeaveSessionSchema,
   PauseSessionSchema,
   ResumeSessionSchema,
-  TransferSessionSchema
+  TransferSessionSchema,
+  z.object({
+    action: z.literal('end'),
+    reason: z.string().optional(),
+    summary: z.string().optional()
+  })
 ])
 
 
@@ -91,7 +96,7 @@ export async function POST(
     }
 
     // Get session
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Session not found' },
@@ -119,7 +124,7 @@ export async function POST(
         }
 
         // Get updated session to return participant info
-        const updatedSession = sessionManager.getSession(sessionId)
+        const updatedSession = await sessionManager.getSession(sessionId)
         
         return NextResponse.json({
           success: true,
@@ -148,7 +153,7 @@ export async function POST(
         }
 
         // Get updated session to return participant info
-        const updatedSessionAfterLeave = sessionManager.getSession(sessionId)
+        const updatedSessionAfterLeave = await sessionManager.getSession(sessionId)
 
         return NextResponse.json({
           success: true,
@@ -257,6 +262,38 @@ export async function POST(
           message: 'Session transferred successfully'
         })
 
+      case 'end':
+        // Verify user owns session or has admin rights
+        if (session.userId !== userId) {
+          return NextResponse.json(
+            { error: 'Forbidden', message: 'Only session owner can end session' },
+            { status: 403 }
+          )
+        }
+
+        const endResult = await sessionManager.completeSession(
+          sessionId, 
+          validatedAction.summary || validatedAction.reason
+        )
+
+        if (!endResult) {
+          return NextResponse.json({
+            error: 'Bad Request',
+            message: 'Failed to end session'
+          }, { status: 400 })
+        }
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            sessionId,
+            status: 'completed',
+            completedAt: new Date().toISOString(),
+            reason: validatedAction.reason
+          },
+          message: 'Session ended successfully'
+        })
+
       default:
         return NextResponse.json({
           error: 'Bad Request',
@@ -287,7 +324,7 @@ export async function POST(
  * Get session control status and available actions
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -313,7 +350,7 @@ export async function GET(
     }
 
     // Get session
-    const session = sessionManager.getSession(sessionId)
+    const session = await sessionManager.getSession(sessionId)
     if (!session) {
       return NextResponse.json(
         { error: 'Not Found', message: 'Session not found' },
@@ -366,7 +403,7 @@ export async function GET(
         isOwner,
         isParticipant,
         availableActions,
-        participants: session.participatingAgents.map(agentId => {
+        participants: session.participatingAgents.map((agentId: string) => {
           const agent = collaborationHub.getAgent(agentId)
           return {
             agentId,

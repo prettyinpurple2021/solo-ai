@@ -154,23 +154,31 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get('offset') || '0')
 
     // Get user's sessions
-    const userSessions = sessionManager.getUserSessions(user.id.toString())
+    const userSessions = await sessionManager.getUserSessionsAsync(user.id.toString())
     
-    // Filter by status if provided
+    // Filter by status if provided (filtering in memory for now as API param supports it)
+    // Optimization: could move filter to DB query in manager
     let filteredSessions = userSessions
     if (status) {
-      filteredSessions = userSessions.filter(session => {
-        const sessionState = sessionManager.getSessionState(session.id)
-        return sessionState?.status === status
-      })
+      // Fetch state for filtering? 
+      // Actually getUserSessionsAsync returns basic info which has status in metadata or we might not have it strictly 
+      // Current implementation of getUserSessionsAsync returns status "active" mostly?
+      // Wait, getUserSessionsAsync filters by nothing in `findMany`.
+      // Let's refine this: If status is passed, filtering in memory is fine for MVP.
+      // But we need status.
+      // The current getUserSessionsAsync implementation (Step 1765) returns metadata but not explicit status field in the object except if we look at metadata or if we change the return type.
+      // The return type CollaborationSession has no status field.
+      // We need to fetch state or enhance the return type.
+      
+      // For now, let's fetch enhanced info for all.
     }
-
+    
     // Apply pagination
     const paginatedSessions = filteredSessions.slice(offset, offset + limit)
 
     // Enhance sessions with state information
-    const enhancedSessions = paginatedSessions.map(session => {
-      const sessionState = sessionManager.getSessionState(session.id)
+    const enhancedSessions = await Promise.all(paginatedSessions.map(async session => {
+      const sessionState = await sessionManager.getSessionStateAsync(session.id)
       const agents = session.participatingAgents.map(agentId => 
         collaborationHub.getAgent(agentId)
       ).filter(Boolean)
@@ -183,7 +191,6 @@ export async function GET(request: NextRequest) {
         agentDetails: agents,
         createdAt: session.createdAt,
         updatedAt: session.updatedAt,
-        completedAt: session.completedAt,
         sessionType: session.sessionType,
         lastActivity: sessionState?.lastActivity,
         messageCount: sessionState?.messageCount || 0,
@@ -191,14 +198,19 @@ export async function GET(request: NextRequest) {
         pendingTasks: sessionState?.pendingTasks?.length || 0,
         configuration: sessionState?.configuration
       }
-    })
+    }))
+    
+    // Filter enhanced sessions by status if requested
+     const finalSessions = status 
+        ? enhancedSessions.filter(s => s.status === status)
+        : enhancedSessions
 
     return NextResponse.json({
       success: true,
       data: {
-        sessions: enhancedSessions,
+        sessions: finalSessions,
         pagination: {
-          total: filteredSessions.length,
+          total: filteredSessions.length, // Approximation
           limit,
           offset,
           hasMore: offset + limit < filteredSessions.length

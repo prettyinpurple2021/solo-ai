@@ -6,7 +6,7 @@
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { z } from 'zod'
 import { db } from '@/db'
-import { chatMessages, chatConversations } from '@/db/schema'
+import { chatMessages, chatConversations, collaborationMessages } from '@/db/schema'
 import { eq, desc, and } from 'drizzle-orm'
 import { generateText } from 'ai'
 import { getTeamMemberConfig } from '@/lib/ai-config'
@@ -480,7 +480,7 @@ export class MessageRouter {
           { role: 'user', content: `${message.fromAgent}: ${message.content}` }
         ],
         temperature: 0.7,
-        maxTokens: 1000 // Corrected property name
+        // maxTokens: 1000
       })
 
       if (!text || text.trim().length === 0) return
@@ -576,20 +576,18 @@ export class MessageRouter {
       // Otherwise it's 'assistant'
       const role = message.fromAgent === 'user' ? 'user' : 'assistant'
       
-      await db.insert(chatMessages).values({
+      // Persist to collaboration messages table
+      await db.insert(collaborationMessages).values({
         id: message.id,
-        conversation_id: message.sessionId,
-        user_id: session.userId, // This links the message to the session owner
-        role: role,
+        session_id: message.sessionId,
+        from_agent_id: message.fromAgent,
         content: message.content,
+        message_type: message.messageType,
         metadata: {
           ...message.metadata,
-          fromAgent: message.fromAgent,
           toAgent: message.toAgent,
-          messageType: message.messageType,
           deliveryStatus: deliveryResult.failed.length === 0 ? 'delivered' : 'partial'
-        },
-        created_at: message.timestamp
+        }
       })
 
       logInfo(`📨 Message persisted: ${message.id} (${message.fromAgent} -> ${message.toAgent || 'broadcast'})`)
