@@ -17,6 +17,7 @@ import { CssScriptCleanup } from "@/components/util/css-script-cleanup"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { OfflineProvider } from "@/components/providers/offline-provider"
+import PWAInstallPrompt from "@/components/mobile/pwa-install-prompt"
 
 // Font configuration - Cyberpunk Design System v3 fonts
 const orbitronFont = Orbitron({ 
@@ -151,6 +152,7 @@ export default function RootLayout({
               </ChatProvider>
               <PerformanceMonitor />
               <ServiceWorkerRegister />
+              <PWAInstallPrompt />
               {!exitIntentDisabled && <ExitIntentSurvey />}
               <SmartTipManager />
               <FeedbackWidget />

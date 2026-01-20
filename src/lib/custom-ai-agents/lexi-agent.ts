@@ -1,6 +1,6 @@
 import { analytics } from "@/lib/analytics"
 import { CustomAgent, AgentResponse } from "./core-agent"
-import { google } from "@ai-sdk/google"
+import { openai } from "@ai-sdk/openai"
 
 export class LexiAgent extends CustomAgent {
   constructor(userId: string) {
@@ -14,7 +14,7 @@ export class LexiAgent extends CustomAgent {
         collaborationStyle: "analyst"
       },
       userId,
-      google("models/gemini-1.5-pro-latest"),
+      openai("gpt-4o"),
       `You are Lexi, the Data Analyst and Business Intelligence specialist for SoloSuccess AI.
       
       Your Role:

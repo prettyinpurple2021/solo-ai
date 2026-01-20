@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import React, { useState, useEffect, useRef } from 'react'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
@@ -11,20 +11,17 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { 
   Send, 
-  Bot, 
   User, 
   Mic, 
   Copy, 
-  MoreVertical,
   ChevronDown,
   MessageSquare,
   X,
-  Sparkles,
-  Zap
+  Sparkles
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
-
+import { useVoiceInput } from '@/hooks/use-voice-input'
 
 interface Message {
   id: string
@@ -118,6 +115,31 @@ export default function MobileChatInterface({
       handleSendMessage()
     }
   }
+
+  const { 
+    isListening, 
+    transcript, 
+    startListening, 
+    stopListening, 
+    resetTranscript 
+  } = useVoiceInput()
+
+  useEffect(() => {
+    if (transcript) {
+      setInput(prev => {
+        // Avoid duplicating if the transcript is appending
+        if (prev.endsWith(transcript)) return prev
+        return prev + (prev ? " " : "") + transcript
+      })
+      resetTranscript()
+      
+      // Auto-resize
+      if (textareaRef.current) {
+        textareaRef.current.style.height = '44px'
+        textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 120) + 'px'
+      }
+    }
+  }, [transcript, resetTranscript])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value)
@@ -256,7 +278,7 @@ export default function MobileChatInterface({
                 {selectedAgent && (
                   <div className="flex flex-wrap gap-1 justify-center">
                     {selectedAgent.capabilities.slice(0, 3).map((capability, index) => (
-                      <Badge key={index} variant="outline" className="text-xs">
+                      <Badge key={index} variant="cyan" className="text-xs">
                         {capability}
                       </Badge>
                     ))}
@@ -386,21 +408,33 @@ export default function MobileChatInterface({
                 />
               </div>
               
-              <Button
-                onClick={handleSendMessage}
-                disabled={!input.trim() || !selectedAgent || isLoading}
-                size="sm"
-                className="h-11 w-11 p-0 bg-neon-purple hover:bg-neon-purple/80"
-              >
-                <Send className="w-4 h-4" />
-              </Button>
+                <Button 
+                  onClick={isListening ? stopListening : startListening}
+                  variant="ghost" 
+                  size="sm"
+                  className={cn(
+                    "h-11 w-11 p-0 transition-colors",
+                    isListening ? "text-red-500 hover:text-red-600 bg-red-500/10" : "text-gray-400 hover:text-white"
+                  )}
+                >
+                  {isListening ? <X className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                </Button>
+
+                <Button
+                  onClick={handleSendMessage}
+                  disabled={!input.trim() || !selectedAgent || isLoading}
+                  size="sm"
+                  className="h-11 w-11 p-0 bg-neon-purple hover:bg-neon-purple/80"
+                >
+                  <Send className="w-4 h-4" />
+                </Button>
             </div>
             
             {/* Quick actions */}
             <div className="flex items-center justify-between mt-2">
               <div className="flex gap-1">
                 {selectedAgent && selectedAgent.capabilities.slice(0, 2).map((capability, index) => (
-                  <Badge key={index} variant="outline" className="text-xs">
+                  <Badge key={index} variant="cyan" className="text-xs">
                     <Sparkles className="w-3 h-3 mr-1" />
                     {capability}
                   </Badge>
