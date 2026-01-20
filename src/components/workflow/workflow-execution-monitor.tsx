@@ -210,7 +210,57 @@ export function WorkflowExecutionMonitor({
       refreshIntervalRef.current = setInterval(() => {
         fetchExecutions()
         fetchStats()
-      }, 5000) // Refresh every 5 seconds
+        // Also refresh selected execution if it's active
+        if (selectedExecution && (selectedExecution.status === 'running' || selectedExecution.status === 'pending')) {
+             fetch(`/api/workflows/executions?id=${selectedExecution.id}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success && data.data) {
+                        // Map the detailed data back to WorkflowExecution structure
+                        const updatedDetails: WorkflowExecution = {
+                            id: data.data.id,
+                            workflowId: data.data.workflow_id,
+                            workflowName: data.data.workflowName,
+                            status: data.data.status,
+                            startedAt: new Date(data.data.started_at),
+                            completedAt: data.data.completed_at ? new Date(data.data.completed_at) : null,
+                            duration: data.data.duration,
+                            executionTime: data.data.duration || 0,
+                            nodeResults: new Map(), // We could map `steps` output to this if needed?
+                            progress: data.data.status === 'completed' ? 100 : (data.data.status === 'failed' ? 100 : 50),
+                            currentStep: data.data.status === 'running' ? 'Processing...' : null,
+                            steps: data.data.steps.map((s: any) => ({
+                                id: s.nodeId, // Use nodeId as step ID
+                                name: `Node ${s.nodeId}`, // Placeholder name, could look up real node name if we had workflow def here
+                                status: s.status,
+                                startedAt: s.startedAt ? new Date(s.startedAt) : undefined,
+                                completedAt: s.completedAt ? new Date(s.completedAt) : undefined,
+                                duration: s.completedAt && s.startedAt ? new Date(s.completedAt).getTime() - new Date(s.startedAt).getTime() : 0,
+                                output: s.output
+                            })),
+                            variables: typeof data.data.variables === 'string' ? JSON.parse(data.data.variables) : data.data.variables,
+                            error: data.data.error,
+                            logs: Array.isArray(data.data.logs) ? data.data.logs.map((l: any) => ({
+                                ...l,
+                                timestamp: new Date(l.timestamp || Date.now())
+                            })) : [],
+                            metadata: {
+                                executedBy: 'system',
+                                environment: 'production',
+                                version: '1.0.0',
+                                retryCount: 0,
+                                maxRetries: 3
+                            }
+                        }
+                        setSelectedExecution(updatedDetails)
+                        
+                        // Also update it in the list
+                        setExecutions(prev => prev.map(e => e.id === updatedDetails.id ? updatedDetails : e))
+                    }
+                })
+                .catch(err => logError('Failed to refresh detailed execution', err))
+        }
+      }, 2000) // Poll every 2 seconds
     } else {
       if (refreshIntervalRef.current) {
         clearInterval(refreshIntervalRef.current)
@@ -223,7 +273,7 @@ export function WorkflowExecutionMonitor({
         clearInterval(refreshIntervalRef.current)
       }
     }
-  }, [autoRefresh, fetchExecutions, fetchStats])
+  }, [autoRefresh, fetchExecutions, fetchStats, selectedExecution])
 
   // Filter executions
   useEffect(() => {

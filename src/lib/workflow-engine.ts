@@ -743,6 +743,22 @@ export class WorkflowEngine {
         nodeId: node.id, nodeType: node.type
       })
 
+      // Log start
+      execution.logs?.push({
+        timestamp: new Date(),
+        level: 'info',
+        message: `Node ${node.name} started`,
+        metadata: { nodeId: node.id, status: 'started' }
+      })
+
+      // Persist start state
+      await db.update(workflowExecutions)
+        .set({
+          logs: execution.logs as any,
+          variables: execution.variables as any
+        })
+        .where(eq(workflowExecutions.id, Number(execution.id)))
+
       // Prepare execution context
       const context: ExecutionContext = {
         workflowId: workflow.id,
@@ -754,7 +770,7 @@ export class WorkflowEngine {
       }
 
       // Get input data from connected nodes
-      const inputEdges = workflow.edges.filter(edge => edge.target === node.id)
+      // const inputEdges = workflow.edges.filter(edge => edge.target === node.id)
       // const _inputData = inputEdges.length > 0 ? 
       //   execution.nodeResults.get(inputEdges[0].source) : 
       //   execution.variables
@@ -771,12 +787,21 @@ export class WorkflowEngine {
         timestamp: new Date(),
         level: 'info',
         message: `Node ${node.name} executed successfully`,
-        metadata: { nodeId: node.id, result }
+        metadata: { nodeId: node.id, result, status: 'completed' }
       })
 
       logInfo('Node execution completed', {
         nodeId: node.id, result
       })
+
+      // Persist completion state
+      await db.update(workflowExecutions)
+        .set({
+            logs: execution.logs as any,
+            output: Object.fromEntries(execution.nodeResults) as any, // Persist intermediate results
+            variables: execution.variables as any
+        })
+        .where(eq(workflowExecutions.id, Number(execution.id)))
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
@@ -784,8 +809,16 @@ export class WorkflowEngine {
         timestamp: new Date(),
         level: 'error',
         message: `Node ${node.name} execution failed: ${errorMessage}`,
-        metadata: { nodeId: node.id, error: errorMessage }
+        metadata: { nodeId: node.id, error: errorMessage, status: 'failed' }
       })
+      
+      // Persist error state
+      await db.update(workflowExecutions)
+        .set({
+            logs: execution.logs as any
+        })
+        .where(eq(workflowExecutions.id, Number(execution.id)))
+
       logError('Node execution failed:', error instanceof Error ? error : new Error(errorMessage))
       throw new Error(`Node ${node.name} execution failed: ${error}`)
     }

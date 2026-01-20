@@ -24,6 +24,58 @@ export async function GET(req: Request) {
     const page = parseInt(searchParams.get('page') || '1')
     const offset = (page - 1) * limit
 
+    // If ID is provided, fetch single execution with full details
+    const id = searchParams.get('id')
+    if (id) {
+       const execution = await db.query.workflowExecutions.findFirst({
+           where: eq(workflowExecutions.id, parseInt(id)),
+           with: {
+               workflow: true
+           }
+       })
+
+       if (!execution) {
+           return NextResponse.json({ success: false, error: 'Execution not found' }, { status: 404 })
+       }
+
+       if (execution.user_id !== session.user.id) {
+           return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 })
+       }
+
+       // Parse logs to reconstruct steps
+       // We expect logs to contain metadata with nodeId and status
+       const steps = (execution.logs as any[] || []).reduce<any[]>((acc, log) => {
+           if (log.metadata?.nodeId && log.metadata?.status) {
+                const existingStep = acc.find(s => s.nodeId === log.metadata.nodeId)
+                if (existingStep) {
+                    if (log.metadata.status === 'completed' || log.metadata.status === 'failed') {
+                        existingStep.status = log.metadata.status
+                        existingStep.completedAt = log.timestamp
+                        existingStep.output = log.metadata.result || log.metadata.error
+                    }
+                } else {
+                    acc.push({
+                        nodeId: log.metadata.nodeId,
+                        status: log.metadata.status,
+                        startedAt: log.timestamp,
+                        completedAt: log.metadata.status === 'completed' ? log.timestamp : null,
+                        output: log.metadata.result
+                    })
+                }
+           }
+           return acc
+       }, [])
+
+       return NextResponse.json({
+           success: true,
+           data: {
+               ...execution,
+               workflowName: execution.workflow.name,
+               steps
+           }
+       })
+    }
+
     let conditions = [eq(workflowExecutions.user_id, session.user.id)]
 
     if (status && status !== 'all') {
@@ -77,18 +129,8 @@ export async function GET(req: Request) {
     const formattedResults = finalResults.map(({ execution, workflowName }) => ({
       ...execution,
       workflowName: workflowName || 'Untitled Workflow',
-      // Ensure logs, variables etc are parsed if they are strings (JSONB should be handled by drizzle but just in case)
       logs: Array.isArray(execution.logs) ? execution.logs : [],
-      steps: [] // We don't store steps separately in the schema shown yet? 
-      // Wait, the schema `workflowExecutions` has `logs`, `input`, `output`, `variables`, `error`. 
-      // But mock data had `steps`. 
-      // Real schema doesn't seem to have a `steps` column or relation in `workflowExecutions` table definition I saw?
-      // Ah, schema line 1252: `logs: jsonb('logs').default('[]'),`
-      // Logic for "steps" might be derived from logs or stored in `output` or part of a separate table if one existed.
-      // The schema I saw didn't have `workflow_execution_steps`.
-      // I'll return what I have. The frontend expects `steps` array. 
-      // I might need to synthesize steps from logs or generic "running" state if actual step tracking isn't fully DB-backed yet.
-      // For now, I will return empty steps or map logs to steps if possible.
+      steps: [] 
     }))
 
     return NextResponse.json({
