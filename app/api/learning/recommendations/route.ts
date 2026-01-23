@@ -9,12 +9,12 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const analytics = await LearningEngine.getLearningAnalytics(session.user.id);
-    return NextResponse.json(analytics);
+    const recommendations = await LearningEngine.getRecommendations(session.user.id);
+    return NextResponse.json(recommendations);
   } catch (error) {
-    console.error('Error fetching analytics:', error);
+    console.error('Error fetching recommendations:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch analytics' },
+      { error: 'Failed to fetch recommendations' },
       { status: 500 }
     );
   }

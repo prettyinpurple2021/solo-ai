@@ -1,29 +1,37 @@
+import { NextResponse } from 'next/server';
+import { LearningEngine } from '@/lib/learning-engine';
+import { auth } from '@/lib/auth';
 
-import { NextResponse } from 'next/server'
-import { db } from '@/server/db'
-import { logError } from '@/lib/logger'
-import { learningModules } from '@/db/schema'
-import { eq, desc } from 'drizzle-orm'
-import { verifyAuth } from '@/lib/auth-server'
-
-export const dynamic = 'force-dynamic'
-
-export async function GET(_req: Request) {
+export async function GET() {
   try {
-    const authResult = await verifyAuth()
-    if (!authResult.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const modules = await db
-      .select()
-      .from(learningModules)
-      .where(eq(learningModules.is_published, true))
-      .orderBy(desc(learningModules.created_at))
+    const rawModules = await LearningEngine.getAllModules();
+    
+    // Transform to match generic UI interface if needed
+    const modules = rawModules.map(m => ({
+      id: m.id,
+      title: m.title,
+      // Use path description or generic text if module description missing
+      description: m.path?.description || `Module ${m.order} of ${m.path?.title}`,
+      duration_minutes: m.duration_minutes || 10,
+      difficulty: m.path?.difficulty || 'beginner',
+      category: m.path?.category || 'General',
+      skills_covered: [], // Placeholder
+      prerequisites: [], // Placeholder
+      completion_rate: 0,
+      rating: 4.5
+    }));
 
-    return NextResponse.json(modules)
+    return NextResponse.json(modules);
   } catch (error) {
-    logError('Error fetching learning modules:', error)
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+    console.error('Error fetching modules:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch modules' },
+      { status: 500 }
+    );
   }
 }

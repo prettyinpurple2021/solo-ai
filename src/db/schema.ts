@@ -1773,6 +1773,57 @@ export const feedbackRelations = relations(feedback, ({ one }) => ({
   }),
 }));
 
+// Learning Paths table
+export const learningPaths = pgTable('learning_paths', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description').notNull(),
+  category: varchar('category', { length: 100 }).notNull(), // marketing, finance, etc.
+  difficulty: varchar('difficulty', { length: 50 }).notNull(), // beginner, intermediate, advanced
+  created_at: timestamp('created_at').defaultNow(),
+});
+
+export const learningModules = pgTable('learning_modules', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  path_id: text('path_id').notNull().references(() => learningPaths.id, { onDelete: 'cascade' }),
+  title: varchar('title', { length: 255 }).notNull(),
+  content: text('content').notNull(), // markdown or video URL
+  module_type: varchar('module_type', { length: 50 }).default('article'), // article, video, quiz
+  order: integer('order').notNull(),
+  duration_minutes: integer('duration_minutes').default(15),
+});
+
+export const userLearningProgress = pgTable('user_learning_progress', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  module_id: text('module_id').notNull().references(() => learningModules.id, { onDelete: 'cascade' }),
+  status: varchar('status', { length: 50 }).default('not_started'), // in_progress, completed
+  completed_at: timestamp('completed_at'),
+  last_accessed_at: timestamp('last_accessed_at').defaultNow(),
+});
+
+export const learningPathsRelations = relations(learningPaths, ({ many }) => ({
+  modules: many(learningModules),
+}));
+
+export const learningModulesRelations = relations(learningModules, ({ one }) => ({
+  path: one(learningPaths, {
+    fields: [learningModules.path_id],
+    references: [learningPaths.id],
+  }),
+}));
+
+export const userLearningProgressRelations = relations(userLearningProgress, ({ one }) => ({
+  user: one(users, {
+    fields: [userLearningProgress.user_id],
+    references: [users.id],
+  }),
+  module: one(learningModules, {
+    fields: [userLearningProgress.module_id],
+    references: [learningModules.id],
+  }),
+}));
+
 // Global Relations
 export const usersRelations = relations(users, ({ many, one }) => ({
   briefcases: many(briefcases),
@@ -1803,4 +1854,5 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   chatMessages: many(chatMessages),
   passwordResetTokens: many(passwordResetTokens),
   feedback: many(feedback),
+  learningProgress: many(userLearningProgress),
 }));
