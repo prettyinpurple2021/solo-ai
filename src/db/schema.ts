@@ -1230,72 +1230,8 @@ export const paymentProviderConnections = pgTable('payment_provider_connections'
   userProviderIdx: index('payment_provider_connections_user_provider_idx').on(table.user_id, table.provider),
 }));
 
-// Learning Modules table
-export const learningModules = pgTable('learning_modules', {
-  id: varchar('id', { length: 255 }).primaryKey(),
-  title: varchar('title', { length: 255 }).notNull(),
-  description: text('description'),
-  content: text('content'), // For simple modules, or link to external content
-  duration_minutes: integer('duration_minutes').notNull(),
-  difficulty: varchar('difficulty', { length: 20 }).notNull().default('beginner'), // beginner, intermediate, advanced
-  category: varchar('category', { length: 100 }).notNull(),
-  skills_covered: jsonb('skills_covered').default('[]'),
-  prerequisites: jsonb('prerequisites').default('[]'),
-  is_published: boolean('is_published').default(false),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
-}, (table) => ({
-  categoryIdx: index('learning_modules_category_idx').on(table.category),
-  difficultyIdx: index('learning_modules_difficulty_idx').on(table.difficulty),
-}));
+// Redundant learning tables removed (moved to end of file)
 
-// User Learning Progress table
-export const userProgress = pgTable('user_progress', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  module_id: varchar('module_id', { length: 255 }).notNull().references(() => learningModules.id, { onDelete: 'cascade' }),
-  completion_percentage: integer('completion_percentage').default(0),
-  time_spent: integer('time_spent').default(0), // in minutes
-  last_accessed: timestamp('last_accessed').defaultNow(),
-  started_at: timestamp('started_at').defaultNow(),
-  completed_at: timestamp('completed_at'),
-  status: varchar('status', { length: 20 }).default('not_started'), // not_started, in_progress, completed
-  data: jsonb('data').default('{}'), // Store interactive state/answers
-}, (table) => ({
-  userIdIdx: index('user_progress_user_id_idx').on(table.user_id),
-  moduleIdIdx: index('user_progress_module_id_idx').on(table.module_id),
-  statusIdx: index('user_progress_status_idx').on(table.status),
-}));
-
-// Skill Assessments table
-export const skillAssessments = pgTable('skill_assessments', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  skill_name: varchar('skill_name', { length: 255 }).notNull(),
-  category: varchar('category', { length: 100 }),
-  current_level: integer('current_level').default(1),
-  target_level: integer('target_level').default(5),
-  gap_score: integer('gap_score').default(0),
-  assessed_at: timestamp('assessed_at').defaultNow(),
-  next_assessment_due: timestamp('next_assessment_due'),
-}, (table) => ({
-  userIdIdx: index('skill_assessments_user_id_idx').on(table.user_id),
-  skillNameIdx: index('skill_assessments_skill_name_idx').on(table.skill_name),
-}));
-
-// Quiz Scores table
-export const quizScores = pgTable('quiz_scores', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  module_id: varchar('module_id', { length: 255 }).references(() => learningModules.id, { onDelete: 'cascade' }),
-  score: integer('score').notNull(),
-  max_score: integer('max_score').default(100),
-  passed: boolean('passed').default(false),
-  completed_at: timestamp('completed_at').defaultNow(),
-}, (table) => ({
-  userIdIdx: index('quiz_scores_user_id_idx').on(table.user_id),
-  moduleIdIdx: index('quiz_scores_module_id_idx').on(table.module_id),
-}));
 
 // User Brand Settings table
 export const userBrandSettings = pgTable('user_brand_settings', {
