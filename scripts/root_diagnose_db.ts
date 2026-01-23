@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
-import { getDb } from './src/db/index';
-import * as schema from './src/db/schema';
+import { getDb } from '@/db/index';
+import * as schema from '@/db/schema';
 import { DrizzleAdapter } from "@auth/drizzle-adapter";
 
 async function diagnose() {

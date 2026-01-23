@@ -1,1 +1,0 @@
--- Baseline, no-op migration retained intentionally.
