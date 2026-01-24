@@ -16,7 +16,7 @@ export async function GET(_req: NextRequest) {
 
   const adminEmails = (process.env.ADMIN_EMAILS || 'prettyinpurple2021@gmail.com')
     .split(',').map(e => e.trim()).filter(Boolean)
-  if (!adminEmails.includes(user.email)) {
+  if (!user.email || !adminEmails.includes(user.email)) {
     return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
   }
 
@@ -30,7 +30,18 @@ export async function GET(_req: NextRequest) {
     uptimeSeconds: Math.floor(process.uptime()),
     serverTime: new Date().toISOString(),
     notifications,
-    scraping
+    scraping,
+    // Add mock system/db stats to prevent client crash until real monitoring is added
+    database: {
+        connectionCount: 5,
+        queryCount: 124,
+        averageQueryTime: 12
+    },
+    system: {
+        memoryUsage: Math.round((process.memoryUsage().heapUsed / 1024 / 1024) * 100) / 100,
+        cpuUsage: 15,
+        diskUsage: 45
+    }
   })
 }
 
