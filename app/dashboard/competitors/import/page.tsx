@@ -104,8 +104,8 @@ BizBoost Solutions,bizboost.com,Business management platform,Technology,New York
     try {
       setUploading(true)
       
-      // Simulate file processing
-      await new Promise(resolve => setTimeout(resolve, 2000))
+      // Process file immediately
+
       
       // Parse CSV data with proper CSV parsing to handle quoted fields and commas
       const csvText = await file.text()

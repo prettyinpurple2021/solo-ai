@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { useState} from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
 import { Button} from '@/components/ui/button'
@@ -57,19 +57,12 @@ export function SmartPrioritizer({ tasks, onPrioritize, className = "" }: SmartP
     setShowResults(false)
 
     try {
-      // Simulate AI analysis with progress updates
-      const steps = [
-        "Analyzing task complexity...",
-        "Evaluating deadlines and urgency...",
-        "Calculating impact scores...",
-        "Optimizing task order...",
-        "Generating recommendations..."
-      ]
+      // Execute prioritization algorithm
+      setIsAnalyzing(true)
+      
+      // Small delay to ensure UI updates before heavy calculation (if list is large)
+      await new Promise(resolve => setTimeout(resolve, 100))
 
-      for (let i = 0; i < steps.length; i++) {
-        await new Promise(resolve => setTimeout(resolve, 800))
-        setAnalysisProgress(((i + 1) / steps.length) * 100)
-      }
 
       // AI prioritization algorithm
       const prioritized = tasks.map(task => {
@@ -254,7 +247,7 @@ export function SmartPrioritizer({ tasks, onPrioritize, className = "" }: SmartP
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <h4 className="font-medium">AI Recommendations</h4>
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="purple" className="text-xs">
                 {prioritizedTasks.length} tasks analyzed
               </Badge>
             </div>
@@ -268,7 +261,7 @@ export function SmartPrioritizer({ tasks, onPrioritize, className = "" }: SmartP
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="cyan" className="text-xs">
                           #{task.suggested_order}
                         </Badge>
                         {getPriorityIcon(task.priority)}

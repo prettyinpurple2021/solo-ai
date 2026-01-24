@@ -58,6 +58,7 @@ export interface Task {
     dueDate?: string | Date;
     tags?: string[];
     assignee?: AgentId;
+    estimatedTime?: string;
     createdAt?: string;
     updatedAt?: string;
 }

@@ -82,13 +82,13 @@ interface CustomReport {
 interface CustomReportBuilderEnhancedProps {
   className?: string
   onSave?: (report: CustomReport) => void
-
+  onExport?: (report: CustomReport, format: 'csv' | 'pdf' | 'excel') => void
 }
 
 export default function CustomReportBuilderEnhanced({ 
   className = "",
   onSave,
- 
+  onExport
 }: CustomReportBuilderEnhancedProps) {
   const [report, setReport] = useState<Partial<CustomReport>>({
     name: '',

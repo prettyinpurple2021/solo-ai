@@ -159,7 +159,7 @@ async function testAPIRoutes() {
     // Test 6: Dashboard API
     console.log('\n📊 Testing Dashboard API...')
     try {
-      // Simulate dashboard data query
+      // Execute dashboard data query
       const dashboardResult = await client.query(`
         SELECT 
           u.id, u.email, u.full_name,

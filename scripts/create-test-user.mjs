@@ -17,15 +17,15 @@ function generateUUID() {
     return crypto.randomUUID();
 }
 
-async function simulateSignup() {
-    console.log('Starting Signup Simulation...');
+async function createTestUser() {
+    console.log('🚀 Creating Test User...');
 
-    const email = `test_sim_${Date.now()}@example.com`;
+    const email = `test_user_${Date.now()}@example.com`;
     const password = 'password123';
-    const fullName = 'Simulation User';
-    const username = `sim_user_${Date.now()}`;
+    const fullName = 'Test User';
+    const username = `user_${Date.now()}`;
 
-    console.log(`Attempting to create user: ${email} / ${username}`);
+    console.log(`Creating user credentials for: ${email}`);
 
     try {
         const url = process.env.DATABASE_URL;
@@ -33,27 +33,27 @@ async function simulateSignup() {
         const sql = neon(url);
 
         // Check existing
-        console.log('Checking existing users...');
+        console.log('Checking for existing user collisions...');
         const existingUsers = await sql`
       SELECT id FROM users WHERE email = ${email.toLowerCase()} OR username = ${username.toLowerCase()}
     `;
 
         if (existingUsers.length > 0) {
-            console.log('User already exists (unexpected for simulation)');
+            console.log('User collision detected (skipping creation)');
             return;
         }
 
         // Hash password
-        console.log('Hashing password...');
+        console.log('Securing password...');
         const saltRounds = 12;
         const passwordHash = await bcrypt.hash(password, saltRounds);
 
         // Insert user
-        console.log('Inserting user...');
+        console.log('Persisting user to database...');
         const _userId = generateUUID();
         const dateOfBirth = null;
 
-        // NOTE: This matches the query in route.ts
+        // Uses the same query structure as the main registration route
         const newUsers = await sql`
       INSERT INTO users (id, email, password_hash, full_name, username, date_of_birth, subscription_tier, subscription_status, cancel_at_period_end, created_at, updated_at)
       VALUES (${_userId}, ${email.toLowerCase()}, ${passwordHash}, ${fullName}, ${username.toLowerCase()}, ${dateOfBirth}, 'launch', 'active', false, NOW(), NOW())
@@ -61,13 +61,13 @@ async function simulateSignup() {
     `;
 
         if (newUsers.length === 0) {
-            throw new Error('Failed to create user (no rows returned)');
+            throw new Error('Failed to create user (database returned no rows)');
         }
 
-        console.log('User created successfully:', newUsers[0]);
+        console.log('✅ User created successfully:', newUsers[0]);
 
         // Generate JWT
-        console.log('Generating JWT...');
+        console.log('Generating authentication token...');
         if (!process.env.JWT_SECRET) throw new Error('JWT_SECRET is not set');
 
         const token = jwt.sign(
@@ -80,10 +80,11 @@ async function simulateSignup() {
             { expiresIn: '7d' }
         );
 
-        console.log('JWT Generated successfully');
+        console.log('✅ Authentication token generated');
+        console.log(`\nTo login, use:\nEmail: ${email}\nPassword: ${password}\n`);
 
     } catch (error) {
-        console.error('Signup Simulation Failed!');
+        console.error('❌ User Creation Failed!');
         console.error('Error:', error.message);
         if (error.stack) console.error('Stack:', error.stack);
 
@@ -92,7 +93,8 @@ async function simulateSignup() {
             console.error('Postgres Error Code:', error.code);
             console.error('Postgres Error Detail:', error.detail);
         }
+        process.exit(1);
     }
 }
 
-simulateSignup();
+createTestUser();

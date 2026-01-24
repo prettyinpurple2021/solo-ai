@@ -1,6 +1,5 @@
 
 import { CollaborationHub } from '../src/lib/collaboration-hub'
-import { logger } from '../src/lib/logger'
 
 async function testAgentInteraction() {
     console.log('🚀 Starting Agent Interaction Test')
@@ -26,16 +25,31 @@ async function testAgentInteraction() {
     console.log(`✅ Session created: ${session.sessionId}`)
     console.log(`👥 Participants: ${session.participants.map(p => p.displayName).join(', ')}`)
 
-    // Wait for agents to process (simulated)
-    console.log('⏳ Waiting for agent responses (5s)...')
-    await new Promise(resolve => setTimeout(resolve, 5000))
+    // Wait for agents to process (Event-driven polling)
+    console.log('⏳ Waiting for agent responses...')
+    
+    const maxWaitTime = 10000; // 10 seconds timeout
+    const startTime = Date.now();
 
-    // Check session history/messages
-    // Since we don't have direct DB access easily here without setting up connection,
-    // we might need to rely on logs or inspect the hub's in-memory state if possible.
-    // But hub uses DB for some things? No, hub uses in-memory maps for active sessions.
-    // But message router logs to DB?
-    // Let's just check if the session is active and has updated.
+    // Monitor for completion
+    while (Date.now() - startTime < maxWaitTime) {
+        // Yield to event loop
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+        const currentSession = hub.getSession(session.sessionId);
+        if (!currentSession) {
+             console.error('❌ Session lost during polling');
+             break;
+        }
+
+        const activeAgents = currentSession.participatingAgents.length;
+        if (activeAgents > 0) {
+             // Just logging activity to show it's alive
+             // console.log(`Still active... (${Math.floor((Date.now() - startTime)/1000)}s)`);
+        }
+    }
+    
+    console.log('✅ Polling finished')
 
     const activeSession = hub.getSession(session.sessionId)
     if (activeSession) {

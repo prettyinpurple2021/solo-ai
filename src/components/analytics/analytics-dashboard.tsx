@@ -1,6 +1,4 @@
-"use client"
-
-import React, { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
@@ -8,41 +6,72 @@ import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import {
   Users,
-  TrendingUp,
   DollarSign,
   Activity,
   Target,
-  BarChart3,
-  PieChart,
-  LineChart,
-  Calendar,
   Download,
-  Filter,
   RefreshCw,
   Brain,
   Lightbulb
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { logger, logInfo } from '@/lib/logger'
+import { logInfo, logError } from '@/lib/logger'
+import { storageService } from '@/services/storageService'
 import PredictiveInsightsDashboard from './predictive-insights-dashboard'
 import CustomReportBuilderEnhanced from './custom-report-builder-enhanced'
 
 export default function AnalyticsDashboard() {
   const [activeTab, setActiveTab] = useState('overview')
   const [isLoading, setIsLoading] = useState(false)
+  const [metrics, setMetrics] = useState({
+    revenue: 0,
+    activeTasks: 0,
+    completedTasks: 0,
+    userLevel: 1,
+    totalActions: 0,
+    growthRate: 0
+  })
 
-  const handleRefresh = async () => {
+  const loadData = async () => {
     setIsLoading(true)
     try {
-      // Simulate data refresh
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      toast.success('Analytics data refreshed!', { icon: '✅' })
-      logInfo('Analytics dashboard refreshed')
+      const [context, tasks, progress] = await Promise.all([
+        storageService.getContext(),
+        storageService.getTasks(),
+        storageService.getUserProgress()
+      ])
+
+      const completed = tasks.filter(t => t.status === 'done').length
+      
+      setMetrics({
+        revenue: context?.monthlyRevenue || 0,
+        growthRate: context?.growthRate || 0,
+        activeTasks: tasks.filter(t => t.status !== 'done').length,
+        completedTasks: completed,
+        userLevel: progress.level,
+        totalActions: progress.totalActions
+      })
+      
+      return true
     } catch (error) {
-      toast.error('Failed to refresh analytics data', { icon: '❌' })
-      logError('Analytics refresh error:', error)
+      logError('Failed to load analytics data', error)
+      return false
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const handleRefresh = async () => {
+    const success = await loadData()
+    if (success) {
+      toast.success('Analytics data updated', { icon: '✅' })
+      logInfo('Analytics dashboard refreshed')
+    } else {
+      toast.error('Failed to refresh data', { icon: '❌' })
     }
   }
 
@@ -68,7 +97,7 @@ export default function AnalyticsDashboard() {
         <div>
           <h1 className="text-3xl font-bold font-orbitron uppercase tracking-wider bg-gradient-to-r from-neon-cyan to-neon-purple bg-clip-text text-transparent">Analytics Dashboard</h1>
           <p className="text-gray-300 mt-1 font-mono">
-            Comprehensive insights into your business performance
+            {new Date().toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
           </p>
         </div>
         <div className="flex gap-2">
@@ -120,52 +149,58 @@ export default function AnalyticsDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <Card className="border-2 border-neon-cyan bg-dark-card rounded-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                <Users className="h-4 w-4 text-muted-foreground" />
-              </CardHeader>
-              <CardContent>
-                <div className="text-2xl font-bold">2,350</div>
-                <p className="text-xs text-muted-foreground">
-                  <span className="text-green-600">+12%</span> from last month
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="border-2 border-neon-cyan bg-dark-card rounded-sm">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Revenue</CardTitle>
+                <CardTitle className="text-sm font-medium">Project Revenue</CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">$45,231</div>
+                <div className="text-2xl font-bold">${metrics.revenue.toLocaleString()}</div>
                 <p className="text-xs text-muted-foreground">
-                  <span className="text-green-600">+8%</span> from last month
+                  <span className={metrics.growthRate >= 0 ? "text-green-600" : "text-red-600"}>
+                    {metrics.growthRate >= 0 ? '+' : ''}{metrics.growthRate}%
+                  </span> growth
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-2 border-neon-cyan bg-dark-card rounded-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Active Sessions</CardTitle>
+                <CardTitle className="text-sm font-medium">Active Tasks</CardTitle>
                 <Activity className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">1,234</div>
+                <div className="text-2xl font-bold">{metrics.activeTasks}</div>
                 <p className="text-xs text-muted-foreground">
-                  <span className="text-green-600">+23%</span> from last month
+                  Running projects
                 </p>
               </CardContent>
             </Card>
 
             <Card className="border-2 border-neon-cyan bg-dark-card rounded-sm">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Conversion Rate</CardTitle>
+                <CardTitle className="text-sm font-medium">Completion Rate</CardTitle>
                 <Target className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">3.2%</div>
+                <div className="text-2xl font-bold">
+                  {metrics.activeTasks + metrics.completedTasks > 0 
+                    ? Math.round((metrics.completedTasks / (metrics.activeTasks + metrics.completedTasks)) * 100) 
+                    : 0}%
+                </div>
                 <p className="text-xs text-muted-foreground">
-                  <span className="text-red-600">-2%</span> from last month
+                  {metrics.completedTasks} tasks completed
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-2 border-neon-cyan bg-dark-card rounded-sm">
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">User Level</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">Lvl {metrics.userLevel}</div>
+                <p className="text-xs text-muted-foreground">
+                  {metrics.totalActions} total actions
                 </p>
               </CardContent>
             </Card>
