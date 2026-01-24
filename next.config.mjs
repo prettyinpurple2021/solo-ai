@@ -24,9 +24,10 @@ const nextConfig = {
   outputFileTracingRoot: process.cwd(),
 
   // Production builds should catch errors
-
+  // TypeScript errors are now checked during build for type safety
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false, // Enable type checking - fixes will be required
+    tsconfigPath: 'tsconfig.json',
   },
 
 
@@ -127,11 +128,30 @@ const nextConfig = {
   ],
 
   // Image optimization for Vercel deployment
+  // Enabled for better performance and reduced bandwidth usage
   images: {
-    unoptimized: true,
-    domains: [],
-    deviceSizes: [],
-    imageSizes: [],
+    unoptimized: false, // Enable Next.js image optimization
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.vercel.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.googletagmanager.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.google-analytics.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'app.bytesroute.com',
+      },
+    ],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    qualities: [75, 100], // Next.js 16 default quality levels
   },
 
   // Bundle optimization for memory efficiency
