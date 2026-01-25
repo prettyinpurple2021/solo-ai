@@ -17,7 +17,7 @@ export const ExportConfigSchema = z.object({
     start: z.date(),
     end: z.date()
   }).optional(),
-  filters: z.record(z.any()).optional(),
+  filters: z.record(z.unknown()).optional(),
   styling: z.object({
     theme: z.enum(['light', 'dark', 'corporate']).default('light'),
     colors: z.array(z.string()).optional(),
@@ -37,7 +37,7 @@ export interface AnalyticsData {
   type: 'metric' | 'dimension' | 'calculated'
   name: string
   value: number | string
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
   timestamp: Date
 }
 
@@ -45,8 +45,8 @@ export interface ChartData {
   id: string
   type: string
   title: string
-  data: any[]
-  config: Record<string, any>
+  data: unknown[]
+  config: Record<string, unknown>
   metadata: {
     created: Date
     updated: Date
@@ -64,7 +64,7 @@ export interface ReportData {
   metadata: {
     totalRecords: number
     dateRange: { start: Date; end: Date }
-    filters: Record<string, any>
+    filters: Record<string, unknown>
   }
 }
 
@@ -241,17 +241,19 @@ export class AnalyticsExportService {
   /**
    * Apply filters to data
    */
-  private applyFilters(data: AnalyticsData[], filters: Record<string, any>): AnalyticsData[] {
+  private applyFilters(data: AnalyticsData[], filters: Record<string, unknown>): AnalyticsData[] {
     return data.filter(item => {
       return Object.entries(filters).every(([key, value]) => {
+        const itemValue = item.metadata?.[key];
+        
         if (typeof value === 'string') {
-          return item.metadata?.[key]?.toString().toLowerCase().includes(value.toLowerCase())
+          return String(itemValue ?? '').toLowerCase().includes(value.toLowerCase())
         }
         if (typeof value === 'number') {
-          return item.metadata?.[key] === value
+          return itemValue === value
         }
         if (Array.isArray(value)) {
-          return value.includes(item.metadata?.[key])
+          return value.includes(itemValue)
         }
         return true
       })

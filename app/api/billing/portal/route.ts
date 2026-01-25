@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { logError, logInfo } from '@/lib/logger'
 
-export async function POST(_req: NextRequest) {
+export async function POST(_req: NextRequest): Promise<NextResponse> {
     try {
         const { user, error } = await authenticateRequest()
         if (error || !user) {

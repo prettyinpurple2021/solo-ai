@@ -1,10 +1,10 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { db } from '@/db'
 import { competitorProfiles, intelligenceData, competitorAlerts } from '@/db/schema'
 import { eq, desc, gte, and, sql } from 'drizzle-orm'
 // AI SDK removed - using worker-based approach
-// import { generateObject } from 'ai'
-// import { openai } from '@/lib/ai-config'
+import { generateObject } from 'ai'
+import { openai } from '@/lib/ai-config'
 import { z } from 'zod'
 
 
@@ -513,7 +513,7 @@ Generate a structured intelligence briefing that helps the user make informed st
   async scheduleBriefing(
     userId: string,
     frequency: BriefingFrequency,
-    config: Partial<BriefingConfig>
+    _config: Partial<BriefingConfig>
   ): Promise<void> {
     // This would integrate with a job scheduler like Bull Queue or similar
     // V1 Strategy: Briefings are generated on-demand or via manual trigger
@@ -525,8 +525,8 @@ Generate a structured intelligence briefing that helps the user make informed st
    * Get briefing history for user
    */
   async getBriefingHistory(
-    userId: string,
-    limit: number = 10
+    _userId: string,
+    _limit: number = 10
   ): Promise<IntelligenceBriefing[]> {
     // This would query a briefings table in the database
     // Returns empty array as briefings are generated on-demand (see generateBriefing)
@@ -539,7 +539,7 @@ Generate a structured intelligence briefing that helps the user make informed st
    */
   async updateBriefingPreferences(
     userId: string,
-    preferences: {
+    _preferences: {
       frequency?: BriefingFrequency
       topics?: string[]
       agents?: string[]

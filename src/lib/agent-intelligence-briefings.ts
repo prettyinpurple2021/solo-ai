@@ -1,9 +1,9 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 // AI SDK removed - using worker-based approach
 // import { generateObject } from 'ai'
-// import { openai } from '@/lib/ai-config'
+import { openai } from '@/lib/ai-config'
+import { generateObject } from 'ai'
 import { z } from 'zod'
-import { IntelligenceBriefing } from './intelligence-briefing-system'
 
 
 // Agent-specific briefing interfaces

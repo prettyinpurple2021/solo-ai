@@ -6,7 +6,7 @@
 import { logError, logApi } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
-import { analyticsExportService, ExportConfigSchema } from '@/lib/analytics-export'
+import { analyticsExportService, ExportConfigSchema, type AnalyticsData } from '@/lib/analytics-export'
 import { verifyAuth } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 
@@ -37,18 +37,18 @@ const ExportRequestSchema = z.object({
       type: z.enum(['metric', 'dimension', 'calculated']),
       name: z.string(),
       value: z.union([z.number(), z.string()]),
-      metadata: z.record(z.any()).optional(),
-      timestamp: z.date()
+      metadata: z.record(z.unknown()).optional(),
+      timestamp: z.string().or(z.date()) // Allow string for JSON serialization
     })),
     charts: z.array(z.object({
       id: z.string(),
       type: z.string(),
       title: z.string(),
-      data: z.array(z.any()),
-      config: z.record(z.any()),
+      data: z.array(z.unknown()), // Chart data can be complex
+      config: z.record(z.unknown()),
       metadata: z.object({
-        created: z.date(),
-        updated: z.date(),
+        created: z.string().or(z.date()),
+        updated: z.string().or(z.date()),
         dataSource: z.string()
       })
     }))
@@ -88,8 +88,29 @@ export async function POST(request: NextRequest) {
 
     // Create export job
     // Ensure metadata is included for ReportData
+    // We need to map the data to ensure timestamps are Date objects as expected by the service
+    const processedData: AnalyticsData[] = validatedData.reportData.data.map(item => ({
+      id: item.id,
+      type: item.type,
+      name: item.name,
+      value: item.value,
+      timestamp: typeof item.timestamp === 'string' ? new Date(item.timestamp) : item.timestamp,
+      metadata: item.metadata as Record<string, any> | undefined
+    }))
+
+    const processedCharts = validatedData.reportData.charts.map(chart => ({
+      ...chart,
+      metadata: {
+        ...chart.metadata,
+        created: typeof chart.metadata.created === 'string' ? new Date(chart.metadata.created) : chart.metadata.created,
+        updated: typeof chart.metadata.updated === 'string' ? new Date(chart.metadata.updated) : chart.metadata.updated
+      }
+    }))
+
     const reportDataWithMetadata = {
       ...validatedData.reportData,
+      data: processedData,
+      charts: processedCharts,
       generatedAt: new Date(),
       generatedBy: user.id.toString(),
       metadata: {
@@ -98,7 +119,7 @@ export async function POST(request: NextRequest) {
           start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
           end: new Date()
         },
-        filters: validatedData.config.filters || {}
+        filters: validatedData.config.filters as Record<string, any> || {}
       }
     }
     
