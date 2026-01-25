@@ -1,4 +1,4 @@
-import { logError } from '@/lib/logger'
+import { logError, logInfo, logWarn } from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { db} from '@/db'
 import { competitorAlerts, competitorProfiles} from '@/db/schema'
