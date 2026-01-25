@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Spline, GitBranch, AlertTriangle, ThumbsUp, ArrowRight, Activity, Loader2, Crosshair } from 'lucide-react';
+import { Spline, GitBranch, AlertTriangle, ThumbsUp, Activity, Loader2, Crosshair } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { SimulationResult, ScenarioOutcome } from '../types';
 import { addXP, showToast } from '../services/gameService';

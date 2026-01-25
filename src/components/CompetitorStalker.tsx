@@ -12,7 +12,7 @@ interface CompetitorStalkerProps {
     onNavigate: (view: string) => void;
 }
 
-export const CompetitorStalker: React.FC<CompetitorStalkerProps> = ({ onNavigate }) => {
+export const CompetitorStalker: React.FC<CompetitorStalkerProps> = ({}) => {
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
     const [report, setReport] = useState<CompetitorReport | null>(null);

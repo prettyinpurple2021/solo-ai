@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { onboardingAI, LaunchPlan } from '../src/services/onboarding-ai';
-import { logInfo } from '../src/lib/logger';
+
 import { config } from 'dotenv';
 
 // Load env vars

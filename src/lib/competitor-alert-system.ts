@@ -1,6 +1,6 @@
 import { db } from '@/db';
 import { competitorAlerts, competitorProfiles, intelligenceData } from '@/db/schema';
-import { eq, and, desc, gte, lte, inArray, sql } from 'drizzle-orm';
+import { eq, and, desc, gte,} from 'drizzle-orm';
 
 export interface AlertTrigger {
   id: string;
@@ -351,7 +351,7 @@ export class CompetitorAlertSystem {
     await db.insert(competitorAlerts).values(alertData);
   }
 
-  private generateAlertTitle(alertType: AlertType, competitorName: string, intelligence: any): string {
+  private generateAlertTitle(alertType: AlertType, competitorName: string,: any): string {
     const titles: Record<AlertType, string> = {
       pricing_change: `${competitorName} Changed Pricing`,
       product_launch: `${competitorName} Launched New Product`,
@@ -381,7 +381,7 @@ export class CompetitorAlertSystem {
     return `${trigger.description}\n\nDetails: ${truncatedContent}`;
   }
 
-  private generateActionItems(alertType: AlertType, intelligence: any, competitor: any): any[] {
+  private generateActionItems(alertType: AlertType,: any,: any): any[] {
     const baseActions = [
       {
         id: `review-${Date.now()}`,
@@ -455,7 +455,7 @@ export class CompetitorAlertSystem {
     return [...baseActions, ...(typeSpecificActions[alertType] || [])];
   }
 
-  private generateRecommendedActions(alertType: AlertType, intelligence: any, competitor: any): string[] {
+  private generateRecommendedActions(alertType: AlertType,: any,: any): string[] {
     const baseRecommendations = [
       'Monitor competitor response and market reaction',
       'Update competitive analysis documentation',

@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState, useEffect } from 'react'
+import, { useState, useEffect } from 'react'
 import { CyberButton } from "@/components/cyber/CyberButton"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -27,7 +27,7 @@ import {
   Trash2
 } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
-import { logger, logInfo } from "@/lib/logger"
+
 import { useSmartTips } from "@/hooks/use-smart-tips"
 import { HudBorder } from "@/components/cyber/HudBorder"
 import { useTemplateSave } from "@/hooks/use-templates-swr"
@@ -84,7 +84,7 @@ export default function TemplatesDashboard() {
   const { user } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
-  const { saveTemplate, isSaving } = useTemplateSave()
+  const { isSaving } = useTemplateSave()
   const [templates, setTemplates] = useState<Template[]>([])
   const [filteredTemplates, setFilteredTemplates] = useState<Template[]>([])
   const [searchQuery, setSearchQuery] = useState("")

@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from "next/server"
 import { auth } from '@/lib/auth';
 import { AgentCollaborationSystem} from "@/lib/custom-ai-agents/agent-collaboration-system"

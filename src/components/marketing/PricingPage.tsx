@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import, { useState } from 'react';
 import { MarketingLayout } from './layout/MarketingLayout';
 import { Check, Loader2 } from 'lucide-react';
 import { apiService } from '../../services/apiService';

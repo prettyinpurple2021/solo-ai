@@ -3,7 +3,7 @@
  * Provides agent lifecycle management, message handling, and context integration
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn, logInfo,} from '@/lib/logger'
 import { z } from 'zod'
 import type { 
   AgentMessage, 
@@ -707,7 +707,7 @@ export class AgentInterface {
    */
   private initializeDefaultHandlers(): void {
     // Default handler for all messages
-    this.registerMessageHandler('default', async (message, context) => {
+    this.registerMessageHandler('default', async (message,) => {
       return {
         content: `I received your message: "${message.content}". I'm ${this.config.displayName}, and I'm here to help!`,
         messageType: 'response',
@@ -716,7 +716,7 @@ export class AgentInterface {
     })
 
     // Handler for handoff requests
-    this.registerMessageHandler('handoff', async (message, context) => {
+    this.registerMessageHandler('handoff', async (message,) => {
       return {
         content: `I understand you'd like me to take over this task. Let me review the context and get started.`,
         messageType: 'response',

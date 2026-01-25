@@ -1,7 +1,7 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { db } from '@/db'
-import { competitors, intelligenceData, competitorAlerts } from '@/db/schema'
-import { eq, and, desc, gte, lte, sql, inArray } from 'drizzle-orm'
+import { intelligenceData,} from '@/db/schema'
+import { eq, and, desc, gte, sql, inArray } from 'drizzle-orm'
 
 
 // Types for opportunity detection
@@ -430,7 +430,7 @@ export class CompetitiveOpportunityDetector {
     return Math.min(1, (complaintCount / 20) + Math.abs(avgSentiment))
   }
 
-  private detectProductGapsFromSocial(socialMentions: any[], competitorId: string): CompetitorWeakness[] {
+  private detectProductGapsFromSocial(socialMentions: any[],: string): CompetitorWeakness[] {
     // Implementation for detecting product gaps from social media
     return []
   }
@@ -470,7 +470,7 @@ export class CompetitiveOpportunityDetector {
     return []
   }
 
-  private analyzePricingPosition(pricing: any, marketPricing: any[]): any {
+  private analyzePricingPosition(pricing: any,: any[]): any {
     // Implementation for analyzing pricing position
     return {
       opportunityDetected: false,

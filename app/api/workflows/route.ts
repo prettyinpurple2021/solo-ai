@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { logError, logInfo } from '@/lib/logger'
 import { rateLimitByIp } from '@/lib/rate-limit'
-import { neon } from '@neondatabase/serverless'
+
 import { getNeonConnection } from '@/lib/database-utils'
 
 

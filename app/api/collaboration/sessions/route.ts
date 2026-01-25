@@ -3,7 +3,7 @@
  * Handles creating, listing, and managing multi-agent collaboration sessions
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { CollaborationHub } from '@/lib/collaboration-hub'

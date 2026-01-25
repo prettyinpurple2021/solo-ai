@@ -1,10 +1,10 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState, useEffect} from "react"
 import { motion} from "framer-motion"
 import { 
-  AlertTriangle, TrendingUp, Eye, Users, DollarSign, Calendar, ArrowUp, ArrowDown, Minus, Info} from "lucide-react"
+  AlertTriangle, TrendingUp, ArrowUp, ArrowDown, Minus, Info} from "lucide-react"
 
 import { BossCard} from "@/components/ui/boss-card"
 import { Badge} from "@/components/ui/badge"

@@ -1,8 +1,8 @@
 "use client"
 
-import React, { useState, useCallback, useEffect } from 'react'
+import, { useState, useCallback, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
@@ -15,34 +15,34 @@ import {
   Zap,
   TrendingUp,
   Briefcase,
-  Mail,
-  Brain,
-  Calendar,
+,
+,
+,
   Filter,
   Download,
-  Upload,
-  Copy,
+,
+,
   Eye,
   Play,
   Crown,
-  Sparkles,
+,
   Heart,
   Bookmark,
   Share2,
-  ThumbsUp,
-  MessageSquare,
+,
+,
   BarChart3,
   Target,
   CheckCircle,
-  ArrowRight,
+,
   Plus,
-  Settings,
+,
   Info
 } from 'lucide-react'
 import { PrimaryButton } from '@/components/ui/button'
-import { cn } from '@/lib/utils'
+
 import { useToast } from '@/hooks/use-toast'
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import type { Workflow } from '@/lib/workflow-engine'
 
 // Types

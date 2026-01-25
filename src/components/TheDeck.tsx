@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Presentation, RefreshCcw, Download, Layout, ChevronRight, ChevronLeft, FileText, MonitorPlay, Save } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
-import { PitchDeck, Slide } from '../types';
+import { PitchDeck,} from '../types';
 import { addXP, showToast } from '../services/gameService';
 import { soundService } from '../services/soundService';
 import { downloadMarkdown } from '../services/exportService';

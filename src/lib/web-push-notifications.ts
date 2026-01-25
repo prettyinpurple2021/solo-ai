@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn,} from '@/lib/logger'
 
 export interface NotificationPermissionState {
   supported: boolean

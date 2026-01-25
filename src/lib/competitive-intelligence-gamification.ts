@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { Achievement, UserStats, GamificationEngine } from './gamification-system'
 import { getSql } from '@/lib/api-utils'
 

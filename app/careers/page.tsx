@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { CyberPageLayout } from '@/components/cyber/CyberPageLayout'
 import { HudBorder } from '@/components/cyber/HudBorder'
 import { CyberButton } from '@/components/cyber/CyberButton'
-import { Briefcase, Users, Zap, Heart, TrendingUp, Target, Rocket, ArrowRight } from 'lucide-react'
+import { Briefcase, Users, Zap, Heart, Rocket, ArrowRight } from 'lucide-react'
 
 const values = [
   {

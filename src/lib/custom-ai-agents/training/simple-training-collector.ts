@@ -254,4 +254,4 @@ export class SimpleTrainingCollector {
   }
 }
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logInfo,} from '@/lib/logger'

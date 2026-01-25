@@ -1,14 +1,14 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { useState, useEffect, useRef} from "react"
+import { logInfo,} from '@/lib/logger'
+import { useState, useEffect,} from "react"
 import { motion, AnimatePresence} from "framer-motion"
 import { Card, CardContent} from "@/components/ui/card"
 import { Button} from "@/components/ui/button"
 import { Badge} from "@/components/ui/badge"
 
 import { 
-  Sparkles, Target, Users, Brain, FileText, TrendingUp, Zap, Crown, CheckCircle, ArrowRight, ArrowLeft, Lightbulb, Star, Gift, Play, Pause, Volume2, VolumeX, X, SkipForward} from "lucide-react"
+  Sparkles, Crown, ArrowRight, ArrowLeft, Lightbulb, Star, Play, X, SkipForward} from "lucide-react"
 
 interface ProgressiveOnboardingProps {
   open: boolean
@@ -32,9 +32,9 @@ interface OnboardingStep {
   tips?: string[]
 }
 
-export function ProgressiveOnboarding({ open, onComplete, onSkip, userData }: ProgressiveOnboardingProps) {
+export function ProgressiveOnboarding({ open, onComplete, onSkip,}: ProgressiveOnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set())
+  const [, setCompletedSteps] = useState<Set<string>>(new Set())
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [showTips, setShowTips] = useState(false)
   const [userPreferences, setUserPreferences] = useState({

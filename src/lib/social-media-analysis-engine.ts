@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { intelligenceData, competitorProfiles } from '@/db/schema';
+import { intelligenceData,} from '@/db/schema';
 import { eq, and, gte, desc, InferSelectModel } from 'drizzle-orm';
 import type { SocialMediaPost, EngagementMetrics, SentimentScore } from './social-media-monitor';
 
@@ -641,7 +641,7 @@ export class SocialMediaAnalysisEngine {
       .sort((a, b) => b.avgEngagement - a.avgEngagement);
   }
 
-  private calculateFrequencyMetrics(posts: SocialMediaPost[], days: number): PostingFrequencyAnalysis['frequency'] {
+  private calculateFrequencyMetrics(posts: SocialMediaPost[],: number): PostingFrequencyAnalysis['frequency'] {
     const dailyPosts = this.groupPostsByDay(posts);
     const weeklyPosts = this.groupPostsByWeek(posts);
     const monthlyPosts = this.groupPostsByMonth(posts);
@@ -949,7 +949,7 @@ export class SocialMediaAnalysisEngine {
     };
   }
 
-  private analyzeGrowthMetrics(posts: SocialMediaPost[], data: any[]): AudienceAnalysis['growth'] {
+  private analyzeGrowthMetrics(posts: SocialMediaPost[],: any[]): AudienceAnalysis['growth'] {
     // Implementation for growth metrics analysis
     return {
       followerGrowthRate: 0,
@@ -990,12 +990,12 @@ export class SocialMediaAnalysisEngine {
     };
   }
 
-  private generateCampaignInsights(campaigns: DetectedCampaign[], performance: CampaignPerformanceMetrics): string[] {
+  private generateCampaignInsights(campaigns: DetectedCampaign[],: CampaignPerformanceMetrics): string[] {
     // Implementation for campaign insights generation
     return [];
   }
 
-  private generateCampaignRecommendations(campaigns: DetectedCampaign[], performance: CampaignPerformanceMetrics): string[] {
+  private generateCampaignRecommendations(campaigns: DetectedCampaign[],: CampaignPerformanceMetrics): string[] {
     // Implementation for campaign recommendations generation
     return [];
   }

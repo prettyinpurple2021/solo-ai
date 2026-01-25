@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { socialMediaScheduler } from './social-media-scheduler';
 // import { socialMediaMonitor } from './social-media-monitor';
 import { 
@@ -330,7 +330,7 @@ export class SocialMediaJobProcessor {
   /**
    * Identify events that should trigger alerts
    */
-  private identifyAlertableEvents(competitor: CompetitorProfile, analyses: AnalysisCollection, insights: InsightsCollection): AlertableEvent[] {
+  private identifyAlertableEvents(competitor: CompetitorProfile,: AnalysisCollection, insights: InsightsCollection): AlertableEvent[] {
     const alerts: AlertableEvent[] = [];
 
     // High-impact insights become alerts

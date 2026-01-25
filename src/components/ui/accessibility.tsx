@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState, useEffect, createContext, useContext} from "react"
 import { useUserPreferences } from "@/hooks/use-user-preferences"
 import { useAuth } from "@/hooks/use-auth"
@@ -10,7 +10,7 @@ import { Label} from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 
 import {
-  Eye, EyeOff, Volume2, VolumeX, Keyboard, MousePointer, Accessibility, Settings, Sun, Moon, Contrast} from "lucide-react"
+, Keyboard, Accessibility,} from "lucide-react"
 
 interface AccessibilityContextType {
   highContrast: boolean

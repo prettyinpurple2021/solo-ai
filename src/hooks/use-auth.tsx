@@ -1,9 +1,9 @@
 "use client"
 
-import { useSession, signIn as nextAuthSignIn, signOut as nextAuthSignOut } from "next-auth/react"
+import { useSession, signIn as, signOut as } from "next-auth/react"
 import { useCallback } from "react"
 import { authClient } from "@/lib/auth-client"
-import type { User } from "@/lib/auth-client" // Use new User type or adapt
+import type {} from "@/lib/auth-client" // Use new User type or adapt
 
 // Maintain compatibility interface as much as possible
 interface AuthContextType {

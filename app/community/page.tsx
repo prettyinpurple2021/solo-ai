@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { CyberPageLayout } from '@/components/cyber/CyberPageLayout'
 import { HudBorder } from '@/components/cyber/HudBorder'
-import { Users, Calendar, Network, Rocket, MessageCircle, Bell } from 'lucide-react'
+import { Users, Calendar, Network, Rocket, MessageCircle,} from 'lucide-react'
 
 export default function CommunityPage() {
   return (

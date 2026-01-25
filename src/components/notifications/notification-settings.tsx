@@ -1,7 +1,7 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import React, { useState, useEffect } from 'react'
+import { logError,} from '@/lib/logger'
+import, { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
@@ -17,12 +17,12 @@ import {
   Clock, 
   Target, 
   Zap, 
-  CheckCircle,
+,
   AlertTriangle,
   Info,
   Settings
 } from 'lucide-react'
-import { cn } from '@/lib/utils'
+
 import { webPushManager, NotificationPermissionState } from '@/lib/web-push-notifications'
 import { useToast } from '@/hooks/use-toast'
 import { useUserPreferences } from '@/hooks/use-user-preferences'

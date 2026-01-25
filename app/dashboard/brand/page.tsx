@@ -3,7 +3,7 @@
 
 export const dynamic = 'force-dynamic'
 import { logError, logInfo } from '@/lib/logger'
-import React, { useState, useEffect } from 'react'
+import, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { HudBorder } from '@/components/cyber/HudBorder'
 import { CyberButton } from '@/components/cyber/CyberButton'
@@ -17,7 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
+
 import { Progress } from "@/components/ui/progress"
 import {
   Palette, 

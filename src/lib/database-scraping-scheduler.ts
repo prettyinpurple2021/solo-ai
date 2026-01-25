@@ -1,7 +1,7 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { eq, and, lte, desc, asc, sql, inArray, isNull, or } from 'drizzle-orm'
 import { db } from '@/db'
-import { scrapingJobs, scrapingJobResults, competitorProfiles, intelligenceData } from '@/db/schema'
+import { scrapingJobs, scrapingJobResults, intelligenceData } from '@/db/schema'
 import { v4 as uuidv4 } from 'uuid'
 
 
@@ -359,7 +359,7 @@ export class ScrapingScheduler {
   /**
    * Calculate next run time based on frequency
    */
-  private calculateNextRun(frequencyType: FrequencyType, frequencyValue: string, timezone?: string): Date {
+  private calculateNextRun(frequencyType: FrequencyType, frequencyValue: string,?: string): Date {
     const now = new Date()
     
     switch (frequencyType) {

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useEffect, useCallback } from 'react'
+import, { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -16,16 +16,16 @@ import {
   AlertTriangle,
   Target,
   Users,
-  Globe,
+,
   BarChart3,
   Lightbulb,
   Brain,
   Zap,
-  Eye,
+,
   RefreshCw,
   Download,
   Activity,
-  Shield,
+,
   Crown,
   Sparkles,
   ArrowRight,
@@ -34,7 +34,7 @@ import {
   Radar
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { logger, logInfo, logError } from '@/lib/logger'
+import { logInfo, logError } from '@/lib/logger'
 
 // Force dynamic rendering to avoid prerender errors
 export const dynamic = 'force-dynamic'

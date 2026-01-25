@@ -3,7 +3,7 @@
  * Handles context persistence, retrieval, and context switching for multi-agent collaboration
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { z } from 'zod'
 
 

@@ -3,8 +3,8 @@
  * Comprehensive testing of all collaboration API endpoints
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { NextResponse } from 'next/server'
+import { logError, logInfo,} from '@/lib/logger'
+
 
 
 // Mock authentication for testing

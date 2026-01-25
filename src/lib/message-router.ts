@@ -3,11 +3,11 @@
  * Supports point-to-point messaging, broadcasts, and priority handling
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { z } from 'zod'
 import { db } from '@/db'
-import { chatMessages, chatConversations, collaborationMessages } from '@/db/schema'
-import { eq, desc, and } from 'drizzle-orm'
+import { chatMessages, collaborationMessages } from '@/db/schema'
+import { eq, desc,} from 'drizzle-orm'
 import { generateText } from 'ai'
 import { getTeamMemberConfig } from '@/lib/ai-config'
 import type { AgentMessage, AgentDefinition, CollaborationHub } from './collaboration-hub'

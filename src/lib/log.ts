@@ -3,7 +3,7 @@
  * Logs are formatted as JSON for easier parsing by log management systems
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logInfo,} from '@/lib/logger'
 import { NextRequest } from 'next/server';
 
 

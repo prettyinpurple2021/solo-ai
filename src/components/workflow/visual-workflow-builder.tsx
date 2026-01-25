@@ -130,7 +130,7 @@ export function VisualWorkflowBuilder({
 
   // Fetch node types from API
   const [nodeTypes, setNodeTypes] = React.useState<NodeType[]>([])
-  const [isLoadingNodeTypes, setIsLoadingNodeTypes] = React.useState(true)
+  const [, setIsLoadingNodeTypes] = React.useState(true)
 
   // Fetch agents from API
   const [agents, setAgents] = React.useState<any[]>([])

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { ModulePlayer } from "@/components/learning/module-player";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Circle, ArrowLeft } from "lucide-react";
+import { CheckCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -18,7 +18,7 @@ interface PathViewerProps {
   userId: string;
 }
 
-export function PathViewer({ path, userId }: PathViewerProps) {
+export function PathViewer({ path,}: PathViewerProps) {
   const router = useRouter();
   const [activeModuleId, setActiveModuleId] = useState<string>(path.modules[0]?.id || "");
   const [modules, setModules] = useState(path.modules);

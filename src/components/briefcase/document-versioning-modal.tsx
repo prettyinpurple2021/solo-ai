@@ -1,7 +1,7 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import React, { useState, useEffect, useCallback } from 'react'
+import { logError,} from '@/lib/logger'
+import, { useState, useEffect, useCallback } from 'react'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import { Button} from '@/components/ui/button'
@@ -16,7 +16,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} 
 import { useToast} from '@/hooks/use-toast'
 
 import {
-  History, RotateCcw, RotateCw, CalendarClock, FileText, Save, Check, ArrowLeft, ArrowRight, Download, Lock, Unlock} from 'lucide-react'
+  History, RotateCcw, RotateCw, CalendarClock, FileText, Save, Check, ArrowLeft, Download, Lock, Unlock} from 'lucide-react'
 
 interface BriefcaseFile {
   id: string

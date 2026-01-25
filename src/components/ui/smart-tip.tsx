@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { X, Lightbulb, Settings, Zap, Target, Users, FileText, MessageCircle, TrendingUp, Clock } from "lucide-react"
-import { logger, logInfo, logDebug } from "@/lib/logger"
+import { X, Lightbulb, Settings, Zap, Target, FileText, MessageCircle, TrendingUp,} from "lucide-react"
+import { logInfo, logDebug } from "@/lib/logger"
 
 export interface SmartTip {
   id: string

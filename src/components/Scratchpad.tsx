@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, Save, Copy, MessageSquare, Eraser, Check } from 'lucide-react';
+import { X, Copy, MessageSquare, Eraser, Check } from 'lucide-react';
 import { soundService } from '../services/soundService';
 import { showToast } from '../services/gameService';
 import { AgentId } from '../types';
@@ -14,7 +14,7 @@ interface ScratchpadProps {
 
 export const Scratchpad: React.FC<ScratchpadProps> = ({ isOpen, onClose, activeAgent, onSendToAgent }) => {
     const [content, setContent] = useState('');
-    const [justSaved, setJustSaved] = useState(false);
+    const [,] = useState(false);
     const [justCopied, setJustCopied] = useState(false);
 
     useEffect(() => {

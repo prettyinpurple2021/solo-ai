@@ -1,8 +1,8 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { authenticateRequest} from '@/lib/auth-server'
 import { rateLimitByIp} from '@/lib/rate-limit'
-import { CompetitiveIntelligenceGamification, CompetitiveVictory} from '@/lib/competitive-intelligence-gamification'
+
 import { db} from '@/db'
 import { users, userCompetitiveStats} from '@/db/schema'
 import { eq} from 'drizzle-orm'
@@ -119,7 +119,7 @@ export async function POST(request: NextRequest) {
       }).optional()
     })
 
-    const { action, stat_type, stat_value, achievement_id, victory_data } = BodySchema.parse(body)
+    const { action, stat_type, stat_value,} = BodySchema.parse(body)
 
     // Get or create competitive stats
     let competitiveStatsRows = await db.select().from(userCompetitiveStats).where(eq(userCompetitiveStats.user_id, user.id))

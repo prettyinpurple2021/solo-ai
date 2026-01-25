@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { db } from '@/db'
 import { scrapingJobResults } from '@/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { eq,} from 'drizzle-orm'
 
 
 

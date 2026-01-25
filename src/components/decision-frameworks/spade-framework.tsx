@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Brain, Users, Target, CheckCircle, Save, AlertTriangle } from "lucide-react"
-import { cn } from "@/lib/utils"
+
 
 interface SpadeStep {
   setting: {

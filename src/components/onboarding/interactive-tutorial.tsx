@@ -1,5 +1,5 @@
 "use client"
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logWarn, logInfo,} from '@/lib/logger'
 import { useState, useEffect, useRef, useMemo} from "react"
 import { useUserPreferences } from "@/hooks/use-user-preferences"
 import { Button} from "@/components/ui/button"

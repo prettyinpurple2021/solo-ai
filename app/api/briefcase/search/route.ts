@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { authenticateRequest} from '@/lib/auth-server'
 import { getSql } from '@/lib/api-utils'
@@ -313,7 +313,7 @@ async function performSemanticSearch(query: string, userId: string, sql: any) {
 }
 
 // Get search statistics
-async function getSearchStats(sql: any, userId: string, whereConditions: string[], params: any[]) {
+async function getSearchStats(sql: any,: string, whereConditions: string[], params: any[]) {
   try {
     const sqlClient = sql as any
     

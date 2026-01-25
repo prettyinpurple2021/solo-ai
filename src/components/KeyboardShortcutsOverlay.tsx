@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { X, Command, Search, Palette, HelpCircle } from 'lucide-react';
+import { X, Command, HelpCircle } from 'lucide-react';
 
 interface KeyboardShortcutsOverlayProps {
     onClose: () => void;

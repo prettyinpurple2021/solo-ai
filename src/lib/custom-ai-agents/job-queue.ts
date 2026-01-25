@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
-import { createAgentJob, getAgentJob, listAgentJobsForUser, AgentJob, AgentJobStatus } from '@/lib/custom-ai-agents/job-store'
+import { createAgentJob, getAgentJob, listAgentJobsForUser, AgentJob,} from '@/lib/custom-ai-agents/job-store'
 import { getQStashClient } from '@/lib/upstash/clients'
-import { logError, logInfo } from '@/lib/logger'
+import { logInfo } from '@/lib/logger'
 
 export interface EnqueueAgentJobInput {
   userId: string

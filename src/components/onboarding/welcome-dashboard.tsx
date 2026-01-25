@@ -5,9 +5,9 @@ import { motion, AnimatePresence} from "framer-motion"
 import { Button} from "@/components/ui/button"
 import { Badge} from "@/components/ui/badge"
 import { Progress} from "@/components/ui/progress"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent,} from "@/components/ui/card"
 import { 
-  Crown, Sparkles, Target, Users, Rocket, Gift, Star, Zap, TrendingUp, Brain, Heart, CheckCircle, ArrowRight, Play, Plus, MessageCircle, FileText, Calendar, Award, Lightbulb} from "lucide-react"
+  Crown, Sparkles, Target, Rocket, Gift, Star, CheckCircle, ArrowRight, Play, MessageCircle, FileText, Award, Lightbulb} from "lucide-react"
 import Link from "next/link"
 
 interface WelcomeDashboardProps {
@@ -16,7 +16,7 @@ interface WelcomeDashboardProps {
   onSkipOnboarding?: () => void
 }
 
-export function WelcomeDashboard({ userData, onStartOnboarding, onSkipOnboarding }: WelcomeDashboardProps) {
+export function WelcomeDashboard({ onStartOnboarding, onSkipOnboarding }: WelcomeDashboardProps) {
   const [currentTip, setCurrentTip] = useState(0)
   const [showCelebration, setShowCelebration] = useState(true)
 

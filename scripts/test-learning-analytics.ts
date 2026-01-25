@@ -1,7 +1,7 @@
 import 'dotenv/config'
 import { db } from '@/db'
-import { userProgress, userAchievements, users, achievements } from '@/db/schema'
-import { eq, and, desc, gte, sql, count } from 'drizzle-orm'
+import { userProgress, userAchievements, achievements } from '@/db/schema'
+import { eq, and, sql, count } from 'drizzle-orm'
 
 async function main() {
     console.log('🧪 Starting Learning Analytics Verification...')

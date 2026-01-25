@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
-import { logger, logError } from './logger'
+import { logError } from './logger'
 
 /**
  * Standardized API response utilities for consistent frontend/backend communication

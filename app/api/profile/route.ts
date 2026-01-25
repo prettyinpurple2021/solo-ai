@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { getDb } from '@/lib/database-client'
 import { z } from 'zod'
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { eq } from 'drizzle-orm'
 import { users } from '@/db/schema'
 

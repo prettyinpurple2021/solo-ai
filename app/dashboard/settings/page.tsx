@@ -6,24 +6,24 @@ import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/hooks/use-auth'
 import { useToast } from '@/hooks/use-toast'
-import { Button } from '@/components/ui/button'
+
 import {
   User,
   Shield,
   Bell,
   CreditCard,
-  LogOut,
+,
   Save,
   Trash2,
   Crown,
   Mail,
-  Lock,
+,
   Eye,
   EyeOff,
-  Globe,
+,
   Smartphone,
   AlertTriangle,
-  CheckCircle,
+,
   Settings as SettingsIcon
 } from 'lucide-react'
 import { CyberButton } from '@/components/cyber/CyberButton'

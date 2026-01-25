@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { ScrapingScheduler} from '@/lib/database-scraping-scheduler'
 import { authenticateRequest} from '@/lib/auth-server'

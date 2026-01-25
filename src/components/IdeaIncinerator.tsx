@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Flame, Hammer, Skull, Zap, ArrowRight, Copy, Check, Thermometer } from 'lucide-react';
+import { Flame, Hammer, Skull, Zap, Copy, Check, Thermometer } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { IncineratorResponse } from '../types';
 import { addXP, showToast } from '../services/gameService';

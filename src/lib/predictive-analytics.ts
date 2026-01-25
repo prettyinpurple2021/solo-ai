@@ -222,7 +222,7 @@ class PredictiveAnalyticsEngine {
   }
 
   private buildEngagementInsight(userData: UserAnalyticsData): PredictiveInsight | null {
-    const { sessionFrequencyPerWeek, avgSessionDurationMinutes, loginFrequencyPerWeek, engagementScore, sessionPatterns } = userData
+    const { sessionFrequencyPerWeek, avgSessionDurationMinutes, engagementScore, sessionPatterns } = userData
 
     if (userData.sessionDurationHistory.length === 0) {
       return null

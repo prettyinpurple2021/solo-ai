@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Flag, Users, Flame, Scroll, ArrowRight, Loader2, HeartHandshake, Save, Trash2 } from 'lucide-react';
+import { Flag, Users, Flame, Scroll, ArrowRight, Loader2, HeartHandshake, Trash2 } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { TribeBlueprint } from '../types';
 import { addXP, showToast } from '../services/gameService';

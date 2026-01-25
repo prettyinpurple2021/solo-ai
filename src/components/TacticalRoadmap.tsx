@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Plus, Clock, CheckCircle2, Circle, AlertCircle, Calendar, ArrowRight, Loader2, Trash2, PlayCircle, Zap, Target, Layers } from 'lucide-react';
+import { Plus, Clock, CheckCircle2, Circle, Loader2, Trash2, PlayCircle, Target, Layers } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { Task, TaskStatus, AgentId } from '../types';
 import { AGENTS } from '../constants';

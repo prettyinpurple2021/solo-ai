@@ -1,9 +1,9 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyAuth } from '@/lib/auth-server'
-import { logInfo, logError } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { db } from '@/lib/db'
-import { collaborationMessages, users } from '@/db/schema'
+import { collaborationMessages,} from '@/db/schema'
 import { eq, asc } from 'drizzle-orm'
 import { collaborationHub } from '@/lib/collaboration-hub'
 

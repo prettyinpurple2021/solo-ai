@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Archive, Search, Eye, Swords, Presentation, Palette, Clock, Trash2, Download, Filter, LayoutGrid, List as ListIcon, Code } from 'lucide-react';
+import { Archive, Search, Eye, Swords, Presentation, Palette, Clock, Trash2, Download, LayoutGrid, List as ListIcon, Code } from 'lucide-react';
 import { CompetitorReport, SavedWarRoomSession, PitchDeck, CreativeAsset, SavedCodeSnippet } from '../types';
 import { soundService } from '../services/soundService';
 import { generateCompetitorMarkdown, generateWarRoomMarkdown, downloadMarkdown } from '../services/exportService';

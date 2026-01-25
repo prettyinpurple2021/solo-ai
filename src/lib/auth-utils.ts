@@ -52,7 +52,7 @@ export async function getUserIdFromRequest(request: NextRequest): Promise<string
 }
 
 // Deprecated functions that we keep for signature compatibility but stub
-export async function createToken(userId: string, email: string): Promise<string> {
+export async function createToken(userId: string,: string): Promise<string> {
   return "mock-token"
 }
 

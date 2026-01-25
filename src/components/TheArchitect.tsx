@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Plus, FileCode, CheckCircle2, ArrowRight, Loader2, Database, Layers, Save, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Box, Plus, FileCode, CheckCircle2, Loader2, Database, Layers, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { ProductSpec, Task, AgentId } from '../types';
 import { addXP, showToast } from '../services/gameService';

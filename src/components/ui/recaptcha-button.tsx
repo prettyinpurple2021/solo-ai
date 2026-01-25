@@ -1,12 +1,12 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn, logInfo,} from '@/lib/logger'
 import { ReactNode} from "react"
 import { motion} from "framer-motion"
 import { BossButton, type BossButtonProps} from "./boss-button"
 import { useRecaptcha, useRecaptchaForm} from "@/hooks/use-recaptcha"
 import { RECAPTCHA_ACTIONS, type RecaptchaAction} from "@/lib/recaptcha-client"
-import { Shield, AlertCircle, CheckCircle} from "lucide-react"
+import { Shield, AlertCircle,} from "lucide-react"
 import { RECAPTCHA_CONFIG} from "@/lib/recaptcha-client"
 
 
@@ -237,7 +237,7 @@ export function RecaptchaForm({
   onSubmit: (formData: any) => Promise<any>
   [key: string]: any
 }) {
-  const { handleSubmit, isReady, isLoading, error } = useRecaptchaForm({
+  const { handleSubmit, isReady, error } = useRecaptchaForm({
     action,
     ...props
   })

@@ -18,7 +18,7 @@ export function RegisterForm() {
   const [error, setError] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [ageError, setAgeError] = useState<string | null>(null);
+  const [, setAgeError] = useState<string | null>(null);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

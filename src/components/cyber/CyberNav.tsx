@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { SoloSuccessLogo } from './SoloSuccessLogo'
+
 import { CyberButton } from './CyberButton'
 
 export function CyberNav() {

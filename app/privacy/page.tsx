@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { CyberPageLayout } from '@/components/cyber/CyberPageLayout'
 import { HudBorder } from '@/components/cyber/HudBorder'
-import { Shield, FileText, Lock, Eye, Database } from 'lucide-react'
+import { Shield,} from 'lucide-react'
 
 export default function PrivacyPolicyPage() {
   return (

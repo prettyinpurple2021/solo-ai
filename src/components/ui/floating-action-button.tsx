@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
-import { Plus, Mic, Calendar, Target, X } from 'lucide-react'
+import { Plus, Mic, Calendar, Target,} from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -133,7 +133,7 @@ export default function FloatingActionButton({
         <AnimatePresence>
           {isExpanded && (
             <div className="absolute bottom-20 right-0 flex flex-col-reverse gap-3">
-              {actionButtons.map((button, index) => {
+              {actionButtons.map((button,) => {
                 const Icon = button.icon
                 return (
                   <motion.div

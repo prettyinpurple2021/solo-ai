@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Rocket, Calendar, CheckCircle2, PlayCircle, Megaphone, Box, ArrowDown, Loader2, Trash2, Target } from 'lucide-react';
+import { Rocket, Calendar, CheckCircle2, PlayCircle, Box, Loader2, Trash2, Target } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { LaunchStrategy, Task, AgentId } from '../types';
 import { addXP, showToast } from '../services/gameService';

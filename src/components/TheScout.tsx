@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { UserPlus, Users, FileText, CheckCircle2, AlertTriangle, Copy, Check, Loader2, Briefcase, ListTodo, Ear } from 'lucide-react';
+import { UserPlus, Users, CheckCircle2, Copy, Loader2, Briefcase, ListTodo, Ear } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { JobDescription, InterviewGuide, SOP } from '../types';
 import { addXP, showToast } from '../services/gameService';
@@ -14,7 +14,7 @@ import { storageService } from '../services/storageService';
 export const TheScout: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'recruit' | 'vet' | 'delegate'>('recruit');
     const [loading, setLoading] = useState(false);
-    const [copied, setCopied] = useState(false);
+    const [, setCopied] = useState(false);
 
     // Recruit State
     const [roleTitle, setRoleTitle] = useState('');

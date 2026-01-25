@@ -1,13 +1,13 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import, { useState, useEffect } from 'react'
 import { logError } from '@/lib/logger'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion,} from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Progress } from '@/components/ui/progress'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
+
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { 
   Brain, 
@@ -15,20 +15,20 @@ import {
   TrendingDown, 
   AlertTriangle, 
   CheckCircle, 
-  Clock, 
+, 
   Target,
   Users,
   BarChart3,
-  PieChart,
+,
   LineChart,
   Zap,
   Crown,
-  Sparkles,
+,
   ArrowRight,
   RefreshCw,
   Filter,
-  Download,
-  Bell,
+,
+,
   Eye
 } from 'lucide-react'
 import { cn } from '@/lib/utils'

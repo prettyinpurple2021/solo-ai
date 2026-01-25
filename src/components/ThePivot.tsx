@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Compass, Map, TrendingUp, Anchor, ArrowRight, Loader2, Target, AlertCircle } from 'lucide-react';
+import { Compass, Map, Anchor, ArrowRight, Loader2, Target, AlertCircle } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { PivotAnalysis } from '../types';
 import { addXP, showToast } from '../services/gameService';

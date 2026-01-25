@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn,} from '@/lib/logger'
 import { db } from '@/db';
 import { competitorProfiles, intelligenceData, socialMediaConnections } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
@@ -725,7 +725,7 @@ export class SocialMediaMonitor {
     return posts
   }
 
-  private async fetchTwitterPostsWithToken(accessToken: string, tokenSecret: string, handle: string): Promise<SocialMediaPost[]> {
+  private async fetchTwitterPostsWithToken(accessToken: string,: string, handle: string): Promise<SocialMediaPost[]> {
     // Use OAuth 1.0a for user authentication (accessToken + tokenSecret)
     // For OAuth 2.0, just use accessToken as Bearer token
     if (!accessToken) {
@@ -930,7 +930,7 @@ export class SocialMediaMonitor {
     }
   }
 
-  private async fetchInstagramCompetitorPosts(accessToken: string, competitorHandle: string): Promise<SocialMediaPost[]> {
+  private async fetchInstagramCompetitorPosts(accessToken: string,: string): Promise<SocialMediaPost[]> {
     // For competitor monitoring, we'd need their Instagram Business Account ID
     // This requires the competitor's account to be connected or publicly accessible
     // Simplified: try to fetch using handle (may not work without proper setup)

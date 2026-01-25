@@ -45,7 +45,7 @@ export async function getStripe() {
 
 // For backwards compatibility, export a proxy that lazily loads Stripe
 export const stripe = new Proxy({} as import('stripe').default, {
-  get(target, prop) {
+  get(,) {
     throw new Error('Use await getStripe() instead of accessing stripe directly')
   }
 })

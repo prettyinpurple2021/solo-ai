@@ -1,8 +1,8 @@
 "use client"
 
 import { useEffect, useCallback, useRef } from "react"
-import { logger, logInfo, logDebug } from "@/lib/logger"
-import { SMART_TIPS, SmartTip } from "@/components/ui/smart-tip"
+import { logInfo, logDebug } from "@/lib/logger"
+import { SMART_TIPS,} from "@/components/ui/smart-tip"
 
 interface TipTrigger {
   condition: () => boolean

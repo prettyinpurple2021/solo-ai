@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Mic, MicOff, Activity, Radio, X, Volume2, Power } from 'lucide-react';
+import { MicOff, Activity, Radio, Volume2, Power } from 'lucide-react';
 import { GoogleGenAI, LiveServerMessage, Modality } from "@google/genai";
 import { AGENTS, SYSTEM_INSTRUCTIONS } from '../constants';
 import { AgentId } from '../types';

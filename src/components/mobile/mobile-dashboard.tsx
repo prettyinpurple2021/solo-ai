@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useMemo, useState } from 'react'
+import, { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { useIsMobile } from '@/hooks/use-mobile'
 import MobileDashboardWidgets from './mobile-dashboard-widgets'
@@ -89,7 +89,7 @@ export default function MobileDashboard({
   className = ""
 }: MobileDashboardProps) {
   const isMobile = useIsMobile()
-  const { data: fetchedDashboard, loading: dashboardLoading, error: dashboardError } = useDashboardData()
+  const { data: fetchedDashboard, loading: dashboardLoading, error: } = useDashboardData()
   const [showVoiceCreator, setShowVoiceCreator] = useState(false)
   const [notifications, setNotifications] = useState(3)
   const [isOnline, setIsOnline] = useState(true)

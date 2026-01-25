@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import, { useState, useEffect } from 'react';
 import { TrendingUp, Users, DollarSign, CreditCard } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { logError } from '@/lib/logger';

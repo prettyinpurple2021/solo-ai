@@ -1,7 +1,7 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import React, { useState, useEffect, useCallback } from 'react'
+import { logError,} from '@/lib/logger'
+import, { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import { Button} from '@/components/ui/button'
 import { Badge} from '@/components/ui/badge'
@@ -11,10 +11,10 @@ import { ScrollArea} from '@/components/ui/scroll-area'
 import { Avatar, AvatarFallback, AvatarImage} from '@/components/ui/avatar'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/components/ui/select'
 import { useToast} from '@/hooks/use-toast'
-import { motion} from 'framer-motion'
+
 
 import {
-  BarChart3, PieChart, TrendingUp, Activity, HardDrive, Files, Users, Eye, Share2, Star, Hash, FolderOpen, FileType, Brain, Sparkles, Zap, Target, AlertTriangle, ArrowUp, ArrowDown, Minus, Plus, RefreshCw, Crown, Shield, Globe} from 'lucide-react'
+, PieChart, TrendingUp, Activity, HardDrive, Files, Users, Eye, Share2, Star, Hash, FolderOpen, FileType, Brain, Sparkles, Zap, Target, AlertTriangle, ArrowUp, ArrowDown, Minus, Plus, RefreshCw, Crown, Globe} from 'lucide-react'
 
 interface DashboardStats {
   totalFiles: number
@@ -408,7 +408,7 @@ export default function EnhancedDashboard({ className = "" }: EnhancedDashboardP
             </CardHeader>
             <CardContent>
               <div className="grid gap-4 md:grid-cols-3">
-                {stats?.topCategories.map((category, index) => (
+                {stats?.topCategories.map((category,) => (
                   <div key={category.name} className="p-4 border rounded-sm">
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-medium">{category.name}</h3>

@@ -7,13 +7,13 @@ import cors from 'cors';
 import { db } from './db';
 
 import { users, tasks, chatHistory, competitorReports, businessContext } from './db/schema';
-import { eq, desc, and, or } from 'drizzle-orm';
-import { z } from 'zod';
+import { eq, desc, and,} from 'drizzle-orm';
+
 import { GoogleGenAI } from '@google/genai';
 import { Redis } from '@upstash/redis';
 import bcrypt from 'bcryptjs';
 import { generateToken, verifyToken } from './utils/jwt';
-import { authMiddleware, AuthRequest } from './middleware/auth';
+
 import { SearchIndexer } from './utils/searchIndexer';
 import adminRouter from './routes/admin';
 import contactsRouter from './routes/contacts';
@@ -74,7 +74,7 @@ const redis = new Redis({
 const sentryRequestMiddleware =
   (Sentry as any).Handlers?.requestHandler?.() ??
   (Sentry as any).requestHandler?.() ??
-  ((req: express.Request, res: express.Response, next: express.NextFunction) => next());
+  ((req: express.Request,: express.Response, next: express.NextFunction) => next());
 app.use(sentryRequestMiddleware);
 
 app.use(cors({
@@ -734,11 +734,11 @@ if (process.env.NODE_ENV === 'production') {
 const sentryErrorMiddleware =
   (Sentry as any).Handlers?.errorHandler?.() ??
   (Sentry as any).errorHandler?.() ??
-  ((err: unknown, req: express.Request, res: express.Response, next: express.NextFunction) => next(err));
+  ((err: unknown,: express.Request,: express.Response, next: express.NextFunction) => next(err));
 app.use(sentryErrorMiddleware);
 
 // Express error handler
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: Error, req: express.Request, res: express.Response,: express.NextFunction) => {
     logError('Unhandled error in Express middleware', err, { path: req.path, method: req.method });
     res.status(500).json({ error: 'Internal server error' });
 });

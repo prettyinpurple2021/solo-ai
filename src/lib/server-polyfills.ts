@@ -60,7 +60,7 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
     class PolyfillFormData {
       private _data: Map<string, string | any> = new Map()
 
-      append(name: string, value: any, fileName?: string): void {
+      append(name: string, value: any,?: string): void {
         this._data.set(name, value as string | any)
       }
 
@@ -72,7 +72,7 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
         return this._data.has(name)
       }
 
-      set(name: string, value: any, fileName?: string): void {
+      set(name: string, value: any,?: string): void {
         this._data.set(name, value as string | any)
       }
 

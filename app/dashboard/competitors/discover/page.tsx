@@ -2,15 +2,15 @@
 
 
 export const dynamic = 'force-dynamic'
-import { logger, logError } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { useState} from "react"
 import { motion} from "framer-motion"
 import { useRouter} from "next/navigation"
 import { 
-  ArrowLeft, Search, Plus, Eye, Zap, Globe, Building, Users, DollarSign, TrendingUp, CheckCircle, AlertTriangle, Lightbulb, Target, Sparkles} from "lucide-react"
+  ArrowLeft, Search, Plus, Globe, Building, Users, DollarSign, TrendingUp, CheckCircle, AlertTriangle, Lightbulb, Target,} from "lucide-react"
 import Link from "next/link"
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent,} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input} from "@/components/ui/input"
 import { Textarea} from "@/components/ui/textarea"

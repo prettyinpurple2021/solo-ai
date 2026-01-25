@@ -2,8 +2,8 @@
 
 
 export const dynamic = 'force-dynamic'
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import React, { useState, useEffect } from "react"
+import { logError,} from '@/lib/logger'
+import, { useState, useEffect } from "react"
 import { HudBorder } from "@/components/cyber/HudBorder"
 import { CyberButton } from "@/components/cyber/CyberButton"
 import { Badge} from "@/components/ui/badge"

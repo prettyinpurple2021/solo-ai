@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server';
 import { authenticateRequest} from '@/lib/auth-server';
 import { rateLimitByIp} from '@/lib/rate-limit';
@@ -519,7 +519,7 @@ async function generateAudienceBenchmarks(competitorIds: string[], platform?: st
   };
 }
 
-async function getIndustryAverages(industry: string = 'general', platform?: string) {
+async function getIndustryAverages(industry: string = 'general',?: string) {
   // Returns standardized industry baselines derived from system configurations.
   const baselines: Record<string, any> = {
     'tech': { engagement_rate: 0.045, posting_frequency: 1.5, follower_growth_rate: 0.08, sentiment_score: 0.2 },

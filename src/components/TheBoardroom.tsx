@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Crown, Briefcase, Loader2, CheckCircle2, TrendingUp, AlertOctagon, FileText } from 'lucide-react';
+import { Crown, Briefcase, Loader2, CheckCircle2, AlertOctagon, FileText } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
-import { BoardMeetingReport, AgentId } from '../types';
+import { BoardMeetingReport,} from '../types';
 import { AGENTS } from '../constants';
 import { addXP, showToast } from '../services/gameService';
 import { soundService } from '../services/soundService';

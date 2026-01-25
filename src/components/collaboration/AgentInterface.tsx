@@ -1,7 +1,7 @@
 
 'use client'
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import React, { useState, useEffect } from 'react'
 import { Card } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -13,21 +13,21 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Bot, 
-  Zap, 
+, 
   Brain, 
   Code, 
   MessageSquare, 
   Settings, 
   Activity, 
-  Clock,
-  CheckCircle,
-  AlertCircle,
-  Play,
-  Pause,
-  Square,
+,
+,
+,
+,
+,
+,
   MoreHorizontal,
   TrendingUp,
-  Users,
+,
   Target
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -121,7 +121,7 @@ const AgentCard: React.FC<{ agent: Agent; onSelect?: (agent: Agent) => void; com
   compact = false 
 }) => {
   const utilisationPercentage = (agent.currentSessions / agent.maxSessions) * 100
-  const [showDetails, setShowDetails] = useState(false)
+  const [,] = useState(false)
 
   const getAgentIcon = (specialization: string) => {
     switch (specialization.toLowerCase()) {
@@ -481,7 +481,7 @@ const AgentDetailsView: React.FC<{ agent: Agent }> = ({ agent }) => {
 const AgentInterface: React.FC = () => {
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
+  const [, setSelectedAgent] = useState<Agent | null>(null)
   const [filter, setFilter] = useState<'all' | 'available' | 'busy' | 'offline'>('all')
 
   useEffect(() => {

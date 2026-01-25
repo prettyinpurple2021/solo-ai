@@ -311,7 +311,7 @@ const SidebarInset = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"main">
 >(({ className, ...props }, ref) => {
-  const { isMobile, state } = useSidebar()
+  const { isMobile,} = useSidebar()
   
   return (
     <main

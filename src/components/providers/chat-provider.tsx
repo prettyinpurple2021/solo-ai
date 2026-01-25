@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn, logInfo, logDebug,} from '@/lib/logger'
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 const FloatingChatButton = dynamic(() => import('@/components/chat/floating-chat-button'), {

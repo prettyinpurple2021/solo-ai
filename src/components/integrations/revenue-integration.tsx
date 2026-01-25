@@ -1,12 +1,12 @@
 "use client"
 
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+
+
 import {
   CreditCard,
   CheckCircle,
@@ -21,7 +21,7 @@ import {
   Store
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
-import {
+
   Dialog,
   DialogContent,
   DialogDescription,
@@ -120,8 +120,8 @@ interface RevenueIntegrationProps {
 export function RevenueIntegration({ className = "" }: RevenueIntegrationProps) {
   const [connections, setConnections] = useState<Record<string, PaymentProviderConnection>>({})
   const [isLoading, setIsLoading] = useState(false)
-  const [showCredentialsDialog, setShowCredentialsDialog] = useState<string | null>(null)
-  const [credentials, setCredentials] = useState<Record<string, any>>({})
+  const [, setShowCredentialsDialog] = useState<string | null>(null)
+  const [,] = useState<Record<string, any>>({})
   const { toast } = useToast()
 
   // Initialize connections state

@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn, logInfo,} from '@/lib/logger'
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import Script from 'next/script'
 import { useToast} from '@/hooks/use-toast'
@@ -34,7 +34,7 @@ declare global {
 
 export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
   const [isReady, setIsReady] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [, setIsLoading] = useState(false)
   const { toast } = useToast()
 
   const executeRecaptcha = async (action: string): Promise<string | null> => {

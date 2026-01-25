@@ -1,5 +1,5 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { z } from 'zod'
+import { logError, logInfo,} from '@/lib/logger'
+
 import { webScrapingService, type ScrapingResult } from './web-scraping-service'
 import type { CompetitorProfile } from './competitor-intelligence-types'
 

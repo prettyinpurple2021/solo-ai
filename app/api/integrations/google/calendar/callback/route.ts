@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { verifyAuth } from '@/lib/auth-server'
-import { logError, logInfo } from '@/lib/logger'
+
+import { logError,} from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 

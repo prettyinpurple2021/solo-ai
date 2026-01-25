@@ -19,7 +19,7 @@ import {
   Bell,
   User,
   ChevronRight,
-  ChevronLeft,
+,
   Calendar,
   CheckSquare,
   Briefcase,

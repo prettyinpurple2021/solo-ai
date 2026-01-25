@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { handleSignOut } from '@/lib/auth-actions';
-import { LayoutDashboard, Users, Eye, ShieldAlert, Swords, Flame, KanbanSquare, Power, Search, Command, Settings, Trophy, ChevronUp, NotebookPen, X, Menu, Coins, Radio, Palette, Presentation, BookTemplate, Archive, Terminal, GitBranch, Scale, Mic, Crown, Compass, Moon, Box, GraduationCap, Flag, Megaphone, Rocket, UserPlus } from 'lucide-react';
+import { LayoutDashboard, Users, Eye, ShieldAlert, Swords, Flame, KanbanSquare, Power, Search, Trophy, ChevronUp, NotebookPen, X, Coins, Radio, Palette, Presentation, BookTemplate, Archive, Terminal, GitBranch, Scale, Mic, Crown, Compass, Moon, Box, GraduationCap, Flag, Megaphone, Rocket, UserPlus } from 'lucide-react';
 import { AGENTS } from '../constants';
 import { AgentId, BusinessContext } from '../types';
 import { getUserProgress, subscribeToToasts, getXPForLevel } from '../services/gameService';
@@ -179,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         }
     ];
 
-    const navItemClass = (isActive: boolean, colorClass: string = 'text-white', label: string) => `
+    const navItemClass = (isActive: boolean, colorClass: string = 'text-white',: string) => `
     flex items-center gap-3 px-4 py-2.5 min-h-[44px] text-base md:text-sm font-medium transition-all duration-200 cursor-pointer group rounded-lg mr-2 relative overflow-hidden
     ${isActive
             ? `glass-subtle ${colorClass} shadow-lg border-l-2 border-${colorClass.split('-')[1]}-500`

@@ -5,7 +5,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/componen
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { CheckCircle, Circle, Play } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 
 interface Module {
   id: string;
@@ -21,7 +21,7 @@ interface ModulePlayerProps {
 }
 
 export function ModulePlayer({ module, onComplete, isCompleted = false }: ModulePlayerProps) {
-  const [isReading, setIsReading] = useState(false);
+  const [,] = useState(false);
 
   // In a real app, we'd render Markdown or Video here
   // For now, simple text display

@@ -1,7 +1,7 @@
 import { db } from '@/db'
 import { paymentProviderConnections } from '@/db/schema'
-import { eq, and, gte, lte, sql, inArray } from 'drizzle-orm'
-import { logError, logInfo, logWarn } from '@/lib/logger'
+import { eq, and, inArray } from 'drizzle-orm'
+import { logError, logWarn } from '@/lib/logger'
 import Stripe from 'stripe'
 
 type PaymentConnection = typeof paymentProviderConnections.$inferSelect
@@ -255,7 +255,7 @@ export class RevenueTrackingService {
   /**
     * PayPal-specific revenue calculation (Placeholder for real API)
     */
-  private static async calculatePayPalRevenue(connection: PaymentConnection, startDate: Date, endDate: Date): Promise<number> {
+  private static async calculatePayPalRevenue(connection: PaymentConnection,: Date,: Date): Promise<number> {
     // Future: PayPal Orders/Transactions API integration
     logWarn('PayPal Revenue calculation deferred to V2', { connectionId: connection.id })
     return 0

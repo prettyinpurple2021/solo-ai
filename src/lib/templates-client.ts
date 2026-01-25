@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { getSql } from '@/lib/api-utils'
 import { Template, TemplateCategory } from './templates-types'
 import { templateCategories as normalizedCategories } from '@/lib/template-catalog'

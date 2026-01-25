@@ -1,4 +1,4 @@
-import { logError, logInfo, logWarn } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { neon } from '@neondatabase/serverless'
 import { SUBSCRIPTION_TIERS } from '@/lib/stripe'
 

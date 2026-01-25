@@ -3,7 +3,7 @@
  * Handles session lifecycle, state persistence, and coordination
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 import { 
@@ -12,7 +12,7 @@ import {
   collaborationMessages,
   collaborationCheckpoints 
 } from '@/db/schema'
-import { eq, and, desc } from 'drizzle-orm'
+import { eq, and,} from 'drizzle-orm'
 import type { 
   CollaborationSession, 
   AgentMessage, 
@@ -635,7 +635,7 @@ export class SessionManager {
   /**
    * Restore session from checkpoint
    */
-  async restoreFromCheckpoint(sessionId: string, checkpointId: string): Promise<boolean> {
+  async restoreFromCheckpoint(sessionId: string,: string): Promise<boolean> {
      // TODO: Implement restore logic
      return false
   }
@@ -643,7 +643,7 @@ export class SessionManager {
   /**
    * Update session task status
    */
-  async updateTaskStatus(sessionId: string, taskId: string, status: 'completed' | 'pending'): Promise<boolean> {
+  async updateTaskStatus(sessionId: string,: string,: 'completed' | 'pending'): Promise<boolean> {
       // Logic could be implemented if we parse metadata
      return false
   }

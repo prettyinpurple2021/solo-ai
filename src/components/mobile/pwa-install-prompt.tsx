@@ -1,9 +1,9 @@
 "use client"
-import React, { useState, useEffect } from 'react'
+import, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+
 import { logError } from '@/lib/logger'
 import { 
   Download, 

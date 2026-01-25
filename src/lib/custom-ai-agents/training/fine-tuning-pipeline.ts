@@ -1,10 +1,10 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import OpenAI from 'openai'
 import { SimpleTrainingCollector } from "./simple-training-collector"
 import type { TrainingInteraction } from "./simple-training-collector"
 import { PerformanceAnalytics, TrainingRecommendation } from "./performance-analytics"
 import { db } from '@/db'
-import { workflows, workflowExecutions, users } from '@/db/schema'
+import { workflows, workflowExecutions,} from '@/db/schema'
 import { eq, and, desc } from 'drizzle-orm'
 
 

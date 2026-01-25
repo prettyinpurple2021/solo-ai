@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from 'react'
+import, { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,18 +9,18 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
   Mic,
-  MicOff,
+,
   Square,
-  Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Send,
+,
+,
+,
+,
+,
   X,
   CheckCircle,
   AlertCircle,
-  Clock,
-  Zap,
+,
+,
   Sparkles
 } from 'lucide-react'
 import { cn } from '@/lib/utils'

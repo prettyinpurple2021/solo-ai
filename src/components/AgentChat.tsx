@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Network, Info, MessageSquare, ListTodo, CheckCircle2, Clock, AlertCircle, Trash2, RefreshCcw } from 'lucide-react';
+import { Send, Bot, User, Network, MessageSquare, ListTodo, CheckCircle2, Clock, AlertCircle, Trash2,} from 'lucide-react';
 import { AgentId, ChatMessage, Task } from '../types';
 import { AGENTS } from '../constants';
 import { geminiService } from '../services/geminiService';

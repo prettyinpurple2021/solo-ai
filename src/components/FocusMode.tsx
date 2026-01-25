@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Play, Pause, Square, CheckCircle2, BrainCircuit, Volume2, VolumeX, X } from 'lucide-react';
+import { Play, Pause, CheckCircle2, BrainCircuit, Volume2, VolumeX, X } from 'lucide-react';
 import { Task } from '../types';
 import { soundService } from '../services/soundService';
 import { addXP, showToast } from '../services/gameService';

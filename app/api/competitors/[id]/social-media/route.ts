@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server';
 import { authenticateRequest} from '@/lib/auth-server';
 import { rateLimitByIp} from '@/lib/rate-limit';
@@ -194,7 +194,7 @@ export async function POST(
       force_refresh: z.boolean().default(false)
     });
 
-    const { platforms, force_refresh } = requestSchema.parse(body);
+    const { platforms,} = requestSchema.parse(body);
 
     // Verify competitor exists and belongs to user
     const [competitor] = await db

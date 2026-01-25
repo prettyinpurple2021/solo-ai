@@ -2,12 +2,12 @@
 
 
 export const dynamic = 'force-dynamic'
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState} from "react"
 import { motion} from "framer-motion"
 import { useRouter} from "next/navigation"
 import { 
-  ArrowLeft, Globe, Building, Users, DollarSign, Shield, Eye, Zap, CheckCircle, AlertTriangle} from "lucide-react"
+  ArrowLeft, Globe, Building, Users, DollarSign, Eye, CheckCircle, AlertTriangle} from "lucide-react"
 import Link from "next/link"
 
 import { HudBorder } from "@/components/cyber/HudBorder"

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Mic, MicOff, Volume2, VolumeX, Square, Play } from 'lucide-react'
+import { Mic, Volume2, VolumeX, Square,} from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 // Provide minimal fallbacks for browser-only Web Speech API types during Node builds

@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { getSql } from '@/lib/api-utils'
 
 
@@ -88,7 +88,7 @@ export class CompetitiveIntelligenceContextService {
   /**
    * Get competitive intelligence context for AI agent conversations
    */
-  static async getCompetitiveContext(userId: string, agentId?: string): Promise<CompetitiveIntelligenceContext> {
+  static async getCompetitiveContext(userId: string,?: string): Promise<CompetitiveIntelligenceContext> {
     try {
       const sql = getSql()
       

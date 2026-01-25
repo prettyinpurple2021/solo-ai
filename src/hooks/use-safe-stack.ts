@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logWarn,} from '@/lib/logger'
 import { useAuth } from '@/hooks/use-auth'
 
 

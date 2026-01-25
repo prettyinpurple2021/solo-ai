@@ -1,9 +1,9 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { authenticateRequest} from '@/lib/auth-server'
 import { rateLimitByIp} from '@/lib/rate-limit'
 import { opportunityRecommendationSystem} from '@/lib/opportunity-recommendation-system'
-import { competitiveOpportunityDetector} from '@/lib/competitive-opportunity-detection'
+
 import { z} from 'zod'
 
 

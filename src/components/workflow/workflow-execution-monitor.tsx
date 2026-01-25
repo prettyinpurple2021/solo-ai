@@ -1,15 +1,15 @@
 "use client"
 
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import, { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+
 import {
-  Play,
+,
   Pause,
   Square,
   RefreshCw,
@@ -17,36 +17,36 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-  Info,
+,
   Eye,
-  Download,
-  Filter,
+,
+,
   Search,
-  Zap,
+,
   Activity,
-  BarChart3,
-  TrendingUp,
-  Timer,
-  Users,
-  Target,
-  Brain,
-  Mail,
-  Webhook,
-  GitBranch,
+,
+,
+,
+,
+,
+,
+,
+,
+,
   Loader2,
   ChevronRight,
   ChevronDown,
-  Copy,
-  ExternalLink,
-  Settings,
+,
+,
+,
   MoreHorizontal
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { PrimaryButton } from '@/components/ui/button'
 import { Loading } from '@/components/ui/loading'
-import { cn } from '@/lib/utils'
+
 import { useToast } from '@/hooks/use-toast'
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import type { WorkflowExecution, WorkflowExecutionStep } from '@/lib/workflow-engine'
 
 // Types
@@ -110,7 +110,7 @@ const STATUS_ICONS: Record<ExtendedStatus, LucideIcon> = {
 }
 
 export function WorkflowExecutionMonitor({
-  executionId,
+,
   onStopExecution,
   onRetryExecution,
   onViewDetails,
@@ -123,7 +123,7 @@ export function WorkflowExecutionMonitor({
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set())
-  const [activeTab, setActiveTab] = useState<'overview' | 'executions' | 'logs' | 'analytics'>('overview')
+  const [,] = useState<'overview' | 'executions' | 'logs' | 'analytics'>('overview')
   const [autoRefresh, setAutoRefresh] = useState(true)
   const [loading, setLoading] = useState(true)
 

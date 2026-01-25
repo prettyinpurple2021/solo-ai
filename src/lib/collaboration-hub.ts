@@ -3,7 +3,7 @@
  * Handles agent registry, session management, and coordination between AI agents
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { z } from 'zod'
 import { MessageRouter } from './message-router'
 import { db } from '@/db'

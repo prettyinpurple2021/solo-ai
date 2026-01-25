@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { useState, useEffect} from "react"
 import { motion, AnimatePresence} from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
@@ -9,7 +9,7 @@ import { Badge} from "@/components/ui/badge"
 import { Progress} from "@/components/ui/progress"
 
 import {
-  Crown, Sparkles, Target, Users, Rocket, Gift, Star, Zap, TrendingUp, Brain, Heart, CheckCircle, ArrowRight, ArrowLeft, Play, Pause, Volume2, VolumeX, Settings} from "lucide-react"
+  Crown, Sparkles, Target, Users, Rocket, Gift, Star, TrendingUp, Brain, CheckCircle, ArrowRight, ArrowLeft, Play, Volume2, VolumeX, Settings} from "lucide-react"
 
 interface WelcomeFlowProps {
   open: boolean
@@ -18,10 +18,10 @@ interface WelcomeFlowProps {
   userData?: any
 }
 
-export function EnhancedWelcomeFlow({ open, onComplete, onSkip, userData }: WelcomeFlowProps) {
+export function EnhancedWelcomeFlow({ open, onComplete, onSkip,}: WelcomeFlowProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [,] = useState(false)
+  const [soundEnabled,] = useState(true)
   const [selectedPersonality, setSelectedPersonality] = useState<string>("")
   const [selectedGoals, setSelectedGoals] = useState<string[]>([])
   const [selectedAgents, setSelectedAgents] = useState<string[]>([])

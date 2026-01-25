@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { getScrapingSystemHealth} from '@/lib/scraping-startup'
 import { queueProcessor} from '@/lib/scraping-queue-processor'

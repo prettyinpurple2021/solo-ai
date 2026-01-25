@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn,} from '@/lib/logger'
 import { Resend } from "resend"
 
 // Initialize Resend client only if API key is available

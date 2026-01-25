@@ -1,6 +1,6 @@
 'use server';
 
-import { signIn } from '@/lib/auth';
+
 import { db } from '@/db';
 import { users } from '@/db/schema';
 import bcrypt from 'bcryptjs';

@@ -15,7 +15,7 @@ console.log('DATABASE_URL starts with:', process.env.DATABASE_URL?.substring(0, 
 
 import { getDb } from '../src/lib/database-client';
 import { users } from '../src/db/schema';
-import { eq, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 
 async function runDiag() {

@@ -6,7 +6,7 @@ import {
     competitorProfiles,
     intelligenceData
 } from '@/db/schema'
-import { eq, desc, sql, and, gte } from 'drizzle-orm'
+import { eq, desc, sql,} from 'drizzle-orm'
 import { verifyAuth } from '@/lib/auth-server'
 import { logError, logInfo } from '@/lib/logger'
 

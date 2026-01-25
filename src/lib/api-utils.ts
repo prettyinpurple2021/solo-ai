@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { neon } from '@neondatabase/serverless'
 import * as jose from 'jose'
-import { logger, logError, logAuth } from '@/lib/logger'
+import { logError, logAuth } from '@/lib/logger'
 
 /**
  * Centralized database connection utility

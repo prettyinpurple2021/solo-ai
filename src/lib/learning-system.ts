@@ -1,4 +1,4 @@
-import { logger, logInfo, logWarn, logError } from '@/lib/logger'
+import { logInfo, logError } from '@/lib/logger'
 
 export interface LearningModule {
   id: string

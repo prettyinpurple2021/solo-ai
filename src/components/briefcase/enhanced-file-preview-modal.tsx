@@ -1,18 +1,18 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import React, { useState, useEffect, useCallback } from 'react'
+import { logError,} from '@/lib/logger'
+import, { useState, useEffect, useCallback } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle} from '@/components/ui/dialog'
 import { Button} from '@/components/ui/button'
 import { Badge} from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger} from '@/components/ui/tabs'
 import { ScrollArea} from '@/components/ui/scroll-area'
 import { useToast} from '@/hooks/use-toast'
-import { motion, AnimatePresence} from 'framer-motion'
+
 import FileMetadataPanel from './file-metadata-panel'
 
 import {
-  X, Download, ZoomIn, ZoomOut, RotateCw, Maximize2, Minimize2, ChevronLeft, ChevronRight, FileText, Image, Music, Video, FileCode, Archive, Eye, Share2, Edit, Trash2, Star, StarOff} from 'lucide-react'
+  X, Download, ZoomIn, ZoomOut, RotateCw, Maximize2, Minimize2, ChevronLeft, ChevronRight, FileText, Image, Music, Video, FileCode, Archive, Eye,} from 'lucide-react'
 
 interface BriefcaseFile {
   id: string
@@ -93,7 +93,7 @@ export default function EnhancedFilePreviewModal({
   const [imageRotation, setImageRotation] = useState(0)
   const [isFullscreen, setIsFullscreen] = useState(false)
   
-  const { toast } = useToast()
+  const {} = useToast()
 
   // Load file preview
   const loadPreview = useCallback(async (fileToPreview: BriefcaseFile) => {

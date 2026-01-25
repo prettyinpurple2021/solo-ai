@@ -1,8 +1,8 @@
 "use client"
 
 import React, { useState, useCallback, useMemo } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+
+import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -11,14 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,} from '@/components/ui/dialog'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+
 import { 
   Plus, 
   Trash2, 
   Save, 
-  Download, 
+, 
   Eye, 
   Settings, 
   BarChart3, 
@@ -30,20 +30,20 @@ import {
   Target,
   Users,
   Activity,
-  DollarSign,
-  Clock,
+,
+,
   CheckCircle,
-  AlertCircle,
-  Info,
-  Sparkles,
-  Zap,
+,
+,
+,
+,
   Crown
 } from 'lucide-react'
 import { PrimaryButton } from '@/components/ui/button'
 import { Loading } from '@/components/ui/loading'
-import { cn } from '@/lib/utils'
+
 import { useToast } from '@/hooks/use-toast'
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 
 // Types
 interface ReportField {

@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { Resend } from 'resend';
 import { CompetitorAlert } from '@/hooks/use-competitor-alerts';
 import { AlertSeverity, AlertType } from './competitor-alert-system';

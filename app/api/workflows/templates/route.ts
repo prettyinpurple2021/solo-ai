@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
 import { templates } from '@/db/schema';
-import { logger, logError } from '@/lib/logger';
+import { logError } from '@/lib/logger';
 import { desc, like, or, and, eq } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';

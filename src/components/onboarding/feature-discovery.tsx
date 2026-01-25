@@ -1,13 +1,13 @@
 "use client"
 
-import { useState, useEffect, useRef} from "react"
-import { motion, AnimatePresence} from "framer-motion"
+import { useState,} from "react"
+import { motion,} from "framer-motion"
 import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import { Button} from "@/components/ui/button"
-import { Badge} from "@/components/ui/badge"
+
 import { Progress} from "@/components/ui/progress"
 import { 
-  Sparkles, Target, Users, Brain, FileText, TrendingUp, Zap, Crown, CheckCircle, ArrowRight, ArrowLeft, Lightbulb, Star, Gift, Play, Pause, Volume2, VolumeX} from "lucide-react"
+, Target, Users, FileText, TrendingUp, Zap, Crown, CheckCircle, ArrowRight, ArrowLeft, Lightbulb, Star,} from "lucide-react"
 
 interface FeatureDiscoveryProps {
   open: boolean
@@ -16,10 +16,10 @@ interface FeatureDiscoveryProps {
   userPreferences?: any
 }
 
-export function FeatureDiscovery({ open, onComplete, onSkip, userPreferences }: FeatureDiscoveryProps) {
+export function FeatureDiscovery({ open, onComplete, onSkip,}: FeatureDiscoveryProps) {
   const [currentFeature, setCurrentFeature] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [,] = useState(false)
+  const [,] = useState(true)
   const [completedFeatures, setCompletedFeatures] = useState<Set<string>>(new Set())
   const [showTips, setShowTips] = useState(false)
 

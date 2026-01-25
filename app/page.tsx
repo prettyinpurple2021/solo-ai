@@ -1,10 +1,10 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { NeuralNetworkCanvas } from '@/components/cyber/NeuralNetworkCanvas'
-import { Server, Zap, Brain, ChevronRight } from 'lucide-react'
+import { Server, Brain,} from 'lucide-react'
 
 import { 
   FeaturesSection, 
@@ -93,7 +93,7 @@ const Navbar = () => (
 )
 
 export default function HomePage() {
-  const [mounted, setMounted] = useState(false)
+  const [, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)

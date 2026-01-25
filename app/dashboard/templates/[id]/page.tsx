@@ -4,9 +4,9 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { useAuth } from "@/hooks/use-auth"
-import { logger, logError } from "@/lib/logger"
+import { logError } from "@/lib/logger"
 import { getTemplateComponent } from "@/components/templates/template-registry"
-import { getTemplateBySlug } from "@/lib/template-catalog"
+
 import { Loader2, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -29,11 +29,11 @@ export default function TemplateEditorPage() {
   const params = useParams()
   const id = params?.id as string
   const router = useRouter()
-  const { user } = useAuth()
+  const {} = useAuth()
   
   const [template, setTemplate] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
+  const [, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {

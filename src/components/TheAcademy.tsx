@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { GraduationCap, MessageSquare, Play, Trophy, RefreshCw, User, Bot, ArrowRight, Swords, AlertTriangle } from 'lucide-react';
+import { GraduationCap, Trophy, User, Bot, ArrowRight, Swords, AlertTriangle } from 'lucide-react';
 import { RoleplayScenario, RoleplayTurn, RoleplayFeedback } from '../types';
 import { geminiService } from '../services/geminiService';
 import { addXP, showToast } from '../services/gameService';

@@ -1,6 +1,6 @@
 import webpush from 'web-push';
 import { db } from '@/db';
-import { users, pushSubscriptions } from '@/db/schema';
+import { pushSubscriptions } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { logError, logInfo } from '@/lib/logger';
 

@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { CompetitiveIntelligenceIntegration } from './competitive-intelligence-integration'
 import { notificationDelivery } from './notification-delivery-system'
 import { CompetitorAlert } from '@/hooks/use-competitor-alerts'

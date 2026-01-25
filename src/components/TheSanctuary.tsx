@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun, CloudRain, Zap, Wind, Fingerprint, ArrowRight, Sparkles } from 'lucide-react';
+import { Moon, Zap, Wind,} from 'lucide-react';
 import { geminiService } from '../services/geminiService';
 import { MentalCoaching } from '../types';
 import { addXP, showToast } from '../services/gameService';

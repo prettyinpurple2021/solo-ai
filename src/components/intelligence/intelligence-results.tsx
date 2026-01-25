@@ -1,9 +1,9 @@
 "use client"
 
-import React, { useState } from "react"
+import, { useState } from "react"
 import { motion} from "framer-motion"
 import {
-  Globe, Users, Activity, Briefcase, Smartphone, FileText, Calendar, Tag, Brain, TrendingUp, AlertTriangle, Target, Lightbulb, ExternalLink, Eye, MoreVertical, Star, Bookmark, Share, Edit, Trash2, Plus, Check, X, Clock, BarChart3, Zap, Filter, Search} from "lucide-react"
+  Globe, Users, Activity, Briefcase, Smartphone, FileText, Tag, Brain, TrendingUp, AlertTriangle, Target, Lightbulb, ExternalLink, Eye, MoreVertical, Bookmark, Share, Edit, Trash2, Clock, BarChart3, Filter, Search} from "lucide-react"
 
 import { BossCard, EmpowermentCard} from "@/components/ui/boss-card"
 import { BossButton} from "@/components/ui/boss-button"
@@ -17,7 +17,7 @@ import { Input} from "@/components/ui/input"
 import { Label} from "@/components/ui/label"
 import { Checkbox} from "@/components/ui/checkbox"
 import { Separator} from "@/components/ui/separator"
-import { ScrollArea} from "@/components/ui/scroll-area"
+
 import { Progress} from "@/components/ui/progress"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 
@@ -162,7 +162,7 @@ export function IntelligenceResults({
   onBulkAction,
   selectedItems = []
 }: IntelligenceResultsProps) {
-  const [showBulkActions, setShowBulkActions] = useState(false)
+  const [,] = useState(false)
   const [showTagDialog, setShowTagDialog] = useState(false)
   const [newTags, setNewTags] = useState("")
   const [tagOperation, setTagOperation] = useState<'add' | 'remove' | 'replace'>('add')

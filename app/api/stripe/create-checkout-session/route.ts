@@ -1,10 +1,9 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import {
-  stripe, createCheckoutSession, SUBSCRIPTION_TIERS, STRIPE_PRICES
-} from '@/lib/stripe'
+  stripe, createCheckoutSession, SUBSCRIPTION_TIERS,} from '@/lib/stripe'
 import { updateUserStripeCustomerId } from '@/lib/stripe-db-utils'
 import { z } from 'zod'
 

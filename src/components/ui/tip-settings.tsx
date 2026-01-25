@@ -8,8 +8,8 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
-import { X, Settings, Lightbulb, Zap, Target, Users, FileText, MessageCircle, TrendingUp } from "lucide-react"
-import { logger, logInfo } from "@/lib/logger"
+import { X, Settings, Lightbulb, Zap, Target, FileText, MessageCircle, TrendingUp } from "lucide-react"
+import { logInfo } from "@/lib/logger"
 
 interface TipSettingsProps {
   open: boolean

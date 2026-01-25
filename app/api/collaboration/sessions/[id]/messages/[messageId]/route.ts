@@ -1,10 +1,10 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { withDocumentAuth, getSql, createErrorResponse } from '@/lib/api-utils'
-import { logInfo, logError } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 
 export const PUT = withDocumentAuth(
-  async (request: NextRequest, user: any, documentId: string) => {
+  async (request: NextRequest, user: any,: string) => {
     // documentId is the sessionId from the URL param
     // We also need messageId, which should be the last param
     const url = new URL(request.url)
@@ -54,7 +54,7 @@ export const PUT = withDocumentAuth(
 )
 
 export const DELETE = withDocumentAuth(
-  async (request: NextRequest, user: any, documentId: string) => {
+  async (request: NextRequest, user: any,: string) => {
     const url = new URL(request.url)
     const pathSegments = url.pathname.split('/')
     const messageId = pathSegments[pathSegments.length - 1]

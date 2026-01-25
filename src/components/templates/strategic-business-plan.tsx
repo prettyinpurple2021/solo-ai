@@ -1,9 +1,9 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState, useEffect} from "react"
 import BaseTemplate, { TemplateData } from "./base-template"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import { CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import { Input} from "@/components/ui/input"
 import { Textarea} from "@/components/ui/textarea"
 import { Label} from "@/components/ui/label"
@@ -12,14 +12,14 @@ import { Button} from "@/components/ui/button"
 import { BossButton} from "@/components/ui/boss-button"
 import { BossCard} from "@/components/ui/boss-card"
 import { Badge} from "@/components/ui/badge"
-import { Progress} from "@/components/ui/progress"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 import { Alert, AlertDescription} from "@/components/ui/alert"
-import { motion, AnimatePresence} from "framer-motion"
+import { motion,} from "framer-motion"
 
 import {
-  Building2, Target, TrendingUp, Users, DollarSign, BarChart3, Lightbulb, CheckCircle, Plus, Minus, PieChart, Crown, Zap, Brain, AlertTriangle, FileText, Globe} from "lucide-react"
+  Building2, Target, Users, DollarSign, BarChart3, Lightbulb, CheckCircle, Plus, Minus, PieChart, Brain, AlertTriangle,} from "lucide-react"
 
 interface FinancialProjection {
   year: number

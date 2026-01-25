@@ -6,8 +6,8 @@
 import { logger, logError, logInfo } from '@/lib/logger'
 import { z } from 'zod'
 import { db } from '@/db'
-import { workflows, workflowExecutions, users } from '@/db/schema'
-import { eq, desc, and, count, sql, avg } from 'drizzle-orm'
+import { workflows, workflowExecutions,} from '@/db/schema'
+import { eq, desc, count, sql, avg } from 'drizzle-orm'
 import { Parser } from 'expr-eval-fork'
 
 // Static parser for high-throughput evaluation

@@ -11,9 +11,9 @@ import {
   achievements,
   focusSessions
 } from '@/db/schema'
-import { eq, and, gte, sql, count, desc, lt, asc } from 'drizzle-orm'
-import { z } from 'zod'
-import { logError, logInfo } from '@/lib/logger'
+import { eq, and, gte, count, desc,} from 'drizzle-orm'
+
+import { logError,} from '@/lib/logger'
 import * as jose from 'jose'
 
 // Force dynamic rendering
@@ -230,7 +230,7 @@ export async function GET(request: NextRequest) {
 
      const [
         todaysTasksRaw,
-        completedTasksTotal,
+,
         activeGoalsRaw,
         recentConversationsRaw,
         briefcasesRaw,

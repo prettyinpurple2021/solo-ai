@@ -2,7 +2,7 @@
 
 
 export const dynamic = 'force-dynamic'
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState, type DragEvent, type ChangeEvent} from "react"
 import { motion} from "framer-motion"
 import { useRouter} from "next/navigation"
@@ -10,11 +10,11 @@ import {
   ArrowLeft, Upload, Download, CheckCircle, AlertTriangle, X, Trash2} from "lucide-react"
 import Link from "next/link"
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
+import { Card, CardContent,} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Input } from "@/components/ui/input"
+
 import { toast } from "sonner"
 
 import {

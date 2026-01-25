@@ -1,6 +1,6 @@
 import { db } from "@/lib/database-client";
 import { learningPaths, learningModules, userLearningProgress } from "@/db/schema";
-import { eq, and, desc, asc } from "drizzle-orm";
+import { eq, and, asc } from "drizzle-orm";
 
 export interface LearningPathWithModules {
   id: string;

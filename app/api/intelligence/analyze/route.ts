@@ -1,11 +1,11 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn,} from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/db'
 import { intelligenceData, competitorProfiles } from '@/db/schema'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import { z } from 'zod'
-import { eq, and, inArray, gte, desc } from 'drizzle-orm'
+import { eq, and, inArray,} from 'drizzle-orm'
 import { AgentCollaborationSystem } from '@/lib/custom-ai-agents/agent-collaboration-system'
 
 

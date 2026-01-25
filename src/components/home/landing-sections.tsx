@@ -1,11 +1,10 @@
 "use client"
 
 import React from 'react'
-import { motion } from 'framer-motion'
+
 import { 
   Sparkles, Target, Zap, TrendingUp, Users, Shield, 
-  CheckCircle, Plus, Minus, ArrowRight 
-} from 'lucide-react'
+  CheckCircle, Plus, Minus,} from 'lucide-react'
 import Link from 'next/link'
 import { Button } from "@/components/ui/button"
 

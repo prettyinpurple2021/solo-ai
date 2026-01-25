@@ -1,7 +1,7 @@
 "use client"
 
 export const dynamic = 'force-dynamic'
-import React, { useState, useEffect, useCallback } from 'react'
+import, { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -19,23 +19,23 @@ import {
   CheckCircle,
   Star,
   Zap,
-  Users,
+,
   Play,
   Download,
   RefreshCw,
   Sparkles,
   Crown,
-  Lightbulb,
+,
   ArrowRight,
-  Calendar,
+,
   BarChart3,
-  Eye,
+,
   Trophy,
   Flame,
   GraduationCap
 } from 'lucide-react'
 import { toast } from 'sonner'
-import { logger, logInfo, logError } from '@/lib/logger'
+import { logInfo, logError } from '@/lib/logger'
 
 interface Skill {
   id: string
@@ -776,7 +776,7 @@ function AnalyticsTab({ analytics, formatTime }: { analytics: LearningAnalytics,
         </CardHeader>
         <CardContent>
           <div className="space-y-5">
-            {analytics.top_categories.map((category, index) => {
+            {analytics.top_categories.map((category,) => {
               const totalTime = analytics.top_categories.reduce((sum, c) => sum + c.time_spent, 0)
               const percentage = totalTime > 0 ? (category.time_spent / totalTime) * 100 : 0
 

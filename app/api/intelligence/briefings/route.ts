@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { authenticateRequest} from '@/lib/auth-server'
 import { rateLimitByIp} from '@/lib/rate-limit'
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = briefingRequestSchema.parse(body)
     
-    const { briefingType, competitorIds, topics, customization } = validatedData
+    const { briefingType, competitorIds, topics,} = validatedData
     
     // Generate briefing based on type
     let briefing

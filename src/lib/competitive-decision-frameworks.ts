@@ -269,7 +269,7 @@ export class CompetitiveDecisionFrameworks {
     return recentActivity > 5 ? 'High likelihood of competitive response' : 'Moderate likelihood of competitive response'
   }
   
-  private static identifyCompetitiveAdvantages(alternative: string, context: CompetitiveIntelligenceContext): string[] {
+  private static identifyCompetitiveAdvantages(alternative: string,: CompetitiveIntelligenceContext): string[] {
     return [
       'First-mover advantage in market segment',
       'Differentiation from current competitor offerings',
@@ -277,7 +277,7 @@ export class CompetitiveDecisionFrameworks {
     ]
   }
   
-  private static identifyCompetitiveRisks(alternative: string, context: CompetitiveIntelligenceContext): string[] {
+  private static identifyCompetitiveRisks(alternative: string,: CompetitiveIntelligenceContext): string[] {
     return [
       'Competitor retaliation and price wars',
       'Market saturation from competitor responses',
@@ -318,7 +318,7 @@ export class CompetitiveDecisionFrameworks {
     return `Problem occurs in competitive environment with ${context.competitors.length} active competitors. Recent competitive activities: ${context.recent_alerts.length} alerts, ${context.opportunities.length} opportunities identified.`
   }
   
-  private static identifyCompetitiveFactors(problem: string, context: CompetitiveIntelligenceContext, level: number): string[] {
+  private static identifyCompetitiveFactors(problem: string,: CompetitiveIntelligenceContext, level: number): string[] {
     const factors = [
       'Competitor pricing strategies',
       'Market positioning conflicts',
@@ -329,11 +329,11 @@ export class CompetitiveDecisionFrameworks {
     return factors.slice(0, Math.min(3, level))
   }
   
-  private static analyzeMarketImplications(problem: string, context: CompetitiveIntelligenceContext, level: number): string {
+  private static analyzeMarketImplications(problem: string,: CompetitiveIntelligenceContext, level: number): string {
     return `Level ${level} market implications: Consider impact on competitive positioning and market share dynamics.`
   }
   
-  private static identifyOpportunitiesFromProblem(problem: string, context: CompetitiveIntelligenceContext): string[] {
+  private static identifyOpportunitiesFromProblem(problem: string,: CompetitiveIntelligenceContext): string[] {
     return [
       'Exploit competitor weaknesses revealed by problem',
       'Differentiate solution approach from competitors',
@@ -341,7 +341,7 @@ export class CompetitiveDecisionFrameworks {
     ]
   }
   
-    private static generateCompetitiveActionPlan(problem: string, context: CompetitiveIntelligenceContext): FiveWhysWithCompetitiveIntelligence['action_plan'] {
+    private static generateCompetitiveActionPlan(problem: string,: CompetitiveIntelligenceContext): FiveWhysWithCompetitiveIntelligence['action_plan'] {
     return [
       {
         action: 'Analyze competitor approaches to similar problems',
@@ -375,7 +375,7 @@ export class CompetitiveDecisionFrameworks {
     return benefit.amount * (opportunities * 0.15) // 15% bonus per high-impact opportunity
   }
   
-  private static calculateMarketShareImpact(benefit: any, context: CompetitiveIntelligenceContext): number {
+  private static calculateMarketShareImpact(benefit: any,: CompetitiveIntelligenceContext): number {
     // Estimate market share impact
     return benefit.amount * 0.05 // 5% of benefit value as market share impact
   }

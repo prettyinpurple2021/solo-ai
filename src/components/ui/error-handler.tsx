@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logWarn,} from '@/lib/logger'
 import { useState, useEffect} from "react"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription} from "@/components/ui/card"
 import { Button} from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { Badge} from "@/components/ui/badge"
 import { Alert, AlertDescription} from "@/components/ui/alert"
 
 import {
-  TriangleAlert, RefreshCw, Wifi, WifiOff, X, Info, CheckCircle, Clock, Zap, Lightbulb, Home} from "lucide-react"
+  TriangleAlert, RefreshCw, WifiOff, X, Info, CheckCircle, Clock, Lightbulb, Home} from "lucide-react"
 
 interface ErrorInfo {
   id: string

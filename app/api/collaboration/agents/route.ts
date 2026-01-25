@@ -3,7 +3,7 @@
  * Handles listing and managing AI agents for collaboration
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { CollaborationHub } from '@/lib/collaboration-hub'
 import { verifyAuth } from '@/lib/auth-server'

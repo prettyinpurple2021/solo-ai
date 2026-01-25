@@ -1,7 +1,7 @@
 "use client"
 
 export const dynamic = 'force-dynamic'
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState, useEffect } from "react"
 import { motion, easeOut } from "framer-motion"
 import { HudBorder } from "@/components/cyber/HudBorder"
@@ -15,12 +15,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import {
   Target,
-  CheckSquare,
+,
   Plus,
   Calendar,
   Flag,
   Clock,
-  TrendingUp,
+,
   Brain,
   Mic,
   Zap,

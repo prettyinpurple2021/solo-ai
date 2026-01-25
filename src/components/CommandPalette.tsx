@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, LayoutDashboard, KanbanSquare, Swords, Eye, Flame, Power, MessageSquare, Command, ChevronRight, CornerDownLeft, NotebookPen } from 'lucide-react';
+import { LayoutDashboard, KanbanSquare, Swords, Eye, Flame, Power, MessageSquare, Command, CornerDownLeft, NotebookPen } from 'lucide-react';
 import { AgentId } from '../types';
 import { AGENTS } from '../constants';
 

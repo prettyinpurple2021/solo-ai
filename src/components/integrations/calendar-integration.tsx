@@ -1,6 +1,6 @@
 "use client"
 
-import { logError, logWarn, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { useState, useEffect, useCallback} from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
 import { Button} from '@/components/ui/button'

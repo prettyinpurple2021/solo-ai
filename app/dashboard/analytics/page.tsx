@@ -2,16 +2,15 @@
 
 export const dynamic = 'force-dynamic'
 
-import React, { useState, useEffect, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import, { useState, useEffect, useCallback } from 'react'
+import { motion,} from 'framer-motion'
 import {
-  BarChart3, PieChart, LineChart, TrendingUp, Activity, Target, Users, DollarSign, Clock, Zap, Sparkles, Download, RefreshCw, Settings, Eye, Filter, Maximize2, Crown, Shield, Trophy, Star, ArrowRight, ArrowUp, ArrowDown, Calendar, TrendingDown
-} from 'lucide-react'
+  BarChart3, Activity, Target, Users, DollarSign, Download, RefreshCw, Crown, ArrowUp, ArrowDown,} from 'lucide-react'
 import { HudBorder } from '@/components/cyber/HudBorder'
 import { CyberButton } from '@/components/cyber/CyberButton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Progress } from '@/components/ui/progress'
-import { ScrollArea } from '@/components/ui/scroll-area'
+
+
 import Link from 'next/link'
 import { useAuth } from "@/hooks/use-auth"
 
@@ -19,7 +18,7 @@ export default function AnalyticsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('7d')
   const [isLoading, setIsLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
-  const { user } = useAuth()
+  const {} = useAuth()
 
   const [analyticsData, setAnalyticsData] = useState<any>({
     overview: { totalRevenue: 0, revenueGrowth: 0, activeUsers: 0, userGrowth: 0, conversionRate: 0, conversionGrowth: 0, avgSessionTime: 0, sessionGrowth: 0 },

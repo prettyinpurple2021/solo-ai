@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { authenticateRequest} from '@/lib/auth-server'
 import { rateLimitByIp} from '@/lib/rate-limit'
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
       goal_id: z.number().optional()
     })
 
-    const { alert_id, template_id, custom_title, custom_description, priority, goal_id } = BodySchema.parse(body)
+    const { alert_id, custom_title, custom_description, priority, goal_id } = BodySchema.parse(body)
 
     
     // Get the alert

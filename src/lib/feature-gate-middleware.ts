@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { logError, logWarn } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { getUserIdFromSession } from '@/lib/auth-utils'
 import { 
   checkConversationLimit, 

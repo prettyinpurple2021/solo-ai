@@ -1,5 +1,5 @@
-import { readFileSync } from 'fs'
-import { resolve } from 'path'
+
+
 
 import { analyze } from '../src/lib/compliance-analyzer'
 

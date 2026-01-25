@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { useState} from 'react'
 import { useOnboardingWorkflow, useStartOnboarding} from '@/hooks/use-temporal-workflow'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle} from '@/components/ui/card'
@@ -21,7 +21,7 @@ interface WorkflowStatusProps {
 export function WorkflowStatus({ workflowId, userId, userData }: WorkflowStatusProps) {
   const [currentWorkflowId, setCurrentWorkflowId] = useState(workflowId)
   
-  const { status, loading, error, isCompleted, isRunning, isFailed } = useOnboardingWorkflow(
+  const { status, error, isCompleted, isRunning, isFailed } = useOnboardingWorkflow(
     currentWorkflowId ?? null,
     {
       onComplete: (result) => {

@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 // import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
 import { useTemplateSave } from '@/hooks/use-template-save';
 import { Save, Zap, Copy, Plus, Trash2 } from 'lucide-react';
 import { logError } from '@/lib/logger';
@@ -27,8 +27,8 @@ export function ViralHookGenerator() {
   const [contentType, setContentType] = (React as any).useState('Post');
   const [generatedHooks, setGeneratedHooks] = (React as any).useState([]);
   const [title, setTitle] = (React as any).useState('');
-  const [isGenerating, setIsGenerating] = (React as any).useState(false);
-  const [generatedMetadata, setGeneratedMetadata] = (React as any).useState(null);
+  const [, setIsGenerating] = (React as any).useState(false);
+  const [, setGeneratedMetadata] = (React as any).useState(null);
   
   const { saveTemplate, isSaving } = useTemplateSave();
 

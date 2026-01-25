@@ -1,12 +1,12 @@
 
 'use client'
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState, useEffect, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion } from 'framer-motion'
-import { ArrowLeft, RefreshCw, Settings, Clock, ExternalLink, Brain, Crosshair, Plus, AlertTriangle } from 'lucide-react'
+import { ArrowLeft, RefreshCw, Settings, Clock, ExternalLink, Brain, Crosshair, Plus,} from 'lucide-react'
 
 import { CyberButton } from '@/components/cyber/CyberButton'
 import { HudBorder } from '@/components/cyber/HudBorder'

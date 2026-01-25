@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { neon } from '@neondatabase/serverless'
+
 import { logInfo, logError } from '@/lib/logger'
 import * as jose from 'jose'
-import { getNeonConnection, safeDbQuery } from '@/lib/database-utils'
+import { getNeonConnection,} from '@/lib/database-utils'
 
 
 

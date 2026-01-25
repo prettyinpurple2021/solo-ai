@@ -1,5 +1,5 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import { CustomAgent, AgentResponse, AgentTask } from "./core-agent"
+import { logError, logWarn,} from '@/lib/logger'
+import { CustomAgent, AgentResponse,} from "./core-agent"
 import { RoxyAgent } from "./roxy-agent"
 import { BlazeAgent } from "./blaze-agent"
 import { EchoAgent } from "./echo-agent"
@@ -114,7 +114,7 @@ export class AgentCollaborationSystem {
   }
 
   // Determine the best agent for a request
-  private determinePrimaryAgent(request: string, context?: Record<string, any>): string {
+  private determinePrimaryAgent(request: string,?: Record<string, any>): string {
     const requestLower = request.toLowerCase()
     
     // Strategic decision-making

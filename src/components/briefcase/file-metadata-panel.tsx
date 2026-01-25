@@ -1,15 +1,15 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState,} from 'react'
 import { Card, CardHeader, CardTitle, CardContent} from '@/components/ui/card'
 import { Badge} from '@/components/ui/badge'
 import { Button} from '@/components/ui/button'
-import { Separator} from '@/components/ui/separator'
-import { ScrollArea} from '@/components/ui/scroll-area'
+
+
 import { useToast} from '@/hooks/use-toast'
-import { motion, AnimatePresence} from 'framer-motion'
+
 import { 
-  FileText, Calendar, User, HardDrive, Tag, Eye, Download, Share2, Edit, Trash2, Copy, Check, Clock, Folder, Hash, Image, File, Archive, Music, Video, Code, FileSpreadsheet} from 'lucide-react'
+  FileText, Calendar, Tag, Eye, Download, Share2, Edit, Trash2, Copy, Check, Clock, Folder, Hash, Image, File, Archive, Music, Video, Code, FileSpreadsheet} from 'lucide-react'
 
 interface BriefcaseFile {
   id: string

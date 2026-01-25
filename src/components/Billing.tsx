@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import, { useState, useEffect } from 'react';
 import { useUser } from '@stackframe/stack';
 import { CreditCard, TrendingUp, Check, Zap, Crown, Rocket, ExternalLink, AlertCircle } from 'lucide-react';
 import { apiService } from '../services/apiService';

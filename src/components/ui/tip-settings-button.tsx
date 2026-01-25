@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { TipSettings } from "@/components/ui/tip-settings"
-import { Settings, Lightbulb } from "lucide-react"
+import { Lightbulb } from "lucide-react"
 
 export function TipSettingsButton() {
   const [showSettings, setShowSettings] = useState(false)

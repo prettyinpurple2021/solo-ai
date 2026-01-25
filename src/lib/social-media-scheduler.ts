@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { db } from '@/db';
 import { competitorProfiles, scrapingJobs, scrapingJobResults } from '@/db/schema';
 import { eq, and, lte } from 'drizzle-orm';

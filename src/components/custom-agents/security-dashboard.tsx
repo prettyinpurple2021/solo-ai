@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState, useEffect} from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import { Button} from "@/components/ui/button"
@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import { Alert, AlertDescription} from "@/components/ui/alert"
 
 import {
-  Shield, Lock, Eye, AlertTriangle, CheckCircle, Clock, Users, Activity, Settings, Key, UserCheck, Ban} from "lucide-react"
+  Shield, Lock, Eye, AlertTriangle, CheckCircle, Clock, Users, Activity, Settings,} from "lucide-react"
 
 interface SecurityMetrics {
   activeSessions: number

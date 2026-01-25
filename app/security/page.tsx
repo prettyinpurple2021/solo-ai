@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { CyberPageLayout } from '@/components/cyber/CyberPageLayout'
 import { HudBorder } from '@/components/cyber/HudBorder'
-import { Shield, Lock, Key, Server, CheckCircle } from 'lucide-react'
+import { Shield, Lock, Key, Server,} from 'lucide-react'
 
 const securityFeatures = [
   {

@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server'
 import { db } from '@/lib/database-client'
 import { workflowTemplates } from '@/db/schema'
 import { desc } from 'drizzle-orm'
-import { logError, logInfo } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 
 export async function GET() {
     try {

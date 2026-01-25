@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from 'react'
+import, { useState, useRef, useEffect } from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -11,7 +11,7 @@ import {
   Flag, 
   Trash2, 
   Edit, 
-  MoreHorizontal,
+,
   GripVertical
 } from 'lucide-react'
 import { cn } from '@/lib/utils'

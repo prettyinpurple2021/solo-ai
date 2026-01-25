@@ -11,7 +11,7 @@ import { Switch} from "@/components/ui/switch"
 import { Label} from "@/components/ui/label"
 import { Separator} from "@/components/ui/separator"
 import { useToast} from "@/hooks/use-toast"
-import { Bell, Mail, Smartphone, Settings, Save} from "lucide-react"
+import { Bell, Mail, Smartphone, Save} from "lucide-react"
 import { motion} from "framer-motion"
 
 export default function NotificationsPage() {

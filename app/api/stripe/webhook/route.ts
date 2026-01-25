@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logInfo,} from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { getStripe, STRIPE_WEBHOOK_EVENTS } from '@/lib/stripe'
 import { headers } from 'next/headers'

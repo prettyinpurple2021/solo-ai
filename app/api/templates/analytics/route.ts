@@ -1,4 +1,4 @@
-import { logger, logError, logInfo } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
@@ -260,7 +260,7 @@ async function calculateStreakDays(db: any, userId: string) {
   }
 }
 
-async function generateRecommendations(db: any, userId: string) {
+async function generateRecommendations(db: any,: string) {
   // Simple recommendation logic - can be enhanced with ML
   return [
     'Keep up the great work with your template usage!',
@@ -269,7 +269,7 @@ async function generateRecommendations(db: any, userId: string) {
   ]
 }
 
-async function identifyPatterns(db: any, userId: string) {
+async function identifyPatterns(db: any,: string) {
   // Simple pattern identification - can be enhanced with analytics
   return [
     'You consistently complete templates with high quality',

@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import '@/lib/server-polyfills'
 import { NextRequest, NextResponse} from 'next/server';
 import { DocumentParser} from '@/lib/documentParser';

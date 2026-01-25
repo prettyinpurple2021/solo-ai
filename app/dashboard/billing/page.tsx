@@ -7,36 +7,36 @@ import { useAuth } from "@/hooks/use-auth"
 import { useToast } from "@/hooks/use-toast"
 import { motion } from "framer-motion"
 import {
-  CreditCard,
+,
   Crown,
   Zap,
-  Check,
-  X,
-  Shield,
+,
+,
+,
   Target,
-  Users,
-  ArrowRight,
+,
+,
   Star,
-  Trophy,
-  Clock,
-  DollarSign,
+,
+,
+,
   Settings,
-  Download,
-  AlertTriangle,
+,
+,
   CheckCircle
 } from "lucide-react"
 import { UIOverlayLines } from '@/components/cyber/UIOverlayLines'
 import { NeuralNetworkCanvas } from '@/components/cyber/NeuralNetworkCanvas'
 import { HudBorder } from "@/components/cyber/HudBorder"
 import { CyberButton } from "@/components/cyber/CyberButton"
-import { Badge } from "@/components/ui/badge"
+
 import { SubscriptionInfo } from "@/lib/subscription-utils"
 import Link from 'next/link'
 
 export default function BillingPage() {
   const { user, loading } = useAuth()
   const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading,] = useState(false)
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null)
 
   useEffect(() => {

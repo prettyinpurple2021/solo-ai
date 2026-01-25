@@ -1,9 +1,9 @@
 "use client"
 
 export const dynamic = 'force-dynamic'
-import { logError, logInfo } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { Badge } from '@/components/ui/badge'
-import { useState, useEffect, useMemo, useCallback, ReactNode } from "react"
+import { useState, useEffect, useMemo, useCallback,} from "react"
 import { useDashboardData } from "@/hooks/use-dashboard-data"
 import { useAuth } from "@/hooks/use-auth"
 import { useSmartTips, TRIGGER_CONDITIONS } from "@/hooks/use-smart-tips"
@@ -39,7 +39,7 @@ import { UIOverlayLines } from "@/components/cyber/UIOverlayLines"
 // SEO metadata is handled in the layout.tsx file
 
 export default function DashboardPage() {
-  const { user, loading: authLoading } = useAuth()
+  const { loading: authLoading } = useAuth()
   const { data, loading, error } = useDashboardData()
   const { track } = useAnalytics()
   const [showOnboarding, setShowOnboarding] = useState(false)
@@ -306,7 +306,7 @@ export default function DashboardPage() {
     )
   }
 
-  const { user: dashboardUser, todaysStats, todaysTasks, activeGoals, recentConversations, recentBriefcases, insights } = data
+  const { user:, todaysStats, todaysTasks, activeGoals, recentConversations, recentBriefcases, insights } = data
 
   // Render mobile PWA dashboard for mobile devices
   if (isMobile) {

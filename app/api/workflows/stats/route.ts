@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { workflows, workflowExecutions, templates } from '@/db/schema';
 import { logError } from '@/lib/logger';
-import { sql, eq, desc } from 'drizzle-orm';
+import { sql, desc } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 

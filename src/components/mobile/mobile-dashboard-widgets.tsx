@@ -1,23 +1,23 @@
 "use client"
 
-import React, { useState, useRef, useEffect } from 'react'
+import, { useState, useRef, useEffect } from 'react'
 import { motion, PanInfo, useAnimation } from 'framer-motion'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Avatar, AvatarFallback,} from "@/components/ui/avatar"
 import { 
   CheckCircle, 
   Target, 
   Clock, 
-  TrendingUp, 
-  Zap, 
+, 
+, 
   Users, 
-  MoreHorizontal,
+,
   ChevronRight,
   Plus,
-  Star,
+,
   Calendar,
   BarChart3,
   RefreshCw,
@@ -46,7 +46,7 @@ const SPRING_CONFIG = { type: "spring" as const, stiffness: 300, damping: 30 }
 export default function MobileDashboardWidgets({ 
   widgets, 
   onWidgetAction, 
-  onWidgetReorder,
+,
   className = "" 
 }: MobileDashboardWidgetsProps) {
   const [draggedWidget, setDraggedWidget] = useState<string | null>(null)
@@ -152,7 +152,7 @@ export default function MobileDashboardWidgets({
           </div>
         </CardHeader>
         <CardContent className="space-y-2">
-          {tasks.slice(0, 3).map((task: any, index: number) => (
+          {tasks.slice(0, 3).map((task: any,: number) => (
             <motion.div
               key={task.id}
               className="flex items-center gap-3 p-2 bg-dark-hover border border-gray-700 rounded-sm touch-target"
@@ -214,7 +214,7 @@ export default function MobileDashboardWidgets({
           </div>
         </CardHeader>
         <CardContent className="space-y-3">
-          {goals.slice(0, 2).map((goal: any, index: number) => (
+          {goals.slice(0, 2).map((goal: any,: number) => (
             <motion.div
               key={goal.id}
               className="p-3 bg-dark-hover border border-gray-700 rounded-sm touch-target"
@@ -259,7 +259,7 @@ export default function MobileDashboardWidgets({
         </CardHeader>
         <CardContent>
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {agents.map((agent: any, index: number) => (
+            {agents.map((agent: any,: number) => (
               <motion.div
                 key={agent.id}
                 className="flex-shrink-0 p-3 bg-dark-hover border border-gray-700 rounded-sm touch-target min-w-[80px] text-center"

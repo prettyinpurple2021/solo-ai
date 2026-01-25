@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Search, MoreVertical, Ban, CheckCircle, XCircle } from 'lucide-react';
+import, { useState, useEffect } from 'react';
+import { Search, Ban, CheckCircle,} from 'lucide-react';
 import { logError } from '@/lib/logger';
 
 interface User {

@@ -76,7 +76,7 @@ export async function POST(
 
     // Get execution parameters from request body
     const body = await request.json()
-    const { input, variables, options } = body || {}
+    const { input,} = body || {}
 
     // Create execution record
     const execution = await workflowEngine.createExecution(workflowId, input || {}, user.id)

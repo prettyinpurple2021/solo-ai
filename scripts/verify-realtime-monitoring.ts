@@ -7,8 +7,8 @@ dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local'), override: true });
 
 import { db } from "@/db";
-import { users, workflows, workflowExecutions } from "@/db/schema";
-import { sql, eq } from "drizzle-orm";
+import { workflows, workflowExecutions } from "@/db/schema";
+import { eq } from "drizzle-orm";
 import { WorkflowEngine } from "@/src/lib/workflow-engine";
 
 async function main() {

@@ -4,7 +4,7 @@ import { db } from '@/db';
 import { goals, tasks, briefcases } from '@/db/schema';
 import { onboardingAI } from '@/services/onboarding-ai';
 import { ApiError, handleApiError, successResponse } from '@/lib/api-utils';
-import { logInfo, logError } from '@/lib/logger';
+import { logInfo,} from '@/lib/logger';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 

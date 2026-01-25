@@ -1,6 +1,6 @@
 "use client"
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError,} from '@/lib/logger'
 import { useState, useEffect, useCallback} from "react"
 import BaseTemplate, { TemplateData } from "./base-template"
 
@@ -15,7 +15,7 @@ import { Badge} from "@/components/ui/badge"
 import { Progress} from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import { Alert, AlertDescription} from "@/components/ui/alert"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import { CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import { motion, AnimatePresence} from "framer-motion"
 
 import { 
