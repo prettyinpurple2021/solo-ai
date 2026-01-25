@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { db} from '@/db'
 import { competitorAlerts, competitorProfiles, intelligenceData} from '@/db/schema'
@@ -50,7 +50,7 @@ const AlertUpdateSchema = z.object({
 
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -291,7 +291,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   try {

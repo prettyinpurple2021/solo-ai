@@ -93,6 +93,7 @@
     "@types/react": "19.2.8",
     "@types/react-dom": "19.2.3",
     "@types/uuid": "^10.0.0",
+    "@types/web-push": "^3.6.4",
     "@typescript-eslint/eslint-plugin": "^8.53.0",
     "@typescript-eslint/parser": "^8.53.0",
     "@upstash/context7-mcp": "^2.1.0",

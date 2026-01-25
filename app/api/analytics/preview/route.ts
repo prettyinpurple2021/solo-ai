@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/server/db';
 import { users, subscriptions, usageTracking } from '@/server/db/schema';
-import { count } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
 import { logError } from '@/lib/logger';
 
@@ -22,8 +22,8 @@ export async function POST(req: Request) {
 
         switch (metricId) {
             case 'user_count':
-                const [userCount] = await db.select({ count: count() }).from(users);
-                value = userCount.count;
+                const userCountResult: any = await db.execute(sql`SELECT count(*) as count FROM ${users}` as any);
+                value = Number(userCountResult.rows[0]?.count || 0);
                 // Mock change for now as we don't have historical snapshots easily accessible
                 // or we could count users created in last 30 days vs previous 30
                 changePercent = 5; 
@@ -32,16 +32,16 @@ export async function POST(req: Request) {
             case 'active_users':
                 // rudimentary "active" based on usage_tracking or just users with recent login (if tracked)
                 // for now, let's assume 70% of total users are active or query usage_tracking
-                const [activeCount] = await db.select({ count: count() }).from(usageTracking);
-                value = activeCount.count; // This is actually total usage records, but serves as proxy
+                const activeCountResult: any = await db.execute(sql`SELECT count(*) as count FROM ${usageTracking}` as any);
+                value = Number(activeCountResult.rows[0]?.count || 0); // This is actually total usage records, but serves as proxy
                 changePercent = 12;
                 break;
 
             case 'revenue':
                 // Sum of active subscriptions (implied value)
                 // This is checking 'subscriptions' table
-                const [subCount] = await db.select({ count: count() }).from(subscriptions);
-                value = subCount.count * 29; // Assuming $29/mo avg
+                const subCountResult: any = await db.execute(sql`SELECT count(*) as count FROM ${subscriptions}` as any);
+                value = Number(subCountResult.rows[0]?.count || 0) * 29; // Assuming $29/mo avg
                 changePercent = 8;
                 break;
 

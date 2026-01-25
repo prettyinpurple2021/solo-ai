@@ -3,7 +3,8 @@ import { LearningEngine } from "@/lib/learning-engine";
 import { PathViewer } from "@/components/learning/path-viewer";
 import { redirect } from "next/navigation";
 
-export default async function PathPage({ params }: { params: { id: string } }) {
+export default async function PathPage(props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const session = await auth();
   if (!session?.user?.id) {
     redirect("/login");

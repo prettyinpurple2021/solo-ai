@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { CyberPageLayout } from '@/components/cyber/CyberPageLayout'
 import { HudBorder } from '@/components/cyber/HudBorder'
 import { CyberButton } from '@/components/cyber/CyberButton'
-import { ArrowRight, Target, Users, Zap, Shield } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 export default function AboutPage() {
   return (

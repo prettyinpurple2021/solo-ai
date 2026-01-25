@@ -36,8 +36,8 @@ export async function GET(request: NextRequest) {
           const expiresValue =
             typeof session.expires === 'string'
               ? session.expires
-              : session.expires instanceof Date && typeof session.expires.toISOString === 'function'
-                ? session.expires.toISOString()
+              : (session.expires as any) instanceof Date && typeof (session.expires as any).toISOString === 'function'
+                ? (session.expires as any).toISOString()
                 : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
 
           // Explicitly set all fields with fallbacks - spread operator would overwrite fallbacks

@@ -23,17 +23,17 @@ export async function POST(req: Request) {
     const applyHistoryQuery = async (table: any, filterCondition: any) => {
         // Get last 7 days of activity
         const data = await db.select({
-            date: sql<string>`to_char(${table.created_at}, 'Tue')`, // Use Day Name strictly for the chart format requested (Mon, Tue...) or usually date
-            rawDate: sql<string>`date_trunc('day', ${table.created_at})`,
-            count: count()
+            date: sql`to_char(${table.created_at}, 'Tue')` as any, // Use Day Name strictly for the chart format requested (Mon, Tue...) or usually date
+            rawDate: sql`date_trunc('day', ${table.created_at})` as any,
+            count: count() as any
         })
         .from(table)
         .where(and(
             filterCondition,
-            gte(table.created_at, sql`now() - interval '7 days'`)
-        ))
-        .groupBy(sql`to_char(${table.created_at}, 'Tue')`, sql`date_trunc('day', ${table.created_at})`)
-        .orderBy(desc(sql`date_trunc('day', ${table.created_at})`)); // Most recent first
+            gte(table.created_at, sql`now() - interval '7 days'` as any)
+        ) as any)
+        .groupBy(sql`to_char(${table.created_at}, 'Tue')` as any, sql`date_trunc('day', ${table.created_at})` as any)
+        .orderBy(desc(sql`date_trunc('day', ${table.created_at})`) as any); // Most recent first
         
         // Map to chart format. Note: The chart seems to expect weekday names. 
         // For production, usually full dates are better, but we stick to the implied "Mon, Tue" format.
@@ -44,20 +44,20 @@ export async function POST(req: Request) {
     };
     
     if (metric === 'tasks_completed') {
-       const userFilter = and(eq(tasks.user_id, session.user.id), eq(tasks.status, 'completed'));
+       const userFilter = and(eq(tasks.user_id, session.user.id), eq(tasks.status, 'completed')) as any;
        
-       const res = await db.select({ count: count() })
-        .from(tasks)
+       const res = await db.select({ count: count() as any })
+        .from(tasks as any)
         .where(userFilter);
        result = res[0].count;
        
        historyData = await applyHistoryQuery(tasks, userFilter);
 
     } else if (metric === 'goals_created') {
-        const userFilter = eq(goals.user_id, session.user.id);
+        const userFilter = eq(goals.user_id, session.user.id) as any;
 
-        const res = await db.select({ count: count() })
-        .from(goals)
+        const res = await db.select({ count: count() as any })
+        .from(goals as any)
         .where(userFilter);
         result = res[0].count;
 
@@ -65,10 +65,10 @@ export async function POST(req: Request) {
 
     } else if (metric === 'total_actions') {
         // Proxy for actions using tasks for now
-        const userFilter = eq(tasks.user_id, session.user.id);
+        const userFilter = eq(tasks.user_id, session.user.id) as any;
 
-        const res = await db.select({ count: count() })
-        .from(tasks)
+        const res = await db.select({ count: count() as any })
+        .from(tasks as any)
         .where(userFilter);
         result = res[0].count;
 

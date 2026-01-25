@@ -1,4 +1,4 @@
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { db} from '@/db'
 import { competitorAlerts, competitorProfiles} from '@/db/schema'
@@ -19,21 +19,7 @@ export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 // Validation schema for notification preferences (for future use)
-const _NotificationPreferencesSchema = z.object({
-  email: z.boolean().default(true),
-  push: z.boolean().default(true),
-  sms: z.boolean().default(false),
-  severityThreshold: z.enum(['info', 'warning', 'urgent', 'critical']).default('warning'),
-  frequency: z.enum(['immediate', 'hourly', 'daily', 'weekly']).default('immediate'),
-  quietHours: z.object({
-    enabled: z.boolean().default(false),
-    start: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).default('22:00'), // HH:MM format
-    end: z.string().regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/).default('08:00'),
-    timezone: z.string().default('UTC'),
-  }).default({}),
-  competitorFilters: z.array(z.string().min(1)).optional(),
-  alertTypeFilters: z.array(z.string()).optional(),
-})
+
 
 const NotificationDeliverySchema = z.object({
   alertIds: z.array(z.string().min(1)).min(1).max(50),
@@ -81,7 +67,7 @@ function initializeServices() {
   }
 }
 
-function generateEmailContent(alerts: any[], template: string, priority: string) {
+function generateEmailContent(alerts: any[], template: string, _priority: string) {
   const criticalCount = alerts.filter(a => a.severity === 'critical').length
   const urgentCount = alerts.filter(a => a.severity === 'urgent').length
   const alertCount = alerts.length

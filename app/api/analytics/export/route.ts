@@ -3,7 +3,7 @@
  * Handles exporting analytics data in various formats
  */
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError, logApi } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { analyticsExportService, ExportConfigSchema } from '@/lib/analytics-export'
@@ -56,9 +56,7 @@ const ExportRequestSchema = z.object({
   config: ExportConfigSchema
 })
 
-const ExportStatusSchema = z.object({
-  jobId: z.string().uuid()
-})
+
 
 /**
  * POST /api/analytics/export
@@ -178,7 +176,7 @@ export async function GET(request: NextRequest) {
      * which prevents errors during the "Collecting page data" phase.
      */
     const searchParams = request.nextUrl.searchParams
-    const jobId = searchParams.get('jobId')
+    // const jobId = searchParams.get('jobId') // Unused
     const status = searchParams.get('status')
     const limit = parseInt(searchParams.get('limit') || '50')
     const offset = parseInt(searchParams.get('offset') || '0')

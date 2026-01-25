@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic'
  * Downloads the exported file
  */
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ jobId: string }> }
 ) {
   try {
