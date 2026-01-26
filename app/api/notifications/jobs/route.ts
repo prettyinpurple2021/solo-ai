@@ -141,7 +141,7 @@ export async function POST(request: NextRequest) {
     // Enforce daily cap (last 24 hours, DB-accurate)
     const last24 = new Date(Date.now() - 24 * 60 * 60 * 1000)
     const sql = getSql()
-    const capRes = await sql`SELECT COUNT(*)::int AS cnt FROM notification_jobs WHERE created_at >= ${last24}`
+    const capRes = await sql`SELECT COUNT(*): int AS cnt FROM notification_jobs WHERE created_at >= ${last24}`
     const recentCount = capRes[0]?.cnt || 0
     if (recentCount >= flags.notifDailyCap) {
       return NextResponse.json({ error: `Daily notifications cap reached (${flags.notifDailyCap}). Try again later.` }, { status: 429 })

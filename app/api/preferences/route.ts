@@ -20,7 +20,7 @@ function getSql() {
   return neon(url)
 }
 
-async function getUserIdFromToken(request: NextRequest): Promise<string | null> {
+async function getUserIdFromToken(request: NextRequest): Promise<string> {
   try {
     const authHeader = request.headers.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -37,7 +37,7 @@ async function getUserIdFromToken(request: NextRequest): Promise<string | null> 
   }
 }
 
-async function getUserId(request: NextRequest): Promise<string | null> {
+async function getUserId(request: NextRequest): Promise<string> {
   // Prefer modern session/cookie auth (NextAuth). Fall back to legacy Bearer token for backward compatibility.
   try {
     const { user } = await authenticateRequest()

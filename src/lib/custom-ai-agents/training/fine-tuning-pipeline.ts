@@ -431,7 +431,7 @@ export class FineTuningPipeline {
     }
   }
 
-  async getFineTuningJob(jobId: string): Promise<FineTuningJob | null> {
+  async getFineTuningJob(jobId: string): Promise<FineTuningJob> {
     try {
       const id = parseInt(jobId)
       if (isNaN(id)) return null

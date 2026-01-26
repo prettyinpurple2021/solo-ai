@@ -48,7 +48,7 @@ export const listUserImages = async (userId: string) => {
   }))
 }
 
-export const getImage = async (documentId: string): Promise<string | null> => {
+export const getImage = async (documentId: string): Promise<string> => {
   const sql = getSql()
   const rows = await sql`
     SELECT id FROM documents WHERE id = ${documentId}

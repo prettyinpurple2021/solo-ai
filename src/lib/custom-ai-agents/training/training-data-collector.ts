@@ -69,8 +69,8 @@ export class TrainingDataCollector {
           confidence, collaboration_requests, follow_up_tasks, metadata
         ) VALUES (
           ${id}, ${interaction.userId}, ${interaction.agentId}, ${timestamp}, ${interaction.userMessage}, ${interaction.agentResponse},
-          ${contextJson}::jsonb, ${interaction.userRating || null}, ${interaction.userFeedback || null}, ${interaction.success}, ${interaction.responseTime},
-          ${interaction.confidence}, ${collaborationJson}::jsonb, ${followUpJson}::jsonb, ${metadataJson}::jsonb
+          ${contextJson}: jsonb, ${interaction.userRating || null}, ${interaction.userFeedback || null}, ${interaction.success}, ${interaction.responseTime},
+          ${interaction.confidence}, ${collaborationJson}: jsonb, ${followUpJson}: jsonb, ${metadataJson}: jsonb
         )
       `
 
@@ -175,7 +175,7 @@ export class TrainingDataCollector {
             agent_id,
             COUNT(*) as total_interactions,
             AVG(user_rating) as avg_rating,
-            COUNT(*) FILTER (WHERE success = true)::float / COUNT(*) as success_rate
+            COUNT(*) FILTER (WHERE success = true): float / COUNT(*) as success_rate
           FROM agent_training_interactions 
           WHERE user_id = ${userId} AND timestamp BETWEEN ${timeRange.start} AND ${timeRange.end}
           GROUP BY agent_id
@@ -187,7 +187,7 @@ export class TrainingDataCollector {
             agent_id,
             COUNT(*) as total_interactions,
             AVG(user_rating) as avg_rating,
-            COUNT(*) FILTER (WHERE success = true)::float / COUNT(*) as success_rate
+            COUNT(*) FILTER (WHERE success = true): float / COUNT(*) as success_rate
           FROM agent_training_interactions 
           WHERE user_id = ${userId}
           GROUP BY agent_id

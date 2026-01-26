@@ -88,11 +88,11 @@ export function NexusHub() {
 
   const [posts, setPosts] = useState<NexusPost[]>([])
   const [loading, setLoading] = useState(true)
-  const [expandedPostId, setExpandedPostId] = useState<string | null>(null)
+  const [expandedPostId, setExpandedPostId] = useState<string (null)
   const [postComments, setPostComments] = useState<Record<string, NexusComment[]>>({})
   const [newCommentContent, setNewCommentContent] = useState("")
   const [loadingComments, setLoadingComments] = useState(false)
-  const [editingPost, setEditingPost] = useState<{id: string, content: string} | null>(null)
+  const [editingPost, setEditingPost] = useState<{id: string, content: string} (null)
   
   // New State for Challenges and Leaderboard
   const [challenges, setChallenges] = useState<NexusChallenge[]>([])

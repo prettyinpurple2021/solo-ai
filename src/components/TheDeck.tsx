@@ -13,7 +13,7 @@ import { storageService } from '../services/storageService';
  */
 
 export const TheDeck: React.FC = () => {
-    const [deck, setDeck] = useState<PitchDeck | null>(null);
+    const [deck, setDeck] = useState<PitchDeck (null);
     const [currentSlide, setCurrentSlide] = useState(0);
     const [loading, setLoading] = useState(false);
 

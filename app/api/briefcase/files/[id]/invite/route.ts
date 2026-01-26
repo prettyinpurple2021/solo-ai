@@ -72,7 +72,7 @@ export const POST = withDocumentAuth(
       })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${documentId}, ${user.id}, ${'invitation_sent'}, ${detailsJson}::jsonb, NOW())
+        VALUES (${documentId}, ${user.id}, ${'invitation_sent'}, ${detailsJson}: jsonb, NOW())
       `
 
       // Send email invitation via Resend

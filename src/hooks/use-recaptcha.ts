@@ -36,7 +36,7 @@ export function useRecaptcha(options: UseRecaptchaOptions = {}) {
 
   const [isReady, setIsReady] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
 
   // Check if reCAPTCHA is ready
   useEffect(() => {
@@ -54,7 +54,7 @@ export function useRecaptcha(options: UseRecaptchaOptions = {}) {
   }, [])
 
   // Execute reCAPTCHA
-  const execute = useCallback(async (): Promise<string | null> => {
+  const execute = useCallback(async (): Promise<string> => {
     if (!RECAPTCHA_CONFIG.siteKey) {
       logWarn('reCAPTCHA site key not configured, skipping validation')
       return null

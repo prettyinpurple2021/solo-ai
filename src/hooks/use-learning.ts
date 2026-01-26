@@ -62,7 +62,7 @@ export function useLearning(): UseLearningReturn {
   const [skillGaps, setSkillGaps] = useState<SkillGap[]>([])
   const [recommendations, setRecommendations] = useState<LearningRecommendation[]>([])
   const [progress, setProgress] = useState<UserProgress[]>([])
-  const [analytics, setAnalytics] = useState<LearningAnalytics | null>(null)
+  const [analytics, setAnalytics] = useState<LearningAnalytics (null)
   const [availableSkills, setAvailableSkills] = useState<Skill[]>([])
   const [availableModules, setAvailableModules] = useState<LearningModule[]>([])
   
@@ -72,7 +72,7 @@ export function useLearning(): UseLearningReturn {
   const [progressLoading, setProgressLoading] = useState(false)
   const [analyticsLoading, setAnalyticsLoading] = useState(false)
   
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
 
   const fetchSkillGaps = useCallback(async () => {
     try {

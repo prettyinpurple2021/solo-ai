@@ -126,7 +126,7 @@ export function IntelligenceSearch({
   const [showAdvanced, setShowAdvanced] = useState(false)
   const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([])
   const [availableTags, setAvailableTags] = useState<Tag[]>([])
-  const [, setAvailableDataTypes] = useState<string[]>([])
+  const [ setAvailableDataTypes] = useState<string[]>([])
   const [showSaveDialog, setShowSaveDialog] = useState(false)
   const [showSavedSearches, setShowSavedSearches] = useState(false)
   const [saveSearchName, setSaveSearchName] = useState("")

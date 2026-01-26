@@ -330,7 +330,7 @@ export class SocialMediaJobProcessor {
   /**
    * Identify events that should trigger alerts
    */
-  private identifyAlertableEvents(competitor: CompetitorProfile,: AnalysisCollection, insights: InsightsCollection): AlertableEvent[] {
+  private identifyAlertableEvents(competitor: CompetitorProfile, arg_AnalysisCollection: AnalysisCollection, insights: InsightsCollection): AlertableEvent[] {
     const alerts: AlertableEvent[] = [];
 
     // High-impact insights become alerts

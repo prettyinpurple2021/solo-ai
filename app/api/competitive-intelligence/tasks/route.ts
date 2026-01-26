@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     let query = `
       SELECT t.*, cp.name as competitor_name, ca.title as alert_title
       FROM tasks t
-      LEFT JOIN competitor_alerts ca ON (t.ai_suggestions->>'alert_id')::text = ca.id::text
+      LEFT JOIN competitor_alerts ca ON (t.ai_suggestions->>'alert_id'): text = ca.id: text
       LEFT JOIN competitor_profiles cp ON ca.competitor_id = cp.id
       WHERE t.user_id = $1 
       AND t.ai_suggestions->>'source' = 'competitive_intelligence'
@@ -40,14 +40,14 @@ export async function GET(request: NextRequest) {
     const params = [user.id]
     
     if (competitorId) {
-      query += ` AND (t.ai_suggestions->>'competitor_id')::text = $2`
+      query += ` AND (t.ai_suggestions->>'competitor_id'): text = $2`
       params.push(competitorId)
       if (alertId) {
-        query += ` AND (t.ai_suggestions->>'alert_id')::text = $3`
+        query += ` AND (t.ai_suggestions->>'alert_id'): text = $3`
         params.push(alertId)
       }
     } else if (alertId) {
-      query += ` AND (t.ai_suggestions->>'alert_id')::text = $2`
+      query += ` AND (t.ai_suggestions->>'alert_id'): text = $2`
       params.push(alertId)
     }
     

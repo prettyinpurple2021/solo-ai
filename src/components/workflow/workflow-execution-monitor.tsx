@@ -9,7 +9,6 @@ import { Progress } from '@/components/ui/progress'
 import { ScrollArea } from '@/components/ui/scroll-area'
 
 import {
-,
   Pause,
   Square,
   RefreshCw,
@@ -17,28 +16,12 @@ import {
   CheckCircle,
   XCircle,
   AlertCircle,
-,
   Eye,
-,
-,
   Search,
-,
   Activity,
-,
-,
-,
-,
-,
-,
-,
-,
-,
   Loader2,
   ChevronRight,
   ChevronDown,
-,
-,
-,
   MoreHorizontal
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -110,7 +93,6 @@ const STATUS_ICONS: Record<ExtendedStatus, LucideIcon> = {
 }
 
 export function WorkflowExecutionMonitor({
-,
   onStopExecution,
   onRetryExecution,
   onViewDetails,
@@ -118,17 +100,17 @@ export function WorkflowExecutionMonitor({
 }: WorkflowExecutionMonitorProps) {
   const [executions, setExecutions] = useState<WorkflowExecution[]>([])
   const [stats, setStats] = useState<ExecutionStats>(INITIAL_STATS)
-  const [selectedExecution, setSelectedExecution] = useState<WorkflowExecution | null>(null)
+  const [selectedExecution, setSelectedExecution] = useState<WorkflowExecution (null)
   const [filteredExecutions, setFilteredExecutions] = useState<WorkflowExecution[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')
   const [expandedSteps, setExpandedSteps] = useState<Set<string>>(new Set())
-  const [,] = useState<'overview' | 'executions' | 'logs' | 'analytics'>('overview')
+  const [] = useState<'overview' | 'executions' | 'logs' | 'analytics'>('overview')
   const [autoRefresh, setAutoRefresh] = useState(true)
   const [loading, setLoading] = useState(true)
 
   const { toast } = useToast()
-  const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const refreshIntervalRef = useRef<NodeJS.Timeout (null)
 
   const fetchExecutions = useCallback(async () => {
     try {

@@ -19,9 +19,9 @@ export interface AsyncActions<T> {
  * Reduces duplication across hooks that perform async operations
  */
 export function useAsyncState<T>(initialData: T | null = null): AsyncState<T> & AsyncActions<T> {
-  const [data, setData] = useState<T | null>(initialData)
+  const [data, setData] = useState<T (initialData)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
 
   const reset = () => {
     setData(initialData)

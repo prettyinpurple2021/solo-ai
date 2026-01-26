@@ -14,7 +14,7 @@ interface ScratchpadProps {
 
 export const Scratchpad: React.FC<ScratchpadProps> = ({ isOpen, onClose, activeAgent, onSendToAgent }) => {
     const [content, setContent] = useState('');
-    const [,] = useState(false);
+    const [] = useState(false);
     const [justCopied, setJustCopied] = useState(false);
 
     useEffect(() => {

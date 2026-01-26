@@ -50,7 +50,7 @@ export function useAiChat(options: UseAiChatOptions = {}): UseAiChatReturn {
     input: "",
   })
 
-  const abortControllerRef = useRef<AbortController | null>(null)
+  const abortControllerRef = useRef<AbortController (null)
 
   const generateId = useCallback(() => {
     return Math.random().toString(36).substring(2) + Date.now().toString(36)

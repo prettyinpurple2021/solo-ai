@@ -16,7 +16,7 @@ import {
 // Uses SavedTemplate from hook to avoid duplicate/conflicting types
 
 export function SavedTemplatesList() {
-  const [_selectedTemplate, setSelectedTemplate] = useState<SavedTemplate | null>(null);
+  const [_selectedTemplate, setSelectedTemplate] = useState<SavedTemplate (null);
   const { templates: savedTemplates, isLoading, deleteTemplate, exportTemplate } = useTemplates();
 
   const getTemplateIcon = (slug: string) => {

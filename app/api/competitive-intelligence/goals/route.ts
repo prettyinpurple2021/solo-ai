@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
     const params = [user.id]
     
     if (competitorId) {
-      query += ` AND (g.ai_suggestions->'competitive_context'->>'competitorId')::text = $2`
+      query += ` AND (g.ai_suggestions->'competitive_context'->>'competitorId'): text = $2`
       params.push(competitorId)
     }
     

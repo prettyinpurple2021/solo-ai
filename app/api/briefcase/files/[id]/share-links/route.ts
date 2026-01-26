@@ -83,7 +83,7 @@ export const POST = withDocumentAuth(
           id, document_id, created_by, url, password_hash, permissions, 
           expires_at, max_access_count, download_enabled, require_auth, 
           is_active, created_at
-        ) VALUES (${shareId}, ${documentId}, ${user.id}, ${shareUrl}, ${passwordHash}, ${permissionsJson}::jsonb, 
+        ) VALUES (${shareId}, ${documentId}, ${user.id}, ${shareUrl}, ${passwordHash}, ${permissionsJson}: jsonb, 
         ${expiresAt || null}, ${maxAccess || null}, ${downloadEnabled || false}, ${requireAuth || false}, 
         ${true}, NOW())
         RETURNING *
@@ -99,7 +99,7 @@ export const POST = withDocumentAuth(
       })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${documentId}, ${user.id}, ${'share_link_created'}, ${detailsJson}::jsonb, NOW())
+        VALUES (${documentId}, ${user.id}, ${'share_link_created'}, ${detailsJson}: jsonb, NOW())
       `
 
       return NextResponse.json({

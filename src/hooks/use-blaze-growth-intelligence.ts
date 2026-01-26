@@ -28,7 +28,7 @@ interface PricingIntelligenceOptions {
 
 export function useBlazeGrowthIntelligence() {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
   const { toast } = useToast()
 
   const analyzePricingStrategy = useCallback(async (competitorId: number) => {

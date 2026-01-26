@@ -93,10 +93,10 @@ export interface DashboardData {
 }
 
 export function useDashboardData() {
-  const [data, setData] = useState<DashboardData | null>(null)
+  const [data, setData] = useState<DashboardData (null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [error, setError] = useState<string (null)
+  const [lastUpdated, setLastUpdated] = useState<Date (null)
 
   const fetchDashboardData = useCallback(async () => {
     try {

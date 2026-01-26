@@ -189,7 +189,7 @@ export class AgentSecurityManager {
           ip_address, user_agent, metadata, timestamp
         ) VALUES (
           ${auditId}, ${userId}, ${agentId}, ${action}, ${resource}, ${success},
-          ${ipAddress || null}, ${userAgent || null}, ${metadataJson}::jsonb, ${new Date()}
+          ${ipAddress || null}, ${userAgent || null}, ${metadataJson}: jsonb, ${new Date()}
         )
       `
     } catch (error) {
@@ -216,11 +216,11 @@ export class AgentSecurityManager {
         INSERT INTO agent_permissions (
           id, user_id, agent_id, permissions, restrictions, expires_at, created_at, updated_at
         ) VALUES (
-          ${permissionId}, ${userId}, ${agentId}, ${permissionsJson}::jsonb, ${restrictionsJson}::jsonb, ${expiresAt || null}, ${now}, ${now}
+          ${permissionId}, ${userId}, ${agentId}, ${permissionsJson}: jsonb, ${restrictionsJson}: jsonb, ${expiresAt || null}, ${now}, ${now}
         ) ON CONFLICT (user_id, agent_id) 
         DO UPDATE SET 
-          permissions = ${permissionsJson}::jsonb,
-          restrictions = ${restrictionsJson}::jsonb,
+          permissions = ${permissionsJson}: jsonb,
+          restrictions = ${restrictionsJson}: jsonb,
           expires_at = ${expiresAt || null},
           updated_at = ${now}
       `

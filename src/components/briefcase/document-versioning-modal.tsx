@@ -75,9 +75,9 @@ export default function DocumentVersioningModal({
 }: DocumentVersioningModalProps) {
   const [activeTab, setActiveTab] = useState<'history' | 'compare'>('history')
   const [versions, setVersions] = useState<VersionHistory[]>([])
-  const [selectedVersion, setSelectedVersion] = useState<string | null>(null)
-  const [compareVersion, setCompareVersion] = useState<string | null>(null)
-  const [versionCompare, setVersionCompare] = useState<VersionCompare | null>(null)
+  const [selectedVersion, setSelectedVersion] = useState<string (null)
+  const [compareVersion, setCompareVersion] = useState<string (null)
+  const [versionCompare, setVersionCompare] = useState<VersionCompare (null)
   const [loading, setLoading] = useState(false)
   const [newVersionNote, setNewVersionNote] = useState('')
   const [newVersionType, setNewVersionType] = useState<'minor' | 'major'>('minor')

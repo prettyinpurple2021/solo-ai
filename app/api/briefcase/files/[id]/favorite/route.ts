@@ -42,7 +42,7 @@ export const POST = withDocumentAuth(
       })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${documentId}, ${user.id}, ${action}, ${detailsJson}::jsonb, NOW())
+        VALUES (${documentId}, ${user.id}, ${action}, ${detailsJson}: jsonb, NOW())
       `
 
       return NextResponse.json({

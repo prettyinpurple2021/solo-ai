@@ -44,7 +44,7 @@ interface ActiveSessionViewProps {
 }
 
 export function ActiveSessionView({ sessionId }: ActiveSessionViewProps) {
-  const [session, setSession] = useState<Session | null>(null)
+  const [session, setSession] = useState<Session (null)
   const [messages, setMessages] = useState<Message[]>([])
   const [inputText, setInputText] = useState("")
   const [isSending, setIsSending] = useState(false)

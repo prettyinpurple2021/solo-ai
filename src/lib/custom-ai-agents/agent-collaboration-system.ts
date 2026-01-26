@@ -114,7 +114,7 @@ export class AgentCollaborationSystem {
   }
 
   // Determine the best agent for a request
-  private determinePrimaryAgent(request: string,?: Record<string, any>): string {
+  private determinePrimaryAgent(request: string, context: Record<string, any>): string {
     const requestLower = request.toLowerCase()
     
     // Strategic decision-making

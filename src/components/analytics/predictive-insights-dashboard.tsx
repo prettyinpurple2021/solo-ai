@@ -15,20 +15,15 @@ import {
   TrendingDown, 
   AlertTriangle, 
   CheckCircle, 
-, 
   Target,
   Users,
   BarChart3,
-,
   LineChart,
   Zap,
   Crown,
-,
   ArrowRight,
   RefreshCw,
   Filter,
-,
-,
   Eye
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -91,10 +86,10 @@ interface PredictiveInsightsDashboardProps {
 
 export default function PredictiveInsightsDashboard({ className = "" }: PredictiveInsightsDashboardProps) {
   const [insights, setInsights] = useState<PredictiveInsight[]>([])
-  const [forecast, setForecast] = useState<BusinessForecast | null>(null)
+  const [forecast, setForecast] = useState<BusinessForecast (null)
   const [anomalies, setAnomalies] = useState<AnomalyDetection[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
   const [selectedTimeframe, setSelectedTimeframe] = useState<'7d' | '30d' | '90d' | '1y'>('30d')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [refreshing, setRefreshing] = useState(false)

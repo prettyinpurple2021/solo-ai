@@ -16,16 +16,13 @@ import {
   AlertTriangle,
   Target,
   Users,
-,
   BarChart3,
   Lightbulb,
   Brain,
   Zap,
-,
   RefreshCw,
   Download,
   Activity,
-,
   Crown,
   Sparkles,
   ArrowRight,
@@ -108,9 +105,9 @@ export default function IntelligencePage() {
   const [refreshing, setRefreshing] = useState(false)
 
   const [insights, setInsights] = useState<IntelligenceInsight[]>([])
-  const [stats, setStats] = useState<IntelligenceStats | null>(null)
-  const [marketPosition, setMarketPosition] = useState<MarketPosition | null>(null)
-  const [strategicAnalysis, setStrategicAnalysis] = useState<StrategicAnalysis | null>(null)
+  const [stats, setStats] = useState<IntelligenceStats (null)
+  const [marketPosition, setMarketPosition] = useState<MarketPosition (null)
+  const [strategicAnalysis, setStrategicAnalysis] = useState<StrategicAnalysis (null)
 
   const loadIntelligenceData = useCallback(async () => {
     try {

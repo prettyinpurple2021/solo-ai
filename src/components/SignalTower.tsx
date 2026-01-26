@@ -7,7 +7,7 @@ import { soundService } from '../services/soundService';
 
 export const SignalTower: React.FC = () => {
     const [loading, setLoading] = useState(false);
-    const [briefing, setBriefing] = useState<string | null>(null);
+    const [briefing, setBriefing] = useState<string (null);
     const [sources, setSources] = useState<any[]>([]);
     const [industry, setIndustry] = useState('');
 

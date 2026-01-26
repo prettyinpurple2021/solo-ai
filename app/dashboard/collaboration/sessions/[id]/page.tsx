@@ -29,10 +29,10 @@ interface SessionData {
 
 export default function SessionPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const [session, setSession] = useState<SessionData | null>(null)
+  const [session, setSession] = useState<SessionData (null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('messages')
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)
+  const [resolvedParams, setResolvedParams] = useState<{ id: string } (null)
 
   useEffect(() => {
     params.then(setResolvedParams)

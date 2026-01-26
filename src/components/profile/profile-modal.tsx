@@ -27,8 +27,8 @@ export function ProfileModal({ open, onOpenChange }: ProfileModalProps) {
   const { profile, updateProfile, uploadAvatar, removeAvatar, isUpdating } = useProfile()
   const router = useRouter()
 
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
+  const [success, setSuccess] = useState<string (null)
   const [isUploading, setIsUploading] = useState(false)
   const [formData, setFormData] = useState({ full_name: "" })
   

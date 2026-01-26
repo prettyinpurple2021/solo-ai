@@ -306,7 +306,7 @@ export default function DashboardPage() {
     )
   }
 
-  const { user:, todaysStats, todaysTasks, activeGoals, recentConversations, recentBriefcases, insights } = data
+  const { user: any, todaysStats, todaysTasks, activeGoals, recentConversations, recentBriefcases, insights } = data
 
   // Render mobile PWA dashboard for mobile devices
   if (isMobile) {

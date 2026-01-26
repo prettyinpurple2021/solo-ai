@@ -17,7 +17,7 @@ interface PerformanceMetrics {
 }
 
 export function PerformanceMonitor() {
-  const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null)
+  const [metrics, setMetrics] = useState<PerformanceMetrics (null)
   const [isVisible, setIsVisible] = useState(false)
   const [isClosed, setIsClosed] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)

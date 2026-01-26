@@ -33,8 +33,8 @@ export default function TemplateEditorPage() {
   
   const [template, setTemplate] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [, setSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [ setSaving] = useState(false)
+  const [error, setError] = useState<string (null)
 
   useEffect(() => {
     const fetchTemplate = async () => {

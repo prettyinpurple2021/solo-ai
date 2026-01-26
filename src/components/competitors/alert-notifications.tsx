@@ -58,7 +58,7 @@ export function AlertNotifications({
   autoHideDelay = 5000 
 }: AlertNotificationsProps) {
   const [visibleAlerts, setVisibleAlerts] = useState<NotificationAlert[]>([]);
-  const [lastAlertTime, setLastAlertTime] = useState<Date | null>(null);
+  const [lastAlertTime, setLastAlertTime] = useState<Date (null);
 
   const { alerts, markAsRead, archiveAlert } = useCompetitorAlerts({
     limit: 10,

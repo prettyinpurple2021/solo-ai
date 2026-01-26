@@ -4,19 +4,12 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { 
   CheckCircle, 
-  ArrowRight, 
-,
+  ArrowRight,
   Crown,
   Zap,
-,
-,
   Users,
   TrendingUp,
   Star,
-,
-,
-,
-,
   Rocket,
   Award
 } from 'lucide-react'

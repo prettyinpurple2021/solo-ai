@@ -60,7 +60,7 @@ export class SocialMediaScheduler {
     userId: string,
     platform: string,
     config: SocialMediaJobConfig
-  ): Promise<string | null> {
+  ): Promise<string> {
     try {
       // Get competitor info
       const [competitor] = await db

@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
     const typographyJson = JSON.stringify(typography || {})
     const rows = await sql`
       INSERT INTO brand_profiles (user_id, brand_name, tagline, description, industry, colors, typography, logo_data, logo_style)
-       VALUES (${user.id}, ${brandName}, ${tagline || ''}, ${description || ''}, ${industry || ''}, ${colorsJson}::jsonb, ${typographyJson}::jsonb, ${logoData || null}, ${logoStyle || null})
+       VALUES (${user.id}, ${brandName}, ${tagline || ''}, ${description || ''}, ${industry || ''}, ${colorsJson}: jsonb, ${typographyJson}: jsonb, ${logoData || null}, ${logoStyle || null})
        RETURNING *
     ` as any[]
 

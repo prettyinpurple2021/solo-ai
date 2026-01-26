@@ -54,7 +54,7 @@ export function CustomAgentChat({ className = "" }: CustomAgentChatProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState("")
   const [selectedAgent, setSelectedAgent] = useState<string>("auto")
-  const [activeWorkflow, setActiveWorkflow] = useState<Workflow | null>(null)
+  const [activeWorkflow, setActiveWorkflow] = useState<Workflow (null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
 
   const {

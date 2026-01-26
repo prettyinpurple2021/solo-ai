@@ -484,7 +484,7 @@ export class SessionManager {
   /**
    * Get session information (DB backed)
    */
-  async getSession(sessionId: string): Promise<CollaborationSession | null> {
+  async getSession(sessionId: string): Promise<CollaborationSession> {
     const session = await db.query.collaborationSessions.findFirst({
         where: eq(collaborationSessions.id, sessionId),
         with: { participants: true }
@@ -516,7 +516,7 @@ export class SessionManager {
   }
   
   // Async version of getSessionState
-  async getSessionStateAsync(sessionId: string): Promise<SessionState | null> {
+  async getSessionStateAsync(sessionId: string): Promise<SessionState> {
      const session = await db.query.collaborationSessions.findFirst({
         where: eq(collaborationSessions.id, sessionId),
         with: { participants: true, messages: true }

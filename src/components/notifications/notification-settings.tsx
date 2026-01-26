@@ -16,8 +16,7 @@ import {
   Shield, 
   Clock, 
   Target, 
-  Zap, 
-,
+  Zap,
   AlertTriangle,
   Info,
   Settings

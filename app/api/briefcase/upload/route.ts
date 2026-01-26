@@ -84,7 +84,7 @@ async function saveFile(params: {
         metadata, created_at, updated_at
       ) VALUES (${fileId}, ${userId}, ${folderId || null}, ${file.name}, ${file.name}, 
       ${getFileTypeFromMime(file.type)}, ${file.type}, ${file.size}, ${fileData}, 
-      ${category}, ${description || null}, ${tagsJson}::jsonb, ${metadataJson}::jsonb, NOW(), NOW())
+      ${category}, ${description || null}, ${tagsJson}: jsonb, ${metadataJson}: jsonb, NOW(), NOW())
       RETURNING *
     ` as any[]
   
@@ -109,7 +109,7 @@ async function saveFile(params: {
   })
   await sql`
       INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-      VALUES (${fileId}, ${userId}, ${'uploaded'}, ${activityDetailsJson}::jsonb, NOW())
+      VALUES (${fileId}, ${userId}, ${'uploaded'}, ${activityDetailsJson}: jsonb, NOW())
     `
 
   return {

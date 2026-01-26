@@ -37,9 +37,9 @@ interface SecurityConfig {
 }
 
 export function SecurityDashboard() {
-  const [metrics, setMetrics] = useState<SecurityMetrics | null>(null)
+  const [metrics, setMetrics] = useState<SecurityMetrics (null)
   const [permissions, setPermissions] = useState<UserPermission[]>([])
-  const [config, setConfig] = useState<SecurityConfig | null>(null)
+  const [config, setConfig] = useState<SecurityConfig (null)
   const [loading, setLoading] = useState(true)
   const [selectedAgent, setSelectedAgent] = useState<string>('roxy')
 

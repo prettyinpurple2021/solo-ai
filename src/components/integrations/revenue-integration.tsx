@@ -120,8 +120,8 @@ interface RevenueIntegrationProps {
 export function RevenueIntegration({ className = "" }: RevenueIntegrationProps) {
   const [connections, setConnections] = useState<Record<string, PaymentProviderConnection>>({})
   const [isLoading, setIsLoading] = useState(false)
-  const [, setShowCredentialsDialog] = useState<string | null>(null)
-  const [,] = useState<Record<string, any>>({})
+  const [ setShowCredentialsDialog] = useState<string (null)
+  const [] = useState<Record<string, any>>({})
   const { toast } = useToast()
 
   // Initialize connections state

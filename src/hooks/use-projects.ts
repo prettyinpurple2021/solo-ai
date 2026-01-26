@@ -28,8 +28,8 @@ export function useProjects(): UseProjectsResult {
   const { user } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [error, setError] = useState<string (null)
+  const [lastUpdated, setLastUpdated] = useState<Date (null)
 
   const fetchProjects = useCallback(async () => {
     if (!user) {

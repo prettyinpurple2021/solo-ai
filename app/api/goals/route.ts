@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
                cp.threat_level as primary_competitor_threat_level
         FROM goals g
         LEFT JOIN tasks t ON t.goal_id = g.id
-        LEFT JOIN competitor_profiles cp ON cp.id = (g.ai_suggestions->'competitive_context'->>'competitorId')::int
+        LEFT JOIN competitor_profiles cp ON cp.id = (g.ai_suggestions->'competitive_context'->>'competitorId'): int
         WHERE g.user_id = $1
         GROUP BY g.id, cp.name, cp.threat_level
         ORDER BY g.created_at DESC

@@ -27,8 +27,8 @@ export function ViralHookGenerator() {
   const [contentType, setContentType] = (React as any).useState('Post');
   const [generatedHooks, setGeneratedHooks] = (React as any).useState([]);
   const [title, setTitle] = (React as any).useState('');
-  const [, setIsGenerating] = (React as any).useState(false);
-  const [, setGeneratedMetadata] = (React as any).useState(null);
+  const [ setIsGenerating] = (React as any).useState(false);
+  const [ setGeneratedMetadata] = (React as any).useState(null);
   
   const { saveTemplate, isSaving } = useTemplateSave();
 

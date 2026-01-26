@@ -48,7 +48,7 @@ export const POST = withDocumentAuth(
       const updatedTagsJson = JSON.stringify(updatedTags)
       await sql`
         UPDATE documents 
-        SET tags = ${updatedTagsJson}::jsonb, updated_at = NOW()
+        SET tags = ${updatedTagsJson}: jsonb, updated_at = NOW()
         WHERE id = ${documentId}
       `
 
@@ -59,7 +59,7 @@ export const POST = withDocumentAuth(
       })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${documentId}, ${user.id}, ${'tag_added'}, ${detailsJson}::jsonb, NOW())
+        VALUES (${documentId}, ${user.id}, ${'tag_added'}, ${detailsJson}: jsonb, NOW())
       `
 
       return NextResponse.json({
@@ -113,7 +113,7 @@ export const DELETE = withDocumentAuth(
       const updatedTagsJson = JSON.stringify(updatedTags)
       await sql`
         UPDATE documents 
-        SET tags = ${updatedTagsJson}::jsonb, updated_at = NOW()
+        SET tags = ${updatedTagsJson}: jsonb, updated_at = NOW()
         WHERE id = ${documentId}
       `
 
@@ -124,7 +124,7 @@ export const DELETE = withDocumentAuth(
       })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${documentId}, ${user.id}, ${'tag_removed'}, ${detailsJson}::jsonb, NOW())
+        VALUES (${documentId}, ${user.id}, ${'tag_removed'}, ${detailsJson}: jsonb, NOW())
       `
 
       return NextResponse.json({

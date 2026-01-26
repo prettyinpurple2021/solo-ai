@@ -44,7 +44,7 @@ export function ComplianceScanner() {
   const [url, setUrl] = useState("")
   const [isScanning, setIsScanning] = useState(false)
   const [scanProgress, setScanProgress] = useState(0)
-  const [scanResults, setScanResults] = useState<ComplianceScan | null>(null)
+  const [scanResults, setScanResults] = useState<ComplianceScan (null)
   const [isDetailedAnalysisOpen, setIsDetailedAnalysisOpen] = useState(false)
 
   const startScan = async () => {

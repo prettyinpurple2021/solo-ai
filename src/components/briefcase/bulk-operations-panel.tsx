@@ -74,7 +74,7 @@ export default function BulkOperationsPanel({
   onClose,
   onOperationComplete
 }: BulkOperationsPanelProps) {
-  const [selectedOperation, setSelectedOperation] = useState<BulkOperation | null>(null)
+  const [selectedOperation, setSelectedOperation] = useState<BulkOperation (null)
   const [loading, setLoading] = useState(false)
   const [operationResult, setOperationResult] = useState<any>(null)
   

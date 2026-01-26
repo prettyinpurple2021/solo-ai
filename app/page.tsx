@@ -93,7 +93,7 @@ const Navbar = () => (
 )
 
 export default function HomePage() {
-  const [, setMounted] = useState(false)
+  const [ setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)

@@ -1,0 +1,1499 @@
+﻿
+> solosuccess-ai@0.0.0 type-check
+> tsc --noEmit
+
+.next/types/app/about/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/account-recovery/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/admin/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/admin/flags/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/admin/status/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/agents/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/ai/generate/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/alerts/[id]/acknowledge/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/alerts/[id]/archive/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/alerts/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/alerts/bulk/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/alerts/notifications/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/alerts/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/analytics/export/download/[jobId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/analytics/export/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/analytics/metrics/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/analytics/predictive/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/analytics/preview/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/analytics/productivity/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/analytics/query/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/analytics/reports/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/analytics/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/[...nextauth]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/change-email/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/change-password/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/delete-account/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/forgot-password/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/logout/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/reset-password/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/session/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/signup/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/update-profile/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/auth/user/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/avatar/upload/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/billing/checkout/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/billing/portal/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/billing/subscription/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/brand/analyze/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/brand/export/download/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/brand/export/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/brand/guidelines/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/brand/save/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/brand/settings/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/bulk/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/activity/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/ai-insights/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/category/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/download/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/favorite/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/invite/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/metadata/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/permissions/[permissionId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/permissions/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/preview/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/share-links/[linkId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/share-links/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/tags/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/versions/[versionId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/[id]/versions/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/files/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/folders/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/parse-content/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/search/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/search/suggestions/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcase/upload/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/briefcases/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/chat/conversations/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/chat/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/chatbase/identity/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/collaboration/agents/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/collaboration/agents/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/collaboration/context/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/collaboration/sessions/[id]/control/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/collaboration/sessions/[id]/messages/[messageId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/collaboration/sessions/[id]/messages/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/collaboration/sessions/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/collaboration/sessions/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/community/challenges/[id]/join/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/community/challenges/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/community/leaderboard/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/community/posts/[postId]/comments/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/community/posts/[postId]/react/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/community/posts/[postId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/community/posts/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/community/users/[userId]/follow/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitive-intelligence/automation/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitive-intelligence/chat-context/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitive-intelligence/frameworks/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitive-intelligence/gamification/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitive-intelligence/goals/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitive-intelligence/milestones/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitive-intelligence/tasks/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/activities/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/alerts/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/enrich/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/growth-analysis/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/insights/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/intelligence/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/scraping/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/social-media/analysis/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/social-media/insights/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/social-media/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/[id]/social-media/schedule/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/alerts/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/alerts/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/discover/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/enrich/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/intelligence/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/pricing-intelligence/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/save-discovered/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/scraping/[jobId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/scraping/health/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/scraping/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/social-media/benchmarks/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/social-media/processor/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/competitors/stats/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/compliance/consent/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/compliance/policies/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/compliance/scan/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/contact/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/context/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/custom-agents/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/custom-agents/security/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/custom-agents/training/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/custom-agents/workflow/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/dashboard/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/events/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/feedback/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/files/[param]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/generate-logo/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/goals/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/health/deps/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/health/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/incinerator/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/google/calendar/callback/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/google/calendar/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/payment-providers/[provider]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/payment-providers/[provider]/sync/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/[platform]/sync/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/facebook/callback/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/facebook/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/instagram/callback/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/instagram/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/linkedin/callback/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/linkedin/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/twitter/callback/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/twitter/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/youtube/callback/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/social-media/youtube/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/stripe/connect/callback/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/integrations/stripe/connect/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/[id]/process/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/analyze/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/agents/blaze/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/agents/collaborative/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/agents/echo/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/agents/lexi/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/agents/nova/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/agents/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/daily/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/monthly/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/briefings/weekly/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/export/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/saved-searches/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/saved-searches/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/search/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/intelligence/tags/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/learning/analytics/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/learning/modules/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/learning/paths/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/learning/paths/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/learning/progress/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/learning/recommendations/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/learning/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/learning/skills/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/newsletter/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/jobs/cleanup/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/jobs/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/jobs/stats/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/preferences/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/processor/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/push-subscriptions/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/push/subscribe/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/send/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/subscribe/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/test/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/notifications/unsubscribe/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/onboarding/generate-plan/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/opportunities/[id]/actions/[actionId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/opportunities/[id]/actions/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/opportunities/[id]/metrics/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/opportunities/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/opportunities/analytics/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/opportunities/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/ping-search/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/preferences/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/profile/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/projects/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/recaptcha/validate/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/register/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/revenue/metrics/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/scraping/failures/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/scraping/jobs/[jobId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/scraping/metrics/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/shared/[shareId]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/stripe/billing-portal/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/stripe/cancel-subscription/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/stripe/create-checkout-session/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/stripe/customers/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/stripe/reactivate-subscription/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/stripe/subscription/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/stripe/webhook/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/surveys/exit-intent/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/tasks/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/tasks/bulk-update/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/tasks/intelligence/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/tasks/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/templates/[id]/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/templates/analytics/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/templates/favorites/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/templates/generate/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/templates/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/test-ai/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/unified-briefcase/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/upload/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/user/api-keys/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/user/progress/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/user/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workers/custom-agents/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workers/onboarding/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflow-templates/[id]/download/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflow-templates/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflow/executions/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflow/templates/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflows/[id]/execute/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflows/execute/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflows/executions/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflows/node-types/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflows/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflows/stats/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/api/workflows/templates/route.ts(10,3): error TS1005: '>' expected.
+.next/types/app/auth/2fa/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/auth/device-approval/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/auth/sessions/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/blog/how-to-automate-revenue-workflows/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/blog/how-to-build-marketing-system-with-ai/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/blog/how-to-scale-a-solo-business/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/blog/layout.ts(10,3): error TS1005: '>' expected.
+.next/types/app/blog/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/careers/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/collaboration/[id]/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/collaboration/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/community/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/compare/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/compare/solosuccess-vs-freelancer-stack/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/compare/solosuccess-vs-generic/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/compliance/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/contact/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/cookies/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/custom-agents/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/custom-agents/security/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/custom-agents/training/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/agents/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/analytics/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/billing/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/brand/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/briefcase/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/burnout/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/collaboration/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/collaboration/sessions/[id]/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/competitors/[id]/edit/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/competitors/[id]/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/competitors/add/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/competitors/discover/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/competitors/import/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/competitors/intelligence/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/competitors/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/evolve/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/focus/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/incinerator/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/integrations/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/learning/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/learning/path/[id]/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/nexus/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/notifications/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/projects/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/settings/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/slaylist/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/subscription/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/templates/[id]/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/templates/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/dashboard/workspace/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/features/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/forgot-password/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/gdpr/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/handler/[...stack]/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/help/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/login/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/offline/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/pricing/accelerator/layout.ts(10,3): error TS1005: '>' expected.
+.next/types/app/pricing/accelerator/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/pricing/dominator/layout.ts(10,3): error TS1005: '>' expected.
+.next/types/app/pricing/dominator/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/pricing/launch/layout.ts(10,3): error TS1005: '>' expected.
+.next/types/app/pricing/launch/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/pricing/layout.ts(10,3): error TS1005: '>' expected.
+.next/types/app/pricing/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/privacy/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/profile/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/register/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/reset-password/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/security/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/signin/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/signup/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/status/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/team/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/templates/[templateSlug]/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/templates/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/terms/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/user/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/workflows/page.ts(10,3): error TS1005: '>' expected.
+.next/types/app/~offline/page.ts(10,3): error TS1005: '>' expected.
+app/api/alerts/[id]/acknowledge/route.ts(90,61): error TS1005: '>' expected.
+app/api/alerts/[id]/archive/route.ts(108,61): error TS1005: '>' expected.
+app/api/alerts/[id]/route.ts(114,59): error TS1005: '>' expected.
+app/api/alerts/[id]/route.ts(259,61): error TS1005: '>' expected.
+app/api/alerts/bulk/route.ts(154,27): error TS1005: '>' expected.
+app/api/alerts/route.ts(215,59): error TS1005: '>' expected.
+app/api/alerts/route.ts(378,57): error TS1005: '>' expected.
+app/api/analytics/export/route.ts(99,5): error TS1005: '>' expected.
+app/api/analytics/export/route.ts(122,64): error TS1005: '>' expected.
+app/api/auth/reset-password/route.ts(61,20): error TS1005: ')' expected.
+app/api/auth/reset-password/route.ts(61,51): error TS1005: ';' expected.
+app/api/briefcase/files/[id]/share-links/route.ts(42,7): error TS1005: ':' expected.
+app/api/briefcase/files/[id]/share-links/route.ts(81,7): error TS1005: ':' expected.
+app/api/briefcase/files/[id]/versions/route.ts(86,7): error TS1005: ':' expected.
+app/api/briefcase/search/route.ts(155,9): error TS1005: ':' expected.
+app/api/briefcase/search/route.ts(157,9): error TS1005: ':' expected.
+app/api/briefcase/search/route.ts(159,9): error TS1005: ':' expected.
+app/api/briefcase/search/route.ts(209,52): error TS1005: ':' expected.
+app/api/competitors/intelligence/route.ts(92,51): error TS1005: ',' expected.
+app/api/competitors/intelligence/route.ts(92,55): error TS1005: ':' expected.
+app/api/competitors/intelligence/route.ts(92,62): error TS1005: ',' expected.
+app/api/competitors/intelligence/route.ts(92,72): error TS1005: ':' expected.
+app/api/competitors/social-media/benchmarks/route.ts(217,104): error TS1005: ':' expected.
+app/api/competitors/social-media/benchmarks/route.ts(219,87): error TS1005: ':' expected.
+app/api/competitors/social-media/benchmarks/route.ts(221,85): error TS1005: ':' expected.
+app/api/competitors/social-media/benchmarks/route.ts(223,89): error TS1005: ':' expected.
+app/api/competitors/social-media/benchmarks/route.ts(439,3): error TS1005: ':' expected.
+app/api/competitors/social-media/benchmarks/route.ts(520,34): error TS1005: '>' expected.
+app/api/dashboard/route.ts(346,116): error TS1005: ',' expected.
+app/api/notifications/unsubscribe/route.ts(77,81): error TS1005: ',' expected.
+app/api/preferences/route.ts(84,29): error TS1005: '>' expected.
+app/api/preferences/route.ts(130,31): error TS1005: '>' expected.
+app/api/templates/analytics/route.ts(61,152): error TS1005: ':' expected.
+app/api/templates/analytics/route.ts(125,5): error TS1005: ':' expected.
+app/api/templates/analytics/route.ts(149,5): error TS1005: ':' expected.
+app/api/workflows/stats/route.ts(50,54): error TS1005: ',' expected.
+app/api/workflows/stats/route.ts(51,18): error TS1005: ',' expected.
+app/api/workflows/stats/route.ts(51,86): error TS1005: ',' expected.
+app/api/workflows/stats/route.ts(51,88): error TS1134: Variable declaration expected.
+app/api/workflows/stats/route.ts(52,9): error TS1128: Declaration or statement expected.
+app/api/workflows/stats/route.ts(53,23): error TS1005: ';' expected.
+app/api/workflows/stats/route.ts(59,21): error TS1005: ';' expected.
+app/api/workflows/stats/route.ts(66,6): error TS1472: 'catch' or 'finally' expected.
+app/api/workflows/stats/route.ts(72,5): error TS1005: 'try' expected.
+app/api/workflows/stats/route.ts(79,1): error TS1128: Declaration or statement expected.
+app/dashboard/brand/page.tsx(364,57): error TS1005: ':' expected.
+app/dashboard/brand/page.tsx(364,64): error TS1005: ',' expected.
+app/dashboard/collaboration/sessions/[id]/page.tsx(247,21): error TS1005: ':' expected.
+app/dashboard/competitors/intelligence/page.tsx(509,27): error TS1005: ':' expected.
+app/dashboard/competitors/intelligence/page.tsx(518,27): error TS1005: ':' expected.
+app/dashboard/competitors/intelligence/page.tsx(735,130): error TS1005: ':' expected.
+app/dashboard/competitors/intelligence/page.tsx(741,133): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(128,11): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(154,11): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(200,9): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(230,29): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(232,21): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(233,30): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(234,25): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(262,48): error TS1005: ';' expected.
+app/dashboard/competitors/page.tsx(263,50): error TS1005: ';' expected.
+app/dashboard/competitors/page.tsx(264,43): error TS1005: ';' expected.
+app/dashboard/competitors/page.tsx(582,35): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(598,33): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(795,29): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(817,35): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(1028,25): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(1087,70): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(1153,27): error TS1005: ':' expected.
+app/dashboard/competitors/page.tsx(1167,37): error TS1005: ':' expected.
+app/dashboard/learning/page.tsx(778,15): error TS1005: ':' expected.
+app/dashboard/learning/page.tsx(815,60): error TS1005: ':' expected.
+app/dashboard/learning/page.tsx(816,81): error TS1005: ':' expected.
+app/dashboard/learning/page.tsx(824,69): error TS1005: ':' expected.
+app/dashboard/learning/page.tsx(825,90): error TS1005: ':' expected.
+app/dashboard/learning/page.tsx(833,66): error TS1005: ':' expected.
+app/dashboard/learning/page.tsx(834,87): error TS1005: ':' expected.
+app/dashboard/learning/page.tsx(842,55): error TS1005: ':' expected.
+app/dashboard/learning/page.tsx(843,76): error TS1005: ':' expected.
+app/dashboard/page.tsx(131,91): error TS1005: ':' expected.
+app/dashboard/page.tsx(502,107): error TS1005: ':' expected.
+app/dashboard/page.tsx(740,110): error TS1005: ':' expected.
+app/dashboard/settings/page.tsx(83,44): error TS1005: ':' expected.
+app/dashboard/settings/page.tsx(107,113): error TS1005: ':' expected.
+app/dashboard/settings/page.tsx(108,83): error TS1005: ':' expected.
+app/dashboard/settings/page.tsx(461,78): error TS1005: ':' expected.
+app/dashboard/settings/page.tsx(461,99): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+app/dashboard/settings/page.tsx(461,100): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+app/dashboard/slaylist/page.tsx(308,37): error TS1005: ';' expected.
+app/dashboard/templates/page.tsx(133,48): error TS1005: ':' expected.
+app/dashboard/templates/page.tsx(135,68): error TS1005: ':' expected.
+app/dashboard/templates/page.tsx(135,72): error TS1005: ',' expected.
+app/dashboard/templates/page.tsx(136,45): error TS1005: ',' expected.
+app/dashboard/templates/page.tsx(137,11): error TS1005: ':' expected.
+app/dashboard/templates/page.tsx(233,78): error TS1005: ':' expected.
+app/dashboard/templates/page.tsx(387,25): error TS1005: ':' expected.
+app/workflows/page.tsx(269,23): error TS1005: ':' expected.
+hooks/useSwipe.ts(44,55): error TS1005: ',' expected.
+hooks/useSwipe.ts(44,59): error TS1005: ',' expected.
+hooks/useSwipe.ts(44,63): error TS1005: ',' expected.
+scripts/test-learning-analytics.ts(71,55): error TS1005: ',' expected.
+server/index.ts(35,65): error TS1005: ':' expected.
+server/index.ts(51,83): error TS1005: ':' expected.
+server/index.ts(98,42): error TS1005: '=>' expected.
+server/index.ts(98,49): error TS1005: ';' expected.
+server/middleware/auth.ts(13,41): error TS1005: ':' expected.
+server/middleware/auth.ts(35,41): error TS1005: ':' expected.
+src/components/admin/SubscriptionMetrics.tsx(24,94): error TS1005: ':' expected.
+src/components/admin/SystemHealth.tsx(20,91): error TS1005: ':' expected.
+src/components/admin/SystemHealth.tsx(35,49): error TS1005: ';' expected.
+src/components/admin/SystemHealth.tsx(37,45): error TS1005: ';' expected.
+src/components/admin/SystemHealth.tsx(45,49): error TS1005: ';' expected.
+src/components/admin/SystemHealth.tsx(47,45): error TS1005: ';' expected.
+src/components/admin/UserTable.tsx(57,92): error TS1005: ':' expected.
+src/components/ai/task-intelligence-panel.tsx(167,114): error TS1005: ':' expected.
+src/components/ai/task-intelligence-panel.tsx(295,25): error TS1005: ':' expected.
+src/components/analytics/custom-report-builder.tsx(75,1): error TS1005: '>' expected.
+src/components/analytics/custom-report-builder.tsx(214,7): error TS1005: ':' expected.
+src/components/analytics/custom-report-builder.tsx(218,70): error TS1005: ':' expected.
+src/components/analytics/custom-report-builder.tsx(262,9): error TS1005: ':' expected.
+src/components/analytics/custom-report-builder.tsx(268,9): error TS1005: ':' expected.
+src/components/analytics/custom-report-builder.tsx(828,23): error TS1005: ':' expected.
+src/components/analytics/custom-report-builder.tsx(850,23): error TS1005: ':' expected.
+src/components/analytics/custom-report-builder.tsx(861,23): error TS1005: ':' expected.
+src/components/analytics/custom-report-builder.tsx(885,23): error TS1005: ':' expected.
+src/components/analytics/predictive-insights-dashboard.tsx(177,3): error TS1005: ':' expected.
+src/components/analytics/predictive-insights-dashboard.tsx(326,99): error TS1005: ':' expected.
+src/components/analytics/predictive-insights-dashboard.tsx(388,96): error TS1005: ':' expected.
+src/components/analytics/predictive-insights-dashboard.tsx(388,117): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/analytics/predictive-insights-dashboard.tsx(388,118): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/analytics/predictive-insights-dashboard.tsx(491,19): error TS1005: ':' expected.
+src/components/Billing.tsx(172,41): error TS1005: ':' expected.
+src/components/briefcase/ai-insights-panel.tsx(233,23): error TS1005: ':' expected.
+src/components/briefcase/ai-insights-panel.tsx(235,16): error TS1005: ';' expected.
+src/components/briefcase/ai-insights-panel.tsx(236,18): error TS1005: ';' expected.
+src/components/briefcase/ai-insights-panel.tsx(237,16): error TS1005: ';' expected.
+src/components/briefcase/ai-insights-panel.tsx(239,23): error TS1005: ':' expected.
+src/components/briefcase/ai-insights-panel.tsx(241,16): error TS1005: ';' expected.
+src/components/briefcase/ai-insights-panel.tsx(242,18): error TS1005: ';' expected.
+src/components/briefcase/ai-insights-panel.tsx(243,16): error TS1005: ';' expected.
+src/components/briefcase/ai-insights-panel.tsx(314,42): error TS1005: ':' expected.
+src/components/briefcase/bulk-operations-panel.tsx(132,84): error TS1005: ';' expected.
+src/components/briefcase/bulk-operations-panel.tsx(143,35): error TS1005: ':' expected.
+src/components/briefcase/bulk-operations-panel.tsx(157,44): error TS1005: ':' expected.
+src/components/briefcase/bulk-operations-panel.tsx(169,11): error TS1005: ':' expected.
+src/components/briefcase/bulk-operations-panel.tsx(171,11): error TS1005: ':' expected.
+src/components/briefcase/bulk-operations-panel.tsx(173,11): error TS1005: ':' expected.
+src/components/briefcase/bulk-operations-panel.tsx(356,76): error TS1005: ':' expected.
+src/components/briefcase/bulk-operations-panel.tsx(381,90): error TS1005: ':' expected.
+src/components/briefcase/bulk-operations-panel.tsx(511,18): error TS1005: ':' expected.
+src/components/briefcase/document-versioning-modal.tsx(243,9): error TS1005: ':' expected.
+src/components/briefcase/document-versioning-modal.tsx(444,78): error TS1005: ':' expected.
+src/components/briefcase/document-versioning-modal.tsx(444,99): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/briefcase/document-versioning-modal.tsx(444,100): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/briefcase/document-versioning-modal.tsx(579,20): error TS1005: ':' expected.
+src/components/briefcase/enhanced-dashboard.tsx(173,23): error TS1005: ':' expected.
+src/components/briefcase/enhanced-dashboard.tsx(173,52): error TS1005: ';' expected.
+src/components/briefcase/enhanced-dashboard.tsx(173,75): error TS1005: ';' expected.
+src/components/briefcase/enhanced-dashboard.tsx(174,23): error TS1005: ':' expected.
+src/components/briefcase/enhanced-dashboard.tsx(174,50): error TS1005: ';' expected.
+src/components/briefcase/enhanced-dashboard.tsx(174,71): error TS1005: ';' expected.
+src/components/briefcase/enhanced-dashboard.tsx(254,116): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(208,11): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(209,59): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(213,75): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(217,70): error TS1005: ';' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(221,57): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(225,70): error TS1005: ';' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(229,70): error TS1005: ';' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(314,7): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(322,7): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(334,7): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(352,7): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(368,7): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(439,69): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(439,90): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/briefcase/enhanced-file-preview-modal.tsx(439,91): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/briefcase/enhanced-file-preview-modal.tsx(503,54): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(504,60): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(505,57): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(506,66): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(507,84): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(508,76): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(509,85): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(510,125): error TS1005: ':' expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(511,110): error TS1005: ':' expected.
+src/components/briefcase/file-sharing-modal.tsx(75,1): error TS1005: '>' expected.
+src/components/briefcase/version-history-modal.tsx(426,14): error TS1005: ':' expected.
+src/components/collaboration/AgentInterface.tsx(123,44): error TS1005: ';' expected.
+src/components/collaboration/AgentInterface.tsx(124,39): error TS1005: ';' expected.
+src/components/collaboration/AgentInterface.tsx(125,41): error TS1005: ';' expected.
+src/components/collaboration/AgentInterface.tsx(126,44): error TS1005: ';' expected.
+src/components/collaboration/AgentInterface.tsx(384,19): error TS1005: ':' expected.
+src/components/collaboration/MessageInterface.tsx(542,101): error TS1005: ',' expected.
+src/components/collaboration/SessionControls.tsx(73,1): error TS1005: '>' expected.
+src/components/competitors/alert-notifications.tsx(270,67): error TS1005: ',' expected.
+src/components/cyber/InlineSSLogo.tsx(14,53): error TS1180: Property destructuring pattern expected.
+src/components/cyber/InlineSSLogo.tsx(14,61): error TS1005: ':' expected.
+src/components/cyber/NeuralNetworkCanvas.tsx(73,36): error TS1005: ';' expected.
+src/components/dashboard/market-positioning-map.tsx(6,72): error TS1128: Declaration or statement expected.
+src/components/dashboard/market-positioning-map.tsx(6,74): error TS1434: Unexpected keyword or identifier.
+src/components/dashboard/market-positioning-map.tsx(12,66): error TS1128: Declaration or statement expected.
+src/components/dashboard/market-positioning-map.tsx(12,68): error TS1434: Unexpected keyword or identifier.
+src/components/dashboard/market-positioning-map.tsx(14,61): error TS1128: Declaration or statement expected.
+src/components/dashboard/market-positioning-map.tsx(14,63): error TS1434: Unexpected keyword or identifier.
+src/components/faq/faq-section.tsx(22,18): error TS1138: Parameter declaration expected.
+src/components/faq/faq-section.tsx(22,23): error TS1005: ')' expected.
+src/components/faq/faq-section.tsx(25,63): error TS1005: ';' expected.
+src/components/faq/faq-section.tsx(25,65): error TS1128: Declaration or statement expected.
+src/components/faq/faq-section.tsx(25,66): error TS1128: Declaration or statement expected.
+src/components/faq/faq-section.tsx(25,75): error TS1005: ';' expected.
+src/components/faq/faq-section.tsx(67,1): error TS1128: Declaration or statement expected.
+src/components/file-preview-modal.tsx(309,45): error TS1005: ')' expected.
+src/components/file-preview-modal.tsx(309,85): error TS1005: ';' expected.
+src/components/file-preview-modal.tsx(309,87): error TS1005: ',' expected.
+src/components/file-preview-modal.tsx(310,12): error TS1005: ':' expected.
+src/components/file-preview-modal.tsx(310,59): error TS1005: ';' expected.
+src/components/file-preview-modal.tsx(313,11): error TS1128: Declaration or statement expected.
+src/components/file-preview-modal.tsx(325,5): error TS1128: Declaration or statement expected.
+src/components/file-preview-modal.tsx(329,3): error TS1128: Declaration or statement expected.
+src/components/file-preview-modal.tsx(329,4): error TS1128: Declaration or statement expected.
+src/components/file-preview-modal.tsx(329,84): error TS1005: ';' expected.
+src/components/file-preview-modal.tsx(648,1): error TS1128: Declaration or statement expected.
+src/components/integrations/calendar-integration.tsx(351,75): error TS1005: ';' expected.
+src/components/integrations/revenue-integration.tsx(30,16): error TS1128: Declaration or statement expected.
+src/components/integrations/revenue-integration.tsx(30,18): error TS1434: Unexpected keyword or identifier.
+src/components/intelligence/intelligence-results.tsx(34,14): error TS1005: ';' expected.
+src/components/intelligence/intelligence-results.tsx(38,6): error TS1109: Expression expected.
+src/components/intelligence/intelligence-results.tsx(39,15): error TS1109: Expression expected.
+src/components/intelligence/intelligence-results.tsx(41,7): error TS1005: ',' expected.
+src/components/intelligence/intelligence-results.tsx(42,7): error TS1005: ',' expected.
+src/components/intelligence/intelligence-results.tsx(46,3): error TS1109: Expression expected.
+src/components/intelligence/intelligence-results.tsx(76,16): error TS1011: An element access expression should take an argument.
+src/components/intelligence/intelligence-results.tsx(79,14): error TS1109: Expression expected.
+src/components/intelligence/intelligence-results.tsx(81,5): error TS1005: ',' expected.
+src/components/intelligence/intelligence-results.tsx(82,5): error TS1005: ',' expected.
+src/components/intelligence/intelligence-results.tsx(83,5): error TS1005: ',' expected.
+src/components/intelligence/intelligence-results.tsx(85,1): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(219,5): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(226,54): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(226,61): error TS1005: ',' expected.
+src/components/intelligence/intelligence-search.tsx(230,15): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(231,7): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(281,11): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(362,65): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(362,86): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/intelligence/intelligence-search.tsx(362,87): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/intelligence/intelligence-search.tsx(579,37): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(812,27): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(815,28): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(824,27): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(827,28): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(847,27): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(850,28): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(864,27): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(867,28): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(880,23): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(884,25): error TS1005: ':' expected.
+src/components/intelligence/intelligence-search.tsx(1057,16): error TS1005: ':' expected.
+src/components/mobile/mobile-dashboard-enhanced.tsx(287,12): error TS1005: ':' expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(76,33): error TS1005: ')' expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(76,51): error TS1005: ';' expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(395,42): error TS1005: ':' expected.
+src/components/mobile/mobile-dashboard.tsx(112,14): error TS1005: ':' expected.
+src/components/mobile/mobile-dashboard.tsx(165,9): error TS1005: ':' expected.
+src/components/mobile/mobile-dashboard.tsx(241,124): error TS1005: ':' expected.
+src/components/mobile/mobile-dashboard.tsx(288,97): error TS1005: ':' expected.
+src/components/mobile/mobile-dashboard.tsx(288,173): error TS1005: ':' expected.
+src/components/mobile/mobile-gestures.tsx(110,30): error TS1005: ')' expected.
+src/components/mobile/mobile-gestures.tsx(110,46): error TS1005: ';' expected.
+src/components/mobile/mobile-gestures.tsx(110,48): error TS1005: ',' expected.
+src/components/mobile/mobile-gestures.tsx(111,28): error TS1005: ',' expected.
+src/components/mobile/mobile-gestures.tsx(112,11): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-gestures.tsx(115,7): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-gestures.tsx(116,5): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-gestures.tsx(116,6): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-gestures.tsx(117,33): error TS1005: ';' expected.
+src/components/mobile/mobile-gestures.tsx(141,28): error TS1005: ')' expected.
+src/components/mobile/mobile-gestures.tsx(141,44): error TS1005: ';' expected.
+src/components/mobile/mobile-gestures.tsx(141,46): error TS1005: ',' expected.
+src/components/mobile/mobile-gestures.tsx(143,9): error TS1005: ',' expected.
+src/components/mobile/mobile-gestures.tsx(159,5): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-gestures.tsx(165,3): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-gestures.tsx(165,4): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-gestures.tsx(165,66): error TS1005: ';' expected.
+src/components/mobile/mobile-gestures.tsx(187,1): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-navigation.tsx(208,63): error TS1005: ':' expected.
+src/components/mobile/mobile-navigation.tsx(291,44): error TS1005: ':' expected.
+src/components/mobile/offline-data-manager.tsx(227,21): error TS1005: ':' expected.
+src/components/mobile/offline-data-manager.tsx(232,21): error TS1005: ':' expected.
+src/components/mobile/offline-data-manager.tsx(237,21): error TS1005: ':' expected.
+src/components/mobile/offline-data-manager.tsx(529,69): error TS1005: ':' expected.
+src/components/mobile/offline-data-manager.tsx(529,90): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/mobile/offline-data-manager.tsx(529,91): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/mobile/offline-data-manager.tsx(571,66): error TS1005: ':' expected.
+src/components/mobile/offline-data-manager.tsx(571,87): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/mobile/offline-data-manager.tsx(571,88): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/mobile/voice-task-creator.tsx(188,7): error TS1005: ':' expected.
+src/components/mobile/voice-task-creator.tsx(323,93): error TS1005: ':' expected.
+src/components/mobile/voice-task-creator.tsx(344,71): error TS1005: ':' expected.
+src/components/notifications/notification-settings.tsx(308,83): error TS1005: ':' expected.
+src/components/Sidebar.tsx(177,19): error TS1005: ':' expected.
+src/components/social/nexus-hub.tsx(102,38): error TS1005: '>' expected.
+src/components/tasks/gesture-task-card.tsx(149,9): error TS1005: ':' expected.
+src/components/tasks/gesture-task-card.tsx(151,9): error TS1005: ':' expected.
+src/components/tasks/gesture-task-card.tsx(153,9): error TS1005: ':' expected.
+src/components/templates/decision-dashboard.tsx(181,33): error TS1005: ',' expected.
+src/components/templates/decision-dashboard.tsx(347,51): error TS1005: '}' expected.
+src/components/templates/decision-dashboard.tsx(349,26): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/ui/accessibility.tsx(97,5): error TS1005: ':' expected.
+src/components/UnifiedBriefcase.tsx(37,3): error TS1005: '>' expected.
+src/components/UnifiedBriefcase.tsx(42,3): error TS1005: '>' expected.
+src/components/workflow/workflow-execution-monitor.tsx(43,16): error TS1005: ';' expected.
+src/components/workflow/workflow-execution-monitor.tsx(44,19): error TS1109: Expression expected.
+src/components/workflow/workflow-execution-monitor.tsx(45,20): error TS1109: Expression expected.
+src/components/workflow/workflow-execution-monitor.tsx(46,17): error TS1109: Expression expected.
+src/components/workflow/workflow-execution-monitor.tsx(48,1): error TS1109: Expression expected.
+src/components/workflow/workflow-execution-monitor.tsx(133,65): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(137,83): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(138,64): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(140,79): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(145,14): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(214,99): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(218,117): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(219,90): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(224,79): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(225,85): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(226,141): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(229,113): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(234,32): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(246,105): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(298,5): error TS1005: ':' expected.
+src/components/workflow/workflow-execution-monitor.tsx(476,76): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(121,14): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(122,85): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(130,53): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(141,80): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(152,49): error TS1005: ',' expected.
+src/components/workflow/workflow-templates.tsx(152,51): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(203,27): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(204,23): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(205,23): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(206,21): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(238,5): error TS1005: ':' expected.
+src/components/workflow/workflow-templates.tsx(580,10): error TS1005: ':' expected.
+src/hooks/use-analytics.ts(9,60): error TS1005: '>' expected.
+src/hooks/use-analytics.ts(10,59): error TS1005: '>' expected.
+src/hooks/use-analytics.ts(12,57): error TS1005: '>' expected.
+src/hooks/use-analytics.ts(54,31): error TS1005: '>' expected.
+src/hooks/use-analytics.ts(85,31): error TS1005: '>' expected.
+src/hooks/use-analytics.ts(121,31): error TS1005: '>' expected.
+src/hooks/use-auth.tsx(14,63): error TS1005: ',' expected.
+src/hooks/use-auth.tsx(14,64): error TS1109: Expression expected.
+src/hooks/use-auth.tsx(14,66): error TS1128: Declaration or statement expected.
+src/hooks/use-auth.tsx(17,1): error TS1128: Declaration or statement expected.
+src/hooks/use-auth.tsx(37,88): error TS1005: ',' expected.
+src/hooks/use-auth.tsx(37,89): error TS1109: Expression expected.
+src/hooks/use-auth.tsx(37,91): error TS1005: ';' expected.
+src/hooks/use-auth.tsx(44,4): error TS1128: Declaration or statement expected.
+src/hooks/use-auth.tsx(44,8): error TS1005: ';' expected.
+src/hooks/use-custom-agents.ts(42,1): error TS1005: '>' expected.
+src/hooks/use-custom-agents.ts(48,3): error TS1005: '>' expected.
+src/hooks/use-custom-agents.ts(63,75): error TS1005: '>' expected.
+src/hooks/use-custom-agents.ts(102,3): error TS1005: '>' expected.
+src/hooks/use-notification-preferences.ts(13,81): error TS1005: '>' expected.
+src/hooks/use-notification-preferences.ts(68,27): error TS1005: '>' expected.
+src/hooks/use-opportunities.ts(26,3): error TS1005: '>' expected.
+src/hooks/use-subscription.ts(68,11): error TS1005: ':' expected.
+src/hooks/use-subscription.ts(74,11): error TS1005: ':' expected.
+src/hooks/use-subscription.ts(80,11): error TS1005: ':' expected.
+src/hooks/use-user-preferences.ts(9,3): error TS1005: '>' expected.
+src/hooks/use-user-preferences.ts(14,3): error TS1005: '>' expected.
+src/hooks/use-user-preferences.ts(17,40): error TS1005: '>' expected.
+src/hooks/use-user-preferences.ts(145,65): error TS1005: '>' expected.
+src/hooks/useSwipe.ts(44,55): error TS1005: ',' expected.
+src/hooks/useSwipe.ts(44,59): error TS1005: ',' expected.
+src/hooks/useSwipe.ts(44,63): error TS1005: ',' expected.
+src/lib/agent-interface.ts(63,3): error TS1005: '>' expected.
+src/lib/agent-interface.ts(79,3): error TS1005: '>' expected.
+src/lib/agent-interface.ts(290,3): error TS1005: '>' expected.
+src/lib/agent-meta-fixed.ts(18,1): error TS1005: '>' expected.
+src/lib/agent-meta.ts(9,1): error TS1005: '>' expected.
+src/lib/analytics-export.ts(569,5): error TS1005: '>' expected.
+src/lib/analytics.ts(36,3): error TS1005: '>' expected.
+src/lib/analytics.ts(93,31): error TS1005: '>' expected.
+src/lib/analytics.ts(297,15): error TS1005: '>' expected.
+src/lib/analytics.ts(297,18): error TS1005: ',' expected.
+src/lib/analytics.ts(450,75): error TS1005: '>' expected.
+src/lib/analytics.ts(453,74): error TS1005: '>' expected.
+src/lib/analytics.ts(456,87): error TS1005: '>' expected.
+src/lib/analytics.ts(459,102): error TS1005: '>' expected.
+src/lib/analytics.ts(462,92): error TS1005: '>' expected.
+src/lib/analytics.ts(465,94): error TS1005: '>' expected.
+src/lib/analytics.ts(468,92): error TS1005: '>' expected.
+src/lib/analytics.ts(471,94): error TS1005: '>' expected.
+src/lib/analytics.ts(474,91): error TS1005: '>' expected.
+src/lib/analytics.ts(477,98): error TS1005: '>' expected.
+src/lib/analytics.ts(480,85): error TS1005: '>' expected.
+src/lib/auth-utils.ts(11,13): error TS1005: ';' expected.
+src/lib/auth-utils.ts(12,14): error TS1109: Expression expected.
+src/lib/auth-utils.ts(13,3): error TS1005: ':' expected.
+src/lib/auth-utils.ts(15,23): error TS1109: Expression expected.
+src/lib/auth-utils.ts(16,1): error TS1005: ':' expected.
+src/lib/collaboration-hub.ts(71,3): error TS1005: '>' expected.
+src/lib/competitive-decision-frameworks.ts(344,66): error TS1144: '{' or ';' expected.
+src/lib/competitive-decision-frameworks.ts(344,79): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(344,81): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+src/lib/competitive-decision-frameworks.ts(362,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(362,11): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(362,54): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(362,71): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(362,105): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(366,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(366,11): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(366,47): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(366,61): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(366,95): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(372,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(372,11): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(372,60): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(372,74): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(372,108): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(378,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(378,11): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(378,52): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(378,59): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(383,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(383,11): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(383,52): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(383,69): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(383,103): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(390,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(390,11): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(390,50): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(390,84): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(395,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(395,11): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(395,51): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(395,57): error TS1011: An element access expression should take an argument.
+src/lib/competitive-decision-frameworks.ts(395,67): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(395,101): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(401,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(401,11): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(401,45): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(401,62): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(401,96): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(405,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(405,11): error TS1128: Declaration or statement expected.
+src/lib/competitive-decision-frameworks.ts(406,10): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(406,31): error TS1011: An element access expression should take an argument.
+src/lib/competitive-decision-frameworks.ts(407,13): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(407,34): error TS1011: An element access expression should take an argument.
+src/lib/competitive-decision-frameworks.ts(408,12): error TS1005: ',' expected.
+src/lib/competitive-decision-frameworks.ts(409,4): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(409,20): error TS1005: ';' expected.
+src/lib/competitive-decision-frameworks.ts(439,1): error TS1128: Declaration or statement expected.
+src/lib/competitive-intelligence-context.ts(12,5): error TS1005: '>' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(368,69): error TS1144: '{' or ';' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(368,71): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(369,11): error TS1005: ':' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(369,18): error TS1005: ',' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(369,43): error TS1005: '(' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(369,45): error TS1136: Property assignment expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(373,9): error TS1005: ':' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(375,9): error TS1005: ':' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(377,9): error TS1005: ':' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(379,9): error TS1005: ':' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(381,9): error TS1005: ':' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(383,9): error TS1005: ':' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(385,9): error TS1005: ':' expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(389,3): error TS1128: Declaration or statement expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(390,1): error TS1128: Declaration or statement expected.
+src/lib/competitive-opportunity-detection.ts(355,25): error TS1005: ':' expected.
+src/lib/competitive-opportunity-detection.ts(356,24): error TS1005: ':' expected.
+src/lib/competitive-opportunity-detection.ts(357,16): error TS1005: ':' expected.
+src/lib/competitive-opportunity-detection.ts(358,24): error TS1005: ':' expected.
+src/lib/competitive-opportunity-detection.ts(359,20): error TS1005: ':' expected.
+src/lib/competitive-opportunity-detection.ts(360,17): error TS1005: ':' expected.
+src/lib/competitive-opportunity-detection.ts(361,16): error TS1005: ':' expected.
+src/lib/competitive-opportunity-detection.ts(363,5): error TS1005: ':' expected.
+src/lib/competitor-alert-system.ts(264,21): error TS1005: ':' expected.
+src/lib/competitor-alert-system.ts(266,95): error TS1005: ':' expected.
+src/lib/competitor-alert-system.ts(272,27): error TS1005: ':' expected.
+src/lib/competitor-alert-system.ts(272,46): error TS1005: ';' expected.
+src/lib/competitor-alert-system.ts(274,24): error TS1005: ':' expected.
+src/lib/competitor-alert-system.ts(281,102): error TS1005: ':' expected.
+src/lib/competitor-alert-system.ts(573,4): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+src/lib/competitor-alert-system.ts(574,11): error TS1005: ':' expected.
+src/lib/competitor-alert-system.ts(585,8): error TS1005: ',' expected.
+src/lib/competitor-alert-system.ts(587,11): error TS1005: ':' expected.
+src/lib/competitor-alert-system.ts(592,44): error TS1005: ',' expected.
+src/lib/competitor-alert-system.ts(595,11): error TS1005: ',' expected.
+src/lib/competitor-alert-system.ts(597,7): error TS1005: ',' expected.
+src/lib/competitor-alert-system.ts(599,12): error TS1005: ':' expected.
+src/lib/competitor-alert-system.ts(599,17): error TS1005: ',' expected.
+src/lib/competitor-alert-system.ts(601,1): error TS1128: Declaration or statement expected.
+src/lib/competitor-intelligence-types.ts(96,26): error TS1005: '>' expected.
+src/lib/competitor-intelligence-types.ts(196,28): error TS1005: '>' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(21,3): error TS1005: '>' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(38,1): error TS1005: '>' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(74,43): error TS1011: An element access expression should take an argument.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(76,3): error TS1109: Expression expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(76,4): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(78,11): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(79,5): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(79,11): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(81,5): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(81,9): error TS1003: Identifier expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(86,5): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(86,11): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(87,5): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(87,11): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(88,5): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(88,11): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(91,5): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(91,11): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(91,23): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(94,5): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(94,11): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(94,33): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(94,48): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(94,49): error TS1109: Expression expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(94,51): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(95,5): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(95,24): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(95,57): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(95,59): error TS1136: Property assignment expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(114,3): error TS1128: Declaration or statement expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(117,3): error TS1128: Declaration or statement expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(117,40): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(117,50): error TS1005: ';' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(165,3): error TS1128: Declaration or statement expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(165,11): error TS1434: Unexpected keyword or identifier.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(166,13): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(167,16): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(169,3): error TS1109: Expression expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(169,5): error TS1005: ';' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(196,3): error TS1128: Declaration or statement expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(197,20): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(198,27): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(198,43): error TS1011: An element access expression should take an argument.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(199,5): error TS1005: ';' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(207,3): error TS1128: Declaration or statement expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(207,11): error TS1434: Unexpected keyword or identifier.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(208,20): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(209,27): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(209,43): error TS1011: An element access expression should take an argument.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(211,3): error TS1109: Expression expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(211,5): error TS1005: ';' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(307,3): error TS1434: Unexpected keyword or identifier.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(307,35): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(307,45): error TS1005: ';' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(318,105): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(328,19): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(328,41): error TS1005: ';' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(334,12): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(338,25): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(338,47): error TS1005: ';' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(344,12): error TS1005: ':' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(348,28): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(348,45): error TS1005: ',' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(348,52): error TS1005: ';' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(356,29): error TS1005: ';' expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(384,1): error TS1128: Declaration or statement expected.
+src/lib/custom-ai-agents/blaze-agent.ts(55,64): error TS1005: '>' expected.
+src/lib/custom-ai-agents/blaze-agent.ts(106,67): error TS1005: '>' expected.
+src/lib/custom-ai-agents/blaze-agent.ts(147,90): error TS1005: '>' expected.
+src/lib/custom-ai-agents/blaze-agent.ts(170,87): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(17,3): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(18,3): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(39,3): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(56,3): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(66,5): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(79,3): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(115,67): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(128,53): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(176,20): error TS1005: '>' expected.
+src/lib/custom-ai-agents/core-agent.ts(375,17): error TS1005: '>' expected.
+src/lib/custom-ai-agents/echo-agent.ts(56,64): error TS1005: '>' expected.
+src/lib/custom-ai-agents/echo-agent.ts(108,86): error TS1005: '>' expected.
+src/lib/custom-ai-agents/echo-agent.ts(131,86): error TS1005: '>' expected.
+src/lib/custom-ai-agents/echo-agent.ts(154,81): error TS1005: '>' expected.
+src/lib/custom-ai-agents/echo-agent.ts(177,88): error TS1005: '>' expected.
+src/lib/custom-ai-agents/glitch-agent.ts(55,64): error TS1005: '>' expected.
+src/lib/custom-ai-agents/glitch-agent.ts(107,68): error TS1005: '>' expected.
+src/lib/custom-ai-agents/glitch-agent.ts(131,92): error TS1005: '>' expected.
+src/lib/custom-ai-agents/glitch-agent.ts(155,94): error TS1005: '>' expected.
+src/lib/custom-ai-agents/glitch-agent.ts(179,83): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lexi-agent.ts(33,64): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lexi-agent.ts(110,68): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lexi-agent.ts(134,93): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lexi-agent.ts(157,90): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lexi-agent.ts(181,85): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lumi-agent.ts(58,64): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lumi-agent.ts(110,88): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lumi-agent.ts(133,91): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lumi-agent.ts(156,80): error TS1005: '>' expected.
+src/lib/custom-ai-agents/lumi-agent.ts(179,86): error TS1005: '>' expected.
+src/lib/custom-ai-agents/nova-agent.ts(55,64): error TS1005: '>' expected.
+src/lib/custom-ai-agents/nova-agent.ts(107,90): error TS1005: '>' expected.
+src/lib/custom-ai-agents/nova-agent.ts(131,85): error TS1005: '>' expected.
+src/lib/custom-ai-agents/nova-agent.ts(155,83): error TS1005: '>' expected.
+src/lib/custom-ai-agents/nova-agent.ts(179,86): error TS1005: '>' expected.
+src/lib/custom-ai-agents/roxy-agent.ts(56,64): error TS1005: '>' expected.
+src/lib/custom-ai-agents/roxy-agent.ts(108,66): error TS1005: '>' expected.
+src/lib/custom-ai-agents/roxy-agent.ts(131,84): error TS1005: '>' expected.
+src/lib/custom-ai-agents/training/performance-analytics.ts(11,1): error TS1005: '>' expected.
+src/lib/custom-ai-agents/training/simple-training-collector.ts(11,3): error TS1005: '>' expected.
+src/lib/custom-ai-agents/vex-agent.ts(56,64): error TS1005: '>' expected.
+src/lib/custom-ai-agents/vex-agent.ts(108,99): error TS1005: '>' expected.
+src/lib/custom-ai-agents/vex-agent.ts(132,91): error TS1005: '>' expected.
+src/lib/custom-ai-agents/vex-agent.ts(155,88): error TS1005: '>' expected.
+src/lib/custom-ai-agents/vex-agent.ts(178,80): error TS1005: '>' expected.
+src/lib/database-scraping-scheduler.ts(24,13): error TS1131: Property or signature expected.
+src/lib/database-scraping-scheduler.ts(28,1): error TS1109: Expression expected.
+src/lib/database-scraping-scheduler.ts(300,42): error TS1144: '{' or ';' expected.
+src/lib/database-scraping-scheduler.ts(300,60): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(301,9): error TS1005: ':' expected.
+src/lib/database-scraping-scheduler.ts(302,13): error TS1005: ':' expected.
+src/lib/database-scraping-scheduler.ts(304,7): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(304,18): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(304,38): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(304,40): error TS1136: Property assignment expected.
+src/lib/database-scraping-scheduler.ts(305,9): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(305,23): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(310,9): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(310,23): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(315,9): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(315,24): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(320,9): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(320,20): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(325,9): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(325,22): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(329,9): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(329,16): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(332,5): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(332,7): error TS1005: 'try' expected.
+src/lib/database-scraping-scheduler.ts(335,3): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(340,3): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(340,11): error TS1434: Unexpected keyword or identifier.
+src/lib/database-scraping-scheduler.ts(340,42): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(340,60): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(340,67): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(362,3): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(362,41): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(362,72): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(362,82): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(389,3): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(389,41): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(389,51): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(400,3): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(400,36): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(400,53): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(421,3): error TS1128: Declaration or statement expected.
+src/lib/database-scraping-scheduler.ts(421,43): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(421,53): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(434,3): error TS1434: Unexpected keyword or identifier.
+src/lib/database-scraping-scheduler.ts(434,17): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(453,10): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(468,3): error TS1434: Unexpected keyword or identifier.
+src/lib/database-scraping-scheduler.ts(468,28): error TS1109: Expression expected.
+src/lib/database-scraping-scheduler.ts(468,30): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(477,5): error TS1005: ':' expected.
+src/lib/database-scraping-scheduler.ts(488,3): error TS1434: Unexpected keyword or identifier.
+src/lib/database-scraping-scheduler.ts(488,23): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(488,33): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(502,3): error TS1434: Unexpected keyword or identifier.
+src/lib/database-scraping-scheduler.ts(502,24): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(502,34): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(534,3): error TS1434: Unexpected keyword or identifier.
+src/lib/database-scraping-scheduler.ts(534,24): error TS1005: ',' expected.
+src/lib/database-scraping-scheduler.ts(534,34): error TS1005: ';' expected.
+src/lib/database-scraping-scheduler.ts(550,1): error TS1128: Declaration or statement expected.
+src/lib/documentParser.ts(206,11): error TS1005: ':' expected.
+src/lib/documentParser.ts(210,60): error TS1005: ':' expected.
+src/lib/documentParser.ts(258,54): error TS1005: ':' expected.
+src/lib/documentParser.ts(344,30): error TS1005: ':' expected.
+src/lib/documentParser.ts(345,86): error TS1005: ':' expected.
+src/lib/documentParser.ts(346,80): error TS1005: ':' expected.
+src/lib/message-router.ts(187,7): error TS1005: '>' expected.
+src/lib/notification-delivery-system.ts(12,24): error TS1005: '>' expected.
+src/lib/notification-job-queue.ts(13,3): error TS1005: '>' expected.
+src/lib/nova-product-intelligence.ts(12,1): error TS1128: Declaration or statement expected.
+src/lib/nova-product-intelligence.ts(12,3): error TS1434: Unexpected keyword or identifier.
+src/lib/nova-product-intelligence.ts(32,1): error TS1005: '>' expected.
+src/lib/nova-product-intelligence.ts(275,5): error TS1005: ':' expected.
+src/lib/predictive-analytics.ts(184,44): error TS1005: ',' expected.
+src/lib/predictive-analytics.ts(184,82): error TS1005: ';' expected.
+src/lib/revenue-tracking.ts(164,18): error TS1005: ':' expected.
+src/lib/revenue-tracking.ts(168,18): error TS1005: ':' expected.
+src/lib/revenue-tracking.ts(170,18): error TS1005: ':' expected.
+src/lib/revenue-tracking.ts(172,18): error TS1005: ':' expected.
+src/lib/revenue-tracking.ts(292,7): error TS1005: ':' expected.
+src/lib/server-polyfills.ts(23,9): error TS1005: ':' expected.
+src/lib/server-polyfills.ts(67,25): error TS1144: '{' or ';' expected.
+src/lib/server-polyfills.ts(67,32): error TS1005: ';' expected.
+src/lib/server-polyfills.ts(71,15): error TS1005: ',' expected.
+src/lib/server-polyfills.ts(71,25): error TS1005: ';' expected.
+src/lib/server-polyfills.ts(75,15): error TS1005: ',' expected.
+src/lib/server-polyfills.ts(75,30): error TS1005: ',' expected.
+src/lib/server-polyfills.ts(75,37): error TS1005: ';' expected.
+src/lib/server-polyfills.ts(79,18): error TS1005: ')' expected.
+src/lib/server-polyfills.ts(79,20): error TS1434: Unexpected keyword or identifier.
+src/lib/server-polyfills.ts(79,26): error TS1128: Declaration or statement expected.
+src/lib/server-polyfills.ts(83,7): error TS1109: Expression expected.
+src/lib/server-polyfills.ts(83,45): error TS1005: ';' expected.
+src/lib/server-polyfills.ts(83,46): error TS1109: Expression expected.
+src/lib/server-polyfills.ts(84,14): error TS1359: Identifier expected. 'const' is a reserved word that cannot be used here.
+src/lib/server-polyfills.ts(84,20): error TS1005: ',' expected.
+src/lib/server-polyfills.ts(84,33): error TS1005: ',' expected.
+src/lib/server-polyfills.ts(84,36): error TS1005: ',' expected.
+src/lib/server-polyfills.ts(84,40): error TS1005: ',' expected.
+src/lib/server-polyfills.ts(84,46): error TS1005: ',' expected.
+src/lib/server-polyfills.ts(84,48): error TS1136: Property assignment expected.
+src/lib/server-polyfills.ts(89,7): error TS1109: Expression expected.
+src/lib/server-polyfills.ts(89,15): error TS1005: ';' expected.
+src/lib/server-polyfills.ts(95,7): error TS1109: Expression expected.
+src/lib/server-polyfills.ts(95,17): error TS1005: ';' expected.
+src/lib/server-polyfills.ts(101,54): error TS1005: ';' expected.
+src/lib/server-polyfills.ts(101,55): error TS1109: Expression expected.
+src/lib/server-polyfills.ts(102,16): error TS1005: ':' expected.
+src/lib/server-polyfills.ts(106,3): error TS1128: Declaration or statement expected.
+src/lib/server-polyfills.ts(107,1): error TS1128: Declaration or statement expected.
+src/lib/session-manager.ts(59,3): error TS1005: '>' expected.
+src/lib/session-manager.ts(60,1): error TS1005: '>' expected.
+src/lib/session-manager.ts(104,19): error TS1005: ';' expected.
+src/lib/session-manager.ts(104,34): error TS1005: ')' expected.
+src/lib/session-manager.ts(104,35): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+src/lib/session-manager.ts(106,3): error TS1109: Expression expected.
+src/lib/session-manager.ts(106,4): error TS1128: Declaration or statement expected.
+src/lib/session-manager.ts(208,7): error TS1005: '>' expected.
+src/lib/session-manager.ts(219,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(219,30): error TS1005: ',' expected.
+src/lib/session-manager.ts(219,47): error TS1005: ',' expected.
+src/lib/session-manager.ts(219,57): error TS1005: ';' expected.
+src/lib/session-manager.ts(305,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(305,31): error TS1005: ',' expected.
+src/lib/session-manager.ts(305,48): error TS1005: ',' expected.
+src/lib/session-manager.ts(305,65): error TS1109: Expression expected.
+src/lib/session-manager.ts(305,67): error TS1005: ';' expected.
+src/lib/session-manager.ts(353,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(353,31): error TS1005: ',' expected.
+src/lib/session-manager.ts(353,48): error TS1109: Expression expected.
+src/lib/session-manager.ts(353,50): error TS1005: ';' expected.
+src/lib/session-manager.ts(377,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(377,34): error TS1005: ',' expected.
+src/lib/session-manager.ts(377,53): error TS1005: ',' expected.
+src/lib/session-manager.ts(377,70): error TS1109: Expression expected.
+src/lib/session-manager.ts(377,72): error TS1005: ';' expected.
+src/lib/session-manager.ts(408,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(408,32): error TS1005: ',' expected.
+src/lib/session-manager.ts(408,42): error TS1005: ';' expected.
+src/lib/session-manager.ts(432,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(432,34): error TS1005: ',' expected.
+src/lib/session-manager.ts(432,52): error TS1109: Expression expected.
+src/lib/session-manager.ts(432,54): error TS1005: ';' expected.
+src/lib/session-manager.ts(471,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(471,33): error TS1005: ',' expected.
+src/lib/session-manager.ts(471,43): error TS1005: ';' expected.
+src/lib/session-manager.ts(486,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(486,29): error TS1005: ',' expected.
+src/lib/session-manager.ts(486,39): error TS1005: ';' expected.
+src/lib/session-manager.ts(504,5): error TS1005: '>' expected.
+src/lib/session-manager.ts(511,28): error TS1005: ',' expected.
+src/lib/session-manager.ts(511,45): error TS1005: ';' expected.
+src/lib/session-manager.ts(518,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(518,39): error TS1005: ',' expected.
+src/lib/session-manager.ts(518,49): error TS1005: ';' expected.
+src/lib/session-manager.ts(558,23): error TS1005: ';' expected.
+src/lib/session-manager.ts(563,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(563,34): error TS1005: ';' expected.
+src/lib/session-manager.ts(579,6): error TS1005: '>' expected.
+src/lib/session-manager.ts(585,25): error TS1005: ',' expected.
+src/lib/session-manager.ts(585,35): error TS1005: ';' expected.
+src/lib/session-manager.ts(589,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(589,36): error TS1005: ',' expected.
+src/lib/session-manager.ts(589,46): error TS1005: ';' expected.
+src/lib/session-manager.ts(605,6): error TS1005: '>' expected.
+src/lib/session-manager.ts(611,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(611,35): error TS1005: ',' expected.
+src/lib/session-manager.ts(611,56): error TS1005: ',' expected.
+src/lib/session-manager.ts(611,66): error TS1005: ';' expected.
+src/lib/session-manager.ts(637,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(637,40): error TS1005: ',' expected.
+src/lib/session-manager.ts(637,50): error TS1005: ';' expected.
+src/lib/session-manager.ts(645,3): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(645,35): error TS1005: ',' expected.
+src/lib/session-manager.ts(645,54): error TS1005: ',' expected.
+src/lib/session-manager.ts(645,81): error TS1005: ';' expected.
+src/lib/session-manager.ts(653,3): error TS1128: Declaration or statement expected.
+src/lib/session-manager.ts(653,11): error TS1434: Unexpected keyword or identifier.
+src/lib/session-manager.ts(654,14): error TS1005: ',' expected.
+src/lib/session-manager.ts(655,12): error TS1005: ',' expected.
+src/lib/session-manager.ts(657,3): error TS1109: Expression expected.
+src/lib/session-manager.ts(657,5): error TS1005: ';' expected.
+src/lib/session-manager.ts(685,3): error TS1128: Declaration or statement expected.
+src/lib/session-manager.ts(685,40): error TS1005: ';' expected.
+src/lib/session-manager.ts(745,1): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(479,56): error TS1144: '{' or ';' expected.
+src/lib/social-media-analysis-engine.ts(479,58): error TS1434: Unexpected keyword or identifier.
+src/lib/social-media-analysis-engine.ts(479,76): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(480,11): error TS1005: ':' expected.
+src/lib/social-media-analysis-engine.ts(480,18): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(480,51): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(480,52): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(480,53): error TS1005: ':' expected.
+src/lib/social-media-analysis-engine.ts(480,55): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(480,57): error TS1136: Property assignment expected.
+src/lib/social-media-analysis-engine.ts(491,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(493,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(493,36): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(493,55): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(493,58): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(507,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(507,43): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(507,61): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(507,64): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(532,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(532,33): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(532,51): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(532,57): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(544,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(544,41): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(544,59): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(544,62): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(569,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(569,41): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(569,59): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(569,62): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(608,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(608,39): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(608,57): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(608,60): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(644,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(644,42): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(644,60): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(644,62): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(644,73): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(656,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(656,42): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(656,60): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(656,62): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(656,75): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(684,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(684,38): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(684,56): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(684,58): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(684,73): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(711,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(711,46): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(711,67): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(715,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(715,43): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(715,58): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(715,76): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(715,79): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(727,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(727,32): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(727,50): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(727,70): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(728,11): error TS1005: ':' expected.
+src/lib/social-media-analysis-engine.ts(728,18): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(728,50): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(728,51): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(728,52): error TS1005: ':' expected.
+src/lib/social-media-analysis-engine.ts(728,54): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(728,56): error TS1136: Property assignment expected.
+src/lib/social-media-analysis-engine.ts(737,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(739,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(739,33): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(739,51): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(739,71): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(740,11): error TS1005: ':' expected.
+src/lib/social-media-analysis-engine.ts(740,18): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(740,50): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(740,51): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(740,52): error TS1005: ':' expected.
+src/lib/social-media-analysis-engine.ts(740,54): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(740,56): error TS1136: Property assignment expected.
+src/lib/social-media-analysis-engine.ts(752,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(754,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(754,34): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(754,52): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(754,72): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(755,11): error TS1005: ':' expected.
+src/lib/social-media-analysis-engine.ts(755,18): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(755,50): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(755,51): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(755,52): error TS1005: ':' expected.
+src/lib/social-media-analysis-engine.ts(755,54): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(755,56): error TS1136: Property assignment expected.
+src/lib/social-media-analysis-engine.ts(766,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(768,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(768,45): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(768,63): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(768,65): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(768,68): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(779,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(779,32): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(779,41): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(779,43): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(779,84): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(795,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(795,32): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(795,41): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(795,43): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(795,91): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(796,11): error TS1005: ':' expected.
+src/lib/social-media-analysis-engine.ts(796,15): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(796,23): error TS1005: '>' expected.
+src/lib/social-media-analysis-engine.ts(796,71): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(796,73): error TS1109: Expression expected.
+src/lib/social-media-analysis-engine.ts(813,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(815,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(815,46): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(815,64): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(815,66): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(815,69): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(822,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(822,34): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(822,44): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(831,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(831,46): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(831,87): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(861,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(861,53): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(861,94): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(886,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(886,45): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(886,73): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(903,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(903,52): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(903,80): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(922,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(922,41): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(922,59): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(922,61): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(922,73): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(932,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(932,37): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(932,55): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(932,57): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(932,71): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(942,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(942,40): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(942,58): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(942,60): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(942,70): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(952,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(952,37): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(952,55): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(952,57): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(952,65): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(961,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(961,44): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(961,64): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(966,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(966,51): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(966,71): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(971,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(971,32): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(971,50): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(971,53): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(976,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(976,41): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(976,60): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(976,63): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(981,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(981,49): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(981,68): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(981,71): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(993,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(993,45): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(993,64): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(993,67): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(998,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(998,52): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(998,71): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(998,74): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(1003,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(1003,42): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1003,60): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(1003,62): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(1003,74): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(1013,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(1013,11): error TS1434: Unexpected keyword or identifier.
+src/lib/social-media-analysis-engine.ts(1014,17): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1015,23): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1015,32): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(1016,13): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1017,9): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1018,5): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(1023,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(1024,12): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1025,16): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1025,39): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(1026,4): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(1026,17): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(1037,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(1038,12): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1039,16): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1039,39): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(1040,5): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(1045,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-analysis-engine.ts(1046,12): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1047,16): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(1047,39): error TS1011: An element access expression should take an argument.
+src/lib/social-media-analysis-engine.ts(1048,5): error TS1005: ';' expected.
+src/lib/social-media-analysis-engine.ts(1052,1): error TS1128: Declaration or statement expected.
+src/lib/social-media-job-processor.ts(136,32): error TS1005: ':' expected.
+src/lib/social-media-job-processor.ts(460,54): error TS1005: ':' expected.
+src/lib/social-media-job-processor.ts(476,57): error TS1144: '{' or ';' expected.
+src/lib/social-media-job-processor.ts(477,9): error TS1005: ':' expected.
+src/lib/social-media-job-processor.ts(478,13): error TS1005: ':' expected.
+src/lib/social-media-job-processor.ts(482,18): error TS1005: ',' expected.
+src/lib/social-media-job-processor.ts(484,13): error TS1005: ':' expected.
+src/lib/social-media-job-processor.ts(484,36): error TS1005: ',' expected.
+src/lib/social-media-job-processor.ts(486,11): error TS1003: Identifier expected.
+src/lib/social-media-job-processor.ts(490,7): error TS1005: ',' expected.
+src/lib/social-media-job-processor.ts(490,15): error TS1003: Identifier expected.
+src/lib/social-media-job-processor.ts(490,71): error TS1005: ',' expected.
+src/lib/social-media-job-processor.ts(501,17): error TS1005: ',' expected.
+src/lib/social-media-job-processor.ts(501,23): error TS1005: ',' expected.
+src/lib/social-media-job-processor.ts(501,33): error TS1005: ',' expected.
+src/lib/social-media-job-processor.ts(501,44): error TS1005: ',' expected.
+src/lib/social-media-job-processor.ts(508,127): error TS1160: Unterminated template literal.
+src/lib/social-media-monitor.ts(34,15): error TS1131: Property or signature expected.
+src/lib/social-media-monitor.ts(34,22): error TS1109: Expression expected.
+src/lib/social-media-monitor.ts(35,18): error TS1109: Expression expected.
+src/lib/social-media-monitor.ts(36,1): error TS1128: Declaration or statement expected.
+src/lib/social-media-monitor.ts(417,75): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(457,23): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(459,22): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(461,23): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(463,24): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(465,22): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(537,23): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(538,22): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(539,23): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(540,24): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(548,25): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(549,24): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(550,25): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(551,26): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(697,77): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(697,83): error TS1005: '{' expected.
+src/lib/social-media-monitor.ts(705,91): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(802,68): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(802,74): error TS1005: '{' expected.
+src/lib/social-media-monitor.ts(831,7): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(870,7): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(878,70): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(878,76): error TS1005: '{' expected.
+src/lib/social-media-monitor.ts(937,66): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(937,72): error TS1005: '{' expected.
+src/lib/social-media-monitor.ts(945,55): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(1059,80): error TS1005: '>' expected.
+src/lib/social-media-monitor.ts(1072,86): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(1072,92): error TS1005: '{' expected.
+src/lib/social-media-monitor.ts(1079,9): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(1080,93): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(1498,39): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(1498,48): error TS1005: ';' expected.
+src/lib/social-media-monitor.ts(1544,74): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(1557,47): error TS1068: Unexpected token. A constructor, method, accessor, or property was expected.
+src/lib/social-media-monitor.ts(1558,11): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(1558,19): error TS1005: ',' expected.
+src/lib/social-media-monitor.ts(1558,50): error TS1005: ',' expected.
+src/lib/social-media-monitor.ts(1558,51): error TS1109: Expression expected.
+src/lib/social-media-monitor.ts(1558,52): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(1558,54): error TS1109: Expression expected.
+src/lib/social-media-monitor.ts(1558,56): error TS1136: Property assignment expected.
+src/lib/social-media-monitor.ts(1578,77): error TS1005: ':' expected.
+src/lib/social-media-monitor.ts(1583,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-monitor.ts(1585,3): error TS1128: Declaration or statement expected.
+src/lib/social-media-monitor.ts(1585,29): error TS1005: ',' expected.
+src/lib/social-media-monitor.ts(1585,47): error TS1011: An element access expression should take an argument.
+src/lib/social-media-monitor.ts(1585,50): error TS1005: ';' expected.
+src/lib/social-media-monitor.ts(1594,1): error TS1128: Declaration or statement expected.
+src/lib/stripe.ts(14,84): error TS1005: ':' expected.
+src/lib/stripe.ts(198,1): error TS1005: ':' expected.
+src/lib/stripe.ts(214,20): error TS1005: ',' expected.
+src/lib/stripe.ts(215,1): error TS1109: Expression expected.
+src/lib/stripe.ts(216,9): error TS1005: ':' expected.
+src/lib/stripe.ts(217,3): error TS1005: ',' expected.
+src/lib/stripe.ts(217,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(221,3): error TS1005: ',' expected.
+src/lib/stripe.ts(221,10): error TS1005: ':' expected.
+src/lib/stripe.ts(237,20): error TS1005: ',' expected.
+src/lib/stripe.ts(238,1): error TS1109: Expression expected.
+src/lib/stripe.ts(239,9): error TS1005: ':' expected.
+src/lib/stripe.ts(240,3): error TS1005: ',' expected.
+src/lib/stripe.ts(240,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(244,3): error TS1005: ',' expected.
+src/lib/stripe.ts(244,10): error TS1005: ':' expected.
+src/lib/stripe.ts(272,2): error TS1144: '{' or ';' expected.
+src/lib/stripe.ts(273,9): error TS1005: ':' expected.
+src/lib/stripe.ts(274,3): error TS1005: ',' expected.
+src/lib/stripe.ts(274,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(278,3): error TS1005: ',' expected.
+src/lib/stripe.ts(278,10): error TS1005: ':' expected.
+src/lib/stripe.ts(286,2): error TS1144: '{' or ';' expected.
+src/lib/stripe.ts(287,9): error TS1005: ':' expected.
+src/lib/stripe.ts(288,3): error TS1005: ',' expected.
+src/lib/stripe.ts(288,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(292,3): error TS1005: ',' expected.
+src/lib/stripe.ts(292,10): error TS1005: ':' expected.
+src/lib/stripe.ts(299,2): error TS1144: '{' or ';' expected.
+src/lib/stripe.ts(300,9): error TS1005: ':' expected.
+src/lib/stripe.ts(301,3): error TS1005: ',' expected.
+src/lib/stripe.ts(301,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(305,3): error TS1005: ',' expected.
+src/lib/stripe.ts(307,5): error TS1005: ',' expected.
+src/lib/stripe.ts(307,10): error TS1005: ':' expected.
+src/lib/stripe.ts(308,12): error TS1005: ':' expected.
+src/lib/stripe.ts(318,2): error TS1144: '{' or ';' expected.
+src/lib/stripe.ts(319,9): error TS1005: ':' expected.
+src/lib/stripe.ts(320,3): error TS1005: ',' expected.
+src/lib/stripe.ts(320,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(324,3): error TS1005: ',' expected.
+src/lib/stripe.ts(324,9): error TS1005: ':' expected.
+src/lib/stripe.ts(326,3): error TS1005: ',' expected.
+src/lib/stripe.ts(326,10): error TS1005: ':' expected.
+src/lib/stripe.ts(339,2): error TS1144: '{' or ';' expected.
+src/lib/stripe.ts(340,9): error TS1005: ':' expected.
+src/lib/stripe.ts(341,3): error TS1005: ',' expected.
+src/lib/stripe.ts(341,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(345,3): error TS1005: ',' expected.
+src/lib/stripe.ts(345,10): error TS1005: ':' expected.
+src/lib/stripe.ts(351,2): error TS1144: '{' or ';' expected.
+src/lib/stripe.ts(351,33): error TS1011: An element access expression should take an argument.
+src/lib/stripe.ts(352,9): error TS1005: ':' expected.
+src/lib/stripe.ts(353,3): error TS1005: ',' expected.
+src/lib/stripe.ts(353,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(357,3): error TS1005: ',' expected.
+src/lib/stripe.ts(357,9): error TS1005: ':' expected.
+src/lib/stripe.ts(362,3): error TS1005: ',' expected.
+src/lib/stripe.ts(362,10): error TS1005: ':' expected.
+src/lib/stripe.ts(369,2): error TS1144: '{' or ';' expected.
+src/lib/stripe.ts(369,29): error TS1011: An element access expression should take an argument.
+src/lib/stripe.ts(370,9): error TS1005: ':' expected.
+src/lib/stripe.ts(371,3): error TS1005: ',' expected.
+src/lib/stripe.ts(371,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(375,3): error TS1005: ',' expected.
+src/lib/stripe.ts(375,9): error TS1005: ':' expected.
+src/lib/stripe.ts(380,3): error TS1005: ',' expected.
+src/lib/stripe.ts(380,10): error TS1005: ':' expected.
+src/lib/stripe.ts(388,47): error TS1011: An element access expression should take an argument.
+src/lib/stripe.ts(391,1): error TS1109: Expression expected.
+src/lib/stripe.ts(391,2): error TS1109: Expression expected.
+src/lib/stripe.ts(392,9): error TS1005: ':' expected.
+src/lib/stripe.ts(393,3): error TS1005: ',' expected.
+src/lib/stripe.ts(393,7): error TS1003: Identifier expected.
+src/lib/stripe.ts(397,3): error TS1005: ',' expected.
+src/lib/stripe.ts(397,9): error TS1005: ':' expected.
+src/lib/stripe.ts(402,3): error TS1005: ',' expected.
+src/lib/stripe.ts(402,10): error TS1005: ':' expected.
+src/lib/stripe.ts(406,3): error TS1005: ':' expected.
+src/services/gameService.ts(28,30): error TS1005: ':' expected.
+src/services/gameService.ts(46,44): error TS1005: '=>' expected.
+src/services/gameService.ts(46,79): error TS1005: ';' expected.
+src/services/gameService.ts(46,90): error TS1005: ',' expected.
+src/services/gameService.ts(46,92): error TS1109: Expression expected.
+src/types/index.ts(201,29): error TS1005: '>' expected.

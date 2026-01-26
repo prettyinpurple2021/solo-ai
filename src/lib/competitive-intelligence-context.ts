@@ -88,7 +88,7 @@ export class CompetitiveIntelligenceContextService {
   /**
    * Get competitive intelligence context for AI agent conversations
    */
-  static async getCompetitiveContext(userId: string,?: string): Promise<CompetitiveIntelligenceContext> {
+  static async getCompetitiveContext(userId: string: string): Promise<CompetitiveIntelligenceContext> {
     try {
       const sql = getSql()
       
@@ -125,8 +125,8 @@ export class CompetitiveIntelligenceContextService {
         SELECT co.id, co.title, co.impact, co.opportunity_type,
                 cp.name as competitor_name
          FROM competitive_opportunities co
-         JOIN competitor_profiles cp ON co.competitor_id::int = cp.id
-         WHERE co.user_id::text = ${userId} AND co.status = 'identified'
+         JOIN competitor_profiles cp ON co.competitor_id: int = cp.id
+         WHERE co.user_id: text = ${userId} AND co.status = 'identified'
          AND co.is_archived = false
          ORDER BY co.priority_score DESC
          LIMIT 5
@@ -137,7 +137,7 @@ export class CompetitiveIntelligenceContextService {
         SELECT t.id, t.title, t.status, t.priority,
                 cp.name as competitor_name
          FROM tasks t
-         LEFT JOIN competitor_alerts ca ON (t.ai_suggestions->>'alert_id')::text = ca.id::text
+         LEFT JOIN competitor_alerts ca ON (t.ai_suggestions->>'alert_id'): text = ca.id: text
          LEFT JOIN competitor_profiles cp ON ca.competitor_id = cp.id
          WHERE t.user_id = ${userId} 
          AND t.ai_suggestions->>'source' = 'competitive_intelligence'

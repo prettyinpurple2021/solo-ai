@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
                  ca.severity as alert_severity
           FROM tasks t
           LEFT JOIN goals g ON t.goal_id = g.id
-          LEFT JOIN competitor_alerts ca ON (t.ai_suggestions->>'alert_id')::text = ca.id::text
+          LEFT JOIN competitor_alerts ca ON (t.ai_suggestions->>'alert_id'): text = ca.id: text
           LEFT JOIN competitor_profiles cp ON ca.competitor_id = cp.id
           WHERE t.user_id = ${user.id} 
           AND t.ai_suggestions->>'source' = 'competitive_intelligence'
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
                  ca.severity as alert_severity
           FROM tasks t
           LEFT JOIN goals g ON t.goal_id = g.id
-          LEFT JOIN competitor_alerts ca ON (t.ai_suggestions->>'alert_id')::text = ca.id::text
+          LEFT JOIN competitor_alerts ca ON (t.ai_suggestions->>'alert_id'): text = ca.id: text
           LEFT JOIN competitor_profiles cp ON ca.competitor_id = cp.id
           WHERE t.user_id = ${user.id}
           ORDER BY t.created_at DESC

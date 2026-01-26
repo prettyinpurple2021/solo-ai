@@ -189,8 +189,8 @@ export default function BrandStudioPage() {
   const [generatingLogo, setGeneratingLogo] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
   const [logoVariants, setLogoVariants] = useState<LogoVariant[]>([])
-  const [selectedLogoVariant, setSelectedLogoVariant] = useState<string | null>(null)
-  const [brandAnalysis, setBrandAnalysis] = useState<BrandAnalysis | null>(null)
+  const [selectedLogoVariant, setSelectedLogoVariant] = useState<string (null)
+  const [brandAnalysis, setBrandAnalysis] = useState<BrandAnalysis (null)
   const [analyzing, setAnalyzing] = useState(false)
 
   useEffect(() => {

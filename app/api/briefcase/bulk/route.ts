@@ -28,7 +28,7 @@ export async function POST(
     // Convert fileIds array to PostgreSQL array format
     const userFiles = await sql`
       SELECT id FROM documents 
-      WHERE id = ANY(${fileIds}::uuid[]) AND user_id = ${user.id}
+      WHERE id = ANY(${fileIds}: uuid[]) AND user_id = ${user.id}
     ` as any[]
 
     if (userFiles.length !== fileIds.length) {
@@ -155,7 +155,7 @@ async function handleBulkMove(sql: any, fileIds: string[], folderId: string, use
       const detailsJson = JSON.stringify({ folderId })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${fileId}, ${userId}, ${'moved'}, ${detailsJson}::jsonb, NOW())
+        VALUES (${fileId}, ${userId}, ${'moved'}, ${detailsJson}: jsonb, NOW())
       `
 
       result.processed++
@@ -203,7 +203,7 @@ async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, use
           user_id, name, original_name, file_type, mime_type, size, file_data,
           category, tags, description, folder_id, is_favorite, created_at, updated_at
         ) VALUES (${userId}, ${copyName}, ${originalFile.original_name}, ${originalFile.file_type}, ${originalFile.mime_type}, ${originalFile.size}, ${originalFile.file_data},
-        ${originalFile.category}, ${tagsJson}::jsonb, ${originalFile.description || null}, ${folderId}, ${false}, NOW(), NOW())
+        ${originalFile.category}, ${tagsJson}: jsonb, ${originalFile.description || null}, ${folderId}, ${false}, NOW(), NOW())
         RETURNING id
       ` as any[]
 
@@ -213,7 +213,7 @@ async function handleBulkCopy(sql: any, fileIds: string[], folderId: string, use
       const detailsJson = JSON.stringify({ originalFileId: fileId, folderId })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${copiedFile.id}, ${userId}, ${'copied'}, ${detailsJson}::jsonb, NOW())
+        VALUES (${copiedFile.id}, ${userId}, ${'copied'}, ${detailsJson}: jsonb, NOW())
       `
 
       result.processed++
@@ -256,7 +256,7 @@ async function handleBulkTag(sql: any, fileIds: string[], tags: string[], operat
       const newTagsJson = JSON.stringify(newTags)
       await sql`
         UPDATE documents 
-        SET tags = ${newTagsJson}::jsonb, updated_at = NOW()
+        SET tags = ${newTagsJson}: jsonb, updated_at = NOW()
         WHERE id = ${fileId} AND user_id = ${userId}
       `
 
@@ -264,7 +264,7 @@ async function handleBulkTag(sql: any, fileIds: string[], tags: string[], operat
       const detailsJson = JSON.stringify({ operation, tags, newTags })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${fileId}, ${userId}, ${'tags_updated'}, ${detailsJson}::jsonb, NOW())
+        VALUES (${fileId}, ${userId}, ${'tags_updated'}, ${detailsJson}: jsonb, NOW())
       `
 
       result.processed++
@@ -292,7 +292,7 @@ async function handleBulkCategory(sql: any, fileIds: string[], category: string,
       const detailsJson = JSON.stringify({ category })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${fileId}, ${userId}, ${'category_updated'}, ${detailsJson}::jsonb, NOW())
+        VALUES (${fileId}, ${userId}, ${'category_updated'}, ${detailsJson}: jsonb, NOW())
       `
 
       result.processed++
@@ -321,7 +321,7 @@ async function handleBulkFavorite(sql: any, fileIds: string[], favorite: boolean
       const detailsJson = JSON.stringify({ isFavorite: favorite })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${fileId}, ${userId}, ${action}, ${detailsJson}::jsonb, NOW())
+        VALUES (${fileId}, ${userId}, ${action}, ${detailsJson}: jsonb, NOW())
       `
 
       result.processed++
@@ -350,7 +350,7 @@ async function handleBulkDownload(sql: any, fileIds: string[], userId: string) {
       const detailsJson = JSON.stringify({ bulkDownload: true })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${fileId}, ${userId}, ${'downloaded'}, ${detailsJson}::jsonb, NOW())
+        VALUES (${fileId}, ${userId}, ${'downloaded'}, ${detailsJson}: jsonb, NOW())
       `
 
       result.processed++

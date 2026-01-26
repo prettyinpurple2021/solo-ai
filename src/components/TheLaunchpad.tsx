@@ -11,7 +11,7 @@ export const TheLaunchpad: React.FC = () => {
     const [productName, setProductName] = useState('');
     const [launchDate, setLaunchDate] = useState('');
     const [loading, setLoading] = useState(false);
-    const [strategy, setStrategy] = useState<LaunchStrategy | null>(null);
+    const [strategy, setStrategy] = useState<LaunchStrategy (null);
     const [deployed, setDeployed] = useState(false);
 
     useEffect(() => {

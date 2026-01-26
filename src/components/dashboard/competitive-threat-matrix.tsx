@@ -43,7 +43,7 @@ export function CompetitiveThreatMatrix({
 }: CompetitiveThreatMatrixProps) {
   const [competitors, setCompetitors] = useState<CompetitorThreat[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedCompetitor, setSelectedCompetitor] = useState<CompetitorThreat | null>(null)
+  const [selectedCompetitor, setSelectedCompetitor] = useState<CompetitorThreat (null)
 
   useEffect(() => {
     fetchThreatMatrix()

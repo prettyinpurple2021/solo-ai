@@ -29,7 +29,7 @@ export function useUserPreferences(
   const { getToken } = useAuth()
   const [preferences, setPreferencesState] = useState<Record<string, any>>(options.defaultValues || {})
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
   const loadingRef = useRef(false) // Prevent multiple simultaneous calls
 
   const getAuthHeaders = useCallback(async () => {

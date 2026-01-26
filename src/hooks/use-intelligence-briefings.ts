@@ -41,10 +41,10 @@ interface UseBriefingsReturn {
 export function useIntelligenceBriefings(): UseBriefingsReturn {
   const [briefings, setBriefings] = useState<IntelligenceBriefing[]>([])
   const [agentBriefings, setAgentBriefings] = useState<AgentBriefing[]>([])
-  const [currentBriefing, setCurrentBriefing] = useState<IntelligenceBriefing | null>(null)
-  const [currentAgentBriefing, setCurrentAgentBriefing] = useState<AgentBriefing | null>(null)
+  const [currentBriefing, setCurrentBriefing] = useState<IntelligenceBriefing (null)
+  const [currentAgentBriefing, setCurrentAgentBriefing] = useState<AgentBriefing (null)
   const [isGenerating, setIsGenerating] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
   
   const clearError = useCallback(() => {
     setError(null)

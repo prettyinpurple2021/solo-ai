@@ -81,7 +81,7 @@ export async function getAllTemplates(): Promise<TemplateCategory[]> {
   }
 }
 
-export async function getTemplateBySlug(slug: string): Promise<Template | null> {
+export async function getTemplateBySlug(slug: string): Promise<Template> {
   try {
     // Only try to connect to database if environment variables are available
     if (!process.env.DATABASE_URL) {

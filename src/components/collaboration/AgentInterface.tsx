@@ -13,21 +13,13 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { 
   Bot, 
-, 
   Brain, 
   Code, 
   MessageSquare, 
   Settings, 
-  Activity, 
-,
-,
-,
-,
-,
-,
+  Activity,
   MoreHorizontal,
   TrendingUp,
-,
   Target
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -121,7 +113,7 @@ const AgentCard: React.FC<{ agent: Agent; onSelect?: (agent: Agent) => void; com
   compact = false 
 }) => {
   const utilisationPercentage = (agent.currentSessions / agent.maxSessions) * 100
-  const [,] = useState(false)
+  const [] = useState(false)
 
   const getAgentIcon = (specialization: string) => {
     switch (specialization.toLowerCase()) {
@@ -481,7 +473,7 @@ const AgentDetailsView: React.FC<{ agent: Agent }> = ({ agent }) => {
 const AgentInterface: React.FC = () => {
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
-  const [, setSelectedAgent] = useState<Agent | null>(null)
+  const [ setSelectedAgent] = useState<Agent (null)
   const [filter, setFilter] = useState<'all' | 'available' | 'busy' | 'offline'>('all')
 
   useEffect(() => {

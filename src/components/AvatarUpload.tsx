@@ -27,8 +27,8 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({
   className = '' 
 }) => {
   const [isUploading, setIsUploading] = useState(false)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [previewUrl, setPreviewUrl] = useState<string (null)
+  const [error, setError] = useState<string (null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {

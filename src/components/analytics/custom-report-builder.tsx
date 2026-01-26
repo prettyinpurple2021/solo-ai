@@ -18,7 +18,6 @@ import {
   Plus, 
   Trash2, 
   Save, 
-, 
   Eye, 
   Settings, 
   BarChart3, 
@@ -30,13 +29,7 @@ import {
   Target,
   Users,
   Activity,
-,
-,
   CheckCircle,
-,
-,
-,
-,
   Crown
 } from 'lucide-react'
 import { PrimaryButton } from '@/components/ui/button'
@@ -170,7 +163,7 @@ export function CustomReportBuilder({
   })
   
   const [activeTab, setActiveTab] = useState<'design' | 'visualize' | 'schedule' | 'preview'>('design')
-  const [selectedVisualization, setSelectedVisualization] = useState<ReportVisualization | null>(null)
+  const [selectedVisualization, setSelectedVisualization] = useState<ReportVisualization (null)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isExporting, setIsExporting] = useState(false)

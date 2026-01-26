@@ -11,7 +11,7 @@ export const TheSanctuary: React.FC = () => {
     const [stress, setStress] = useState(50);
     const [blocker, setBlocker] = useState('');
     const [loading, setLoading] = useState(false);
-    const [coaching, setCoaching] = useState<MentalCoaching | null>(null);
+    const [coaching, setCoaching] = useState<MentalCoaching (null);
     const [breathing, setBreathing] = useState(false);
 
     const handleReflect = async () => {

@@ -25,7 +25,7 @@ async function getTodayUsage(userId: string) {
 
   const result = await sql`
     INSERT INTO daily_usage_limits (user_id, date, conversations_count, agents_accessed, file_storage_bytes)
-    VALUES (${userId}, CURRENT_DATE, 0, ARRAY[]::TEXT[], 0)
+    VALUES (${userId}, CURRENT_DATE, 0, ARRAY[]: TEXT[], 0)
     ON CONFLICT (user_id, date) 
     DO UPDATE SET updated_at = NOW()
     RETURNING *

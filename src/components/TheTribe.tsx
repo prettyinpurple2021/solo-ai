@@ -9,7 +9,7 @@ export const TheTribe: React.FC = () => {
     const [audience, setAudience] = useState('');
     const [enemy, setEnemy] = useState('');
     const [loading, setLoading] = useState(false);
-    const [blueprint, setBlueprint] = useState<TribeBlueprint | null>(null);
+    const [blueprint, setBlueprint] = useState<TribeBlueprint (null);
 
     useEffect(() => {
         const saved = localStorage.getItem('solo_tribe_blueprint');

@@ -40,7 +40,7 @@ export const DELETE = withDocumentAuth(
       // Log activity
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${documentId}, ${user.id}, ${'share_link_deleted'}, ${JSON.stringify({ linkId })}::jsonb, NOW())
+        VALUES (${documentId}, ${user.id}, ${'share_link_deleted'}, ${JSON.stringify({ linkId })}: jsonb, NOW())
       `
 
       logInfo('Share link deleted', { linkId, documentId, userId: user.id })

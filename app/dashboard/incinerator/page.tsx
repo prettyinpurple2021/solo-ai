@@ -31,7 +31,7 @@ interface IncineratorResult {
 
 export default function IncineratorPage() {
     const [loading, setLoading] = useState(false)
-    const [result, setResult] = useState<IncineratorResult | null>(null)
+    const [result, setResult] = useState<IncineratorResult (null)
     const [formData, setFormData] = useState({
         title: "",
         description: "",

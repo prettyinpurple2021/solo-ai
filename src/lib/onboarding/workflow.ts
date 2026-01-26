@@ -102,7 +102,7 @@ export async function runOnboardingWorkflow(jobId: string, userId: string): Prom
     : (
         (await sql`
           INSERT INTO briefcases (user_id, title, description, status, metadata, created_at, updated_at)
-          VALUES (${userId}, ${DEFAULT_BRIEFCASE.title}, ${DEFAULT_BRIEFCASE.description}, ${DEFAULT_BRIEFCASE.status}, ${JSON.stringify(DEFAULT_BRIEFCASE.metadata)}::jsonb, NOW(), NOW())
+          VALUES (${userId}, ${DEFAULT_BRIEFCASE.title}, ${DEFAULT_BRIEFCASE.description}, ${DEFAULT_BRIEFCASE.status}, ${JSON.stringify(DEFAULT_BRIEFCASE.metadata)}: jsonb, NOW(), NOW())
           RETURNING id
         ` as Array<{ id: number }>)
       )[0]
@@ -152,7 +152,7 @@ export async function runOnboardingWorkflow(jobId: string, userId: string): Prom
 
     await sql`
       INSERT INTO tasks (user_id, briefcase_id, title, description, status, priority, estimated_minutes, category, tags, created_at, updated_at)
-      VALUES (${userId}, ${insertedBriefcase.id}, ${task.title}, ${task.description}, 'pending', ${task.priority}, ${task.estimated_minutes}, 'onboarding', ${JSON.stringify(['onboarding', 'solosuccess'])}::jsonb, NOW(), NOW())
+      VALUES (${userId}, ${insertedBriefcase.id}, ${task.title}, ${task.description}, 'pending', ${task.priority}, ${task.estimated_minutes}, 'onboarding', ${JSON.stringify(['onboarding', 'solosuccess'])}: jsonb, NOW(), NOW())
     `
 
     tasksCreated += 1
@@ -175,7 +175,7 @@ export async function runOnboardingWorkflow(jobId: string, userId: string): Prom
 
   await sql`
     UPDATE users
-    SET onboarding_data = ${JSON.stringify(onboardingPayload)}::jsonb,
+    SET onboarding_data = ${JSON.stringify(onboardingPayload)}: jsonb,
         onboarding_completed = false,
         updated_at = NOW()
     WHERE id = ${userId}

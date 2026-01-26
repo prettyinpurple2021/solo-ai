@@ -52,7 +52,7 @@ interface ProductivityDashboardProps {
 }
 
 export function ProductivityDashboard({ className = "" }: ProductivityDashboardProps) {
-  const [data, setData] = useState<AnalyticsData | null>(null)
+  const [data, setData] = useState<AnalyticsData (null)
   const [isLoading, setIsLoading] = useState(true)
   const [timeRange, setTimeRange] = useState<'week' | 'month' | 'quarter'>('week')
 

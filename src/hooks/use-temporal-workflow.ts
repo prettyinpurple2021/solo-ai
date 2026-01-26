@@ -20,9 +20,9 @@ export function useTemporalWorkflow(
   endpoint: 'onboarding' | 'intelligence' | 'briefings' = 'onboarding',
   options: UseTemporalWorkflowOptions = {}
 ) {
-  const [status, setStatus] = useState<WorkflowStatus | null>(null)
+  const [status, setStatus] = useState<WorkflowStatus (null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
 
   const { pollInterval = 5000, onComplete, onError } = options
 
@@ -132,7 +132,7 @@ export function useBriefingWorkflow(workflowId: string | null, options?: UseTemp
 // Hook for starting onboarding workflow
 export function useStartOnboarding() {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
 
   const startOnboarding = useCallback(async (userId: string, userData: any) => {
     setLoading(true)
@@ -167,7 +167,7 @@ export function useStartOnboarding() {
 // Hook for starting intelligence processing
 export function useStartIntelligenceProcessing() {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
 
   const startProcessing = useCallback(async (userId: string, competitorData: any[]) => {
     setLoading(true)
@@ -202,7 +202,7 @@ export function useStartIntelligenceProcessing() {
 // Hook for starting AI agent briefings
 export function useStartBriefings() {
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
 
   const startBriefings = useCallback(async (
     userId: string, 

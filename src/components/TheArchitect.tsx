@@ -14,9 +14,9 @@ import { storageService } from '../services/storageService';
 export const TheArchitect: React.FC = () => {
     const [idea, setIdea] = useState('');
     const [specs, setSpecs] = useState<ProductSpec[]>([]);
-    const [activeSpec, setActiveSpec] = useState<ProductSpec | null>(null);
+    const [activeSpec, setActiveSpec] = useState<ProductSpec (null);
     const [loading, setLoading] = useState(false);
-    const [expandedFeature, setExpandedFeature] = useState<number | null>(null);
+    const [expandedFeature, setExpandedFeature] = useState<number (null);
     const [selectedFeatures, setSelectedFeatures] = useState<number[]>([]);
 
     useEffect(() => {

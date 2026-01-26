@@ -110,7 +110,7 @@ export async function POST(
     const insightsJson = JSON.stringify(insights)
     await sql`
       UPDATE documents 
-      SET ai_insights = ${insightsJson}::jsonb, updated_at = NOW()
+      SET ai_insights = ${insightsJson}: jsonb, updated_at = NOW()
       WHERE id = ${documentId}
     `
 
@@ -123,7 +123,7 @@ export async function POST(
     })
     await sql`
       INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-      VALUES (${documentId}, ${user.id}, ${'ai_analyzed'}, ${activityDetailsJson}::jsonb, NOW())
+      VALUES (${documentId}, ${user.id}, ${'ai_analyzed'}, ${activityDetailsJson}: jsonb, NOW())
     `
 
     return NextResponse.json({

@@ -22,7 +22,7 @@ function getSql() {
   }
 }
 
-async function getUserIdFromToken(request: NextRequest): Promise<string | null> {
+async function getUserIdFromToken(request: NextRequest): Promise<string> {
   try {
     const authHeader = request.headers.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {

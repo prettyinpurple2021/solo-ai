@@ -141,7 +141,7 @@ export async function POST(
         })
         await sql`
           INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-          VALUES (${documentId}, ${user.id}, ${'version_restored'}, ${restoreDetailsJson}::jsonb, NOW())
+          VALUES (${documentId}, ${user.id}, ${'version_restored'}, ${restoreDetailsJson}: jsonb, NOW())
         `
 
         return NextResponse.json({
@@ -226,7 +226,7 @@ export async function DELETE(
     })
     await sql`
       INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-      VALUES (${documentId}, ${user.id}, ${'version_deleted'}, ${deleteDetailsJson}::jsonb, NOW())
+      VALUES (${documentId}, ${user.id}, ${'version_deleted'}, ${deleteDetailsJson}: jsonb, NOW())
     `
 
     return NextResponse.json({

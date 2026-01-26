@@ -50,13 +50,13 @@ export async function PATCH(
     }
 
     if (tags !== undefined) {
-      setParts.push(`tags = $${paramIndex}::jsonb`)
+      setParts.push(`tags = $${paramIndex}: jsonb`)
       queryParams.push(JSON.stringify(Array.isArray(tags) ? tags : []))
       paramIndex++
     }
 
     if (metadata !== undefined) {
-      setParts.push(`metadata = $${paramIndex}::jsonb`)
+      setParts.push(`metadata = $${paramIndex}: jsonb`)
       queryParams.push(typeof metadata === 'string' ? metadata : JSON.stringify(metadata))
       paramIndex++
     }
@@ -101,7 +101,7 @@ export async function PATCH(
     })
     await sql`
       INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-      VALUES (${documentId}, ${user.id}, ${'metadata_updated'}, ${detailsJson}::jsonb, NOW())
+      VALUES (${documentId}, ${user.id}, ${'metadata_updated'}, ${detailsJson}: jsonb, NOW())
     `
 
     return NextResponse.json({

@@ -60,7 +60,7 @@ export async function PATCH(
     })
     await sql`
       INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-      VALUES (${documentId}, ${user.id}, ${'permission_updated'}, ${detailsJson}::jsonb, NOW())
+      VALUES (${documentId}, ${user.id}, ${'permission_updated'}, ${detailsJson}: jsonb, NOW())
     `
 
     return NextResponse.json({
@@ -127,7 +127,7 @@ export async function DELETE(
     })
     await sql`
       INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-      VALUES (${documentId}, ${user.id}, ${'permission_revoked'}, ${detailsJson}::jsonb, NOW())
+      VALUES (${documentId}, ${user.id}, ${'permission_revoked'}, ${detailsJson}: jsonb, NOW())
     `
 
     return NextResponse.json({

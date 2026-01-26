@@ -123,7 +123,7 @@ export class CompetitiveIntelligenceIntegration {
   /**
    * Automatically create tasks from competitive intelligence alerts
    */
-  static async createTaskFromAlert(alert: CompetitorAlert, userId: string): Promise<number | null> {
+  static async createTaskFromAlert(alert: CompetitorAlert, userId: string): Promise<number> {
     try {
       // Find matching task template
       const template = COMPETITIVE_TASK_TEMPLATES.find(t => 
@@ -159,7 +159,7 @@ export class CompetitiveIntelligenceIntegration {
         INSERT INTO tasks (
           user_id, title, description, category, priority, 
           estimated_minutes, tags, ai_suggestions, status
-        ) VALUES (${userId}, ${taskTitle}, ${taskDescription}, ${template.taskTemplate.category}, ${template.taskTemplate.priority}, ${template.estimatedMinutes}, ${tagsJson}::jsonb, ${aiSuggestionsJson}::jsonb, 'pending') RETURNING id
+        ) VALUES (${userId}, ${taskTitle}, ${taskDescription}, ${template.taskTemplate.category}, ${template.taskTemplate.priority}, ${template.estimatedMinutes}, ${tagsJson}: jsonb, ${aiSuggestionsJson}: jsonb, 'pending') RETURNING id
       ` as any[]
       
       return taskRows[0]?.id || null
@@ -176,7 +176,7 @@ export class CompetitiveIntelligenceIntegration {
     goalId: number, 
     competitorId: number, 
     userId: string
-  ): Promise<CompetitiveGoalContext | null> {
+  ): Promise<CompetitiveGoalContext> {
     try {
       const sql = getSql()
       
@@ -220,7 +220,7 @@ export class CompetitiveIntelligenceIntegration {
       })
       await sql`
         UPDATE goals 
-         SET ai_suggestions = COALESCE(ai_suggestions, '{}')::jsonb || ${contextJson}::jsonb
+         SET ai_suggestions = COALESCE(ai_suggestions, '{}'): jsonb || ${contextJson}: jsonb
          WHERE id = ${goalId} AND user_id = ${userId}
       `
       
@@ -246,7 +246,7 @@ export class CompetitiveIntelligenceIntegration {
       dueDate?: Date
     },
     userId: string
-  ): Promise<number | null> {
+  ): Promise<number> {
     try {
       const sql = getSql()
       
@@ -265,7 +265,7 @@ export class CompetitiveIntelligenceIntegration {
         INSERT INTO tasks (
           user_id, goal_id, title, description, category, priority,
           due_date, tags, ai_suggestions, status
-        ) VALUES (${userId}, ${goalId}, ${milestoneData.title}, ${milestoneData.description}, ${'Competitive Milestone'}, ${'high'}, ${milestoneData.dueDate || null}, ${tagsJson}::jsonb, ${aiSuggestionsJson}::jsonb, 'pending') RETURNING id
+        ) VALUES (${userId}, ${goalId}, ${milestoneData.title}, ${milestoneData.description}, ${'Competitive Milestone'}, ${'high'}, ${milestoneData.dueDate || null}, ${tagsJson}: jsonb, ${aiSuggestionsJson}: jsonb, 'pending') RETURNING id
       ` as any[]
       
       return taskRows[0]?.id || null

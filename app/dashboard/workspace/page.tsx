@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { 
-, 
   Search, 
   Trash2, 
   Download, 
@@ -28,7 +27,7 @@ export default function WorkspacePage() {
   const router = useRouter()
   const { templates, isLoading, deleteTemplate, exportTemplate } = useTemplates()
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
+  const [selectedTemplate, setSelectedTemplate] = useState<string (null)
 
   const filteredTemplates = templates.filter(template =>
     template.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||

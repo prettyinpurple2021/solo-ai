@@ -135,7 +135,7 @@ export async function gateAdvancedFeature(
 export async function enforceFeatureGate(
   request: NextRequest,
   gateCheck: () => Promise<FeatureGateResult>
-): Promise<NextResponse | null> {
+): Promise<NextResponse> {
   const result = await gateCheck()
   
   if (!result.allowed) {
@@ -159,7 +159,7 @@ export async function checkRequestGate(
   request: NextRequest,
   gateType: 'conversation' | 'agent' | 'file' | 'analytics' | 'priority_support' | 'api_access' | 'custom_branding',
   gateParams?: { agentId?: string; fileSize?: number }
-): Promise<NextResponse | null> {
+): Promise<NextResponse> {
   try {
     const userId = await getUserIdFromSession(request)
     

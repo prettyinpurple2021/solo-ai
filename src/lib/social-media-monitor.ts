@@ -452,7 +452,7 @@ export class SocialMediaMonitor {
     platform: typeof this.platforms[number], 
     handle: string, 
     competitorId: string
-  ): Promise<SocialMediaAnalysis | null> {
+  ): Promise<SocialMediaAnalysis> {
     switch (platform) {
       case 'linkedin':
         const linkedinPosts = await this.scrapeLinkedInPosts(handle);

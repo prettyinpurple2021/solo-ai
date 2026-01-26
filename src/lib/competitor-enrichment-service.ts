@@ -573,7 +573,7 @@ export class CompetitorEnrichmentService {
     let overlapScore = 0
     
     // Check for direct industry matches
-    for (const [, keywords] of Object.entries(INDUSTRY_KEYWORDS)) {
+    for (const [ keywords] of Object.entries(INDUSTRY_KEYWORDS)) {
       const competitorMatches = keywords.filter(keyword => 
         competitorKeywords.some(word => word.includes(keyword))
       ).length

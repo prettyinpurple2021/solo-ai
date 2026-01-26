@@ -7,22 +7,11 @@ import { useAuth } from "@/hooks/use-auth"
 import { useToast } from "@/hooks/use-toast"
 import { motion } from "framer-motion"
 import {
-,
   Crown,
   Zap,
-,
-,
-,
   Target,
-,
-,
   Star,
-,
-,
-,
   Settings,
-,
-,
   CheckCircle
 } from "lucide-react"
 import { UIOverlayLines } from '@/components/cyber/UIOverlayLines'
@@ -37,7 +26,7 @@ export default function BillingPage() {
   const { user, loading } = useAuth()
   const { toast } = useToast()
   const [isLoading,] = useState(false)
-  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null)
+  const [subscription, setSubscription] = useState<SubscriptionInfo (null)
 
   useEffect(() => {
     const fetchSubscription = async () => {

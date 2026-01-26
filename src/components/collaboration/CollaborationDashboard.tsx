@@ -75,13 +75,13 @@ const CollaborationDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState('sessions')
   const [searchQuery, setSearchQuery] = useState('')
   const [filterStatus, setFilterStatus] = useState<string>('all')
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
   const [showCreateDialog, setShowCreateDialog] = useState(false)
   const [newGoal, setNewGoal] = useState('')
   const [selectedAgentIds, setSelectedAgentIds] = useState<string[]>([])
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [confirmAction, setConfirmAction] = useState<'pause' | 'resume' | 'complete'>('pause')
-  const [confirmSessionId, setConfirmSessionId] = useState<string | null>(null)
+  const [confirmSessionId, setConfirmSessionId] = useState<string (null)
 
   // Helpers
   const computeStats = (sess: CollaborationSession[], ags: Agent[]) => {

@@ -74,7 +74,7 @@ const redis = new Redis({
 const sentryRequestMiddleware =
   (Sentry as any).Handlers?.requestHandler?.() ??
   (Sentry as any).requestHandler?.() ??
-  ((req: express.Request,: express.Response, next: express.NextFunction) => next());
+  ((req: express.Request, res: express.Response, next: express.NextFunction) => next());
 app.use(sentryRequestMiddleware);
 
 app.use(cors({
@@ -115,7 +115,7 @@ const getUserId = (req: express.Request): string | null => {
 // Cache helper functions
 const CACHE_TTL = 300; // 5 minutes
 
-async function getCached<T>(key: string): Promise<T | null> {
+async function getCached<T>(key: string): Promise<T> {
     try {
         const cached = await redis.get(key);
         return cached as T | null;
@@ -734,7 +734,7 @@ if (process.env.NODE_ENV === 'production') {
 const sentryErrorMiddleware =
   (Sentry as any).Handlers?.errorHandler?.() ??
   (Sentry as any).errorHandler?.() ??
-  ((err: unknown,: express.Request,: express.Response, next: express.NextFunction) => next(err));
+  ((err: unknown,: express.Request, res: express.Response, next: express.NextFunction) => next(err));
 app.use(sentryErrorMiddleware);
 
 // Express error handler

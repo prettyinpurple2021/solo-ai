@@ -990,12 +990,12 @@ export class SocialMediaAnalysisEngine {
     };
   }
 
-  private generateCampaignInsights(campaigns: DetectedCampaign[],: CampaignPerformanceMetrics): string[] {
+  private generateCampaignInsights(campaigns: DetectedCampaign[], arg_CampaignPerformanceMetrics: CampaignPerformanceMetrics): string[] {
     // Implementation for campaign insights generation
     return [];
   }
 
-  private generateCampaignRecommendations(campaigns: DetectedCampaign[],: CampaignPerformanceMetrics): string[] {
+  private generateCampaignRecommendations(campaigns: DetectedCampaign[], arg_CampaignPerformanceMetrics: CampaignPerformanceMetrics): string[] {
     // Implementation for campaign recommendations generation
     return [];
   }

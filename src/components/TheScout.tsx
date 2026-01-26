@@ -14,21 +14,21 @@ import { storageService } from '../services/storageService';
 export const TheScout: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'recruit' | 'vet' | 'delegate'>('recruit');
     const [loading, setLoading] = useState(false);
-    const [, setCopied] = useState(false);
+    const [ setCopied] = useState(false);
 
     // Recruit State
     const [roleTitle, setRoleTitle] = useState('');
     const [employmentType, setEmploymentType] = useState('Freelance');
-    const [jd, setJd] = useState<JobDescription | null>(null);
+    const [jd, setJd] = useState<JobDescription (null);
 
     // Vet State
     const [vetRole, setVetRole] = useState('');
     const [vetFocus, setVetFocus] = useState('');
-    const [guide, setGuide] = useState<InterviewGuide | null>(null);
+    const [guide, setGuide] = useState<InterviewGuide (null);
 
     // Delegate State
     const [taskName, setTaskName] = useState('');
-    const [sop, setSop] = useState<SOP | null>(null);
+    const [sop, setSop] = useState<SOP (null);
 
     const handleRecruit = async () => {
         if (!roleTitle.trim()) return;

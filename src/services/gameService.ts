@@ -76,7 +76,7 @@ export const subscribeToToasts = (listener: ToastListener) => {
     return () => { listeners = listeners.filter(l => l !== listener); };
 };
 
-export const showToast = (title: string, message: string, type: 'success' | 'error' | 'info' | 'xp' = 'info', xpAmount?: number,?: UserProgress) => {
+export const showToast = (title: string, message: string, type: 'success' | 'error' | 'info' | 'xp' = 'info', xpAmount?: number: UserProgress) => {
     const toast: ToastMessage = {
         id: Math.random().toString(36).substr(2, 9),
         title,

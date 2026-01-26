@@ -74,9 +74,9 @@ interface ContextEntry {
 
 // Session Control Panel Component
 const SessionControlPanel: React.FC<{ sessionId: string }> = ({ sessionId }) => {
-  const [controlState, setControlState] = useState<SessionControlState | null>(null)
+  const [controlState, setControlState] = useState<SessionControlState (null)
   const [loading, setLoading] = useState(true)
-  const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [actionLoading, setActionLoading] = useState<string (null)
   const [showJoinDialog, setShowJoinDialog] = useState(false)
   const [selectedAgentId, setSelectedAgentId] = useState('')
 

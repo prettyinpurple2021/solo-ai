@@ -36,7 +36,7 @@ router.post('/verify-pin', async (req, res) => {
 router.use(requireAdmin as any);
 
 // Analytics Dashboard
-router.get('/analytics', async (, res) => {
+router.get('/analytics', async ( res) => {
     try {
         const [userCount] = await db.select({ count: count() }).from(users);
         const [subCount] = await db.select({ count: count() }).from(subscriptions);
@@ -142,7 +142,7 @@ router.post('/users/:userId/suspend', async (req, res) => {
 });
 
 // System Health
-router.get('/system-health', async (, res) => {
+router.get('/system-health', async ( res) => {
     try {
         // Check DB connection
         const dbStart = Date.now();

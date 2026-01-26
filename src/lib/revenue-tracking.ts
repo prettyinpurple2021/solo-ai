@@ -255,7 +255,7 @@ export class RevenueTrackingService {
   /**
     * PayPal-specific revenue calculation (Placeholder for real API)
     */
-  private static async calculatePayPalRevenue(connection: PaymentConnection,: Date,: Date): Promise<number> {
+  private static async calculatePayPalRevenue(connection: PaymentConnection, arg_Date: Date, arg_Date: Date): Promise<number> {
     // Future: PayPal Orders/Transactions API integration
     logWarn('PayPal Revenue calculation deferred to V2', { connectionId: connection.id })
     return 0

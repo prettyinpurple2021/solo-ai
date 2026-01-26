@@ -116,13 +116,13 @@ const AI_AGENTS: Agent[] = [
 ]
 
 export default function AgentsPage() {
-  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
+  const [selectedAgent, setSelectedAgent] = useState<Agent (null)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [_conversations, setConversations] = useState<unknown[]>([])
   const [showSaveDialog, setShowSaveDialog] = useState(false)
-  const [selectedMessageToSave, setSelectedMessageToSave] = useState<Message | null>(null)
+  const [selectedMessageToSave, setSelectedMessageToSave] = useState<Message (null)
   const [saveForm, setSaveForm] = useState({
     fileName: "",
     description: "",

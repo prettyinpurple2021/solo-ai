@@ -21,7 +21,7 @@ const STYLES = [
 export const TheStudio: React.FC = () => {
     const [prompt, setPrompt] = useState('');
     const [selectedStyle, setSelectedStyle] = useState(STYLES[0]);
-    const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+    const [generatedImage, setGeneratedImage] = useState<string (null);
     const [loading, setLoading] = useState(false);
 
     const saveToVault = (imageBase64: string) => {

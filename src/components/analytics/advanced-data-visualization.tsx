@@ -144,7 +144,7 @@ export function AdvancedDataVisualization({
   className = "" 
 }: AdvancedDataVisualizationProps) {
   const [visualizations, setVisualizations] = useState<VisualizationData[]>(data)
-  const [selectedViz, setSelectedViz] = useState<VisualizationData | null>(null)
+  const [selectedViz, setSelectedViz] = useState<VisualizationData (null)
   const [isCreating, setIsCreating] = useState(false)
   const [isAnimating, setIsAnimating] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)

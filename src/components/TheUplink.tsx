@@ -17,11 +17,11 @@ export const TheUplink: React.FC = () => {
     const [volume, setVolume] = useState(0); // For visualizer
 
     // Audio Context Refs
-    const inputContextRef = useRef<AudioContext | null>(null);
-    const outputContextRef = useRef<AudioContext | null>(null);
-    const inputSourceRef = useRef<MediaStreamAudioSourceNode | null>(null);
-    const processorRef = useRef<ScriptProcessorNode | null>(null);
-    const streamRef = useRef<MediaStream | null>(null);
+    const inputContextRef = useRef<AudioContext (null);
+    const outputContextRef = useRef<AudioContext (null);
+    const inputSourceRef = useRef<MediaStreamAudioSourceNode (null);
+    const processorRef = useRef<ScriptProcessorNode (null);
+    const streamRef = useRef<MediaStream (null);
     const nextStartTimeRef = useRef<number>(0);
     const sessionRef = useRef<any>(null); // Holds the active Gemini session
 
@@ -32,7 +32,7 @@ export const TheUplink: React.FC = () => {
         };
     }, []);
 
-    const analyserRef = useRef<AnalyserNode | null>(null);
+    const analyserRef = useRef<AnalyserNode (null);
 
     // Visualizer Loop
     useEffect(() => {

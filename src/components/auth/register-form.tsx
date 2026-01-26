@@ -15,10 +15,10 @@ import Link from 'next/link';
 
 export function RegisterForm() {
   const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string (null);
   const [isPending, setIsPending] = useState(false);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [, setAgeError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string (null);
+  const [ setAgeError] = useState<string (null);
 
   async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

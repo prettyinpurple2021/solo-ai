@@ -1,0 +1,388 @@
+﻿
+> solosuccess-ai@0.0.0 type-check
+> tsc --noEmit
+
+app/api/briefcase/files/[id]/permissions/route.ts(12,31): error TS1138: Parameter declaration expected.
+app/api/briefcase/files/[id]/share-links/route.ts(15,31): error TS1138: Parameter declaration expected.
+app/api/briefcase/files/[id]/versions/route.ts(12,31): error TS1138: Parameter declaration expected.
+app/api/briefcase/search/route.ts(316,40): error TS1138: Parameter declaration expected.
+app/api/collaboration/sessions/[id]/messages/[messageId]/route.ts(7,42): error TS1138: Parameter declaration expected.
+app/api/collaboration/sessions/[id]/messages/[messageId]/route.ts(57,42): error TS1138: Parameter declaration expected.
+app/api/competitors/social-media/benchmarks/route.ts(522,65): error TS1003: Identifier expected.
+app/api/templates/analytics/route.ts(263,48): error TS1138: Parameter declaration expected.
+app/api/templates/analytics/route.ts(272,41): error TS1138: Parameter declaration expected.
+app/dashboard/agents/page.tsx(6,1): error TS1128: Declaration or statement expected.
+app/dashboard/agents/page.tsx(6,7): error TS1128: Declaration or statement expected.
+app/dashboard/agents/page.tsx(6,33): error TS1434: Unexpected keyword or identifier.
+app/dashboard/analytics/page.tsx(5,1): error TS1128: Declaration or statement expected.
+app/dashboard/analytics/page.tsx(5,7): error TS1128: Declaration or statement expected.
+app/dashboard/analytics/page.tsx(5,46): error TS1434: Unexpected keyword or identifier.
+app/dashboard/billing/page.tsx(10,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(13,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(14,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(15,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(17,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(18,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(20,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(21,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(22,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(24,1): error TS1003: Identifier expected.
+app/dashboard/billing/page.tsx(25,1): error TS1003: Identifier expected.
+app/dashboard/brand/page.tsx(6,1): error TS1128: Declaration or statement expected.
+app/dashboard/brand/page.tsx(6,7): error TS1128: Declaration or statement expected.
+app/dashboard/brand/page.tsx(6,33): error TS1434: Unexpected keyword or identifier.
+app/dashboard/collaboration/sessions/[id]/page.tsx(4,1): error TS1128: Declaration or statement expected.
+app/dashboard/collaboration/sessions/[id]/page.tsx(4,7): error TS1128: Declaration or statement expected.
+app/dashboard/collaboration/sessions/[id]/page.tsx(4,33): error TS1434: Unexpected keyword or identifier.
+app/dashboard/competitors/intelligence/page.tsx(3,1): error TS1128: Declaration or statement expected.
+app/dashboard/competitors/intelligence/page.tsx(3,7): error TS1128: Declaration or statement expected.
+app/dashboard/competitors/intelligence/page.tsx(3,46): error TS1434: Unexpected keyword or identifier.
+app/dashboard/competitors/intelligence/page.tsx(19,1): error TS1003: Identifier expected.
+app/dashboard/competitors/intelligence/page.tsx(24,1): error TS1003: Identifier expected.
+app/dashboard/competitors/intelligence/page.tsx(28,1): error TS1003: Identifier expected.
+app/dashboard/competitors/page.tsx(6,1): error TS1128: Declaration or statement expected.
+app/dashboard/competitors/page.tsx(6,7): error TS1128: Declaration or statement expected.
+app/dashboard/competitors/page.tsx(6,33): error TS1434: Unexpected keyword or identifier.
+app/dashboard/learning/page.tsx(4,1): error TS1128: Declaration or statement expected.
+app/dashboard/learning/page.tsx(4,7): error TS1128: Declaration or statement expected.
+app/dashboard/learning/page.tsx(4,46): error TS1434: Unexpected keyword or identifier.
+app/dashboard/learning/page.tsx(22,1): error TS1003: Identifier expected.
+app/dashboard/learning/page.tsx(28,1): error TS1003: Identifier expected.
+app/dashboard/learning/page.tsx(30,1): error TS1003: Identifier expected.
+app/dashboard/learning/page.tsx(32,1): error TS1003: Identifier expected.
+app/dashboard/page.tsx(309,16): error TS1003: Identifier expected.
+app/dashboard/settings/page.tsx(15,1): error TS1003: Identifier expected.
+app/dashboard/settings/page.tsx(20,1): error TS1003: Identifier expected.
+app/dashboard/settings/page.tsx(23,1): error TS1003: Identifier expected.
+app/dashboard/settings/page.tsx(26,1): error TS1003: Identifier expected.
+app/dashboard/slaylist/page.tsx(18,1): error TS1003: Identifier expected.
+app/dashboard/slaylist/page.tsx(23,1): error TS1003: Identifier expected.
+app/dashboard/templates/page.tsx(5,1): error TS1128: Declaration or statement expected.
+app/dashboard/templates/page.tsx(5,7): error TS1128: Declaration or statement expected.
+app/dashboard/templates/page.tsx(5,33): error TS1434: Unexpected keyword or identifier.
+app/dashboard/workspace/page.tsx(12,1): error TS1003: Identifier expected.
+app/features/page.tsx(11,1): error TS1003: Identifier expected.
+app/features/page.tsx(12,1): error TS1003: Identifier expected.
+app/features/page.tsx(13,1): error TS1003: Identifier expected.
+app/features/page.tsx(14,1): error TS1003: Identifier expected.
+app/features/page.tsx(15,1): error TS1003: Identifier expected.
+app/features/page.tsx(16,1): error TS1003: Identifier expected.
+app/features/page.tsx(17,1): error TS1003: Identifier expected.
+app/features/page.tsx(18,1): error TS1003: Identifier expected.
+app/features/page.tsx(19,1): error TS1003: Identifier expected.
+app/features/page.tsx(20,1): error TS1003: Identifier expected.
+app/layout.tsx(3,18): error TS1003: Identifier expected.
+app/page.tsx(3,1): error TS1128: Declaration or statement expected.
+app/page.tsx(3,7): error TS1128: Declaration or statement expected.
+app/page.tsx(3,33): error TS1434: Unexpected keyword or identifier.
+app/pricing/accelerator/page.tsx(8,1): error TS1003: Identifier expected.
+app/pricing/accelerator/page.tsx(11,1): error TS1003: Identifier expected.
+app/pricing/accelerator/page.tsx(12,1): error TS1003: Identifier expected.
+app/pricing/accelerator/page.tsx(16,1): error TS1003: Identifier expected.
+app/pricing/accelerator/page.tsx(17,1): error TS1003: Identifier expected.
+app/pricing/accelerator/page.tsx(18,1): error TS1003: Identifier expected.
+app/pricing/accelerator/page.tsx(19,1): error TS1003: Identifier expected.
+app/pricing/dominator/page.tsx(15,1): error TS1003: Identifier expected.
+app/pricing/dominator/page.tsx(16,1): error TS1003: Identifier expected.
+app/pricing/launch/page.tsx(8,1): error TS1003: Identifier expected.
+app/pricing/launch/page.tsx(10,1): error TS1003: Identifier expected.
+app/pricing/launch/page.tsx(16,1): error TS1003: Identifier expected.
+app/pricing/launch/page.tsx(17,1): error TS1003: Identifier expected.
+app/pricing/launch/page.tsx(18,1): error TS1003: Identifier expected.
+app/pricing/launch/page.tsx(19,1): error TS1003: Identifier expected.
+app/pricing/launch/page.tsx(21,1): error TS1003: Identifier expected.
+app/pricing/launch/page.tsx(31,1): error TS1003: Identifier expected.
+app/pricing/launch/page.tsx(32,1): error TS1003: Identifier expected.
+app/workflows/page.tsx(13,1): error TS1003: Identifier expected.
+server/index.ts(77,26): error TS1138: Parameter declaration expected.
+server/index.ts(77,35): error TS1005: ',' expected.
+server/index.ts(737,18): error TS1138: Parameter declaration expected.
+server/index.ts(737,27): error TS1005: ',' expected.
+server/index.ts(737,36): error TS1138: Parameter declaration expected.
+server/index.ts(737,45): error TS1005: ',' expected.
+server/index.ts(741,66): error TS1138: Parameter declaration expected.
+server/index.ts(741,75): error TS1005: ',' expected.
+server/middleware/auth.ts(33,47): error TS1138: Parameter declaration expected.
+server/routes/admin.ts(39,33): error TS1135: Argument expression expected.
+server/routes/admin.ts(39,40): error TS1005: ',' expected.
+server/routes/admin.ts(40,9): error TS1005: ':' expected.
+server/routes/admin.ts(41,15): error TS1005: ':' expected.
+server/routes/admin.ts(41,76): error TS1005: ',' expected.
+server/routes/admin.ts(42,15): error TS1005: ':' expected.
+server/routes/admin.ts(42,83): error TS1005: ',' expected.
+server/routes/admin.ts(45,15): error TS1005: ':' expected.
+server/routes/admin.ts(45,107): error TS1005: ',' expected.
+server/routes/admin.ts(46,13): error TS1005: ',' expected.
+server/routes/admin.ts(46,20): error TS1005: ',' expected.
+server/routes/admin.ts(47,19): error TS1005: ',' expected.
+server/routes/admin.ts(51,11): error TS1005: ',' expected.
+server/routes/admin.ts(53,12): error TS1005: ',' expected.
+server/routes/admin.ts(58,11): error TS1005: ',' expected.
+server/routes/admin.ts(59,7): error TS1005: ',' expected.
+server/routes/admin.ts(145,37): error TS1135: Argument expression expected.
+server/routes/admin.ts(145,44): error TS1005: ',' expected.
+server/routes/admin.ts(146,9): error TS1005: ':' expected.
+server/routes/admin.ts(148,15): error TS1005: ':' expected.
+server/routes/admin.ts(148,35): error TS1005: ',' expected.
+server/routes/admin.ts(149,15): error TS1005: ',' expected.
+server/routes/admin.ts(149,17): error TS1005: ',' expected.
+server/routes/admin.ts(149,40): error TS1005: ',' expected.
+server/routes/admin.ts(150,15): error TS1005: ':' expected.
+server/routes/admin.ts(150,47): error TS1005: ',' expected.
+server/routes/admin.ts(152,12): error TS1005: ',' expected.
+server/routes/admin.ts(162,11): error TS1005: ',' expected.
+server/routes/admin.ts(163,7): error TS1005: ',' expected.
+src/components/admin/SubscriptionMetrics.tsx(1,1): error TS1128: Declaration or statement expected.
+src/components/admin/SubscriptionMetrics.tsx(1,7): error TS1128: Declaration or statement expected.
+src/components/admin/SubscriptionMetrics.tsx(1,33): error TS1434: Unexpected keyword or identifier.
+src/components/admin/SystemHealth.tsx(1,1): error TS1128: Declaration or statement expected.
+src/components/admin/SystemHealth.tsx(1,7): error TS1128: Declaration or statement expected.
+src/components/admin/SystemHealth.tsx(1,33): error TS1434: Unexpected keyword or identifier.
+src/components/admin/UserTable.tsx(1,1): error TS1128: Declaration or statement expected.
+src/components/admin/UserTable.tsx(1,7): error TS1128: Declaration or statement expected.
+src/components/admin/UserTable.tsx(1,33): error TS1434: Unexpected keyword or identifier.
+src/components/ai/task-intelligence-panel.tsx(15,1): error TS1003: Identifier expected.
+src/components/ai/task-intelligence-panel.tsx(19,1): error TS1003: Identifier expected.
+src/components/analytics/custom-report-builder.tsx(21,1): error TS1003: Identifier expected.
+src/components/analytics/custom-report-builder.tsx(33,1): error TS1003: Identifier expected.
+src/components/analytics/custom-report-builder.tsx(34,1): error TS1003: Identifier expected.
+src/components/analytics/custom-report-builder.tsx(36,1): error TS1003: Identifier expected.
+src/components/analytics/custom-report-builder.tsx(37,1): error TS1003: Identifier expected.
+src/components/analytics/custom-report-builder.tsx(38,1): error TS1003: Identifier expected.
+src/components/analytics/custom-report-builder.tsx(39,1): error TS1003: Identifier expected.
+src/components/analytics/predictive-insights-dashboard.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/analytics/predictive-insights-dashboard.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/analytics/predictive-insights-dashboard.tsx(3,33): error TS1434: Unexpected keyword or identifier.
+src/components/analytics/predictive-insights-dashboard.tsx(18,1): error TS1003: Identifier expected.
+src/components/analytics/predictive-insights-dashboard.tsx(22,1): error TS1003: Identifier expected.
+src/components/analytics/predictive-insights-dashboard.tsx(26,1): error TS1003: Identifier expected.
+src/components/analytics/predictive-insights-dashboard.tsx(30,1): error TS1003: Identifier expected.
+src/components/analytics/predictive-insights-dashboard.tsx(31,1): error TS1003: Identifier expected.
+src/components/Billing.tsx(1,1): error TS1128: Declaration or statement expected.
+src/components/Billing.tsx(1,7): error TS1128: Declaration or statement expected.
+src/components/Billing.tsx(1,33): error TS1434: Unexpected keyword or identifier.
+src/components/briefcase/ai-insights-panel.tsx(4,1): error TS1128: Declaration or statement expected.
+src/components/briefcase/ai-insights-panel.tsx(4,7): error TS1128: Declaration or statement expected.
+src/components/briefcase/ai-insights-panel.tsx(4,46): error TS1434: Unexpected keyword or identifier.
+src/components/briefcase/bulk-operations-panel.tsx(4,1): error TS1128: Declaration or statement expected.
+src/components/briefcase/bulk-operations-panel.tsx(4,7): error TS1128: Declaration or statement expected.
+src/components/briefcase/bulk-operations-panel.tsx(4,22): error TS1434: Unexpected keyword or identifier.
+src/components/briefcase/document-versioning-modal.tsx(4,1): error TS1128: Declaration or statement expected.
+src/components/briefcase/document-versioning-modal.tsx(4,7): error TS1128: Declaration or statement expected.
+src/components/briefcase/document-versioning-modal.tsx(4,46): error TS1434: Unexpected keyword or identifier.
+src/components/briefcase/enhanced-dashboard.tsx(4,1): error TS1128: Declaration or statement expected.
+src/components/briefcase/enhanced-dashboard.tsx(4,7): error TS1128: Declaration or statement expected.
+src/components/briefcase/enhanced-dashboard.tsx(4,46): error TS1434: Unexpected keyword or identifier.
+src/components/briefcase/enhanced-dashboard.tsx(17,1): error TS1003: Identifier expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(4,1): error TS1128: Declaration or statement expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(4,7): error TS1128: Declaration or statement expected.
+src/components/briefcase/enhanced-file-preview-modal.tsx(4,46): error TS1434: Unexpected keyword or identifier.
+src/components/briefcase/version-history-modal.tsx(4,1): error TS1128: Declaration or statement expected.
+src/components/briefcase/version-history-modal.tsx(4,7): error TS1128: Declaration or statement expected.
+src/components/briefcase/version-history-modal.tsx(4,46): error TS1434: Unexpected keyword or identifier.
+src/components/chat/floating-chat-button.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/chat/floating-chat-button.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/chat/floating-chat-button.tsx(3,33): error TS1434: Unexpected keyword or identifier.
+src/components/collaboration/AgentInterface.tsx(16,1): error TS1003: Identifier expected.
+src/components/collaboration/AgentInterface.tsx(22,1): error TS1003: Identifier expected.
+src/components/collaboration/AgentInterface.tsx(23,1): error TS1003: Identifier expected.
+src/components/collaboration/AgentInterface.tsx(24,1): error TS1003: Identifier expected.
+src/components/collaboration/AgentInterface.tsx(25,1): error TS1003: Identifier expected.
+src/components/collaboration/AgentInterface.tsx(26,1): error TS1003: Identifier expected.
+src/components/collaboration/AgentInterface.tsx(27,1): error TS1003: Identifier expected.
+src/components/collaboration/AgentInterface.tsx(30,1): error TS1003: Identifier expected.
+src/components/cyber/InlineSSLogo.tsx(14,53): error TS1180: Property destructuring pattern expected.
+src/components/cyber/InlineSSLogo.tsx(14,61): error TS1005: ':' expected.
+src/components/dashboard/market-positioning-map.tsx(6,72): error TS1128: Declaration or statement expected.
+src/components/dashboard/market-positioning-map.tsx(6,74): error TS1434: Unexpected keyword or identifier.
+src/components/dashboard/market-positioning-map.tsx(12,68): error TS1109: Expression expected.
+src/components/dashboard/market-positioning-map.tsx(12,70): error TS1434: Unexpected keyword or identifier.
+src/components/dashboard/market-positioning-map.tsx(14,63): error TS1109: Expression expected.
+src/components/dashboard/market-positioning-map.tsx(14,65): error TS1434: Unexpected keyword or identifier.
+src/components/faq/faq-section.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/faq/faq-section.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/faq/faq-section.tsx(3,21): error TS1434: Unexpected keyword or identifier.
+src/components/integrations/revenue-integration.tsx(31,1): error TS1109: Expression expected.
+src/components/integrations/revenue-integration.tsx(31,3): error TS1434: Unexpected keyword or identifier.
+src/components/integrations/social-media-integration.tsx(32,1): error TS1003: Identifier expected.
+src/components/intelligence/intelligence-results.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/intelligence/intelligence-results.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/intelligence/intelligence-results.tsx(3,22): error TS1434: Unexpected keyword or identifier.
+src/components/intelligence/intelligence-search.tsx(4,1): error TS1128: Declaration or statement expected.
+src/components/intelligence/intelligence-search.tsx(4,7): error TS1128: Declaration or statement expected.
+src/components/intelligence/intelligence-search.tsx(4,55): error TS1434: Unexpected keyword or identifier.
+src/components/marketing/PricingPage.tsx(1,1): error TS1128: Declaration or statement expected.
+src/components/marketing/PricingPage.tsx(1,7): error TS1128: Declaration or statement expected.
+src/components/marketing/PricingPage.tsx(1,22): error TS1434: Unexpected keyword or identifier.
+src/components/mobile/mobile-dashboard-enhanced.tsx(2,1): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-dashboard-enhanced.tsx(2,7): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-dashboard-enhanced.tsx(2,20): error TS1109: Expression expected.
+src/components/mobile/mobile-dashboard-enhanced.tsx(2,22): error TS1434: Unexpected keyword or identifier.
+src/components/mobile/mobile-dashboard-enhanced.tsx(22,1): error TS1003: Identifier expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(3,41): error TS1434: Unexpected keyword or identifier.
+src/components/mobile/mobile-dashboard-widgets.tsx(14,1): error TS1003: Identifier expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(15,1): error TS1003: Identifier expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(17,1): error TS1003: Identifier expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(20,1): error TS1003: Identifier expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(49,1): error TS1180: Property destructuring pattern expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(155,45): error TS1138: Parameter declaration expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(155,53): error TS1005: '=>' expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(155,55): error TS1005: '}' expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(155,56): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/mobile/mobile-dashboard-widgets.tsx(182,13): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/mobile/mobile-dashboard-widgets.tsx(217,45): error TS1138: Parameter declaration expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(217,53): error TS1005: '=>' expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(217,55): error TS1005: '}' expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(217,56): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/mobile/mobile-dashboard-widgets.tsx(242,13): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/mobile/mobile-dashboard-widgets.tsx(262,37): error TS1138: Parameter declaration expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(262,45): error TS1005: '=>' expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(262,47): error TS1005: '}' expected.
+src/components/mobile/mobile-dashboard-widgets.tsx(262,48): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?
+src/components/mobile/mobile-dashboard-widgets.tsx(284,15): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+src/components/mobile/mobile-dashboard.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-dashboard.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/mobile/mobile-dashboard.tsx(3,42): error TS1434: Unexpected keyword or identifier.
+src/components/mobile/mobile-dashboard.tsx(92,69): error TS1003: Identifier expected.
+src/components/mobile/mobile-gestures.tsx(38,1): error TS1180: Property destructuring pattern expected.
+src/components/mobile/mobile-gestures.tsx(39,1): error TS1180: Property destructuring pattern expected.
+src/components/mobile/mobile-gestures.tsx(40,1): error TS1180: Property destructuring pattern expected.
+src/components/mobile/mobile-navigation.tsx(22,1): error TS1003: Identifier expected.
+src/components/mobile/offline-data-manager.tsx(14,1): error TS1003: Identifier expected.
+src/components/mobile/offline-data-manager.tsx(17,1): error TS1003: Identifier expected.
+src/components/mobile/offline-data-manager.tsx(18,1): error TS1003: Identifier expected.
+src/components/mobile/offline-data-manager.tsx(19,1): error TS1003: Identifier expected.
+src/components/mobile/pwa-install-prompt.tsx(2,1): error TS1128: Declaration or statement expected.
+src/components/mobile/pwa-install-prompt.tsx(2,7): error TS1128: Declaration or statement expected.
+src/components/mobile/pwa-install-prompt.tsx(2,33): error TS1434: Unexpected keyword or identifier.
+src/components/mobile/voice-task-creator.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/mobile/voice-task-creator.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/mobile/voice-task-creator.tsx(3,41): error TS1434: Unexpected keyword or identifier.
+src/components/mobile/voice-task-creator.tsx(12,1): error TS1003: Identifier expected.
+src/components/mobile/voice-task-creator.tsx(14,1): error TS1003: Identifier expected.
+src/components/mobile/voice-task-creator.tsx(15,1): error TS1003: Identifier expected.
+src/components/mobile/voice-task-creator.tsx(16,1): error TS1003: Identifier expected.
+src/components/mobile/voice-task-creator.tsx(17,1): error TS1003: Identifier expected.
+src/components/mobile/voice-task-creator.tsx(18,1): error TS1003: Identifier expected.
+src/components/mobile/voice-task-creator.tsx(22,1): error TS1003: Identifier expected.
+src/components/mobile/voice-task-creator.tsx(23,1): error TS1003: Identifier expected.
+src/components/notifications/notification-settings.tsx(4,1): error TS1128: Declaration or statement expected.
+src/components/notifications/notification-settings.tsx(4,7): error TS1128: Declaration or statement expected.
+src/components/notifications/notification-settings.tsx(4,33): error TS1434: Unexpected keyword or identifier.
+src/components/notifications/notification-settings.tsx(20,1): error TS1003: Identifier expected.
+src/components/onboarding/feature-discovery.tsx(10,1): error TS1003: Identifier expected.
+src/components/Sidebar.tsx(182,80): error TS1138: Parameter declaration expected.
+src/components/tasks/gesture-task-card.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/tasks/gesture-task-card.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/tasks/gesture-task-card.tsx(3,41): error TS1434: Unexpected keyword or identifier.
+src/components/tasks/gesture-task-card.tsx(14,1): error TS1003: Identifier expected.
+src/components/ui/accessibility.tsx(13,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/workflow/workflow-execution-monitor.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/workflow/workflow-execution-monitor.tsx(3,54): error TS1434: Unexpected keyword or identifier.
+src/components/workflow/workflow-execution-monitor.tsx(12,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(20,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(22,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(23,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(25,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(27,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(28,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(29,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(30,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(31,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(32,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(33,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(34,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(35,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(39,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(40,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(41,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-execution-monitor.tsx(113,1): error TS1180: Property destructuring pattern expected.
+src/components/workflow/workflow-templates.tsx(3,1): error TS1128: Declaration or statement expected.
+src/components/workflow/workflow-templates.tsx(3,7): error TS1128: Declaration or statement expected.
+src/components/workflow/workflow-templates.tsx(3,46): error TS1434: Unexpected keyword or identifier.
+src/components/workflow/workflow-templates.tsx(18,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-templates.tsx(19,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-templates.tsx(20,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-templates.tsx(23,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-templates.tsx(24,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-templates.tsx(28,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-templates.tsx(32,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-templates.tsx(33,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-templates.tsx(37,1): error TS1003: Identifier expected.
+src/components/workflow/workflow-templates.tsx(39,1): error TS1003: Identifier expected.
+src/hooks/use-auth.tsx(3,31): error TS1003: Identifier expected.
+src/hooks/use-auth.tsx(3,44): error TS1003: Identifier expected.
+src/hooks/use-projects.ts(4,1): error TS1128: Declaration or statement expected.
+src/hooks/use-projects.ts(4,7): error TS1128: Declaration or statement expected.
+src/hooks/use-projects.ts(4,46): error TS1434: Unexpected keyword or identifier.
+src/hooks/use-subscription.ts(3,1): error TS1128: Declaration or statement expected.
+src/hooks/use-subscription.ts(3,7): error TS1128: Declaration or statement expected.
+src/hooks/use-subscription.ts(3,33): error TS1434: Unexpected keyword or identifier.
+src/lib/auth-utils.ts(55,50): error TS1138: Parameter declaration expected.
+src/lib/competitive-decision-frameworks.ts(272,68): error TS1138: Parameter declaration expected.
+src/lib/competitive-decision-frameworks.ts(280,63): error TS1138: Parameter declaration expected.
+src/lib/competitive-decision-frameworks.ts(321,61): error TS1138: Parameter declaration expected.
+src/lib/competitive-decision-frameworks.ts(332,60): error TS1138: Parameter declaration expected.
+src/lib/competitive-decision-frameworks.ts(336,67): error TS1138: Parameter declaration expected.
+src/lib/competitive-decision-frameworks.ts(344,66): error TS1138: Parameter declaration expected.
+src/lib/competitive-decision-frameworks.ts(378,58): error TS1138: Parameter declaration expected.
+src/lib/competitive-intelligence-context.ts(91,53): error TS1003: Identifier expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(10,49): error TS1138: Parameter declaration expected.
+src/lib/competitive-intelligence-gamification-triggers.ts(58,55): error TS1138: Parameter declaration expected.
+src/lib/competitive-opportunity-detection.ts(433,61): error TS1138: Parameter declaration expected.
+src/lib/competitive-opportunity-detection.ts(473,47): error TS1138: Parameter declaration expected.
+src/lib/competitive-opportunity-detection.ts(473,52): error TS1005: ',' expected.
+src/lib/competitor-alert-system.ts(354,75): error TS1138: Parameter declaration expected.
+src/lib/competitor-alert-system.ts(384,52): error TS1138: Parameter declaration expected.
+src/lib/competitor-alert-system.ts(384,58): error TS1138: Parameter declaration expected.
+src/lib/competitor-alert-system.ts(458,59): error TS1138: Parameter declaration expected.
+src/lib/competitor-alert-system.ts(458,65): error TS1138: Parameter declaration expected.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(117,49): error TS1003: Identifier expected.
+src/lib/database-scraping-scheduler.ts(362,81): error TS1003: Identifier expected.
+src/lib/documentParser.ts(290,53): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(12,1): error TS1128: Declaration or statement expected.
+src/lib/nova-product-intelligence.ts(12,3): error TS1434: Unexpected keyword or identifier.
+src/lib/nova-product-intelligence.ts(310,61): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(314,62): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(318,65): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(322,61): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(322,66): error TS1005: ',' expected.
+src/lib/nova-product-intelligence.ts(322,69): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(322,74): error TS1005: ',' expected.
+src/lib/nova-product-intelligence.ts(322,77): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(322,82): error TS1005: ',' expected.
+src/lib/nova-product-intelligence.ts(336,63): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(336,72): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(336,78): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(340,55): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(340,60): error TS1005: ',' expected.
+src/lib/nova-product-intelligence.ts(348,53): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(348,58): error TS1005: ',' expected.
+src/lib/nova-product-intelligence.ts(356,53): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(364,56): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(364,61): error TS1005: ',' expected.
+src/lib/nova-product-intelligence.ts(376,60): error TS1138: Parameter declaration expected.
+src/lib/nova-product-intelligence.ts(380,62): error TS1138: Parameter declaration expected.
+src/lib/revenue-tracking.ts(258,77): error TS1138: Parameter declaration expected.
+src/lib/revenue-tracking.ts(258,84): error TS1138: Parameter declaration expected.
+src/lib/server-polyfills.ts(63,39): error TS1003: Identifier expected.
+src/lib/server-polyfills.ts(75,36): error TS1003: Identifier expected.
+src/lib/session-manager.ts(638,49): error TS1138: Parameter declaration expected.
+src/lib/session-manager.ts(646,44): error TS1138: Parameter declaration expected.
+src/lib/session-manager.ts(646,53): error TS1138: Parameter declaration expected.
+src/lib/session-manager.ts(646,55): error TS1003: Identifier expected.
+src/lib/session-manager.ts(646,67): error TS1003: Identifier expected.
+src/lib/session-manager.ts(646,69): error TS1003: Identifier expected.
+src/lib/social-media-analysis-engine.ts(644,62): error TS1138: Parameter declaration expected.
+src/lib/social-media-analysis-engine.ts(952,57): error TS1138: Parameter declaration expected.
+src/lib/social-media-analysis-engine.ts(952,62): error TS1005: ',' expected.
+src/lib/social-media-analysis-engine.ts(993,66): error TS1138: Parameter declaration expected.
+src/lib/social-media-analysis-engine.ts(998,73): error TS1138: Parameter declaration expected.
+src/lib/social-media-job-processor.ts(333,65): error TS1138: Parameter declaration expected.
+src/lib/social-media-monitor.ts(728,64): error TS1138: Parameter declaration expected.
+src/lib/social-media-monitor.ts(933,67): error TS1138: Parameter declaration expected.
+src/lib/stripe.ts(48,7): error TS1138: Parameter declaration expected.
+src/services/gameService.ts(79,129): error TS1003: Identifier expected.

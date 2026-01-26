@@ -19,17 +19,13 @@ import {
   CheckCircle,
   Star,
   Zap,
-,
   Play,
   Download,
   RefreshCw,
   Sparkles,
   Crown,
-,
   ArrowRight,
-,
   BarChart3,
-,
   Trophy,
   Flame,
   GraduationCap
@@ -103,7 +99,7 @@ export default function LearningDashboard() {
   const [skillGaps, setSkillGaps] = useState<SkillGap[]>([])
   const [recommendations, setRecommendations] = useState<LearningRecommendation[]>([])
   const [progress, setProgress] = useState<UserProgress[]>([])
-  const [analytics, setAnalytics] = useState<LearningAnalytics | null>(null)
+  const [analytics, setAnalytics] = useState<LearningAnalytics (null)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
 

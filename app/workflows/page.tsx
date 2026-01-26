@@ -10,7 +10,6 @@ import {
   Crown,
   Users,
   TrendingUp,
-,
   Play,
   Target,
   Settings,

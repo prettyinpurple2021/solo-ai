@@ -15,8 +15,8 @@ export const TheMainframe: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'audit' | 'fabricator'>('audit');
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [auditResult, setAuditResult] = useState<TechStackAudit | null>(null);
-    const [codeResult, setCodeResult] = useState<CodeSnippet | null>(null);
+    const [auditResult, setAuditResult] = useState<TechStackAudit (null);
+    const [codeResult, setCodeResult] = useState<CodeSnippet (null);
     const [copied, setCopied] = useState(false);
     const [saved, setSaved] = useState(false);
 
@@ -191,7 +191,7 @@ export const TheMainframe: React.FC = () => {
                                     <h4 className="text-xs font-orbitron font-bold text-neon-orange uppercase tracking-widest mb-2">Optimization Protocol</h4>
                                     <ul className="space-y-2">
                                         {auditResult.recommendations.map((r, i) => (
-                                            <li key={i} className="text-sm font-mono text-gray-300 flex gap-2"><span className="text-neon-orange/50">::</span> {r}</li>
+                                            <li key={i} className="text-sm font-mono text-gray-300 flex gap-2"><span className="text-neon-orange/50">: </span> {r}</li>
                                         ))}
                                     </ul>
                                 </div>

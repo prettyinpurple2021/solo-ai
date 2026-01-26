@@ -29,13 +29,13 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
   const [isConnected, setIsConnected] = useState(false)
   const [transcript, setTranscript] = useState("")
   const [audioLevel, setAudioLevel] = useState(0)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
 
   const recognitionRef = useRef<any>(null)
   const synthRef = useRef<any>(null)
-  const audioContextRef = useRef<AudioContext | null>(null)
-  const analyserRef = useRef<AnalyserNode | null>(null)
-  const microphoneRef = useRef<MediaStreamAudioSourceNode | null>(null)
+  const audioContextRef = useRef<AudioContext (null)
+  const analyserRef = useRef<AnalyserNode (null)
+  const microphoneRef = useRef<MediaStreamAudioSourceNode (null)
 
   useEffect(() => {
     // Initialize speech synthesis

@@ -85,7 +85,7 @@ const pricingData: PricingCardProps[] = [
 export function PricingCards() {
   const { user } = useAuth()
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly')
-  const [loading, setLoading] = useState<string | null>(null)
+  const [loading, setLoading] = useState<string (null)
 
   const handleUpgrade = async (tier: 'accelerator' | 'dominator') => {
     if (!user) {

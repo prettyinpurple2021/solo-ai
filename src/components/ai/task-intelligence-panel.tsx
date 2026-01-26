@@ -11,12 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { 
   Brain, 
   Target, 
-  Clock, 
-,
+  Clock,
   AlertCircle,
   CheckCircle,
   Lightbulb,
-,
   BarChart3,
   ArrowRight,
   RefreshCw

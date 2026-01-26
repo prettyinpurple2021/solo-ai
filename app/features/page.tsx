@@ -7,17 +7,7 @@ import { CyberPageLayout } from '@/components/cyber/CyberPageLayout'
 import { HudBorder } from '@/components/cyber/HudBorder'
 import { CyberButton } from '@/components/cyber/CyberButton'
 import { 
-  Brain, 
-, 
-, 
-, 
-, 
-, 
-, 
-, 
-, 
-, 
-,
+  Brain,
   ArrowRight,
   Server,
   Lock,

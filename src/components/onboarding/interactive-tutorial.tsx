@@ -51,10 +51,10 @@ export function InteractiveTutorial({
   onStepChange
 }: InteractiveTutorialProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [highlightedElement, setHighlightedElement] = useState<HTMLElement | null>(null)
+  const [highlightedElement, setHighlightedElement] = useState<HTMLElement (null)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set())
-  const [startTime, setStartTime] = useState<Date | null>(null)
+  const [startTime, setStartTime] = useState<Date (null)
   const [showTips, setShowTips] = useState(false)
   const [userPreferences, setUserPreferences] = useState({
     showAnimations: true,

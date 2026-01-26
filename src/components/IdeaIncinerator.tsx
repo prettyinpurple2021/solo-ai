@@ -10,7 +10,7 @@ export const IdeaIncinerator: React.FC = () => {
     const [brutality, setBrutality] = useState(50);
     const [mode, setMode] = useState<'roast' | 'forge'>('forge');
     const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState<IncineratorResponse | null>(null);
+    const [result, setResult] = useState<IncineratorResponse (null);
     const [copied, setCopied] = useState(false);
 
     const handleIgnite = async (): Promise<void> => {

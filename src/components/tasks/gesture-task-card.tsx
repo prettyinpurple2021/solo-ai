@@ -10,8 +10,7 @@ import {
   Clock, 
   Flag, 
   Trash2, 
-  Edit, 
-,
+  Edit,
   GripVertical
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -48,7 +47,7 @@ export default function GestureTaskCard({
   className = ""
 }: GestureTaskCardProps) {
   const [showActions, setShowActions] = useState(false)
-  const [longPressTimeout, setLongPressTimeout] = useState<NodeJS.Timeout | null>(null)
+  const [longPressTimeout, setLongPressTimeout] = useState<NodeJS.Timeout (null)
   const [isLongPress, setIsLongPress] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   

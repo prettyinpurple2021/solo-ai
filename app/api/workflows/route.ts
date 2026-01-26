@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
           COUNT(*) FILTER (WHERE status = 'failed') as failed_executions,
           CASE 
             WHEN COUNT(*) > 0 THEN 
-              ROUND((COUNT(*) FILTER (WHERE status = 'completed')::FLOAT / COUNT(*)) * 100, 2)
+              ROUND((COUNT(*) FILTER (WHERE status = 'completed'): FLOAT / COUNT(*)) * 100, 2)
             ELSE 0 
           END as success_rate,
           AVG(duration) as average_duration,

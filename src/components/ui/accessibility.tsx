@@ -9,8 +9,7 @@ import { Switch} from "@/components/ui/switch"
 import { Label} from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 
-import {
-, Keyboard, Accessibility,} from "lucide-react"
+import { Keyboard, Accessibility,} from "lucide-react"
 
 interface AccessibilityContextType {
   highContrast: boolean
@@ -430,8 +429,8 @@ export const accessibilityStyles = `
 
   /* Reduced motion */
   .reduced-motion *,
-  .reduced-motion *::before,
-  .reduced-motion *::after {
+  .reduced-motion *: before,
+  .reduced-motion *: after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

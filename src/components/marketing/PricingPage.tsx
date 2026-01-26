@@ -7,7 +7,7 @@ import { logError } from '@/lib/logger';
 
 export function PricingPage() {
     const user = null; // useUser();
-    const [loadingTier, setLoadingTier] = useState<string | null>(null);
+    const [loadingTier, setLoadingTier] = useState<string (null);
 
     const handleUpgrade = async (tier: string, priceId: string) => {
         if (!user) {

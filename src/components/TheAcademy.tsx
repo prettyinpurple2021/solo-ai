@@ -51,11 +51,11 @@ const SCENARIOS: RoleplayScenario[] = [
 ];
 
 export const TheAcademy: React.FC = () => {
-    const [activeScenario, setActiveScenario] = useState<RoleplayScenario | null>(null);
+    const [activeScenario, setActiveScenario] = useState<RoleplayScenario (null);
     const [history, setHistory] = useState<RoleplayTurn[]>([]);
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [feedback, setFeedback] = useState<RoleplayFeedback | null>(null);
+    const [feedback, setFeedback] = useState<RoleplayFeedback (null);
     const scrollRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

@@ -16,8 +16,8 @@ export const useSwipe = ({
     onSwipeRight,
     minSwipeDistance = 50
 }: SwipeInput) => {
-    const [touchStart, setTouchStart] = useState<TouchPosition | null>(null);
-    const [touchEnd, setTouchEnd] = useState<TouchPosition | null>(null);
+    const [touchStart, setTouchStart] = useState<TouchPosition (null);
+    const [touchEnd, setTouchEnd] = useState<TouchPosition (null);
 
     const onTouchStart = (e: TouchEvent) => {
         setTouchEnd(null); // Reset touchEnd

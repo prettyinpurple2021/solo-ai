@@ -30,7 +30,7 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
 }
 
 // Optional auth - doesn't fail if no token, just doesn't set userId
-export function optionalAuth(req: AuthRequest,: Response, next: NextFunction) {
+export function optionalAuth(req: AuthRequest, arg_Response: Response, next: NextFunction) {
     const authHeader = req.headers.authorization;
     const token = authHeader?.startsWith('Bearer ')
         ? authHeader.substring(7)

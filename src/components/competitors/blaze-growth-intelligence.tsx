@@ -61,11 +61,11 @@ export function BlazeGrowthIntelligence({
 }: BlazeGrowthIntelligenceProps) {
   const [activeTab, setActiveTab] = useState('pricing')
   const [loading, setLoading] = useState(false)
-  const [pricingAnalysis, setPricingAnalysis] = useState<PricingAnalysis | null>(null)
+  const [pricingAnalysis, setPricingAnalysis] = useState<PricingAnalysis (null)
   const [growthRecommendations, setGrowthRecommendations] = useState<GrowthRecommendation[]>([])
   const [revenueOptimization, setRevenueOptimization] = useState<GrowthRecommendation[]>([])
-  const [error, setError] = useState<string | null>(null)
-  const [lastAnalyzed, setLastAnalyzed] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
+  const [lastAnalyzed, setLastAnalyzed] = useState<string (null)
 
   useEffect(() => {
     // Auto-load pricing analysis for high/critical threats

@@ -58,8 +58,8 @@ const TIER_INFO = {
 
 export function Billing() {
     const user = useUser();
-    const [subscription, setSubscription] = useState<Subscription | null>(null);
-    const [usage, setUsage] = useState<Usage | null>(null);
+    const [subscription, setSubscription] = useState<Subscription (null);
+    const [usage, setUsage] = useState<Usage (null);
     const [loading, setLoading] = useState(true);
     const [managingBilling, setManagingBilling] = useState(false);
 

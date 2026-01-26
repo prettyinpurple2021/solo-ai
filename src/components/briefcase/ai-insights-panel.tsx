@@ -77,8 +77,8 @@ interface AIInsightsPanelProps {
 
 export default function AIInsightsPanel({ file, onClose, className = "" }: AIInsightsPanelProps) {
   const [insights, setInsights] = useState<DocumentInsight[]>([])
-  const [keyInsights, setKeyInsights] = useState<KeyInsights | null>(null)
-  const [sentiment, setSentiment] = useState<SentimentAnalysis | null>(null)
+  const [keyInsights, setKeyInsights] = useState<KeyInsights (null)
+  const [sentiment, setSentiment] = useState<SentimentAnalysis (null)
   const [categories, setCategories] = useState<CategoryPrediction[]>([])
   const [suggestedTags, setSuggestedTags] = useState<Array<{ name: string; confidence: number }>>([])
   const [loading, setLoading] = useState(false)

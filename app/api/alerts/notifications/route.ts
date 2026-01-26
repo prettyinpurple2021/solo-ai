@@ -581,7 +581,7 @@ export async function POST(request: NextRequest) {
       .set({
         source_data: sql`
           COALESCE(source_data, '{}') || 
-          '{"lastNotified": "${notificationTimestamp.toISOString()}", "notificationChannels": ${JSON.stringify(deliveryResult.deliveredChannels)}}'::jsonb
+          '{"lastNotified": "${notificationTimestamp.toISOString()}", "notificationChannels": ${JSON.stringify(deliveryResult.deliveredChannels)}}': jsonb
         `,
         updated_at: notificationTimestamp,
       })

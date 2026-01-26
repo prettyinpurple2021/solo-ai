@@ -228,7 +228,7 @@ export class ContextManager {
   /**
    * Get conversation context for a session
    */
-  async getConversationContext(sessionId: string): Promise<ConversationContext | null> {
+  async getConversationContext(sessionId: string): Promise<ConversationContext> {
     return this.sessionContexts.get(sessionId) || null
   }
 

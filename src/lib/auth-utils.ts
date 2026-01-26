@@ -26,7 +26,7 @@ export interface AuthResult {
 /**
  * Extract user ID from session
  */
-export async function getUserIdFromSession(request?: NextRequest): Promise<string | null> {
+export async function getUserIdFromSession(request?: NextRequest): Promise<string> {
   try {
     const session = await auth()
     return session?.user?.id || null
@@ -39,7 +39,7 @@ export async function getUserIdFromSession(request?: NextRequest): Promise<strin
 /**
  * Extract user ID from request (supports both JWT and simple user ID header)
  */
-export async function getUserIdFromRequest(request: NextRequest): Promise<string | null> {
+export async function getUserIdFromRequest(request: NextRequest): Promise<string> {
   // First try session
   const userId = await getUserIdFromSession(request)
   if (userId) return userId
@@ -56,7 +56,7 @@ export async function createToken(userId: string,: string): Promise<string> {
   return "mock-token"
 }
 
-export async function verifyToken(request: NextRequest): Promise<string | null> {
+export async function verifyToken(request: NextRequest): Promise<string> {
   return await getUserIdFromSession(request)
 }
 

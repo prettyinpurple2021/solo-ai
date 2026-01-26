@@ -38,8 +38,8 @@ export function EnhancedProfileModal({ _open, onOpenChangeAction }: EnhancedProf
 
   const [isUploading, setIsUploading] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
+  const [success, setSuccess] = useState<string (null)
   
   // Account management states
   const [showChangePassword, setShowChangePassword] = useState(false)

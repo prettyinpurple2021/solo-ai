@@ -139,7 +139,7 @@ export async function GET(
       // This is a simplified approach - in  you'd want proper JSON array contains
       conditions.push(
         // Use JSON containment operator for robust array matching
-        sql`${intelligenceData.tags} @> ${JSON.stringify(filters.tags)}::jsonb`
+        sql`${intelligenceData.tags} @> ${JSON.stringify(filters.tags)}: jsonb`
       )
     }
 

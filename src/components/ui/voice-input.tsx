@@ -67,11 +67,11 @@ export default function VoiceInput({
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState("")
   const [interimTranscript, setInterimTranscript] = useState("")
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
   const [confidence, setConfidence] = useState(0)
 
-  const recognitionRef = useRef<SpeechRecognition | null>(null)
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const recognitionRef = useRef<SpeechRecognition (null)
+  const timeoutRef = useRef<NodeJS.Timeout (null)
 
   useEffect(() => {
     // Check if Speech Recognition is supported

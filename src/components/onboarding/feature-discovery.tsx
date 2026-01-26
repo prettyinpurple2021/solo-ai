@@ -6,8 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import { Button} from "@/components/ui/button"
 
 import { Progress} from "@/components/ui/progress"
-import { 
-, Target, Users, FileText, TrendingUp, Zap, Crown, CheckCircle, ArrowRight, ArrowLeft, Lightbulb, Star,} from "lucide-react"
+import { Target, Users, FileText, TrendingUp, Zap, Crown, CheckCircle, ArrowRight, ArrowLeft, Lightbulb, Star,} from "lucide-react"
 
 interface FeatureDiscoveryProps {
   open: boolean
@@ -18,8 +17,8 @@ interface FeatureDiscoveryProps {
 
 export function FeatureDiscovery({ open, onComplete, onSkip,}: FeatureDiscoveryProps) {
   const [currentFeature, setCurrentFeature] = useState(0)
-  const [,] = useState(false)
-  const [,] = useState(true)
+  const [] = useState(false)
+  const [] = useState(true)
   const [completedFeatures, setCompletedFeatures] = useState<Set<string>>(new Set())
   const [showTips, setShowTips] = useState(false)
 

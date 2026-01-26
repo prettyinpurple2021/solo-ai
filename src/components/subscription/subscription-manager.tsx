@@ -23,9 +23,9 @@ interface SubscriptionData {
 
 export function SubscriptionManager() {
   const { user } = useAuth()
-  const [subscription, setSubscription] = useState<SubscriptionData | null>(null)
+  const [subscription, setSubscription] = useState<SubscriptionData (null)
   const [loading, setLoading] = useState(true)
-  const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const [actionLoading, setActionLoading] = useState<string (null)
 
   useEffect(() => {
     if (user) {

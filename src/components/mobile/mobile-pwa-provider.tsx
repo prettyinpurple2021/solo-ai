@@ -31,7 +31,7 @@ interface PWAMobileContextType {
   hideInstallPrompt: () => void
 }
 
-const PWAMobileContext = createContext<PWAMobileContextType | null>(null)
+const PWAMobileContext = createContext<PWAMobileContextType (null)
 
 interface MobilePWAProviderProps {
   children: ReactNode

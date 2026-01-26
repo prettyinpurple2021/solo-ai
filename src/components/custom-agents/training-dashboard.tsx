@@ -68,7 +68,7 @@ interface FineTuningJob {
 }
 
 export function TrainingDashboard() {
-  const [metrics, setMetrics] = useState<TrainingMetrics | null>(null)
+  const [metrics, setMetrics] = useState<TrainingMetrics (null)
   const [agentPerformance, setAgentPerformance] = useState<Record<string, AgentPerformance>>({})
   const [fineTuningJobs, setFineTuningJobs] = useState<FineTuningJob[]>([])
   const [loading, setLoading] = useState(true)

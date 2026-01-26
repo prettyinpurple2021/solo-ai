@@ -92,7 +92,7 @@ interface MarketPositionData {
 
 export default function CompetitorDashboardPage() {
   const [competitors, setCompetitors] = useState<Competitor[]>([])
-  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [stats, setStats] = useState<DashboardStats (null)
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [threatFilter, setThreatFilter] = useState<string>("all")

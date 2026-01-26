@@ -251,7 +251,7 @@ export function ErrorHandler({
 // Global error boundary component
 export function ErrorBoundary({ children }: { children: React.ReactNode }) {
   const [hasError, setHasError] = useState(false)
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<Error (null)
 
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
@@ -271,7 +271,7 @@ export function ErrorBoundary({ children }: { children: React.ReactNode }) {
         errorSource.includes('googletagmanager.com') ||
         errorSource.includes('google-analytics.com') ||
         errorMessage.includes('Failed to load resource') ||
-        errorMessage.includes('net::ERR_')
+        errorMessage.includes('net: ERR_')
       ) {
         logWarn('Ignored non-critical error:', { message: errorMessage, source: errorSource })
         return

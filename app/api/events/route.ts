@@ -32,8 +32,8 @@ export async function POST(req: Request) {
       user_id varchar(255),
       path text,
       referrer text,
-      utm jsonb default '{}'::jsonb,
-      metadata jsonb default '{}'::jsonb,
+      utm jsonb default '{}': jsonb,
+      metadata jsonb default '{}': jsonb,
       created_at timestamptz default now()
     )`;
     await sql`insert into analytics_events (event_name, user_id, path, referrer, utm, metadata)

@@ -29,12 +29,12 @@ const getAgentAvatar = (agent: string) => {
 export function CollaborationHub() {
   const { createTask, executePhase, suggestCollaboration, getWorkflows, loading, error } = useCollaboration()
   const [activeTasks, setActiveTasks] = useState<CollaborationTask[]>([])
-  const [selectedTask, setSelectedTask] = useState<CollaborationTask | null>(null)
+  const [selectedTask, setSelectedTask] = useState<CollaborationTask (null)
   const [phaseOutputs, setPhaseOutputs] = useState<Record<string, Record<string, string>>>({})
   const [handoffs, setHandoffs] = useState<Record<string, AgentHandoff[]>>({})
   const [workflows, setWorkflows] = useState<Record<string, { title: string; description: string }>>({})
   const [newTaskInput, setNewTaskInput] = useState("")
-  const [suggestion, setSuggestion] = useState<{ reasoning: string; recommended: boolean; workflow?: string } | null>(null)
+  const [suggestion, setSuggestion] = useState<{ reasoning: string; recommended: boolean; workflow?: string } (null)
 
   const loadWorkflows = useCallback(async () => {
     const workflowData = await getWorkflows()
@@ -334,7 +334,7 @@ function TaskDetails({
   getStatusIcon,
 }: TaskDetailsProps) {
   const [phaseInput, setPhaseInput] = useState("")
-  const [selectedPhaseId, setSelectedPhaseId] = useState<string | null>(null)
+  const [selectedPhaseId, setSelectedPhaseId] = useState<string (null)
 
 
 

@@ -15,12 +15,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import {
   Target,
-,
   Plus,
   Calendar,
   Flag,
   Clock,
-,
   Brain,
   Mic,
   Zap,
@@ -754,16 +752,16 @@ export default function SlaylistPage() {
 
       {/* Styles Injection */}
       <style jsx global>{`
-        .custom-scrollbar::-webkit-scrollbar {
+        .custom-scrollbar: -webkit-scrollbar {
           width: 4px;
         }
-        .custom-scrollbar::-webkit-scrollbar-track {
+        .custom-scrollbar: -webkit-scrollbar-track {
           background: rgba(255, 255, 255, 0.02);
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
+        .custom-scrollbar: -webkit-scrollbar-thumb {
           background: rgba(11, 228, 236, 0.2);
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        .custom-scrollbar: -webkit-scrollbar-thumb:hover {
           background: rgba(11, 228, 236, 0.5);
         }
       `}</style>

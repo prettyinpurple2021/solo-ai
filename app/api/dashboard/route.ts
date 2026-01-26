@@ -230,7 +230,6 @@ export async function GET(request: NextRequest) {
 
      const [
         todaysTasksRaw,
-,
         activeGoalsRaw,
         recentConversationsRaw,
         briefcasesRaw,

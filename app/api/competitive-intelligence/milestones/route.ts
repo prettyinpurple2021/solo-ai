@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
       SELECT t.*, g.title as goal_title, cp.name as competitor_name
       FROM tasks t
       LEFT JOIN goals g ON t.goal_id = g.id
-      LEFT JOIN competitor_profiles cp ON (t.ai_suggestions->>'competitor_id')::int = cp.id
+      LEFT JOIN competitor_profiles cp ON (t.ai_suggestions->>'competitor_id'): int = cp.id
       WHERE t.user_id = $1 
       AND t.category = 'Competitive Milestone'
       AND t.ai_suggestions->>'milestone_type' = 'competitive_benchmark'
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
     }
     
     if (competitorId) {
-      query += ` AND (t.ai_suggestions->>'competitor_id')::text = $${params.length + 1}`
+      query += ` AND (t.ai_suggestions->>'competitor_id'): text = $${params.length + 1}`
       params.push(competitorId)
     }
     

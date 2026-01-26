@@ -38,7 +38,7 @@ export function VoiceTaskCreator({ isOpen, onClose, onTaskCreate }: VoiceTaskCre
         description: string
         priority: 'low' | 'medium' | 'high' | 'urgent'
         estimatedMinutes: number
-    } | null>(null)
+    } (null)
 
     const recognitionRef = useRef<any>(null)
 

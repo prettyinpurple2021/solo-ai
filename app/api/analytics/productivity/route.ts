@@ -146,7 +146,7 @@ export async function GET(request: NextRequest) {
       FROM tasks 
       WHERE user_id = ${user.id} AND created_at >= ${startDate.toISOString()}
       GROUP BY EXTRACT(DOW FROM created_at)
-      ORDER BY (COUNT(CASE WHEN status = 'completed' THEN 1 END)::FLOAT / NULLIF(COUNT(*), 0)) DESC
+      ORDER BY (COUNT(CASE WHEN status = 'completed' THEN 1 END): FLOAT / NULLIF(COUNT(*), 0)) DESC
       LIMIT 1
     `
 
@@ -158,7 +158,7 @@ export async function GET(request: NextRequest) {
       FROM tasks 
       WHERE user_id = ${user.id} AND created_at >= ${startDate.toISOString()}
       GROUP BY EXTRACT(HOUR FROM created_at)
-      ORDER BY (COUNT(CASE WHEN status = 'completed' THEN 1 END)::FLOAT / NULLIF(COUNT(*), 0)) DESC
+      ORDER BY (COUNT(CASE WHEN status = 'completed' THEN 1 END): FLOAT / NULLIF(COUNT(*), 0)) DESC
       LIMIT 1
     `
 

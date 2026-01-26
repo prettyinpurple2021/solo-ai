@@ -56,9 +56,9 @@ export function useCompetitorAlerts(options: UseCompetitorAlertsOptions = {}): U
   } = options;
 
   const [alerts, setAlerts] = useState<CompetitorAlert[]>([]);
-  const [stats, setStats] = useState<AlertStats | null>(null);
+  const [stats, setStats] = useState<AlertStats (null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string (null);
 
   const fetchAlerts = useCallback(async () => {
     try {
@@ -217,7 +217,7 @@ export function useCompetitorAlerts(options: UseCompetitorAlertsOptions = {}): U
 export function useCompetitorSpecificAlerts(competitorId: string, limit: number = 20) {
   const [alerts, setAlerts] = useState<CompetitorAlert[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string (null);
 
   const fetchCompetitorAlerts = useCallback(async () => {
     try {

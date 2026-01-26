@@ -11,13 +11,9 @@ import {
   CheckCircle, 
   Target, 
   Clock, 
-, 
-, 
-  Users, 
-,
+  Users,
   ChevronRight,
   Plus,
-,
   Calendar,
   BarChart3,
   RefreshCw,
@@ -45,11 +41,10 @@ const SPRING_CONFIG = { type: "spring" as const, stiffness: 300, damping: 30 }
 
 export default function MobileDashboardWidgets({ 
   widgets, 
-  onWidgetAction, 
-,
+  onWidgetAction,
   className = "" 
 }: MobileDashboardWidgetsProps) {
-  const [draggedWidget, setDraggedWidget] = useState<string | null>(null)
+  const [draggedWidget, setDraggedWidget] = useState<string (null)
   const [isReordering, setIsReordering] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
 

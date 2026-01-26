@@ -110,8 +110,8 @@ export function VisualWorkflowBuilder({
     }
   })
 
-  const [selectedNode, setSelectedNode] = React.useState<WorkflowNode | null>(null)
-  const [selectedEdge, setSelectedEdge] = React.useState<WorkflowEdge | null>(null)
+  const [selectedNode, setSelectedNode] = React.useState<WorkflowNode (null)
+  const [selectedEdge, setSelectedEdge] = React.useState<WorkflowEdge (null)
   const [dragState, setDragState] = React.useState<DragState>({
     isDragging: false,
     dragStart: { x: 0, y: 0 },
@@ -130,7 +130,7 @@ export function VisualWorkflowBuilder({
 
   // Fetch node types from API
   const [nodeTypes, setNodeTypes] = React.useState<NodeType[]>([])
-  const [, setIsLoadingNodeTypes] = React.useState(true)
+  const [ setIsLoadingNodeTypes] = React.useState(true)
 
   // Fetch agents from API
   const [agents, setAgents] = React.useState<any[]>([])

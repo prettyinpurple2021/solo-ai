@@ -162,7 +162,7 @@ export function IntelligenceResults({
   onBulkAction,
   selectedItems = []
 }: IntelligenceResultsProps) {
-  const [,] = useState(false)
+  const [] = useState(false)
   const [showTagDialog, setShowTagDialog] = useState(false)
   const [newTags, setNewTags] = useState("")
   const [tagOperation, setTagOperation] = useState<'add' | 'remove' | 'replace'>('add')

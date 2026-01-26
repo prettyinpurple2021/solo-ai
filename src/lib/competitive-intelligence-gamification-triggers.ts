@@ -234,7 +234,7 @@ export class CompetitiveIntelligenceGamificationTriggers {
         await sql`
           INSERT INTO competitive_challenges (
             id, user_id, title, description, objectives, total_points, expires_at
-          ) VALUES (${challengeUserId}, ${userId}, ${challengeData.title}, ${challengeData.description}, ${objectivesJson}::jsonb, ${challengeData.total_points}, ${challengeData.expires_at})
+          ) VALUES (${challengeUserId}, ${userId}, ${challengeData.title}, ${challengeData.description}, ${objectivesJson}: jsonb, ${challengeData.total_points}, ${challengeData.expires_at})
         `
       }
       
@@ -283,7 +283,7 @@ export class CompetitiveIntelligenceGamificationTriggers {
         UPDATE competitive_leaderboard cl
         SET 
           rank_position = ru.new_rank,
-          percentile = ROUND(ru.new_percentile::numeric, 2)
+          percentile = ROUND(ru.new_percentile: numeric, 2)
         FROM ranked_users ru
         WHERE cl.user_id = ru.user_id
       `

@@ -35,19 +35,16 @@ export function TouchGestureWrapper({
   onDoubleTap,
   onLongPress,
   onPinch: _onPinch,
-,
-,
-,
   children,
   className = "",
   enablePullToRefresh = true,
   enableSwipeBack = true,
   enableEdgeSwipe = true,
 }: TouchGestureProps) {
-  const [touchStart, setTouchStart] = useState<{ x: number; y: number; time: number } | null>(null)
-  const [touchEnd, setTouchEnd] = useState<{ x: number; y: number; time: number } | null>(null)
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number; time: number } (null)
+  const [touchEnd, setTouchEnd] = useState<{ x: number; y: number; time: number } (null)
   const [lastTap, setLastTap] = useState<number>(0)
-  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout | null>(null)
+  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout (null)
   const [isLongPress, setIsLongPress] = useState(false)
   const [gestureActive, setGestureActive] = useState(false)
   const [currentGesture, setCurrentGesture] = useState<string>("")

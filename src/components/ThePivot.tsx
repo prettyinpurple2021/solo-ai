@@ -8,7 +8,7 @@ import { soundService } from '../services/soundService';
 
 export const ThePivot: React.FC = () => {
     const [loading, setLoading] = useState(false);
-    const [analysis, setAnalysis] = useState<PivotAnalysis | null>(null);
+    const [analysis, setAnalysis] = useState<PivotAnalysis (null);
 
     const handleScan = async () => {
         setLoading(true);

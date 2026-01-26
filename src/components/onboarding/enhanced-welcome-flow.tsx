@@ -20,7 +20,7 @@ interface WelcomeFlowProps {
 
 export function EnhancedWelcomeFlow({ open, onComplete, onSkip,}: WelcomeFlowProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [,] = useState(false)
+  const [] = useState(false)
   const [soundEnabled,] = useState(true)
   const [selectedPersonality, setSelectedPersonality] = useState<string>("")
   const [selectedGoals, setSelectedGoals] = useState<string[]>([])

@@ -12,8 +12,6 @@ import {
   TrendingUp,
   Star,
   Infinity,
-,
-,
   Flame,
   Globe,
   Cpu

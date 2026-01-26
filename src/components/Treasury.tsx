@@ -17,7 +17,7 @@ export const Treasury: React.FC = () => {
     });
 
     const [projection, setProjection] = useState<any[]>([]);
-    const [audit, setAudit] = useState<FinancialAudit | null>(null);
+    const [audit, setAudit] = useState<FinancialAudit (null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {

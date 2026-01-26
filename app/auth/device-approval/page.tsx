@@ -32,7 +32,7 @@ interface DeviceApproval {
 }
 
 export default function DeviceApprovalPage() {
-  const [deviceInfo, setDeviceInfo] = useState<DeviceApproval | null>(null)
+  const [deviceInfo, setDeviceInfo] = useState<DeviceApproval (null)
   const [isLoading, setIsLoading] = useState(true)
   const [isApproving, setIsApproving] = useState(false)
   const [error, setError] = useState("")

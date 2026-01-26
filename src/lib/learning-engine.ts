@@ -34,7 +34,7 @@ export class LearningEngine {
   /**
    * Fetch a specific learning path with user progress
    */
-  static async getPathWithProgress(pathId: string, userId: string): Promise<LearningPathWithModules | null> {
+  static async getPathWithProgress(pathId: string, userId: string): Promise<LearningPathWithModules> {
     const path = await db.query.learningPaths.findFirst({
       where: eq(learningPaths.id, pathId),
       with: {

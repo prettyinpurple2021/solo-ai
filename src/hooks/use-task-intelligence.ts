@@ -14,10 +14,10 @@ export interface UseTaskIntelligenceOptions {
 export function useTaskIntelligence(options: UseTaskIntelligenceOptions = {}) {
   const { user } = useAuth()
   const [engine] = useState(() => new TaskIntelligenceEngine())
-  const [optimizationResult, setOptimizationResult] = useState<TaskOptimizationResult | null>(null)
+  const [optimizationResult, setOptimizationResult] = useState<TaskOptimizationResult (null)
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [lastOptimized, setLastOptimized] = useState<Date | null>(null)
+  const [error, setError] = useState<string (null)
+  const [lastOptimized, setLastOptimized] = useState<Date (null)
 
   const {
     autoOptimize = true,
@@ -59,7 +59,7 @@ export function useTaskIntelligence(options: UseTaskIntelligenceOptions = {}) {
   const getTaskSuggestion = useCallback(async (
     task: TaskIntelligenceData, 
     allTasks: TaskIntelligenceData[]
-  ): Promise<TaskSuggestion | null> => {
+  ): Promise<TaskSuggestion> => {
     if (!user || !enableAI) return null
 
     try {

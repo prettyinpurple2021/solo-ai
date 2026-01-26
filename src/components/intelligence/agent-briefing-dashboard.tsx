@@ -70,7 +70,7 @@ export function AgentBriefingDashboard({ competitorIds }: AgentBriefingDashboard
     clearError
   } = useIntelligenceBriefings()
   
-  const [selectedBriefing, setSelectedBriefing] = useState<AgentBriefing | null>(null)
+  const [selectedBriefing, setSelectedBriefing] = useState<AgentBriefing (null)
   
   useEffect(() => {
     if (currentAgentBriefing) {

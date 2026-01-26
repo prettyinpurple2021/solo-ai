@@ -13,8 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '@/
 import { useToast} from '@/hooks/use-toast'
 
 
-import {
-, PieChart, TrendingUp, Activity, HardDrive, Files, Users, Eye, Share2, Star, Hash, FolderOpen, FileType, Brain, Sparkles, Zap, Target, AlertTriangle, ArrowUp, ArrowDown, Minus, Plus, RefreshCw, Crown, Globe} from 'lucide-react'
+import { PieChart, TrendingUp, Activity, HardDrive, Files, Users, Eye, Share2, Star, Hash, FolderOpen, FileType, Brain, Sparkles, Zap, Target, AlertTriangle, ArrowUp, ArrowDown, Minus, Plus, RefreshCw, Crown, Globe} from 'lucide-react'
 
 interface DashboardStats {
   totalFiles: number
@@ -84,10 +83,10 @@ interface EnhancedDashboardProps {
 }
 
 export default function EnhancedDashboard({ className = "" }: EnhancedDashboardProps) {
-  const [stats, setStats] = useState<DashboardStats | null>(null)
-  const [aiInsights, setAiInsights] = useState<AIInsightsOverview | null>(null)
-  const [collaboration, setCollaboration] = useState<CollaborationStats | null>(null)
-  const [storage, setStorage] = useState<StorageAnalytics | null>(null)
+  const [stats, setStats] = useState<DashboardStats (null)
+  const [aiInsights, setAiInsights] = useState<AIInsightsOverview (null)
+  const [collaboration, setCollaboration] = useState<CollaborationStats (null)
+  const [storage, setStorage] = useState<StorageAnalytics (null)
   const [loading, setLoading] = useState(true)
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d')
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'ai-insights' | 'collaboration'>('overview')

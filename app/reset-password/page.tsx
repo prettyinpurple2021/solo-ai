@@ -17,7 +17,7 @@ import { Lock, Eye, EyeOff, CheckCircle, AlertCircle } from 'lucide-react'
 export default function ResetPasswordPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [token, setToken] = useState<string | null>(null)
+  const [token, setToken] = useState<string (null)
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)

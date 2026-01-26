@@ -19,7 +19,6 @@ import {
   WifiOff,
   Download,
   RefreshCw,
-,
   Settings
 } from 'lucide-react'
 import { cn } from '@/lib/utils'

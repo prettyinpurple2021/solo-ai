@@ -9,18 +9,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
   Mic,
-,
   Square,
-,
-,
-,
-,
-,
   X,
   CheckCircle,
   AlertCircle,
-,
-,
   Sparkles
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -81,12 +73,12 @@ export default function VoiceTaskCreator({
   })
 
   const [isSupported, setIsSupported] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<string (null)
 
   const recognitionRef = useRef<any>(null)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const mediaRecorderRef = useRef<MediaRecorder (null)
+  const audioRef = useRef<HTMLAudioElement (null)
+  const intervalRef = useRef<NodeJS.Timeout (null)
 
   // Check for browser support
   useEffect(() => {

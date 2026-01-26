@@ -29,11 +29,11 @@ type CarouselContextProps = {
 } & CarouselProps
 
 // Lazy context creation to prevent build errors
-let CarouselContextInstance: React.Context<CarouselContextProps | null> | undefined
+let CarouselContextInstance: React.Context<CarouselContextProps  | undefined
 
 function getCarouselContext() {
   if (!CarouselContextInstance) {
-    CarouselContextInstance = React.createContext<CarouselContextProps | null>(null)
+    CarouselContextInstance = React.createContext<CarouselContextProps (null)
   }
   return CarouselContextInstance
 }

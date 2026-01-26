@@ -21,7 +21,7 @@ interface ModulePlayerProps {
 }
 
 export function ModulePlayer({ module, onComplete, isCompleted = false }: ModulePlayerProps) {
-  const [,] = useState(false);
+  const [] = useState(false);
 
   // In a real app, we'd render Markdown or Video here
   // For now, simple text display

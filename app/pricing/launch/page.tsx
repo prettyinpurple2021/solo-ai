@@ -4,21 +4,14 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { 
   CheckCircle, 
-  ArrowRight, 
-,
+  ArrowRight,
   Crown,
-,
   Target,
   Shield,
   Users,
   TrendingUp,
   Star,
-,
-,
-,
-,
   Rocket,
-,
   Gift,
   Heart,
   Play
@@ -27,9 +20,7 @@ import {
   TacticalButton, 
   GlassCard, 
   RankStars, 
-  CamoBackground, 
-,
-,
+  CamoBackground,
   TacticalGrid,
   TacticalGridItem
 } from '@/components/military'

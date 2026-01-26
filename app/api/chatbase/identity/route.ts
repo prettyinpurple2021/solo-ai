@@ -73,7 +73,7 @@ export async function GET(request: NextRequest) {
     }
 
     const sanitizedPayload = Object.fromEntries(
-      Object.entries(payload).filter(([, value]) => value !== undefined && value !== null && value !== '')
+      Object.entries(payload).filter(([ value]) => value !== undefined && value !== null && value !== '')
     ) as ChatbaseIdentityPayload
 
     const token = jwt.sign(sanitizedPayload, process.env.CHATBOT_IDENTITY_SECRET, {

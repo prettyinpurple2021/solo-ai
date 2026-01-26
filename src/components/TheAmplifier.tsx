@@ -17,12 +17,12 @@ export const TheAmplifier: React.FC = () => {
     // Multiplier State
     const [source, setSource] = useState('');
     const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState<ContentAmplification | null>(null);
+    const [result, setResult] = useState<ContentAmplification (null);
     const [activeTab, setActiveTab] = useState<'twitter' | 'linkedin' | 'tiktok' | 'email'>('twitter');
     const [copied, setCopied] = useState(false);
 
     // Strategy State
-    const [strategy, setStrategy] = useState<SocialStrategy | null>(null);
+    const [strategy, setStrategy] = useState<SocialStrategy (null);
     const [loadingStrategy, setLoadingStrategy] = useState(false);
 
     useEffect(() => {
