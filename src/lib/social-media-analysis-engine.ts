@@ -641,7 +641,7 @@ export class SocialMediaAnalysisEngine {
       .sort((a, b) => b.avgEngagement - a.avgEngagement);
   }
 
-  private calculateFrequencyMetrics(posts: SocialMediaPost[],: number): PostingFrequencyAnalysis['frequency'] {
+  private calculateFrequencyMetrics(posts: SocialMediaPost[], arg_number: number): PostingFrequencyAnalysis['frequency'] {
     const dailyPosts = this.groupPostsByDay(posts);
     const weeklyPosts = this.groupPostsByWeek(posts);
     const monthlyPosts = this.groupPostsByMonth(posts);
@@ -949,7 +949,7 @@ export class SocialMediaAnalysisEngine {
     };
   }
 
-  private analyzeGrowthMetrics(posts: SocialMediaPost[],: any[]): AudienceAnalysis['growth'] {
+  private analyzeGrowthMetrics(posts: SocialMediaPost[], arg_any: any[]): AudienceAnalysis['growth'] {
     // Implementation for growth metrics analysis
     return {
       followerGrowthRate: 0,

@@ -101,8 +101,8 @@ export async function GET(request: NextRequest) {
       impact: validatedParams.impact,
       competitorId: validatedParams.competitorId,
       minPriorityScore: validatedParams.minPriorityScore ? parseFloat(validatedParams.minPriorityScore) : undefined,
-      isArchived: validatedParams.isArchived ? validatedParams.isArchived === 'true' : false
-    }
+      isArchived: validatedParams.isArchived ? validatedParams.isArchived === 'true'
+     : false}
 
     const sorting = {
       field: validatedParams.sortField,

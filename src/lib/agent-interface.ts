@@ -90,7 +90,7 @@ export interface AgentResponse {
 }
 
 export interface AgentMessageHandler {
-  (message: AgentMessage, context: MessageContext): Promise<AgentResponse 
+  (message: AgentMessage, context: MessageContext): Promise<AgentResponse> 
 }
 
 export interface AgentCapabilityHandler {

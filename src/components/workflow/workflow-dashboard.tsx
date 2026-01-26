@@ -61,7 +61,7 @@ const PrimaryButton = BossButton
 export function WorkflowDashboard({ className = "" }: WorkflowDashboardProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'builder' | 'templates' | 'executions'>('overview')
   const [stats, setStats] = useState<WorkflowStats>(INITIAL_STATS)
-  const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow (null)
+  const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null)
   
   const { toast } = useToast()
 

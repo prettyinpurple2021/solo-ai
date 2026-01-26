@@ -26,7 +26,7 @@ export function SubscriptionGuard({
 }: SubscriptionGuardProps) {
   const { user } = useAuth()
   const router = useRouter()
-  const [hasAccess, setHasAccess] = useState<boolean (null)
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -136,7 +136,7 @@ export function SubscriptionGuard({
 // Hook for checking subscription access
 export function useSubscriptionAccess(requiredTier: 'accelerator' | 'dominator') {
   const { user } = useAuth()
-  const [hasAccess, setHasAccess] = useState<boolean (null)
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {

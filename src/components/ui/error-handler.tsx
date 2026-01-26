@@ -251,7 +251,7 @@ export function ErrorHandler({
 // Global error boundary component
 export function ErrorBoundary({ children }: { children: React.ReactNode }) {
   const [hasError, setHasError] = useState(false)
-  const [error, setError] = useState<Error (null)
+  const [error, setError] = useState<Error | null>(null)
 
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {

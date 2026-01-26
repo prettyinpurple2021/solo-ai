@@ -67,7 +67,7 @@ export default function VoiceInput({
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState("")
   const [interimTranscript, setInterimTranscript] = useState("")
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
   const [confidence, setConfidence] = useState(0)
 
   const recognitionRef = useRef<SpeechRecognition (null)

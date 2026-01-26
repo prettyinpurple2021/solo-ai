@@ -88,7 +88,7 @@ export class CompetitiveIntelligenceContextService {
   /**
    * Get competitive intelligence context for AI agent conversations
    */
-  static async getCompetitiveContext(userId: string: string): Promise<CompetitiveIntelligenceContext> {
+  static async getCompetitiveContext(userId: string, context: string): Promise<CompetitiveIntelligenceContext> {
     try {
       const sql = getSql()
       

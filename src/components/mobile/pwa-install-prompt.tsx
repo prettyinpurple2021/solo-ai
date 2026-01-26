@@ -1,5 +1,5 @@
 "use client"
-import, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -34,7 +34,7 @@ export default function PWAInstallPrompt({
   onInstall, 
   onDismiss 
 }: PWAInstallPromptProps) {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent (null)
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isInstalled, setIsInstalled] = useState(false)
   const [showPrompt, setShowPrompt] = useState(false)
   const [isInstalling, setIsInstalling] = useState(false)
@@ -194,7 +194,7 @@ export default function PWAInstallPrompt({
 }
 // Hook to manage PWA install state
 export function usePWAInstall() {
-  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent (null)
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
   const [isInstalled, setIsInstalled] = useState(false)
   useEffect(() => {
     const checkInstalled = () => {

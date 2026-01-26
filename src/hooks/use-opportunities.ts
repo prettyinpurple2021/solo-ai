@@ -101,7 +101,7 @@ export function useOpportunities() {
   const { user } = useAuth()
   const [opportunities, setOpportunities] = useState<Opportunity[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchOpportunities = useCallback(async (
     filters: OpportunityFilters = {},
@@ -295,7 +295,7 @@ export function useOpportunityActions(opportunityId: string) {
   const { user } = useAuth()
   const [actions, setActions] = useState<OpportunityAction[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchActions = useCallback(async () => {
     if (!user || !opportunityId) return
@@ -423,7 +423,7 @@ export function useOpportunityMetrics(opportunityId: string) {
   const { user } = useAuth()
   const [metrics, setMetrics] = useState<OpportunityMetric[]>([])
   const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchMetrics = useCallback(async () => {
     if (!user || !opportunityId) return

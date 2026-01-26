@@ -734,11 +734,11 @@ if (process.env.NODE_ENV === 'production') {
 const sentryErrorMiddleware =
   (Sentry as any).Handlers?.errorHandler?.() ??
   (Sentry as any).errorHandler?.() ??
-  ((err: unknown,: express.Request, res: express.Response, next: express.NextFunction) => next(err));
+  ((err: unknown, arg_express: express.Request, res: express.Response, next: express.NextFunction) => next(err));
 app.use(sentryErrorMiddleware);
 
 // Express error handler
-app.use((err: Error, req: express.Request, res: express.Response,: express.NextFunction) => {
+app.use((err: Error, req: express.Request, res: express.Response, arg_express: express.NextFunction) => {
     logError('Unhandled error in Express middleware', err, { path: req.path, method: req.method });
     res.status(500).json({ error: 'Internal server error' });
 });

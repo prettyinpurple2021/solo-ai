@@ -313,7 +313,7 @@ async function performSemanticSearch(query: string, userId: string, sql: any) {
 }
 
 // Get search statistics
-async function getSearchStats(sql: any,: string, whereConditions: string[], params: any[]) {
+async function getSearchStats(sql: any, arg_string: string, whereConditions: string[], params: any[]) {
   try {
     const sqlClient = sql as any
     

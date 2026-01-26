@@ -307,19 +307,19 @@ export class NovaProductIntelligence {
     return competitor || {}
   }
 
-  private async getWebsiteIntelligence(competitorId: string,: number): Promise<any[]> {
+  private async getWebsiteIntelligence(competitorId: string, arg_number: number): Promise<any[]> {
     return []
   }
 
-  private async getAppStoreIntelligence(competitorId: string,: number): Promise<any[]> {
+  private async getAppStoreIntelligence(competitorId: string, arg_number: number): Promise<any[]> {
     return []
   }
 
-  private async getSocialMediaIntelligence(competitorId: string,: number): Promise<any[]> {
+  private async getSocialMediaIntelligence(competitorId: string, arg_number: number): Promise<any[]> {
     return []
   }
 
-  private buildProductFeatureAnalysisPrompt(competitor: any,: any[],: any[],: any[]): string {
+  private buildProductFeatureAnalysisPrompt(competitor: any, arg_any: any[], arg_any_2: any[], arg_any_3: any[]): string {
     return `Analyze product features for ${competitor.name || 'competitor'}`
   }
 
@@ -333,11 +333,11 @@ export class NovaProductIntelligence {
     }
   }
 
-  private async storeProductIntelligence(competitorId: string,: string,: any,: string): Promise<void> {
+  private async storeProductIntelligence(competitorId: string, arg_string: string, arg_any: any, arg_string_2: string): Promise<void> {
     // Store in database - minimal implementation
   }
 
-  private buildUXTrendsAnalysisPrompt(competitor: any,: any[]): string {
+  private buildUXTrendsAnalysisPrompt(competitor: any, arg_any: any[]): string {
     return `Analyze UX trends for ${competitor.name || 'competitor'}`
   }
 
@@ -345,7 +345,7 @@ export class NovaProductIntelligence {
     return { competitorId, trends: [], recommendations: [], confidence: 0.5, analyzedAt: new Date() }
   }
 
-  private buildDesignPatternsPrompt(competitor: any,: any[]): string {
+  private buildDesignPatternsPrompt(competitor: any, arg_any: any[]): string {
     return `Analyze design patterns for ${competitor.name || 'competitor'}`
   }
 
@@ -353,7 +353,7 @@ export class NovaProductIntelligence {
     return { competitorId, patterns: [], recommendations: [], confidence: 0.5, analyzedAt: new Date() }
   }
 
-  private buildProductGapsPrompt(competitors: any[],: any): string {
+  private buildProductGapsPrompt(competitors: any[], arg_any: any): string {
     return 'Analyze product gaps in the market'
   }
 
@@ -361,7 +361,7 @@ export class NovaProductIntelligence {
     return { gaps: [], opportunities: [], confidence: 0.5, analyzedAt: new Date() }
   }
 
-  private buildRoadmapPredictionPrompt(competitor: any,: any[]): string {
+  private buildRoadmapPredictionPrompt(competitor: any, arg_any: any[]): string {
     return `Predict roadmap for ${competitor.name || 'competitor'}`
   }
 
@@ -373,11 +373,11 @@ export class NovaProductIntelligence {
     return `Product intelligence briefing for ${timeframe}`
   }
 
-  private async getHiringIntelligence(competitorId: string,: number): Promise<any[]> {
+  private async getHiringIntelligence(competitorId: string, arg_number: number): Promise<any[]> {
     return []
   }
 
-  private async getProductAnnouncements(competitorId: string,: number): Promise<any[]> {
+  private async getProductAnnouncements(competitorId: string, arg_number: number): Promise<any[]> {
     return []
   }
 

@@ -287,7 +287,7 @@ export class DocumentParser {
     }
   }
 
-  private static async parseTextFile(buffer: Buffer,: string): Promise<ParseResult> {
+  private static async parseTextFile(buffer: Buffer, arg_string: string): Promise<ParseResult> {
     try {
       // Try different encodings
       let content = '';

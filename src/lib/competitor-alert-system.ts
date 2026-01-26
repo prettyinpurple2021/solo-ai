@@ -351,7 +351,7 @@ export class CompetitorAlertSystem {
     await db.insert(competitorAlerts).values(alertData);
   }
 
-  private generateAlertTitle(alertType: AlertType, competitorName: string,: any): string {
+  private generateAlertTitle(alertType: AlertType, competitorName: string, arg_any: any): string {
     const titles: Record<AlertType, string> = {
       pricing_change: `${competitorName} Changed Pricing`,
       product_launch: `${competitorName} Launched New Product`,
@@ -381,7 +381,7 @@ export class CompetitorAlertSystem {
     return `${trigger.description}\n\nDetails: ${truncatedContent}`;
   }
 
-  private generateActionItems(alertType: AlertType,: any,: any): any[] {
+  private generateActionItems(alertType: AlertType, arg_any: any, arg_any_2: any): any[] {
     const baseActions = [
       {
         id: `review-${Date.now()}`,
@@ -455,7 +455,7 @@ export class CompetitorAlertSystem {
     return [...baseActions, ...(typeSpecificActions[alertType] || [])];
   }
 
-  private generateRecommendedActions(alertType: AlertType,: any,: any): string[] {
+  private generateRecommendedActions(alertType: AlertType, arg_any: any, arg_any_2: any): string[] {
     const baseRecommendations = [
       'Monitor competitor response and market reaction',
       'Update competitive analysis documentation',

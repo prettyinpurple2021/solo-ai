@@ -134,7 +134,7 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
     throttling: 100
   })
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop')
-  const [selectedBlock, setSelectedBlock] = useState<string (null)
+  const [selectedBlock, setSelectedBlock] = useState<string | null>(null)
   
   const totalSteps = 5
 

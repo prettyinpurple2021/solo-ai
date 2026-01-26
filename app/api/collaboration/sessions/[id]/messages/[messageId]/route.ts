@@ -4,7 +4,7 @@ import { withDocumentAuth, getSql, createErrorResponse } from '@/lib/api-utils'
 import { logError } from '@/lib/logger'
 
 export const PUT = withDocumentAuth(
-  async (request: NextRequest, user: any,: string) => {
+  async (request: NextRequest, user: any, arg_string: string) => {
     // documentId is the sessionId from the URL param
     // We also need messageId, which should be the last param
     const url = new URL(request.url)
@@ -54,7 +54,7 @@ export const PUT = withDocumentAuth(
 )
 
 export const DELETE = withDocumentAuth(
-  async (request: NextRequest, user: any,: string) => {
+  async (request: NextRequest, user: any, arg_string: string) => {
     const url = new URL(request.url)
     const pathSegments = url.pathname.split('/')
     const messageId = pathSegments[pathSegments.length - 1]

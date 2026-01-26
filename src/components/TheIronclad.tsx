@@ -17,11 +17,11 @@ export const TheIronclad: React.FC = () => {
     // Draft State
     const [docType, setDocType] = useState<LegalDocType>('NDA');
     const [docDetails, setDocDetails] = useState('');
-    const [draftResult, setDraftResult] = useState<string (null);
+    const [draftResult, setDraftResult] = useState<string | null>(null);
 
     // Review State
     const [contractText, setContractText] = useState('');
-    const [analysisResult, setAnalysisResult] = useState<LegalAnalysis (null);
+    const [analysisResult, setAnalysisResult] = useState<LegalAnalysis | null>(null);
 
     const [loading, setLoading] = useState(false);
     const [copied, setCopied] = useState(false);

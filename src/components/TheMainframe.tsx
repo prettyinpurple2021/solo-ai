@@ -15,8 +15,8 @@ export const TheMainframe: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'audit' | 'fabricator'>('audit');
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [auditResult, setAuditResult] = useState<TechStackAudit (null);
-    const [codeResult, setCodeResult] = useState<CodeSnippet (null);
+    const [auditResult, setAuditResult] = useState<TechStackAudit | null>(null);
+    const [codeResult, setCodeResult] = useState<CodeSnippet | null>(null);
     const [copied, setCopied] = useState(false);
     const [saved, setSaved] = useState(false);
 

@@ -1,6 +1,6 @@
 "use client"
 
-import, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -105,9 +105,9 @@ export default function IntelligencePage() {
   const [refreshing, setRefreshing] = useState(false)
 
   const [insights, setInsights] = useState<IntelligenceInsight[]>([])
-  const [stats, setStats] = useState<IntelligenceStats (null)
-  const [marketPosition, setMarketPosition] = useState<MarketPosition (null)
-  const [strategicAnalysis, setStrategicAnalysis] = useState<StrategicAnalysis (null)
+  const [stats, setStats] = useState<IntelligenceStats | null>(null)
+  const [marketPosition, setMarketPosition] = useState<MarketPosition | null>(null)
+  const [strategicAnalysis, setStrategicAnalysis] = useState<StrategicAnalysis | null>(null)
 
   const loadIntelligenceData = useCallback(async () => {
     try {

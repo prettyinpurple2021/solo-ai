@@ -1,4 +1,4 @@
-import, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useUser } from '@stackframe/stack';
 import { CreditCard, TrendingUp, Check, Zap, Crown, Rocket, ExternalLink, AlertCircle } from 'lucide-react';
 import { apiService } from '../services/apiService';
@@ -58,8 +58,8 @@ const TIER_INFO = {
 
 export function Billing() {
     const user = useUser();
-    const [subscription, setSubscription] = useState<Subscription (null);
-    const [usage, setUsage] = useState<Usage (null);
+    const [subscription, setSubscription] = useState<Subscription | null>(null);
+    const [usage, setUsage] = useState<Usage | null>(null);
     const [loading, setLoading] = useState(true);
     const [managingBilling, setManagingBilling] = useState(false);
 

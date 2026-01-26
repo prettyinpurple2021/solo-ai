@@ -64,7 +64,7 @@ export default function FileMetadataPanel({
   const [description, setDescription] = useState(file.description || '')
   const [category, setCategory] = useState(file.category || 'uncategorized')
   const [newTag, setNewTag] = useState('')
-  const [copiedField, setCopiedField] = useState<string (null)
+  const [copiedField, setCopiedField] = useState<string | null>(null)
   const { toast } = useToast()
 
   const formatFileSize = (bytes: number): string => {

@@ -1,7 +1,7 @@
 "use client"
 
 export const dynamic = 'force-dynamic'
-import, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -99,7 +99,7 @@ export default function LearningDashboard() {
   const [skillGaps, setSkillGaps] = useState<SkillGap[]>([])
   const [recommendations, setRecommendations] = useState<LearningRecommendation[]>([])
   const [progress, setProgress] = useState<UserProgress[]>([])
-  const [analytics, setAnalytics] = useState<LearningAnalytics (null)
+  const [analytics, setAnalytics] = useState<LearningAnalytics | null>(null)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
 

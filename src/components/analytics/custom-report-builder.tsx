@@ -163,7 +163,7 @@ export function CustomReportBuilder({
   })
   
   const [activeTab, setActiveTab] = useState<'design' | 'visualize' | 'schedule' | 'preview'>('design')
-  const [selectedVisualization, setSelectedVisualization] = useState<ReportVisualization (null)
+  const [selectedVisualization, setSelectedVisualization] = useState<ReportVisualization | null>(null)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isExporting, setIsExporting] = useState(false)

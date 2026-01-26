@@ -47,7 +47,7 @@ export default function BaseTemplate({
   className = ""
 }: BaseTemplateProps) {
   const [isSaving, setIsSaving] = useState(false)
-  const [lastSaved, setLastSaved] = useState<Date (null)
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [isBookmarked, setIsBookmarked] = useState(false)
 
   const handleSave = async (data: any) => {

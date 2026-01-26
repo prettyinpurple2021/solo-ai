@@ -1,7 +1,7 @@
 "use client"
 
 import { logError,} from '@/lib/logger'
-import, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle} from '@/components/ui/card'
 import { Button} from '@/components/ui/button'
 import { Badge} from '@/components/ui/badge'
@@ -83,10 +83,10 @@ interface EnhancedDashboardProps {
 }
 
 export default function EnhancedDashboard({ className = "" }: EnhancedDashboardProps) {
-  const [stats, setStats] = useState<DashboardStats (null)
-  const [aiInsights, setAiInsights] = useState<AIInsightsOverview (null)
-  const [collaboration, setCollaboration] = useState<CollaborationStats (null)
-  const [storage, setStorage] = useState<StorageAnalytics (null)
+  const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [aiInsights, setAiInsights] = useState<AIInsightsOverview | null>(null)
+  const [collaboration, setCollaboration] = useState<CollaborationStats | null>(null)
+  const [storage, setStorage] = useState<StorageAnalytics | null>(null)
   const [loading, setLoading] = useState(true)
   const [timeRange, setTimeRange] = useState<'7d' | '30d' | '90d' | '1y'>('30d')
   const [activeTab, setActiveTab] = useState<'overview' | 'analytics' | 'ai-insights' | 'collaboration'>('overview')

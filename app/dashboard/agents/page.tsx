@@ -3,7 +3,7 @@
 
 export const dynamic = 'force-dynamic'
 import { logError,} from '@/lib/logger'
-import, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { HudBorder } from "@/components/cyber/HudBorder"
 import { CyberButton } from "@/components/cyber/CyberButton"
 import { Badge} from "@/components/ui/badge"
@@ -116,13 +116,13 @@ const AI_AGENTS: Agent[] = [
 ]
 
 export default function AgentsPage() {
-  const [selectedAgent, setSelectedAgent] = useState<Agent (null)
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [_conversations, setConversations] = useState<unknown[]>([])
   const [showSaveDialog, setShowSaveDialog] = useState(false)
-  const [selectedMessageToSave, setSelectedMessageToSave] = useState<Message (null)
+  const [selectedMessageToSave, setSelectedMessageToSave] = useState<Message | null>(null)
   const [saveForm, setSaveForm] = useState({
     fileName: "",
     description: "",

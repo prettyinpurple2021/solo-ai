@@ -17,7 +17,7 @@ interface UseRecaptchaValidationReturn {
 
 export function useRecaptchaValidation(): UseRecaptchaValidationReturn {
   const [isValidating, setIsValidating] = useState(false)
-  const [lastValidationError, setLastValidationError] = useState<string (null)
+  const [lastValidationError, setLastValidationError] = useState<string | null>(null)
   const { executeRecaptcha, isReady } = useRecaptcha()
   const { toast } = useToast()
 

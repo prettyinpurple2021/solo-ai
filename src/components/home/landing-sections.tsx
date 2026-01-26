@@ -231,7 +231,7 @@ const faqs = [
 ]
 
 export const FAQSection = ({ className }: SectionProps) => {
-  const [openIndex, setOpenIndex] = React.useState<number (null)
+  const [openIndex, setOpenIndex] = React.useState<number | null>(null)
 
   return (
     <section id="faq" className={`py-24 bg-white/5 relative z-10 ${className}`}>

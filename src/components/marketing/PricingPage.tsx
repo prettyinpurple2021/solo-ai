@@ -1,4 +1,4 @@
-import, { useState } from 'react';
+import { useState } from 'react';
 import { MarketingLayout } from './layout/MarketingLayout';
 import { Check, Loader2 } from 'lucide-react';
 import { apiService } from '../../services/apiService';
@@ -7,7 +7,7 @@ import { logError } from '@/lib/logger';
 
 export function PricingPage() {
     const user = null; // useUser();
-    const [loadingTier, setLoadingTier] = useState<string (null);
+    const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
     const handleUpgrade = async (tier: string, priceId: string) => {
         if (!user) {

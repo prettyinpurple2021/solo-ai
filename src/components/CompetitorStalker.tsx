@@ -15,10 +15,10 @@ interface CompetitorStalkerProps {
 export const CompetitorStalker: React.FC<CompetitorStalkerProps> = ({}) => {
     const [input, setInput] = useState('');
     const [loading, setLoading] = useState(false);
-    const [report, setReport] = useState<CompetitorReport (null);
+    const [report, setReport] = useState<CompetitorReport | null>(null);
     const [recentSearches, setRecentSearches] = useState<string[]>([]);
     const [showRecent, setShowRecent] = useState(false);
-    const [error, setError] = useState<string (null);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const saved = localStorage.getItem('solo_competitor_searches');

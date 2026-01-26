@@ -59,7 +59,7 @@ export function SocialMediaIntegration({ className = "" }: SocialMediaIntegratio
     youtube: { platform: 'youtube', connected: false }
   })
   const [isLoading, setIsLoading] = useState(false)
-  const [showCredentialsDialog, setShowCredentialsDialog] = useState<string (null)
+  const [showCredentialsDialog, setShowCredentialsDialog] = useState<string | null>(null)
   const [credentials, setCredentials] = useState<Record<string, { clientId: string; clientSecret: string; instagramAccountId?: string }>>({})
   const { toast } = useToast()
 

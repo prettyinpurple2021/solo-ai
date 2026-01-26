@@ -1,4 +1,4 @@
-import, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Server, Database, Activity, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
 import { logError } from '@/lib/logger';
 

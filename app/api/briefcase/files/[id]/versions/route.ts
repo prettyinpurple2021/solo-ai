@@ -9,7 +9,7 @@ import {
 
 
 export const GET = withDocumentAuth(
-  async (request: NextRequest,: any, documentId: string) => {
+  async (request: NextRequest, arg_any: any, documentId: string) => {
     try {
       const sql = getSql()
 

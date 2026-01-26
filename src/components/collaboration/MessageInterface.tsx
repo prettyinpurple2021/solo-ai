@@ -333,11 +333,11 @@ const MessageInterface: React.FC<{ sessionId: string }> = ({ sessionId }) => {
   const [messages, setMessages] = useState<Message[]>([])
   const [participants, setParticipants] = useState<SessionParticipant[]>([])
   const [newMessage, setNewMessage] = useState('')
-  const [editingMessage, setEditingMessage] = useState<Message (null)
+  const [editingMessage, setEditingMessage] = useState<Message | null>(null)
   const [messageType, setMessageType] = useState<'text' | 'code'>('text')
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
-  const [replyingTo, setReplyingTo] = useState<Message (null)
+  const [replyingTo, setReplyingTo] = useState<Message | null>(null)
   const scrollAreaRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 

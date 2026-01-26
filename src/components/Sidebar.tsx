@@ -179,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         }
     ];
 
-    const navItemClass = (isActive: boolean, colorClass: string = 'text-white',: string) => `
+    const navItemClass = (isActive: boolean, colorClass: string = 'text-white', arg_string: string) => `
     flex items-center gap-3 px-4 py-2.5 min-h-[44px] text-base md:text-sm font-medium transition-all duration-200 cursor-pointer group rounded-lg mr-2 relative overflow-hidden
     ${isActive
             ? `glass-subtle ${colorClass} shadow-lg border-l-2 border-${colorClass.split('-')[1]}-500`

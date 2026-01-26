@@ -19,16 +19,16 @@ export const TheScout: React.FC = () => {
     // Recruit State
     const [roleTitle, setRoleTitle] = useState('');
     const [employmentType, setEmploymentType] = useState('Freelance');
-    const [jd, setJd] = useState<JobDescription (null);
+    const [jd, setJd] = useState<JobDescription | null>(null);
 
     // Vet State
     const [vetRole, setVetRole] = useState('');
     const [vetFocus, setVetFocus] = useState('');
-    const [guide, setGuide] = useState<InterviewGuide (null);
+    const [guide, setGuide] = useState<InterviewGuide | null>(null);
 
     // Delegate State
     const [taskName, setTaskName] = useState('');
-    const [sop, setSop] = useState<SOP (null);
+    const [sop, setSop] = useState<SOP | null>(null);
 
     const handleRecruit = async () => {
         if (!roleTitle.trim()) return;

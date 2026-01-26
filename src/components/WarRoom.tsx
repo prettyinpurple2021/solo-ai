@@ -11,10 +11,10 @@ import { storageService } from '../services/storageService';
 export const WarRoom: React.FC = () => {
     const [topic, setTopic] = useState('');
     const [loading, setLoading] = useState(false);
-    const [fullResponse, setFullResponse] = useState<WarRoomResponse (null);
+    const [fullResponse, setFullResponse] = useState<WarRoomResponse | null>(null);
     const [displayedDialogue, setDisplayedDialogue] = useState<WarRoomEntry[]>([]);
     const [showConsensus, setShowConsensus] = useState(false);
-    const [currentSpeaker, setCurrentSpeaker] = useState<AgentId (null);
+    const [currentSpeaker, setCurrentSpeaker] = useState<AgentId | null>(null);
     const [deployed, setDeployed] = useState(false);
     const [sessions, setSessions] = useState<SavedWarRoomSession[]>([]);
     const [showHistory, setShowHistory] = useState(false);

@@ -87,10 +87,10 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
   const { onError, onWorkflowCreated, onWorkflowCompleted } = options
   
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
   const [agents, setAgents] = useState<any[]>([])
   const [workflows, setWorkflows] = useState<Workflow[]>([])
-  const [insights, setInsights] = useState<CustomAgentInsights (null)
+  const [insights, setInsights] = useState<CustomAgentInsights | null>(null)
   
   const abortControllerRef = useRef<AbortController (null)
 

@@ -70,7 +70,7 @@ const FilePreviewModal: React.FC<FilePreviewModalProps> = ({
   const [_isMuted, setIsMuted] = useState(false)
 
   // Touch gesture state
-  const [touchStart, setTouchStart] = useState<{ x: number; y: number; distance?: number } (null)
+  const [touchStart, setTouchStart] = useState<{ x: number; y: number; distance?: number } | null>(null)
   const [isTouching, setIsTouching] = useState(false)
 
   // Load file preview

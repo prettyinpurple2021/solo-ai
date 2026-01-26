@@ -62,9 +62,9 @@ type AdminStatus = {
 
 export default function AdminClient() {
   const { user, loading } = useAuth()
-  const [adminStatus, setAdminStatus] = useState<AdminStatus (null)
+  const [adminStatus, setAdminStatus] = useState<AdminStatus | null>(null)
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchAdminStatus = async () => {

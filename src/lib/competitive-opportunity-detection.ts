@@ -430,7 +430,7 @@ export class CompetitiveOpportunityDetector {
     return Math.min(1, (complaintCount / 20) + Math.abs(avgSentiment))
   }
 
-  private detectProductGapsFromSocial(socialMentions: any[],: string): CompetitorWeakness[] {
+  private detectProductGapsFromSocial(socialMentions: any[], arg_string: string): CompetitorWeakness[] {
     // Implementation for detecting product gaps from social media
     return []
   }
@@ -470,7 +470,7 @@ export class CompetitiveOpportunityDetector {
     return []
   }
 
-  private analyzePricingPosition(pricing: any,: any[]): any {
+  private analyzePricingPosition(pricing: any, arg_any: any[]): any {
     // Implementation for analyzing pricing position
     return {
       opportunityDetected: false,

@@ -13,7 +13,7 @@ import { storageService } from '../services/storageService';
  */
 
 export const TheBoardroom: React.FC = () => {
-    const [report, setReport] = useState<BoardMeetingReport (null);
+    const [report, setReport] = useState<BoardMeetingReport | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleConvene = async () => {

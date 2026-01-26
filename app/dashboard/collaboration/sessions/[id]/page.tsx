@@ -1,7 +1,7 @@
 "use client"
 
 import { logError } from '@/lib/logger'
-import, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -29,10 +29,10 @@ interface SessionData {
 
 export default function SessionPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter()
-  const [session, setSession] = useState<SessionData (null)
+  const [session, setSession] = useState<SessionData | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('messages')
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } (null)
+  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)
 
   useEffect(() => {
     params.then(setResolvedParams)

@@ -142,9 +142,9 @@ export const wsNotificationService = WebSocketNotificationService.getInstance();
 
 export function useWebSocketNotifications(userId: string | null) {
   const [connectionStatus, setConnectionStatus] = React.useState<ConnectionStatus>('disconnected');
-  const [lastNotification, setLastNotification] = React.useState<NotificationPayload (null);
-  const [lastUpdate, setLastUpdate] = React.useState<NotificationUpdatePayload (null);
-  const [lastDeleted, setLastDeleted] = React.useState<NotificationDeletedPayload (null);
+  const [lastNotification, setLastNotification] = React.useState<NotificationPayload | null>(null);
+  const [lastUpdate, setLastUpdate] = React.useState<NotificationUpdatePayload | null>(null);
+  const [lastDeleted, setLastDeleted] = React.useState<NotificationDeletedPayload | null>(null);
 
   React.useEffect(() => {
     if (!userId) return;

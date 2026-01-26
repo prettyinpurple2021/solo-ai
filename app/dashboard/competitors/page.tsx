@@ -3,7 +3,7 @@
 
 export const dynamic = 'force-dynamic'
 import { logError,} from '@/lib/logger'
-import, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { motion, easeOut } from "framer-motion"
 import {
   Search, Plus, Eye, AlertTriangle, TrendingUp, Users, Globe, Shield, Target, Zap, MoreVertical, RefreshCw, Download, Settings, Activity, BarChart3, Map, Clock, Radar, Grid3X3, Layers,} from "lucide-react"
@@ -92,7 +92,7 @@ interface MarketPositionData {
 
 export default function CompetitorDashboardPage() {
   const [competitors, setCompetitors] = useState<Competitor[]>([])
-  const [stats, setStats] = useState<DashboardStats (null)
+  const [stats, setStats] = useState<DashboardStats | null>(null)
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState("")
   const [threatFilter, setThreatFilter] = useState<string>("all")

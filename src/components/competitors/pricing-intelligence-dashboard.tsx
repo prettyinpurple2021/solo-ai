@@ -52,9 +52,9 @@ interface MarketInsights {
 export function PricingIntelligenceDashboard() {
   const [loading, setLoading] = useState(false)
   const [pricingData, setPricingData] = useState<PricingIntelligenceData[]>([])
-  const [marketInsights, setMarketInsights] = useState<MarketInsights (null)
+  const [marketInsights, setMarketInsights] = useState<MarketInsights | null>(null)
   const [summary, setSummary] = useState<any>(null)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
   const [threatLevelFilter, setThreatLevelFilter] = useState('high,critical')
   const [analysisScope, setAnalysisScope] = useState<'pricing_only' | 'comprehensive'>('pricing_only')
 

@@ -260,7 +260,7 @@ async function calculateStreakDays(db: any, userId: string) {
   }
 }
 
-async function generateRecommendations(db: any,: string) {
+async function generateRecommendations(db: any, arg_string: string) {
   // Simple recommendation logic - can be enhanced with ML
   return [
     'Keep up the great work with your template usage!',
@@ -269,7 +269,7 @@ async function generateRecommendations(db: any,: string) {
   ]
 }
 
-async function identifyPatterns(db: any,: string) {
+async function identifyPatterns(db: any, arg_string: string) {
   // Simple pattern identification - can be enhanced with analytics
   return [
     'You consistently complete templates with high quality',

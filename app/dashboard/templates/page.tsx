@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { CyberButton } from "@/components/cyber/CyberButton"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"

@@ -65,7 +65,7 @@ export function FeedbackWidget() {
   const prefersReducedMotion = useReducedMotion()
   const [open, setOpen] = useState(false)
   const [form, setForm] = useState<FeedbackFormState>(initialState)
-  const [previewUrl, setPreviewUrl] = useState<string (null)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {

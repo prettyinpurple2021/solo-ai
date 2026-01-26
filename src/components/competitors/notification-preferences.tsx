@@ -55,10 +55,10 @@ const alertTypeOptions: { value: AlertType; label: string }[] = [
 ];
 
 export function NotificationPreferences({ className }: NotificationPreferencesProps) {
-  const [preferences, setPreferences] = useState<NotificationPreferences (null);
+  const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [testingChannel, setTestingChannel] = useState<string (null);
+  const [testingChannel, setTestingChannel] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPreferences();

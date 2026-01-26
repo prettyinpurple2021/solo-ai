@@ -212,7 +212,7 @@ async function getUserFavoriteTemplates(userId: string) {
         description: 'Input content idea + vibe. Get high-engagement hook options in text or video format',
         category: 'Content & Collab',
         isFavorite: true,
-        favoritedAt: '2024-01-12T16:00:00Z',
+        favoritedAt: '2024-01-12T16: 00Z',
         usageCount: 5,
         lastUsed: '2024-01-22T08:30:00Z'
       }

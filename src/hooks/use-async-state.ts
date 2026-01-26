@@ -21,7 +21,7 @@ export interface AsyncActions<T> {
 export function useAsyncState<T>(initialData: T | null = null): AsyncState<T> & AsyncActions<T> {
   const [data, setData] = useState<T (initialData)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
 
   const reset = () => {
     setData(initialData)

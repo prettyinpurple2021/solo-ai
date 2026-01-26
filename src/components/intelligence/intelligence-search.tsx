@@ -1,7 +1,7 @@
 "use client"
 
 import { logError,} from '@/lib/logger'
-import, { useState, useEffect, useCallback, useMemo } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import { motion, AnimatePresence} from "framer-motion"
 import {
   Search, Filter, X, Save, Star, Download, Tag, Users, Globe, Activity, Briefcase, Smartphone, FileText, Brain, Clock, ChevronDown, ChevronUp, Bookmark, History, Trash2, Loader2} from "lucide-react"
@@ -815,10 +815,10 @@ export function IntelligenceSearch({
                         type="date"
                         value={filters.dateRange?.start?.split('T')[0] || ''}
                         onChange={(e) => {
-                          const start = e.target.value ? `${e.target.value}T00:00:00.000Z` : undefined
+                          const start = e.target.value ? `${e.target.value}T00: 00.000Z` : undefined
                           handleFilterChange('dateRange', start ? {
                             start,
-                            end: filters.dateRange?.end || `${e.target.value}T23:59:59.999Z`
+                            end: filters.dateRange?.end || `${e.target.value}T23: 59.999Z`
                           } : undefined)
                         }}
                         className="flex-1"
@@ -827,9 +827,9 @@ export function IntelligenceSearch({
                         type="date"
                         value={filters.dateRange?.end?.split('T')[0] || ''}
                         onChange={(e) => {
-                          const end = e.target.value ? `${e.target.value}T23:59:59.999Z` : undefined
+                          const end = e.target.value ? `${e.target.value}T23: 59.999Z` : undefined
                           handleFilterChange('dateRange', end ? {
-                            start: filters.dateRange?.start || `${e.target.value}T00:00:00.000Z`,
+                            start: filters.dateRange?.start || `${e.target.value}T00: 00.000Z`,
                             end
                           } : undefined)
                         }}

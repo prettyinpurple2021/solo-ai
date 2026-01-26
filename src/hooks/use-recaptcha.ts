@@ -36,7 +36,7 @@ export function useRecaptcha(options: UseRecaptchaOptions = {}) {
 
   const [isReady, setIsReady] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
 
   // Check if reCAPTCHA is ready
   useEffect(() => {

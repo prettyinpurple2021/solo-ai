@@ -90,7 +90,7 @@ export function ScrapingManager({ competitorId, competitorName, competitorDomain
   const [jobs, setJobs] = useState<ScrapingJob[]>([])
   const [metrics, setMetrics] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
   const [showAddDialog, setShowAddDialog] = useState(false)
   const [executingJobs, setExecutingJobs] = useState<Set<string>>(new Set())
 

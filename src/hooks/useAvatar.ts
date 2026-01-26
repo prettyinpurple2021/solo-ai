@@ -13,9 +13,9 @@ interface Avatar {
 }
 
 export const useAvatar = () => {
-  const [avatar, setAvatar] = useState<Avatar (null)
+  const [avatar, setAvatar] = useState<Avatar | null>(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
 
   const fetchAvatar = async () => {
     try {

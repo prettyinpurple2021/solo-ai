@@ -129,7 +129,7 @@ interface ProjectTimelineProps {
 export default function ProjectTimeline({ template: _template, onSave: _onSave, onExport: _onExport }: ProjectTimelineProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [viewMode, setViewMode] = useState<'gantt' | 'kanban' | 'calendar' | 'list'>('gantt')
-  const [_selectedTask, _setSelectedTask] = useState<ProjectTask (null)
+  const [_selectedTask, _setSelectedTask] = useState<ProjectTask | null>(null)
   const [_timelineZoom, _setTimelineZoom] = useState<'days' | 'weeks' | 'months'>('weeks')
   const [showCriticalPath, setShowCriticalPath] = useState(false)
   const [data, setData] = useState<ProjectTimelineData>({

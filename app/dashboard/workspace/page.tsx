@@ -27,7 +27,7 @@ export default function WorkspacePage() {
   const router = useRouter()
   const { templates, isLoading, deleteTemplate, exportTemplate } = useTemplates()
   const [searchQuery, setSearchQuery] = useState("")
-  const [selectedTemplate, setSelectedTemplate] = useState<string (null)
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
 
   const filteredTemplates = templates.filter(template =>
     template.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||

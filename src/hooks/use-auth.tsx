@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession, signIn as, signOut as } from "next-auth/react"
+import { useSession, signIn, signOut } from "next-auth/react"
 import { useCallback } from "react"
 import { authClient } from "@/lib/auth-client"
 import type {} from "@/lib/auth-client" // Use new User type or adapt
@@ -13,7 +13,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: unknown }>
   signUp: (email: string, password: string, metadata?: Record<string, unknown>) => Promise<{ error: unknown }>
   signOut: () => Promise<void>
-  getToken: () => Promise<string 
+  getToken: () => Promise<string> 
 }
 
 // Dummy provider for compatibility if imported elsewhere

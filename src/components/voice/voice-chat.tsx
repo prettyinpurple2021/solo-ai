@@ -29,7 +29,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
   const [isConnected, setIsConnected] = useState(false)
   const [transcript, setTranscript] = useState("")
   const [audioLevel, setAudioLevel] = useState(0)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
 
   const recognitionRef = useRef<any>(null)
   const synthRef = useRef<any>(null)

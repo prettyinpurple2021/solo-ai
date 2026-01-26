@@ -67,7 +67,7 @@ interface IntelligenceDashboardProps {
 }
 
 export function IntelligenceDashboard({ className }: IntelligenceDashboardProps) {
-  const [stats, setStats] = useState<IntelligenceDashboardStats (null)
+  const [stats, setStats] = useState<IntelligenceDashboardStats | null>(null)
   const [activities, setActivities] = useState<CompetitorActivity[]>([])
   const [threatMatrix, setThreatMatrix] = useState<ThreatMatrix[]>([])
   const [loading, setLoading] = useState(true)

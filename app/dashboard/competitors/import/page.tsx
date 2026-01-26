@@ -51,7 +51,7 @@ export default function CompetitorImportPage() {
   const [uploading, setUploading] = useState(false)
   const [importing, setImporting] = useState(false)
   const [importedData, setImportedData] = useState<ImportedCompetitor[]>([])
-  const [validationResult, setValidationResult] = useState<ValidationResult (null)
+  const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
   const [selectedRows, setSelectedRows] = useState<Set<string>>(new Set())
 
   // Mock CSV template data

@@ -10,7 +10,7 @@ const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''
 
 interface RecaptchaContextType {
   isReady: boolean
-  executeRecaptcha: (action: string) => Promise<string 
+  executeRecaptcha: (action: string) => Promise<string> 
   resetRecaptcha: () => void
 }
 

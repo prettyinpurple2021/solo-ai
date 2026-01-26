@@ -13,7 +13,7 @@ import { soundService } from '../services/soundService';
 export const TheNetwork: React.FC = () => {
     const [contacts, setContacts] = useState<Contact[]>([]);
     const [viewMode, setViewMode] = useState<'list' | 'add' | 'details'>('list');
-    const [selectedContact, setSelectedContact] = useState<Contact (null);
+    const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
 
     // New Contact Form State
@@ -23,8 +23,8 @@ export const TheNetwork: React.FC = () => {
 
     // AI Action State
     const [loading, setLoading] = useState(false);
-    const [generatedEmail, setGeneratedEmail] = useState<string (null);
-    const [negPrep, setNegPrep] = useState<NegotiationPrep (null);
+    const [generatedEmail, setGeneratedEmail] = useState<string | null>(null);
+    const [negPrep, setNegPrep] = useState<NegotiationPrep | null>(null);
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {

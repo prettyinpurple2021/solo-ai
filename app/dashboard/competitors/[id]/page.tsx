@@ -60,7 +60,7 @@ export default function CompetitorDetailPage() {
 
   // State
   const [loading, setLoading] = useState(true)
-  const [competitor, setCompetitor] = useState<CompetitorProfile (null)
+  const [competitor, setCompetitor] = useState<CompetitorProfile | null>(null)
   const [activities, setActivities] = useState<ActivityItem[]>([])
   const [alerts, setAlerts] = useState<Alert[]>([])
   const [insights, setInsights] = useState<Insight[]>([])

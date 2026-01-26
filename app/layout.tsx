@@ -1,6 +1,6 @@
 import "./globals.css"
 import type { ReactNode } from 'react'
-import { Inter as, Orbitron, JetBrains_Mono } from "next/font/google"
+import { Inter, Orbitron, JetBrains_Mono } from "next/font/google"
 import Script from 'next/script'
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"

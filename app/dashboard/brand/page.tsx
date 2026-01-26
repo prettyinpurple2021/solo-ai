@@ -3,7 +3,7 @@
 
 export const dynamic = 'force-dynamic'
 import { logError, logInfo } from '@/lib/logger'
-import, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { HudBorder } from '@/components/cyber/HudBorder'
 import { CyberButton } from '@/components/cyber/CyberButton'
@@ -189,8 +189,8 @@ export default function BrandStudioPage() {
   const [generatingLogo, setGeneratingLogo] = useState(false)
   const [activeTab, setActiveTab] = useState('overview')
   const [logoVariants, setLogoVariants] = useState<LogoVariant[]>([])
-  const [selectedLogoVariant, setSelectedLogoVariant] = useState<string (null)
-  const [brandAnalysis, setBrandAnalysis] = useState<BrandAnalysis (null)
+  const [selectedLogoVariant, setSelectedLogoVariant] = useState<string | null>(null)
+  const [brandAnalysis, setBrandAnalysis] = useState<BrandAnalysis | null>(null)
   const [analyzing, setAnalyzing] = useState(false)
 
   useEffect(() => {

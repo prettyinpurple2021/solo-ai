@@ -162,8 +162,8 @@ export default function MobileNavigation({
   className = ""
 }: MobileNavigationProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [activeItem, setActiveItem] = useState<string (null)
-  const [showQuickActions, setShowQuickActions] = useState<string (null)
+  const [activeItem, setActiveItem] = useState<string | null>(null)
+  const [showQuickActions, setShowQuickActions] = useState<string | null>(null)
   const router = useRouter()
   const pathname = usePathname()
   const navRef = useRef<HTMLDivElement>(null)

@@ -1,76 +1,10 @@
 {
     "extends": "next/core-web-vitals",
     "rules": {
-        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "warn",
         "@typescript-eslint/no-explicit-any": "off",
-        "@typescript-eslint/no-empty-object-type": "off",
-        "no-unused-vars": "off",
-        "prefer-const": "warn",
-        "no-console": [
-            "error",
-            {
-                "allow": [
-                    "warn",
-                    "error"
-                ]
-            }
-        ],
         "react/no-unescaped-entities": "off",
-        "react/jsx-no-undef": "warn"
-    },
-    "overrides": [
-        {
-            "files": [
-                "**/*.ts",
-                "**/*.tsx"
-            ],
-            "rules": {
-                "@typescript-eslint/explicit-module-boundary-types": "off"
-            }
-        },
-        {
-            "files": [
-                "lib/logger.ts",
-                "*.config.*",
-                "next.config.*",
-                "postcss.config.*",
-                "tailwind.config.*",
-                "jest.*",
-                "scripts/**"
-            ],
-            "rules": {
-                "no-console": "off"
-            }
-        }
-    ],
-    "ignorePatterns": [
-        "node_modules/**",
-        ".next/**",
-        "out/**",
-        "build/**",
-        "dist/**",
-        "*.config.js",
-        "*.config.mjs",
-        "*.config.ts",
-        "public/**",
-        "migrations/**",
-        "scripts/**",
-        "test/**",
-        "tests/**",
-        "docs/**",
-        "wiki/**",
-        "*.md",
-        "*.json",
-        "*.sql",
-        "*.ico",
-        "*.png",
-        "*.jpg",
-        "*.jpeg",
-        "*.gif",
-        "*.svg",
-        "*.woff",
-        "*.woff2",
-        "*.ttf",
-        "*.eot"
-    ]
+        "react/display-name": "off",
+        "import/no-anonymous-default-export": "off"
+    }
 }

@@ -7,7 +7,7 @@ export class CompetitiveIntelligenceGamificationTriggers {
   /**
    * Trigger gamification when a competitor is added
    */
-  static async onCompetitorAdded(userId: string,: string): Promise<void> {
+  static async onCompetitorAdded(userId: string, arg_string: string): Promise<void> {
     try {
       await this.triggerGamificationEvent(userId, 'competitor_added', 1)
       logInfo(`Gamification triggered: competitor_added for user ${userId}`)
@@ -55,7 +55,7 @@ export class CompetitiveIntelligenceGamificationTriggers {
   /**
    * Trigger gamification when an opportunity is identified
    */
-  static async onOpportunityIdentified(userId: string,: string): Promise<void> {
+  static async onOpportunityIdentified(userId: string, arg_string: string): Promise<void> {
     try {
       await this.triggerGamificationEvent(userId, 'opportunity_identified', 1)
       logInfo(`Gamification triggered: opportunity_identified for user ${userId}`)

@@ -13,7 +13,7 @@ export function ServiceWorkerRegister() {
   const [isInstalled, setIsInstalled] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [showInstallPrompt, setShowInstallPrompt] = useState(false)
-  const [deferredPrompt, setDeferredPrompt] = useState<Event (null)
+  const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null)
 
   useEffect(() => {
     // Check if service worker is supported

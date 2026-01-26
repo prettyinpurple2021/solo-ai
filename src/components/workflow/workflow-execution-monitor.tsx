@@ -1,6 +1,6 @@
 "use client"
 
-import, { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -100,7 +100,7 @@ export function WorkflowExecutionMonitor({
 }: WorkflowExecutionMonitorProps) {
   const [executions, setExecutions] = useState<WorkflowExecution[]>([])
   const [stats, setStats] = useState<ExecutionStats>(INITIAL_STATS)
-  const [selectedExecution, setSelectedExecution] = useState<WorkflowExecution (null)
+  const [selectedExecution, setSelectedExecution] = useState<WorkflowExecution | null>(null)
   const [filteredExecutions, setFilteredExecutions] = useState<WorkflowExecution[]>([])
   const [searchQuery, setSearchQuery] = useState('')
   const [statusFilter, setStatusFilter] = useState<string>('all')

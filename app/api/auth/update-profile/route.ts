@@ -9,7 +9,7 @@ import { eq} from 'drizzle-orm'
 
 export async function POST(request: NextRequest) {
   try {
-    // verifyToken expects a NextRequest and returns Promise<string 
+    // verifyToken expects a NextRequest and returns Promise<string> 
     const userId = await verifyToken(request)
     
     if (!userId) {

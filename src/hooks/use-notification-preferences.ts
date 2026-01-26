@@ -15,9 +15,9 @@ interface UseNotificationPreferencesReturn {
 }
 
 export function useNotificationPreferences(): UseNotificationPreferencesReturn {
-  const [preferences, setPreferences] = useState<NotificationPreferences (null);
+  const [preferences, setPreferences] = useState<NotificationPreferences | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string (null);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchPreferences = useCallback(async () => {
     try {

@@ -26,7 +26,7 @@ export default function BillingPage() {
   const { user, loading } = useAuth()
   const { toast } = useToast()
   const [isLoading,] = useState(false)
-  const [subscription, setSubscription] = useState<SubscriptionInfo (null)
+  const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null)
 
   useEffect(() => {
     const fetchSubscription = async () => {

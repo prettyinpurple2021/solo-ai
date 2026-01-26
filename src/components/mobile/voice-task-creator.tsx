@@ -1,6 +1,6 @@
 "use client"
 
-import, { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -18,25 +18,25 @@ import {
 import { cn } from '@/lib/utils'
 
 interface VoiceTaskCreatorProps {
-  isOpen: boolean
+  isOpen: boolean,boolean
   onClose: () => void
   onTaskCreate: (task: {
-    title: string
-    description?: string
-    priority: 'low' | 'medium' | 'high' | 'urgent'
-    estimatedMinutes?: number
+    title: string,string
+    description?: string,string
+    priority: 'low' | 'medium' | 'high' | 'urgent',
+    estimatedMinutes?: number,number
   }) => void
-  className?: string
+  className?: string,string
 }
 
 interface VoiceState {
-  isRecording: boolean
-  isProcessing: boolean
-  isPlaying: boolean
-  transcript: string
-  confidence: number
-  duration: number
-  audioBlob?: Blob
+  isRecording: boolean,boolean
+  isProcessing: boolean,boolean
+  isPlaying: boolean,boolean
+  transcript: string,string
+  confidence: number,number
+  duration: number,number
+  audioBlob?: Blob,
 }
 
 
@@ -62,18 +62,18 @@ export default function VoiceTaskCreator({
     transcript: '',
     confidence: 0,
     duration: 0,
-    audioBlob: undefined
+    audioBlob: undefined,
   })
 
   const [taskData, setTaskData] = useState({
     title: '',
     description: '',
     priority: 'medium' as 'low' | 'medium' | 'high' | 'urgent',
-    estimatedMinutes: 0
+    estimatedMinutes: 0,
   })
 
   const [isSupported, setIsSupported] = useState(false)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
 
   const recognitionRef = useRef<any>(null)
   const mediaRecorderRef = useRef<MediaRecorder (null)
@@ -181,7 +181,7 @@ export default function VoiceTaskCreator({
       const isHours = lowerTranscript.includes('hour') || lowerTranscript.includes('hr')
       setTaskData(prev => ({
         ...prev,
-        estimatedMinutes: isHours ? time * 60 : time
+        estimatedMinutes: isHours ? time * 60 : time,
       }))
     }
 
@@ -253,7 +253,7 @@ export default function VoiceTaskCreator({
       transcript: '',
       confidence: 0,
       duration: 0,
-      audioBlob: undefined
+      audioBlob: undefined,
     })
     onClose()
   }
@@ -314,7 +314,7 @@ export default function VoiceTaskCreator({
                       "w-24 h-24 mx-auto rounded-full flex items-center justify-center transition-all duration-300",
                       voiceState.isRecording
                         ? "bg-neon-magenta animate-pulse"
-                        : "bg-dark-card border border-neon-purple hover:bg-dark-hover"
+                        : "bg-dark-card border border-neon-purple hover:bg-dark-hover","bg-dark-card border border-neon-purple hover:bg-dark-hover"
                     )}
                     animate={voiceState.isRecording ? { scale: [1, 1.1, 1] } : {}}
                     transition={{ duration: 0.5, repeat: voiceState.isRecording ? Infinity : 0 }}

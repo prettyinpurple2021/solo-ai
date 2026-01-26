@@ -1,7 +1,7 @@
 "use client"
 
 import { logError,} from '@/lib/logger'
-import, { useState } from 'react'
+import { useState } from 'react'
 import { Card, CardHeader, CardTitle, CardContent} from '@/components/ui/card'
 import { Button} from '@/components/ui/button'
 import { Badge} from '@/components/ui/badge'
@@ -74,7 +74,7 @@ export default function BulkOperationsPanel({
   onClose,
   onOperationComplete
 }: BulkOperationsPanelProps) {
-  const [selectedOperation, setSelectedOperation] = useState<BulkOperation (null)
+  const [selectedOperation, setSelectedOperation] = useState<BulkOperation | null>(null)
   const [loading, setLoading] = useState(false)
   const [operationResult, setOperationResult] = useState<any>(null)
   

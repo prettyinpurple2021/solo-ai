@@ -110,8 +110,8 @@ export function VisualWorkflowBuilder({
     }
   })
 
-  const [selectedNode, setSelectedNode] = React.useState<WorkflowNode (null)
-  const [selectedEdge, setSelectedEdge] = React.useState<WorkflowEdge (null)
+  const [selectedNode, setSelectedNode] = React.useState<WorkflowNode | null>(null)
+  const [selectedEdge, setSelectedEdge] = React.useState<WorkflowEdge | null>(null)
   const [dragState, setDragState] = React.useState<DragState>({
     isDragging: false,
     dragStart: { x: 0, y: 0 },

@@ -473,7 +473,7 @@ const AgentDetailsView: React.FC<{ agent: Agent }> = ({ agent }) => {
 const AgentInterface: React.FC = () => {
   const [agents, setAgents] = useState<Agent[]>([])
   const [loading, setLoading] = useState(true)
-  const [ setSelectedAgent] = useState<Agent (null)
+  const [ setSelectedAgent] = useState<Agent | null>(null)
   const [filter, setFilter] = useState<'all' | 'available' | 'busy' | 'offline'>('all')
 
   useEffect(() => {

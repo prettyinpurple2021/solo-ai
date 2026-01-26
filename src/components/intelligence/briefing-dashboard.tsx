@@ -31,7 +31,7 @@ export function BriefingDashboard({ competitorIds }: BriefingDashboardProps) {
     clearError
   } = useIntelligenceBriefings()
   
-  const [selectedBriefing, setSelectedBriefing] = useState<IntelligenceBriefing (null)
+  const [selectedBriefing, setSelectedBriefing] = useState<IntelligenceBriefing | null>(null)
   
   useEffect(() => {
     getBriefingHistory()

@@ -33,11 +33,11 @@ type SidebarContext = {
 }
 
 // Lazy context creation to prevent build errors
-let SidebarContextInstance: React.Context<SidebarContext  | undefined
+let SidebarContextInstance: React.Context<SidebarContext  | undefined>
 
 function getSidebarContext() {
   if (!SidebarContextInstance) {
-    SidebarContextInstance = React.createContext<SidebarContext (null)
+    SidebarContextInstance = React.createContext<SidebarContext | null>(null)
   }
   return SidebarContextInstance
 }

@@ -2,7 +2,7 @@
 
 export const dynamic = 'force-dynamic'
 
-import, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { motion,} from 'framer-motion'
 import {
   BarChart3, Activity, Target, Users, DollarSign, Download, RefreshCw, Crown, ArrowUp, ArrowDown,} from 'lucide-react'

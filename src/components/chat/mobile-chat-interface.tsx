@@ -61,7 +61,7 @@ export default function MobileChatInterface({
   isLoading = false,
   className = ""
 }: MobileChatInterfaceProps) {
-  const [selectedAgent, setSelectedAgent] = useState<Agent (null)
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
   const [input, setInput] = useState('')
   const [showAgentSelector, setShowAgentSelector] = useState(false)
   const scrollAreaRef = useRef<HTMLDivElement>(null)

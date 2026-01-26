@@ -1,6 +1,6 @@
 "use client"
 
-import, { useState } from "react"
+import { useState } from "react"
 import { motion} from "framer-motion"
 import {
   Globe, Users, Activity, Briefcase, Smartphone, FileText, Tag, Brain, TrendingUp, AlertTriangle, Target, Lightbulb, ExternalLink, Eye, MoreVertical, Bookmark, Share, Edit, Trash2, Clock, BarChart3, Filter, Search} from "lucide-react"

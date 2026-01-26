@@ -1,6 +1,6 @@
 "use client"
 
-import, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { logError } from '@/lib/logger'
 import { motion,} from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -86,10 +86,10 @@ interface PredictiveInsightsDashboardProps {
 
 export default function PredictiveInsightsDashboard({ className = "" }: PredictiveInsightsDashboardProps) {
   const [insights, setInsights] = useState<PredictiveInsight[]>([])
-  const [forecast, setForecast] = useState<BusinessForecast (null)
+  const [forecast, setForecast] = useState<BusinessForecast | null>(null)
   const [anomalies, setAnomalies] = useState<AnomalyDetection[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
   const [selectedTimeframe, setSelectedTimeframe] = useState<'7d' | '30d' | '90d' | '1y'>('30d')
   const [selectedCategory, setSelectedCategory] = useState<string>('all')
   const [refreshing, setRefreshing] = useState(false)

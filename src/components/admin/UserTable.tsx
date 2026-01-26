@@ -1,4 +1,4 @@
-import, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Ban, CheckCircle,} from 'lucide-react';
 import { logError } from '@/lib/logger';
 

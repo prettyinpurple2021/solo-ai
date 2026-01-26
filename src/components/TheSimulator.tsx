@@ -10,7 +10,7 @@ import { storageService } from '../services/storageService';
 export const TheSimulator: React.FC = () => {
     const [scenario, setScenario] = useState('');
     const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState<SimulationResult (null);
+    const [result, setResult] = useState<SimulationResult | null>(null);
 
     const handleSimulate = async () => {
         if (!scenario.trim()) return;

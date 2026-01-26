@@ -78,7 +78,7 @@ const ITEM_TYPE_COLORS = {
 const UnifiedBriefcase: React.FC<UnifiedBriefcaseProps> = ({ className = '' }) => {
   const [items, setItems] = useState<BriefcaseItem[]>([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string (null)
+  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedType, setSelectedType] = useState<string>('all')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
