@@ -230,7 +230,7 @@ export async function PUT(
       .where(eq(competitorProfiles.id, updatedAlert.competitor_id))
       .limit(1)
 
-    let intelligence = null
+    let intelligence: { id: string; sourceType: string; dataType: string; sourceUrl: string | null } | null = null
     if (updatedAlert.intelligence_id) {
       const intelligenceResult = await db
         .select({
