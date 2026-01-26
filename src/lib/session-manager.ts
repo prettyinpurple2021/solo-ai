@@ -484,7 +484,7 @@ export class SessionManager {
   /**
    * Get session information (DB backed)
    */
-  async getSession(sessionId: string): Promise<CollaborationSession> {
+  async getSession(sessionId: string): Promise<CollaborationSession | null> {
     const session = await db.query.collaborationSessions.findFirst({
         where: eq(collaborationSessions.id, sessionId),
         with: { participants: true }
@@ -516,7 +516,7 @@ export class SessionManager {
   }
   
   // Async version of getSessionState
-  async getSessionStateAsync(sessionId: string): Promise<SessionState> {
+  async getSessionStateAsync(sessionId: string): Promise<SessionState | null> {
      const session = await db.query.collaborationSessions.findFirst({
         where: eq(collaborationSessions.id, sessionId),
         with: { participants: true, messages: true }
@@ -643,7 +643,7 @@ export class SessionManager {
   /**
    * Update session task status
    */
-  async updateTaskStatus(sessionId: string, arg_string: string,: 'completed' | 'pending'): Promise<boolean> {
+  async updateTaskStatus(sessionId: string, arg_string: string, status: 'completed' | 'pending'): Promise<boolean> {
       // Logic could be implemented if we parse metadata
      return false
   }

@@ -3,7 +3,7 @@ import { cookies } from 'next/headers'
 import jwt from 'jsonwebtoken'
 
 
-export async function getServerAuthToken(): Promise<string> {
+export async function getServerAuthToken(): Promise<string | null> {
   try {
     const cookieStore = await cookies()
     const token = cookieStore.get('auth_token')?.value
@@ -14,7 +14,7 @@ export async function getServerAuthToken(): Promise<string> {
   }
 }
 
-export async function getServerUser(): Promise<{ id: string; email: string }  {
+export async function getServerUser(): Promise<{ id: string; email: string } | null> {
   try {
     const token = await getServerAuthToken()
     if (!token) return null

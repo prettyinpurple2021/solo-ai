@@ -11,7 +11,7 @@ interface InlineSSLogoProps {
 /**
  * Inline SVG logo matching the exact design from index.html
  */
-export function InlineSSLogo({ className, size = 48,= false }: InlineSSLogoProps) {
+export function InlineSSLogo({ className, size = 48, animated = false }: InlineSSLogoProps) {
   return (
     <svg 
       viewBox="0 0 100 100" 

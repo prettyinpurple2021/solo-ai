@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { useToast } from '@/hooks/use-toast'
 
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -120,7 +121,7 @@ interface RevenueIntegrationProps {
 export function RevenueIntegration({ className = "" }: RevenueIntegrationProps) {
   const [connections, setConnections] = useState<Record<string, PaymentProviderConnection>>({})
   const [isLoading, setIsLoading] = useState(false)
-  const [ setShowCredentialsDialog] = useState<string | null>(null)
+  const [showCredentialsDialog, setShowCredentialsDialog] = useState<string | null>(null)
   const [] = useState<Record<string, any>>({})
   const { toast } = useToast()
 
@@ -432,12 +433,12 @@ export function RevenueIntegration({ className = "" }: RevenueIntegrationProps) 
                         </div>
                       </div>
                       {isConnected ? (
-                        <Badge variant="outline" className="bg-green-500/20 text-green-400 border-green-500/30">
+                        <Badge className="bg-green-500/20 text-green-400 border-green-500/30">
                           <CheckCircle className="w-3 h-3 mr-1" />
                           Connected
                         </Badge>
                       ) : (
-                        <Badge variant="outline" className="bg-military-tactical/30 text-military-storm-grey border-military-tactical/50">
+                        <Badge className="bg-military-tactical/30 text-military-storm-grey border-military-tactical/50">
                           <XCircle className="w-3 h-3 mr-1" />
                           Not Connected
                         </Badge>
