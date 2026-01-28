@@ -388,7 +388,7 @@ async function updateProductivityInsights(userId: string, session: any, sql: any
     `
     
     // Generate recommendations based on performance
-    const recommendations = []
+    const recommendations: string[] = []
     if (efficiencyScore < 0.8) {
       recommendations.push('Consider breaking tasks into smaller chunks')
       recommendations.push('Try the Pomodoro Technique with 25-minute sessions')

@@ -78,7 +78,7 @@ function generateEmailContent(alerts: any[], template: string, _priority: string
 
   if (template === 'summary') {
     subject = `${alertCount} New Competitor Alert${alertCount > 1 ? 's' : ''}`
-    const severitySummary = []
+    const severitySummary: string[] = []
     if (criticalCount > 0) severitySummary.push(`${criticalCount} critical`)
     if (urgentCount > 0) severitySummary.push(`${urgentCount} urgent`)
     
