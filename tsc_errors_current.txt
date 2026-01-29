@@ -1,0 +1,1078 @@
+﻿app/api/briefcase/files/[id]/share-links/route.ts(76,9): error TS2322: Type 'string' is not assignable to type 'null'.
+app/api/briefcase/files/route.ts(178,28): error TS2345: Argument of type 'Record<string, any>' is not assignable to parameter of type 'never'.
+app/api/chat/route-refactored.ts(41,107): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/chat/route-refactored.ts(73,30): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { email: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<string, any> | undefined; name?: string | SQL<unknown> | Placeholder<...> | null | undefined; ... 24 more ...; updated_at?: Date | ... 3 more ... | undefined; }): PgInsertBase<...>', gave the following error.
+    Type 'string | null | undefined' is not assignable to type 'string | SQL<unknown> | Placeholder<string, any>'.
+      Type 'undefined' is not assignable to type 'string | SQL<unknown> | Placeholder<string, any>'.
+  Overload 2 of 2, '(values: { email: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<string, any> | undefined; name?: string | SQL<unknown> | Placeholder<...> | null | undefined; ... 24 more ...; updated_at?: Date | ... 3 more ... | undefined; }[]): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'id' does not exist in type '{ email: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<string, any> | undefined; name?: string | SQL<unknown> | Placeholder<...> | null | undefined; ... 24 more ...; updated_at?: Date | ... 3 more ... | undefined; }[]'.
+app/api/chat/route-refactored.ts(77,25): error TS2339: Property 'full_name' does not exist on type '{ id: string; role: string; address?: string | undefined; } & User'.
+app/api/chat/route-refactored.ts(78,21): error TS2339: Property 'avatar_url' does not exist on type '{ id: string; role: string; address?: string | undefined; } & User'.
+app/api/chat/route.ts(83,107): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/chat/route.ts(115,30): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { email: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<string, any> | undefined; name?: string | SQL<unknown> | Placeholder<...> | null | undefined; ... 24 more ...; updated_at?: Date | ... 3 more ... | undefined; }): PgInsertBase<...>', gave the following error.
+    Type 'string | null | undefined' is not assignable to type 'string | SQL<unknown> | Placeholder<string, any>'.
+      Type 'undefined' is not assignable to type 'string | SQL<unknown> | Placeholder<string, any>'.
+  Overload 2 of 2, '(values: { email: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<string, any> | undefined; name?: string | SQL<unknown> | Placeholder<...> | null | undefined; ... 24 more ...; updated_at?: Date | ... 3 more ... | undefined; }[]): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'id' does not exist in type '{ email: string | SQL<unknown> | Placeholder<string, any>; id?: string | SQL<unknown> | Placeholder<string, any> | undefined; name?: string | SQL<unknown> | Placeholder<...> | null | undefined; ... 24 more ...; updated_at?: Date | ... 3 more ... | undefined; }[]'.
+app/api/chat/route.ts(119,25): error TS2339: Property 'full_name' does not exist on type '{ id: string; role: string; address?: string | undefined; } & User'.
+app/api/chat/route.ts(120,21): error TS2339: Property 'avatar_url' does not exist on type '{ id: string; role: string; address?: string | undefined; } & User'.
+app/api/collaboration/agents/[id]/route.ts(63,42): error TS2339: Property 'getAgentSessions' does not exist on type 'SessionManager'.
+app/api/collaboration/context/route.ts(81,17): error TS2339: Property 'userId' does not exist on type 'Promise<{ id: string; userId: string; updatedAt: Date; createdAt: Date; participatingAgents: string[]; sessionStatus: "active" | "completed" | "cancelled" | "paused"; sessionType: "chat" | ... 2 more ... | "consultation"; metadata?: Record<...> | undefined; projectName?: string | undefined; completedAt?: Date | unde...'.
+app/api/collaboration/context/route.ts(179,19): error TS2339: Property 'userId' does not exist on type 'Promise<{ id: string; userId: string; updatedAt: Date; createdAt: Date; participatingAgents: string[]; sessionStatus: "active" | "completed" | "cancelled" | "paused"; sessionType: "chat" | ... 2 more ... | "consultation"; metadata?: Record<...> | undefined; projectName?: string | undefined; completedAt?: Date | unde...'.
+app/api/competitive-intelligence/chat-context/route.ts(27,96): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/competitive-intelligence/chat-context/route.ts(75,96): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/competitive-intelligence/chat-context/route.ts(166,16): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/chat-context/route.ts(171,16): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/chat-context/route.ts(176,16): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/chat-context/route.ts(181,16): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/goals/route.ts(139,34): error TS2345: Argument of type 'number' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(123,27): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(124,27): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(129,27): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(130,27): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(135,27): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(136,27): error TS2345: Argument of type '"medium" | "low" | "high" | "critical"' is not assignable to parameter of type 'never'.
+  Type '"medium"' is not assignable to type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(141,27): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(142,27): error TS2345: Argument of type 'number' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(146,25): error TS2345: Argument of type '"updated_at = NOW()"' is not assignable to parameter of type 'never'.
+app/api/competitive-intelligence/tasks/route.ts(147,25): error TS2345: Argument of type 'number' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(239,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(240,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(243,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(244,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(247,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(248,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(251,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(252,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(255,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(256,25): error TS2345: Argument of type '"small" | "medium" | "startup" | "large" | "enterprise"' is not assignable to parameter of type 'never'.
+  Type '"small"' is not assignable to type 'never'.
+app/api/competitors/[id]/route.ts(259,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(260,25): error TS2345: Argument of type '"medium" | "low" | "high" | "critical"' is not assignable to parameter of type 'never'.
+  Type '"medium"' is not assignable to type 'never'.
+app/api/competitors/[id]/route.ts(263,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(264,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(267,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(268,25): error TS2345: Argument of type 'number' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(271,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(272,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(275,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(276,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(279,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(280,25): error TS2345: Argument of type '"active" | "archived" | "paused"' is not assignable to parameter of type 'never'.
+  Type '"active"' is not assignable to type 'never'.
+app/api/competitors/[id]/route.ts(287,23): error TS2345: Argument of type '"updated_at = NOW()"' is not assignable to parameter of type 'never'.
+app/api/competitors/[id]/route.ts(288,23): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/discover/route.ts(265,14): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/discover/route.ts(269,16): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/competitors/social-media/benchmarks/route.ts(235,101): error TS2554: Expected 0-1 arguments, but got 2.
+app/api/competitors/social-media/benchmarks/route.ts(476,18): error TS2345: Argument of type '{ competitorId: string; content_analysis: EngagementPatternAnalysis[]; }' is not assignable to parameter of type 'never'.
+app/api/competitors/social-media/benchmarks/route.ts(493,18): error TS2345: Argument of type '{ competitorId: string; timing_analysis: PostingFrequencyAnalysis[]; }' is not assignable to parameter of type 'never'.
+app/api/competitors/social-media/benchmarks/route.ts(510,18): error TS2345: Argument of type '{ competitorId: string; audience_analysis: AudienceAnalysis[]; }' is not assignable to parameter of type 'never'.
+app/api/dashboard/route.ts(345,95): error TS2339: Property 'updatedAt' does not exist on type '{ id: string; status: string | null; }'.
+app/api/dashboard/route.ts(347,86): error TS2339: Property 'duration' does not exist on type '{ id: number; earned_at: Date | null; name: string | null; title: string | null; description: string | null; icon: string | null; points: number | null; }'.
+app/api/dashboard/route.ts(348,60): error TS2339: Property 'status' does not exist on type '{ duration: number | null; }'.
+app/api/dashboard/route.ts(349,58): error TS2339: Property 'status' does not exist on type '{ duration: number | null; }'.
+app/api/dashboard/route.ts(375,19): error TS2339: Property 'id' does not exist on type '{ count: number; }'.
+app/api/dashboard/route.ts(376,22): error TS2339: Property 'title' does not exist on type '{ count: number; }'.
+app/api/dashboard/route.ts(377,28): error TS2339: Property 'description' does not exist on type '{ count: number; }'.
+app/api/dashboard/route.ts(379,28): error TS2339: Property 'due_date' does not exist on type '{ count: number; }'.
+app/api/dashboard/route.ts(379,50): error TS2339: Property 'due_date' does not exist on type '{ count: number; }'.
+app/api/dashboard/route.ts(389,28): error TS2339: Property 'last_message_at' does not exist on type '{ id: string; user_id: string; briefcase_id: string | null; title: string; description: string | null; status: string | null; priority: string | null; due_date: Date | null; completed_at: Date | null; created_at: Date | null; updated_at: Date | null; }'.
+app/api/dashboard/route.ts(389,57): error TS2339: Property 'last_message_at' does not exist on type '{ id: string; user_id: string; briefcase_id: string | null; title: string; description: string | null; status: string | null; priority: string | null; due_date: Date | null; completed_at: Date | null; created_at: Date | null; updated_at: Date | null; }'.
+app/api/dashboard/route.ts(391,21): error TS2339: Property 'agent_name' does not exist on type '{ id: string; user_id: string; briefcase_id: string | null; title: string; description: string | null; status: string | null; priority: string | null; due_date: Date | null; completed_at: Date | null; created_at: Date | null; updated_at: Date | null; }'.
+app/api/dashboard/route.ts(392,29): error TS2339: Property 'agent_id' does not exist on type '{ id: string; user_id: string; briefcase_id: string | null; title: string; description: string | null; status: string | null; priority: string | null; due_date: Date | null; completed_at: Date | null; created_at: Date | null; updated_at: Date | null; }'.
+app/api/dashboard/route.ts(400,24): error TS2339: Property 'description' does not exist on type '{ id: string; title: string; last_message_at: Date | null; agent_id: string; agent_name: string; }'.
+app/api/dashboard/route.ts(401,19): error TS2339: Property 'status' does not exist on type '{ id: string; title: string; last_message_at: Date | null; agent_id: string; agent_name: string; }'.
+app/api/dashboard/route.ts(404,23): error TS2339: Property 'created_at' does not exist on type '{ id: string; title: string; last_message_at: Date | null; agent_id: string; agent_name: string; }'.
+app/api/dashboard/route.ts(404,47): error TS2339: Property 'created_at' does not exist on type '{ id: string; title: string; last_message_at: Date | null; agent_id: string; agent_name: string; }'.
+app/api/dashboard/route.ts(405,23): error TS2339: Property 'updated_at' does not exist on type '{ id: string; title: string; last_message_at: Date | null; agent_id: string; agent_name: string; }'.
+app/api/dashboard/route.ts(405,47): error TS2339: Property 'updated_at' does not exist on type '{ id: string; title: string; last_message_at: Date | null; agent_id: string; agent_name: string; }'.
+app/api/dashboard/route.ts(451,9): error TS2322: Type '{ id: string; title: string; description: string | null; status: string; priority: string | null; due_date: string | null; goal: { id: string; title: string; category: null; } | null; }[]' is not assignable to type '{ id: string; title: string; description: string | null; status: string; priority: string; due_date: string | null; goal: { id: string; title: string; category: string | null; } | null; }[]'.
+  Type '{ id: string; title: string; description: string | null; status: string; priority: string | null; due_date: string | null; goal: { id: string; title: string; category: null; } | null; }' is not assignable to type '{ id: string; title: string; description: string | null; status: string; priority: string; due_date: string | null; goal: { id: string; title: string; category: string | null; } | null; }'.
+    Types of property 'priority' are incompatible.
+      Type 'string | null' is not assignable to type 'string'.
+        Type 'null' is not assignable to type 'string'.
+app/api/dashboard/route.ts(456,26): error TS2339: Property 'earned_at' does not exist on type '{ id: string; user_id: string; title: string; description: string | null; status: string | null; metadata: unknown; created_at: Date | null; updated_at: Date | null; }'.
+app/api/dashboard/route.ts(458,25): error TS2339: Property 'name' does not exist on type '{ id: string; user_id: string; title: string; description: string | null; status: string | null; metadata: unknown; created_at: Date | null; updated_at: Date | null; }'.
+app/api/dashboard/route.ts(461,25): error TS2339: Property 'icon' does not exist on type '{ id: string; user_id: string; title: string; description: string | null; status: string | null; metadata: unknown; created_at: Date | null; updated_at: Date | null; }'.
+app/api/dashboard/route.ts(462,27): error TS2339: Property 'points' does not exist on type '{ id: string; user_id: string; title: string; description: string | null; status: string | null; metadata: unknown; created_at: Date | null; updated_at: Date | null; }'.
+app/api/dashboard/route.ts(467,82): error TS2339: Property 'duration' does not exist on type '{ id: number; earned_at: Date | null; name: string | null; title: string | null; description: string | null; icon: string | null; points: number | null; }'.
+app/api/feedback/route.ts(66,7): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { type: string | SQL<unknown> | Placeholder<string, any>; message: string | SQL<unknown> | Placeholder<string, any>; status?: string | SQL<unknown> | Placeholder<...> | undefined; ... 7 more ...; screenshot_url?: string | ... 3 more ... | undefined; }): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, but 'userId' does not exist in type '{ type: string | SQL<unknown> | Placeholder<string, any>; message: string | SQL<unknown> | Placeholder<string, any>; status?: string | SQL<unknown> | Placeholder<string, any> | undefined; ... 7 more ...; screenshot_url?: string | ... 3 more ... | undefined; }'. Did you mean to write 'user_id'?
+  Overload 2 of 2, '(values: { type: string | SQL<unknown> | Placeholder<string, any>; message: string | SQL<unknown> | Placeholder<string, any>; status?: string | SQL<unknown> | Placeholder<...> | undefined; ... 7 more ...; screenshot_url?: string | ... 3 more ... | undefined; }[]): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'userId' does not exist in type '{ type: string | SQL<unknown> | Placeholder<string, any>; message: string | SQL<unknown> | Placeholder<string, any>; status?: string | SQL<unknown> | Placeholder<string, any> | undefined; ... 7 more ...; screenshot_url?: string | ... 3 more ... | undefined; }[]'.
+app/api/integrations/google/calendar/route.ts(336,40): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+app/api/integrations/google/calendar/route.ts(340,40): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+app/api/learning/route.ts(23,47): error TS2554: Expected 0 arguments, but got 1.
+app/api/learning/route.ts(27,48): error TS2339: Property 'analyzeSkillGaps' does not exist on type 'LearningEngine'.
+app/api/learning/route.ts(31,54): error TS2339: Property 'getPersonalizedRecommendations' does not exist on type 'LearningEngine'.
+app/api/learning/route.ts(35,47): error TS2576: Property 'getUserProgress' does not exist on type 'LearningEngine'. Did you mean to access the static member 'LearningEngine.getUserProgress' instead?
+app/api/learning/route.ts(39,48): error TS2576: Property 'getLearningAnalytics' does not exist on type 'LearningEngine'. Did you mean to access the static member 'LearningEngine.getLearningAnalytics' instead?
+app/api/learning/route.ts(65,47): error TS2554: Expected 0 arguments, but got 1.
+app/api/learning/route.ts(69,30): error TS2339: Property 'trackProgress' does not exist on type 'LearningEngine'.
+app/api/learning/route.ts(73,30): error TS2339: Property 'createSkillAssessment' does not exist on type 'LearningEngine'.
+app/api/notifications/jobs/cleanup/route.ts(34,31): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/notifications/jobs/route.ts(62,31): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/notifications/jobs/route.ts(114,32): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/notifications/jobs/route.ts(200,32): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/notifications/jobs/route.ts(227,22): error TS2345: Argument of type '{ jobId: any; cancelled: boolean; }' is not assignable to parameter of type 'never'.
+app/api/notifications/jobs/route.ts(229,22): error TS2345: Argument of type '{ jobId: any; cancelled: boolean; error: string; }' is not assignable to parameter of type 'never'.
+app/api/notifications/jobs/route.ts(237,50): error TS2339: Property 'cancelled' does not exist on type 'never'.
+app/api/notifications/jobs/stats/route.ts(31,42): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/notifications/processor/route.ts(33,31): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/notifications/processor/route.ts(68,32): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/notifications/send/route.ts(98,7): error TS2322: Type '{ id: string; role: string; address?: string | undefined; } & User' is not assignable to type 'null'.
+app/api/notifications/send/route.ts(99,17): error TS18047: 'user' is possibly 'null'.
+app/api/notifications/send/route.ts(146,26): error TS2339: Property 'id' does not exist on type 'never'.
+app/api/notifications/send/route.ts(198,35): error TS2339: Property 'id' does not exist on type 'never'.
+app/api/notifications/send/route.ts(260,22): error TS2345: Argument of type '{ userId: any; subscriptionId: any; success: boolean; }' is not assignable to parameter of type 'never'.
+app/api/notifications/send/route.ts(278,21): error TS2345: Argument of type '{ userId: any; subscriptionId: any; error: any; statusCode: any; }' is not assignable to parameter of type 'never'.
+app/api/notifications/send/route.ts(308,17): error TS2339: Property 'id' does not exist on type 'never'.
+app/api/notifications/send/route.ts(386,27): error TS2345: Argument of type '{ index: number; title: string; success: boolean; message: string; }' is not assignable to parameter of type 'never'.
+app/api/notifications/send/route.ts(394,27): error TS2345: Argument of type '{ index: number; title: string; success: boolean; error: string; }' is not assignable to parameter of type 'never'.
+app/api/notifications/send/route.ts(403,53): error TS2339: Property 'success' does not exist on type 'never'.
+app/api/notifications/send/route.ts(404,52): error TS2339: Property 'success' does not exist on type 'never'.
+app/api/onboarding/generate-plan/route.ts(112,9): error TS2345: Argument of type 'PgInsertBase<PgTableWithColumns<{ name: "goals"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "goals"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 9 more ...; updated_at: PgC...' is not assignable to parameter of type 'never'.
+app/api/onboarding/generate-plan/route.ts(126,11): error TS2345: Argument of type 'PgInsertBase<PgTableWithColumns<{ name: "tasks"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "tasks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: true; ... 6 more ...; generated: undefined; }, {}, {}>; ... 19 more ...; updated_at: Pg...' is not assignable to parameter of type 'never'.
+app/api/preferences/route.ts(27,7): error TS2322: Type 'null' is not assignable to type 'string'.
+app/api/preferences/route.ts(31,21): error TS2322: Type 'null' is not assignable to type 'string'.
+app/api/preferences/route.ts(34,5): error TS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.
+app/api/preferences/route.ts(36,5): error TS2322: Type 'null' is not assignable to type 'string'.
+app/api/preferences/route.ts(121,22): error TS2345: Argument of type 'Record<string, any>' is not assignable to parameter of type 'never'.
+app/api/preferences/route.ts(128,19): error TS2339: Property 'preference_key' does not exist on type 'never'.
+app/api/preferences/route.ts(128,41): error TS2339: Property 'preference_value' does not exist on type 'never'.
+app/api/scraping/failures/route.ts(17,26): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/scraping/metrics/route.ts(39,31): error TS2345: Argument of type 'string | null | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+app/api/scraping/metrics/route.ts(78,29): error TS2345: Argument of type 'ScrapingJobResult' is not assignable to parameter of type 'never'.
+app/api/scraping/metrics/route.ts(82,39): error TS2339: Property 'completedAt' does not exist on type 'never'.
+app/api/scraping/metrics/route.ts(82,65): error TS2339: Property 'completedAt' does not exist on type 'never'.
+app/api/scraping/metrics/route.ts(87,37): error TS2339: Property 'success' does not exist on type 'never'.
+app/api/scraping/metrics/route.ts(92,50): error TS2339: Property 'executionTime' does not exist on type 'never'.
+app/api/stripe/billing-portal/route.ts(33,15): error TS2339: Property 'stripe_customer_id' does not exist on type '{ id: string; role: string; address?: string | undefined; } & User'.
+app/api/stripe/billing-portal/route.ts(42,12): error TS2339: Property 'stripe_customer_id' does not exist on type '{ id: string; role: string; address?: string | undefined; } & User'.
+app/api/stripe/create-checkout-session/route.ts(65,14): error TS2339: Property 'stripe_customer_id' does not exist on type '{ id: string; role: string; address?: string | undefined; } & User'.
+app/api/stripe/create-checkout-session/route.ts(66,25): error TS2339: Property 'stripe_customer_id' does not exist on type '{ id: string; role: string; address?: string | undefined; } & User'.
+app/api/stripe/create-checkout-session/route.ts(77,20): error TS2339: Property 'full_name' does not exist on type '{ id: string; role: string; address?: string | undefined; } & User'.
+app/api/stripe/subscription/route.ts(39,11): error TS2322: Type 'Response<Subscription>' is not assignable to type 'null'.
+app/api/surveys/exit-intent/route.ts(29,7): error TS2322: Type 'null' is not assignable to type 'string'.
+app/api/surveys/exit-intent/route.ts(34,5): error TS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.
+app/api/surveys/exit-intent/route.ts(36,5): error TS2322: Type 'null' is not assignable to type 'string'.
+app/api/user/progress/route.ts(31,59): error TS2339: Property 'extractErrors' does not exist on type 'ZodError<{ xp: number; level: number; totalActions: number; }>'.
+app/api/workflows/route.ts(332,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(333,19): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(337,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(338,19): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(342,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(343,19): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(347,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(348,19): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(352,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(353,19): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(357,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(358,19): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(362,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(363,19): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(367,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(368,19): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(372,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(373,19): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(377,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(378,19): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(382,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(383,19): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(387,23): error TS2345: Argument of type '"updated_at = NOW()"' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(390,17): error TS2345: Argument of type 'any' is not assignable to parameter of type 'never'.
+app/api/workflows/route.ts(391,17): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+app/api/workflows/templates/route.ts(20,23): error TS2345: Argument of type 'SQL<unknown> | undefined' is not assignable to parameter of type 'never'.
+  Type 'undefined' is not assignable to type 'never'.
+app/api/workflows/templates/route.ts(27,23): error TS2345: Argument of type 'SQL<unknown>' is not assignable to parameter of type 'never'.
+app/api/workflows/templates/route.ts(31,23): error TS2345: Argument of type 'SQL<unknown>' is not assignable to parameter of type 'never'.
+app/auth/2fa/page.tsx(28,15): error TS2339: Property 'data' does not exist on type 'void'.
+app/auth/2fa/page.tsx(28,21): error TS2339: Property 'error' does not exist on type 'void'.
+app/auth/2fa/page.tsx(28,82): error TS2554: Expected 0 arguments, but got 1.
+app/auth/device-approval/page.tsx(110,31): error TS2339: Property 'message' does not exist on type 'never'.
+app/auth/sessions/page.tsx(48,32): error TS2339: Property 'message' does not exist on type 'never'.
+app/auth/sessions/page.tsx(64,82): error TS2554: Expected 0 arguments, but got 1.
+app/auth/sessions/page.tsx(69,30): error TS2339: Property 'message' does not exist on type 'never'.
+app/auth/sessions/page.tsx(85,30): error TS2339: Property 'message' does not exist on type 'never'.
+app/dashboard/analytics/page.tsx(70,7): error TS2304: Cannot find name 'logError'.
+app/dashboard/billing/page.tsx(45,9): error TS2304: Cannot find name 'logError'.
+app/dashboard/incinerator/page.tsx(67,13): error TS2304: Cannot find name 'logError'.
+app/dashboard/slaylist/page.tsx(745,12): error TS2741: Property 'boolean' is missing in type '{ isOpen: true; onClose: () => void; onTaskCreate: (taskData: { title: string; description?: string | undefined; priority: "medium" | "low" | "high" | "urgent"; estimatedMinutes?: number | undefined; }) => Promise<...>; }' but required in type 'VoiceTaskCreatorProps'.
+app/dashboard/templates/[id]/page.tsx(69,5): error TS2349: This expression is not callable.
+  Type 'Boolean' has no call signatures.
+app/dashboard/templates/[id]/page.tsx(93,7): error TS2349: This expression is not callable.
+  Type 'Boolean' has no call signatures.
+app/dashboard/templates/page.tsx(142,9): error TS2304: Cannot find name 'logError'.
+app/dashboard/templates/page.tsx(211,7): error TS2304: Cannot find name 'logError'.
+app/dashboard/templates/page.tsx(243,7): error TS2304: Cannot find name 'logError'.
+app/dashboard/templates/page.tsx(272,7): error TS2304: Cannot find name 'logError'.
+app/dashboard/workspace/page.tsx(65,34): error TS2322: Type '{ variant: "pulse"; text: string; }' is not assignable to type 'IntrinsicAttributes & LoadingProps'.
+  Property 'text' does not exist on type 'IntrinsicAttributes & LoadingProps'.
+app/help/page.tsx(75,85): error TS2322: Type '{ children: (false | Element)[]; key: number; variant: "hover"; className: string; onClick: () => void; }' is not assignable to type 'IntrinsicAttributes & HudBorderProps'.
+  Property 'onClick' does not exist on type 'IntrinsicAttributes & HudBorderProps'.
+app/page.tsx(99,5): error TS2349: This expression is not callable.
+  Type 'Boolean' has no call signatures.
+app/templates/[templateSlug]/page.tsx(44,26): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+app/templates/[templateSlug]/page.tsx(48,21): error TS2322: Type '"default" | "secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+  Type '"default"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+app/templates/page.tsx(67,83): error TS2339: Property 'name' does not exist on type 'TemplateSummary'.
+examples/stripe-usage.ts(9,16): error TS7030: Not all code paths return a value.
+scripts/root_inspect_db.ts(4,23): error TS2307: Cannot find module './src/lib/database-client' or its corresponding type declarations.
+scripts/root_proxy.ts(2,28): error TS2307: Cannot find module './src/auth.config' or its corresponding type declarations.
+scripts/root_reset_db.ts(3,23): error TS2307: Cannot find module './src/lib/database-client' or its corresponding type declarations.
+scripts/test-learning-analytics.ts(3,10): error TS2305: Module '"@/db/schema"' has no exported member 'userProgress'.
+scripts/verify-realtime-monitoring.ts(42,21): error TS2353: Object literal may only specify known properties, and 'data' does not exist in type '{ config: Record<string, any>; status: "pending" | "running" | "completed" | "failed" | "skipped"; id: string; name: string; type: "email" | "action" | "webhook" | "trigger" | ... 8 more ... | "transform_data"; ... 5 more ...; description?: string | undefined; }'.
+scripts/verify-realtime-monitoring.ts(49,21): error TS2353: Object literal may only specify known properties, and 'data' does not exist in type '{ config: Record<string, any>; status: "pending" | "running" | "completed" | "failed" | "skipped"; id: string; name: string; type: "email" | "action" | "webhook" | "trigger" | ... 8 more ... | "transform_data"; ... 5 more ...; description?: string | undefined; }'.
+scripts/verify-realtime-monitoring.ts(61,21): error TS2353: Object literal may only specify known properties, and 'data' does not exist in type '{ config: Record<string, any>; status: "pending" | "running" | "completed" | "failed" | "skipped"; id: string; name: string; type: "email" | "action" | "webhook" | "trigger" | ... 8 more ... | "transform_data"; ... 5 more ...; description?: string | undefined; }'.
+scripts/verify-realtime-monitoring.ts(121,42): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "id"; tableName: "workflows"; dataType: "number"; columnType: "PgInteger"; data: number; driverParam: string | number; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: number | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'string | number' is not assignable to parameter of type 'number | SQLWrapper'.
+      Type 'string' is not assignable to type 'number | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<string | number>, right: string | number | SQLWrapper): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "workflows"; dataType: "number"; columnType: "PgInteger"; data: number; driverParam: string | number; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string | number>'.
+      Type 'PgColumn<{ name: "id"; tableName: "workflows"; dataType: "number"; columnType: "PgInteger"; data: number; driverParam: string | number; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string | number>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "workflows"; dataType: "number"; columnType: "PgInteger"; data: number; driverParam: string | number; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+server/index.ts(2,25): error TS2307: Cannot find module '@sentry/node' or its corresponding type declarations.
+server/index.ts(5,48): error TS2307: Cannot find module 'socket.io' or its corresponding type declarations.
+server/index.ts(121,9): error TS2322: Type 'T | null' is not assignable to type 'T'.
+  'T' could be instantiated with an arbitrary type which could be unrelated to 'T | null'.
+server/index.ts(124,9): error TS2322: Type 'null' is not assignable to type 'T'.
+  'T' could be instantiated with an arbitrary type which could be unrelated to 'null'.
+server/index.ts(184,30): error TS7030: Not all code paths return a value.
+server/index.ts(213,29): error TS7030: Not all code paths return a value.
+server/index.ts(241,27): error TS7030: Not all code paths return a value.
+server/index.ts(313,22): error TS7030: Not all code paths return a value.
+server/index.ts(359,32): error TS7030: Not all code paths return a value.
+server/index.ts(394,23): error TS7030: Not all code paths return a value.
+server/index.ts(419,24): error TS7030: Not all code paths return a value.
+server/index.ts(452,30): error TS7030: Not all code paths return a value.
+server/index.ts(488,30): error TS7030: Not all code paths return a value.
+server/index.ts(497,17): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "id"; tableName: "tasks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'string | string[]' is not assignable to parameter of type 'string | SQLWrapper'.
+      Type 'string[]' is not assignable to type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<string | string[]>, right: string | string[] | SQLWrapper): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "tasks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; hasRuntimeDefault: false; enumValues: [...]; baseColumn: never; identity: undefined; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string | string[]>'.
+      Type 'PgColumn<{ name: "id"; tableName: "tasks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; hasRuntimeDefault: false; enumValues: [...]; baseColumn: never; identity: undefined; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string | string[]>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "tasks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; hasRuntimeDefault: false; enumValues: [...]; baseColumn: never; identity: undefined; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+server/index.ts(504,61): error TS2345: Argument of type 'string | string[]' is not assignable to parameter of type 'string'.
+  Type 'string[]' is not assignable to type 'string'.
+server/index.ts(512,26): error TS7030: Not all code paths return a value.
+server/index.ts(530,31): error TS7030: Not all code paths return a value.
+server/index.ts(547,21): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "agent_id"; tableName: "chat_history"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'string | string[]' is not assignable to parameter of type 'string | SQLWrapper'.
+      Type 'string[]' is not assignable to type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<string | string[]>, right: string | string[] | SQLWrapper): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "agent_id"; tableName: "chat_history"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string | string[]>'.
+      Type 'PgColumn<{ name: "agent_id"; tableName: "chat_history"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string | string[]>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "agent_id"; tableName: "chat_history"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+server/index.ts(560,23): error TS7030: Not all code paths return a value.
+server/index.ts(595,25): error TS7030: Not all code paths return a value.
+server/index.ts(620,26): error TS7030: Not all code paths return a value.
+server/index.ts(652,25): error TS7030: Not all code paths return a value.
+server/index.ts(682,26): error TS7030: Not all code paths return a value.
+server/middleware/admin.ts(3,20): error TS2307: Cannot find module 'bcrypt' or its corresponding type declarations.
+server/middleware/admin.ts(22,23): error TS7030: Not all code paths return a value.
+server/middleware/auth.ts(9,17): error TS7030: Not all code paths return a value.
+server/middleware/checkSuspended.ts(11,31): error TS7030: Not all code paths return a value.
+server/realtime.ts(1,45): error TS2307: Cannot find module 'socket.io' or its corresponding type declarations.
+server/routes/admin.ts(14,28): error TS7030: Not all code paths return a value.
+server/routes/admin.ts(53,13): error TS2339: Property 'json' does not exist on type 'Request<{}, any, any, ParsedQs, Record<string, any>>'.
+server/routes/admin.ts(60,13): error TS2339: Property 'status' does not exist on type 'Request<{}, any, any, ParsedQs, Record<string, any>>'.
+server/routes/admin.ts(92,30): error TS7030: Not all code paths return a value.
+server/routes/admin.ts(152,13): error TS2339: Property 'json' does not exist on type 'Request<{}, any, any, ParsedQs, Record<string, any>>'.
+server/routes/admin.ts(164,13): error TS2339: Property 'status' does not exist on type 'Request<{}, any, any, ParsedQs, Record<string, any>>'.
+server/routes/ai.ts(299,62): error TS7030: Not all code paths return a value.
+server/routes/contacts.ts(33,20): error TS7030: Not all code paths return a value.
+server/routes/contacts.ts(58,18): error TS7030: Not all code paths return a value.
+server/routes/contacts.ts(93,20): error TS7030: Not all code paths return a value.
+server/routes/contacts.ts(139,23): error TS7030: Not all code paths return a value.
+server/routes/notifications.ts(137,53): error TS7030: Not all code paths return a value.
+server/routes/pitchDecks.ts(22,38): error TS2339: Property 'generatedAt' does not exist on type 'PgTableWithColumns<{ name: "pitch_decks"; schema: undefined; columns: { id: PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; ... 6 more ...; generated: undefined; }, {}, {}>; ... 6 more ...; updatedAt: PgCo...'.
+server/routes/pitchDecks.ts(32,20): error TS7030: Not all code paths return a value.
+server/routes/pitchDecks.ts(40,17): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'string | string[]' is not assignable to parameter of type 'string | SQLWrapper'.
+      Type 'string[]' is not assignable to type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<string | string[]>, right: string | string[] | SQLWrapper): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string | string[]>'.
+      Type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string | string[]>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+server/routes/pitchDecks.ts(57,18): error TS7030: Not all code paths return a value.
+server/routes/pitchDecks.ts(108,20): error TS7030: Not all code paths return a value.
+server/routes/pitchDecks.ts(118,17): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'string | string[]' is not assignable to parameter of type 'string | SQLWrapper'.
+      Type 'string[]' is not assignable to type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<string | string[]>, right: string | string[] | SQLWrapper): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string | string[]>'.
+      Type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string | string[]>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+server/routes/pitchDecks.ts(133,20): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'string | string[]' is not assignable to parameter of type 'string | SQLWrapper'.
+      Type 'string[]' is not assignable to type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<string | string[]>, right: string | string[] | SQLWrapper): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string | string[]>'.
+      Type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string | string[]>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+server/routes/pitchDecks.ts(144,23): error TS7030: Not all code paths return a value.
+server/routes/pitchDecks.ts(153,17): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'string | string[]' is not assignable to parameter of type 'string | SQLWrapper'.
+      Type 'string[]' is not assignable to type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<string | string[]>, right: string | string[] | SQLWrapper): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string | string[]>'.
+      Type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string | string[]>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+server/routes/pitchDecks.ts(163,20): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'string | string[]' is not assignable to parameter of type 'string | SQLWrapper'.
+      Type 'string[]' is not assignable to type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<string | string[]>, right: string | string[] | SQLWrapper): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string | string[]>'.
+      Type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string | string[]>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "pitch_decks"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+server/routes/resources.ts(19,53): error TS7030: Not all code paths return a value.
+server/routes/resources.ts(36,54): error TS7030: Not all code paths return a value.
+server/routes/resources.ts(57,60): error TS7030: Not all code paths return a value.
+server/routes/search.ts(13,43): error TS7030: Not all code paths return a value.
+server/routes/stripe.ts(12,41): error TS7030: Not all code paths return a value.
+server/routes/stripe.ts(52,29): error TS7030: Not all code paths return a value.
+server/routes/stripe.ts(76,22): error TS7030: Not all code paths return a value.
+server/routes/stripe.ts(109,33): error TS7030: Not all code paths return a value.
+server/routes/stripe.ts(139,68): error TS7030: Not all code paths return a value.
+src/components/AgentChat.tsx(86,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/AgentChat.tsx(105,67): error TS2353: Object literal may only specify known properties, and 'completedAt' does not exist in type 'Partial<Task>'.
+src/components/AgentChat.tsx(112,9): error TS2554: Expected 5 arguments, but got 4.
+src/components/AgentChat.tsx(113,24): error TS2554: Expected 5 arguments, but got 3.
+src/components/AgentChat.tsx(229,107): error TS2769: No overload matches this call.
+  Overload 1 of 4, '(value: string | number | Date): Date', gave the following error.
+    Argument of type 'number | undefined' is not assignable to parameter of type 'string | number | Date'.
+      Type 'undefined' is not assignable to type 'string | number | Date'.
+  Overload 2 of 4, '(value: string | number): Date', gave the following error.
+    Argument of type 'number | undefined' is not assignable to parameter of type 'string | number'.
+      Type 'undefined' is not assignable to type 'string | number'.
+src/components/ai/smart-prioritizer.tsx(152,43): error TS2345: Argument of type '"Overdue - immediate attention needed"' is not assignable to parameter of type 'never'.
+src/components/ai/smart-prioritizer.tsx(153,48): error TS2345: Argument of type '"Due very soon"' is not assignable to parameter of type 'never'.
+src/components/ai/smart-prioritizer.tsx(154,48): error TS2345: Argument of type '"Due this week"' is not assignable to parameter of type 'never'.
+src/components/ai/smart-prioritizer.tsx(158,20): error TS2345: Argument of type '"High priority task"' is not assignable to parameter of type 'never'.
+src/components/ai/smart-prioritizer.tsx(162,20): error TS2345: Argument of type '"Quick win opportunity"' is not assignable to parameter of type 'never'.
+src/components/ai/smart-prioritizer.tsx(166,20): error TS2345: Argument of type '"Direct revenue impact"' is not assignable to parameter of type 'never'.
+src/components/ai/smart-prioritizer.tsx(169,35): error TS2345: Argument of type '"High strategic value"' is not assignable to parameter of type 'never'.
+src/components/ai/smart-prioritizer.tsx(170,40): error TS2345: Argument of type '"Good balance of urgency and impact"' is not assignable to parameter of type 'never'.
+src/components/ai/smart-prioritizer.tsx(171,40): error TS2345: Argument of type '"Moderate priority"' is not assignable to parameter of type 'never'.
+src/components/ai/smart-prioritizer.tsx(172,23): error TS2345: Argument of type '"Lower priority - consider delegating"' is not assignable to parameter of type 'never'.
+src/components/ai/task-intelligence-panel.tsx(167,23): error TS2322: Type '"default" | "secondary" | "destructive"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+  Type '"default"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/ai/task-intelligence-panel.tsx(234,38): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/ai/task-intelligence-panel.tsx(237,38): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/ai/task-intelligence-panel.tsx(240,38): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/ai/task-intelligence-panel.tsx(291,38): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/analytics/predictive-insights-dashboard.tsx(357,32): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/analytics/predictive-insights-dashboard.tsx(360,32): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/analytics/predictive-insights-dashboard.tsx(505,26): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/auth/register-form.tsx(28,5): error TS2349: This expression is not callable.
+  Type 'String' has no call signatures.
+src/components/auth/register-form.tsx(28,5): error TS2721: Cannot invoke an object which is possibly 'null'.
+src/components/auth/register-form.tsx(45,9): error TS2349: This expression is not callable.
+  Type 'String' has no call signatures.
+src/components/auth/register-form.tsx(45,9): error TS2721: Cannot invoke an object which is possibly 'null'.
+src/components/Billing.tsx(79,29): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'SetStateAction<Subscription | null>'.
+src/components/Billing.tsx(80,22): error TS2345: Argument of type '{} | { aiGenerations: number; competitorsTracked: number; businessProfiles: number; }' is not assignable to parameter of type 'SetStateAction<Usage | null>'.
+  Type '{}' is not assignable to type 'SetStateAction<Usage | null>'.
+src/components/Billing.tsx(96,17): error TS18046: 'response' is of type 'unknown'.
+src/components/Billing.tsx(97,40): error TS18046: 'response' is of type 'unknown'.
+src/components/Billing.tsx(114,17): error TS18046: 'response' is of type 'unknown'.
+src/components/Billing.tsx(115,40): error TS18046: 'response' is of type 'unknown'.
+src/components/briefcase/advanced-search-panel.tsx(346,26): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/advanced-search-panel.tsx(393,35): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/advanced-search-panel.tsx(407,34): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/advanced-search-panel.tsx(421,24): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/ai-insights-panel.tsx(270,23): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/ai-insights-panel.tsx(393,34): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/ai-insights-panel.tsx(603,36): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/bulk-operations-panel.tsx(314,38): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/bulk-operations-panel.tsx(327,38): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/document-versioning-modal.tsx(421,34): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/enhanced-dashboard.tsx(414,30): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/enhanced-dashboard.tsx(580,32): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/enhanced-dashboard.tsx(717,36): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/enhanced-file-preview-modal.tsx(417,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/enhanced-file-preview-modal.tsx(419,26): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/file-metadata-panel.tsx(429,34): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/briefcase/file-sharing-modal.tsx(509,40): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/charts/RevenueChart.tsx(42,25): error TS2322: Type '(value: number) => [string, "Revenue"]' is not assignable to type 'Formatter<number, "Revenue">'.
+  Types of parameters 'value' and 'value' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+src/components/charts/RunwayChart.tsx(55,25): error TS2322: Type '(value: number) => [string, "Balance"]' is not assignable to type 'Formatter<number, "Balance">'.
+  Types of parameters 'value' and 'value' are incompatible.
+    Type 'number | undefined' is not assignable to type 'number'.
+      Type 'undefined' is not assignable to type 'number'.
+src/components/collaboration/AgentInterface.tsx(538,13): error TS2322: Type 'Agent | null' is not assignable to type '((agent: Agent) => void) | undefined'.
+  Type 'null' is not assignable to type '((agent: Agent) => void) | undefined'.
+src/components/collaboration/collaboration-hub.tsx(250,32): error TS2322: Type '"default" | "secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+  Type '"default"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/collaboration/collaboration-hub.tsx(350,20): error TS2322: Type '"default" | "secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+  Type '"default"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/collaboration/squad-builder.tsx(327,45): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/CompetitorStalker.tsx(58,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/CompetitorStalker.tsx(59,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/CompetitorStalker.tsx(83,3): error TS18048: 'report.vulnerabilities' is possibly 'undefined'.
+src/components/CompetitorStalker.tsx(255,61): error TS18048: 'report.metrics' is possibly 'undefined'.
+src/components/CompetitorStalker.tsx(256,66): error TS18048: 'report.metrics' is possibly 'undefined'.
+src/components/CompetitorStalker.tsx(257,62): error TS18048: 'report.metrics' is possibly 'undefined'.
+src/components/CompetitorStalker.tsx(258,64): error TS18048: 'report.metrics' is possibly 'undefined'.
+src/components/CompetitorStalker.tsx(259,59): error TS18048: 'report.metrics' is possibly 'undefined'.
+src/components/CompetitorStalker.tsx(283,38): error TS18048: 'report.vulnerabilities' is possibly 'undefined'.
+src/components/CompetitorStalker.tsx(314,34): error TS18048: 'report.intel' is possibly 'undefined'.
+src/components/custom-agents/custom-agent-chat.tsx(181,26): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/custom-agent-chat.tsx(185,26): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/custom-agent-chat.tsx(285,36): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/security-dashboard.tsx(257,48): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/security-dashboard.tsx(271,48): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/security-dashboard.tsx(300,30): error TS2322: Type '"default" | "secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+  Type '"default"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/security-dashboard.tsx(306,30): error TS2322: Type '"default" | "secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+  Type '"default"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/security-dashboard.tsx(312,30): error TS2322: Type '"default" | "secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+  Type '"default"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/security-dashboard.tsx(318,30): error TS2322: Type '"default" | "secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+  Type '"default"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/training-dashboard.tsx(336,32): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/training-dashboard.tsx(437,46): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/training-dashboard.tsx(447,46): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/custom-agents/training-dashboard.tsx(476,34): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/cyber/NeuralNetworkCanvas.tsx(32,7): error TS18047: 'canvas' is possibly 'null'.
+src/components/cyber/NeuralNetworkCanvas.tsx(33,7): error TS18047: 'canvas' is possibly 'null'.
+src/components/Dashboard.tsx(147,44): error TS2339: Property 'completedAt' does not exist on type 'Task'.
+src/components/Dashboard.tsx(147,69): error TS2339: Property 'completedAt' does not exist on type 'Task'.
+src/components/Dashboard.tsx(155,31): error TS2345: Argument of type '{ name: string; value: number; }' is not assignable to parameter of type 'never'.
+src/components/decision-frameworks/five-whys-analysis.tsx(302,32): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/evolve/first-hire-architect.tsx(601,30): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/FocusMode.tsx(69,9): error TS2554: Expected 5 arguments, but got 4.
+src/components/FocusMode.tsx(70,24): error TS2554: Expected 5 arguments, but got 3.
+src/components/gamification/achievement-celebration.tsx(32,13): error TS7030: Not all code paths return a value.
+src/components/guardian-ai/policy-generator.tsx(282,30): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/IdeaIncinerator.tsx(22,19): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'SetStateAction<IncineratorResponse | null>'.
+src/components/IdeaIncinerator.tsx(27,9): error TS2554: Expected 5 arguments, but got 4.
+src/components/IdeaIncinerator.tsx(28,24): error TS2554: Expected 5 arguments, but got 3.
+src/components/integrations/integration-hub.tsx(190,32): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/integrations/integration-hub.tsx(194,34): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(193,5): error TS2349: This expression is not callable.
+  Type 'string[]' has no call signatures.
+src/components/intelligence/intelligence-search.tsx(363,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(379,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(580,37): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(721,46): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(932,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(941,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(950,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(959,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(968,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(977,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(986,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/intelligence/intelligence-search.tsx(995,24): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/learning/path-card.tsx(35,18): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/marketing/exit-intent-survey.tsx(28,31): error TS7030: Not all code paths return a value.
+src/components/marketing/PricingPage.tsx(28,30): error TS2339: Property 'id' does not exist on type 'never'.
+src/components/marketing/PricingPage.tsx(31,17): error TS18046: 'response' is of type 'unknown'.
+src/components/marketing/PricingPage.tsx(32,40): error TS18046: 'response' is of type 'unknown'.
+src/components/marketing/PricingPage.tsx(93,64): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/components/marketing/PricingPage.tsx(112,63): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/components/marketing/PricingPage.tsx(131,66): error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+  Type 'undefined' is not assignable to type 'string'.
+src/components/mobile/mobile-dashboard-enhanced.tsx(144,26): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/mobile-dashboard-enhanced.tsx(185,24): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/mobile-dashboard-enhanced.tsx(203,24): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/mobile-dashboard-enhanced.tsx(220,24): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/mobile-dashboard-enhanced.tsx(238,24): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/mobile-dashboard-widgets.tsx(100,20): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/mobile-dashboard-widgets.tsx(250,20): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/mobile-dashboard-widgets.tsx(333,20): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/mobile-dashboard.tsx(386,8): error TS2739: Type '{ isOpen: boolean; onClose: () => void; onTaskCreate: (task: any) => void; }' is missing the following properties from type 'VoiceTaskCreatorProps': boolean, string
+src/components/mobile/mobile-gestures.tsx(47,9): error TS2488: Type 'boolean' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/components/mobile/mobile-gestures.tsx(47,56): error TS2708: Cannot use namespace 'NodeJS' as a value.
+src/components/mobile/mobile-pwa-provider.tsx(163,24): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/offline-data-manager.tsx(550,24): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/offline-data-manager.tsx(686,36): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/mobile/voice-task-creator.tsx(24,19): error TS2300: Duplicate identifier 'string'.
+src/components/mobile/voice-task-creator.tsx(25,26): error TS2300: Duplicate identifier 'string'.
+src/components/mobile/voice-task-creator.tsx(33,24): error TS2300: Duplicate identifier 'boolean'.
+src/components/mobile/voice-task-creator.tsx(34,25): error TS2300: Duplicate identifier 'boolean'.
+src/components/mobile/voice-task-creator.tsx(35,22): error TS2300: Duplicate identifier 'boolean'.
+src/components/mobile/voice-task-creator.tsx(37,22): error TS2300: Duplicate identifier 'number'.
+src/components/mobile/voice-task-creator.tsx(38,20): error TS2300: Duplicate identifier 'number'.
+src/components/mobile/voice-task-creator.tsx(58,60): error TS2345: Argument of type '{ isRecording: false; isProcessing: false; isPlaying: false; transcript: string; confidence: number; duration: number; audioBlob: undefined; }' is not assignable to parameter of type 'VoiceState | (() => VoiceState)'.
+  Type '{ isRecording: false; isProcessing: false; isPlaying: false; transcript: string; confidence: number; duration: number; audioBlob: undefined; }' is missing the following properties from type 'VoiceState': boolean, string, number
+src/components/mobile/voice-task-creator.tsx(79,35): error TS2348: Value of type '{ new (stream: MediaStream, options?: MediaRecorderOptions | undefined): MediaRecorder; prototype: MediaRecorder; isTypeSupported(type: string): boolean; }' is not callable. Did you mean to include 'new'?
+src/components/mobile/voice-task-creator.tsx(80,27): error TS2348: Value of type '{ new (): HTMLAudioElement; prototype: HTMLAudioElement; }' is not callable. Did you mean to include 'new'?
+src/components/mobile/voice-task-creator.tsx(81,30): error TS2708: Cannot use namespace 'NodeJS' as a value.
+src/components/mobile/voice-task-creator.tsx(208,19): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/mobile/voice-task-creator.tsx(221,21): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/mobile/voice-task-creator.tsx(222,33): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/mobile/voice-task-creator.tsx(223,19): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/mobile/voice-task-creator.tsx(228,42): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/mobile/voice-task-creator.tsx(229,16): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/mobile/voice-task-creator.tsx(235,18): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/mobile/voice-task-creator.tsx(236,16): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/mobile/voice-task-creator.tsx(247,18): error TS2345: Argument of type '{ title: string; description: string; priority: "low" | "medium" | "high" | "urgent"; estimatedMinutes: number; }' is not assignable to parameter of type '{ title: string; string: any; description?: string | undefined; priority: "medium" | "low" | "high" | "urgent"; estimatedMinutes?: number | undefined; number: any; }'.
+  Type '{ title: string; description: string; priority: "medium" | "low" | "high" | "urgent"; estimatedMinutes: number; }' is missing the following properties from type '{ title: string; string: any; description?: string | undefined; priority: "medium" | "low" | "high" | "urgent"; estimatedMinutes?: number | undefined; number: any; }': string, number
+src/components/mobile/voice-task-creator.tsx(249,19): error TS2345: Argument of type '{ isRecording: false; isProcessing: false; isPlaying: false; transcript: string; confidence: number; duration: number; audioBlob: undefined; }' is not assignable to parameter of type 'SetStateAction<VoiceState>'.
+  Type '{ isRecording: false; isProcessing: false; isPlaying: false; transcript: string; confidence: number; duration: number; audioBlob: undefined; }' is missing the following properties from type 'VoiceState': boolean, string, number
+src/components/mobile/voice-task-creator.tsx(446,30): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/onboarding/enhanced-welcome-flow.tsx(346,48): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/onboarding/interactive-tutorial.tsx(686,13): error TS7030: Not all code paths return a value.
+src/components/onboarding/onboarding-wizard.tsx(432,52): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/onboarding/progressive-onboarding.tsx(178,5): error TS2349: This expression is not callable.
+  Type 'Set<string>' has no call signatures.
+src/components/onboarding/progressive-onboarding.tsx(207,13): error TS7030: Not all code paths return a value.
+src/components/onboarding/progressive-onboarding.tsx(350,28): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/onboarding/welcome-dashboard.tsx(185,14): error TS2304: Cannot find name 'StatsBadge'.
+src/components/onboarding/welcome-dashboard.tsx(188,15): error TS2304: Cannot find name 'StatsBadge'.
+src/components/onboarding/welcome-dashboard.tsx(189,14): error TS2304: Cannot find name 'StatsBadge'.
+src/components/onboarding/welcome-dashboard.tsx(192,15): error TS2304: Cannot find name 'StatsBadge'.
+src/components/onboarding/welcome-dashboard.tsx(208,18): error TS2304: Cannot find name 'GlassCard'.
+src/components/onboarding/welcome-dashboard.tsx(225,19): error TS2304: Cannot find name 'GlassCard'.
+src/components/performance/performance-monitor.tsx(25,13): error TS7030: Not all code paths return a value.
+src/components/performance/service-worker-register.tsx(146,20): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/recaptcha/recaptcha-button.tsx(50,9): error TS2322: Type '"default" | "icon" | "lg" | "sm"' is not assignable to type '"icon" | "lg" | "md" | "sm" | undefined'.
+  Type '"default"' is not assignable to type '"icon" | "lg" | "md" | "sm" | undefined'.
+src/components/recaptcha/recaptcha-provider.tsx(43,7): error TS2322: Type 'null' is not assignable to type 'string'.
+src/components/recaptcha/recaptcha-provider.tsx(53,7): error TS2322: Type 'null' is not assignable to type 'string'.
+src/components/recaptcha/recaptcha-provider.tsx(73,21): error TS2345: Argument of type 'null' is not assignable to parameter of type 'string | PromiseLike<string>'.
+src/components/recaptcha/recaptcha-provider.tsx(84,7): error TS2322: Type 'null' is not assignable to type 'string'.
+src/components/recaptcha/recaptcha-provider.tsx(97,5): error TS2349: This expression is not callable.
+  Type 'Boolean' has no call signatures.
+src/components/recaptcha/recaptcha-provider.tsx(140,5): error TS2349: This expression is not callable.
+  Type 'Boolean' has no call signatures.
+src/components/recaptcha/recaptcha-provider.tsx(144,5): error TS2349: This expression is not callable.
+  Type 'Boolean' has no call signatures.
+src/components/Scratchpad.tsx(49,9): error TS2554: Expected 5 arguments, but got 3.
+src/components/Settings.tsx(75,9): error TS2554: Expected 5 arguments, but got 3.
+src/components/Settings.tsx(92,17): error TS2554: Expected 5 arguments, but got 3.
+src/components/Settings.tsx(96,17): error TS2554: Expected 5 arguments, but got 3.
+src/components/Sidebar.tsx(105,23): error TS2339: Property 'newProgress' does not exist on type 'ToastMessage'.
+src/components/Sidebar.tsx(106,35): error TS2339: Property 'newProgress' does not exist on type 'ToastMessage'.
+src/components/SignalTower.tsx(24,32): error TS2339: Property 'content' does not exist on type '{}'.
+src/components/SignalTower.tsx(25,31): error TS2339: Property 'sources' does not exist on type '{}'.
+src/components/SignalTower.tsx(28,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/SignalTower.tsx(29,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/SignalTower.tsx(32,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TacticalRoadmap.tsx(29,26): error TS2538: Type 'undefined' cannot be used as an index type.
+src/components/TacticalRoadmap.tsx(30,38): error TS2345: Argument of type 'AgentId | undefined' is not assignable to parameter of type 'AgentId'.
+  Type 'undefined' is not assignable to type 'AgentId'.
+src/components/TacticalRoadmap.tsx(125,44): error TS2345: Argument of type '{}' is not assignable to parameter of type 'Task[]'.
+  Type '{}' is missing the following properties from type 'Task[]': length, pop, push, concat, and 35 more.
+src/components/TacticalRoadmap.tsx(126,43): error TS2488: Type '{}' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/components/TacticalRoadmap.tsx(130,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TacticalRoadmap.tsx(131,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TacticalRoadmap.tsx(149,70): error TS2353: Object literal may only specify known properties, and 'completedAt' does not exist in type 'Partial<Task>'.
+src/components/TacticalRoadmap.tsx(154,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TacticalRoadmap.tsx(155,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/tasks/gesture-task-card.tsx(50,60): error TS2708: Cannot use namespace 'NodeJS' as a value.
+src/components/tasks/gesture-task-card.tsx(277,68): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/tasks/gesture-task-card.tsx(280,64): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/templates/base-template.tsx(84,29): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/base-template.tsx(103,17): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/base-template.tsx(113,19): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/base-template.tsx(124,17): error TS2322: Type '"empowerment"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/base-template.tsx(175,67): error TS2322: Type '"empowerment"' is not assignable to type '"default" | "cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/templates/base-template.tsx(231,19): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/base-template.tsx(242,21): error TS2322: Type '"accent"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/base-template.tsx(249,21): error TS2322: Type '"accent"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/decision-dashboard.tsx(329,45): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/decision-dashboard.tsx(515,15): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/decision-dashboard.tsx(631,15): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/decision-dashboard.tsx(730,15): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/decision-dashboard.tsx(737,17): error TS2322: Type '"empowerment"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/decision-dashboard.tsx(744,17): error TS2322: Type '"accent"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/email-campaign-builder.tsx(848,15): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/email-campaign-builder.tsx(892,60): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/email-campaign-builder.tsx(984,15): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/email-campaign-builder.tsx(1076,65): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/email-campaign-builder.tsx(1160,15): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/email-campaign-builder.tsx(1372,15): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/email-campaign-builder.tsx(1379,17): error TS2322: Type '"empowerment"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/email-campaign-builder.tsx(1386,17): error TS2322: Type '"accent"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/email-campaign-builder.tsx(1391,17): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/project-timeline.tsx(1103,55): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/templates/project-timeline.tsx(1622,34): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/templates/project-timeline.tsx(1777,36): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/templates/social-media-strategy.tsx(817,15): error TS2322: Type '"secondary"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/social-media-strategy.tsx(1240,34): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/templates/social-media-strategy.tsx(1576,17): error TS2322: Type '"empowerment"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/social-media-strategy.tsx(1583,17): error TS2322: Type '"accent"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/strategic-business-plan.tsx(1192,17): error TS2322: Type '"empowerment"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/templates/strategic-business-plan.tsx(1199,17): error TS2322: Type '"accent"' is not assignable to type '"cyan" | "purple" | "magenta" | "outline" | "lime" | "orange" | undefined'.
+src/components/TheAcademy.tsx(101,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheAcademy.tsx(102,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheAmplifier.tsx(51,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheAmplifier.tsx(52,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheAmplifier.tsx(55,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheAmplifier.tsx(81,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheAmplifier.tsx(82,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheAmplifier.tsx(85,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheArchitect.tsx(56,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheArchitect.tsx(57,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheArchitect.tsx(60,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheArchitect.tsx(81,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheArchitect.tsx(101,9): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheArchitect.tsx(102,24): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheBoardroom.tsx(43,64): error TS2345: Argument of type '{ currentCash: number; monthlyBurn: number; monthlyRevenue: number; growthRate: number; }' is not assignable to parameter of type 'string'.
+src/components/TheBoardroom.tsx(46,23): error TS2345: Argument of type 'string' is not assignable to parameter of type 'SetStateAction<BoardMeetingReport | null>'.
+src/components/TheBoardroom.tsx(48,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheBoardroom.tsx(49,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheBoardroom.tsx(52,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheCodex.tsx(3,20): error TS2305: Module '"../types"' has no exported member 'TargetPersona'.
+src/components/TheCodex.tsx(51,9): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheCodex.tsx(52,24): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheCodex.tsx(57,42): error TS2488: Type 'unknown' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/components/TheCodex.tsx(62,38): error TS18046: 'dna.coreValues' is of type 'unknown'.
+src/components/TheCodex.tsx(67,43): error TS2488: Type 'unknown' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/components/TheCodex.tsx(72,39): error TS18046: 'dna.bannedWords' is of type 'unknown'.
+src/components/TheCodex.tsx(82,40): error TS2488: Type 'unknown' must have a '[Symbol.iterator]()' method that returns an iterator.
+src/components/TheCodex.tsx(89,36): error TS18046: 'dna.personas' is of type 'unknown'.
+src/components/TheCodex.tsx(142,73): error TS18046: 'dna.tone' is of type 'unknown'.
+src/components/TheCodex.tsx(146,44): error TS18046: 'dna.tone' is of type 'unknown'.
+src/components/TheCodex.tsx(147,79): error TS2698: Spread types may only be created from object types.
+src/components/TheCodex.tsx(156,74): error TS18046: 'dna.tone' is of type 'unknown'.
+src/components/TheCodex.tsx(160,44): error TS18046: 'dna.tone' is of type 'unknown'.
+src/components/TheCodex.tsx(161,79): error TS2698: Spread types may only be created from object types.
+src/components/TheCodex.tsx(170,71): error TS18046: 'dna.tone' is of type 'unknown'.
+src/components/TheCodex.tsx(174,44): error TS18046: 'dna.tone' is of type 'unknown'.
+src/components/TheCodex.tsx(175,79): error TS2698: Spread types may only be created from object types.
+src/components/TheCodex.tsx(202,38): error TS18046: 'dna.coreValues' is of type 'unknown'.
+src/components/TheCodex.tsx(207,38): error TS18046: 'dna.coreValues' is of type 'unknown'.
+src/components/TheCodex.tsx(230,38): error TS18046: 'dna.bannedWords' is of type 'unknown'.
+src/components/TheCodex.tsx(235,38): error TS18046: 'dna.bannedWords' is of type 'unknown'.
+src/components/TheCodex.tsx(279,30): error TS18046: 'dna.personas' is of type 'unknown'.
+src/components/TheCodex.tsx(294,30): error TS18046: 'dna.personas' is of type 'unknown'.
+src/components/TheDeck.tsx(32,20): error TS2339: Property 'id' does not exist on type '{}'.
+src/components/TheDeck.tsx(34,21): error TS2345: Argument of type '{}' is not assignable to parameter of type 'SetStateAction<PitchDeck | null>'.
+src/components/TheDeck.tsx(35,31): error TS2345: Argument of type '{}' is not assignable to parameter of type 'PitchDeck'.
+  Type '{}' is missing the following properties from type 'PitchDeck': id, title, slides, generatedAt
+src/components/TheDeck.tsx(39,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheDeck.tsx(40,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheDeck.tsx(43,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheDeck.tsx(74,9): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheIronclad.tsx(42,28): error TS2345: Argument of type 'LegalDoc' is not assignable to parameter of type 'SetStateAction<string | null>'.
+src/components/TheIronclad.tsx(45,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheIronclad.tsx(46,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheIronclad.tsx(60,31): error TS2345: Argument of type '{}' is not assignable to parameter of type 'SetStateAction<LegalAnalysis | null>'.
+src/components/TheIronclad.tsx(62,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheIronclad.tsx(63,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheLaunchpad.tsx(40,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheLaunchpad.tsx(41,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheLaunchpad.tsx(44,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheLaunchpad.tsx(56,19): error TS2339: Property 'events' does not exist on type '{ name: string; duration: string; actions: string[]; }'.
+src/components/TheLaunchpad.tsx(75,9): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheLaunchpad.tsx(76,24): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheLaunchpad.tsx(173,48): error TS2339: Property 'events' does not exist on type '{ name: string; duration: string; actions: string[]; }'.
+src/components/TheLaunchpad.tsx(203,109): error TS2339: Property 'launchDate' does not exist on type 'LaunchStrategy'.
+src/components/TheMainframe.tsx(35,17): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheMainframe.tsx(36,32): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheMainframe.tsx(43,31): error TS2345: Argument of type '{}' is not assignable to parameter of type 'SetStateAction<CodeSnippet | null>'.
+src/components/TheMainframe.tsx(45,17): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheMainframe.tsx(46,32): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheMainframe.tsx(69,13): error TS2353: Object literal may only specify known properties, and 'timestamp' does not exist in type 'SavedCodeSnippet'.
+src/components/TheMainframe.tsx(76,9): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheNetwork.tsx(61,9): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheNetwork.tsx(62,24): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheNetwork.tsx(88,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheNetwork.tsx(89,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheNetwork.tsx(104,24): error TS2345: Argument of type 'string' is not assignable to parameter of type 'SetStateAction<NegotiationPrep | null>'.
+src/components/TheNetwork.tsx(106,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheNetwork.tsx(107,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/ThePivot.tsx(20,25): error TS2345: Argument of type '{}' is not assignable to parameter of type 'SetStateAction<PivotAnalysis | null>'.
+src/components/ThePivot.tsx(23,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/ThePivot.tsx(24,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/ThePivot.tsx(27,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheSanctuary.tsx(23,66): error TS2345: Argument of type '{ mood: string; stressLevel: number; primaryBlocker: string; }' is not assignable to parameter of type 'string'.
+src/components/TheSanctuary.tsx(30,25): error TS2345: Argument of type 'string' is not assignable to parameter of type 'SetStateAction<MentalCoaching | null>'.
+src/components/TheSanctuary.tsx(32,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheSanctuary.tsx(33,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheSanctuary.tsx(36,24): error TS2339: Property 'breathingExercise' does not exist on type 'string'.
+src/components/TheScout.tsx(46,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheScout.tsx(61,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheScout.tsx(76,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheScout.tsx(84,9): error TS2349: This expression is not callable.
+  Type 'Boolean' has no call signatures.
+src/components/TheScout.tsx(85,26): error TS2349: This expression is not callable.
+  Type 'Boolean' has no call signatures.
+src/components/TheSimulator.tsx(23,23): error TS2345: Argument of type '{}' is not assignable to parameter of type 'SetStateAction<SimulationResult | null>'.
+src/components/TheSimulator.tsx(26,49): error TS2345: Argument of type '{}' is not assignable to parameter of type 'SimulationResult'.
+  Type '{}' is missing the following properties from type 'SimulationResult': id, query, likelyCase, bestCase, and 3 more.
+src/components/TheSimulator.tsx(29,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheSimulator.tsx(30,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheSimulator.tsx(33,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheStudio.tsx(31,13): error TS2353: Object literal may only specify known properties, and 'style' does not exist in type 'CreativeAsset'.
+src/components/TheStudio.tsx(57,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheStudio.tsx(58,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheStudio.tsx(61,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheStudio.tsx(76,9): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheTribe.tsx(32,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/TheTribe.tsx(33,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheTribe.tsx(36,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/TheUplink.tsx(20,36): error TS2348: Value of type '{ new (contextOptions?: AudioContextOptions | undefined): AudioContext; prototype: AudioContext; }' is not callable. Did you mean to include 'new'?
+src/components/TheUplink.tsx(21,37): error TS2348: Value of type '{ new (contextOptions?: AudioContextOptions | undefined): AudioContext; prototype: AudioContext; }' is not callable. Did you mean to include 'new'?
+src/components/TheUplink.tsx(22,35): error TS2348: Value of type '{ new (context: AudioContext, options: MediaStreamAudioSourceOptions): MediaStreamAudioSourceNode; prototype: MediaStreamAudioSourceNode; }' is not callable. Did you mean to include 'new'?
+src/components/TheUplink.tsx(23,33): error TS2348: Value of type '{ new (): ScriptProcessorNode; prototype: ScriptProcessorNode; }' is not callable. Did you mean to include 'new'?
+src/components/TheUplink.tsx(24,30): error TS2348: Value of type '{ new (): MediaStream; new (stream: MediaStream): MediaStream; new (tracks: MediaStreamTrack[]): MediaStream; prototype: MediaStream; }' is not callable. Did you mean to include 'new'?
+src/components/TheUplink.tsx(35,32): error TS2348: Value of type '{ new (context: BaseAudioContext, options?: AnalyserOptions | undefined): AnalyserNode; prototype: AnalyserNode; }' is not callable. Did you mean to include 'new'?
+src/components/TheUplink.tsx(47,29): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(48,62): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(49,29): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(86,29): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(87,30): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(91,23): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(123,46): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(125,40): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(125,66): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(128,37): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(128,63): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(129,37): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(130,40): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(130,68): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(132,38): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(132,64): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(134,38): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(149,40): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(149,69): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(150,38): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(150,70): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(155,59): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(157,58): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(219,19): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(220,19): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(223,24): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(224,22): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(227,25): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheUplink.tsx(228,26): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/TheVault.tsx(177,114): error TS2339: Property 'timestamp' does not exist on type 'SavedCodeSnippet'.
+src/components/Treasury.tsx(68,23): error TS2345: Argument of type '{ month: string; cash: number; revenue: number; burn: number; }' is not assignable to parameter of type 'never'.
+src/components/Treasury.tsx(87,22): error TS2345: Argument of type '{}' is not assignable to parameter of type 'SetStateAction<FinancialAudit | null>'.
+src/components/Treasury.tsx(89,13): error TS2554: Expected 5 arguments, but got 4.
+src/components/Treasury.tsx(90,28): error TS2554: Expected 5 arguments, but got 3.
+src/components/ui/carousel.tsx(36,5): error TS2322: Type 'Context<CarouselContextProps | null>' is not assignable to type 'Context<CarouselContextProps | undefined>'.
+  Types of property 'Provider' are incompatible.
+    Type 'Provider<CarouselContextProps | null>' is not assignable to type 'Provider<CarouselContextProps | undefined>'.
+      Type 'ProviderProps<CarouselContextProps | undefined>' is not assignable to type 'ProviderProps<CarouselContextProps | null>'.
+        Type 'CarouselContextProps | undefined' is not assignable to type 'CarouselContextProps | null'.
+          Type 'undefined' is not assignable to type 'CarouselContextProps | null'.
+src/components/ui/floating-action-button.tsx(41,13): error TS7030: Not all code paths return a value.
+src/components/ui/help-tooltip.tsx(90,28): error TS2322: Type '"outline"' is not assignable to type '"cyan" | "purple" | "magenta" | "lime" | "orange" | undefined'.
+src/components/ui/sidebar.tsx(40,5): error TS2322: Type 'Context<SidebarContext | null>' is not assignable to type 'Context<SidebarContext | undefined>'.
+  Types of property 'Provider' are incompatible.
+    Type 'Provider<SidebarContext | null>' is not assignable to type 'Provider<SidebarContext | undefined>'.
+      Type 'ProviderProps<SidebarContext | undefined>' is not assignable to type 'ProviderProps<SidebarContext | null>'.
+        Type 'SidebarContext | undefined' is not assignable to type 'SidebarContext | null'.
+          Type 'undefined' is not assignable to type 'SidebarContext | null'.
+src/components/ui/smart-tip.tsx(36,13): error TS7030: Not all code paths return a value.
+src/components/ui/voice-input.tsx(73,33): error TS2693: 'SpeechRecognition' only refers to a type, but is being used as a value here.
+src/components/ui/voice-input.tsx(74,29): error TS2708: Cannot use namespace 'NodeJS' as a value.
+src/components/ui/voice-input.tsx(135,22): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(142,26): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(143,24): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(145,22): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(146,33): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(169,25): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(173,22): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(177,20): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(187,25): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(190,22): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(191,22): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(192,33): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/ui/voice-input.tsx(193,20): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(36,34): error TS2348: Value of type '{ new (contextOptions?: AudioContextOptions | undefined): AudioContext; prototype: AudioContext; }' is not callable. Did you mean to include 'new'?
+src/components/voice/voice-chat.tsx(37,30): error TS2348: Value of type '{ new (context: BaseAudioContext, options?: AnalyserOptions | undefined): AnalyserNode; prototype: AnalyserNode; }' is not callable. Did you mean to include 'new'?
+src/components/voice/voice-chat.tsx(38,32): error TS2348: Value of type '{ new (context: AudioContext, options: MediaStreamAudioSourceOptions): MediaStreamAudioSourceNode; prototype: MediaStreamAudioSourceNode; }' is not callable. Did you mean to include 'new'?
+src/components/voice/voice-chat.tsx(93,27): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(94,25): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(106,23): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(107,19): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(107,45): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(108,21): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(108,47): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(110,21): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(110,49): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(111,19): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(113,40): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(117,25): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-chat.tsx(118,23): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/voice/voice-task-creator.tsx(25,23): error TS2300: Duplicate identifier 'string'.
+src/components/voice/voice-task-creator.tsx(26,30): error TS2300: Duplicate identifier 'string'.
+src/components/voice/voice-task-creator.tsx(37,23): error TS2300: Duplicate identifier 'string'.
+src/components/voice/voice-task-creator.tsx(38,29): error TS2300: Duplicate identifier 'string'.
+src/components/voice/voice-task-creator.tsx(118,27): error TS2345: Argument of type '{ title: string; description: string; priority: "medium" | "low" | "high" | "urgent"; estimatedMinutes: number; }' is not assignable to parameter of type 'SetStateAction<{ title: string; string: any; description: string; priority: "medium" | "low" | "high" | "urgent"; estimatedMinutes: number; number: any; } | null>'.
+  Type '{ title: string; description: string; priority: "medium" | "low" | "high" | "urgent"; estimatedMinutes: number; }' is missing the following properties from type '{ title: string; string: any; description: string; priority: "medium" | "low" | "high" | "urgent"; estimatedMinutes: number; number: any; }': string, number
+src/components/WarRoom.tsx(74,21): error TS2554: Expected 5 arguments, but got 4.
+src/components/WarRoom.tsx(75,36): error TS2554: Expected 5 arguments, but got 3.
+src/components/WarRoom.tsx(98,17): error TS2554: Expected 5 arguments, but got 3.
+src/components/WarRoom.tsx(101,13): error TS2554: Expected 5 arguments, but got 3.
+src/components/WarRoom.tsx(122,9): error TS2554: Expected 5 arguments, but got 3.
+src/components/WarRoom.tsx(130,9): error TS2554: Expected 5 arguments, but got 3.
+src/components/WarRoom.tsx(174,9): error TS2554: Expected 5 arguments, but got 4.
+src/components/WarRoom.tsx(175,24): error TS2554: Expected 5 arguments, but got 3.
+src/components/workflow/visual-workflow-builder.tsx(155,9): error TS2349: This expression is not callable.
+  Type 'Boolean' has no call signatures.
+src/components/workflow/workflow-dashboard.tsx(101,5): error TS2304: Cannot find name 'setIsCreatingWorkflow'.
+src/components/workflow/workflow-execution-monitor.tsx(113,37): error TS2708: Cannot use namespace 'NodeJS' as a value.
+src/components/workflow/workflow-execution-monitor.tsx(192,26): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/workflow/workflow-execution-monitor.tsx(196,77): error TS2367: This comparison appears to be unintentional because the types '"completed" | "failed" | "cancelled"' and '"pending"' have no overlap.
+src/components/workflow/workflow-execution-monitor.tsx(247,30): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/workflow/workflow-execution-monitor.tsx(248,42): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/workflow/workflow-execution-monitor.tsx(249,28): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/workflow/workflow-execution-monitor.tsx(254,30): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/components/workflow/workflow-execution-monitor.tsx(255,42): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-ai-chat.ts(53,37): error TS2348: Value of type '{ new (): AbortController; prototype: AbortController; }' is not callable. Did you mean to include 'new'?
+src/hooks/use-ai-chat.ts(88,32): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-ai-chat.ts(89,30): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-ai-chat.ts(92,28): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-ai-chat.ts(104,38): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-ai-chat.ts(238,28): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-ai-chat.ts(239,26): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-ai-chat.ts(247,30): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-ai-chat.ts(248,28): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-auth.tsx(61,5): error TS2322: Type '() => Promise<null>' is not assignable to type '() => Promise<string>'.
+  Type 'Promise<null>' is not assignable to type 'Promise<string>'.
+    Type 'null' is not assignable to type 'string'.
+src/hooks/use-collaboration.ts(34,9): error TS2322: Type 'null' is not assignable to type 'CollaborationTask'.
+src/hooks/use-collaboration.ts(38,7): error TS2322: Type 'null' is not assignable to type 'CollaborationTask'.
+src/hooks/use-collaboration.ts(71,9): error TS2322: Type 'null' is not assignable to type 'CollaborationResult'.
+src/hooks/use-collaboration.ts(75,7): error TS2322: Type 'null' is not assignable to type 'CollaborationResult'.
+src/hooks/use-custom-agents.ts(95,37): error TS2348: Value of type '{ new (): AbortController; prototype: AbortController; }' is not callable. Did you mean to include 'new'?
+src/hooks/use-custom-agents.ts(108,30): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-custom-agents.ts(109,28): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-custom-agents.ts(112,26): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-custom-agents.ts(127,36): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-custom-agents.ts(152,47): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-custom-agents.ts(416,30): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-custom-agents.ts(417,28): error TS2339: Property 'current' does not exist on type 'boolean'.
+src/hooks/use-recaptcha.ts(60,7): error TS2322: Type 'null' is not assignable to type 'string'.
+src/hooks/use-recaptcha.ts(68,7): error TS2322: Type 'null' is not assignable to type 'string'.
+src/hooks/use-recaptcha.ts(112,9): error TS2322: Type 'null' is not assignable to type 'string'.
+src/hooks/use-recaptcha.ts(119,7): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/actions/authenticate-action.ts(7,23): error TS7030: Not all code paths return a value.
+src/lib/agent-collaboration.ts(160,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/agent-collaboration.ts(226,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/agent-collaboration.ts(269,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/agent-intelligence-briefings.ts(419,28): error TS2589: Type instantiation is excessively deep and possibly infinite.
+src/lib/agent-intelligence-briefings.ts(448,28): error TS2589: Type instantiation is excessively deep and possibly infinite.
+src/lib/agent-intelligence-briefings.ts(478,28): error TS2589: Type instantiation is excessively deep and possibly infinite.
+src/lib/agent-intelligence-briefings.ts(508,28): error TS2589: Type instantiation is excessively deep and possibly infinite.
+src/lib/agent-intelligence-briefings.ts(539,28): error TS2589: Type instantiation is excessively deep and possibly infinite.
+src/lib/ai-personality-system.ts(338,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/ai-task-intelligence.ts(188,9): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { messages: ModelMessage[]; prompt?: undefined; } & { ...; }'.
+src/lib/ai-task-intelligence.ts(431,9): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { messages: ModelMessage[]; prompt?: undefined; } & { ...; }'.
+src/lib/analytics.ts(142,30): error TS2322: Type 'null' is not assignable to type 'UserMetrics'.
+src/lib/api-utils.ts(31,7): error TS2698: Spread types may only be created from object types.
+src/lib/auth-actions.ts(12,23): error TS7030: Not all code paths return a value.
+src/lib/auth-actions.ts(82,23): error TS7030: Not all code paths return a value.
+src/lib/auth-utils.ts(9,18): error TS2430: Interface 'AuthenticatedUser' incorrectly extends interface 'User'.
+  Types of property 'role' are incompatible.
+    Type 'string | undefined' is not assignable to type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/lib/auth-utils.ts(32,5): error TS2322: Type 'string | null' is not assignable to type 'string'.
+  Type 'null' is not assignable to type 'string'.
+src/lib/auth-utils.ts(35,5): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/auth-utils.ts(51,3): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/auth.ts(18,3): error TS2322: Type 'import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/adapters").Adapter | undefined' is not assignable to type 'import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/next-auth/node_modules/@auth/core/adapters").Adapter | undefined'.
+  Type 'import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/adapters").Adapter' is not assignable to type 'import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/next-auth/node_modules/@auth/core/adapters").Adapter'.
+    Types of property 'createUser' are incompatible.
+      Type '((user: import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/adapters").AdapterUser) => import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/types").Awaitable<import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/...' is not assignable to type '((user: import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/next-auth/node_modules/@auth/core/adapters").AdapterUser) => import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/next-auth/node_modules/@auth/core/types").Awaitable<import("C:/Users/prett/OneDrive/Desktop/pr...'.
+        Type '(user: import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/adapters").AdapterUser) => import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/types").Awaitable<import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/a...' is not assignable to type '(user: import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/next-auth/node_modules/@auth/core/adapters").AdapterUser) => import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/next-auth/node_modules/@auth/core/types").Awaitable<import("C:/Users/prett/OneDrive/Desktop/pro...'.
+          Type 'import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/types").Awaitable<import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/adapters").AdapterUser>' is not assignable to type 'import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/next-auth/node_modules/@auth/core/types").Awaitable<import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/next-auth/node_modules/@auth/core/adapters").AdapterUser>'.
+            Type 'AdapterUser' is not assignable to type 'Awaitable<AdapterUser>'.
+              Property 'role' is missing in type 'import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/@auth/core/adapters").AdapterUser' but required in type 'import("C:/Users/prett/OneDrive/Desktop/projects/SoloSuccess-AI/node_modules/next-auth/node_modules/@auth/core/adapters").AdapterUser'.
+src/lib/auth.ts(50,13): error TS2322: Type '(credentials: Partial<Record<"email" | "password", unknown>>) => Promise<{ role: string | undefined; image: string | undefined; id: string; name: string | null; email: string; ... 21 more ...; updated_at: Date | null; } | null>' is not assignable to type '(credentials: Partial<Record<"email" | "password", unknown>>, request: Request) => Awaitable<User | null>'.
+  Type 'Promise<{ role: string | undefined; image: string | undefined; id: string; name: string | null; email: string; emailVerified: Date | null; username: string | null; full_name: string | null; ... 18 more ...; updated_at: Date | null; } | null>' is not assignable to type 'Awaitable<User | null>'.
+    Type 'Promise<{ role: string | undefined; image: string | undefined; id: string; name: string | null; email: string; emailVerified: Date | null; username: string | null; full_name: string | null; ... 18 more ...; updated_at: Date | null; } | null>' is not assignable to type 'PromiseLike<User | null>'.
+      Types of property 'then' are incompatible.
+        Type '<TResult1 = { role: string | undefined; image: string | undefined; id: string; name: string | null; email: string; emailVerified: Date | null; username: string | null; full_name: string | null; ... 18 more ...; updated_at: Date | null; } | null, TResult2 = never>(onfulfilled?: ((value: { ...; } | null) => TResult1 |...' is not assignable to type '<TResult1 = User | null, TResult2 = never>(onfulfilled?: ((value: User | null) => TResult1 | PromiseLike<TResult1>) | null | undefined, onrejected?: ((reason: any) => TResult2 | PromiseLike<...>) | null | undefined) => PromiseLike<...>'.
+          Types of parameters 'onfulfilled' and 'onfulfilled' are incompatible.
+            Types of parameters 'value' and 'value' are incompatible.
+              Type '{ role: string | undefined; image: string | undefined; id: string; name: string | null; email: string; emailVerified: Date | null; username: string | null; full_name: string | null; ... 18 more ...; updated_at: Date | null; } | null' is not assignable to type 'User | null'.
+                Type '{ role: string | undefined; image: string | undefined; id: string; name: string | null; email: string; emailVerified: Date | null; username: string | null; full_name: string | null; ... 18 more ...; updated_at: Date | null; }' is not assignable to type 'User'.
+                  Types of property 'role' are incompatible.
+                    Type 'string | undefined' is not assignable to type 'string'.
+                      Type 'undefined' is not assignable to type 'string'.
+src/lib/blaze-growth-intelligence.ts(371,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { messages: ModelMessage[]; prompt?: undefined; } & { ...; }'.
+src/lib/blaze-growth-intelligence.ts(433,27): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { messages: ModelMessage[]; prompt?: undefined; } & { ...; }'.
+src/lib/blaze-growth-intelligence.ts(512,9): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { messages: ModelMessage[]; prompt?: undefined; } & { ...; }'.
+src/lib/blaze-growth-intelligence.ts(590,27): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { messages: ModelMessage[]; prompt?: undefined; } & { ...; }'.
+src/lib/blaze-growth-intelligence.ts(647,27): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { messages: ModelMessage[]; prompt?: undefined; } & { ...; }'.
+src/lib/competitive-decision-frameworks.ts(97,76): error TS2554: Expected 2 arguments, but got 1.
+src/lib/competitive-decision-frameworks.ts(141,76): error TS2554: Expected 2 arguments, but got 1.
+src/lib/competitive-decision-frameworks.ts(176,76): error TS2554: Expected 2 arguments, but got 1.
+src/lib/competitive-intelligence-context.ts(233,25): error TS2345: Argument of type '{ trend: string; description: string; impact: string; competitors_affected: any[]; }' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-context.ts(246,25): error TS2345: Argument of type '{ trend: string; description: string; impact: string; competitors_affected: any[]; }' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-context.ts(445,20): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-context.ts(449,20): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-context.ts(455,22): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-context.ts(460,20): error TS2345: Argument of type 'string' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-gamification.ts(624,20): error TS2345: Argument of type '"Add more competitors to your monitoring list"' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-gamification.ts(628,20): error TS2345: Argument of type '"Process pending competitive alerts"' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-gamification.ts(632,20): error TS2345: Argument of type '"Analyze competitor weaknesses for opportunities"' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-gamification.ts(636,20): error TS2345: Argument of type '"Complete competitive response tasks"' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-gamification.ts(640,20): error TS2345: Argument of type '"Continue monitoring competitors for new intelligence"' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-gamification.ts(641,20): error TS2345: Argument of type '"Analyze market trends for strategic opportunities"' is not assignable to parameter of type 'never'.
+src/lib/competitive-intelligence-integration.ts(135,9): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/competitive-intelligence-integration.ts(168,7): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/competitive-intelligence-integration.ts(189,9): error TS2322: Type 'null' is not assignable to type 'CompetitiveGoalContext'.
+src/lib/competitive-intelligence-integration.ts(230,7): error TS2322: Type 'null' is not assignable to type 'CompetitiveGoalContext'.
+src/lib/competitive-intelligence-integration.ts(274,7): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/competitor-enrichment-service.ts(577,42): error TS2339: Property 'filter' does not exist on type 'string'.
+src/lib/competitor-enrichment-service.ts(580,36): error TS2339: Property 'filter' does not exist on type 'string'.
+src/lib/context-manager.ts(232,5): error TS2719: Type '{ participants: string[]; sessionId: string; conversationHistory: { content: string; timestamp: Date; importance: "medium" | "low" | "high"; agentId: string; messageId: string; }[]; sharedKnowledge: Record<...>; activeGoals: { ...; }[]; lastUpdated: Date; currentTopic?: string | undefined; contextSummary?: string | ...' is not assignable to type '{ participants: string[]; sessionId: string; conversationHistory: { content: string; timestamp: Date; importance: "medium" | "low" | "high"; agentId: string; messageId: string; }[]; sharedKnowledge: Record<...>; activeGoals: { ...; }[]; lastUpdated: Date; currentTopic?: string | undefined; contextSummary?: string | ...'. Two different types with this name exist, but they are unrelated.
+  Type 'null' is not assignable to type '{ participants: string[]; sessionId: string; conversationHistory: { content: string; timestamp: Date; importance: "medium" | "low" | "high"; agentId: string; messageId: string; }[]; sharedKnowledge: Record<...>; activeGoals: { ...; }[]; lastUpdated: Date; currentTopic?: string | undefined; contextSummary?: string | ...'.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(78,82): error TS2345: Argument of type 'Record<string, any> | undefined' is not assignable to parameter of type 'Record<string, any>'.
+  Type 'undefined' is not assignable to type 'Record<string, any>'.
+src/lib/custom-ai-agents/agent-collaboration-system.ts(277,52): error TS2345: Argument of type '{ name: string; description: string; status: "active"; triggerType: "manual"; triggerConfig: {}; nodes: any[]; edges: any[]; variables: Record<string, any>; settings: { timeout: number; retryAttempts: number; retryDelay: number; parallelExecution: false; errorHandling: "stop"; }; }' is not assignable to parameter of type 'Omit<{ metadata: { createdBy: string; updatedAt: Date; createdAt: Date; successRate: number; executionCount: number; averageExecutionTime: number; lastExecuted?: Date | undefined; }; ... 10 more ...; description?: string | undefined; }, "metadata" | "id">'.
+  Property 'version' is missing in type '{ name: string; description: string; status: "active"; triggerType: "manual"; triggerConfig: {}; nodes: any[]; edges: any[]; variables: Record<string, any>; settings: { timeout: number; retryAttempts: number; retryDelay: number; parallelExecution: false; errorHandling: "stop"; }; }' but required in type 'Omit<{ metadata: { createdBy: string; updatedAt: Date; createdAt: Date; successRate: number; executionCount: number; averageExecutionTime: number; lastExecuted?: Date | undefined; }; ... 10 more ...; description?: string | undefined; }, "metadata" | "id">'.
+src/lib/custom-ai-agents/core-agent.ts(235,9): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/custom-ai-agents/job-store.ts(90,5): error TS2322: Type 'null' is not assignable to type 'AgentJob'.
+src/lib/custom-ai-agents/job-store.ts(98,5): error TS2322: Type 'null' is not assignable to type 'AgentJob'.
+src/lib/custom-ai-agents/job-store.ts(112,5): error TS2322: Type 'null' is not assignable to type 'AgentJob'.
+src/lib/custom-ai-agents/training/fine-tuning-pipeline.ts(437,22): error TS2322: Type 'null' is not assignable to type 'FineTuningJob'.
+src/lib/custom-ai-agents/training/fine-tuning-pipeline.ts(444,32): error TS2322: Type 'null' is not assignable to type 'FineTuningJob'.
+src/lib/custom-ai-agents/training/fine-tuning-pipeline.ts(454,7): error TS2322: Type 'null' is not assignable to type 'FineTuningJob'.
+src/lib/database-scraping-scheduler.ts(69,104): error TS2554: Expected 2 arguments, but got 3.
+src/lib/database-scraping-scheduler.ts(165,9): error TS2554: Expected 2 arguments, but got 3.
+src/lib/database-scraping-scheduler.ts(518,7): error TS2554: Expected 2 arguments, but got 3.
+src/lib/echo-marketing-intelligence.ts(181,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/echo-marketing-intelligence.ts(206,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/echo-marketing-intelligence.ts(229,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/echo-marketing-intelligence.ts(256,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/echo-marketing-intelligence.ts(282,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/feature-gate-middleware.ts(152,3): error TS2322: Type 'null' is not assignable to type 'NextResponse<unknown>'.
+src/lib/feature-gate-middleware.ts(206,5): error TS2322: Type 'null' is not assignable to type 'NextResponse<unknown>'.
+src/lib/image-upload.ts(56,26): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/intelligence-briefing-system.ts(384,28): error TS2589: Type instantiation is excessively deep and possibly infinite.
+src/lib/learning-engine.ts(47,16): error TS2322: Type 'null' is not assignable to type 'LearningPathWithModules'.
+src/lib/learning-engine.ts(152,98): error TS2339: Property 'completion_percentage' does not exist on type '{ status: string | null; id: string; user_id: string; completed_at: Date | null; module_id: string; last_accessed_at: Date | null; }'.
+src/lib/lexi-strategic-analysis.ts(316,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/lexi-strategic-analysis.ts(345,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/lexi-strategic-analysis.ts(378,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/lexi-strategic-analysis.ts(401,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/lexi-strategic-analysis.ts(428,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/lexi-strategic-analysis.ts(465,7): error TS2353: Object literal may only specify known properties, and 'maxTokens' does not exist in type 'CallSettings & { system?: string | SystemModelMessage | SystemModelMessage[] | undefined; } & { prompt: string | ModelMessage[]; messages?: undefined; } & { ...; }'.
+src/lib/message-router.ts(194,7): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/message-router.ts(203,7): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/message-router.ts(324,15): error TS2322: Type 'null' is not assignable to type '{ id: string; priority: "medium" | "low" | "high" | "urgent"; content: string; timestamp: Date; sessionId: string; fromAgent: string; messageType: "handoff" | "request" | "broadcast" | "response" | "notification"; ... 4 more ...; parentMessageId?: string | undefined; }'.
+src/lib/onboarding/workflow.ts(196,9): error TS2304: Cannot find name 'logWarn'.
+src/lib/onboarding/workflow.ts(206,5): error TS2304: Cannot find name 'logWarn'.
+src/lib/recaptcha.ts(31,7): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/recaptcha.ts(36,7): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/recaptcha.ts(41,7): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/recaptcha.ts(87,7): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/recaptcha.ts(94,7): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/recaptcha.ts(100,7): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/recaptcha.ts(107,7): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/recaptcha.ts(121,5): error TS2322: Type 'null' is not assignable to type 'number'.
+src/lib/scraping-scheduler.ts(649,5): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/scraping-scheduler.ts(660,5): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/scraping-scheduler.ts(671,5): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/social-media-job-processor.ts(481,16): error TS2769: No overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "id"; tableName: "competitor_profiles"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'number' is not assignable to parameter of type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<number>, right: number | SQLWrapper): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "competitor_profiles"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<number>'.
+      Type 'PgColumn<{ name: "id"; tableName: "competitor_profiles"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<number>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "id"; tableName: "competitor_profiles"; dataType: "string"; columnType: "PgText"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+src/lib/social-media-monitor.ts(473,9): error TS2322: Type 'null' is not assignable to type 'SocialMediaAnalysis'.
+src/lib/social-media-monitor.ts(1047,9): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(value: { user_id: string | SQL<unknown> | Placeholder<string, any>; competitor_id: string | SQL<unknown> | Placeholder<string, any>; source_type: string | SQL<...> | Placeholder<...>; ... 13 more ...; processed_at?: Date | ... 3 more ... | undefined; }): PgInsertBase<...>', gave the following error.
+    Type 'null' is not assignable to type 'string | SQL<unknown> | Placeholder<string, any>'.
+  Overload 2 of 2, '(values: { user_id: string | SQL<unknown> | Placeholder<string, any>; competitor_id: string | SQL<unknown> | Placeholder<string, any>; source_type: string | SQL<...> | Placeholder<...>; ... 13 more ...; processed_at?: Date | ... 3 more ... | undefined; }[]): PgInsertBase<...>', gave the following error.
+    Object literal may only specify known properties, and 'competitor_id' does not exist in type '{ user_id: string | SQL<unknown> | Placeholder<string, any>; competitor_id: string | SQL<unknown> | Placeholder<string, any>; source_type: string | SQL<...> | Placeholder<...>; ... 13 more ...; processed_at?: Date | ... 3 more ... | undefined; }[]'.
+src/lib/social-media-scheduler.ts(81,9): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/social-media-scheduler.ts(110,7): error TS2322: Type 'null' is not assignable to type 'string'.
+src/lib/templates-client.ts(89,7): error TS2322: Type 'Template | null' is not assignable to type 'Template'.
+  Type 'null' is not assignable to type 'Template'.
+src/lib/templates-client.ts(97,5): error TS2322: Type 'Template | null' is not assignable to type 'Template'.
+  Type 'null' is not assignable to type 'Template'.
+src/lib/templates-client.ts(101,5): error TS2322: Type 'Template | null' is not assignable to type 'Template'.
+  Type 'null' is not assignable to type 'Template'.
+src/lib/unified-briefcase.ts(472,30): error TS2322: Type 'null' is not assignable to type 'BriefcaseItem'.
+src/lib/web-push-notifications.ts(413,78): error TS2322: Type 'null' is not assignable to type 'ServiceWorkerRegistration'.
+src/lib/web-push-notifications.ts(417,7): error TS2322: Type 'ServiceWorkerRegistration | null' is not assignable to type 'ServiceWorkerRegistration'.
+  Type 'null' is not assignable to type 'ServiceWorkerRegistration'.
+src/lib/web-push-notifications.ts(420,7): error TS2322: Type 'null' is not assignable to type 'ServiceWorkerRegistration'.
+src/services/gameService.ts(79,129): error TS1016: A required parameter cannot follow an optional parameter.
+src/services/geminiService.ts(67,13): error TS2322: Type 'null' is not assignable to type 'CompetitorReport'.
+src/services/geminiService.ts(77,13): error TS2322: Type 'null' is not assignable to type 'WarRoomResponse'.
+src/services/geminiService.ts(134,13): error TS2322: Type 'null' is not assignable to type 'TribeBlueprint'.
+src/services/geminiService.ts(143,13): error TS2322: Type 'null' is not assignable to type 'ContentAmplification'.
+src/services/geminiService.ts(152,13): error TS2322: Type 'null' is not assignable to type 'SocialStrategy'.
+src/services/geminiService.ts(161,13): error TS2322: Type 'null' is not assignable to type 'LaunchStrategy'.
+src/services/geminiService.ts(171,13): error TS2322: Type 'null' is not assignable to type 'JobDescription'.
+src/services/geminiService.ts(180,13): error TS2322: Type 'null' is not assignable to type 'InterviewGuide'.
+src/services/geminiService.ts(189,13): error TS2322: Type 'null' is not assignable to type 'SOP'.
+src/services/geminiService.ts(222,13): error TS2322: Type 'null' is not assignable to type 'TechStackAudit'.
+src/services/geminiService.ts(252,13): error TS2322: Type 'null' is not assignable to type 'LegalDoc'.
+src/services/geminiService.ts(291,13): error TS2322: Type 'null' is not assignable to type 'RoleplayFeedback'.
+src/services/geminiService.ts(302,13): error TS2322: Type 'null' is not assignable to type 'string'.
+src/services/geminiService.ts(338,13): error TS2322: Type 'null' is not assignable to type 'ProductSpec'.
+src/services/storageService.ts(256,9): error TS2322: Type 'boolean' is not assignable to type 'BusinessContext'.
+src/services/storageService.ts(256,24): error TS2693: 'BusinessContext' only refers to a type, but is being used as a value here.
+src/services/storageService.ts(266,9): error TS2322: Type 'BrandDNA | null' is not assignable to type 'BrandDNA'.
+  Type 'null' is not assignable to type 'BrandDNA'.
+src/services/storageService.ts(497,70): error TS2322: Type 'null' is not assignable to type 'string'.
+src/services/storageService.ts(499,13): error TS2322: Type 'null' is not assignable to type 'string'.
+src/services/storageService.ts(567,30): error TS2693: 'UserProgress' only refers to a type, but is being used as a value here.
+src/services/storageService.ts(570,41): error TS2345: Argument of type 'boolean' is not assignable to parameter of type 'UserProgress'.
+src/services/storageService.ts(581,29): error TS2693: 'BusinessContext' only refers to a type, but is being used as a value here.
+src/services/storageService.ts(584,36): error TS2345: Argument of type 'boolean' is not assignable to parameter of type 'BusinessContext'.
+test/web-scraping-service.test.ts(219,14): error TS18048: 'result.data' is possibly 'undefined'.
+test/web-scraping-service.test.ts(220,14): error TS18048: 'result.data' is possibly 'undefined'.
+test/web-scraping-service.test.ts(221,14): error TS18048: 'result.data' is possibly 'undefined'.
+test/web-scraping-service.test.ts(222,14): error TS18048: 'result.data' is possibly 'undefined'.
+test/web-scraping-service.test.ts(223,14): error TS18048: 'result.data' is possibly 'undefined'.
+test/web-scraping-service.test.ts(224,14): error TS18048: 'result.data' is possibly 'undefined'.

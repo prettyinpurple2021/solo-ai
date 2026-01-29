@@ -59,7 +59,7 @@ export const geminiService = {
     },
 
     // Competitor Analysis
-    async generateCompetitorReport(url: string, name: string): Promise<CompetitorReport> {
+    async generateCompetitorReport(url: string, name: string): Promise<CompetitorReport | null> {
         try {
             return await apiService.post<CompetitorReport>('/ai/competitor-report', { url, name });
         } catch (error) {
@@ -69,7 +69,7 @@ export const geminiService = {
     },
 
     // War Room
-    async generateWarRoomDebate(topic: string, previousSessionId?: string): Promise<WarRoomResponse> {
+    async generateWarRoomDebate(topic: string, previousSessionId?: string): Promise<WarRoomResponse | null> {
         try {
             return await apiService.post<WarRoomResponse>('/ai/war-room', { topic, previousSessionId });
         } catch (error) {
@@ -126,7 +126,7 @@ export const geminiService = {
         }
     },
 
-    async generateTribeBlueprint(audience: string, manifesto?: string): Promise<TribeBlueprint> {
+    async generateTribeBlueprint(audience: string, manifesto?: string): Promise<TribeBlueprint | null> {
         try {
             return await apiService.post<TribeBlueprint>('/ai/tribe-blueprint', { audience, manifesto });
         } catch (error) {
@@ -135,7 +135,7 @@ export const geminiService = {
         }
     },
 
-    async generateAmplifiedContent(content: string, platforms?: string[]): Promise<ContentAmplification> {
+    async generateAmplifiedContent(content: string, platforms?: string[]): Promise<ContentAmplification | null> {
         try {
             return await apiService.post<ContentAmplification>('/ai/amplified-content', { content, platforms });
         } catch (error) {
@@ -144,7 +144,7 @@ export const geminiService = {
         }
     },
 
-    async generateSocialStrategy(platform?: string, goal?: string): Promise<SocialStrategy> {
+    async generateSocialStrategy(platform?: string, goal?: string): Promise<SocialStrategy | null> {
         try {
             return await apiService.post<SocialStrategy>('/ai/social-strategy', { platform, goal });
         } catch (error) {
@@ -153,7 +153,7 @@ export const geminiService = {
         }
     },
 
-    async generateLaunchStrategy(product: string, context?: string): Promise<LaunchStrategy> {
+    async generateLaunchStrategy(product: string, context?: string): Promise<LaunchStrategy | null> {
         try {
             return await apiService.post<LaunchStrategy>('/ai/launch-strategy', { product, context });
         } catch (error) {
@@ -163,7 +163,7 @@ export const geminiService = {
     },
 
     // Ops & HR
-    async generateJobDescription(role: string, culture: string): Promise<JobDescription> {
+    async generateJobDescription(role: string, culture: string): Promise<JobDescription | null> {
         try {
             return await apiService.post<JobDescription>('/ai/job-description', { role, culture });
         } catch (error) {
@@ -172,7 +172,7 @@ export const geminiService = {
         }
     },
 
-    async generateInterviewGuide(role: string, focus?: string): Promise<InterviewGuide> {
+    async generateInterviewGuide(role: string, focus?: string): Promise<InterviewGuide | null> {
         try {
             return await apiService.post<InterviewGuide>('/ai/interview-guide', { role, focus });
         } catch (error) {
@@ -181,7 +181,7 @@ export const geminiService = {
         }
     },
 
-    async generateSOP(processName: string, goal?: string): Promise<SOP> {
+    async generateSOP(processName: string, goal?: string): Promise<SOP | null> {
         try {
             return await apiService.post<SOP>('/ai/sop', { processName, goal });
         } catch (error) {
@@ -214,7 +214,7 @@ export const geminiService = {
         }
     },
 
-    async conductTechAudit(stack: string): Promise<TechStackAudit> {
+    async conductTechAudit(stack: string): Promise<TechStackAudit | null> {
         try {
             return await apiService.post<TechStackAudit>('/ai/tech-audit', { stack });
         } catch (error) {
@@ -244,7 +244,7 @@ export const geminiService = {
         }
     },
 
-    async draftLegalDoc(type: string, details: string): Promise<LegalDoc> {
+    async draftLegalDoc(type: string, details: string): Promise<LegalDoc | null> {
         try {
             return await apiService.post<LegalDoc>('/ai/legal-doc', { type, details });
         } catch (error) {
@@ -283,7 +283,7 @@ export const geminiService = {
         }
     },
 
-    async evaluateRoleplaySession(scenario: RoleplayScenario, history: RoleplayTurn[]): Promise<RoleplayFeedback> {
+    async evaluateRoleplaySession(scenario: RoleplayScenario, history: RoleplayTurn[]): Promise<RoleplayFeedback | null> {
         try {
             return await apiService.post<RoleplayFeedback>('/ai/roleplay-feedback', { scenario, history });
         } catch (error) {
@@ -293,7 +293,7 @@ export const geminiService = {
     },
 
     // Misc
-    async generateBrandImage(promptUser: string, styleDesc: string): Promise<string> {
+    async generateBrandImage(promptUser: string, styleDesc: string): Promise<string | null> {
         try {
             const response = await apiService.post<{ image: string }>('/ai/brand-image', { promptUser, styleDesc });
             return response.image;
@@ -330,7 +330,7 @@ export const geminiService = {
         }
     },
 
-    async generateProductSpec(idea: string): Promise<ProductSpec> {
+    async generateProductSpec(idea: string): Promise<ProductSpec | null> {
         try {
             return await apiService.post<ProductSpec>('/ai/product-spec', { idea });
         } catch (error) {

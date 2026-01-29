@@ -232,8 +232,8 @@ export async function PUT(
     }
 
     // Build dynamic update query
-    const updateFields = []
-    const updateValues = []
+    const updateFields: string[] = []
+    const updateValues: (string | number | boolean)[] = []
 
     if (updateData.name !== undefined) {
       updateFields.push('name = $' + (updateValues.length + 1))

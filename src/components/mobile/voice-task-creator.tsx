@@ -18,25 +18,25 @@ import {
 import { cn } from '@/lib/utils'
 
 interface VoiceTaskCreatorProps {
-  isOpen: boolean,boolean
+  isOpen: boolean
   onClose: () => void
   onTaskCreate: (task: {
-    title: string,string
-    description?: string,string
-    priority: 'low' | 'medium' | 'high' | 'urgent',
-    estimatedMinutes?: number,number
+    title: string
+    description?: string
+    priority: 'low' | 'medium' | 'high' | 'urgent'
+    estimatedMinutes?: number
   }) => void
-  className?: string,string
+  className?: string
 }
 
 interface VoiceState {
-  isRecording: boolean,boolean
-  isProcessing: boolean,boolean
-  isPlaying: boolean,boolean
-  transcript: string,string
-  confidence: number,number
-  duration: number,number
-  audioBlob?: Blob,
+  isRecording: boolean
+  isProcessing: boolean
+  isPlaying: boolean
+  transcript: string
+  confidence: number
+  duration: number
+  audioBlob?: Blob
 }
 
 
@@ -76,9 +76,9 @@ export default function VoiceTaskCreator({
   const [error, setError] = useState<string | null>(null)
 
   const recognitionRef = useRef<any>(null)
-  const mediaRecorderRef = useRef<MediaRecorder (null)
-  const audioRef = useRef<HTMLAudioElement (null)
-  const intervalRef = useRef<NodeJS.Timeout (null)
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   // Check for browser support
   useEffect(() => {

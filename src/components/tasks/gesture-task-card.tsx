@@ -47,7 +47,7 @@ export default function GestureTaskCard({
   className = ""
 }: GestureTaskCardProps) {
   const [showActions, setShowActions] = useState(false)
-  const [longPressTimeout, setLongPressTimeout] = useState<NodeJS.Timeout (null)
+  const [longPressTimeout, setLongPressTimeout] = useState<ReturnType<typeof setTimeout> | null>(null)
   const [isLongPress, setIsLongPress] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
   

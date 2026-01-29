@@ -7,7 +7,6 @@ import { User } from "next-auth"
  * Authenticated user type extending NextAuth User
  */
 export interface AuthenticatedUser extends User {
-  role?: string
   username?: string | null
   full_name?: string | null
   subscription_tier?: string
@@ -26,7 +25,7 @@ export interface AuthResult {
 /**
  * Extract user ID from session
  */
-export async function getUserIdFromSession(request?: NextRequest): Promise<string> {
+export async function getUserIdFromSession(request?: NextRequest): Promise<string | null> {
   try {
     const session = await auth()
     return session?.user?.id || null
@@ -39,7 +38,7 @@ export async function getUserIdFromSession(request?: NextRequest): Promise<strin
 /**
  * Extract user ID from request (supports both JWT and simple user ID header)
  */
-export async function getUserIdFromRequest(request: NextRequest): Promise<string> {
+export async function getUserIdFromRequest(request: NextRequest): Promise<string | null> {
   // First try session
   const userId = await getUserIdFromSession(request)
   if (userId) return userId
@@ -56,7 +55,7 @@ export async function createToken(userId: string, arg_string: string): Promise<s
   return "mock-token"
 }
 
-export async function verifyToken(request: NextRequest): Promise<string> {
+export async function verifyToken(request: NextRequest): Promise<string | null> {
   return await getUserIdFromSession(request)
 }
 

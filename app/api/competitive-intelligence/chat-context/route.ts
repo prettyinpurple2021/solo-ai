@@ -159,7 +159,7 @@ function extractRelevantCompetitiveData(message: string, context: any): any {
  * Generate a summary of competitive intelligence context
  */
 function generateContextSummary(context: any): string {
-  const parts = []
+  const parts: string[] = []
   
   if (context.competitors.length > 0) {
     const highThreatCount = context.competitors.filter((c: any) => c.threat_level === 'high' || c.threat_level === 'critical').length

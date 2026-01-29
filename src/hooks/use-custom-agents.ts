@@ -92,7 +92,7 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
   const [workflows, setWorkflows] = useState<Workflow[]>([])
   const [insights, setInsights] = useState<CustomAgentInsights | null>(null)
   
-  const abortControllerRef = useRef<AbortController (null)
+  const abortControllerRef = useRef<AbortController | null>(null)
 
   // Send message to custom agents
   const sendMessage = useCallback(async (

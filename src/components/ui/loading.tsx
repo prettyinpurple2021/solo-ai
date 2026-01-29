@@ -7,6 +7,7 @@ interface LoadingProps {
   size?: 'sm' | 'md' | 'lg'
   color?: 'cyan' | 'magenta' | 'lime' | 'purple'
   className?: string
+  text?: string
 }
 
 export const Loading = ({ 

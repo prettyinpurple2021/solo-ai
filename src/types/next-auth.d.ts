@@ -10,12 +10,18 @@ declare module "next-auth" {
       role: string
       /** The user's postal address. */
       address?: string
+      full_name?: string | null
+      avatar_url?: string | null
+      stripe_customer_id?: string | null
     } & DefaultSession["user"]
   }
 
   interface User {
     id: string
     role: string
+    full_name?: string | null
+    avatar_url?: string | null
+    stripe_customer_id?: string | null
   }
 }
 

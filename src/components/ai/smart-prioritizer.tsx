@@ -145,7 +145,7 @@ export function SmartPrioritizer({ tasks, onPrioritize, className = "" }: SmartP
   }
 
   const generateAIReason = (task: Task, score: number): string => {
-    const reasons = []
+    const reasons: string[] = []
 
     if (task.due_date) {
       const daysUntilDue = Math.ceil((new Date(task.due_date).getTime() - Date.now()) / (1000 * 60 * 60 * 24))

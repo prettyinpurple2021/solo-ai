@@ -20,7 +20,7 @@ function getSql() {
   return neon(url)
 }
 
-async function getUserIdFromToken(request: NextRequest): Promise<string> {
+async function getUserIdFromToken(request: NextRequest): Promise<string | null> {
   try {
     const authHeader = request.headers.get('authorization')
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -37,7 +37,7 @@ async function getUserIdFromToken(request: NextRequest): Promise<string> {
   }
 }
 
-async function getUserId(request: NextRequest): Promise<string> {
+async function getUserId(request: NextRequest): Promise<string | null> {
   // Prefer modern session/cookie auth (NextAuth). Fall back to legacy Bearer token for backward compatibility.
   try {
     const { user } = await authenticateRequest()
@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
 
     if (preferences) {
       // Bulk update multiple preferences
-      const results = []
+      const results: { preference_key: string; preference_value: any }[] = []
       for (const [prefKey, prefValue] of Object.entries(preferences)) {
         const result = await sql`
           insert into user_preferences (user_id, preference_key, preference_value, updated_at) 
@@ -118,7 +118,9 @@ export async function POST(req: NextRequest) {
             updated_at = now()
           returning preference_key, preference_value
         `
-        results.push(result[0])
+        if (result[0]) {
+          results.push(result[0] as { preference_key: string; preference_value: any })
+        }
       }
 
       return NextResponse.json({

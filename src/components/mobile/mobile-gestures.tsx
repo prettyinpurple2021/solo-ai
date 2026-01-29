@@ -44,7 +44,7 @@ export function TouchGestureWrapper({
   const [touchStart, setTouchStart] = useState<{ x: number; y: number; time: number } | null>(null)
   const [touchEnd, setTouchEnd] = useState<{ x: number; y: number; time: number } | null>(null)
   const [lastTap, setLastTap] = useState<number>(0)
-  const [longPressTimer, setLongPressTimer] = useState<NodeJS.Timeout (null)
+  const [longPressTimer, setLongPressTimer] = useState<ReturnType<typeof setTimeout> | null>(null)
   const [isLongPress, setIsLongPress] = useState(false)
   const [gestureActive, setGestureActive] = useState(false)
   const [currentGesture, setCurrentGesture] = useState<string>("")

@@ -203,7 +203,7 @@ app.post('/api/auth/signup', async (req: Request, res: Response) => {
 
         const token = generateToken(String(newUser[0].id), email);
 
-        res.json({ token, user: newUser[0] });
+        return res.json({ token, user: newUser[0] });
     } catch (error: any) {
         console.error('Signup error:', error);
         res.status(500).json({ error: `Signup failed: ${error.message}` });
@@ -230,7 +230,7 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
 
         const token = generateToken(String(user[0].id), email);
 
-        res.json({ token, user: user[0] });
+        return res.json({ token, user: user[0] });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({ error: 'Login failed' });
@@ -267,7 +267,7 @@ app.post('/api/generate', async (req: Request, res: Response) => {
             });
 
             const result = await chat.sendMessage({ message: prompt });
-            res.json({ text: result.text || '' });
+            return res.json({ text: result.text || '' });
         } else {
             const chat = ai.chats.create({
                 model: targetModel,
@@ -280,7 +280,7 @@ app.post('/api/generate', async (req: Request, res: Response) => {
             });
 
             const result = await chat.sendMessage({ message: prompt });
-            res.json({ text: result.text || '' });
+            return res.json({ text: result.text || '' });
         }
     } catch (error) {
         console.error("Generation error:", error);
@@ -349,7 +349,7 @@ app.get('/api/user', async (req: Request, res: Response) => {
         }
 
         await setCache(cacheKey, user[0]);
-        res.json(user[0]);
+        return res.json(user[0]);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to fetch user' });
@@ -384,7 +384,7 @@ app.post('/api/user/progress', async (req: Request, res: Response) => {
         // Invalidate cache
         await invalidateCache(`user:${userId}`);
 
-        res.json(updated[0]);
+        return res.json(updated[0]);
     } catch (error) {
         res.status(500).json({ error: 'Failed to update progress' });
     }
@@ -410,7 +410,7 @@ app.get('/api/tasks', async (req: Request, res: Response) => {
             .orderBy(desc(tasks.createdAt));
 
         await setCache(cacheKey, allTasks);
-        res.json(allTasks);
+        return res.json(allTasks);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch tasks' });
     }
@@ -442,7 +442,7 @@ app.post('/api/tasks', async (req: Request, res: Response) => {
         // Index for search
         await SearchIndexer.indexTask(userId, result[0]);
 
-        res.json(result[0]);
+        return res.json(result[0]);
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to save task' });
@@ -479,7 +479,7 @@ app.post('/api/tasks/batch', async (req: Request, res: Response) => {
         await invalidateCache(`tasks:${userId}`);
         broadcastToUser(userId, 'tasks:batch_updated', taskList);
 
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Failed to batch save' });
     }
@@ -503,7 +503,7 @@ app.delete('/api/tasks/:id', async (req: Request, res: Response) => {
         // Remove from index
         await SearchIndexer.removeFromIndex(userId, 'task', id);
 
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Failed to delete task' });
     }
@@ -520,7 +520,7 @@ app.delete('/api/tasks', async (req: Request, res: Response) => {
         await invalidateCache(`tasks:${userId}`);
         broadcastToUser(userId, 'tasks:cleared', {});
 
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Failed to clear tasks' });
     }
@@ -551,7 +551,7 @@ app.get('/api/chat/:agentId', async (req: Request, res: Response) => {
             .orderBy(chatHistory.id);
 
         await setCache(cacheKey, history);
-        res.json(history);
+        return res.json(history);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch chat' });
     }
@@ -584,7 +584,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
         await invalidateCache(`chat:${userId}:${agentId}`);
         broadcastToUser(userId, 'chat:updated', { agentId });
 
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Failed to save chat' });
@@ -611,7 +611,7 @@ app.get('/api/context', async (req: Request, res: Response) => {
 
         const result = ctx[0] || null;
         await setCache(cacheKey, result);
-        res.json(result);
+        return res.json(result);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch context' });
     }
@@ -642,7 +642,7 @@ app.post('/api/context', async (req: Request, res: Response) => {
         await invalidateCache(`context:${userId}`);
         broadcastToUser(userId, 'context:updated', result[0]);
 
-        res.json(result[0]);
+        return res.json(result[0]);
     } catch (error) {
         res.status(500).json({ error: 'Failed to save context' });
     }
@@ -673,7 +673,7 @@ app.get('/api/reports', async (req: Request, res: Response) => {
         }));
 
         await setCache(cacheKey, formatted);
-        res.json(formatted);
+        return res.json(formatted);
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch reports' });
     }
@@ -703,7 +703,7 @@ app.post('/api/reports', async (req: Request, res: Response) => {
         const reportId = report.competitorName || 'unknown_id';
         await SearchIndexer.indexReport(userId, { ...report, id: reportId });
 
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
         res.status(500).json({ error: 'Failed to save report' });
     }

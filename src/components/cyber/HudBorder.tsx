@@ -3,15 +3,17 @@
 import { cn } from '@/lib/utils'
 import { ReactNode } from 'react'
 
-interface HudBorderProps {
+export interface HudBorderProps {
   children: ReactNode
   className?: string
-  variant?: 'default' | 'hover'
+  variant?: 'default' | 'hover' | 'cyan' | 'purple' | 'magenta' | 'lime' | 'orange' | 'outline' | 'secondary'
+  onClick?: () => void
 }
 
-export function HudBorder({ children, className, variant = 'default' }: HudBorderProps) {
+export function HudBorder({ children, className, variant = 'default', onClick }: HudBorderProps) {
   return (
     <div
+      onClick={onClick}
       className={cn(
         'relative',
         'bg-dark-card/80',

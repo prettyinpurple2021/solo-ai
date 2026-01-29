@@ -10,7 +10,7 @@ const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ''
 
 interface RecaptchaContextType {
   isReady: boolean
-  executeRecaptcha: (action: string) => Promise<string> 
+  executeRecaptcha: (action: string) => Promise<string | null>
   resetRecaptcha: () => void
 }
 
@@ -34,10 +34,10 @@ declare global {
 
 export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
   const [isReady, setIsReady] = useState(false)
-  const [ setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
 
-  const executeRecaptcha = async (action: string): Promise<string> => {
+  const executeRecaptcha = async (action: string): Promise<string | null> => {
     if (!RECAPTCHA_SITE_KEY) {
       // Silently return null if reCAPTCHA is not configured (optional feature)
       return null

@@ -33,9 +33,9 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
 
   const recognitionRef = useRef<any>(null)
   const synthRef = useRef<any>(null)
-  const audioContextRef = useRef<AudioContext (null)
-  const analyserRef = useRef<AnalyserNode (null)
-  const microphoneRef = useRef<MediaStreamAudioSourceNode (null)
+  const audioContextRef = useRef<AudioContext | null>(null)
+  const analyserRef = useRef<AnalyserNode | null>(null)
+  const microphoneRef = useRef<MediaStreamAudioSourceNode | null>(null)
 
   useEffect(() => {
     // Initialize speech synthesis

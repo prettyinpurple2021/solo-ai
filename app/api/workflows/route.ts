@@ -324,8 +324,8 @@ export async function PUT(request: NextRequest) {
     }
 
     // Build dynamic update query
-    let updateFields = []
-    let params = []
+    let updateFields: string[] = []
+    let params: any[] = []
     let paramIndex = 1
 
     if (updates.name !== undefined) {

@@ -115,8 +115,8 @@ export async function POST(request: NextRequest) {
     
     // Update task with custom values if provided
     if (custom_title || custom_description || priority || goal_id) {
-      const updateFields = []
-      const updateValues = []
+      const updateFields: string[] = []
+      const updateValues: (string | number)[] = []
       let paramIndex = 1
       
       if (custom_title) {

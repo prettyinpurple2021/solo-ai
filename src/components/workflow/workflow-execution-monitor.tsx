@@ -110,7 +110,7 @@ export function WorkflowExecutionMonitor({
   const [loading, setLoading] = useState(true)
 
   const { toast } = useToast()
-  const refreshIntervalRef = useRef<NodeJS.Timeout (null)
+  const refreshIntervalRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const fetchExecutions = useCallback(async () => {
     try {
