@@ -409,7 +409,7 @@ export class WebPushNotificationManager {
   /**
    * Private helper methods
    */
-  private async getServiceWorkerRegistration(): Promise<ServiceWorkerRegistration> {
+  private async getServiceWorkerRegistration(): Promise<ServiceWorkerRegistration | null> {
     if (typeof navigator === 'undefined' || !('serviceWorker' in navigator)) return null
 
     try {

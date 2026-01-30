@@ -80,11 +80,10 @@ export async function POST(request: NextRequest) {
     await incrementConversationCount(user.id)
 
     // Get competitive intelligence context
-    const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(user.id, agentId)
+    const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(user.id, agentId || 'general')
     
     // Get agent-specific prompts with competitive intelligence integration
     const agentPrompts = CompetitiveIntelligenceContextService.getAgentCompetitivePrompts()
-    const _agentId_typed = agentId as keyof typeof agentPrompts
     
     // Get agent personality based on agentId
     const agentPersonalities = {
@@ -113,11 +112,11 @@ export async function POST(request: NextRequest) {
     if (existing.length === 0) {
       // Insert only the columns that exist on the Drizzle users table to avoid type errors
       await db.insert(users).values({
-        id: user.id,
-        email: user.email,
+        id: user.id || '',
+        email: user.email || '',
         password: '',
-        full_name: user.full_name,
-        image: user.avatar_url,
+        full_name: user.full_name || '',
+        image: user.avatar_url || '',
         subscription_tier: 'free',
         onboarding_completed: false,
         created_at: new Date(),

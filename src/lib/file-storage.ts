@@ -141,28 +141,26 @@ class NeonFileStorage implements FileStorageProvider {
   }
 }
 
-// Default implementation using local storage (for development)
-class LocalFileStorage implements FileStorageProvider {
+// Fallback implementation using in-memory data URIs (stateless)
+class InMemoryFileStorage implements FileStorageProvider {
   async upload(file: File, pathname: string): Promise<FileUploadResult> {
-    // For development, we'll create a data URL
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader()
-      reader.onload = () => {
-        resolve({
-          url: reader.result as string,
-          pathname,
-          contentType: file.type,
-          contentDisposition: `attachment; filename="${file.name}"`,
-        })
-      }
-      reader.onerror = reject
-      reader.readAsDataURL(file)
-    })
+    // Convert to base64 data URL for stateless usage
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+    const base64 = buffer.toString('base64')
+    const url = `data:${file.type};base64,${base64}`
+    
+    return {
+      url,
+      pathname,
+      contentType: file.type,
+      contentDisposition: `attachment; filename="${file.name}"`,
+    }
   }
 
   async delete(_pathname: string): Promise<void> {
-    // No-op for local storage
-    logInfo(`Would delete file: ${_pathname}`)
+    // No-op for in-memory storage
+    logInfo(`[InMemory] Virtual delete for: ${_pathname}`)
   }
 
   async list(_prefix: string): Promise<Array<{
@@ -171,20 +169,20 @@ class LocalFileStorage implements FileStorageProvider {
     size: number
     uploadedAt: Date
   }>> {
-    // Return empty array for local storage
+    // Return empty array for stateless storage
     return []
   }
 }
 
 // Initialize storage provider based on environment
 const getStorageProvider = (): FileStorageProvider => {
-  // Use Neon storage if DATABASE_URL is available, otherwise local storage
+  // Use Neon storage if DATABASE_URL is available
   if (process.env.DATABASE_URL) {
     return new NeonFileStorage()
   }
 
-  // Fallback to local storage for development
-  return new LocalFileStorage()
+  // Fallback to in-memory storage if no database connection
+  return new InMemoryFileStorage()
 }
 
 const storageProvider = getStorageProvider()

@@ -19,7 +19,7 @@ const querySchema = z.object({
   competitor_ids: z.string().transform(str => str.split(',').filter(Boolean)),
   platform: z.enum(['linkedin', 'twitter', 'facebook', 'instagram', 'youtube']).optional(),
   days: z.coerce.number().default(30),
-  metrics: z.string().transform(str => str.split(',')).default(['engagement', 'frequency', 'reach', 'sentiment'] as any)
+  metrics: z.string().transform(str => str.split(',')).refine(val => val.length > 0) .or(z.array(z.string())).transform(val => Array.isArray(val) ? val : [val]) as any
 });
 
 /**

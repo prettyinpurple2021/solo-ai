@@ -459,7 +459,7 @@ export class UnifiedBriefcaseManager {
   /**
    * Get user's current avatar
    */
-  async getUserAvatar(userId: string): Promise<BriefcaseItem> {
+  async getUserAvatar(userId: string): Promise<BriefcaseItem | null> {
     const sql = getSql()
     // @ts-ignore - neon client typing issue
     const result = await sql(`

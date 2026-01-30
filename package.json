@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "cross-env NODE_OPTIONS='--max-old-space-size=6144' next build --webpack",
+    "build": "cross-env NODE_OPTIONS='--max-old-space-size=8192' next build --webpack",
     "start": "next start",
     "lint": "eslint .",
-    "type-check": "tsc --noEmit",
+    "type-check": "cross-env NODE_OPTIONS='--max-old-space-size=8192' tsc --noEmit",
     "dev:all": "concurrently \"npm run dev\" \"cd server && npm run dev\"",
     "db:generate": "drizzle-kit generate --config=server/drizzle.config.ts",
     "db:push": "drizzle-kit push --config=server/drizzle.config.ts",

@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
     }
 
     const sql = getSql()
-    const uploadedFiles = []
+    const uploadedFiles: any[] = []
 
     for (const file of files) {
       // Generate unique ID
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
             ${file.size},
             ${blob.url},
             ${category},
-            ${JSON.stringify([])},
+            ${JSON.stringify([])}::jsonb,
             false,
             false,
             0,
