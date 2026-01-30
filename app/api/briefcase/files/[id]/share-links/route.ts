@@ -71,19 +71,19 @@ export const POST = withDocumentAuth(
       const shareUrl = `${process.env.NEXT_PUBLIC_APP_URL}/shared/${shareId}`
 
       // Hash password if provided
-      let passwordHash = null
+      let passwordHash: string | null = null
       if (password && password.trim()) {
         passwordHash = await bcrypt.hash(password, 10)
       }
 
       // Create share link
       const permissionsJson = typeof permissions === 'string' ? permissions : JSON.stringify(permissions)
-      const newLinkRows = await sql`
+        const newLinkRows = await sql`
         INSERT INTO document_share_links (
           id, document_id, created_by, url, password_hash, permissions, 
           expires_at, max_access_count, download_enabled, require_auth, 
           is_active, created_at
-        ) VALUES (${shareId}, ${documentId}, ${user.id}, ${shareUrl}, ${passwordHash}, ${permissionsJson}: jsonb, 
+        ) VALUES (${shareId}, ${documentId}, ${user.id}, ${shareUrl}, ${passwordHash}, ${permissionsJson}::jsonb, 
         ${expiresAt || null}, ${maxAccess || null}, ${downloadEnabled || false}, ${requireAuth || false}, 
         ${true}, NOW())
         RETURNING *
@@ -99,7 +99,7 @@ export const POST = withDocumentAuth(
       })
       await sql`
         INSERT INTO document_activity (document_id, user_id, action, details, created_at)
-        VALUES (${documentId}, ${user.id}, ${'share_link_created'}, ${detailsJson}: jsonb, NOW())
+        VALUES (${documentId}, ${user.id}, ${'share_link_created'}, ${detailsJson}::jsonb, NOW())
       `
 
       return NextResponse.json({
