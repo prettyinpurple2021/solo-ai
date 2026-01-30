@@ -19,12 +19,12 @@ router.get('/', async (req: Request, res: Response) => {
         const decks = await db.select()
             .from(pitchDecks)
             .where(eq(pitchDecks.userId, Number(userId)))
-            .orderBy(desc(pitchDecks.generatedAt));
+            .orderBy(desc(pitchDecks.createdAt));
 
-        res.json(decks);
+        return res.json(decks);
     } catch (error) {
         console.error('Error fetching pitch decks:', error);
-        res.status(500).json({ error: 'Failed to fetch pitch decks' });
+        return res.status(500).json({ error: 'Failed to fetch pitch decks' });
     }
 });
 
@@ -32,7 +32,7 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId;
-        const deckId = req.params.id;
+        const deckId = req.params.id as string;
 
         const deck = await db.select()
             .from(pitchDecks)
@@ -46,10 +46,10 @@ router.get('/:id', async (req: Request, res: Response) => {
             return res.status(404).json({ error: 'Pitch deck not found' });
         }
 
-        res.json(deck[0]);
+        return res.json(deck[0]);
     } catch (error) {
         console.error('Error fetching pitch deck:', error);
-        res.status(500).json({ error: 'Failed to fetch pitch deck' });
+        return res.status(500).json({ error: 'Failed to fetch pitch deck' });
     }
 });
 
@@ -100,7 +100,7 @@ router.post('/', async (req: Request, res: Response) => {
         }
     } catch (error) {
         console.error('Error saving pitch deck:', error);
-        res.status(500).json({ error: 'Failed to save pitch deck' });
+        return res.status(500).json({ error: 'Failed to save pitch deck' });
     }
 });
 
@@ -108,7 +108,7 @@ router.post('/', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId;
-        const deckId = req.params.id;
+        const deckId = req.params.id as string;
         const { title, slides } = req.body;
 
         // Verify ownership
@@ -133,10 +133,10 @@ router.put('/:id', async (req: Request, res: Response) => {
             .where(eq(pitchDecks.id, deckId))
             .returning();
 
-        res.json(updated);
+        return res.json(updated);
     } catch (error) {
         console.error('Error updating pitch deck:', error);
-        res.status(500).json({ error: 'Failed to update pitch deck' });
+        return res.status(500).json({ error: 'Failed to update pitch deck' });
     }
 });
 
@@ -144,7 +144,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId;
-        const deckId = req.params.id;
+        const deckId = req.params.id as string;
 
         // Verify ownership before deleting
         const existing = await db.select()
@@ -162,10 +162,10 @@ router.delete('/:id', async (req: Request, res: Response) => {
         await db.delete(pitchDecks)
             .where(eq(pitchDecks.id, deckId));
 
-        res.json({ success: true, message: 'Pitch deck deleted' });
+        return res.json({ success: true, message: 'Pitch deck deleted' });
     } catch (error) {
         console.error('Error deleting pitch deck:', error);
-        res.status(500).json({ error: 'Failed to delete pitch deck' });
+        return res.status(500).json({ error: 'Failed to delete pitch deck' });
     }
 });
 

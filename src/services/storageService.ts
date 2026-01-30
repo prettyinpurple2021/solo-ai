@@ -252,8 +252,8 @@ export const storageService = {
     },
 
     // --- Business Context ---
-    async getContext(): Promise<BusinessContext> {
-        return apiCall<BusinessContext ('GET', '/api/context', undefined, KEYS.CONTEXT, null);
+    async getContext(): Promise<BusinessContext | null> {
+        return apiCall<BusinessContext>('GET', '/api/context', undefined, KEYS.CONTEXT, null as unknown as BusinessContext);
     },
 
     async saveContext(context: BusinessContext): Promise<void> {
@@ -261,7 +261,7 @@ export const storageService = {
     },
 
     // --- Brand DNA ---
-    async getBrandDNA(): Promise<BrandDNA> {
+    async getBrandDNA(): Promise<BrandDNA | null> {
         const context = await this.getContext();
         return context?.brandDna || null;
     },
@@ -489,7 +489,7 @@ export const storageService = {
     },
 
     // --- System Instructions ---
-    async getSystemInstructions(agentId: string): Promise<string> {
+    async getSystemInstructions(agentId: string): Promise<string | null> {
         // Fetch from agent-instructions table
         try {
             const instructions = await apiCall<{ agentId: string, instruction: string }[]>('GET', '/api/resources/agent-instructions', undefined, `solo_agent_prompt_${agentId}`, []);
@@ -564,7 +564,7 @@ export const storageService = {
         logInfo('Starting migration to backend...');
 
         // Progress
-        const progress = get<UserProgress (KEYS.PROGRESS, null);
+        const progress = get<UserProgress>(KEYS.PROGRESS, null as unknown as UserProgress);
         if (progress) {
             logInfo('Migrating Progress...');
             await this.saveUserProgress(progress);
@@ -578,7 +578,7 @@ export const storageService = {
         }
 
         // Context
-        const context = get<BusinessContext (KEYS.CONTEXT, null);
+        const context = get<BusinessContext>(KEYS.CONTEXT, null as unknown as BusinessContext);
         if (context) {
             logInfo('Migrating Context...');
             await this.saveContext(context);

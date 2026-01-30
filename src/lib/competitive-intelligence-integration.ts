@@ -123,7 +123,7 @@ export class CompetitiveIntelligenceIntegration {
   /**
    * Automatically create tasks from competitive intelligence alerts
    */
-  static async createTaskFromAlert(alert: CompetitorAlert, userId: string): Promise<number> {
+  static async createTaskFromAlert(alert: CompetitorAlert, userId: string): Promise<number | null> {
     try {
       // Find matching task template
       const template = COMPETITIVE_TASK_TEMPLATES.find(t => 
@@ -176,7 +176,7 @@ export class CompetitiveIntelligenceIntegration {
     goalId: number, 
     competitorId: number, 
     userId: string
-  ): Promise<CompetitiveGoalContext> {
+  ): Promise<CompetitiveGoalContext | null> {
     try {
       const sql = getSql()
       
@@ -246,7 +246,7 @@ export class CompetitiveIntelligenceIntegration {
       dueDate?: Date
     },
     userId: string
-  ): Promise<number> {
+  ): Promise<number | null> {
     try {
       const sql = getSql()
       

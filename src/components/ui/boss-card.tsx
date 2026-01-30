@@ -11,7 +11,7 @@ import { Crown, Sparkles } from "lucide-react"
  */
 interface BossCardProps {
   children: ReactNode
-  variant?: "default" | "cyan" | "lime" | "orange" | "magenta" | "purple"
+  variant?: "default" | "cyan" | "lime" | "orange" | "magenta" | "purple" | "empowerment" | "accent" | "secondary" | "destructive" | "ghost" | "outline"
   size?: "sm" | "md" | "lg"
   shimmer?: boolean
   glow?: boolean
@@ -52,7 +52,13 @@ export function BossCard({
     lime: "border-2 border-neon-lime shadow-[0_0_15px_rgba(57,255,20,0.2)]",
     orange: "border-2 border-neon-orange shadow-[0_0_15px_rgba(255,102,0,0.2)]",
     magenta: "border-2 border-neon-magenta shadow-[0_0_15px_rgba(255,0,110,0.2)]",
-    purple: "border-2 border-neon-purple shadow-[0_0_15px_rgba(179,0,255,0.2)]"
+    purple: "border-2 border-neon-purple shadow-[0_0_15px_rgba(179,0,255,0.2)]",
+    empowerment: "border-2 border-neon-purple bg-gradient-to-br from-dark-card to-neon-purple/10 shadow-[0_0_15px_rgba(179,0,255,0.2)]",
+    accent: "border-2 border-neon-cyan bg-gradient-to-br from-dark-card to-neon-cyan/10 shadow-[0_0_15px_rgba(11,228,236,0.2)]",
+    secondary: "border-2 border-gray-600 bg-gray-800/50",
+    destructive: "border-2 border-red-600 bg-red-900/20 shadow-[0_0_15px_rgba(220,38,38,0.2)]",
+    ghost: "border-0 bg-transparent shadow-none",
+    outline: "border-2 border-gray-500 bg-transparent"
   }
 
   const widthClass = fullWidth ? "w-full" : ""

@@ -11,7 +11,7 @@ interface CollaborationResult {
 export function useCollaboration() {
   const { loading, error, setLoading, setError } = useAsyncState()
 
-  const createTask = async (workflowType: string, customization?: any): Promise<CollaborationTask> => {
+  const createTask = async (workflowType: string, customization?: any): Promise<CollaborationTask | null> => {
     setLoading(true)
     setError(null)
 
@@ -46,7 +46,7 @@ export function useCollaboration() {
     phaseId: string,
     userInput: string,
     previousOutputs: Record<string, string> = {},
-  ): Promise<CollaborationResult> => {
+  ): Promise<CollaborationResult | null> => {
     setLoading(true)
     setError(null)
 

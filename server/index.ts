@@ -115,7 +115,7 @@ const getUserId = (req: express.Request): string | null => {
 // Cache helper functions
 const CACHE_TTL = 300; // 5 minutes
 
-async function getCached<T>(key: string): Promise<T> {
+async function getCached<T>(key: string): Promise<T | null> {
     try {
         const cached = await redis.get(key);
         return cached as T | null;
@@ -206,7 +206,7 @@ app.post('/api/auth/signup', async (req: Request, res: Response) => {
         return res.json({ token, user: newUser[0] });
     } catch (error: any) {
         console.error('Signup error:', error);
-        res.status(500).json({ error: `Signup failed: ${error.message}` });
+        return res.status(500).json({ error: `Signup failed: ${error.message}` });
     }
 });
 
@@ -233,7 +233,7 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
         return res.json({ token, user: user[0] });
     } catch (error) {
         console.error('Login error:', error);
-        res.status(500).json({ error: 'Login failed' });
+        return res.status(500).json({ error: 'Login failed' });
     }
 });
 
@@ -284,7 +284,7 @@ app.post('/api/generate', async (req: Request, res: Response) => {
         }
     } catch (error) {
         console.error("Generation error:", error);
-        res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ error: 'Generation failed' });
     }
 });
 
@@ -352,7 +352,7 @@ app.get('/api/user', async (req: Request, res: Response) => {
         return res.json(user[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Failed to fetch user' });
+        return res.status(500).json({ error: 'Failed to fetch user' });
     }
 });
 
@@ -386,7 +386,7 @@ app.post('/api/user/progress', async (req: Request, res: Response) => {
 
         return res.json(updated[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update progress' });
+        return res.status(500).json({ error: 'Failed to update progress' });
     }
 });
 
@@ -412,7 +412,7 @@ app.get('/api/tasks', async (req: Request, res: Response) => {
         await setCache(cacheKey, allTasks);
         return res.json(allTasks);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch tasks' });
+        return res.status(500).json({ error: 'Failed to fetch tasks' });
     }
 });
 
@@ -445,7 +445,7 @@ app.post('/api/tasks', async (req: Request, res: Response) => {
         return res.json(result[0]);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Failed to save task' });
+        return res.status(500).json({ error: 'Failed to save task' });
     }
 });
 
@@ -481,7 +481,7 @@ app.post('/api/tasks/batch', async (req: Request, res: Response) => {
 
         return res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to batch save' });
+        return res.status(500).json({ error: 'Failed to batch save' });
     }
 });
 
@@ -494,18 +494,18 @@ app.delete('/api/tasks/:id', async (req: Request, res: Response) => {
 
         const { id } = req.params;
         await db.delete(tasks).where(
-            and(eq(tasks.id, id), eq(tasks.userId, userId))
+            and(eq(tasks.id, id as string), eq(tasks.userId, userId))
         );
 
         await invalidateCache(`tasks:${userId}`);
         broadcastToUser(userId, 'task:deleted', { id });
 
         // Remove from index
-        await SearchIndexer.removeFromIndex(userId, 'task', id);
+        await SearchIndexer.removeFromIndex(userId, 'task', id as string);
 
         return res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to delete task' });
+        return res.status(500).json({ error: 'Failed to delete task' });
     }
 });
 
@@ -522,7 +522,7 @@ app.delete('/api/tasks', async (req: Request, res: Response) => {
 
         return res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to clear tasks' });
+        return res.status(500).json({ error: 'Failed to clear tasks' });
     }
 });
 
@@ -544,7 +544,7 @@ app.get('/api/chat/:agentId', async (req: Request, res: Response) => {
             .from(chatHistory)
             .where(
                 and(
-                    eq(chatHistory.agentId, req.params.agentId),
+                    eq(chatHistory.agentId, req.params.agentId as string),
                     eq(chatHistory.userId, userId)
                 )
             )
@@ -553,7 +553,7 @@ app.get('/api/chat/:agentId', async (req: Request, res: Response) => {
         await setCache(cacheKey, history);
         return res.json(history);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch chat' });
+        return res.status(500).json({ error: 'Failed to fetch chat' });
     }
 });
 
@@ -587,7 +587,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
         return res.json({ success: true });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Failed to save chat' });
+        return res.status(500).json({ error: 'Failed to save chat' });
     }
 });
 
@@ -613,7 +613,7 @@ app.get('/api/context', async (req: Request, res: Response) => {
         await setCache(cacheKey, result);
         return res.json(result);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch context' });
+        return res.status(500).json({ error: 'Failed to fetch context' });
     }
 });
 
@@ -644,7 +644,7 @@ app.post('/api/context', async (req: Request, res: Response) => {
 
         return res.json(result[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to save context' });
+        return res.status(500).json({ error: 'Failed to save context' });
     }
 });
 
@@ -675,7 +675,7 @@ app.get('/api/reports', async (req: Request, res: Response) => {
         await setCache(cacheKey, formatted);
         return res.json(formatted);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch reports' });
+        return res.status(500).json({ error: 'Failed to fetch reports' });
     }
 });
 
@@ -705,7 +705,7 @@ app.post('/api/reports', async (req: Request, res: Response) => {
 
         return res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to save report' });
+        return res.status(500).json({ error: 'Failed to save report' });
     }
 });
 

@@ -230,6 +230,7 @@ export async function GET(request: NextRequest) {
 
      const [
         todaysTasksRaw,
+        completedTasksCountRaw,
         activeGoalsRaw,
         recentConversationsRaw,
         briefcasesRaw,
@@ -237,7 +238,7 @@ export async function GET(request: NextRequest) {
         todaysFocusSessions,
         goalsTotal,
         taskStats,
-        userStats
+        weeklyFocusSessions
      ] = await Promise.all([
         // Today's Tasks (Due today or earlier and incomplete, or completed today)
         db.select({
@@ -261,7 +262,6 @@ export async function GET(request: NextRequest) {
         )
         .limit(10),
 
-        // Total Completed Tasks count
         // Total Completed Tasks count
         db.select({ count: count() }).from(tasks).where(and(eq(tasks.user_id, userId.toString()), eq(tasks.status, 'completed'))),
 
@@ -464,9 +464,11 @@ export async function GET(request: NextRequest) {
         })),
         recentBriefcases: formattedBriefcases,
         weeklyFocus: {
-            total_minutes: todaysFocusSessions.reduce((acc, curr) => acc + (curr.duration || 0), 0), // Should use weekly query result
-            sessions_count: todaysFocusSessions.length, // Should use weekly query result
-            average_session: 0 // Calc from weekly
+            total_minutes: weeklyFocusSessions.reduce((acc, curr) => acc + (curr.duration || 0), 0),
+            sessions_count: weeklyFocusSessions.length,
+            average_session: weeklyFocusSessions.length > 0 
+                ? Math.round(weeklyFocusSessions.reduce((acc, curr) => acc + (curr.duration || 0), 0) / weeklyFocusSessions.length)
+                : 0
         },
         insights
      }

@@ -11,7 +11,7 @@ import { Crown, Sparkles, Zap } from "lucide-react"
  */
 export interface BossButtonProps {
   children: ReactNode
-  variant?: "cyan" | "magenta" | "lime" | "purple" | "orange" | "outline"
+  variant?: "cyan" | "magenta" | "lime" | "purple" | "orange" | "outline" | "secondary" | "destructive" | "ghost" | "link" | "empowerment" | "accent"
   size?: "sm" | "md" | "lg"
   icon?: ReactNode
   iconPosition?: "left" | "right"
@@ -54,7 +54,13 @@ export function BossButton({
     lime: "border-2 border-neon-lime bg-neon-lime/10 text-neon-lime focus:ring-neon-lime hover:bg-neon-lime/20 hover:shadow-[0_0_20px_rgba(57,255,20,0.5)]",
     purple: "border-2 border-neon-purple bg-neon-purple/10 text-neon-purple focus:ring-neon-purple hover:bg-neon-purple/20 hover:shadow-[0_0_20px_rgba(179,0,255,0.5)]",
     orange: "border-2 border-neon-orange bg-neon-orange/10 text-neon-orange focus:ring-neon-orange hover:bg-neon-orange/20 hover:shadow-[0_0_20px_rgba(255,102,0,0.5)]",
-    outline: "border-2 border-gray-700 bg-transparent text-gray-300 hover:border-neon-cyan hover:text-neon-cyan focus:ring-neon-cyan"
+    outline: "border-2 border-gray-700 bg-transparent text-gray-300 hover:border-neon-cyan hover:text-neon-cyan focus:ring-neon-cyan",
+    secondary: "border-2 border-gray-600 bg-gray-800/50 text-gray-200 hover:bg-gray-700 hover:border-gray-500 focus:ring-gray-500",
+    destructive: "border-2 border-red-600 bg-red-600/10 text-red-500 hover:bg-red-600/20 hover:shadow-[0_0_20px_rgba(220,38,38,0.5)] focus:ring-red-500",
+    ghost: "border-2 border-transparent bg-transparent text-gray-400 hover:text-white hover:bg-white/5 focus:ring-gray-500",
+    link: "border-0 bg-transparent text-neon-cyan underline-offset-4 hover:underline focus:ring-0 px-0",
+    empowerment: "border-2 border-neon-purple bg-gradient-to-r from-neon-purple/20 to-neon-magenta/20 text-white hover:shadow-[0_0_20px_rgba(179,0,255,0.5)] focus:ring-neon-purple",
+    accent: "border-2 border-neon-cyan bg-gradient-to-r from-neon-cyan/20 to-neon-lime/20 text-white hover:shadow-[0_0_20px_rgba(11,228,236,0.5)] focus:ring-neon-cyan"
   }
 
   const widthClass = fullWidth ? "w-full" : ""

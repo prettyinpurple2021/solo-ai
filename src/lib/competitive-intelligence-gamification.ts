@@ -618,7 +618,7 @@ export class CompetitiveIntelligenceGamification extends GamificationEngine {
   }
 
   private getRecommendedActions(): string[] {
-    const actions = []
+    const actions: string[] = []
     
     if (this.competitiveStats.competitors_monitored < 3) {
       actions.push("Add more competitors to your monitoring list")

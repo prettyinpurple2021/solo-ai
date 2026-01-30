@@ -24,7 +24,7 @@ export const RECAPTCHA_CONFIG = {
 export async function createAssessment(
   token: string,
   action: string = 'submit'
-): Promise<number> {
+): Promise<number | null> {
   try {
     if (!RECAPTCHA_CONFIG.apiKey) {
       logError('Google Cloud API key not configured for reCAPTCHA Enterprise')

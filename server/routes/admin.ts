@@ -36,7 +36,7 @@ router.post('/verify-pin', async (req, res) => {
 router.use(requireAdmin as any);
 
 // Analytics Dashboard
-router.get('/analytics', async ( res) => {
+router.get('/analytics', async (req: express.Request, res: express.Response) => {
     try {
         const [userCount] = await db.select({ count: count() }).from(users);
         const [subCount] = await db.select({ count: count() }).from(subscriptions);
@@ -62,7 +62,7 @@ router.get('/analytics', async ( res) => {
 });
 
 // User Management
-router.get('/users', async (req, res) => {
+router.get('/users', async (req: express.Request, res: express.Response) => {
     try {
         const page = Number(req.query.page) || 1;
         const limit = 20;
@@ -89,7 +89,7 @@ router.get('/users', async (req, res) => {
     }
 });
 
-router.get('/users/:userId', async (req, res) => {
+router.get('/users/:userId', async (req: express.Request, res: express.Response) => {
     try {
         const userId = Number(req.params.userId);
         const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -111,7 +111,7 @@ router.get('/users/:userId', async (req, res) => {
     }
 });
 
-router.post('/users/:userId/suspend', async (req, res) => {
+router.post('/users/:userId/suspend', async (req: express.Request, res: express.Response) => {
     try {
         const userId = Number(req.params.userId);
         const { reason } = req.body;
@@ -142,7 +142,7 @@ router.post('/users/:userId/suspend', async (req, res) => {
 });
 
 // System Health
-router.get('/system-health', async ( res) => {
+router.get('/system-health', async (req: express.Request, res: express.Response) => {
     try {
         // Check DB connection
         const dbStart = Date.now();

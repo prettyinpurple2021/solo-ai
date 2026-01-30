@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     const isSystemJob = request.headers.get('X-System-Job') === 'true'
     const jobId = request.headers.get('X-Job-Id')
 
-    let user = null
+    let user: any = null
     let isAdmin = false
 
     if (isSystemJob) {
@@ -234,8 +234,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Send notifications
-    const results = []
-    const errors = []
+    const results: any[] = []
+    const errors: any[] = []
 
     for (const subscription of subscriptions) {
       try {
@@ -363,7 +363,7 @@ export async function PUT(request: NextRequest) {
     const { notifications, batchName } = parsed.data
 
     // Process each notification in the batch
-    const batchResults = []
+    const batchResults: any[] = []
 
     for (let i = 0; i < notifications.length; i++) {
       const notification = notifications[i]

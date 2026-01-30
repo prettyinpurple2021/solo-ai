@@ -212,7 +212,7 @@ export class CompetitiveIntelligenceContextService {
       ` as any[]
       
       // Analyze patterns and generate insights
-      const insights = []
+      const insights: any[] = []
       const dataTypes = new Map()
       const competitorActivities = new Map()
       
@@ -439,7 +439,7 @@ export class CompetitiveIntelligenceContextService {
    * Generate competitive intelligence queries for agents
    */
   static generateCompetitiveQueries(context: CompetitiveIntelligenceContext): string[] {
-    const queries = []
+    const queries: string[] = []
     
     if (context.recent_alerts.length > 0) {
       queries.push(`What should I do about the recent ${context.recent_alerts[0].alert_type} from ${context.recent_alerts[0].competitor_name}?`)
