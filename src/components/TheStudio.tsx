@@ -27,11 +27,12 @@ export const TheStudio: React.FC = () => {
     const saveToVault = (imageBase64: string) => {
         const newAsset: CreativeAsset = {
             id: `img-${Date.now()}`,
+            url: '',
             prompt: prompt,
             style: selectedStyle.label,
             imageBase64: imageBase64,
             type: 'image',
-            content: prompt,
+
             generatedAt: new Date().toISOString()
         };
 

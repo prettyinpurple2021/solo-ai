@@ -17,7 +17,13 @@ export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete }) => {
         industry: '',
         description: '',
         goals: ['', '', ''], // 3 empty goals
-        brandDna: { onboardingStatus: 'draft' } // Initialize with draft status
+        brandDna: { 
+            onboardingStatus: 'draft',
+            tone: { formalVsCasual: 50, playfulVsSerious: 50, modernVsClassic: 50 },
+            personas: [],
+            coreValues: [],
+            bannedWords: []
+        } // Initialize with draft status
     });
 
     // Load saved progress from DB on mount
@@ -30,7 +36,7 @@ export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete }) => {
                         ...prev,
                         ...context,
                         goals: context.goals && context.goals.length > 0 ? context.goals : ['', '', ''],
-                        brandDna: { ...prev.brandDna, ...context.brandDna }
+                        brandDna: { ...prev.brandDna, ...context.brandDna, personas: context.brandDna?.personas || [], coreValues: context.brandDna?.coreValues || [], bannedWords: context.brandDna?.bannedWords || [] }
                     }));
 
                     // If we have saved data (founder name or company name), skip the boot animation
@@ -72,9 +78,15 @@ export const SystemBoot: React.FC<SystemBootProps> = ({ onComplete }) => {
     }, [step]);
 
     const saveProgress = async (status: 'draft' | 'completed' = 'draft') => {
-        const updatedData = {
+        const updatedData: BusinessContext = {
             ...formData,
-            brandDna: { ...formData.brandDna, onboardingStatus: status }
+            brandDna: { 
+                personas: [],
+                coreValues: [],
+                bannedWords: [],
+                ...(formData.brandDna || {}),
+                onboardingStatus: status 
+            }
         };
         await storageService.saveContext(updatedData);
         return updatedData;

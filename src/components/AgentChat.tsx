@@ -134,7 +134,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({ agentId, initialMessage, o
 
     return (
 
-        <div className="flex flex-col fixed inset-0 z-50 md:relative md:inset-auto md:z-auto md:h-[calc(100vh-4rem)] max-h-[100vh] md:max-h-[800px] glass-panel rounded-none md:rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300 relative">
+        <div className="flex flex-col fixed inset-0 z-50 md:relative md:inset-auto md:z-auto md:h-[calc(100vh-4rem)] max-h-[100vh] md:max-h-[800px] glass-panel rounded-none md:rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-300">
 
             {/* Agent Header & Tabs */}
             <div className="bg-white/5 border-b border-white/5 backdrop-blur-md relative z-20 shrink-0 safe-top">
@@ -226,7 +226,7 @@ export const AgentChat: React.FC<AgentChatProps> = ({ agentId, initialMessage, o
                                             {isUser ? <User size={9} className="md:hidden" /> : <Bot size={9} className="md:hidden" />}
                                             {isUser ? <User size={10} className="hidden md:inline" /> : <Bot size={10} className="hidden md:inline" />}
                                             <span className="font-bold tracking-wider text-[9px] md:text-[10px]">{isUser ? 'YOU' : agent.name}</span>
-                                            <span className="ml-auto text-[9px] md:text-[10px]">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                                            <span className="ml-auto text-[9px] md:text-[10px]">{new Date(msg.timestamp || Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
                                         </div>
                                         <p className="text-xs md:text-sm whitespace-pre-wrap leading-relaxed font-normal">{msg.text}</p>
                                     </div>

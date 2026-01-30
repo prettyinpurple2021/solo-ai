@@ -41,6 +41,7 @@ export async function authenticate(
     // Re-throw all other errors (including redirect errors) to allow Next.js to handle them
     throw error;
   }
+  return undefined;
 }
 
 export async function socialLogin(provider: string) {
@@ -144,6 +145,7 @@ export async function register(prevState: any, formData: FormData) {
     // Re-throw all other errors (including redirect errors) to allow Next.js to handle them
     throw error;
   }
+  return undefined;
 }
 
 export async function handleSignOut() {

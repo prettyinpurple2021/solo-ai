@@ -19,8 +19,19 @@ import {
     SocialStrategy,
     ContentAmplification,
     TribeBlueprint,
-
-    TechStackAudit
+    PitchDeck,
+    TechStackAudit,
+    BoardMeetingReport,
+    NegotiationPrep,
+    MentalCoaching,
+    SimulationResult,
+    MarketPulse,
+    LegalAnalysis,
+    Task,
+    PivotAnalysis,
+    IncineratorResponse,
+    CodeSnippet,
+    FinancialAudit
 } from '../types';
 
 // Types
@@ -89,37 +100,37 @@ export const geminiService = {
     },
 
     // Tactical Plan
-    async generateTacticalPlan(goal: string | string[]): Promise<unknown> {
+    async generateTacticalPlan(goal: string | string[]): Promise<Task[]> {
         try {
-            return await apiService.post('/ai/tactical-plan', { goal });
+            return await apiService.post<Task[]>('/ai/tactical-plan', { goal });
         } catch (error) {
             logError('Tactical Plan Error:', error);
-            return null;
+            return [];
         }
     },
 
     // Marketing & Strategy
-    async generateIncineratorFeedback(idea: string, type?: string, context?: string): Promise<unknown> {
+    async generateIncineratorFeedback(idea: string, type?: string, context?: string): Promise<IncineratorResponse | null> {
         try {
-            return await apiService.post('/ai/incinerator', { idea, type, context });
+            return await apiService.post<IncineratorResponse>('/ai/incinerator', { idea, type, context });
         } catch (error) {
             logError('Incinerator Error:', error);
             return null;
         }
     },
 
-    async generatePitchDeck(businessName?: string, description?: string): Promise<unknown> {
+    async generatePitchDeck(businessName?: string, description?: string): Promise<PitchDeck | null> {
         try {
-            return await apiService.post('/ai/pitch-deck', { businessName, description });
+            return await apiService.post<PitchDeck>('/ai/pitch-deck', { businessName, description });
         } catch (error) {
             logError('Pitch Deck Error:', error);
             return null;
         }
     },
 
-    async findBlueOceans(industry?: string): Promise<unknown> {
+    async findBlueOceans(industry?: string): Promise<PivotAnalysis | null> {
         try {
-            return await apiService.post('/ai/blue-oceans', { industry });
+            return await apiService.post<PivotAnalysis>('/ai/blue-oceans', { industry });
         } catch (error) {
             logError('Blue Ocean Error:', error);
             return null;
@@ -191,23 +202,22 @@ export const geminiService = {
     },
 
     async generateBoardReport(
-        period: string,
-        metrics?: Record<string, unknown>,
-        reports?: Record<string, unknown>,
+        financials: Partial<FinancialContext>,
+        tasks?: Task[],
+        reports?: CompetitorReport[],
         contacts?: Contact[]
-    ): Promise<string> {
+    ): Promise<BoardMeetingReport | null> {
         try {
-            const response = await apiService.post<{ text: string }>('/ai/board-report', { period, metrics, reports, contacts });
-            return response.text;
+            return await apiService.post<BoardMeetingReport>('/ai/board-report', { financials, tasks, reports, contacts });
         } catch (error) {
             logError('Board Report Error:', error);
-            return 'Failed to generate report.';
+            return null;
         }
     },
 
-    async conductFinancialAudit(data: string | FinancialContext): Promise<unknown> {
+    async conductFinancialAudit(data: string | FinancialContext): Promise<FinancialAudit | null> {
         try {
-            return await apiService.post('/ai/financial-audit', { data });
+            return await apiService.post<FinancialAudit>('/ai/financial-audit', { data });
         } catch (error) {
             logError('Financial Audit Error:', error);
             return null;
@@ -234,13 +244,12 @@ export const geminiService = {
         }
     },
 
-    async generateNegotiationPrep(contact: Contact): Promise<string> {
+    async generateNegotiationPrep(contact: Contact): Promise<NegotiationPrep | null> {
         try {
-            const response = await apiService.post<{ text: string }>('/ai/negotiation-prep', { contact });
-            return response.text;
+            return await apiService.post<NegotiationPrep>('/ai/negotiation-prep', { contact });
         } catch (error) {
             logError('Negotiation Prep Error:', error);
-            return 'Failed to generate prep.';
+            return null;
         }
     },
 
@@ -253,9 +262,9 @@ export const geminiService = {
         }
     },
 
-    async analyzeContract(text: string): Promise<unknown> {
+    async analyzeContract(text: string): Promise<LegalAnalysis | null> {
         try {
-            return await apiService.post('/ai/contract-analysis', { text });
+            return await apiService.post<LegalAnalysis>('/ai/contract-analysis', { text });
         } catch (error) {
             logError('Contract Analysis Error:', error);
             return null;
@@ -263,13 +272,12 @@ export const geminiService = {
     },
 
     // Mental & Roleplay
-    async generateStoicCoaching(mood: string, stressLevel?: number, primaryBlocker?: string): Promise<string> {
+    async generateStoicCoaching(mood: string, stressLevel?: number, primaryBlocker?: string): Promise<MentalCoaching | null> {
         try {
-            const response = await apiService.post<{ text: string }>('/ai/stoic-coaching', { mood, stressLevel, primaryBlocker });
-            return response.text;
+            return await apiService.post<MentalCoaching>('/ai/stoic-coaching', { mood, stressLevel, primaryBlocker });
         } catch (error) {
             logError('Stoic Coaching Error:', error);
-            return 'Stay stoic. System offline.';
+            return null;
         }
     },
 
@@ -303,27 +311,27 @@ export const geminiService = {
         }
     },
 
-    async generateCodeSolution(problem: string): Promise<unknown> {
+    async generateCodeSolution(problem: string): Promise<CodeSnippet | null> {
         try {
-            return await apiService.post('/ai/code-solution', { problem });
+            return await apiService.post<CodeSnippet>('/ai/code-solution', { problem });
         } catch (error) {
             logError('Code Solution Error:', error);
             return null;
         }
     },
 
-    async runSimulation(scenario: string): Promise<unknown> {
+    async runSimulation(scenario: string): Promise<SimulationResult | null> {
         try {
-            return await apiService.post('/ai/simulation', { scenario });
+            return await apiService.post<SimulationResult>('/ai/simulation', { scenario });
         } catch (error) {
             logError('Simulation Error:', error);
             return null;
         }
     },
 
-    async generateMarketPulse(context?: unknown): Promise<unknown> {
+    async generateMarketPulse(industry: string): Promise<MarketPulse | null> {
         try {
-            return await apiService.post('/ai/market-pulse', { context });
+            return await apiService.post<MarketPulse>('/ai/market-pulse', { industry });
         } catch (error) {
             logError('Market Pulse Error:', error);
             return null;

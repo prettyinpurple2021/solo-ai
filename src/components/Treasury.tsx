@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Coins, TrendingUp, DollarSign, Calculator, AlertTriangle, Lightbulb, Loader2 } from 'lucide-react';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ReferenceLine } from 'recharts';
-import { FinancialContext, FinancialAudit } from '../types';
+import { FinancialContext, FinancialAudit, BusinessContext } from '../types';
 import { geminiService } from '../services/geminiService';
 import { addXP, showToast } from '../services/gameService';
 import { soundService } from '../services/soundService';
@@ -40,7 +40,7 @@ export const Treasury: React.FC = () => {
     useEffect(() => {
         const timeout = setTimeout(async () => {
             const current = await storageService.getContext() || {} as Record<string, unknown>;
-            storageService.saveContext({ ...current, ...financials }).catch((e) => logError("Failed to save financial context", e));
+            storageService.saveContext({ ...current, ...financials } as BusinessContext).catch((e) => logError("Failed to save financial context", e));
         }, 1000);
 
         calculateProjection();
@@ -53,7 +53,7 @@ export const Treasury: React.FC = () => {
         const burn = financials.monthlyBurn;
         const growth = financials.growthRate / 100;
 
-        const data = [];
+        const data: { month: string; cash: number; revenue: number; burn: number }[] = [];
         let zeroCashMonth = -1;
 
         for (let i = 0; i <= 18; i++) {

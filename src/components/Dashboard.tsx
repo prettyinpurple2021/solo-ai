@@ -131,7 +131,7 @@ export const Dashboard: React.FC = () => {
             // === GENERATE REAL CHART DATA (Burn-up) ===
             const generateChartData = () => {
                 const days = 7;
-                const data = [];
+                const data: { name: string; value: number }[] = [];
                 const now = new Date();
 
                 // Initialize last 7 days

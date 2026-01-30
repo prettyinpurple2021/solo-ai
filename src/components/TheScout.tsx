@@ -14,7 +14,7 @@ import { storageService } from '../services/storageService';
 export const TheScout: React.FC = () => {
     const [activeTab, setActiveTab] = useState<'recruit' | 'vet' | 'delegate'>('recruit');
     const [loading, setLoading] = useState(false);
-    const [ setCopied] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     // Recruit State
     const [roleTitle, setRoleTitle] = useState('');

@@ -13,7 +13,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: unknown }>
   signUp: (email: string, password: string, metadata?: Record<string, unknown>) => Promise<{ error: unknown }>
   signOut: () => Promise<void>
-  getToken: () => Promise<string> 
+  getToken: () => Promise<string | null> 
 }
 
 // Dummy provider for compatibility if imported elsewhere

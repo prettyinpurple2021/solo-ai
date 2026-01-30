@@ -26,8 +26,8 @@ const getAgentColor = (id: AgentId) => {
 };
 
 const TaskCard: React.FC<TaskCardProps> = ({ task, onMove, onDelete, onFocus }) => {
-    const agent = AGENTS[task.assignee];
-    const agentStyle = getAgentColor(task.assignee);
+    const agent = task.assignee ? AGENTS[task.assignee] : AGENTS[AgentId.ROXY];
+    const agentStyle = task.assignee ? getAgentColor(task.assignee) : 'border-gray-500 text-gray-400';
 
     return (
         <div className="bg-dark-card border-2 border-gray-700 p-3 md:p-5 rounded-sm group hover:border-neon-cyan/30 transition-all shadow-[0_0_15px_rgba(11,228,236,0.1)] hover:shadow-[0_0_20px_rgba(11,228,236,0.2)] relative animate-in fade-in zoom-in duration-300 flex flex-col touch-none">

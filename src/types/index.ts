@@ -21,7 +21,21 @@ export interface ChatMessage {
     timestamp?: number;
 }
 
+export interface TargetPersona {
+    name: string;
+    description: string;
+    painPoints: string[];
+}
+
 export interface BrandDNA {
+    tone?: {
+        formalVsCasual: number;
+        playfulVsSerious: number;
+        modernVsClassic: number;
+    };
+    personas: TargetPersona[];
+    coreValues: string[];
+    bannedWords: string[];
     voice?: string;
     values?: string[];
     audience?: string;
@@ -61,6 +75,7 @@ export interface Task {
     estimatedTime?: string;
     createdAt?: string;
     updatedAt?: string;
+    completedAt?: string;
 }
 // ... existing imports ...
 export interface DepartmentGrade {
@@ -198,6 +213,8 @@ export interface CreativeAsset {
     type: 'image' | 'logo' | 'banner' | 'icon';
     url: string;
     prompt?: string;
+    style?: string;
+    imageBase64?: string;
     metadata?: Record<string, any>;
     generatedAt: string;
 }
@@ -217,6 +234,7 @@ export interface ToastMessage {
     message: string;
     type: 'success' | 'error' | 'info' | 'xp';
     xpAmount?: number;
+    newProgress?: UserProgress;
 }
 
 export interface LaunchStrategy {
@@ -225,9 +243,17 @@ export interface LaunchStrategy {
     phases: {
         name: string;
         duration: string;
-        actions: string[];
+        actions: string[]; // For backward compatibility / simple lists
+        events: {
+            day: string;
+            title: string;
+            description: string;
+            owner: string;
+            channel: string;
+        }[];
     }[];
     channels: string[];
+    launchDate: string; // was missing before
     generatedAt: string;
 }
 
@@ -443,4 +469,9 @@ export interface LaunchEvent {
     description: string;
     owner: AgentId;
     channel: string;
+}
+
+export interface MarketPulse {
+    content: string;
+    sources: { title: string; uri: string }[];
 }

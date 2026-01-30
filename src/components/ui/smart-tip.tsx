@@ -41,6 +41,7 @@ export function SmartTipPopup({ tip, onDismiss, onAction, position = "top-right"
       }, tip.autoHide)
       return () => clearTimeout(timer)
     }
+    return undefined
   }, [tip.autoHide, tip.id, onDismiss])
 
   const handleDismiss = useCallback(() => {

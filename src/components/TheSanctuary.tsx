@@ -20,11 +20,7 @@ export const TheSanctuary: React.FC = () => {
         setCoaching(null);
         soundService.playClick();
 
-        const result = await geminiService.generateStoicCoaching({
-            mood,
-            stressLevel: stress,
-            primaryBlocker: blocker
-        });
+        const result = await geminiService.generateStoicCoaching(mood, stress, blocker);
 
         if (result) {
             setCoaching(result);

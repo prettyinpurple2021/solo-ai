@@ -49,6 +49,7 @@ export default function FloatingActionButton({
       document.addEventListener('click', handleClickOutside)
       return () => document.removeEventListener('click', handleClickOutside)
     }
+    return undefined
   }, [isExpanded])
 
   // Don't render on desktop if hideOnDesktop is true

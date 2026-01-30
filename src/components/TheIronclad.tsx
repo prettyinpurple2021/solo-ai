@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Scale, FileText, ShieldAlert, CheckCircle2, PenTool, AlertTriangle, Loader2, Copy, Check, Hand } from 'lucide-react';
 import { geminiService } from '../services/geminiService';
-import { LegalDocType, LegalAnalysis } from '../types';
+import { LegalDoc, LegalDocType, LegalAnalysis } from '../types';
 import { addXP, showToast } from '../services/gameService';
 import { soundService } from '../services/soundService';
 
@@ -17,7 +17,7 @@ export const TheIronclad: React.FC = () => {
     // Draft State
     const [docType, setDocType] = useState<LegalDocType>('NDA');
     const [docDetails, setDocDetails] = useState('');
-    const [draftResult, setDraftResult] = useState<string | null>(null);
+    const [draftResult, setDraftResult] = useState<LegalDoc | null>(null);
 
     // Review State
     const [contractText, setContractText] = useState('');
@@ -225,13 +225,13 @@ export const TheIronclad: React.FC = () => {
                         <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
                             <div className="flex justify-between items-center mb-4 border-b border-zinc-800 pb-4">
                                 <h3 className="font-bold text-white flex items-center gap-2"><CheckCircle2 className="text-emerald-500" size={18} /> Draft Ready</h3>
-                                <button onClick={() => copyToClipboard(draftResult)} className="text-xs font-bold text-zinc-500 hover:text-white flex items-center gap-2 uppercase">
+                                <button onClick={() => copyToClipboard(draftResult.content)} className="text-xs font-bold text-zinc-500 hover:text-white flex items-center gap-2 uppercase">
                                     {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? 'Copied' : 'Copy Text'}
                                 </button>
                             </div>
                             <div className="flex-1 bg-black border border-zinc-800 rounded-lg p-4 overflow-y-auto custom-scrollbar">
                                 <pre className="whitespace-pre-wrap text-zinc-300 font-mono text-sm leading-relaxed">
-                                    {draftResult}
+                                    {draftResult.content}
                                 </pre>
                             </div>
                             <p className="text-[10px] text-red-500 font-mono mt-2 text-center uppercase">* Verify with legal counsel before use.</p>

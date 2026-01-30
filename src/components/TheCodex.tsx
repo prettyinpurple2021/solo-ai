@@ -139,12 +139,12 @@ export const TheCodex: React.FC = () => {
                             <div>
                                 <div className="flex justify-between text-xs font-mono font-bold text-gray-400 mb-2 uppercase">
                                     <span>Formal</span>
-                                    <span className="text-neon-purple">{dna.tone.formalVsCasual}% Casual</span>
+                                    <span className="text-neon-purple">{dna.tone?.formalVsCasual || 50}% Casual</span>
                                 </div>
                                 <input
                                     type="range" min="0" max="100"
-                                    value={dna.tone.formalVsCasual}
-                                    onChange={(e) => setDna({ ...dna, tone: { ...dna.tone, formalVsCasual: parseInt(e.target.value) } })}
+                                    value={dna.tone?.formalVsCasual || 50}
+                                    onChange={(e) => setDna({ ...dna, tone: { ...(dna.tone || { formalVsCasual: 50, playfulVsSerious: 50, modernVsClassic: 50 }), formalVsCasual: parseInt(e.target.value) } })}
                                     className="w-full h-2 bg-dark-bg border border-gray-700 rounded-sm appearance-none cursor-pointer accent-neon-purple"
                                 />
                             </div>
@@ -153,12 +153,12 @@ export const TheCodex: React.FC = () => {
                             <div>
                                 <div className="flex justify-between text-xs font-mono font-bold text-gray-400 mb-2 uppercase">
                                     <span>Serious</span>
-                                    <span className="text-neon-magenta">{dna.tone.playfulVsSerious}% Playful</span>
+                                    <span className="text-neon-magenta">{dna.tone?.playfulVsSerious || 50}% Playful</span>
                                 </div>
                                 <input
                                     type="range" min="0" max="100"
-                                    value={dna.tone.playfulVsSerious}
-                                    onChange={(e) => setDna({ ...dna, tone: { ...dna.tone, playfulVsSerious: parseInt(e.target.value) } })}
+                                    value={dna.tone?.playfulVsSerious || 50}
+                                    onChange={(e) => setDna({ ...dna, tone: { ...(dna.tone || { formalVsCasual: 50, playfulVsSerious: 50, modernVsClassic: 50 }), playfulVsSerious: parseInt(e.target.value) } })}
                                     className="w-full h-2 bg-dark-bg border border-gray-700 rounded-sm appearance-none cursor-pointer accent-neon-magenta"
                                 />
                             </div>
@@ -167,12 +167,12 @@ export const TheCodex: React.FC = () => {
                             <div>
                                 <div className="flex justify-between text-xs font-mono font-bold text-gray-400 mb-2 uppercase">
                                     <span>Classic</span>
-                                    <span className="text-neon-cyan">{dna.tone.modernVsClassic}% Modern</span>
+                                    <span className="text-neon-cyan">{dna.tone?.modernVsClassic || 50}% Modern</span>
                                 </div>
                                 <input
                                     type="range" min="0" max="100"
-                                    value={dna.tone.modernVsClassic}
-                                    onChange={(e) => setDna({ ...dna, tone: { ...dna.tone, modernVsClassic: parseInt(e.target.value) } })}
+                                    value={dna.tone?.modernVsClassic || 50}
+                                    onChange={(e) => setDna({ ...dna, tone: { ...(dna.tone || { formalVsCasual: 50, playfulVsSerious: 50, modernVsClassic: 50 }), modernVsClassic: parseInt(e.target.value) } })}
                                     className="w-full h-2 bg-dark-bg border border-gray-700 rounded-sm appearance-none cursor-pointer accent-neon-cyan"
                                 />
                             </div>

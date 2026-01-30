@@ -174,7 +174,7 @@ export const TheVault: React.FC = () => {
             items = [...items, ...images.map(i => ({ ...i, _type: 'image', _id: i.id, _title: i.prompt, _date: i.generatedAt }))];
         }
         if (activeTab === 'all' || activeTab === 'code') {
-            items = [...items, ...snippets.map(c => ({ ...c, _type: 'code', _id: c.id, _title: c.title, _date: c.timestamp }))];
+            items = [...items, ...snippets.map(c => ({ ...c, _type: 'code', _id: c.id, _title: c.title, _date: c.generatedAt }))];
         }
 
         return items.filter(item =>

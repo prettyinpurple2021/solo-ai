@@ -24,7 +24,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         verificationTokensTable: verificationTokens,
       });
       logInfo("NextAuth DrizzleAdapter initialized successfully.");
-      return adapter;
+      return adapter as import("next-auth/adapters").Adapter;
     } catch (e) {
       // During build time or if DB is not available, return a partial/mock adapter
       // This prevents the "Unsupported database type" error from crashing the build
@@ -81,7 +81,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             const { password: _, ...userWithoutPassword } = user;
             return {
               ...userWithoutPassword,
-              role: userWithoutPassword.role ?? undefined,
+              role: userWithoutPassword.role ?? 'user',
               image: userWithoutPassword.image ?? undefined,
               // Add other nullable fields if necessary for strict type compliance
             };

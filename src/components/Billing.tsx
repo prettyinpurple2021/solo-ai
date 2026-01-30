@@ -72,8 +72,8 @@ export function Billing() {
             setLoading(true);
             // Fetch subscription and usage data from backend
             const [subData, usageData] = await Promise.all([
-                apiService.get('/stripe/subscription').catch(() => null),
-                apiService.get('/stripe/usage').catch(() => null)
+                apiService.get<Subscription>('/stripe/subscription').catch(() => null),
+                apiService.get<Usage>('/stripe/usage').catch(() => null)
             ]);
 
             setSubscription(subData);
@@ -89,7 +89,7 @@ export function Billing() {
         try {
             setManagingBilling(true);
             // Create Stripe Customer Portal session
-            const response = await apiService.post('/stripe/customer-portal', {
+            const response = await apiService.post<{ url: string }>('/stripe/customer-portal', {
                 userId: user?.id
             });
 
@@ -106,7 +106,7 @@ export function Billing() {
 
     const handleUpgrade = async (tier: string) => {
         try {
-            const response = await apiService.post('/stripe/create-checkout-session', {
+            const response = await apiService.post<{ url: string }>('/stripe/create-checkout-session', {
                 tier,
                 userId: user?.id
             });
