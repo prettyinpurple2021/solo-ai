@@ -305,6 +305,13 @@ export class ScrapingScheduler {
   }
 
   /**
+   * Get all scheduled jobs
+   */
+  getAllJobs(): ScrapingJob[] {
+    return Array.from(this.jobQueue.values())
+  }
+
+  /**
    * Get queue metrics and performance statistics
    */
   getMetrics(): QueueMetrics {
@@ -638,7 +645,7 @@ export class ScrapingScheduler {
     return new Date(Date.now() + delayMinutes * 60 * 1000)
   }
 
-  private async findPricingUrl(domain: string): Promise<string> {
+  private async findPricingUrl(domain: string): Promise<string | null> {
     const commonPaths = ['/pricing', '/plans', '/subscribe', '/buy', '/purchase']
     for (const path of commonPaths) {
         const url = `https://${domain}${path}`
@@ -649,7 +656,7 @@ export class ScrapingScheduler {
     return null
   }
 
-  private async findProductUrl(domain: string): Promise<string> {
+  private async findProductUrl(domain: string): Promise<string | null> {
     const commonPaths = ['/products', '/features', '/solutions', '/services']
     for (const path of commonPaths) {
         const url = `https://${domain}${path}`
@@ -660,7 +667,7 @@ export class ScrapingScheduler {
     return null
   }
 
-  private async findJobsUrl(domain: string): Promise<string> {
+  private async findJobsUrl(domain: string): Promise<string | null> {
     const commonPaths = ['/careers', '/jobs', '/hiring', '/about/careers', '/join-us']
     for (const path of commonPaths) {
         const url = `https://${domain}${path}`

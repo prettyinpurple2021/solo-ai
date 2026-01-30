@@ -97,55 +97,68 @@ export interface Opportunity {
 }
 
 // Briefing generation schemas
+// Sub-schemas for briefing generation
+const updateSchema = z.object({
+  type: z.enum(['product', 'pricing', 'marketing', 'hiring', 'funding', 'news']),
+  title: z.string(),
+  description: z.string(),
+  impact: z.enum(['low', 'medium', 'high', 'critical']),
+  source: z.string(),
+  date: z.date()
+});
+
+const competitorUpdateSchema = z.object({
+  competitorId: z.string(),
+  competitorName: z.string(),
+  updates: z.array(updateSchema)
+});
+
+const trendAnalysisSchema = z.object({
+  category: z.string(),
+  trend: z.string(),
+  description: z.string(),
+  implications: z.array(z.string()),
+  confidence: z.number().min(0).max(1)
+});
+
+const actionItemSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  priority: z.enum(['low', 'medium', 'high', 'urgent']),
+  estimatedEffort: z.string(),
+  potentialImpact: z.string()
+});
+
+const threatAssessmentSchema = z.object({
+  overallThreatLevel: z.enum(['low', 'medium', 'high', 'critical']),
+  emergingThreats: z.array(z.object({
+    competitorId: z.string(),
+    threat: z.string(),
+    severity: z.enum(['low', 'medium', 'high', 'critical']),
+    timeframe: z.string()
+  })),
+  marketChanges: z.array(z.string())
+});
+
+const opportunitySchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  competitorWeakness: z.string().optional(),
+  marketGap: z.string().optional(),
+  priority: z.enum(['low', 'medium', 'high']),
+  timeframe: z.string(),
+  requiredActions: z.array(z.string())
+});
+
 const briefingSchema = z.object({
   title: z.string(),
   summary: z.string(),
   keyInsights: z.array(z.string()),
-  competitorUpdates: z.array(z.object({
-    competitorId: z.string(),
-    competitorName: z.string(),
-    updates: z.array(z.object({
-      type: z.enum(['product', 'pricing', 'marketing', 'hiring', 'funding', 'news']),
-      title: z.string(),
-      description: z.string(),
-      impact: z.enum(['low', 'medium', 'high', 'critical']),
-      source: z.string(),
-      date: z.date()
-    }))
-  })),
-  trendAnalysis: z.array(z.object({
-    category: z.string(),
-    trend: z.string(),
-    description: z.string(),
-    implications: z.array(z.string()),
-    confidence: z.number().min(0).max(1)
-  })),
-  actionItems: z.array(z.object({
-    title: z.string(),
-    description: z.string(),
-    priority: z.enum(['low', 'medium', 'high', 'urgent']),
-    estimatedEffort: z.string(),
-    potentialImpact: z.string()
-  })),
-  threatAssessment: z.object({
-    overallThreatLevel: z.enum(['low', 'medium', 'high', 'critical']),
-    emergingThreats: z.array(z.object({
-      competitorId: z.string(),
-      threat: z.string(),
-      severity: z.enum(['low', 'medium', 'high', 'critical']),
-      timeframe: z.string()
-    })),
-    marketChanges: z.array(z.string())
-  }),
-  opportunities: z.array(z.object({
-    title: z.string(),
-    description: z.string(),
-    competitorWeakness: z.string().optional(),
-    marketGap: z.string().optional(),
-    priority: z.enum(['low', 'medium', 'high']),
-    timeframe: z.string(),
-    requiredActions: z.array(z.string())
-  }))
+  competitorUpdates: z.array(competitorUpdateSchema),
+  trendAnalysis: z.array(trendAnalysisSchema),
+  actionItems: z.array(actionItemSchema),
+  threatAssessment: threatAssessmentSchema,
+  opportunities: z.array(opportunitySchema)
 })
 
 export class IntelligenceBriefingService {
@@ -383,7 +396,7 @@ export class IntelligenceBriefingService {
     try {
       const result = await generateObject({
         model: openai('gpt-4-turbo'),
-        schema: briefingSchema,
+        schema: briefingSchema as any,
         prompt
       })
       

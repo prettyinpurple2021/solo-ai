@@ -452,7 +452,7 @@ export class SocialMediaMonitor {
     platform: typeof this.platforms[number], 
     handle: string, 
     competitorId: string
-  ): Promise<SocialMediaAnalysis> {
+  ): Promise<SocialMediaAnalysis | null> {
     switch (platform) {
       case 'linkedin':
         const linkedinPosts = await this.scrapeLinkedInPosts(handle);
@@ -1043,6 +1043,9 @@ export class SocialMediaMonitor {
    */
   private async storeUserIntelligenceData(userId: string, analysis: SocialMediaAnalysis): Promise<void> {
     try {
+      // Schema requires competitor_id. Self-monitoring storage disabled until schema update.
+      return;
+      /*
       await db.insert(intelligenceData).values({
         competitor_id: null, // Not competitor-specific
         user_id: userId,
@@ -1063,7 +1066,7 @@ export class SocialMediaMonitor {
         tags: [analysis.platform, 'social_media', 'self_monitoring'],
         collected_at: new Date(),
         processed_at: new Date()
-      });
+      }); */
     } catch (error) {
       logError('Error storing user intelligence data:', error);
     }

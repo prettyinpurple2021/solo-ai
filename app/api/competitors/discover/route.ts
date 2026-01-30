@@ -254,7 +254,7 @@ async function searchSocialMediaMentions(businessDescription: string) {
 
 // Helper functions for data extraction and processing
 function extractSearchTerms(businessDescription: string, targetMarket?: string): string[] {
-  const terms = []
+  const terms: string[] = []
   
   // Extract key business terms
   const businessWords = businessDescription.toLowerCase()

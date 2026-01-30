@@ -179,7 +179,7 @@ export class LearningEngine {
     const progress = await this.getUserProgress();
     
     // 2. Calculate metrics
-    const totalModulesCompleted = progress.filter(p => p.status === 'completed' || (parseFloat(p.completion_percentage?.toString() || '0') >= 100)).length;
+    const totalModulesCompleted = progress.filter(p => p.status === 'completed' || (parseFloat((p as any).completion_percentage?.toString() || '0') >= 100)).length;
     
     // Calculate total time (mock if field missing or 0)
     const totalTimeSpent = 0; // Placeholder until schema update

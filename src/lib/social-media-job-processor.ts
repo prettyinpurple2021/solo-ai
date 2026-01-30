@@ -478,7 +478,7 @@ export class SocialMediaJobProcessor {
       const results = await db
         .select()
         .from(competitorProfiles)
-        .where(eq(competitorProfiles.id, Number(competitorId)))
+        .where(eq(competitorProfiles.id, competitorId))
         .limit(1);
 
       const competitor = results[0];

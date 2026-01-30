@@ -216,12 +216,12 @@ describe('WebScrapingService', () => {
       expect(result.data).toBeDefined()
       expect(Array.isArray(result.data)).toBe(true)
       expect(result.data).toHaveLength(2)
-      expect(result.data[0].title).toBe('Senior Software Engineer')
-      expect(result.data[0].location).toBe('San Francisco, CA')
-      expect(result.data[0].department).toBe('Engineering')
-      expect(result.data[0].remote).toBe(false)
-      expect(result.data[1].remote).toBe(true) // Remote job
-      expect(result.data[0].strategicImportance).toBe('high') // Engineering role
+      expect(result.data![0].title).toBe('Senior Software Engineer')
+      expect(result.data![0].location).toBe('San Francisco, CA')
+      expect(result.data![0].department).toBe('Engineering')
+      expect(result.data![0].remote).toBe(false)
+      expect(result.data![1].remote).toBe(true) // Remote job
+      expect(result.data![0].strategicImportance).toBe('high') // Engineering role
     })
   })
 

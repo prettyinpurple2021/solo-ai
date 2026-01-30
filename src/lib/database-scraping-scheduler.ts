@@ -359,7 +359,7 @@ export class ScrapingScheduler {
   /**
    * Calculate next run time based on frequency
    */
-  private calculateNextRun(frequencyType: FrequencyType, frequencyValue: string): Date {
+  private calculateNextRun(frequencyType: FrequencyType, frequencyValue: string, frequencyTimezone?: string): Date {
     const now = new Date()
     
     switch (frequencyType) {

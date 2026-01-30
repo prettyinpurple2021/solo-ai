@@ -333,11 +333,11 @@ export async function POST(request: NextRequest) {
                 summary: title,
                 description: description || '',
                 start: {
-                    dateTime: new Date(startTime).toISOString(),
+                    dateTime: new Date(startTime!).toISOString(),
                     timeZone: 'UTC'
                 },
                 end: {
-                    dateTime: new Date(endTime).toISOString(),
+                    dateTime: new Date(endTime!).toISOString(),
                     timeZone: 'UTC'
                 }
             }

@@ -232,7 +232,7 @@ Do not include markdown code fences or additional commentary.`
         model: this.model as any,
         prompt: fullPrompt,
         temperature: 0.5,
-        maxTokens: 1200,
+        // maxTokens: 1200,
       })
 
       let text = response.text.trim()

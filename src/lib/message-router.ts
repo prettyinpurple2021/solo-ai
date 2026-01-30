@@ -188,7 +188,7 @@ export class MessageRouter {
       excludeAgents?: string[]
     }, 
     sessionId: string
-  ): Promise<string> {
+  ): Promise<string | null> {
     const session = this.collaborationHub.getSession(sessionId)
     if (!session) {
       return null
@@ -312,7 +312,7 @@ export class MessageRouter {
   /**
    * Apply routing rules to a message
    */
-  private async applyRoutingRules(message: AgentMessage): Promise<AgentMessage> {
+  private async applyRoutingRules(message: AgentMessage): Promise<AgentMessage | null> {
     for (const rule of this.routingRules.values()) {
       if (!rule.enabled) continue
 

@@ -1,5 +1,5 @@
 import { getSql } from '@/lib/api-utils'
-import { logError, logInfo } from '@/lib/logger'
+import { logError, logInfo, logWarn } from '@/lib/logger'
 import { sendWelcomeEmail } from '@/lib/email'
 
 interface WorkflowResult {

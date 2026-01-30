@@ -48,7 +48,7 @@ export async function GET(request: NextRequest) {
     const status = scrapingScheduler.getStatus()
 
     // Get user-specific job statistics
-    const allJobs = Array.from(scrapingScheduler['jobQueue'].values())
+    const allJobs = scrapingScheduler.getAllJobs()
     const userJobs = allJobs.filter(job => job.userId === user.id)
 
     const userMetrics = {

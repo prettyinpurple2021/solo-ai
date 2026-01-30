@@ -83,7 +83,7 @@ export async function createAgentJob(job: AgentJob): Promise<AgentJob> {
   return job
 }
 
-export async function getAgentJob(jobId: string): Promise<AgentJob> {
+export async function getAgentJob(jobId: string): Promise<AgentJob | null> {
   const redis = getRedisClient()
   const rawJob = await redis.get<string>(jobKey(jobId))
   if (!rawJob) {
@@ -106,7 +106,7 @@ export async function updateAgentJob(
     result?: AgentJobResult
     error?: AgentJobError
   }
-): Promise<AgentJob> {
+): Promise<AgentJob | null> {
   const existing = await getAgentJob(jobId)
   if (!existing) {
     return null

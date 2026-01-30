@@ -149,7 +149,7 @@ export async function enforceFeatureGate(
     )
   }
   
-  return null // No error, continue with request
+  return NextResponse.next() // No error, continue with request
 }
 
 /**
@@ -203,7 +203,7 @@ export async function checkRequestGate(
       )
     }
     
-    return null
+    return NextResponse.next()
   } catch (error) {
     logError('Error in checkRequestGate:', error)
     return NextResponse.json(
