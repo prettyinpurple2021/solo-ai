@@ -156,9 +156,9 @@ router.get('/preferences', (authMiddleware as any), async (req: Request, res: Re
             });
         }
 
-        res.json(prefs[0]);
+        return res.json(prefs[0]);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch preferences' });
+        return res.status(500).json({ error: 'Failed to fetch preferences' });
     }
 });
 
@@ -181,9 +181,9 @@ router.put('/preferences', (authMiddleware as any), async (req: Request, res: Re
                 .values({ ...newPrefs, userId: Number(userId) });
         }
 
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to update preferences' });
+        return res.status(500).json({ error: 'Failed to update preferences' });
     }
 });
 

@@ -1,6 +1,6 @@
 // Admin Authentication Middleware
 import { Request, Response, NextFunction } from 'express';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 import { db } from '../db';
 import { users, adminActions } from '../db/schema';
 import { eq } from 'drizzle-orm';
@@ -24,7 +24,8 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
         const userId = req.userId;
 
         if (!userId) {
-            return res.status(401).json({ error: 'Authentication required' });
+            res.status(401).json({ error: 'Authentication required' });
+            return;
         }
 
         const user = await db.query.users.findFirst({
@@ -32,7 +33,8 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
         });
 
         if (!user || user.role !== 'admin') {
-            return res.status(403).json({ error: 'Admin access required' });
+            res.status(403).json({ error: 'Admin access required' });
+            return;
         }
 
         req.userRole = user.role;
@@ -40,6 +42,7 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
     } catch (error) {
         console.error('Admin middleware error:', error);
         res.status(500).json({ error: 'Internal server error' });
+        return;
     }
 }
 

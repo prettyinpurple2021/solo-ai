@@ -96,8 +96,8 @@ export async function POST(req: Request) {
     // Use serialized operations to prevent FK race conditions
     // Insert Goals first, then their Tasks
     
-    const goalOperations = [];
-    const taskOperations = [];
+    const goalOperations: any[] = [];
+    const taskOperations: any[] = [];
 
     // Organize data structures
     for (const phase of launchPlan.roadmap) {

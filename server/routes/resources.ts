@@ -25,10 +25,10 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
                 .where(eq(table.userId, Number(userId))) // Ensure userId is number for DB
                 .orderBy(desc(table[dateField]));
 
-            res.json(items);
+            return res.json(items);
         } catch (error) {
             console.error(`Error fetching ${path}:`, error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
     });
 
@@ -46,10 +46,10 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
             }
 
             const result = await db.insert(table).values(data).returning();
-            res.json((result as any[])[0]);
+            return res.json((result as any[])[0]);
         } catch (error) {
             console.error(`Error creating ${path}:`, error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
     });
 
@@ -62,10 +62,10 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
             await db.delete(table).where(
                 and(eq(table.id, req.params.id), eq(table.userId, Number(userId)))
             );
-            res.json({ success: true });
+            return res.json({ success: true });
         } catch (error) {
             console.error(`Error deleting ${path}:`, error);
-            res.status(500).json({ error: 'Internal Server Error' });
+            return res.status(500).json({ error: 'Internal Server Error' });
         }
     });
 };

@@ -22,10 +22,10 @@ router.get('/', async (req: Request, res: Response) => {
             .where(eq(contacts.userId, Number(userId)))
             .orderBy(desc(contacts.updatedAt));
 
-        res.json(userContacts);
+        return res.json(userContacts);
     } catch (error) {
         console.error('Error fetching contacts:', error);
-        res.status(500).json({ error: 'Failed to fetch contacts' });
+        return res.status(500).json({ error: 'Failed to fetch contacts' });
     }
 });
 
@@ -47,10 +47,10 @@ router.get('/:id', async (req: Request, res: Response) => {
             return res.status(404).json({ error: 'Contact not found' });
         }
 
-        res.json(contact[0]);
+        return res.json(contact[0]);
     } catch (error) {
         console.error('Error fetching contact:', error);
-        res.status(500).json({ error: 'Failed to fetch contact' });
+        return res.status(500).json({ error: 'Failed to fetch contact' });
     }
 });
 
@@ -82,10 +82,10 @@ router.post('/', async (req: Request, res: Response) => {
         // Index for search
         await SearchIndexer.indexContact(String(userId), newContact);
 
-        res.status(201).json(newContact);
+        return res.status(201).json(newContact);
     } catch (error) {
         console.error('Error creating contact:', error);
-        res.status(500).json({ error: 'Failed to create contact' });
+        return res.status(500).json({ error: 'Failed to create contact' });
     }
 });
 
@@ -128,10 +128,10 @@ router.put('/:id', async (req: Request, res: Response) => {
         // Update index
         await SearchIndexer.indexContact(String(userId), updated);
 
-        res.json(updated);
+        return res.json(updated);
     } catch (error) {
         console.error('Error updating contact:', error);
-        res.status(500).json({ error: 'Failed to update contact' });
+        return res.status(500).json({ error: 'Failed to update contact' });
     }
 });
 
@@ -160,10 +160,10 @@ router.delete('/:id', async (req: Request, res: Response) => {
         // Remove from index
         await SearchIndexer.removeFromIndex(String(userId), 'contact', String(contactId));
 
-        res.json({ success: true, message: 'Contact deleted' });
+        return res.json({ success: true, message: 'Contact deleted' });
     } catch (error) {
         console.error('Error deleting contact:', error);
-        res.status(500).json({ error: 'Failed to delete contact' });
+        return res.status(500).json({ error: 'Failed to delete contact' });
     }
 });
 

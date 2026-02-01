@@ -30,14 +30,14 @@ export function AchievementCelebration({ achievement, onClose, onShare }: Achiev
   const [showConfetti, setShowConfetti] = useState(false)
 
   useEffect(() => {
-    if (achievement) {
-      setShowConfetti(true)
-      // Auto-close after 5 seconds
-      const timer = setTimeout(() => {
-        onClose()
-      }, 5000)
-      return () => clearTimeout(timer)
-    }
+    if (!achievement) return
+
+    setShowConfetti(true)
+    // Auto-close after 5 seconds
+    const timer = setTimeout(() => {
+      onClose()
+    }, 5000)
+    return () => clearTimeout(timer)
   }, [achievement, onClose])
 
   if (!achievement) return null

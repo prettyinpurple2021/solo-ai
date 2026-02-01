@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const { user, error } = await authenticateRequest()
     if (error || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     const admins = (process.env.ADMIN_EMAILS || 'prettyinpurple2021@gmail.com').split(',').map(e => e.trim()).filter(Boolean)
-    if (!admins.includes(user.email)) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
+    if (!user.email || !admins.includes(user.email)) return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
 
     const url = new URL(request.url)
     const limit = Math.min(parseInt(url.searchParams.get('limit') || '10', 10), 50)

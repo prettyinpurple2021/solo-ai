@@ -232,7 +232,7 @@ export async function POST(request: NextRequest) {
 
     // Include industry averages if requested
     if (include_industry_averages) {
-      benchmarkResults.industry_averages = await getIndustryAverages(competitors[0].industry || '', platform);
+      benchmarkResults.industry_averages = await getIndustryAverages(competitors[0].industry || '');
     }
 
     return NextResponse.json({
@@ -468,7 +468,7 @@ async function generatePerformanceBenchmarks(competitorIds: string[], platform?:
 }
 
 async function generateContentBenchmarks(competitorIds: string[], platform?: string, days: number = 30) {
-  const results = [];
+  const results: any[] = [];
   
   for (const id of competitorIds) {
     // Content analysis is part of engagement patterns
@@ -486,7 +486,7 @@ async function generateContentBenchmarks(competitorIds: string[], platform?: str
 }
 
 async function generateTimingBenchmarks(competitorIds: string[], platform?: string, days: number = 30) {
-  const results = [];
+  const results: any[] = [];
   
   for (const id of competitorIds) {
     const timing = await socialMediaAnalysisEngine.analyzePostingFrequency(id, platform, days);
@@ -503,7 +503,7 @@ async function generateTimingBenchmarks(competitorIds: string[], platform?: stri
 }
 
 async function generateAudienceBenchmarks(competitorIds: string[], platform?: string, days: number = 30) {
-  const results = [];
+  const results: any[] = [];
   
   for (const id of competitorIds) {
     const audience = await socialMediaAnalysisEngine.analyzeAudience(id, platform, days);

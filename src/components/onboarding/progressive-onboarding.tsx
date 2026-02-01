@@ -205,14 +205,18 @@ export function ProgressiveOnboarding({ open, onComplete, onSkip,}: ProgressiveO
 
   // Auto-advance functionality
   useEffect(() => {
+    let timer: NodeJS.Timeout | undefined
+
     if (userPreferences.autoAdvance && !isTransitioning && open) {
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         if (currentStep < totalSteps - 1) {
           nextStep()
         }
       }, 5000) // Auto-advance after 5 seconds
+    }
 
-      return () => clearTimeout(timer)
+    return () => {
+      if (timer) clearTimeout(timer)
     }
   }, [userPreferences.autoAdvance, isTransitioning, open, currentStep, totalSteps])
 

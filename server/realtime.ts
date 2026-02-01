@@ -17,5 +17,6 @@ export function broadcastToUser(userId: string, event: string, data: any) {
     return
   }
   ioInstance.to(`user:${userId}`).emit(event, data)
+  return
 }
 

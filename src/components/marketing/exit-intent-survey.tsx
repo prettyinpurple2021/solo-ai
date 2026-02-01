@@ -1,7 +1,7 @@
 "use client"
 
 import { logError } from '@/lib/logger'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/use-auth'
@@ -22,6 +22,8 @@ export default function ExitIntentSurvey() {
   const [canShow, setCanShow] = useState(false)
   const [statusChecked, setStatusChecked] = useState(false)
   const { getToken } = useAuth()
+  const timerRef = useState<{ current: NodeJS.Timeout | null }>({ current: null })[0] // Using state as stable ref since useRef import missing or just use useRef if I add import.
+  // Wait, I should add useRef to imports.
 
   // Check survey status from database on mount
   useEffect(() => {
@@ -55,8 +57,8 @@ export default function ExitIntentSurvey() {
             const timer = setTimeout(() => {
               setCanShow(true)
             }, 3000)
+            timerRef.current = timer
             setStatusChecked(true)
-            return () => clearTimeout(timer)
           }
         }
         setStatusChecked(true)
@@ -66,12 +68,16 @@ export default function ExitIntentSurvey() {
         const timer = setTimeout(() => {
           setCanShow(true)
         }, 3000)
+         timerRef.current = timer
         setStatusChecked(true)
-        return () => clearTimeout(timer)
       }
     }
     
     checkSurveyStatus()
+
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
   }, [getToken])
 
   useEffect(() => {

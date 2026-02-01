@@ -25,10 +25,10 @@ router.post('/verify-pin', async (req, res) => {
             return res.status(401).json({ error: 'Invalid PIN' });
         }
 
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
         console.error('PIN verification error:', error);
-        res.status(500).json({ error: 'Verification failed' });
+        return res.status(500).json({ error: 'Verification failed' });
     }
 });
 
@@ -50,14 +50,14 @@ router.get('/analytics', async (req: express.Request, res: express.Response) => 
             if (sub.tier === 'empire') mrr += 199;
         });
 
-        res.json({
+        return res.json({
             totalUsers: userCount.count,
             totalSubscriptions: subCount.count,
             mrr,
             activeSubscriptions: activeSubs.length
         });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch analytics' });
+        return res.status(500).json({ error: 'Failed to fetch analytics' });
     }
 });
 
@@ -83,9 +83,9 @@ router.get('/users', async (req: express.Request, res: express.Response) => {
             .offset(offset)
             .orderBy(desc(users.createdAt));
 
-        res.json(allUsers);
+        return res.json(allUsers);
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch users' });
+        return res.status(500).json({ error: 'Failed to fetch users' });
     }
 });
 
@@ -101,13 +101,13 @@ router.get('/users/:userId', async (req: express.Request, res: express.Response)
         const sub = await db.select().from(subscriptions).where(eq(subscriptions.userId, userId)).limit(1);
         const usage = await db.select().from(usageTracking).where(eq(usageTracking.userId, userId)).limit(1);
 
-        res.json({
+        return res.json({
             user: user[0],
             subscription: sub[0] || null,
             usage: usage[0] || null
         });
     } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch user details' });
+        return res.status(500).json({ error: 'Failed to fetch user details' });
     }
 });
 
@@ -134,10 +134,10 @@ router.post('/users/:userId/suspend', async (req: express.Request, res: express.
             details: { reason }
         });
 
-        res.json({ success: true, message: 'User suspended successfully' });
+        return res.json({ success: true, message: 'User suspended successfully' });
     } catch (error) {
         console.error('Error suspending user:', error);
-        res.status(500).json({ error: 'Failed to suspend user' });
+        return res.status(500).json({ error: 'Failed to suspend user' });
     }
 });
 
@@ -149,7 +149,7 @@ router.get('/system-health', async (req: express.Request, res: express.Response)
         await db.execute(sql`SELECT 1`);
         const dbLatency = Date.now() - dbStart;
 
-        res.json({
+        return res.json({
             status: 'healthy',
             database: {
                 status: 'connected',
@@ -161,7 +161,7 @@ router.get('/system-health', async (req: express.Request, res: express.Response)
             uptime: process.uptime()
         });
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             status: 'degraded',
             error: 'Database connection failed'
         });

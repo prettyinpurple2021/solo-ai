@@ -31,7 +31,7 @@ export async function GET(_request: NextRequest) {
     }
 
     // If user has a Stripe subscription, get additional details from Stripe
-    let stripeSubscription = null
+    let stripeSubscription: any = null
     if (subscription.stripe_subscription_id) {
       try {
         const stripe = await getStripe()

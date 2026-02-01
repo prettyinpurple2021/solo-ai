@@ -41,10 +41,10 @@ router.post('/create-checkout-session', async (req, res) => {
             }
         });
 
-        res.json({ url: session.url });
+        return res.json({ url: session.url });
     } catch (error: any) {
         console.error('Stripe Checkout Error:', error);
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 });
 
@@ -65,10 +65,10 @@ router.get('/subscription', async (req, res) => {
             return res.json({ tier: 'free', status: 'active' });
         }
 
-        res.json(sub[0]);
+        return res.json(sub[0]);
     } catch (error) {
         console.error('Error fetching subscription:', error);
-        res.status(500).json({ error: 'Failed to fetch subscription' });
+        return res.status(500).json({ error: 'Failed to fetch subscription' });
     }
 });
 
@@ -98,10 +98,10 @@ router.get('/usage', async (req, res) => {
             });
         }
 
-        res.json(usage[0]);
+        return res.json(usage[0]);
     } catch (error) {
         console.error('Error fetching usage:', error);
-        res.status(500).json({ error: 'Failed to fetch usage' });
+        return res.status(500).json({ error: 'Failed to fetch usage' });
     }
 });
 
@@ -128,10 +128,10 @@ router.post('/customer-portal', async (req, res) => {
             return_url: `${CLIENT_URL}/app`,
         });
 
-        res.json({ url: session.url });
+        return res.json({ url: session.url });
     } catch (error: any) {
         console.error('Customer Portal Error:', error);
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 });
 
@@ -165,7 +165,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
             console.log(`Unhandled event type ${event.type}`);
     }
 
-    res.send();
+    return res.send();
 });
 
 async function handleCheckoutCompleted(session: any) {

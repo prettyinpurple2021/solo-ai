@@ -14,12 +14,14 @@ export function authMiddleware(req: AuthRequest, res: Response, next: NextFuncti
         : req.cookies?.token;
 
     if (!token) {
-        return res.status(401).json({ error: 'Unauthorized - No token provided' });
+        res.status(401).json({ error: 'Unauthorized - No token provided' });
+        return;
     }
 
     const decoded = verifyToken(token);
     if (!decoded) {
-        return res.status(401).json({ error: 'Unauthorized - Invalid token' });
+        res.status(401).json({ error: 'Unauthorized - Invalid token' });
+        return;
     }
 
     // Attach user info to request

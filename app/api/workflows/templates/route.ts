@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get('category');
     const complexity = searchParams.get('complexity');
 
-    let conditions = [];
+    let conditions: any[] = [];
 
     if (query) {
       conditions.push(or(

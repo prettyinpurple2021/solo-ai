@@ -13,7 +13,8 @@ export const checkSuspended = async (req: Request, res: Response, next: NextFunc
         const userId = ((req as unknown) as AuthRequest).userId;
 
         if (!userId) {
-            return res.status(401).json({ error: 'Authentication required' });
+            res.status(401).json({ error: 'Authentication required' });
+            return;
         }
 
         const user = await db.select({
@@ -25,19 +26,22 @@ export const checkSuspended = async (req: Request, res: Response, next: NextFunc
             .limit(1);
 
         if (!user.length) {
-            return res.status(404).json({ error: 'User not found' });
+            res.status(404).json({ error: 'User not found' });
+            return;
         }
 
         if (user[0].suspended) {
-            return res.status(403).json({
+            res.status(403).json({
                 error: 'Account suspended',
                 reason: user[0].suspendedReason || 'Your account has been suspended. Please contact support.'
             });
+            return;
         }
 
         next();
     } catch (error) {
         console.error('Error checking suspension status:', error);
         res.status(500).json({ error: 'Failed to verify account status' });
+        return;
     }
 };

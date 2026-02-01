@@ -693,6 +693,7 @@ export function InteractiveTutorial({
 
       return () => clearTimeout(timer)
     }
+    return undefined
   }, [userPreferences.autoAdvance, isTransitioning, open, currentStep, totalSteps])
 
   // Cleanup effect

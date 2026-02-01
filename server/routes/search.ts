@@ -44,10 +44,10 @@ router.post('/', (authMiddleware as any), async (req: Request, res: Response) =>
             relevance: 1
         }));
 
-        res.json(formatted);
+        return res.json(formatted);
     } catch (error) {
         console.error('Search error:', error);
-        res.status(500).json({ error: 'Search failed' });
+        return res.status(500).json({ error: 'Search failed' });
     }
 });
 
@@ -58,9 +58,9 @@ router.post('/index', (authMiddleware as any), async (req: Request, res: Respons
         const { type, id, title, content, tags } = req.body;
 
         await SearchIndexer.indexEntity(userId, type, id, title, content, tags);
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Indexing failed' });
+        return res.status(500).json({ error: 'Indexing failed' });
     }
 });
 
@@ -70,9 +70,9 @@ router.delete('/index', (authMiddleware as any), async (req: Request, res: Respo
         const { type, id } = req.body;
 
         await SearchIndexer.removeFromIndex(userId, type, id);
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Remove failed' });
+        return res.status(500).json({ error: 'Remove failed' });
     }
 });
 

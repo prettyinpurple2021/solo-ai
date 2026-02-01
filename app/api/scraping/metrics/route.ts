@@ -36,7 +36,8 @@ export async function GET(request: NextRequest) {
     }
     const adminEmails = (process.env.ADMIN_EMAILS || 'prettyinpurple2021@gmail.com')
       .split(',').map(e => e.trim()).filter(Boolean)
-    if (!adminEmails.includes(user.email)) {
+    
+    if (!user.email || !adminEmails.includes(user.email)) {
       return NextResponse.json(
         { error: 'Insufficient permissions' },
         { status: 403 }
@@ -72,7 +73,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get recent job execution history for the user
-    const recentExecutions = []
+    const recentExecutions: any[] = []
     for (const job of userJobs) {
       const history = scrapingScheduler.getJobHistory(job.id)
       recentExecutions.push(...history.slice(-3)) // Last 3 executions per job
