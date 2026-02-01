@@ -185,7 +185,7 @@ ${prompt}
           },
         ],
         temperature: 0.35,
-        maxTokens: 600,
+        // maxTokens: 600,
       })
 
       let content = text.trim()
@@ -428,7 +428,7 @@ Provide specific, actionable tips that would help improve productivity and task 
           { role: 'user', content: prompt },
         ],
         temperature: 0.6,
-        maxTokens: 320,
+        // maxTokens: 320,
       })
 
       return text

@@ -418,7 +418,7 @@ export class AgentIntelligenceBriefingService {
     try {
       const result = await generateObject({
         model: openai('gpt-4-turbo'),
-        schema: echoMarketingBriefingSchema,
+        schema: echoMarketingBriefingSchema as any,
         prompt
       })
       
@@ -427,7 +427,7 @@ export class AgentIntelligenceBriefingService {
         agentName: 'Echo',
         briefingType: 'marketing',
         generatedAt: new Date(),
-        ...result.object
+        ...(result.object as any)
       } as EchoMarketingBriefing
       
     } catch (error) {
@@ -447,7 +447,7 @@ export class AgentIntelligenceBriefingService {
     try {
       const result = await generateObject({
         model: openai('gpt-4-turbo'),
-        schema: this.getLexiSchema(),
+        schema: this.getLexiSchema() as any,
         prompt
       })
       
@@ -456,7 +456,7 @@ export class AgentIntelligenceBriefingService {
         agentName: 'Lexi',
         briefingType: 'strategic',
         generatedAt: new Date(),
-        ...result.object
+        ...(result.object as any)
       } as LexiStrategicBriefing
       
     } catch (error) {
@@ -477,7 +477,7 @@ export class AgentIntelligenceBriefingService {
     try {
       const result = await generateObject({
         model: openai('gpt-4-turbo'),
-        schema: this.getNovaSchema(),
+        schema: this.getNovaSchema() as any,
         prompt
       })
       
@@ -486,7 +486,7 @@ export class AgentIntelligenceBriefingService {
         agentName: 'Nova',
         briefingType: 'product',
         generatedAt: new Date(),
-        ...result.object
+        ...(result.object as any)
       } as NovaProductBriefing
       
     } catch (error) {
@@ -507,7 +507,7 @@ export class AgentIntelligenceBriefingService {
     try {
       const result = await generateObject({
         model: openai('gpt-4-turbo'),
-        schema: this.getBlazeSchema(),
+        schema: this.getBlazeSchema() as any,
         prompt
       })
       
@@ -516,7 +516,7 @@ export class AgentIntelligenceBriefingService {
         agentName: 'Blaze',
         briefingType: 'growth',
         generatedAt: new Date(),
-        ...result.object
+        ...(result.object as any)
       } as BlazeGrowthBriefing
       
     } catch (error) {
@@ -538,7 +538,7 @@ export class AgentIntelligenceBriefingService {
     try {
       const result = await generateObject({
         model: openai('gpt-4-turbo'),
-        schema: this.getCollaborativeSchema(),
+        schema: this.getCollaborativeSchema() as any,
         prompt
       })
       
@@ -548,7 +548,7 @@ export class AgentIntelligenceBriefingService {
         briefingType: 'collaborative',
         participatingAgents,
         generatedAt: new Date(),
-        ...result.object
+        ...(result.object as any)
       } as CollaborativeBriefing
       
     } catch (error) {

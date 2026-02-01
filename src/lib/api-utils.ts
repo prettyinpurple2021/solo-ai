@@ -25,13 +25,9 @@ export function createErrorResponse(
   details?: unknown
 ) {
   logError(`API Error (${status}): ${message}`, details)
-  return NextResponse.json(
-    { 
-      error: message,
-      ...(details && { details })
-    },
-    { status }
-  )
+  const response: any = { error: message }
+  if (details) response.details = details
+  return NextResponse.json(response, { status })
 }
 
 export class ApiError extends Error {

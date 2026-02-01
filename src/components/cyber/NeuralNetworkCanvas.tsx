@@ -27,6 +27,7 @@ export function NeuralNetworkCanvas({
     let height = window.innerHeight
 
     function resize() {
+      if (!canvas) return
       width = window.innerWidth
       height = window.innerHeight
       canvas.width = width

@@ -19,13 +19,13 @@ import { toast } from "sonner"
 import { logError } from "@/lib/logger"
 
 interface VoiceTaskCreatorProps {
-    isOpen: boolean,boolean
+    isOpen: boolean
     onClose: () => void
     onTaskCreate: (task: {
-        title: string,string
-        description?: string,string
+        title: string
+        description?: string
         priority: 'low' | 'medium' | 'high' | 'urgent',
-        estimatedMinutes?: number,number
+        estimatedMinutes?: number
     }) => Promise<void>
 }
 
@@ -34,10 +34,10 @@ export function VoiceTaskCreator({ isOpen, onClose, onTaskCreate }: VoiceTaskCre
     const [isProcessing, setIsProcessing] = useState(false)
     const [transcript, setTranscript] = useState("")
     const [parsedTask, setParsedTask] = useState<{
-        title: string,string
-        description: string,string
+        title: string
+        description: string
         priority: 'low' | 'medium' | 'high' | 'urgent',
-        estimatedMinutes: number,number
+        estimatedMinutes: number
     } | null>(null)
 
     const recognitionRef = useRef<any>(null)

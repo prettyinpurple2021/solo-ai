@@ -98,7 +98,7 @@ export function WorkflowDashboard({ className = "" }: WorkflowDashboardProps) {
 
   // Handle create custom workflow
   const handleCreateCustom = useCallback(() => {
-    setIsCreatingWorkflow(true)
+    // setIsCreatingWorkflow(true) - Removed as it's not defined
     setSelectedWorkflow(null)
     setActiveTab('builder')
     logInfo('Creating custom workflow')

@@ -34,7 +34,7 @@ interface OnboardingStep {
 
 export function ProgressiveOnboarding({ open, onComplete, onSkip,}: ProgressiveOnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [ setCompletedSteps] = useState<Set<string>>(new Set())
+  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set())
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [showTips, setShowTips] = useState(false)
   const [userPreferences, setUserPreferences] = useState({

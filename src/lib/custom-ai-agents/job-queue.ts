@@ -80,7 +80,7 @@ export async function enqueueAgentJob(input: EnqueueAgentJobInput): Promise<Agen
   return job
 }
 
-export async function getAgentJobStatus(jobId: string): Promise<AgentJob> {
+export async function getAgentJobStatus(jobId: string): Promise<AgentJob | null> {
   return getAgentJob(jobId)
 }
 

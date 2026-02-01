@@ -47,7 +47,7 @@ export function RecaptchaButton({
     <div className="relative">
       <Button
         variant={variant}
-        size={size}
+        size={size === 'default' ? 'md' : size}
         className={className}
         onClick={handleClick}
         disabled={isDisabled}

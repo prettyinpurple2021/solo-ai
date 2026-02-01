@@ -182,14 +182,14 @@ export function WelcomeDashboard({ onStartOnboarding, onSkipOnboarding }: Welcom
           </div>
 
           <div className="flex items-center justify-center gap-4">
-            <StatsBadge variant="warning" size="lg">
+            <Badge variant="purple" className="text-lg px-3 py-1">
               <Sparkles className="h-4 w-4 mr-2" />
               Level 1 Boss
-            </StatsBadge>
-            <StatsBadge variant="success" size="lg">
+            </Badge>
+            <Badge variant="lime" className="text-lg px-3 py-1">
               <Star className="h-4 w-4 mr-2" />
               100 Points
-            </StatsBadge>
+            </Badge>
           </div>
         </div>
 
@@ -205,7 +205,7 @@ export function WelcomeDashboard({ onStartOnboarding, onSkipOnboarding }: Welcom
               className="group"
             >
               <Link href={action.href}>
-                <GlassCard className="h-full cursor-pointer transition-all duration-200 hover:shadow-lg" interactive>
+                <div className="h-full cursor-pointer transition-all duration-200 hover:shadow-lg glass-card border border-white/10 rounded-lg">
                   <div className="p-6 text-center space-y-4 relative z-10">
                     <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-military-hot-pink to-military-blush-pink flex items-center justify-center group-hover:scale-110 transition-transform duration-200 border border-white/20">
                       <action.icon className="h-8 w-8 text-white" />
@@ -222,7 +222,7 @@ export function WelcomeDashboard({ onStartOnboarding, onSkipOnboarding }: Welcom
                       <ArrowRight className="h-4 w-4 ml-2" />
                     </Button>
                   </div>
-                </GlassCard>
+                </div>
               </Link>
             </motion.div>
           ))}

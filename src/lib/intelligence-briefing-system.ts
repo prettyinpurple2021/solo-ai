@@ -191,7 +191,7 @@ export class IntelligenceBriefingService {
       id: crypto.randomUUID(),
       userId,
       briefingType,
-      ...briefingContent,
+      ...(briefingContent as any),
       generatedAt: new Date(),
       periodCovered
     }

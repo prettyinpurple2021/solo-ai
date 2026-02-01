@@ -94,7 +94,7 @@ export class CompetitiveDecisionFrameworks {
     decisionContext: string,
     alternatives: string[]
   ): Promise<SPADEFrameworkWithCompetitiveIntelligence> {
-    const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(userId)
+    const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(userId, decisionContext)
     
     return {
       setting: {
@@ -138,7 +138,7 @@ export class CompetitiveDecisionFrameworks {
     userId: string,
     problemStatement: string
   ): Promise<FiveWhysWithCompetitiveIntelligence> {
-    const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(userId)
+    const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(userId, problemStatement)
     
     const whyQuestions = [
       'Why is this problem occurring?',
@@ -173,7 +173,7 @@ export class CompetitiveDecisionFrameworks {
     estimatedCosts: { category: string; amount: number; description: string }[],
     estimatedBenefits: { category: string; amount: number; description: string }[]
   ): Promise<CostBenefitAnalysisWithCompetitiveIntelligence> {
-    const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(userId)
+    const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(userId, decisionContext)
     
     return {
       decision_context: decisionContext,

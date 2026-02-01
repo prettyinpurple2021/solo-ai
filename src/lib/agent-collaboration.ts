@@ -157,7 +157,7 @@ Provide your analysis and recommendations for this phase of the project.
       model: agentConfig.model as any,
       prompt: collaborationPrompt,
       temperature: 0.7,
-      maxTokens: 800,
+      // maxTokens: 800,
     })
 
     // Generate handoff if there's a next phase
@@ -223,7 +223,7 @@ Keep it concise but comprehensive. Format as a professional handoff note.
       model: fromConfig.model as any,
       prompt: handoffPrompt,
       temperature: 0.6,
-      maxTokens: 300,
+      // maxTokens: 300,
     })
 
     return {
@@ -266,7 +266,7 @@ Format as JSON: {"recommended": boolean, "workflow": string|null, "agents": stri
       model: getTeamMemberConfig("lexi").model as any,
       prompt: analysisPrompt,
       temperature: 0.3,
-      maxTokens: 200,
+      // maxTokens: 200,
     })
 
     try {

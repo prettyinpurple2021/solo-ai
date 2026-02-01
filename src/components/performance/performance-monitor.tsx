@@ -72,6 +72,8 @@ export function PerformanceMonitor() {
         fcpObserver.disconnect()
       }
     }
+    return undefined
+    return undefined
   }, [])
 
   if (!isVisible || isClosed) return null

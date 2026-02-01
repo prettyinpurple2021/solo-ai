@@ -52,7 +52,7 @@ export const RunwayChart: React.FC<RunwayChartProps> = ({ data, runwayMonths = 8
                             borderRadius: '8px',
                             color: '#fff'
                         }}
-                        formatter={(value: number) => [`$${value.toLocaleString()}`, 'Balance']}
+                        formatter={(value: any) => [`$${value.toLocaleString()}`, 'Balance']}
                     />
                     <Area
                         type="monotone"

@@ -335,7 +335,7 @@ Respond as ${agentId} with full personality and context awareness:
       model: agentConfig.model as any,
       prompt: contextualPrompt,
       temperature: 0.8,
-      maxTokens: 300,
+      // maxTokens: 300,
     })
 
     return text

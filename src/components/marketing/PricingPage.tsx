@@ -1,16 +1,20 @@
+"use client";
+
 import { useState } from 'react';
 import { MarketingLayout } from './layout/MarketingLayout';
 import { Check, Loader2 } from 'lucide-react';
 import { apiService } from '../../services/apiService';
 import { Button } from '@/components/ui/button';
 import { logError } from '@/lib/logger';
+import { useSession } from 'next-auth/react';
 
 export function PricingPage() {
-    const user = null; // useUser();
+    const { data: session } = useSession();
+    const user = session?.user;
     const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
-    const handleUpgrade = async (tier: string, priceId: string) => {
-        if (!user) {
+    const handleUpgrade = async (tier: string, priceId: string | undefined) => {
+        if (!user || !user.id) {
             // Redirect to login if not logged in
             window.location.href = '/sign-in';
             return;
@@ -28,8 +32,8 @@ export function PricingPage() {
                 userId: user.id
             });
 
-            if (response.url) {
-                window.location.href = response.url;
+            if ((response as any).url) {
+                window.location.href = (response as any).url;
             }
         } catch (error) {
             logError('Upgrade failed:', error);

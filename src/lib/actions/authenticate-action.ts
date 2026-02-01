@@ -22,6 +22,7 @@ export async function authenticateAction(
       password,
       redirectTo 
     });
+    return undefined;
     // signIn will throw a redirect error on success - let it bubble up
   } catch (error) {
     // Only catch AuthErrors - let redirect errors (NEXT_REDIRECT) bubble up naturally

@@ -132,7 +132,7 @@ class AnalyticsService {
    * Get user metrics
    * Note: This is a heavy operation and should be optimized or cached in production
    */
-  async getUserMetrics(userId: string): Promise<UserMetrics> {
+  async getUserMetrics(userId: string): Promise<UserMetrics | null> {
     // Get user metrics (V1: On-demand query)
     // Future: Aggregate in background job or materialized view for scale
     const events = await db.select()

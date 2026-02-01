@@ -193,7 +193,7 @@ export function WorkflowExecutionMonitor({
         fetchExecutions()
         fetchStats()
         // Also refresh selected execution if it's active
-        if (selectedExecution && (selectedExecution.status === 'running' || selectedExecution.status === 'pending')) {
+        if (selectedExecution && (selectedExecution.status === 'running' || (selectedExecution.status as string) === 'pending')) {
              fetch(`/api/workflows/executions?id=${selectedExecution.id}`)
                 .then(res => res.json())
                 .then(data => {

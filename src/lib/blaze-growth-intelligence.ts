@@ -368,7 +368,7 @@ ${pricingSummary || 'No direct pricing intelligence available - infer using comp
         { role: 'user', content: analysisPrompt },
       ],
       temperature: 0.4,
-      maxTokens: 1800,
+      // maxTokens: 1800,
     })
 
     return this.parsePricingAnalysis(text, competitorId)
@@ -430,7 +430,7 @@ ${pricingSummary || 'No direct pricing intelligence available - infer using comp
             content: analysisPrompt
           }
         ],
-        temperature: 0.6, maxTokens: 1500
+        temperature: 0.6, // maxTokens: 1500
       })
 
       return this.parseGrowthRecommendations(response.text, competitorId)
@@ -509,7 +509,7 @@ ${pricingSummary || 'No direct pricing intelligence available - infer using comp
           }
         ],
         temperature: 0.7,
-        maxTokens: 2000
+        // maxTokens: 2000
       })
 
       return this.parseGrowthPatternAnalysis(response.text, competitorId)
@@ -587,7 +587,7 @@ ${pricingSummary || 'No direct pricing intelligence available - infer using comp
             content: analysisPrompt
           }
         ],
-        temperature: 0.6, maxTokens: 1800
+        temperature: 0.6, // maxTokens: 1800
       })
 
       return this.parseGrowthRecommendations(response.text, competitorIds[0])
@@ -644,7 +644,7 @@ ${pricingSummary || 'No direct pricing intelligence available - infer using comp
             content: analysisPrompt
           }
         ],
-        temperature: 0.6, maxTokens: 1500
+        temperature: 0.6, // maxTokens: 1500
       })
 
       return this.parseGrowthRecommendations(response.text, competitorId)
