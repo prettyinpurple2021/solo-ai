@@ -1,7 +1,6 @@
-
 import { NextResponse } from 'next/server';
-import { db } from '@/server/db';
-import { challenges, userChallenges } from '@/server/db/schema';
+import { db } from '@/db';
+import { challenges, userChallenges } from '@/db/extra_schema';
 import { desc, eq, sql } from 'drizzle-orm';
 
 import { auth } from '@/lib/auth';
@@ -10,7 +9,7 @@ import { logError } from '@/lib/logger';
 export async function GET(_req: Request) {
   try {
     const session = await auth();
-    const userId = session?.user?.id ? parseInt(session.user.id) : undefined;
+    const userId = session?.user?.id;
 
     // Fetch challenges with participant count
     const challengesWithCounts = await db
@@ -32,7 +31,7 @@ export async function GET(_req: Request) {
         .orderBy(desc(challenges.createdAt));
 
     // If userId is provided, fetch their status for each challenge
-    let userStatuses: Record<number, string> = {};
+    let userStatuses: Record<string, string> = {};
     if (userId) {
         const statuses = await db.select({
             challengeId: userChallenges.challengeId,
@@ -42,7 +41,7 @@ export async function GET(_req: Request) {
         .where(eq(userChallenges.userId, userId));
         
         statuses.forEach(s => {
-            userStatuses[s.challengeId] = s.status;
+            userStatuses[s.challengeId] = s.status || 'joined';
         });
     }
 
@@ -57,7 +56,7 @@ export async function GET(_req: Request) {
             points: c.rewardPoints,
             badge: c.rewardBadge
         },
-        difficulty: c.difficulty.toLowerCase(),
+        difficulty: (c.difficulty || 'Easy').toLowerCase(),
         category: c.category,
         userStatus: userId ? (userStatuses[c.id] || 'not_joined') : undefined
     }));

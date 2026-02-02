@@ -1,7 +1,6 @@
-
 import { NextResponse } from 'next/server';
-import { db } from '@/server/db';
-import { userChallenges } from '@/server/db/schema';
+import { db } from '@/db';
+import { userChallenges } from '@/db/extra_schema';
 import { logError } from '@/lib/logger';
 import { eq, and } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
@@ -15,10 +14,10 @@ export async function POST(_req: Request, props: { params: Promise<{ id: string 
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const userId = parseInt(session.user.id);
-        const challengeId = parseInt(params.id);
+        const userId = session.user.id;
+        const challengeId = params.id;
 
-        if (isNaN(userId) || isNaN(challengeId)) {
+        if (!userId || !challengeId) {
             return NextResponse.json({ error: 'Invalid input' }, { status: 400 });
         }
 

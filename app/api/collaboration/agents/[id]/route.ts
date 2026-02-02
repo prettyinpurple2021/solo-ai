@@ -60,8 +60,10 @@ export async function GET(
     }
 
     // Get agent's active sessions details
-    const agentSessions = sessionManager.getAgentSessions(agentId).map(session => {
-      const sessionState = sessionManager.getSessionState(session.id)
+    // Get agent's active sessions details
+    const sessions = await sessionManager.getAgentSessionsAsync(agentId)
+    const agentSessions = await Promise.all(sessions.map(async session => {
+      const sessionState = await sessionManager.getSessionStateAsync(session.id)
       return {
         id: session.id,
         projectName: session.projectName,
@@ -70,7 +72,7 @@ export async function GET(
         lastActivity: sessionState?.lastActivity,
         participantCount: session.participatingAgents.length
       }
-    })
+    }))
 
     // Calculate performance metrics
     const totalResponseTime = agentSessions.reduce((sum, session) => {

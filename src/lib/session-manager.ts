@@ -12,7 +12,7 @@ import {
   collaborationMessages,
   collaborationCheckpoints 
 } from '@/db/schema'
-import { eq, and,} from 'drizzle-orm'
+import { eq, and, inArray } from 'drizzle-orm'
 import type { 
   CollaborationSession, 
   AgentMessage, 
@@ -604,6 +604,41 @@ export class SessionManager {
         projectName: s.name,
         metadata: s.metadata as Record<string, any>
      }))
+  }
+
+  /**
+   * Get sessions by agent interaction
+   */
+  async getAgentSessionsAsync(agentId: string): Promise<CollaborationSession[]> {
+    try {
+        const participations = await db.query.collaborationParticipants.findMany({
+            where: eq(collaborationParticipants.agent_id, agentId)
+        })
+        
+        if (participations.length === 0) return []
+        
+        const sessionIds = participations.map(p => p.session_id)
+        
+        const sessions = await db.query.collaborationSessions.findMany({
+            where: inArray(collaborationSessions.id, sessionIds),
+            with: { participants: true }
+        })
+        
+        return sessions.map(s => ({
+            id: s.id,
+            userId: s.user_id,
+            participatingAgents: s.participants.map(p => p.agent_id),
+            createdAt: s.created_at || new Date(),
+            updatedAt: s.updated_at || new Date(),
+            sessionStatus: s.status as any,
+            sessionType: 'project',
+            projectName: s.name,
+            metadata: s.metadata as Record<string, any>
+        }))
+    } catch (error) {
+        logError(`Error getting agent sessions: ${error}`)
+        return []
+    }
   }
 
   /**
