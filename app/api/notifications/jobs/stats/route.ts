@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
       .split(',')
       .map(e => e.trim())
       .filter(Boolean)
-    const isAdmin = adminEmails.includes(user.email)
+    const isAdmin = adminEmails.includes(user.email!)
     if (!isAdmin) {
       return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
     }

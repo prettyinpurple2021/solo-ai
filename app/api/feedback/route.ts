@@ -63,12 +63,12 @@ export async function POST(req: Request) {
 
     // Save feedback to database
     const [newFeedback] = await db.insert(feedback).values({
-      userId,
+      user_id: userId,
       type: validatedData.type,
       title: validatedData.title,
       message: validatedData.message,
-      browserInfo: validatedData.browserInfo,
-      screenshotUrl,
+      browser_info: validatedData.browserInfo,
+      screenshot_url: screenshotUrl,
       priority: validatedData.priority,
       status: 'pending',
     }).returning();

@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic'
 export async function GET(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-      if (error || !user) {
+      if (error || !user || !user.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -24,7 +24,8 @@ export async function GET(request: NextRequest) {
     const agentId = searchParams.get('agent_id')
 
     // Get competitive intelligence context
-    const context = await CompetitiveIntelligenceContextService.getCompetitiveContext(user.id, agentId || undefined)
+    const userId = user.id as string
+    const context = await CompetitiveIntelligenceContextService.getCompetitiveContext(userId, agentId || '')
     
     // Generate suggested competitive queries
     const suggestedQueries = CompetitiveIntelligenceContextService.generateCompetitiveQueries(context)
@@ -53,7 +54,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { user, error } = await authenticateRequest()
-      if (error || !user) {
+      if (error || !user || !user.id) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
@@ -72,7 +73,8 @@ export async function POST(request: NextRequest) {
     const { message, agent_id } = BodySchema.parse(body)
 
     // Get competitive intelligence context
-    const context = await CompetitiveIntelligenceContextService.getCompetitiveContext(user.id, agent_id)
+    const userId = user.id as string
+    const context = await CompetitiveIntelligenceContextService.getCompetitiveContext(userId, agent_id || '')
     
     // Format context for the specific agent and message
     const formattedContext = CompetitiveIntelligenceContextService.formatContextForAgent(

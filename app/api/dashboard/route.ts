@@ -359,7 +359,7 @@ export async function GET(request: NextRequest) {
         title: t.title,
         description: t.description,
         status: t.status || 'todo',
-        priority: t.priority,
+        priority: t.priority || 'medium',
         due_date: t.due_date ? new Date(t.due_date).toISOString() : null, // Handle Date -> string conversion
         goal: t.goal_id ? {
             id: t.goal_id.toString(),
@@ -398,7 +398,7 @@ export async function GET(request: NextRequest) {
         id: b.id,
         title: b.title,
         description: b.description,
-        status: b.status,
+        status: b.status || 'active',
         goal_count: 0, 
         task_count: 0, 
         created_at: b.created_at ? new Date(b.created_at).toISOString() : new Date().toISOString(),

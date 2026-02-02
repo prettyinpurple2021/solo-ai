@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/server/db'
+import { db } from '@/db'
 import { logError } from '@/lib/logger'
 import { templates } from '@/db/schema'
 import { eq, and } from 'drizzle-orm'

@@ -15,7 +15,8 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const progress = await LearningEngine.getUserProgress(session.user.id);
+    const learningEngine = new LearningEngine(session.user.id);
+    const progress = await learningEngine.getUserProgress();
     
     // Transform to match UI expectations if needed, but schema is pretty clean
     return NextResponse.json(progress);
@@ -46,7 +47,8 @@ export async function POST(req: Request) {
     }
 
     const { moduleId, status } = validation.data;
-    await LearningEngine.updateProgress(session.user.id, moduleId, status);
+    const learningEngine = new LearningEngine(session.user.id);
+    await learningEngine.updateProgress(moduleId, status);
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -13,10 +13,8 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const path = await LearningEngine.getPathWithProgress(
-      params.id,
-      session.user.id
-    );
+    const learningEngine = new LearningEngine(session.user.id);
+    const path = await learningEngine.getPathWithProgress(params.id);
 
     if (!path) {
       return NextResponse.json({ error: 'Learning path not found' }, { status: 404 });

@@ -9,7 +9,8 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const recommendations = await LearningEngine.getRecommendations(session.user.id);
+    const learningEngine = new LearningEngine(session.user.id);
+    const recommendations = await learningEngine.getPersonalizedRecommendations();
     return NextResponse.json(recommendations);
   } catch (error) {
     console.error('Error fetching recommendations:', error);

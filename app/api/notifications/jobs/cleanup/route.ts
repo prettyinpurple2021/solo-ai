@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     const adminEmails = (process.env.ADMIN_EMAILS || 'prettyinpurple2021@gmail.com')
       .split(',').map(e => e.trim()).filter(Boolean)
-    if (!adminEmails.includes(user.email)) {
+    if (!adminEmails.includes(user.email!)) {
       return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
     }
 

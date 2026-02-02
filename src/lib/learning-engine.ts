@@ -27,7 +27,7 @@ export class LearningEngine {
   /**
    * Fetch all available learning paths
    */
-  async getAllPaths(): Promise<any[]> {
+  static async getAllPaths(): Promise<any[]> {
     return await db.query.learningPaths.findMany({
       with: {
         modules: {

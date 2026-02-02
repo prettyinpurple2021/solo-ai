@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Create competitive milestones if requested
-    const createdMilestones = []
+    const createdMilestones: number[] = []
     if (create_milestones && milestone_data) {
       for (const milestone of milestone_data) {
         const milestoneId = await CompetitiveIntelligenceIntegration.createCompetitiveMilestone(
