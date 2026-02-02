@@ -83,8 +83,8 @@ export function useUser() {
 }
 
 // Deprecated / Stubbed methods
-export async function verifyTOTP() { throw new Error("Not implemented in new auth system") }
-export async function resend2FACode() { throw new Error("Not implemented in new auth system") }
+export async function verifyTOTP(args?: any) { return { data: null, error: { message: "Not implemented in new auth system" } } }
+export async function resend2FACode(args?: any) { return { data: null, error: { message: "Not implemented in new auth system" } } }
 interface ApproveDeviceParams {
   deviceFingerprint: string;
   deviceName: string;
@@ -96,11 +96,11 @@ interface DenyDeviceParams {
   deviceFingerprint: string;
 }
 
-export async function approveDevice(_data?: ApproveDeviceParams) { return { data: true, error: null } } 
-export async function denyDevice(_data: DenyDeviceParams) { return { data: true, error: null } } 
-export async function getSessions() { return { data: { sessions: [] }, error: null } }
-export async function revokeSession() { return { data: true, error: null } }
-export async function revokeOtherSessions() { return { data: true, error: null } }
+export async function approveDevice(_data?: ApproveDeviceParams) { return { data: true, error: null as any } } 
+export async function denyDevice(_data: DenyDeviceParams) { return { data: true, error: null as any } } 
+export async function getSessions() { return { data: { sessions: [] }, error: null as any } }
+export async function revokeSession(args?: any) { return { data: true, error: null as any } }
+export async function revokeOtherSessions() { return { data: true, error: null as any } }
 
 export const authClient = {
   signIn,

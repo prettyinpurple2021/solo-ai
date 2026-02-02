@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import Link from 'next/link'
 import { useAuth } from "@/hooks/use-auth"
+import { logError } from "@/lib/logger"
 
 export default function AnalyticsPage() {
   const [selectedPeriod, setSelectedPeriod] = useState('7d')

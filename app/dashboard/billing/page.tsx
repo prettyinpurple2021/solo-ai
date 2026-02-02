@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
+import { logError } from "@/lib/logger"
 import { useToast } from "@/hooks/use-toast"
 import { motion } from "framer-motion"
 import {

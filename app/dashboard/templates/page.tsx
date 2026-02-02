@@ -33,6 +33,7 @@ import { HudBorder } from "@/components/cyber/HudBorder"
 import { useTemplateSave } from "@/hooks/use-templates-swr"
 import { useRouter } from "next/navigation"
 import { useToast } from "@/hooks/use-toast"
+import { logError } from "@/lib/logger"
 
 interface Template {
   id: string

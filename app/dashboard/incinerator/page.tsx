@@ -21,6 +21,7 @@ import { Label } from "@/components/ui/label"
 
 
 import { toast } from "sonner"
+import { logError } from "@/lib/logger"
 
 interface IncineratorResult {
     score: number

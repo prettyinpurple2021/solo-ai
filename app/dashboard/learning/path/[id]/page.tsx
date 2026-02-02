@@ -10,7 +10,8 @@ export default async function PathPage(props: { params: Promise<{ id: string }> 
     redirect("/login");
   }
 
-  const path = await LearningEngine.getPathWithProgress(params.id, session.user.id);
+  const engine = new LearningEngine(session.user.id);
+  const path = await engine.getPathWithProgress(params.id);
 
   if (!path) {
     return <div>Learning path not found.</div>;

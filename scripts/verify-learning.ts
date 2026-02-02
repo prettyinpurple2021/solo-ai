@@ -55,7 +55,8 @@ async function main() {
     // specific type assertion/check if needed, but for now just grab first
     pathId = existingPaths[0].id;
     // We need to get modules for this path to get an ID
-    const pathWithModules = await LearningEngine.getPathWithProgress(pathId!, user.id);
+    const engine = new LearningEngine(user.id);
+    const pathWithModules = await engine.getPathWithProgress(pathId!);
     if (pathWithModules && pathWithModules.modules.length > 0) {
         moduleId = pathWithModules.modules[0].id;
         console.log("   ✅ Found existing path/module:", pathId, moduleId);
@@ -79,8 +80,8 @@ async function main() {
   console.log("\n3. Testing Progress Tracking...");
   
   // Start module
-  await LearningEngine.updateProgress(user.id, moduleId, "in_progress");
-  let progress = await LearningEngine.getUserProgress(user.id);
+  await engine.updateProgress(moduleId, "in_progress");
+  let progress = await engine.getUserProgress();
   let entry = progress.find(p => p.module_id === moduleId);
   
   if (entry?.status !== "in_progress") {
@@ -89,8 +90,8 @@ async function main() {
   console.log("   ✅ Module started successfully");
 
   // Complete module
-  await LearningEngine.updateProgress(user.id, moduleId, "completed");
-  progress = await LearningEngine.getUserProgress(user.id);
+  await engine.updateProgress(moduleId, "completed");
+  progress = await engine.getUserProgress();
   entry = progress.find(p => p.module_id === moduleId);
 
   if (entry?.status !== "completed") {
@@ -100,7 +101,7 @@ async function main() {
 
   // 4. Test Analytics
   console.log("\n4. Testing Analytics...");
-  const analytics = await LearningEngine.getLearningAnalytics(user.id);
+  const analytics = await engine.getLearningAnalytics();
   console.log("   Stored Analytics:", JSON.stringify(analytics, null, 2));
 
   if (analytics.total_modules_completed < 1) {
@@ -111,7 +112,7 @@ async function main() {
 
   // 5. Test Recommendations
   console.log("\n5. Testing Recommendations...");
-  const recs = await LearningEngine.getRecommendations(user.id);
+  const recs = await engine.getPersonalizedRecommendations();
   console.log(`   Fetched ${recs.length} recommendations`);
   
   if (!Array.isArray(recs)) throw new Error("Recommendations must be an array");

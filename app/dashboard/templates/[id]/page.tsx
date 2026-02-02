@@ -33,7 +33,7 @@ export default function TemplateEditorPage() {
   
   const [template, setTemplate] = useState<any>(null)
   const [loading, setLoading] = useState(true)
-  const [ setSaving] = useState(false)
+  const [, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {

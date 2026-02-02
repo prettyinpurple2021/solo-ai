@@ -64,7 +64,7 @@ export default function TemplatesPage() {
             {featuredTemplates.map((template) => (
               <Link key={template.id} href={`/templates/${template.slug}`}>
                 <HudBorder variant="hover" className="p-6 h-full cursor-pointer">
-                  <h3 className="font-orbitron text-lg text-white mb-2">{template.name}</h3>
+                  <h3 className="font-orbitron text-lg text-white mb-2">{template.title}</h3>
                   <p className="text-sm text-gray-400 font-mono mb-4 leading-relaxed">{template.description}</p>
                   <div className="flex items-center gap-2 text-xs text-gray-500 font-mono">
                     <span className="text-neon-cyan">{template.category}</span>

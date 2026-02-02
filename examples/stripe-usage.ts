@@ -11,7 +11,7 @@ async function listCustomers() {
     // Check if Stripe is configured
     if (!isStripeConfigured()) {
       console.log('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
-      return
+      return []
     }
 
     // List customers (equivalent to your requested code)
@@ -21,6 +21,7 @@ async function listCustomers() {
     return customers
   } catch (error) {
     console.error('Error listing customers:', error)
+    return []
   }
 }
 
