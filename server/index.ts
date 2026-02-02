@@ -49,7 +49,7 @@ const allowedOrigins = Array.from(
             process.env.CLIENT_URL || "https://solosuccessai.fun",
             "https://solosuccessai.fun",
             // Only allow localhost in development (undefined or 'development')
-            ...(isDevelopment ? ["http://localhost:3000", "http://localhost:3001"] : []),
+            ...(isDevelopment ? ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"] : []),
         ].filter(Boolean)
     )
 );
@@ -62,7 +62,7 @@ const io = new SocketServer(httpServer, {
 });
 setIo(io);
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 // Initialize Redis
 const redis = new Redis({
@@ -718,12 +718,12 @@ if (process.env.NODE_ENV === 'production') {
     const clientRouteLimiter = rateLimit({
         windowMs: 15 * 60 * 1000, // 15 minutes
         max: 1000, // limit each IP to 1000 requests per windowMs
-        standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+        standardHeaders: 'draft-7', // Return rate limit info in the `RateLimit-*` headers
         legacyHeaders: false, // Disable the `X-RateLimit-*` headers
     });
 
     // Handle client-side routing
-    app.get('*', clientRouteLimiter, (req: Request, res: Response) => {
+    app.get('*', clientRouteLimiter as unknown as express.RequestHandler, (req: Request, res: Response) => {
         if (!req.path.startsWith('/api')) {
             res.sendFile(path.join(distPath, 'index.html'));
         }

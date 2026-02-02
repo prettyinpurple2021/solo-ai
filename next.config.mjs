@@ -334,6 +334,17 @@ const nextConfig = {
       // ... your existing redirects config remains untouched
     ];
   },
+
+  async rewrites() {
+    return {
+      fallback: [
+        {
+          source: '/api/:path*',
+          destination: 'http://localhost:5000/api/:path*',
+        },
+      ],
+    };
+  },
 };
 
 const withPWA = (await import("@ducanh2912/next-pwa")).default({
