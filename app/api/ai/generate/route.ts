@@ -16,19 +16,21 @@ export async function POST(req: Request) {
     const { type, context } = await req.json();
 
     if (type === 'vision_board') {
+      const schema: z.ZodType<any> = z.object({
+        vision_statement: z.string().describe('a powerful 1-sentence statement'),
+        core_values: z.array(z.string()).min(3).max(5),
+        elements: z.array(z.object({
+          category: z.enum(["Business", "Personal", "Financial"]),
+          title: z.string(),
+          description: z.string()
+        }))
+      });
+
       const { object } = await generateObject({
         model: openai('gpt-4o'),
         system: 'You are a motivational coach helper.',
         prompt: `Generate a structured vision board for a user with the following goals/interests: ${context || 'general success'}.`,
-        schema: z.object({
-          vision_statement: z.string().describe('a powerful 1-sentence statement'),
-          core_values: z.array(z.string()).min(3).max(5),
-          elements: z.array(z.object({
-            category: z.enum(["Business", "Personal", "Financial"]),
-            title: z.string(),
-            description: z.string()
-          }))
-        })
+        schema: schema as any,
       });
 
       return NextResponse.json(object);
