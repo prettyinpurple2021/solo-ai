@@ -30,8 +30,6 @@ SoloSuccess AI is a comprehensive platform designed to empower solopreneurs with
 
 ### Installation
 
-### Installation
-
 1. Clone the repository:
 
    ```bash
@@ -60,7 +58,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 For more detailed information, please refer to the following:
 
-- [Production Quality Guidelines](PRODUCTION_QUALITY_GUIDELINES.md)
+- [Production Quality Guidelines](docs/deployment/PRODUCTION_QUALITY_GUIDELINES.md)
 - [Production Readiness Report](docs/reports/PRODUCTION_READINESS_REPORT.md)
 - [User Handbook & Guides](docs/user-guides/app-usage/README.md)
 - [Integrations Setup](docs/user-guides/integrations/)

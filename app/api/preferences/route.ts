@@ -91,7 +91,7 @@ export async function GET(req: NextRequest) {
     if ((error as any)?.code === '42P01') {
       return NextResponse.json({ preferences: {} })
     }
-    return NextResponse.json({ error: 'Server error' }, { status: 500 })
+    return NextResponse.json({ preferences: {} })
   }
 }
 

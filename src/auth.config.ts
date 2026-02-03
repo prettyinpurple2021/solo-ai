@@ -44,9 +44,9 @@ export const authConfig = {
         if (user) {
             token.id = user.id
             token.email = user.email || token.email
-            token.name = (user as any).full_name || (user as any).name || token.name
-            if ('role' in user) token.role = user.role;
-            if ('subscription_tier' in user) token.subscription_tier = user.subscription_tier;
+            token.name = user.full_name || user.name || token.name
+            token.role = user.role
+            token.subscription_tier = user.subscription_tier
         }
         if (trigger === "update" && session) {
             token = { ...token, ...session }
@@ -59,10 +59,9 @@ export const authConfig = {
                 session.user.id = token.id as string
                 session.user.email = (token.email as string) || session.user.email
                 session.user.name = (token.name as string) || session.user.name
-                // @ts-ignore
-                session.user.role = token.role as string
-                // @ts-ignore
-                session.user.subscription_tier = token.subscription_tier as string
+                
+                session.user.role = (token.role as string) || 'user'
+                session.user.subscription_tier = (token.subscription_tier as string) || 'free'
             }
         }
         return session

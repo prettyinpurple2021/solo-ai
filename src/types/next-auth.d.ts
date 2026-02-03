@@ -7,7 +7,8 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string
-      role: string
+      role: string | null
+      subscription_tier: string | null
       /** The user's postal address. */
       address?: string
       full_name?: string | null
@@ -18,7 +19,8 @@ declare module "next-auth" {
 
   interface User {
     id: string
-    role: string
+    role: string | null
+    subscription_tier?: string | null
     full_name?: string | null
     avatar_url?: string | null
     stripe_customer_id?: string | null
@@ -28,6 +30,8 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
   interface JWT {
     id: string
-    role: string
+    role: string | null
+    subscription_tier?: string | null
+    full_name?: string | null
   }
 }

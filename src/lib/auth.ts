@@ -47,7 +47,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials: any) {
         logInfo("[Auth] Authorize attempt for email:", credentials?.email);
         try {
           const parsedCredentials = z

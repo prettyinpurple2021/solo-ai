@@ -1,12 +1,10 @@
 
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { OpenAI } from 'openai';
+import { generateObject } from 'ai';
+import { openai } from '@/lib/ai-config';
+import { z } from 'zod';
 import { logError } from '@/lib/logger';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 export async function POST(req: Request) {
   try {
@@ -18,20 +16,22 @@ export async function POST(req: Request) {
     const { type, context } = await req.json();
 
     if (type === 'vision_board') {
-      const prompt = `Generate a structured vision board for a user with the following goals/interests: ${context || 'general success'}. 
-      Return a JSON object with:
-      - vision_statement: a powerful 1-sentence statement.
-      - core_values: array of 3-5 strings.
-      - elements: array of objects { category: "Business"|"Personal"|"Financial", title: string, description: string }.`;
-
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4o',
-        messages: [{ role: 'system', content: 'You are a motivational coach helper.' }, { role: 'user', content: prompt }],
-        response_format: { type: "json_object" },
+      const { object } = await generateObject({
+        model: openai('gpt-4o'),
+        system: 'You are a motivational coach helper.',
+        prompt: `Generate a structured vision board for a user with the following goals/interests: ${context || 'general success'}.`,
+        schema: z.object({
+          vision_statement: z.string().describe('a powerful 1-sentence statement'),
+          core_values: z.array(z.string()).min(3).max(5),
+          elements: z.array(z.object({
+            category: z.enum(["Business", "Personal", "Financial"]),
+            title: z.string(),
+            description: z.string()
+          }))
+        })
       });
 
-      const content = JSON.parse(completion.choices[0].message.content || '{}');
-      return NextResponse.json(content);
+      return NextResponse.json(object);
     }
 
     return new NextResponse('Invalid Type', { status: 400 });
