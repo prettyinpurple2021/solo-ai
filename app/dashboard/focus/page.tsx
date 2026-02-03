@@ -1,13 +1,29 @@
-export const dynamic = 'force-dynamic'
+'use client';
+
+import React from 'react';
+import { useRouter } from 'next/navigation';
+import { FocusMode } from '@/components/FocusMode';
+
+export const dynamic = 'force-dynamic';
 
 export default function FocusPage() {
+  const router = useRouter();
+
+  const handleExit = () => {
+    router.push('/dashboard');
+  };
+
+  const handleComplete = (taskId: string) => {
+    // In standalone mode, we just exit after completion
+    // The gamification logic is handled inside FocusMode
+    router.push('/dashboard');
+  };
+
   return (
-    <div style={{ 
-      padding: '20px',
-      fontFamily: 'system-ui, sans-serif'
-    }}>
-      <h1 style={{ color: '#6d28d9' }}>Maintenance</h1>
-      <p>This page is currently under maintenance.</p>
-    </div>
-  )
+    <FocusMode 
+      activeTask={null} 
+      onExit={handleExit} 
+      onComplete={handleComplete} 
+    />
+  );
 }

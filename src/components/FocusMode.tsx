@@ -6,9 +6,9 @@ import { soundService } from '../services/soundService';
 import { addXP, showToast } from '../services/gameService';
 
 interface FocusModeProps {
-    activeTask: Task | null;
+    activeTask?: Task | null;
     onExit: () => void;
-    onComplete: (taskId: string) => void;
+    onComplete?: (taskId: string) => void;
 }
 
 export const FocusMode: React.FC<FocusModeProps> = ({ activeTask, onExit, onComplete }) => {
@@ -18,15 +18,13 @@ export const FocusMode: React.FC<FocusModeProps> = ({ activeTask, onExit, onComp
     const [pulse, setPulse] = useState(false);
 
     useEffect(() => {
-        if (!activeTask) return;
-
-        // Start sound on mount
+        // Start sound on mount if enabled
         if (soundEnabled) soundService.startFocusDrone();
 
         return () => {
             soundService.stopFocusDrone();
         };
-    }, [activeTask]);
+    }, []);
 
     useEffect(() => {
         let interval: any;
@@ -62,14 +60,17 @@ export const FocusMode: React.FC<FocusModeProps> = ({ activeTask, onExit, onComp
     };
 
     const handleComplete = async () => {
-        if (!activeTask) return;
         soundService.stopFocusDrone();
         // Bonus XP for using Focus Mode
         const { leveledUp } = await addXP(50);
         showToast("HYPERFOCUS COMPLETE", "Neural synchronization achieved.", "xp", 50);
         if (leveledUp) showToast("RANK UP!", "You have reached a new founder level.", "success");
 
-        onComplete(activeTask.id);
+        if (activeTask && onComplete) {
+            onComplete(activeTask.id);
+        } else {
+            onExit();
+        }
     };
 
     const formatTime = (seconds: number) => {
@@ -80,7 +81,8 @@ export const FocusMode: React.FC<FocusModeProps> = ({ activeTask, onExit, onComp
 
     const progress = ((25 * 60 - timeLeft) / (25 * 60)) * 100;
 
-    if (!activeTask) return null;
+    const displayTitle = activeTask?.title || "DEEP WORK SESSION";
+    const displayDesc = activeTask?.description || "High-intensity focus block. Eliminate all distractions.";
 
     return (
         <div className="fixed inset-0 z-[100] bg-dark-bg flex flex-col items-center justify-center overflow-hidden animate-in fade-in duration-700">
@@ -99,10 +101,10 @@ export const FocusMode: React.FC<FocusModeProps> = ({ activeTask, onExit, onComp
                         Neural Link Established
                     </div>
                     <h1 className="font-orbitron text-3xl md:text-5xl font-bold uppercase tracking-wider text-white leading-tight max-w-2xl">
-                        {activeTask.title}
+                        {displayTitle}
                     </h1>
                     <p className="text-gray-500 mt-4 text-lg max-w-xl mx-auto font-mono">
-                        {activeTask.description.length > 100 ? activeTask.description.substring(0, 100) + '...' : activeTask.description}
+                        {displayDesc.length > 100 ? displayDesc.substring(0, 100) + '...' : displayDesc}
                     </p>
                 </div>
 
@@ -159,7 +161,7 @@ export const FocusMode: React.FC<FocusModeProps> = ({ activeTask, onExit, onComp
                     <button
                         onClick={handleComplete}
                         className="p-4 rounded-full border-2 border-gray-700 text-neon-lime hover:bg-neon-lime/10 hover:border-neon-lime hover:shadow-[0_0_15px_rgba(57,255,20,0.3)] transition-all bg-dark-card"
-                        title="Mark Task Complete"
+                        title="Mark Session Complete"
                     >
                         <CheckCircle2 size={24} />
                     </button>

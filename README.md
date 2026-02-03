@@ -12,11 +12,11 @@ SoloSuccess AI is a comprehensive platform designed to empower solopreneurs with
 
 ## Tech Stack
 
-- **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
 - **Database**: [PostgreSQL](https://www.postgresql.org/) with [Drizzle ORM](https://orm.drizzle.team/) (hosted on [Neon](https://neon.tech/))
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Components**: [Radix UI](https://www.radix-ui.com/) & [Lucide Icons](https://lucide.dev/)
-- **Authentication**: [Auth.js](https://authjs.dev/) (NextAuth v5 Beta)
+- **Authentication**: [NextAuth.js v5](https://authjs.dev/)
 - **AI Integration**: [Vercel AI SDK](https://sdk.vercel.ai/) with Anthropic, Google Gemini, and OpenAI
 - **Animations**: [Framer Motion](https://www.framer.com/motion/)
 
@@ -46,6 +46,10 @@ SoloSuccess AI is a comprehensive platform designed to empower solopreneurs with
 3. Set up environment variables:
    Copy `.env.example` to `.env.local` and fill in the required keys.
 
+   ```bash
+   cp .env.example .env.local
+   ```
+
 4. Run the development server:
 
    ```bash
@@ -56,15 +60,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Documentation
 
-For more detailed information, please refer to the following:
+**[📚 Main Documentation Index](docs/SUMMARY.md)**
+
+For more detailed information, please refer to the following specific sections:
 
 - [Production Quality Guidelines](docs/deployment/PRODUCTION_QUALITY_GUIDELINES.md)
 - [Production Readiness Report](docs/reports/PRODUCTION_READINESS_REPORT.md)
 - [User Handbook & Guides](docs/user-guides/app-usage/README.md)
-- [Integrations Setup](docs/user-guides/integrations/)
-- [Developer & Technical Docs](docs/technical/)
-- [Design System](docs/design-system/)
+- [Integrations Setup](docs/user-guides/integrations/README.md)
+- [Developer & Technical Docs](docs/technical/README.md)
+- [Design System](docs/design-system/index.md)
 - [Implementation Gaps](docs/IMPLEMENTATION_GAPS.md)
 
 ---
-**Last Updated**: December 30, 2025
+**Last Updated**: February 3, 2026
