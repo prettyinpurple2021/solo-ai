@@ -52,6 +52,10 @@ export const usageTracking = pgTable('usage_tracking', {
     userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     month: text('month').notNull(), // 'YYYY-MM'
     aiGenerations: integer('ai_generations').default(0),
+    conversations: integer('conversations').default(0),
+    agents: integer('agents').default(0),
+    automations: integer('automations').default(0),
+    teamMembers: integer('team_members').default(0),
     competitorsTracked: integer('competitors_tracked').default(0),
     businessProfiles: integer('business_profiles').default(1),
     createdAt: timestamp('created_at').defaultNow(),

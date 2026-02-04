@@ -1,7 +1,24 @@
-
 import { NextResponse } from 'next/server';
+import { authenticateRequest } from '@/lib/auth-server';
+import { createErrorResponse } from '@/lib/api-response';
 
 export async function GET() {
+  const { user, error } = await authenticateRequest();
+
+  if (error || !user) {
+    return createErrorResponse('Unauthorized', 401);
+  }
+
+  // FEATURE GATE: Agents (Requires Solo+)
+  const { canAccessFeature } = await import('@/lib/billing-logic');
+  if (!await canAccessFeature(user.id, 'agents')) {
+      return createErrorResponse(
+          'Premium Feature: Upgrade to Solo tier or higher to access AI Agents.', 
+          403, 
+          { requiresUpgrade: true }
+      );
+  }
+
   const agents = [
     {
       id: 'lexi',
@@ -13,7 +30,7 @@ export async function GET() {
       id: 'nova',
       name: 'Nova',
       description: 'Product Design & UX Agent',
-      capabilities: ['UI/UX Design', 'user Research', 'Prototyping']
+      capabilities: ['UI/UX Design', 'User Research', 'Prototyping']
     },
     {
       id: 'glitch',

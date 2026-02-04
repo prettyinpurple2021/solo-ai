@@ -23,6 +23,7 @@ interface UseBriefingsReturn {
   currentAgentBriefing: AgentBriefing | null
   isGenerating: boolean
   error: string | null
+  isLocked: boolean
   generateBriefing: (request: BriefingRequest) => Promise<void>
   generateDailyBriefing: (competitorIds?: string[]) => Promise<void>
   generateWeeklyBriefing: (competitorIds?: string[]) => Promise<void>
@@ -45,9 +46,34 @@ export function useIntelligenceBriefings(): UseBriefingsReturn {
   const [currentAgentBriefing, setCurrentAgentBriefing] = useState<AgentBriefing | null>(null)
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [isLocked, setIsLocked] = useState(false)
   
   const clearError = useCallback(() => {
     setError(null)
+    setIsLocked(false)
+  }, [])
+
+  const secureFetch = useCallback(async (url: string, options?: RequestInit) => {
+    const response = await fetch(url, options)
+    
+    if (!response.ok) {
+      if (response.status === 403) {
+        try {
+          const data = await response.json()
+          if (data.requiresUpgrade) {
+            setIsLocked(true)
+            throw new Error(data.error || 'Premium feature: Upgrade required')
+          }
+        } catch (e) {
+            // If fetching json fails, fall through to generic error
+        }
+      }
+      
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error || `Request failed with status ${response.status}`)
+    }
+    
+    return response
   }, [])
   
   const generateBriefing = useCallback(async (request: BriefingRequest) => {
@@ -55,18 +81,13 @@ export function useIntelligenceBriefings(): UseBriefingsReturn {
     setError(null)
     
     try {
-      const response = await fetch('/api/intelligence/briefings', {
+      const response = await secureFetch('/api/intelligence/briefings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(request)
       })
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to generate briefing')
-      }
       
       const data = await response.json()
       
@@ -91,18 +112,13 @@ export function useIntelligenceBriefings(): UseBriefingsReturn {
     setError(null)
     
     try {
-      const response = await fetch('/api/intelligence/briefings/daily', {
+      const response = await secureFetch('/api/intelligence/briefings/daily', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ competitorIds })
       })
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to generate daily briefing')
-      }
       
       const data = await response.json()
       
@@ -127,18 +143,13 @@ export function useIntelligenceBriefings(): UseBriefingsReturn {
     setError(null)
     
     try {
-      const response = await fetch('/api/intelligence/briefings/weekly', {
+      const response = await secureFetch('/api/intelligence/briefings/weekly', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ competitorIds })
       })
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to generate weekly briefing')
-      }
       
       const data = await response.json()
       
@@ -163,18 +174,13 @@ export function useIntelligenceBriefings(): UseBriefingsReturn {
     setError(null)
     
     try {
-      const response = await fetch('/api/intelligence/briefings/monthly', {
+      const response = await secureFetch('/api/intelligence/briefings/monthly', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ competitorIds })
       })
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to generate monthly report')
-      }
       
       const data = await response.json()
       
@@ -212,18 +218,13 @@ export function useIntelligenceBriefings(): UseBriefingsReturn {
     setError(null)
     
     try {
-      const response = await fetch('/api/intelligence/briefings/agents', {
+      const response = await secureFetch('/api/intelligence/briefings/agents', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ agentId, competitorIds })
       })
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to generate agent briefing')
-      }
       
       const data = await response.json()
       
@@ -425,12 +426,7 @@ export function useIntelligenceBriefings(): UseBriefingsReturn {
   
   const getBriefingHistory = useCallback(async () => {
     try {
-      const response = await fetch('/api/intelligence/briefings')
-      
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(errorData.error || 'Failed to fetch briefing history')
-      }
+      const response = await secureFetch('/api/intelligence/briefings')
       
       const data = await response.json()
       
@@ -452,6 +448,7 @@ export function useIntelligenceBriefings(): UseBriefingsReturn {
     currentAgentBriefing,
     isGenerating,
     error,
+    isLocked,
     generateBriefing,
     generateDailyBriefing,
     generateWeeklyBriefing,

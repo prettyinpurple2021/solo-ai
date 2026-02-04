@@ -128,6 +128,7 @@ export function IntelligenceSearch({
   const [availableTags, setAvailableTags] = useState<Tag[]>([])
   const [availableDataTypes, setAvailableDataTypes] = useState<string[]>([])
   const [showSaveDialog, setShowSaveDialog] = useState(false)
+  const [isLocked, setIsLocked] = useState(false)
   const [showSavedSearches, setShowSavedSearches] = useState(false)
   const [saveSearchName, setSaveSearchName] = useState("")
   const [saveSearchDescription, setSaveSearchDescription] = useState("")
@@ -157,6 +158,16 @@ export function IntelligenceSearch({
     try {
       setLoadingSavedSearches(true)
       const response = await fetch('/api/intelligence/saved-searches')
+      
+      if (!response.ok) {
+           if (response.status === 403) {
+                 const data = await response.json().catch(() => ({}));
+                 if (data.requiresUpgrade) {
+                     setIsLocked(true);
+                 }
+            }
+      }
+
       if (response.ok) {
         const data = await response.json()
         setSavedSearches(data.savedSearches || [])
@@ -322,6 +333,20 @@ export function IntelligenceSearch({
     if (filters.hasAnalysis !== undefined) count++
     return count
   }, [filters])
+
+  if (isLocked) {
+      // Inline dynamic import for the placeholder
+      const { FeatureGatePlaceholder } = require('@/components/subscription/feature-gate-placeholder');
+      return (
+          <div className="flex items-center justify-center p-12">
+            <FeatureGatePlaceholder 
+                title="Unlock Market Intelligence" 
+                description="Access deep market insights, competitor analysis, and automated briefing systems. Upgrade to Solo+ to unlock."
+                tier="solo"
+            />
+          </div>
+      );
+  }
 
   return (
     <div className="space-y-6">

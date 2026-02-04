@@ -104,6 +104,17 @@ export async function GET(request: NextRequest) {
       return createErrorResponse('Unauthorized', 401)
     }
 
+    // FEATURE GATE: Market Intelligence (Requires Solo+)
+    // Importing dynamically to avoid potential circular dependency issues if any, though standard import is fine.
+    const { canAccessFeature } = await import('@/lib/billing-logic');
+    if (!await canAccessFeature(user.id, 'advanced_tools')) {
+        return createErrorResponse(
+            'Premium Feature: Upgrade to Solo tier or higher to access Market Intelligence.', 
+            403, 
+            { requiresUpgrade: true }
+        );
+    }
+
     // Parse query parameters
     const url = new URL(request.url)
     const queryParams = Object.fromEntries(url.searchParams.entries())
@@ -278,6 +289,16 @@ export async function POST(request: NextRequest) {
     
     if (error || !user) {
       return createErrorResponse('Unauthorized', 401)
+    }
+
+    // FEATURE GATE: Market Intelligence (Requires Solo+)
+    const { canAccessFeature } = await import('@/lib/billing-logic');
+    if (!await canAccessFeature(user.id, 'advanced_tools')) {
+        return createErrorResponse(
+            'Premium Feature: Upgrade to Solo tier or higher to create Market Intelligence entries.', 
+            403, 
+            { requiresUpgrade: true }
+        );
     }
 
     const body = await request.json()

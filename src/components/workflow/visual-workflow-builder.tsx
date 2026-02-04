@@ -135,6 +135,7 @@ export function VisualWorkflowBuilder({
   // Fetch agents from API
   const [agents, setAgents] = React.useState<any[]>([])
   const [isLoadingAgents, setIsLoadingAgents] = React.useState(true)
+  const [isLocked, setIsLocked] = React.useState(false)
 
   React.useEffect(() => {
     async function fetchNodeTypes() {
@@ -159,6 +160,19 @@ export function VisualWorkflowBuilder({
     async function fetchAgents() {
         try {
             const response = await fetch('/api/agents')
+
+            if (!response.ok) {
+                if (response.status === 403) {
+                     const data = await response.json().catch(() => ({}));
+                     if (data.requiresUpgrade) {
+                         setIsLocked(true);
+                         setIsLoadingAgents(false); // Stop loading to show lock screen
+                         return; // Stop processing
+                     }
+                }
+                throw new Error('Failed to fetch agents')
+            }
+
             const data = await response.json()
             if (data.success && Array.isArray(data.data)) {
                 setAgents(data.data)
@@ -636,6 +650,24 @@ export function VisualWorkflowBuilder({
              </div>
         )
     }
+  }
+
+  if (isLocked) {
+    return (
+       <div className={`h-full flex flex-col items-center justify-center bg-black/20 ${className}`}>
+           {/* Dynamic import to avoid circular dependency issues if any */}
+           {(() => {
+               const { FeatureGatePlaceholder } = require('@/components/subscription/feature-gate-placeholder');
+               return (
+                   <FeatureGatePlaceholder 
+                       title="Unlock AI Agents" 
+                       description="Build powerful workflows with autonomous AI agents. Upgrade to Solo or Pro to access this feature."
+                       tier="solo"
+                   />
+               );
+           })()}
+       </div>
+    );
   }
 
   return (
