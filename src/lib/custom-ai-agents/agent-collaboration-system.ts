@@ -8,34 +8,11 @@ import { VexAgent } from "./vex-agent"
 import { LexiAgent } from "./lexi-agent"
 import { NovaAgent } from "./nova-agent"
 import { GlitchAgent } from "./glitch-agent"
-import { WorkflowEngine } from "@/lib/workflow-engine"
+import { CollaborationRequest, AgentWorkflow } from "@/types/agent-collaboration"
+import { AgentInteraction } from "@/types/custom-agent"
 
 
-export interface CollaborationRequest {
-  id: string
-  fromAgent: string
-  toAgent: string
-  request: string
-  priority: "low" | "medium" | "high" | "critical"
-  context: Record<string, any>
-  timestamp: Date
-  status: "pending" | "in_progress" | "completed" | "failed"
-  response?: AgentResponse
-}
-
-export interface AgentWorkflow {
-  id: string
-  name: string
-  description: string
-  steps: Array<{
-    agentId: string
-    task: string
-    dependencies: string[]
-    expectedOutcome: string
-  }>
-  status: "pending" | "in_progress" | "completed" | "failed"
-  results: Record<string, any>
-}
+// Interfaces moved to @/types/agent-collaboration
 
 export class AgentCollaborationSystem {
   private agents: Map<string, CustomAgent>
@@ -176,16 +153,26 @@ export class AgentCollaborationSystem {
         continue
       }
 
+      const interaction: AgentInteraction = {
+        type: 'collaboration_request',
+        timestamp: new Date(),
+        details: {
+          request: req.request,
+          priority: req.priority, 
+          fromAgentId
+        }
+      }
+
       try {
         const response = await targetAgent.collaborateWith(fromAgentId, req.request)
         responses.push(response)
         
         // Update agent relationships
-        targetAgent.updateRelationship(fromAgentId, req, { success: true })
+        targetAgent.updateRelationship(fromAgentId, interaction, { success: true })
         
       } catch (error) {
         logError(`Collaboration failed between ${fromAgentId} and ${req.agentId}:`, error)
-        targetAgent.updateRelationship(fromAgentId, req, { success: false, error: error instanceof Error ? error.message : 'Unknown error' })
+        targetAgent.updateRelationship(fromAgentId, interaction, { success: false, error: error instanceof Error ? error.message : 'Unknown error' })
       }
     }
     
@@ -209,6 +196,9 @@ export class AgentCollaborationSystem {
     collaborationResponses: AgentResponse[],
     context?: Record<string, any>
   ): Promise<AgentWorkflow> {
+    // @ts-ignore - preventing type resolution depth
+    const module = await import("@/lib/workflow-engine") as any
+    const WorkflowEngine = module.WorkflowEngine
     const engine = new WorkflowEngine()
     
     // Map agent tasks to workflow nodes
@@ -306,6 +296,9 @@ export class AgentCollaborationSystem {
 
   // Execute a workflow
   async executeWorkflow(workflowId: string): Promise<AgentWorkflow> {
+    // @ts-ignore - preventing type resolution depth
+    const module = await import("@/lib/workflow-engine") as any
+    const WorkflowEngine = module.WorkflowEngine
     const engine = new WorkflowEngine()
     
     try {

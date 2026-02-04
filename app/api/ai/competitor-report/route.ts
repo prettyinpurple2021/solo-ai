@@ -32,7 +32,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are 'The Scout', an elite competitive intelligence agent. Your job is to analyze competitors and find their weak points.",
             prompt: `Analyze the competitor: ${name} (${url}). Infer their strategy, strengths, and weaknesses based on typical patterns in their industry. Provide a threat assessment.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -41,3 +41,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate competitor report' }, { status: 500 });
     }
 }
+

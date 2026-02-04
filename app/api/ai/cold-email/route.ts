@@ -16,7 +16,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are an expert Copywriter. Write high-conversion cold outreach emails.",
             prompt: `Write a cold email to: ${contact.name} (${contact.role} at ${contact.company}). Notes: ${contact.notes}. Keep it short, personalized, and value-driven.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -25,3 +25,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate email' }, { status: 500 });
     }
 }
+

@@ -32,7 +32,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are a Product Launch Specialist. Orchestrate a hype-building launch campaign.",
             prompt: `Create a launch strategy for: "${product}". Context: "${context}". Break it down into phases (Pre-launch, Launch Day, Post-launch).`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -41,3 +41,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate launch strategy' }, { status: 500 });
     }
 }
+

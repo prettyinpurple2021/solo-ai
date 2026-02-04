@@ -224,7 +224,7 @@ async function gatherUserData(
       .select({
         id: focusSessions.id,
         startedAt: focusSessions.started_at,
-        endedAt: focusSessions.ended_at,
+        endedAt: focusSessions.end_time,
         durationMinutes: focusSessions.duration_minutes
       })
       .from(focusSessions)

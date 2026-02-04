@@ -18,7 +18,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are a Senior Software Engineer. Provide clean, documented, and optimal code solutions.",
             prompt: `Solve this coding problem: "${problem}". Provide the code and a brief explanation.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -27,3 +27,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate code solution' }, { status: 500 });
     }
 }
+

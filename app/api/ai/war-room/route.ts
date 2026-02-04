@@ -41,7 +41,7 @@ Simulate a debate amongst yourselves about the user's topic: "${topic}".
             model: openai('gpt-4o'),
             system: systemPrompt,
             prompt: `Simulate the debate for topic: ${topic}`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -50,3 +50,4 @@ Simulate a debate amongst yourselves about the user's topic: "${topic}".
         return Response.json({ error: 'Failed to generate war room simulation' }, { status: 500 });
     }
 }
+

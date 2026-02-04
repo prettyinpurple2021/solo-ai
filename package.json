@@ -8,7 +8,7 @@
     "build": "cross-env NODE_OPTIONS='--max-old-space-size=8192' next build --webpack",
     "start": "next start",
     "lint": "eslint .",
-    "type-check": "cross-env NODE_OPTIONS='--max-old-space-size=12288' tsc --noEmit",
+    "type-check": "cross-env NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit",
     "dev:all": "concurrently \"npm run dev\" \"cd server && npm run dev\"",
     "db:generate": "drizzle-kit generate --config=server/drizzle.config.ts",
     "db:push": "drizzle-kit push --config=server/drizzle.config.ts",

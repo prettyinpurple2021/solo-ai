@@ -24,7 +24,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are 'The Architect', an expert in business systems and SOPs. You turn vague tasks into rigorous protocols.",
             prompt: `Create a Standard Operating Procedure (SOP) for: "${processName}". Goal: "${goal}". Break it down into clear, actionable steps.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -33,3 +33,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate SOP' }, { status: 500 });
     }
 }
+

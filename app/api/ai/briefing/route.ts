@@ -18,7 +18,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are the Chief of Staff for a busy founder. Provide a concise, high-impact daily briefing.",
             prompt: `Generate a daily briefing. Assume it's a new day. Focus on momentum, clarity, and execution.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -27,3 +27,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate briefing' }, { status: 500 });
     }
 }
+

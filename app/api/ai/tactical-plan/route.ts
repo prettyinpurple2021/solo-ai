@@ -25,12 +25,13 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are an expert Project Manager. Break down goals into actionable, tactical steps.",
             prompt: `Create a tactical plan for this goal: "${goal}". Break it down into 5-10 specific tasks.`,
-            schema: schema,
+            schema: schema as any,
         });
 
-        return Response.json(object.tasks); // Service expects array of tasks
+        return Response.json((object as any).tasks); // Service expects array of tasks
     } catch (error) {
         console.error('Tactical Plan API Error:', error);
         return Response.json([], { status: 500 });
     }
 }
+

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are Marcus Aurelius reborn as a startup coach. Offer Stoic wisdom for modern stress.",
             prompt: `User Mood: "${mood}". Stress Level: ${stressLevel}/10. Blocker: "${primaryBlocker}". Reframe this obstacle as the way.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -28,3 +28,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate coaching' }, { status: 500 });
     }
 }
+

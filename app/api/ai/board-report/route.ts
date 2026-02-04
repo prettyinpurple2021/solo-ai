@@ -34,7 +34,7 @@ export async function POST(req: Request) {
             Network Growth: ${contacts?.length || 0}
             
             Grade each department (Product, Marketing, Legal, Tech, Finance). Give a CEO Score (0-100).`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -43,3 +43,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate board report' }, { status: 500 });
     }
 }
+

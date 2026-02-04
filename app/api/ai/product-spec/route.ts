@@ -26,7 +26,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are a Senior Product Manager. Write a PRD (Product Requirements Document) for a new feature.",
             prompt: `Write a Product Spec for this idea: "${idea}". Include user stories, acceptance criteria, and a rough data model.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -35,3 +35,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate product spec' }, { status: 500 });
     }
 }
+

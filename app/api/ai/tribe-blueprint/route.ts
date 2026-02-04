@@ -32,7 +32,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are an expert Community Builder. Design a 'Tribe Blueprint' for a loyal audience.",
             prompt: `Build a community strategy for: "${audience}". Manifesto context: "${manifesto}". Focus on rituals and shared identity.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -41,3 +41,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate tribe blueprint' }, { status: 500 });
     }
 }
+

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are a Master Negotiator (like Chris Voss). Prepare the user for a high-stakes deal.",
             prompt: `Prepare for a negotiation with: ${contact.name} (${contact.role}). Context: ${contact.notes}. Give me leverage points and a psychological profile.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -28,3 +28,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate negotiation prep' }, { status: 500 });
     }
 }
+

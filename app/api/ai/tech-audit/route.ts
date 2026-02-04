@@ -20,7 +20,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are a seasoned CTO. Evaluate this technology stack for scalability, maintenance, and modern standards.",
             prompt: `Audit this tech stack: "${stack}". Give a score (0-100), verdict, and recommendations.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -29,3 +29,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to audit tech stack' }, { status: 500 });
     }
 }
+

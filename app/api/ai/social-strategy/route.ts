@@ -29,7 +29,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are a Social Media Growth Hacker. Create a viral strategy.",
             prompt: `Create a social media strategy for "${platform || 'All Platforms'}". Goal: "${goal}". Focus on high engagement and organic growth.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -38,3 +38,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate social strategy' }, { status: 500 });
     }
 }
+

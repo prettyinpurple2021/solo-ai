@@ -24,7 +24,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are a VC Pitch Deck specialist. Create a 10-slide deck structure for a startup.",
             prompt: `Create a pitch deck for "${businessName}". Description: "${description}". Follow the standard Sequoia format.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -33,3 +33,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate pitch deck' }, { status: 500 });
     }
 }
+

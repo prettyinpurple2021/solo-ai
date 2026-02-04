@@ -11,23 +11,9 @@ export interface AgentCapabilities {
   collaborationStyle: "leader" | "supporter" | "analyst" | "executor"
 }
 
-export interface AgentMemory {
-  userId: string
-  context: Record<string, any>
-  preferences: Record<string, any>
-  history: Array<{
-    timestamp: Date
-    interaction: string
-    outcome: string
-    learning: string
-  }>
-  relationships: Record<string, {
-    agentId: string
-    collaborationHistory: any[]
-    trustLevel: number
-    specialization: string
-  }>
-}
+import { AgentMemory, AgentContext, AgentInteraction, AgentOutcome } from "@/types/custom-agent"
+
+export type { AgentMemory, AgentContext, AgentInteraction, AgentOutcome }
 
 export interface AgentTask {
   id: string
@@ -35,7 +21,7 @@ export interface AgentTask {
   priority: "low" | "medium" | "high" | "critical"
   assignedTo: string
   dependencies: string[]
-  context: Record<string, any>
+  context: Record<string, unknown>
   expectedOutcome: string
   deadline?: Date
   status: "pending" | "in_progress" | "completed" | "blocked"
@@ -52,7 +38,7 @@ export interface AgentResponse {
     priority: string
   }>
   followUpTasks: AgentTask[]
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
   analysis?: {
     insights: Array<{
       id?: string
@@ -62,7 +48,7 @@ export interface AgentResponse {
       confidence?: number
       impact?: string
       urgency?: string
-      supportingData?: Array<Record<string, any>>
+      supportingData?: Array<Record<string, unknown>>
     }>
     recommendations: Array<{
       id?: string
@@ -75,7 +61,7 @@ export interface AgentResponse {
       timeline?: string
       actionItems?: string[]
     }>
-    metadata?: Record<string, any>
+    metadata?: Record<string, unknown>
   }
 }
 
@@ -112,7 +98,7 @@ export abstract class CustomAgent {
   }
 
   // Core agent methods
-  abstract processRequest(request: string, context?: Record<string, any>): Promise<AgentResponse>
+  abstract processRequest(request: string, context?: Record<string, unknown>): Promise<AgentResponse>
   abstract collaborateWith(agentId: string, request: string): Promise<AgentResponse>
 
   // Memory management
@@ -125,7 +111,7 @@ export abstract class CustomAgent {
   }
 
   // Context building
-  protected buildContext(userContext?: Record<string, any>): string {
+  protected buildContext(userContext?: Record<string, unknown>): string {
     const baseContext = `
 AGENT IDENTITY: ${this.name} (${this.id})
 CAPABILITIES: ${this.capabilities.frameworks.join(", ")}
@@ -143,7 +129,7 @@ ${userContext ? `CURRENT REQUEST CONTEXT: ${JSON.stringify(userContext)}` : ""}
   }
 
   // Relationship management
-  updateRelationship(agentId: string, interaction: any, outcome: any): void {
+  updateRelationship(agentId: string, interaction: AgentInteraction, outcome: AgentOutcome): void {
     if (!this.memory.relationships[agentId]) {
       this.memory.relationships[agentId] = {
         agentId,
@@ -352,8 +338,7 @@ Do not include markdown code fences or additional commentary.`
     }
   }
 
-  // Learning from interactions (optional override)
-  async learnFromInteraction(interaction: any, outcome: any): Promise<void> {
+  async learnFromInteraction(interaction: AgentInteraction, outcome: AgentOutcome): Promise<void> {
     this.memory.history.push({
       timestamp: new Date(),
       interaction: JSON.stringify(interaction),
@@ -371,7 +356,7 @@ Do not include markdown code fences or additional commentary.`
   async recordTrainingData(
     userMessage: string,
     agentResponse: AgentResponse,
-    context: Record<string, any>,
+    context: Record<string, unknown>,
     responseTime: number,
     success: boolean = true
   ): Promise<void> {
@@ -401,7 +386,7 @@ Do not include markdown code fences or additional commentary.`
     }
   }
 
-  protected extractLearning(interaction: any, outcome: any): string {
+  protected extractLearning(interaction: AgentInteraction, outcome: AgentOutcome): string {
     // Simple learning extraction - can be enhanced with more sophisticated ML
     if (outcome.success) {
       return `Successful interaction pattern: ${interaction.type || 'general'}`

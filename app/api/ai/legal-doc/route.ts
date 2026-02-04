@@ -20,7 +20,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are an elite Corporate Lawyer. Draft ironclad legal documents.",
             prompt: `Draft a "${type}". Details: "${details}". Ensure it is comprehensive and professional.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -29,3 +29,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to draft legal document' }, { status: 500 });
     }
 }
+

@@ -19,7 +19,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are The Incinerator. Your job is to brutally critique marketing copy and business ideas to make them bulletproof.",
             prompt: `Roast this ${type}: "${idea}". Context: ${context || 'None'}. Be harsh but constructive. Rewrite it if it's bad.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -28,3 +28,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to incinerate content' }, { status: 500 });
     }
 }
+

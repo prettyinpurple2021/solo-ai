@@ -1,5 +1,6 @@
 // Core agent system
-export { CustomAgent, type AgentCapabilities, type AgentMemory, type AgentTask, type AgentResponse } from "./core-agent"
+export { CustomAgent } from "./core-agent"
+export type { AgentCapabilities, AgentMemory, AgentTask, AgentResponse } from "./core-agent"
 
 // Individual agents
 export { RoxyAgent } from "./roxy-agent"
@@ -12,4 +13,5 @@ export { NovaAgent } from "./nova-agent"
 export { GlitchAgent } from "./glitch-agent"
 
 // Collaboration system
-export { AgentCollaborationSystem, type CollaborationRequest, type AgentWorkflow } from "./agent-collaboration-system"
+export { AgentCollaborationSystem } from "./agent-collaboration-system"
+export type { CollaborationRequest, AgentWorkflow } from "@/types/agent-collaboration"

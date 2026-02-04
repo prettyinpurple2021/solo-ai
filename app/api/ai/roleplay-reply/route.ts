@@ -29,7 +29,7 @@ Reply as the opponent. Stay in character. Be challenging if difficulty is high.
             model: openai('gpt-4o'),
             system: "You are an expert roleplay actor for sales/negotiation training.",
             prompt: prompt,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -38,3 +38,4 @@ Reply as the opponent. Stay in character. Be challenging if difficulty is high.
         return Response.json({ error: 'Failed to generate reply' }, { status: 500 });
     }
 }
+

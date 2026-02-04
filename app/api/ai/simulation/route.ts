@@ -30,7 +30,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are a Futurist and Strategy Simulator. Model the outcomes of complex scenarios.",
             prompt: `Simulate potential outcomes for this scenario: "${scenario}". Analyze Likely, Best, and Worst cases.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -39,3 +39,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to run simulation' }, { status: 500 });
     }
 }
+

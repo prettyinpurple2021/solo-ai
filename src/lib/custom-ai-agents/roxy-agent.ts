@@ -1,5 +1,6 @@
 import { CustomAgent, AgentCapabilities, AgentResponse } from "./core-agent"
 import { openai } from "@ai-sdk/openai"
+import { AgentInteraction, AgentOutcome } from "@/types/custom-agent"
 
 export class RoxyAgent extends CustomAgent {
   constructor(userId: string) {
@@ -53,7 +54,7 @@ Always respond as Roxy in first person, maintain your punk rock executive assist
     super("roxy", "Roxy", capabilities, userId, openai("gpt-4o"), systemPrompt)
   }
 
-  async processRequest(request: string, context?: Record<string, any>): Promise<AgentResponse> {
+  async processRequest(request: string, context?: Record<string, unknown>): Promise<AgentResponse> {
     const agentContext = this.buildContext(context)
     
     const prompt = `User Request: ${request}
@@ -89,13 +90,15 @@ Provide your collaboration response with Roxy's leadership style.`
     return await this.generateStructuredResponse(prompt, collaborationContext)
   }
 
-  async learnFromInteraction(interaction: any, outcome: any): Promise<void> {
+  async learnFromInteraction(interaction: AgentInteraction, outcome: AgentOutcome): Promise<void> {
     // Call the base learning method
     await super.learnFromInteraction(interaction, outcome)
     
     // Roxy-specific learning: track decision patterns and outcomes
-    if (interaction.type === "decision_making") {
-      this.memory.context.decisionPatterns = this.memory.context.decisionPatterns || []
+    if (interaction.type === "decision_making" && interaction.framework) {
+      if (!this.memory.context.decisionPatterns) {
+        this.memory.context.decisionPatterns = [];
+      }
       this.memory.context.decisionPatterns.push({
         framework: interaction.framework,
         outcome: outcome.success,
@@ -105,7 +108,7 @@ Provide your collaboration response with Roxy's leadership style.`
   }
 
   // SPADE Framework helper method
-  async analyzeWithSPADE(decision: string, context: Record<string, any>): Promise<AgentResponse> {
+  async analyzeWithSPADE(decision: string, context: Record<string, unknown>): Promise<AgentResponse> {
     const spadeContext = this.buildContext({
       ...context,
       decisionType: "SPADE Analysis",
@@ -128,7 +131,7 @@ Provide a comprehensive SPADE analysis with Roxy's strategic thinking and punk r
   }
 
   // Strategic planning helper
-  async createStrategicPlan(goal: string, timeframe: string, context: Record<string, any>): Promise<AgentResponse> {
+  async createStrategicPlan(goal: string, timeframe: string, context: Record<string, unknown>): Promise<AgentResponse> {
     const planningContext = this.buildContext({
       ...context,
       goal: goal,

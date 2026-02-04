@@ -19,7 +19,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are an AI Legal Assistant. Review contracts for dangerous clauses.",
             prompt: `Analyze this contract text: "${text.substring(0, 5000)}". Flag any critical risks or unfair terms. Give a safety score (0-100).`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -28,3 +28,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to analyze contract' }, { status: 500 });
     }
 }
+

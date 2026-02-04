@@ -22,7 +22,7 @@ export async function POST(req: Request) {
             model: openai('gpt-4o'),
             system: "You are an expert HR strategist for lean, high-performance startups. Write compelling, non-corporate job descriptions.",
             prompt: `Write a job description for a "${role}". The company culture/vibe is: "${culture}". Make it sound appealing to top talent.`,
-            schema: schema,
+            schema: schema as any,
         });
 
         return Response.json(object);
@@ -31,3 +31,4 @@ export async function POST(req: Request) {
         return Response.json({ error: 'Failed to generate JD' }, { status: 500 });
     }
 }
+
