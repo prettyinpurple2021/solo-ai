@@ -20,6 +20,8 @@ export interface LearningPathWithModules {
     order: number;
     duration_minutes: number | null;
     status?: string | null;
+    content?: string;
+    module_type?: string | null;
   }[];
 }
 
@@ -78,6 +80,8 @@ export class LearningEngine {
         title: module.title,
         order: module.order,
         duration_minutes: module.duration_minutes,
+        content: module.content,
+        module_type: module.module_type,
         status: progressMap.get(module.id) || "not_started"
     }));
 

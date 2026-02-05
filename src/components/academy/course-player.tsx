@@ -162,15 +162,31 @@ export function CoursePlayer({ pathId }: CoursePlayerProps) {
                         </div>
 
                         <Card className="p-8 prose prose-indigo max-w-none dark:prose-invert">
-                           {/* Placeholder for content - In real app, fetch markdown or embed video */}
+                           {/* Content Renderer */}
                            {activeModule.module_type === 'video' ? (
                                <div className="aspect-video bg-black rounded-lg flex items-center justify-center">
                                    <PlayCircle className="w-16 h-16 text-white opacity-50" />
                                </div>
+                           ) : activeModule.module_type === 'quiz' ? (
+                               <QuizRunner 
+                                   title={activeModule.title}
+                                   questions={parseQuizContent(activeModule.content)}
+                                   onComplete={(score, passed) => {
+                                       if (passed) {
+                                           // Only complete if passed
+                                           handleCompleteModule();
+                                       } else {
+                                           // Optional: Show "Try Again" feedback
+                                       }
+                                   }}
+                               />
                            ) : (
                                <div>
                                    <p>This is a placeholder for the module content. Imagine rich text, images, and interactive elements here.</p>
                                    <p>Learning content for <strong>{activeModule.title}</strong> would appear here.</p>
+                                   <div className="mt-8 p-4 bg-muted rounded-md text-sm">
+                                       <strong>Module Type:</strong> {activeModule.module_type}
+                                   </div>
                                </div>
                            )}
                         </Card>
@@ -196,6 +212,21 @@ export function CoursePlayer({ pathId }: CoursePlayerProps) {
     </div>
   )
 }
+
+// Importing locally since it's used in the same feature scope
+import { QuizRunner, Question } from "./quiz-runner"
+
+// Helper to safely parse quiz content
+const parseQuizContent = (content?: string): Question[] => {
+    if (!content) return [];
+    try {
+        const parsed = JSON.parse(content);
+        return Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+        console.error("Failed to parse quiz content", e);
+        return [];
+    }
+};
 
 function ModuleList({ path, activeModule, onSelect }: { path: LearningPath, activeModule: Module | null, onSelect: (m: Module) => void }) {
     return (

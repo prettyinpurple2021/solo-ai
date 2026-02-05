@@ -49,6 +49,36 @@ export async function GET() {
             module_type: 'video',
             order: 3,
             duration_minutes: 20
+        },
+        {
+            path_id: pathId,
+            title: 'Knowledge Check: Launch Basics',
+            content: JSON.stringify([
+                {
+                    id: "q1",
+                    text: "What is the primary benefit of an LLC for a solopreneur?",
+                    options: [
+                        { id: "a", text: "It guarantees profitability." },
+                        { id: "b", text: "It separates personal assets from business liabilities." },
+                        { id: "c", text: "It allows you to hire unlimited employees for free." }
+                    ],
+                    correctOptionId: "b",
+                    explanation: "An LLC limits your personal liability, protecting your home and savings."
+                },
+                {
+                    id: "q2",
+                    text: "True or False: You should wait to start marketing until your product is perfect.",
+                    options: [
+                        { id: "a", text: "True" },
+                        { id: "b", text: "False" }
+                    ],
+                    correctOptionId: "b",
+                    explanation: "Marketing should start early to validate demand and build an audience."
+                }
+            ]),
+            module_type: 'quiz',
+            order: 4,
+            duration_minutes: 5
         }
     ]);
 
