@@ -3,9 +3,9 @@ import { authenticateRequest } from '@/lib/auth-server';
 import { redirect } from 'next/navigation';
 
 interface Props {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
 export const metadata = {
@@ -19,12 +19,12 @@ export default async function PathPage({ params }: Props) {
     redirect('/auth/signin');
   }
 
-  // We are assuming the ID is passed via params properly.
-  // In Next.js 13+, params might need to be awaited in some versions, but standard valid props are { params }
+  // Await params for Next.js 16+ compatibility
+  const { id } = await params;
   
   return (
     <div className="bg-background min-h-screen">
-      <CoursePlayer pathId={params.id} />
+      <CoursePlayer pathId={id} />
     </div>
   );
 }

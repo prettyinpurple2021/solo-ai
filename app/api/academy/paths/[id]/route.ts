@@ -4,7 +4,7 @@ import { LearningEngine } from '@/lib/learning-engine';
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const { user, error } = await authenticateRequest();
   
@@ -13,8 +13,10 @@ export async function GET(
   }
 
   try {
+    const { id } = await params;
+    
     const engine = new LearningEngine(user.id);
-    const path = await engine.getPathWithProgress(params.id);
+    const path = await engine.getPathWithProgress(id);
 
     if (!path) {
       return NextResponse.json({ error: 'Learning path not found' }, { status: 404 });
@@ -22,7 +24,8 @@ export async function GET(
     
     return NextResponse.json(path);
   } catch (err) {
-    console.error(`Error fetching path ${params.id}:`, err);
+    const { id } = await params;
+    console.error(`Error fetching path ${id}:`, err);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
