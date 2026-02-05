@@ -58,26 +58,20 @@ export class WellnessEngine {
   }
   
   private async awardXP(amount: number) {
-      // Atomic update using sql operator
-      // We assume XP is never null/undefined in DB default, but we coalesce just in case
-      // New Level Formula: floor(sqrt(newXP / 100)) + 1
-      // Note: Doing complex math in SQL update purely might be tricky for "Level" if derived.
-      // However, we can use RETURNING to get the new XP then update Level, or just do it in two steps but atomic-ish.
-      // Best approach for valid atomic increment:
+      // Single atomic operation to update XP and recalculate Level
+      // Level Formula: floor(sqrt((xp + amount) / 100)) + 1
       const result = await db.update(users)
         .set({ 
-            xp: sql`${users.xp} + ${amount}` 
+            xp: sql`${users.xp} + ${amount}`,
+            level: sql`floor(sqrt((${users.xp} + ${amount}) / 100)) + 1`
         })
         .where(eq(users.id, this.userId))
-        .returning({ xp: users.xp });
+        .returning({ xp: users.xp, level: users.level });
 
-      if (result.length > 0) {
-          const newXP = result[0].xp || 0;
-          const newLevel = Math.floor(Math.sqrt(newXP / 100)) + 1;
-          
-          await db.update(users)
-            .set({ level: newLevel })
-            .where(eq(users.id, this.userId));
+      if (result.length === 0) {
+          // Explicitly handle missing user case
+          console.error(`WellnessEngine: Failed to award XP. User ${this.userId} not found.`);
+          throw new Error(`User ${this.userId} not found when awarding XP`);
       }
   }
 
@@ -108,7 +102,9 @@ export class WellnessEngine {
     if (recentMoods.length === 0) {
         burnoutRisk = "Insufficient Data";
     } else {
-        if (avgEnergy > 0 && avgEnergy < 2.5) burnoutRisk = "High";
+        // User request: include 0 in High risk, though mathematically 1-5 scale prevents it. 
+        // We use < 2.5 to be safe and inclusive.
+        if (avgEnergy < 2.5) burnoutRisk = "High";
         else if (avgEnergy >= 2.5 && avgEnergy < 3.5) burnoutRisk = "Medium";
         else burnoutRisk = "Low";
     }

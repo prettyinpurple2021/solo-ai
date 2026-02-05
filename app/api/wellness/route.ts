@@ -27,7 +27,7 @@ export async function POST(request: Request) {
 
   } catch (err) {
       console.error('Error in POST /api/wellness:', err);
-      return NextResponse.json({ error: 'Internal Server Error', message: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });
+      return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
