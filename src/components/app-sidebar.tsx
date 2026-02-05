@@ -2,7 +2,7 @@
 
 import type * as React from "react"
 import {
-  Bot, GalleryVerticalEnd, SquareTerminal, Briefcase, Palette, Target, Shield, CheckSquare, FileText, Eye, Focus, Users,
+  Bot, GalleryVerticalEnd, SquareTerminal, Briefcase, Palette, Target, Shield, CheckSquare, FileText, Eye, Focus, Users, GraduationCap, Sparkles, Trophy,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -75,9 +75,29 @@ const data = {
       icon: Shield,
     },
     {
-      title: "Idea Incinerator",
-      url: "/dashboard/incinerator",
-      icon: Target,
+      title: "The Academy",
+      url: "/academy",
+      icon: GraduationCap,
+    },
+    {
+      title: "The Tribe",
+      url: "/community",
+      icon: Users,
+    },
+    {
+      title: "The Sanctuary",
+      url: "/sanctuary",
+      icon: Sparkles,
+    },
+    {
+      title: "Achievements",
+      url: "/achievements",
+      icon: Trophy,
+    },
+    {
+      title: "Dev Tools",
+      url: "/dev",
+      icon: SquareTerminal,
     },
   ],
 }
@@ -92,6 +112,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     avatar: user?.avatar_url || "/default-user.svg",
   }
 
+  // Filter nav items based on role
+  const filteredNavMain = data.navMain.filter(item => {
+    if (item.url === "/dev") {
+      return (user as any)?.role === 'admin';
+    }
+    return true;
+  });
+
   return (
     <Sidebar
       collapsible="icon"
@@ -102,7 +130,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher teams={data.teams} />
       </SidebarHeader>
       <SidebarContent className="text-gray-300">
-        <NavMain items={data.navMain} />
+        <NavMain items={filteredNavMain} />
         <NavProjects />
       </SidebarContent>
       <SidebarFooter className="text-gray-300">
