@@ -43,3 +43,5 @@ export async function verifyAuth() {
     error: session?.user ? undefined : "Unauthorized" 
   }
 }
+
+export const authenticateAction = verifyAuth;

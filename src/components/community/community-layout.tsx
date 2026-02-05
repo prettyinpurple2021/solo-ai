@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Hash, Trophy, Megaphone, TrendingUp, Wrench, MessageSquare, PlusCircle } from "lucide-react"
 import Link from "next/link"
-import { usePathname, useSearchParams } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { CreatePostDialog } from "@/components/community/create-post-dialog"
 
 interface Topic {
@@ -24,8 +24,7 @@ const iconMap: Record<string, any> = {
 }
 
 export function CommunityLayout({ children, topics }: CommunityLayoutProps) {
-    const searchParams = useSearchParams()
-    const currentTopicId = searchParams.get('test_topic_id') // Naive check, ideally use topic slug in URL
+    // searchParams could be used for other things, keeping for now if needed, but removing unused vars
     const pathname = usePathname()
 
     return (
@@ -38,7 +37,7 @@ export function CommunityLayout({ children, topics }: CommunityLayoutProps) {
                 </div>
                 
                 <div className="flex-1 overflow-y-auto py-4 px-2 space-y-1">
-                    <Button variant="ghost" className={cn("w-full justify-start", pathname === '/community' && !searchParams.get('topic') && "bg-accent")} asChild>
+                    <Button variant="ghost" className={cn("w-full justify-start", pathname === '/community' && "bg-accent")} asChild>
                         <Link href="/community">
                            <Hash className="w-4 h-4 mr-2" /> All Posts
                         </Link>
@@ -48,7 +47,10 @@ export function CommunityLayout({ children, topics }: CommunityLayoutProps) {
                         <h3 className="px-4 text-xs font-semibold text-muted-foreground mb-2">TOPICS</h3>
                         {topics.map(topic => {
                             const Icon = iconMap[topic.icon] || Hash
-                            const isActive = pathname.includes(topic.slug) // Simplification
+                            // Fix: Use topic.id or slug depending on route structure. 
+                            // Since we link to /community/topic/[id], we check validity there.
+                            // Assuming backend returns topic.id that matches URL param.
+                            const isActive = pathname.includes(`/topic/${topic.id}`) 
                             
                             return (
                                 <Button 
@@ -57,7 +59,7 @@ export function CommunityLayout({ children, topics }: CommunityLayoutProps) {
                                     className={cn("w-full justify-start", isActive && "bg-accent")}
                                     asChild
                                 >
-                                    <Link href={`/community/topic/${topic.id}`}>
+                                    <Link href={`/community?topicId=${topic.id}`}>
                                         <Icon className="w-4 h-4 mr-2" /> {topic.name}
                                     </Link>
                                 </Button>

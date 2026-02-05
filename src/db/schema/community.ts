@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, text, timestamp, boolean, index, primaryKey } from 'drizzle-orm/pg-core';
+import { integer, pgTable, varchar, text, timestamp, boolean, index, primaryKey, foreignKey } from 'drizzle-orm/pg-core';
 import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
@@ -23,8 +23,8 @@ export const communityPosts = pgTable('community_posts', {
   view_count: integer('view_count').default(0),
   like_count: integer('like_count').default(0),
   comment_count: integer('comment_count').default(0),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
     userIdIdx: index('community_posts_user_id_idx').on(table.user_id),
     topicIdIdx: index('community_posts_topic_id_idx').on(table.topic_id),
@@ -35,9 +35,9 @@ export const communityComments = pgTable('community_comments', {
   id: text('id').primaryKey().$defaultFn(() => uuidv4()),
   post_id: text('post_id').notNull().references(() => communityPosts.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  parent_id: text('parent_id'), // Self-reference for replies
+  parent_id: text('parent_id'), 
   content: text('content').notNull(),
-  is_solution: boolean('is_solution').default(false), // Like "accepted answer"
+  is_solution: boolean('is_solution').default(false), 
   like_count: integer('like_count').default(0),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
@@ -45,14 +45,29 @@ export const communityComments = pgTable('community_comments', {
     postIdIdx: index('community_comments_post_id_idx').on(table.post_id),
     userIdIdx: index('community_comments_user_id_idx').on(table.user_id),
     parentIdIdx: index('community_comments_parent_id_idx').on(table.parent_id),
+    parentFk: foreignKey({
+        columns: [table.parent_id],
+        foreignColumns: [table.id],
+        name: 'community_comments_parent_id_fk'
+    }).onDelete('set null'),
 }));
 
-export const communityLikes = pgTable('community_likes', {
-  user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  entity_type: varchar('entity_type', { length: 20 }).notNull(), // 'post' or 'comment'
-  entity_id: text('entity_id').notNull(),
-  created_at: timestamp('created_at').defaultNow(),
+export const postLikes = pgTable('post_likes', {
+    post_id: text('post_id').notNull().references(() => communityPosts.id, { onDelete: 'cascade' }),
+    user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    created_at: timestamp('created_at').defaultNow(),
 }, (table) => ({
-    pk: primaryKey({ columns: [table.user_id, table.entity_type, table.entity_id] }),
-    entityIdx: index('community_likes_entity_idx').on(table.entity_type, table.entity_id),
+    pk: primaryKey({ columns: [table.post_id, table.user_id] }),
+    postIdIdx: index('post_likes_post_id_idx').on(table.post_id),
+    userIdIdx: index('post_likes_user_id_idx').on(table.user_id),
+}));
+
+export const commentLikes = pgTable('comment_likes', {
+    comment_id: text('comment_id').notNull().references(() => communityComments.id, { onDelete: 'cascade' }),
+    user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    created_at: timestamp('created_at').defaultNow(),
+}, (table) => ({
+    pk: primaryKey({ columns: [table.comment_id, table.user_id] }),
+    commentIdIdx: index('comment_likes_comment_id_idx').on(table.comment_id),
+    userIdIdx: index('comment_likes_user_id_idx').on(table.user_id),
 }));

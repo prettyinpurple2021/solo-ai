@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { users } from '../users';
-import { communityTopics, communityPosts, communityComments, communityLikes } from '../community';
+import { communityTopics, communityPosts, communityComments, postLikes, commentLikes } from '../community';
 
 export const communityTopicsRelations = relations(communityTopics, ({ many }) => ({
   posts: many(communityPosts),
@@ -16,7 +16,7 @@ export const communityPostsRelations = relations(communityPosts, ({ one, many })
     references: [communityTopics.id],
   }),
   comments: many(communityComments),
-  likes: many(communityLikes), 
+  likes: many(postLikes), 
 }));
 
 export const communityCommentsRelations = relations(communityComments, ({ one, many }) => ({
@@ -36,11 +36,27 @@ export const communityCommentsRelations = relations(communityComments, ({ one, m
   replies: many(communityComments, {
     relationName: 'replies'
   }),
+  likes: many(commentLikes),
 }));
 
-export const communityLikesRelations = relations(communityLikes, ({ one }) => ({
+export const postLikesRelations = relations(postLikes, ({ one }) => ({
   user: one(users, {
-    fields: [communityLikes.user_id],
+    fields: [postLikes.user_id],
     references: [users.id],
+  }),
+  post: one(communityPosts, {
+    fields: [postLikes.post_id],
+    references: [communityPosts.id],
+  }),
+}));
+
+export const commentLikesRelations = relations(commentLikes, ({ one }) => ({
+  user: one(users, {
+    fields: [commentLikes.user_id],
+    references: [users.id],
+  }),
+  comment: one(communityComments, {
+    fields: [commentLikes.comment_id],
+    references: [communityComments.id],
   }),
 }));

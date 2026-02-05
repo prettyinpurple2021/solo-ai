@@ -16,28 +16,7 @@ import { toggleLike } from "@/lib/actions/community-actions"
 import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-
-export interface PostProps {
-    id: string
-    title: string
-    content: string
-    created_at: Date
-    author: {
-        id: string
-        name: string | null
-        image: string | null
-    }
-    topic?: {
-        name: string
-    }
-    _count?: {
-        likes: number
-        comments: number
-    }
-    like_count?: number
-    comment_count?: number
-    isLiked?: boolean
-}
+import { PostProps } from "@/types/community"
 
 export function PostCard({ post }: { post: PostProps }) {
     const [liked, setLiked] = useState(post.isLiked || false);
@@ -47,7 +26,7 @@ export function PostCard({ post }: { post: PostProps }) {
         // Optimistic UI
         const newLiked = !liked;
         setLiked(newLiked);
-        setLikeCount(prev => newLiked ? prev + 1 : prev - 1);
+        setLikeCount((prev: number) => newLiked ? prev + 1 : Math.max(0, prev - 1));
 
         try {
             const res = await toggleLike('post', post.id);
@@ -55,9 +34,44 @@ export function PostCard({ post }: { post: PostProps }) {
         } catch (e) {
             // Revert
             setLiked(!newLiked);
-            setLikeCount(prev => !newLiked ? prev + 1 : prev - 1);
+            setLikeCount((prev: number) => !newLiked ? prev + 1 : Math.max(0, prev - 1));
             toast.error("Failed to like post");
         }
+    }
+
+    const handleShare = async () => {
+        const url = `${window.location.origin}/community/post/${post.id}`;
+        const shareData = {
+            title: post.title,
+            text: post.content.substring(0, 100),
+            url
+        };
+
+        if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+            try {
+                await navigator.share(shareData);
+                toast.success("Shared successfully!");
+            } catch (err) {
+                console.error("Share failed", err);
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(url);
+                toast.success("Link copied to clipboard!");
+            } catch (err) {
+                toast.error("Failed to copy link.");
+            }
+        }
+    }
+
+    const handleReport = async () => {
+        // Mock API call for now
+        // In real app: await fetch(`/api/community/posts/${post.id}/report`, { method: 'POST' })
+        toast.promise(new Promise((resolve) => setTimeout(resolve, 500)), {
+            loading: 'Reporting...',
+            success: 'Post reported to admins.',
+            error: 'Failed to report.'
+        });
     }
 
     return (
@@ -81,7 +95,7 @@ export function PostCard({ post }: { post: PostProps }) {
                                  </Button>
                              </DropdownMenuTrigger>
                              <DropdownMenuContent align="end">
-                                 <DropdownMenuItem onClick={() => toast.success("Post reported to admins.")}>
+                                 <DropdownMenuItem onClick={handleReport}>
                                      <Flag className="w-4 h-4 mr-2" /> Report
                                  </DropdownMenuItem>
                              </DropdownMenuContent>
@@ -112,7 +126,12 @@ export function PostCard({ post }: { post: PostProps }) {
                     <MessageSquare className="w-4 h-4" />
                     {post.comment_count || 0}
                 </Button>
-                 <Button variant="ghost" size="sm" className="gap-2 ml-auto">
+                 <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="gap-2 ml-auto"
+                    onClick={(e) => { e.stopPropagation(); handleShare(); }}
+                 >
                     <Share2 className="w-4 h-4" />
                 </Button>
             </CardFooter>

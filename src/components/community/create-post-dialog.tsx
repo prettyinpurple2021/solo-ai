@@ -25,7 +25,7 @@ interface Topic {
     name: string
 }
 
-export function CreatePostDialog({ topics }: { topics: Topic[] }) {
+export function CreatePostDialog({ topics, triggerClassName }: { topics: Topic[], triggerClassName?: string }) {
     const [open, setOpen] = useState(false)
     const [loading, setLoading] = useState(false)
     const [title, setTitle] = useState("")
@@ -54,9 +54,12 @@ export function CreatePostDialog({ topics }: { topics: Topic[] }) {
                 setContent("")
                 setTopicId("")
                 router.refresh()
+            } else {
+                // Keep open, show error
+                toast.error("Failed to create post. Please try again.")
             }
         } catch (error) {
-            toast.error("Failed to create post. Try again.")
+            toast.error("An unexpected error occurred.")
             console.error(error)
         } finally {
             setLoading(false)
@@ -66,7 +69,7 @@ export function CreatePostDialog({ topics }: { topics: Topic[] }) {
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button className="w-full">
+                <Button className={triggerClassName || "w-full"}>
                     <PlusCircle className="w-4 h-4 mr-2" /> New Post
                 </Button>
             </DialogTrigger>

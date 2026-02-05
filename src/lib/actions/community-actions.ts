@@ -1,9 +1,9 @@
 'use server'
 
 import { db } from "@/db";
-import { communityPosts, communityComments, communityLikes, communityTopics, users } from "@/db/schema";
-import { eq, desc, and, sql, count } from "drizzle-orm";
-import { authenticateAction } from "@/lib/auth-server"; // Assuming this exists or similar
+import { communityPosts, communityComments, communityTopics, users, postLikes, commentLikes } from "@/db/schema";
+import { eq, desc, and, sql, count, inArray } from "drizzle-orm";
+import { authenticateAction } from "@/lib/auth-server"; 
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
@@ -12,7 +12,7 @@ import { revalidatePath } from "next/cache";
 const createPostSchema = z.object({
   title: z.string().min(3).max(255),
   content: z.string().min(10),
-  topicId: z.string().uuid().or(z.string()), // Accept UUID or topic slug/ID
+  topicId: z.string().uuid().or(z.string()), 
 });
 
 const createCommentSchema = z.object({
@@ -31,56 +31,46 @@ export async function getTopics() {
 }
 
 export async function getPosts(topicId?: string) {
-    // Basic fetch with author relation
-    // In a real app we might want pagination
-    return await db.query.communityPosts.findMany({
-        where: topicId ? eq(communityPosts.topic_id, topicId) : undefined,
-        orderBy: [desc(communityPosts.is_pinned), desc(communityPosts.created_at)],
-        with: {
-            author: {
-                columns: { id: true, name: true, image: true, level: true } // Assuming level exists on user
-            },
-            topic: true,
-            _count: {
-                select: {
-                   comments: true,
-                   likes: true 
-                }
-            } // Note: Drizzle _count needs helper, simplifying for now executing getting simple list
-        },
-        limit: 50
-    });
+    // Basic fetch matching getCommunityFeed structure but simpler
+    return getCommunityFeed(topicId);
 }
 
 // Optimized Get Feed with Like Status
 export async function getCommunityFeed(topicId?: string) {
-    const { user } = await authenticateAction(); // Optional user for "liked" status
+    const { user } = await authenticateAction(); 
     const userId = user?.id;
 
+    // 1. Fetch posts
     const posts = await db.query.communityPosts.findMany({
         where: topicId ? eq(communityPosts.topic_id, topicId) : undefined,
         orderBy: [desc(communityPosts.is_pinned), desc(communityPosts.created_at)],
         limit: 50,
         with: {
-            author: true,
+            author: {
+                columns: { id: true, name: true, image: true, level: true }
+            },
             topic: true,
-            // We can't easily do "is_liked_by_me" in one relational query without raw SQL or extra fetches
-            // For MVP, we'll just return the posts and handle likes client-side or separate check
         }
     });
 
-    // If user is logged in, fetch their likes for these posts
+    if (posts.length === 0) return [];
+
+    // 2. Fetch User Likes (if logged in)
     let likedPostIds = new Set<string>();
-    if (userId && posts.length > 0) {
-        const likes = await db.query.communityLikes.findMany({
+    if (userId) {
+        const likes = await db.query.postLikes.findMany({
             where: and(
-                eq(communityLikes.user_id, userId),
-                eq(communityLikes.entity_type, 'post')
+                eq(postLikes.user_id, userId),
+                inArray(postLikes.post_id, posts.map(p => p.id))
             )
         });
-        likedPostIds = new Set(likes.map(l => l.entity_id));
+        likedPostIds = new Set(likes.map(l => l.post_id));
     }
 
+    // 3. Map & Return
+    // Note: Counts are assumed to be reliable on the post object via triggers/app logic.
+    // If not, we'd do a group-by count query here. For MVP, we trust the `like_count` / `comment_count` columns.
+    
     return posts.map(post => ({
         ...post,
         isLiked: likedPostIds.has(post.id)
@@ -108,9 +98,9 @@ export async function createPost(data: z.infer<typeof createPostSchema>) {
 
     // Award XP
     try {
-        const { WellnessEngine } = await import("@/lib/wellness"); // Dynamic import to avoid cycles if any
+        const { WellnessEngine } = await import("@/lib/wellness");
         const engine = new WellnessEngine(user.id);
-        await engine.awardXP(10); // 10 XP for a post
+        await engine.awardXP(10); 
     } catch (e) {
         console.error("Failed to award XP for post", e);
     }
@@ -125,76 +115,133 @@ export async function addComment(data: z.infer<typeof createCommentSchema>) {
 
     const validated = createCommentSchema.parse(data);
 
-    await db.insert(communityComments).values({
-        user_id: user.id,
-        post_id: validated.postId,
-        parent_id: validated.parentId,
-        content: validated.content
-    });
-
-    // Increment comment count on post
-    await db.execute(sql`
-        UPDATE community_posts 
-        SET comment_count = comment_count + 1 
-        WHERE id = ${validated.postId}
-    `);
-
-    // Award XP
+    // Transactional Insert & Update
     try {
-        const { WellnessEngine } = await import("@/lib/wellness");
-        const engine = new WellnessEngine(user.id);
-        await engine.awardXP(5); // 5 XP for a comment
-    } catch (e) {
-        console.error("Failed to award XP for comment", e);
-    }
+        await db.transaction(async (tx) => {
+            // 1. Verify Post Exists
+            const post = await tx.query.communityPosts.findFirst({
+                where: eq(communityPosts.id, validated.postId),
+                columns: { id: true }
+            });
+            if (!post) throw new Error("Post not found");
 
-    revalidatePath(`/community`); // Ideally stricter path
-    return { success: true };
+            // 2. Insert Comment
+            await tx.insert(communityComments).values({
+                user_id: user.id,
+                post_id: validated.postId,
+                parent_id: validated.parentId || null,
+                content: validated.content
+            });
+
+            // 3. Increment Counter & Update Timestamp
+            await tx.execute(sql`
+                UPDATE community_posts 
+                SET comment_count = comment_count + 1,
+                    updated_at = NOW()
+                WHERE id = ${validated.postId}
+            `);
+        });
+
+        // XP Reward (outside transaction to not block it, fast enough)
+        try {
+            const { WellnessEngine } = await import("@/lib/wellness");
+            const engine = new WellnessEngine(user.id);
+            await engine.awardXP(5);
+        } catch (e) {
+            console.error("XP Award Failed", e);
+        }
+
+        revalidatePath(`/community`);
+        return { success: true };
+
+    } catch (e) {
+        console.error("Comment failed", e);
+        return { success: false, error: "Failed to post comment" };
+    }
 }
 
 export async function toggleLike(entityType: 'post' | 'comment', entityId: string) {
     const { user, error } = await authenticateAction();
     if (error || !user) throw new Error("Unauthorized");
 
-    const existing = await db.query.communityLikes.findFirst({
-        where: and(
-            eq(communityLikes.user_id, user.id),
-            eq(communityLikes.entity_type, entityType),
-            eq(communityLikes.entity_id, entityId)
-        )
-    });
+    try {
+        const isLiked = await db.transaction(async (tx) => {
+            if (entityType === 'post') {
+                // Check existence
+                const existing = await tx.query.postLikes.findFirst({
+                    where: and(
+                         eq(postLikes.user_id, user.id),
+                         eq(postLikes.post_id, entityId)
+                    )
+                });
 
-    if (existing) {
-        // Unlike
-        await db.delete(communityLikes).where(and(
-             eq(communityLikes.user_id, user.id),
-             eq(communityLikes.entity_type, entityType),
-             eq(communityLikes.entity_id, entityId)
-        ));
-        
-        // Decrement count
-         if (entityType === 'post') {
-            await db.execute(sql`UPDATE community_posts SET like_count = like_count - 1 WHERE id = ${entityId}`);
-        } else {
-            await db.execute(sql`UPDATE community_comments SET like_count = like_count - 1 WHERE id = ${entityId}`);
-        }
+                if (existing) {
+                    // Unlike
+                    await tx.delete(postLikes).where(and(
+                        eq(postLikes.user_id, user.id),
+                        eq(postLikes.post_id, entityId)
+                    ));
+                    await tx.execute(sql`
+                        UPDATE community_posts 
+                        SET like_count = GREATEST(0, like_count - 1)
+                        WHERE id = ${entityId}
+                    `);
+                    return false;
+                } else {
+                    // Like
+                    await tx.insert(postLikes).values({
+                        user_id: user.id,
+                        post_id: entityId
+                    });
+                    await tx.execute(sql`
+                        UPDATE community_posts 
+                        SET like_count = like_count + 1 
+                        WHERE id = ${entityId}
+                    `);
+                    return true;
+                }
+            } else {
+                 // Comment Logic (similar)
+                 const existing = await tx.query.commentLikes.findFirst({
+                    where: and(
+                         eq(commentLikes.user_id, user.id),
+                         eq(commentLikes.comment_id, entityId)
+                    )
+                });
 
-    } else {
-        // Like
-        await db.insert(communityLikes).values({
-            user_id: user.id,
-            entity_type: entityType,
-            entity_id: entityId
+                if (existing) {
+                    await tx.delete(commentLikes).where(and(
+                        eq(commentLikes.user_id, user.id),
+                        eq(commentLikes.comment_id, entityId)
+                    ));
+                    await tx.execute(sql`
+                        UPDATE community_comments 
+                        SET like_count = GREATEST(0, like_count - 1),
+                            updated_at = NOW()
+                        WHERE id = ${entityId}
+                    `);
+                    return false;
+                } else {
+                    await tx.insert(commentLikes).values({
+                        user_id: user.id,
+                        comment_id: entityId
+                    });
+                    await tx.execute(sql`
+                        UPDATE community_comments 
+                        SET like_count = like_count + 1,
+                            updated_at = NOW()
+                        WHERE id = ${entityId}
+                    `);
+                    return true;
+                }
+            }
         });
 
-        // Increment count
-        if (entityType === 'post') {
-            await db.execute(sql`UPDATE community_posts SET like_count = like_count + 1 WHERE id = ${entityId}`);
-        } else {
-            await db.execute(sql`UPDATE community_comments SET like_count = like_count + 1 WHERE id = ${entityId}`);
-        }
-    }
+        revalidatePath('/community');
+        return { success: true, liked: isLiked };
 
-    revalidatePath('/community');
-    return { success: true, liked: !existing };
+    } catch (e) {
+        console.error("Toggle Like Failed", e);
+        return { success: false, error: "Action failed" };
+    }
 }

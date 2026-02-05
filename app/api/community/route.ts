@@ -25,9 +25,13 @@ export async function POST(request: Request) {
         return NextResponse.json(result);
     } catch (e: any) {
         console.error("API Error", e);
-        // Basic Zod error handling if action throws
-        if (e.message === "Invalid Topic" || e.name === "ZodError") {
-             return NextResponse.json({ error: "Invalid Request", details: e }, { status: 400 });
+        if (e.name === "ZodError") {
+             // Sanitize Zod error
+             const errors = e.issues?.map((i: any) => ({ path: i.path, message: i.message }));
+             return NextResponse.json({ error: "Validation Error", details: errors }, { status: 400 });
+        }
+        if (e.message === "Invalid Topic") {
+            return NextResponse.json({ error: "Invalid Topic" }, { status: 400 });
         }
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }

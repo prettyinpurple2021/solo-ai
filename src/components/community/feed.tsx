@@ -1,6 +1,5 @@
-'use client'
-
-import { PostProps, PostCard } from "./post-card"
+import { PostCard } from "./post-card"
+import { PostProps } from "@/types/community"
 
 interface FeedProps {
     posts: PostProps[]
