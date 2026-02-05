@@ -152,6 +152,7 @@ export const focusSessions = pgTable('focus_sessions', {
     duration_minutes: integer('duration_minutes').default(0),
     status: varchar('status', { length: 50 }).default('completed'), 
     notes: text('notes'),
+    xp_earned: integer('xp_earned').default(0),
     created_at: timestamp('created_at').defaultNow(),
 });
 
