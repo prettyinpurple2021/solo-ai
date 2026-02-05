@@ -14,18 +14,27 @@ export function XpHud() {
   const [stats, setStats] = useState<UserStats | null>(null)
 
   const fetchStats = async () => {
-    // In a real app, this might come from a global context or user session
-    // For now, we'll fetch from a dedicated endpoint or profile endpoint
-    // We can reuse the learning-analytics endpoint which returns level info
     try {
-        const res = await fetch('/api/academy/analytics') // We haven't created this specific route yet, but we'll mock or create it
-        // Actually, let's create a quick route for this or assume we use the session context if we had it.
-        // Let's assume we can fetch it from user profile.
+        const res = await fetch('/api/wellness')
+        if (res.ok) {
+            const data = await res.json()
+            if (data.gamification) {
+                setStats({
+                    level: data.gamification.level,
+                    xp: data.gamification.xp,
+                    nextLevelProgress: data.gamification.next_level_progress
+                })
+            }
+        }
     } catch (e) {
-        // Fallback for demo
-        setStats({ level: 1, xp: 0, nextLevelProgress: 0 })
+        // Silent generic error or console warning
+        console.warn("Failed to fetch gamification stats", e);
     }
   }
+
+  useEffect(() => {
+    fetchStats()
+  }, [])
   
   // For this MVF (Minimum Viable Feature), I'll make it self-contained to fetch specific stats if available, or just render static for now until connected.
   // Ideally this connects to `useUser()` or similar.

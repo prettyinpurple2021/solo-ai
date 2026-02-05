@@ -113,11 +113,36 @@ export class WellnessEngine {
     // Simple verification: summing minutes from focusSessions where created_at is today
     // For MVP efficiency, just returning recent sessions count
     
+    // Fetch user for current XP/Level
+    const user = await db.query.users.findFirst({
+        where: eq(users.id, this.userId),
+        columns: { xp: true, level: true }
+    });
+
+    const currentXp = user?.xp || 0;
+    const currentLevel = user?.level || 1;
+    
+    // Calculate progress to next level:
+    // Next Level (L+1) requires: 100 * L^2.
+    const nextLevelXpReq = 100 * Math.pow(currentLevel, 2);
+    // Previous Level (Current) req: 100 * (currentLevel - 1)^2
+    const currentLevelBaseXp = 100 * Math.pow(currentLevel - 1, 2);
+    
+    // Progress % = (CurrentXP - BaseXP) / (NextXP - BaseXP)
+    const levelProgress = Math.min(100, Math.max(0, 
+        ((currentXp - currentLevelBaseXp) / (nextLevelXpReq - currentLevelBaseXp)) * 100
+    ));
+
     return {
         avg_energy: avgEnergy.toFixed(1),
         burnout_risk: burnoutRisk,
         recent_moods: recentMoods.slice(0, 5),
-        total_focus_sessions: 0 // Placeholder/TODO: Add aggregate query
+        total_focus_sessions: 0,
+        gamification: {
+            xp: currentXp,
+            level: currentLevel,
+            next_level_progress: Math.round(levelProgress)
+        }
     };
   }
 }
