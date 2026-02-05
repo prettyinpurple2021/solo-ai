@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, Square, Trophy } from "lucide-react"
 import { toast } from "sonner"
@@ -12,36 +12,8 @@ export function FocusTimer() {
   const [timeLeft, setTimeLeft] = useState(25 * 60)
   const [sessionCount, setSessionCount] = useState(0)
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null
-
-    if (isActive && timeLeft > 0) {
-      interval = setInterval(() => {
-        setTimeLeft((time) => time - 1)
-      }, 1000)
-    } else if (timeLeft === 0 && isActive) {
-      // Timer finished
-      setIsActive(false)
-      handleComplete()
-      if (interval) clearInterval(interval)
-    }
-
-    return () => {
-        if (interval) clearInterval(interval)
-    }
-  }, [isActive, timeLeft])
-
-  const toggleTimer = () => setIsActive(!isActive)
-
-  const resetTimer = () => {
-    setIsActive(false)
-    setTimeLeft(duration * 60)
-  }
-
-  const handleComplete = async () => {
+  const handleComplete = useCallback(async () => {
       try {
-          // Play sound? (Optional)
-          
           const res = await fetch('/api/wellness/focus', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
@@ -57,10 +29,40 @@ export function FocusTimer() {
                   icon: <Trophy className="w-4 h-4 text-yellow-500" />
               })
               setSessionCount(prev => prev + 1)
+          } else {
+              const errData = await res.json().catch(() => ({}));
+              toast.error(errData.error || "Failed to save session");
           }
       } catch (e) {
           console.error(e)
+          toast.error("Error saving focus session");
       }
+  }, [duration])
+
+
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+
+    if (isActive && timeLeft > 0) {
+      interval = setInterval(() => {
+        setTimeLeft((time) => time - 1)
+      }, 1000)
+    } else if (timeLeft === 0 && isActive) {
+      setIsActive(false)
+      handleComplete()
+    }
+
+    return () => {
+        if (interval) clearInterval(interval)
+    }
+  }, [isActive, timeLeft, handleComplete])
+
+  const toggleTimer = () => setIsActive(!isActive)
+
+  const resetTimer = () => {
+    setIsActive(false)
+    setTimeLeft(duration * 60)
   }
 
   const formatTime = (seconds: number) => {

@@ -32,6 +32,17 @@ export function SanctuaryDashboard() {
       return 'text-green-500'
   }
 
+  if (loading) {
+      return (
+          <div className="flex items-center justify-center p-12">
+              <div className="flex flex-col items-center gap-2">
+                  <div className="ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 animate-spin border-t-indigo-500 mb-4"></div>
+                  <p className="text-muted-foreground animate-pulse">Loading sanctuary usage...</p>
+              </div>
+          </div>
+      )
+  }
+
   return (
     <div className="space-y-8">
       {/* Header Stats */}

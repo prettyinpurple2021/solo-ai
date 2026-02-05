@@ -14,7 +14,14 @@ export async function POST(request: Request) {
   if (error || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
-    const body = await request.json();
+
+    let body;
+    try {
+      body = await request.json();
+    } catch (e) {
+      return NextResponse.json({ error: 'Malformed JSON', details: e instanceof Error ? e.message : 'Unknown error' }, { status: 400 });
+    }
+
     const result = moodSchema.safeParse(body);
 
     if (!result.success) {
@@ -22,7 +29,7 @@ export async function POST(request: Request) {
     }
 
     const engine = new WellnessEngine(user.id);
-    await engine.logMood(result.data.energyLevel, result.data.moodLabel || '', result.data.note);
+    await engine.logMood(result.data.energyLevel, result.data.moodLabel || '', result.data.note || '');
 
     return NextResponse.json({ success: true });
   } catch (err) {

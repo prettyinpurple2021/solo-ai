@@ -25,6 +25,10 @@ export class WellnessEngine {
    * Log a completed focus session and award XP
    */
   async logFocusSession(durationMinutes: number, taskDescription?: string) {
+    if (!durationMinutes || durationMinutes <= 0 || !Number.isFinite(durationMinutes)) {
+        throw new Error("Invalid duration minutes");
+    }
+
     // simple gamification: 10 XP per 15 mins
     const xpEarned = Math.floor(durationMinutes / 15) * 10;
     
@@ -54,19 +58,27 @@ export class WellnessEngine {
   }
   
   private async awardXP(amount: number) {
-      const user = await db.query.users.findFirst({
-          where: eq(users.id, this.userId),
-          columns: { xp: true, level: true }
-      });
+      // Atomic update using sql operator
+      // We assume XP is never null/undefined in DB default, but we coalesce just in case
+      // New Level Formula: floor(sqrt(newXP / 100)) + 1
+      // Note: Doing complex math in SQL update purely might be tricky for "Level" if derived.
+      // However, we can use RETURNING to get the new XP then update Level, or just do it in two steps but atomic-ish.
+      // Best approach for valid atomic increment:
+      const result = await db.update(users)
+        .set({ 
+            xp: sql`${users.xp} + ${amount}` 
+        })
+        .where(eq(users.id, this.userId))
+        .returning({ xp: users.xp });
 
-      if (!user) return;
-
-      const newXP = (user.xp || 0) + amount;
-      const newLevel = Math.floor(Math.sqrt(newXP / 100)) + 1;
-
-      await db.update(users)
-        .set({ xp: newXP, level: newLevel })
-        .where(eq(users.id, this.userId));
+      if (result.length > 0) {
+          const newXP = result[0].xp || 0;
+          const newLevel = Math.floor(Math.sqrt(newXP / 100)) + 1;
+          
+          await db.update(users)
+            .set({ level: newLevel })
+            .where(eq(users.id, this.userId));
+      }
   }
 
   /**
@@ -91,10 +103,15 @@ export class WellnessEngine {
         : 0;
 
     // Burnout Risk Logic
-    // If avg energy < 3, risk is High.
-    let burnoutRisk = "Low";
-    if (avgEnergy > 0 && avgEnergy < 2.5) burnoutRisk = "High";
-    else if (avgEnergy >= 2.5 && avgEnergy < 3.5) burnoutRisk = "Medium";
+    let burnoutRisk = "Unknown";
+    
+    if (recentMoods.length === 0) {
+        burnoutRisk = "Insufficient Data";
+    } else {
+        if (avgEnergy > 0 && avgEnergy < 2.5) burnoutRisk = "High";
+        else if (avgEnergy >= 2.5 && avgEnergy < 3.5) burnoutRisk = "Medium";
+        else burnoutRisk = "Low";
+    }
 
     // Get today's focus minutes
     // Simple verification: summing minutes from focusSessions where created_at is today

@@ -21,21 +21,13 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     
-    // Distinguish action based on a query param or body field? 
-    // Usually routes are split. For simplicity in this mono-route file demo:
-    // Let's assume different endpoints. Wait, I'm writing one file.
-    // I should probably split them or handle by a 'type' field.
-    // Given the plan says /mood and /focus, I should really make separate folders.
-    // BUT, for speed, I'll handle "action" in body if permitted, or just write separate files.
-    // The previous prompt created /academy/paths etc.
-    // Let's create specific folders for cleanliness: api/wellness/mood and api/wellness/focus.
-    // However, I am currently targetting `app/api/wellness/route.ts` as a catch-all for `GET /stats`.
-    // I will use this file for GET stats and create separate ones for POST if needed, or handle methods.
-    
+    // For now, this route serves primarily as a health check or potentially a status endpoint.
+    // Specific actions like /mood and /focus have their own execution paths.
     return NextResponse.json({ error: 'Use specific endpoints /mood or /focus' }, { status: 400 });
 
   } catch (err) {
-      return NextResponse.json({ error: 'Error' }, { status: 500 });
+      console.error('Error in POST /api/wellness:', err);
+      return NextResponse.json({ error: 'Internal Server Error', message: err instanceof Error ? err.message : 'Unknown error' }, { status: 500 });
   }
 }
 
