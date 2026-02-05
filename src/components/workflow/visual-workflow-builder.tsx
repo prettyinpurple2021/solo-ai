@@ -30,6 +30,7 @@ import { PrimaryButton } from '@/components/ui/button'
 import { Loading } from '@/components/ui/loading'
 import { useToast } from '@/hooks/use-toast'
 import { logError, logInfo } from '@/lib/logger'
+import { FeatureGatePlaceholder } from '@/components/subscription/feature-gate-placeholder'
 import type { Workflow, WorkflowNode, WorkflowEdge, NodeType } from '@/lib/workflow-engine'
 import './visual-workflow-builder.css'
 
@@ -655,17 +656,11 @@ export function VisualWorkflowBuilder({
   if (isLocked) {
     return (
        <div className={`h-full flex flex-col items-center justify-center bg-black/20 ${className}`}>
-           {/* Dynamic import to avoid circular dependency issues if any */}
-           {(() => {
-               const { FeatureGatePlaceholder } = require('@/components/subscription/feature-gate-placeholder');
-               return (
-                   <FeatureGatePlaceholder 
-                       title="Unlock AI Agents" 
-                       description="Build powerful workflows with autonomous AI agents. Upgrade to Solo or Pro to access this feature."
-                       tier="solo"
-                   />
-               );
-           })()}
+           <FeatureGatePlaceholder 
+               title="Unlock AI Agents" 
+               description="Build powerful workflows with autonomous AI agents. Upgrade to Solo or Pro to access this feature."
+               tier="solo"
+           />
        </div>
     );
   }

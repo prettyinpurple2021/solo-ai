@@ -1,12 +1,12 @@
 import { db } from "@/db"; // Use the Next.js alias for shared code
-import { subscriptions, usageTracking, pitchDecks, competitorReports, businessContext, contacts } from "@/db/schema"; // Use shared schema import
-import { eq, and, count } from "drizzle-orm";
+import { users, briefcases } from "@/db/schema";
+import { competitorProfiles } from "@/db/schema/intelligence";
+import { eq, count } from "drizzle-orm";
 
 // Tier limits for feature gating (Synced with server/routes/stripe.ts)
-// TODO: Ideally this config should be in a shared config file or DB
 export const TIER_LIMITS = {
     free: {
-        businesses: 1,
+        businesses: 1, // Mapped to Briefcases
         storage: 5,
         aiGenerations: 10,
         conversations: 10,
@@ -58,24 +58,23 @@ export type Tier = keyof typeof TIER_LIMITS;
  */
 export async function getUserTier(userId: number | string): Promise<Tier> {
     try {
-        // Ensure valid integer ID if possible, though schema might use string or int depending on setup
-        // NextAuth ID is string, but our DB `users.id` is serial (int). 
-        // We need to handle parsing safely.
-        const id = typeof userId === 'string' ? parseInt(userId) : userId;
+        // NextAuth ID is string (UUID for this project), no need to parse if DB uses text
+        const id = userId.toString();
         
-        if (isNaN(id)) return 'free';
-
-        const sub = await db.select()
-            .from(subscriptions)
-            .where(eq(subscriptions.userId, id))
+        const user = await db.select({
+            tier: users.subscription_tier,
+            status: users.subscription_status
+        })
+            .from(users)
+            .where(eq(users.id, id))
             .limit(1);
 
-        // If no subscription or not active, return free
-        if (!sub.length || sub[0].status !== 'active') {
+        // If no user or not active, return free
+        if (!user.length || user[0].status !== 'active') {
             return 'free';
         }
 
-        const tier = sub[0].tier as Tier;
+        const tier = user[0].tier as Tier;
         return TIER_LIMITS[tier] ? tier : 'free';
     } catch (error) {
         console.error('Error fetching user tier:', error);
@@ -93,4 +92,34 @@ export async function canAccessFeature(userId: number | string, feature: string)
     if (!limits) return false;
 
     return limits.features.includes(feature) || limits.features.includes('all');
+}
+
+/**
+ * Check if user has reached a usage limit
+ * @param resource - 'businesses' | 'competitors'
+ */
+export async function hasReachedLimit(userId: number | string, resource: 'businesses' | 'competitors'): Promise<boolean> {
+    const tier = await getUserTier(userId);
+    const limits = TIER_LIMITS[tier];
+    const limit = limits[resource]; // TS might complain if resource key isn't keyof TierLimits
+
+    if (limit === -1) return false;
+
+    const id = userId.toString();
+    try {
+        let currentCount = 0;
+
+        if (resource === 'businesses') {
+            const result = await db.select({ count: count() }).from(briefcases).where(eq(briefcases.user_id, id));
+            currentCount = result[0].count;
+        } else if (resource === 'competitors') {
+            const result = await db.select({ count: count() }).from(competitorProfiles).where(eq(competitorProfiles.user_id, id));
+            currentCount = result[0].count;
+        }
+
+        return currentCount >= limit;
+    } catch (error) {
+        console.error(`Error checking limits for ${resource}:`, error);
+        return true; // Fail safe
+    }
 }

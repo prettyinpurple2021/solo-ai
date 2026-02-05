@@ -75,7 +75,7 @@ export function SubscriptionStatus() {
               <Badge className="bg-green-100 text-green-700 border-green-200">{subscription.status}</Badge>
             </div>
 
-            {subscription.plan !== "launchpad" && (
+            {subscription.plan !== "free" && (
               <>
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-medium text-gray-600">Billing Cycle</span>
@@ -90,8 +90,8 @@ export function SubscriptionStatus() {
             )}
 
             <div className="pt-4">
-              <Button variant="outline" className="w-full bg-transparent" disabled={subscription.plan === "dominator"}>
-                {subscription.plan === "dominator" ? "You're at the top!" : "Upgrade Plan"}
+              <Button variant="outline" className="w-full bg-transparent" disabled={subscription.plan === "agency"}>
+                {subscription.plan === "agency" ? "You're at the top!" : "Upgrade Plan"}
               </Button>
             </div>
           </div>

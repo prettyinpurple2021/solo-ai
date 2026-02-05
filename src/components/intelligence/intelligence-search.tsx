@@ -12,6 +12,7 @@ import { BossButton,} from "@/components/ui/boss-button"
 import { Input} from "@/components/ui/input"
 import { Badge} from "@/components/ui/badge"
 import { Button} from "@/components/ui/button"
+import { FeatureGatePlaceholder } from "@/components/subscription/feature-gate-placeholder"
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 import {
@@ -335,8 +336,6 @@ export function IntelligenceSearch({
   }, [filters])
 
   if (isLocked) {
-      // Inline dynamic import for the placeholder
-      const { FeatureGatePlaceholder } = require('@/components/subscription/feature-gate-placeholder');
       return (
           <div className="flex items-center justify-center p-12">
             <FeatureGatePlaceholder 
