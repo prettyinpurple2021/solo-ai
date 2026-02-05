@@ -1,0 +1,34 @@
+import { NextResponse } from 'next/server';
+import { getCommunityFeed, createPost } from "@/lib/actions/community-actions";
+import { authenticateRequest } from "@/lib/auth-server";
+
+export async function GET(request: Request) {
+    const { searchParams } = new URL(request.url);
+    const topicId = searchParams.get('topicId') || undefined;
+
+    try {
+        const posts = await getCommunityFeed(topicId);
+        return NextResponse.json(posts);
+    } catch (e) {
+        console.error("API Error", e);
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}
+
+export async function POST(request: Request) {
+    const { user, error } = await authenticateRequest();
+    if (error || !user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    try {
+        const body = await request.json();
+        const result = await createPost(body); // This uses Zod internally
+        return NextResponse.json(result);
+    } catch (e: any) {
+        console.error("API Error", e);
+        // Basic Zod error handling if action throws
+        if (e.message === "Invalid Topic" || e.name === "ZodError") {
+             return NextResponse.json({ error: "Invalid Request", details: e }, { status: 400 });
+        }
+        return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    }
+}

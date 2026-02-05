@@ -57,7 +57,7 @@ export class WellnessEngine {
     return { xpEarned };
   }
   
-  private async awardXP(amount: number) {
+  async awardXP(amount: number) {
       // Single atomic operation to update XP and recalculate Level
       // Level Formula: floor(sqrt((xp + amount) / 100)) + 1
       const result = await db.update(users)

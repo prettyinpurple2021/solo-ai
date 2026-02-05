@@ -8,3 +8,4 @@ export * from './workflow';
 export * from './gamification';
 export * from './wellness';
 export * from './relations'; 
+export * from './community'; 
