@@ -15,6 +15,13 @@
       "when": 1766585531934,
       "tag": "0001_light_morlocks",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770338114201,
+      "tag": "0002_large_wallop",
+      "breakpoints": true
     }
   ]
 }
