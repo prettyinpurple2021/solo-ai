@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   
   // Strict check: Only authorized users or specific admins should run this.
   // For MVP/Dev, we allow authenticated users to trigger it (idempotent).
-  if (error || !user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (error || !user || user.role !== 'admin') return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
   try {
     await GamificationEngine.seedDefaults();

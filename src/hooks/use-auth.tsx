@@ -5,9 +5,21 @@ import { useCallback } from "react"
 import { authClient } from "@/lib/auth-client"
 import type {} from "@/lib/auth-client" // Use new User type or adapt
 
+// Extended User type to match DB schema and Session callback
+export interface AuthUser {
+  id?: string | null
+  name?: string | null
+  email?: string | null
+  image?: string | null
+  full_name?: string | null
+  role?: string | null
+  avatar_url?: string | null
+  subscription_tier?: string | null
+}
+
 // Maintain compatibility interface as much as possible
 interface AuthContextType {
-  user: any | null
+  user: AuthUser | null
   session: any | null
   loading: boolean
   signIn: (email: string, password: string) => Promise<{ error: unknown }>
@@ -52,7 +64,7 @@ export function useAuth(): AuthContextType {
   }, [])
 
   return {
-    user: session?.user || null,
+    user: (session?.user as AuthUser) || null,
     session: session,
     loading,
     signIn,

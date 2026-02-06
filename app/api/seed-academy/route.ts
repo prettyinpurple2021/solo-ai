@@ -3,7 +3,14 @@ import { db } from "@/db";
 import { learningPaths, learningModules } from "@/db/schema";
 import { v4 as uuidv4 } from 'uuid';
 
-export async function GET() {
+import { getJWTAuthenticatedUser } from "@/lib/auth-server";
+
+export async function POST(req: Request) { // Changed to POST for security
+  const user = await getJWTAuthenticatedUser();
+  if (!user || user.role !== 'admin') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     // Check if paths exist
     const existing = await db.query.learningPaths.findFirst();

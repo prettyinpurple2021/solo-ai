@@ -1,8 +1,10 @@
+'use client'
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { toast } from "sonner"
 import { useState, useEffect } from "react"
-import { Loader2, Database, GraduationCap, Users, Trophy, ShieldAlert } from "lucide-react"
+import { Loader2, GraduationCap, Users, Trophy } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 
@@ -12,23 +14,20 @@ export default function DevToolsPage() {
     const router = useRouter()
 
     useEffect(() => {
-        if (!authLoading && (user as any)?.role !== 'admin') {
+        if (!authLoading && user?.role !== 'admin') {
             router.push('/dashboard')
         }
     }, [user, authLoading, router])
 
     if (authLoading) return <div className="p-10"><Loader2 className="animate-spin" /></div>
     
-    if ((user as any)?.role !== 'admin') return null;
+    if (user?.role !== 'admin') return null;
 
     const runSeed = async (name: string, url: string, method: string = 'POST') => {
         setLoading(name)
         try {
             const res = await fetch(url, { 
-                method,
-                headers: {
-                    'x-admin-secret': process.env.NEXT_PUBLIC_ADMIN_SECRET || 'secret' // Fallback or needs explicit env
-                }
+                method
             })
             if (res.ok) {
                 toast.success(`${name} seeded successfully!`)
@@ -37,7 +36,8 @@ export default function DevToolsPage() {
                 toast.error(`Failed to seed ${name}: ${text}`)
             }
         } catch (e) {
-            toast.error(`Error connecting to ${url}`)
+            console.error(`Dev Tools Seed Error [${url}]:`, e);
+            toast.error(`Error connecting to ${url}: ${(e as Error).message || 'Unknown error'}`)
         } finally {
             setLoading(null)
         }
@@ -64,7 +64,7 @@ export default function DevToolsPage() {
                     <CardContent>
                         <Button 
                             className="w-full" 
-                            onClick={() => runSeed('Academy', '/api/seed-academy', 'GET')} // Note: GET based on walkthrough
+                            onClick={() => runSeed('Academy', '/api/seed-academy', 'POST')}
                             disabled={!!loading}
                         >
                             {loading === 'Academy' && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

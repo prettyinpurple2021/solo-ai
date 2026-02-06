@@ -1,19 +1,22 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from "@/db";
-import { communityTopics } from "@/db/schema";
+import { communityTopics } from "@/db/schema/community";
+import { v4 as uuidv4 } from "uuid";
+import { getJWTAuthenticatedUser } from "@/lib/auth-server";
 import { eq } from "drizzle-orm";
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
     // 1. Auth Check (Basic for demonstration, ideally require Admin role)
     // For now, ensuring user is just authenticated is a step up, but seeding really invites abuse if not strict.
     // User requested "verify current user/session and require an admin or trusted role".
     // Since we don't have roles implemented fully, we'll check for a specific header or just auth.
     // Let's assume generic "authenticateAction" or header check for simplicity in this MVP.
     
-    // Simulating stricter check:
-    const authHeader = request.headers.get('x-admin-secret');
-    if (authHeader !== process.env.ADMIN_SECRET && process.env.NODE_ENV !== 'development') {
-         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // Authenticate user
+    const user = await getJWTAuthenticatedUser();
+
+    if (!user || user.role !== 'admin') {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     try {

@@ -2,7 +2,7 @@
 
 import type * as React from "react"
 import {
-  Bot, GalleryVerticalEnd, SquareTerminal, Briefcase, Palette, Target, Shield, CheckSquare, FileText, Eye, Focus, Users, GraduationCap, Sparkles, Trophy,
+  Bot, GalleryVerticalEnd, SquareTerminal, Briefcase, Palette, Target, Shield, CheckSquare, FileText, Eye, Focus, Users, GraduationCap, Sparkles, Trophy, MessageCircle,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -82,7 +82,7 @@ const data = {
     {
       title: "The Tribe",
       url: "/community",
-      icon: Users,
+      icon: MessageCircle,
     },
     {
       title: "The Sanctuary",
@@ -107,15 +107,15 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Create user data with fallbacks for missing information
   const userData = {
-    name: (user as any)?.name || (user as any)?.full_name || user?.email?.split('@')[0] || "SoloSuccess User",
+    name: user?.name || user?.full_name || user?.email?.split('@')[0] || "SoloSuccess User",
     email: user?.email || "user@solobossai.fun",
-    avatar: user?.avatar_url || "/default-user.svg",
+    avatar: user?.image || user?.avatar_url || "/default-user.svg", // Fixed prop name to image/avatar_url based on type
   }
 
   // Filter nav items based on role
   const filteredNavMain = data.navMain.filter(item => {
     if (item.url === "/dev") {
-      return (user as any)?.role === 'admin';
+      return user?.role === 'admin';
     }
     return true;
   });
