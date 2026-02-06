@@ -2,7 +2,7 @@
 
 import type * as React from "react"
 import {
-  Bot, GalleryVerticalEnd, SquareTerminal, Briefcase, Palette, Target, Shield, CheckSquare, FileText, Eye, Focus, Users, GraduationCap, Sparkles, Trophy, MessageCircle,
+  Bot, GalleryVerticalEnd, SquareTerminal, Briefcase, Palette, Shield, CheckSquare, FileText, Eye, Focus, Users, GraduationCap, Sparkles, Trophy, MessageCircle,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"

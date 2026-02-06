@@ -12,6 +12,7 @@ export interface AuthUser {
   email?: string | null
   image?: string | null
   full_name?: string | null
+  username?: string | null
   role?: string | null
   avatar_url?: string | null
   subscription_tier?: string | null
