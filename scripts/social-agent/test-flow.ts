@@ -3,9 +3,9 @@ import { getRecentCommits } from './git-monitor';
 import { draftPost } from './post-drafter';
 
 (async () => {
-    console.log("TEST: Start");
+    console.log("TEST: Start (Cheap Models)");
     const commits = getRecentCommits(24);
-    console.log("TEST: Commits len:", commits.length);
+    
     if (!commits) {
         console.log("TEST: No commits");
         return;

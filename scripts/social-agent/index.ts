@@ -36,7 +36,7 @@ async function main() {
   console.log("\nFound updates (first 500 chars):");
   console.log((commits.substring(0, 500) + (commits.length > 500 ? "..." : "")).replace(/\n/g, '\n> '));
 
-  console.log("\nDrafting post using Echo persona...");
+  console.log("\nDrafting post using Build-in-Public Founder persona...");
   let draft = "";
   try {
      draft = await draftPost(commits);
