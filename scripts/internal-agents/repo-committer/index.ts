@@ -1,7 +1,7 @@
 
 import { execSync } from 'child_process';
 import { generateText } from 'ai';
-import { getAgentConfig } from '../shared/config';
+import { getAgentConfig } from '../shared';
 import fs from 'fs';
 import path from 'path';
 

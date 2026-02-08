@@ -27,7 +27,6 @@ async function testModel(provider: 'anthropic' | 'openai', modelId: string) {
     await generateText({
       model,
       prompt: "Hi",
-      maxTokens: 5,
     });
     console.log("✅ Success");
   } catch (error: any) {

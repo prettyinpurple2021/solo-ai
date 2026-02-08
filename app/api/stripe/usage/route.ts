@@ -1,8 +1,8 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import { db } from "@/db"; // Use centralized DB client
-import { usageTracking } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { db } from "../../../../server/db"; // Use centralized DB client
+import { usageTracking } from "../../../../server/db/schema";
+import { eq } from "../../../../server/db";
 
 export async function GET(req: NextRequest) {
   try {

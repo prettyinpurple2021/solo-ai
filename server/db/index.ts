@@ -27,4 +27,8 @@ const connectDB = async () => {
 
 connectDB();
 
+
 export const db = drizzle(client, { schema });
+
+// Re-export common operators to avoid "dual package hazard"
+export { eq, gt, lt, gte, lte, ne, isNull, isNotNull, inArray, notInArray, exists, notExists, and, or, not, asc, desc, sql } from 'drizzle-orm';
