@@ -51,14 +51,14 @@ router.post('/create-checkout-session', async (req, res) => {
 // Get Subscription Status
 router.get('/subscription', async (req, res) => {
     try {
-        const userId = req.headers['x-user-id'] || req.query.userId;
+        const userId = (req.headers['x-user-id'] || req.query.userId) as string;
 
         if (!userId) {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
         const sub = await db.select().from(subscriptions)
-            .where(eq(subscriptions.userId, Number(userId)))
+            .where(eq(subscriptions.userId, userId))
             .limit(1);
 
         if (!sub.length) {
@@ -75,7 +75,7 @@ router.get('/subscription', async (req, res) => {
 // Get Usage Statistics
 router.get('/usage', async (req, res) => {
     try {
-        const userId = req.headers['x-user-id'] || req.query.userId;
+        const userId = (req.headers['x-user-id'] || req.query.userId) as string;
 
         if (!userId) {
             return res.status(401).json({ error: 'Unauthorized' });
@@ -86,7 +86,7 @@ router.get('/usage', async (req, res) => {
 
         const usage = await db.select().from(usageTracking)
             .where(
-                eq(usageTracking.userId, Number(userId))
+                eq(usageTracking.userId, userId)
             )
             .limit(1);
 
@@ -116,7 +116,7 @@ router.post('/customer-portal', async (req, res) => {
 
         // Get customer ID from subscription
         const sub = await db.select().from(subscriptions)
-            .where(eq(subscriptions.userId, Number(userId)))
+            .where(eq(subscriptions.userId, userId))
             .limit(1);
 
         if (!sub.length || !sub[0].stripeCustomerId) {
@@ -169,7 +169,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
 });
 
 async function handleCheckoutCompleted(session: any) {
-    const userId = parseInt(session.client_reference_id);
+    const userId = session.client_reference_id; // already string
     const subscriptionId = session.subscription;
     const customerId = session.customer;
 

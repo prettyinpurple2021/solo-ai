@@ -14,11 +14,11 @@ router.use(checkSuspended as any);
 // Get all pitch decks for authenticated user
 router.get('/', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
 
         const decks = await db.select()
             .from(pitchDecks)
-            .where(eq(pitchDecks.userId, Number(userId)))
+            .where(eq(pitchDecks.userId, userId))
             .orderBy(desc(pitchDecks.createdAt));
 
         return res.json(decks);
@@ -31,14 +31,14 @@ router.get('/', async (req: Request, res: Response) => {
 // Get single pitch deck by ID
 router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
         const deckId = req.params.id as string;
 
         const deck = await db.select()
             .from(pitchDecks)
             .where(and(
                 eq(pitchDecks.id, deckId),
-                eq(pitchDecks.userId, Number(userId))
+                eq(pitchDecks.userId, userId)
             ))
             .limit(1);
 
@@ -56,7 +56,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Create or update pitch deck
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
         const { id, title, slides, generatedAt } = req.body;
 
         if (!id || !title || !slides) {
@@ -68,7 +68,7 @@ router.post('/', async (req: Request, res: Response) => {
             .from(pitchDecks)
             .where(and(
                 eq(pitchDecks.id, id),
-                eq(pitchDecks.userId, Number(userId))
+                eq(pitchDecks.userId, userId)
             ))
             .limit(1);
 
@@ -89,7 +89,7 @@ router.post('/', async (req: Request, res: Response) => {
             const [newDeck] = await db.insert(pitchDecks)
                 .values({
                     id,
-                    userId: Number(userId),
+                    userId: userId,
                     title,
                     slides,
                     createdAt: generatedAt ? new Date(generatedAt) : new Date()
@@ -107,7 +107,7 @@ router.post('/', async (req: Request, res: Response) => {
 // Update pitch deck
 router.put('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
         const deckId = req.params.id as string;
         const { title, slides } = req.body;
 
@@ -116,7 +116,7 @@ router.put('/:id', async (req: Request, res: Response) => {
             .from(pitchDecks)
             .where(and(
                 eq(pitchDecks.id, deckId),
-                eq(pitchDecks.userId, Number(userId))
+                eq(pitchDecks.userId, userId)
             ))
             .limit(1);
 
@@ -143,7 +143,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 // Delete pitch deck
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
         const deckId = req.params.id as string;
 
         // Verify ownership before deleting
@@ -151,7 +151,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
             .from(pitchDecks)
             .where(and(
                 eq(pitchDecks.id, deckId),
-                eq(pitchDecks.userId, Number(userId))
+                eq(pitchDecks.userId, userId)
             ))
             .limit(1);
 

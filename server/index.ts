@@ -197,6 +197,7 @@ app.post('/api/auth/signup', async (req: Request, res: Response) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await db.insert(users).values({
+            id: crypto.randomUUID(),
             email,
             password: hashedPassword,
         }).returning();
@@ -326,20 +327,17 @@ app.get('/api/user', async (req: Request, res: Response) => {
 
         // Get from database
         let user;
-        if (!isNaN(Number(userId))) {
-            user = await db.select().from(users).where(eq(users.id, Number(userId))).limit(1);
-        } else {
+        // Get from database - check both ID and Stack ID
+        user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+        
+        if (user.length === 0) {
             user = await db.select().from(users).where(eq(users.stackUserId, userId)).limit(1);
         }
 
         if (user.length === 0) {
-            // Only create new user if it's a Stack Auth ID (non-numeric usually)
-            if (!isNaN(Number(userId))) {
-                return res.status(404).json({ error: 'User not found' });
-            }
-
-            // Create new user for Stack Auth
+            // Create new user for Stack Auth (if not found by ID or Stack ID)
             const newUser = await db.insert(users).values({
+                id: crypto.randomUUID(), // Explicitly generate ID
                 email: `${userId}@stack.auth`,
                 stackUserId: userId
             }).returning();
@@ -366,9 +364,10 @@ app.post('/api/user/progress', async (req: Request, res: Response) => {
         const { xp, level, totalActions } = req.body;
 
         let user;
-        if (!isNaN(Number(userId))) {
-            user = await db.select().from(users).where(eq(users.id, Number(userId))).limit(1);
-        } else {
+        // Check both ID and Stack ID
+        user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+        
+        if (user.length === 0) {
             user = await db.select().from(users).where(eq(users.stackUserId, userId)).limit(1);
         }
 

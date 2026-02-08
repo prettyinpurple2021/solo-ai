@@ -9,7 +9,7 @@ import { eq } from 'drizzle-orm';
 declare global {
     namespace Express {
         interface Request {
-            userId?: number;
+            userId?: string;
             userRole?: string;
         }
     }
@@ -84,9 +84,9 @@ export async function hashAdminPin(pin: string): Promise<string> {
  * Log admin action for audit trail
  */
 export async function logAdminAction(
-    adminUserId: number,
+    adminUserId: string,
     action: string,
-    targetUserId?: number,
+    targetUserId?: string,
     details?: any
 ) {
     try {

@@ -22,7 +22,7 @@ export const checkSuspended = async (req: Request, res: Response, next: NextFunc
             suspendedReason: users.suspendedReason
         })
             .from(users)
-            .where(eq(users.id, Number(userId)))
+            .where(eq(users.id, userId))
             .limit(1);
 
         if (!user.length) {

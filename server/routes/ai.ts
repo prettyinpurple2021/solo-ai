@@ -83,7 +83,7 @@ const getDeepMindContext = async (userId: string) => {
 
     // Strategic Memory (Board Reports)
     const lastQbr = await db.select().from(boardReports)
-        .where(eq(boardReports.userId, parseInt(userId)))
+        .where(eq(boardReports.userId, userId))
         .orderBy(desc(boardReports.generatedAt))
         .limit(1);
 
@@ -95,7 +95,7 @@ const getDeepMindContext = async (userId: string) => {
 
     // Market Gaps (The Pivot)
     const pivot = await db.select().from(pivotAnalyses)
-        .where(eq(pivotAnalyses.userId, parseInt(userId)))
+        .where(eq(pivotAnalyses.userId, userId))
         .orderBy(desc(pivotAnalyses.generatedAt))
         .limit(1);
 
@@ -256,7 +256,7 @@ router.post('/war-room', (authMiddleware as any), requireAi, async (req: Request
         let historyContext = "";
         if (previousSessionId) {
             const prevSession = await db.select().from(warRoomSessions)
-                .where(and(eq(warRoomSessions.id, previousSessionId), eq(warRoomSessions.userId, parseInt(userId))))
+                .where(and(eq(warRoomSessions.id, Number(previousSessionId)), eq(warRoomSessions.userId, userId)))
                 .limit(1);
 
             if (prevSession.length > 0) {
@@ -304,7 +304,7 @@ router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request
         // Check if already exists for today
         const existing = await db.select().from(dailyIntelligence)
             .where(and(
-                eq(dailyIntelligence.userId, Number(userId)),
+                eq(dailyIntelligence.userId, userId),
                 eq(dailyIntelligence.date, today)
             ))
             .limit(1);
@@ -344,7 +344,7 @@ router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request
 
         // Save to DB
         await db.insert(dailyIntelligence).values({
-            userId: Number(userId),
+            userId: userId,
             date: today,
             priorityActions: data.focusPoints,
             alerts: data.threatAlerts,

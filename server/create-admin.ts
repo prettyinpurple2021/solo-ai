@@ -19,7 +19,7 @@ async function createAdminUser() {
     if (existingUser.length > 0) {
       console.log(`User ${email} already exists. Updating role to admin...`);
       await db.update(users)
-        .set({ role: 'admin' } as any)
+        .set({ role: 'admin' })
         .where(eq(users.email, email));
       console.log('User role updated successfully.');
     } else {
@@ -27,7 +27,7 @@ async function createAdminUser() {
       const hashedPassword = await bcrypt.hash(password, 10);
       
       await db.insert(users).values({
-        id: crypto.randomUUID(), // Explicitly generate UUID since DB uses text/uuid
+        id: crypto.randomUUID(),
         email,
         password: hashedPassword,
         name: fullName,
@@ -36,8 +36,12 @@ async function createAdminUser() {
         role: 'admin',
         createdAt: new Date(),
         updatedAt: new Date(),
-        // Add other required fields with defaults if necessary
-      } as any);
+        emailVerified: new Date(), // Now allowed
+        subscriptionTier: 'free',
+        subscriptionStatus: 'active',
+        onboardingCompleted: true,
+        isVerified: true,
+      });
       
       console.log('Admin user created successfully.');
     }

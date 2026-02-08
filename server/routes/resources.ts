@@ -22,7 +22,7 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
             if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
             const items = await db.select().from(table)
-                .where(eq(table.userId, Number(userId))) // Ensure userId is number for DB
+                .where(eq(table.userId, userId)) // Ensure userId is string for DB
                 .orderBy(desc(table[dateField]));
 
             return res.json(items);
@@ -38,7 +38,7 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
             const userId = (req as AuthRequest).userId;
             if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
-            const data = { ...req.body, userId: Number(userId) }; // Ensure userId is number
+            const data = { ...req.body, userId: userId }; // Ensure userId is string
             // Ensure ID is present if it's a text ID field, otherwise let DB handle serial
             // We check if the 'id' column is of type string (text/varchar)
             if (!data.id && (table.id as any).dataType === 'string') {
@@ -60,7 +60,7 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
             if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
             await db.delete(table).where(
-                and(eq(table.id, req.params.id), eq(table.userId, Number(userId)))
+                and(eq(table.id, req.params.id), eq(table.userId, userId))
             );
             return res.json({ success: true });
         } catch (error) {

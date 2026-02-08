@@ -25,7 +25,7 @@ router.get('/', (authMiddleware as any), async (req: Request, res: Response) => 
         const userId = (req as AuthRequest).userId!;
 
         const userNotifications = await db.select().from(notifications)
-            .where(eq(notifications.userId, Number(userId)))
+            .where(eq(notifications.userId, userId))
             .orderBy(desc(notifications.createdAt))
             .limit(50);
 
@@ -48,7 +48,7 @@ router.post('/create', (authMiddleware as any), async (req: Request, res: Respon
 
         const payload = parsed.data;
         const [created] = await db.insert(notifications).values({
-            userId: Number(userId),
+            userId: userId,
             type: payload.type,
             category: payload.category,
             title: payload.title,
@@ -76,7 +76,7 @@ router.post('/:id/read', (authMiddleware as any), async (req: Request, res: Resp
 
         const [updated] = await db.update(notifications)
             .set({ read: true })
-            .where(and(eq(notifications.id, notificationId), eq(notifications.userId, Number(userId))))
+            .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)))
             .returning();
 
         if (!updated) {
@@ -98,7 +98,7 @@ router.post('/read-all', (authMiddleware as any), async (req: Request, res: Resp
 
         const updated = await db.update(notifications)
             .set({ read: true })
-            .where(eq(notifications.userId, Number(userId)))
+            .where(eq(notifications.userId, userId))
             .returning({ id: notifications.id });
 
         if (updated.length > 0) {
@@ -118,7 +118,7 @@ router.delete('/:id', (authMiddleware as any), async (req: Request, res: Respons
         const notificationId = Number(req.params.id);
 
         const deleted = await db.delete(notifications)
-            .where(and(eq(notifications.id, notificationId), eq(notifications.userId, Number(userId))))
+            .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)))
             .returning({ id: notifications.id });
 
         if (deleted.length === 0) {
@@ -139,7 +139,7 @@ router.get('/preferences', (authMiddleware as any), async (req: Request, res: Re
         const userId = (req as AuthRequest).userId!;
 
         const prefs = await db.select().from(notificationPreferences)
-            .where(eq(notificationPreferences.userId, Number(userId)))
+            .where(eq(notificationPreferences.userId, userId))
             .limit(1);
 
         if (prefs.length === 0) {
@@ -169,16 +169,16 @@ router.put('/preferences', (authMiddleware as any), async (req: Request, res: Re
         const newPrefs = req.body;
 
         const existing = await db.select().from(notificationPreferences)
-            .where(eq(notificationPreferences.userId, Number(userId)))
+            .where(eq(notificationPreferences.userId, userId))
             .limit(1);
 
         if (existing.length > 0) {
             await db.update(notificationPreferences)
                 .set({ ...newPrefs, updatedAt: new Date() })
-                .where(eq(notificationPreferences.userId, Number(userId)));
+                .where(eq(notificationPreferences.userId, userId));
         } else {
             await db.insert(notificationPreferences)
-                .values({ ...newPrefs, userId: Number(userId) });
+                .values({ ...newPrefs, userId: userId });
         }
 
         return res.json({ success: true });

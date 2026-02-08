@@ -5,13 +5,15 @@ import { pgTable, serial, text, integer, timestamp, jsonb, boolean } from 'drizz
 // ========================================
 
 export const users = pgTable('users', {
-    id: serial('id').primaryKey(),
+    id: text('id').primaryKey(), // Changed from serial to text (UUID)
     email: text('email').unique(),
+    emailVerified: timestamp('emailVerified'),
     password: text('password'), // Hashed password
     name: text('name'), // NextAuth standard
     full_name: text('full_name'), // App specific
     username: text('username').unique(),
     image: text('image'),
+    bio: text('bio'),
     date_of_birth: timestamp('date_of_birth'),
     stackUserId: text('stack_user_id').unique(), // Stack Auth user ID (optional now)
     role: text('role').default('user'), // 'user' | 'admin'
@@ -21,6 +23,20 @@ export const users = pgTable('users', {
     totalActions: integer('total_actions').default(0),
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
+    
+    // Stripe & Subscription Fields
+    stripeCustomerId: text('stripe_customer_id'),
+    subscriptionTier: text('subscription_tier').default('free'),
+    subscriptionStatus: text('subscription_status').default('active'),
+    stripeSubscriptionId: text('stripe_subscription_id'),
+    currentPeriodStart: timestamp('current_period_start'),
+    currentPeriodEnd: timestamp('current_period_end'),
+    cancelAtPeriodEnd: boolean('cancel_at_period_end').default(false),
+
+    // Onboarding & Verification
+    isVerified: boolean('is_verified').default(false),
+    onboardingCompleted: boolean('onboarding_completed').default(false),
+
     // Suspension fields for Admin
     suspended: boolean('suspended').default(false),
     suspendedAt: timestamp('suspended_at'),
@@ -33,7 +49,7 @@ export const users = pgTable('users', {
 
 export const subscriptions = pgTable('subscriptions', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     stripeCustomerId: text('stripe_customer_id').unique(),
     stripeSubscriptionId: text('stripe_subscription_id').unique(),
     stripePriceId: text('stripe_price_id'),
@@ -49,7 +65,7 @@ export const subscriptions = pgTable('subscriptions', {
 
 export const usageTracking = pgTable('usage_tracking', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     month: text('month').notNull(), // 'YYYY-MM'
     aiGenerations: integer('ai_generations').default(0),
     conversations: integer('conversations').default(0),
@@ -67,9 +83,9 @@ export const usageTracking = pgTable('usage_tracking', {
 
 export const adminActions = pgTable('admin_actions', {
     id: serial('id').primaryKey(),
-    adminUserId: integer('admin_user_id').notNull().references(() => users.id),
+    adminUserId: text('admin_user_id').notNull().references(() => users.id),
     action: text('action').notNull(), // 'user_suspended', 'subscription_refunded', etc.
-    targetUserId: integer('target_user_id'),
+    targetUserId: text('target_user_id'),
     details: jsonb('details'),
     createdAt: timestamp('created_at').defaultNow(),
 });
@@ -80,15 +96,73 @@ export const adminActions = pgTable('admin_actions', {
 
 export const tasks = pgTable('tasks', {
     id: text('id').primaryKey(),
-    userId: text('user_id'), // Multi-user support
+    userId: text('user_id').notNull(), // Multi-user support
+    goalId: text('goal_id'),
+    briefcaseId: text('briefcase_id'),
+    parentTaskId: text('parent_task_id'),
     title: text('title').notNull(),
     description: text('description'),
     assignee: text('assignee').notNull(),
-    priority: text('priority').notNull(),
-    status: text('status').default('todo'),
-    estimatedTime: text('estimated_time'),
+    priority: text('priority').notNull(), // 'low' | 'medium' | 'high'
+    status: text('status').default('pending'), // 'todo' | 'in_progress' | 'done' | 'pending'
+    category: text('category'),
+    tags: jsonb('tags').default([]),
+    dueDate: timestamp('due_date'),
+    estimatedMinutes: integer('estimated_minutes'),
+    actualMinutes: integer('actual_minutes'),
+    energyLevel: text('energy_level').default('medium'),
+    isRecurring: boolean('is_recurring').default(false),
+    recurrencePattern: jsonb('recurrence_pattern'),
+    aiSuggestions: jsonb('ai_suggestions').default({}),
+    estimatedTime: text('estimated_time'), // Leaving for backward compat if needed, or remove if not in DB dump (it wasn't in DB dump shown previously, but verifying... actually it WAS NOT in the dump shown for tasks. The dump had estimated_minutes.)
+    // Wait, the dump had estimated_minutes. estimated_time was in the OLD schema.
+    // I should probably keep estimated_time if code uses it, but DB doesn't have it? 
+    // Dump checks: 4337: "estimated_minutes".
+    // I don't see "estimated_time" in the dump for `tasks` table. 
+    // So I should REMOVE estimated_time.
     createdAt: timestamp('created_at').defaultNow(),
+    updatedAt: timestamp('updated_at').defaultNow(),
     completedAt: timestamp('completed_at'),
+});
+
+export const analyticsEvents = pgTable('analytics_events', {
+    id: serial('id').primaryKey(),
+    userId: text('user_id'),
+    event: text('event').notNull(),
+    properties: jsonb('properties').default({}),
+    timestamp: timestamp('timestamp').defaultNow(),
+    sessionId: text('session_id'),
+    metadata: jsonb('metadata').default({}),
+});
+
+// ========================================
+// NEXT AUTH (Standard Tables)
+// ========================================
+
+export const accounts = pgTable('account', {
+    userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    type: text('type').notNull(),
+    provider: text('provider').notNull(),
+    providerAccountId: text('providerAccountId').notNull(),
+    refresh_token: text('refresh_token'),
+    access_token: text('access_token'),
+    expires_at: integer('expires_at'),
+    token_type: text('token_type'),
+    scope: text('scope'),
+    id_token: text('id_token'),
+    session_state: text('session_state'),
+});
+
+export const sessions = pgTable('session', {
+    sessionToken: text('sessionToken').primaryKey(),
+    userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    expires: timestamp('expires', { mode: 'date' }).notNull(),
+});
+
+export const verificationTokens = pgTable('verificationToken', {
+    identifier: text('identifier').notNull(),
+    token: text('token').notNull(),
+    expires: timestamp('expires', { mode: 'date' }).notNull(),
 });
 
 export const chatHistory = pgTable('chat_history', {
@@ -143,7 +217,7 @@ export const searchIndex = pgTable('search_index', {
 
 export const notifications = pgTable('notifications', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     type: text('type').notNull(), // 'email' | 'sms' | 'in_app'
     category: text('category').notNull(), // 'deadline' | 'financial' | 'competitive' | 'system'
     title: text('title').notNull(),
@@ -156,7 +230,7 @@ export const notifications = pgTable('notifications', {
 });
 
 export const notificationPreferences = pgTable('notification_preferences', {
-    userId: integer('user_id').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id').primaryKey().references(() => users.id, { onDelete: 'cascade' }),
     emailEnabled: boolean('email_enabled').default(true),
     smsEnabled: boolean('sms_enabled').default(false),
     inAppEnabled: boolean('in_app_enabled').default(true),
@@ -175,7 +249,7 @@ export const notificationPreferences = pgTable('notification_preferences', {
 
 export const dailyIntelligence = pgTable('daily_intelligence', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     date: text('date').notNull(), // YYYY-MM-DD
     priorityActions: jsonb('priority_actions'), // Array of priority action objects
     alerts: jsonb('alerts'), // Array of alert objects
@@ -190,7 +264,7 @@ export const dailyIntelligence = pgTable('daily_intelligence', {
 
 export const pitchDecks = pgTable('pitch_decks', {
     id: text('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     title: text('title').notNull(),
     content: jsonb('content'),
     slides: jsonb('slides'),
@@ -201,7 +275,7 @@ export const pitchDecks = pgTable('pitch_decks', {
 
 export const contacts = pgTable('contacts', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     name: text('name').notNull(),
     email: text('email'),
     phone: text('phone'),
@@ -218,7 +292,7 @@ export const contacts = pgTable('contacts', {
 
 export const sops = pgTable('sops', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     taskName: text('task_name'),
     goal: text('goal'),
     content: jsonb('content'),
@@ -227,7 +301,7 @@ export const sops = pgTable('sops', {
 
 export const jobDescriptions = pgTable('job_descriptions', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     roleTitle: text('role_title'),
     content: jsonb('content'),
     generatedAt: timestamp('generated_at').defaultNow(),
@@ -235,7 +309,7 @@ export const jobDescriptions = pgTable('job_descriptions', {
 
 export const interviewGuides = pgTable('interview_guides', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     roleTitle: text('role_title'),
     content: jsonb('content'),
     generatedAt: timestamp('generated_at').defaultNow(),
@@ -243,7 +317,7 @@ export const interviewGuides = pgTable('interview_guides', {
 
 export const productSpecs = pgTable('product_specs', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     title: text('title'),
     content: jsonb('content'),
     generatedAt: timestamp('generated_at').defaultNow(),
@@ -251,7 +325,7 @@ export const productSpecs = pgTable('product_specs', {
 
 export const pivotAnalyses = pgTable('pivot_analyses', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     gaps: jsonb('gaps'),
     content: jsonb('content'),
     generatedAt: timestamp('generated_at').defaultNow(),
@@ -259,7 +333,7 @@ export const pivotAnalyses = pgTable('pivot_analyses', {
 
 export const legalDocs = pgTable('legal_docs', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     title: text('title'),
     content: text('content'),
     generatedAt: timestamp('generated_at').defaultNow(),
@@ -267,7 +341,7 @@ export const legalDocs = pgTable('legal_docs', {
 
 export const trainingHistory = pgTable('training_history', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     title: text('title'),
     content: jsonb('content'),
     timestamp: timestamp('timestamp').defaultNow(),
@@ -275,7 +349,7 @@ export const trainingHistory = pgTable('training_history', {
 
 export const simulations = pgTable('simulations', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     scenario: text('scenario'),
     results: jsonb('results'),
     timestamp: timestamp('timestamp').defaultNow(),
@@ -283,7 +357,7 @@ export const simulations = pgTable('simulations', {
 
 export const campaigns = pgTable('campaigns', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     title: text('title'),
     content: jsonb('content'),
     generatedAt: timestamp('generated_at').defaultNow(),
@@ -291,7 +365,7 @@ export const campaigns = pgTable('campaigns', {
 
 export const creativeAssets = pgTable('creative_assets', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     title: text('title'),
     content: jsonb('content'), // urls or base64
     generatedAt: timestamp('generated_at').defaultNow(),
@@ -299,7 +373,7 @@ export const creativeAssets = pgTable('creative_assets', {
 
 export const codeSnippets = pgTable('code_snippets', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     title: text('title'),
     code: text('code'),
     language: text('language'),
@@ -309,7 +383,7 @@ export const codeSnippets = pgTable('code_snippets', {
 
 export const launchStrategies = pgTable('launch_strategies', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     productName: text('product_name'),
     launchDate: text('launch_date'),
     content: jsonb('content'),
@@ -318,7 +392,7 @@ export const launchStrategies = pgTable('launch_strategies', {
 
 export const tribeBlueprints = pgTable('tribe_blueprints', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     audience: text('audience'),
     content: jsonb('content'),
     generatedAt: timestamp('generated_at').defaultNow(),
@@ -326,7 +400,7 @@ export const tribeBlueprints = pgTable('tribe_blueprints', {
 
 export const boardReports = pgTable('board_reports', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     ceoScore: integer('ceo_score'),
     consensus: text('consensus'),
     executiveSummary: text('executive_summary'),
@@ -336,7 +410,7 @@ export const boardReports = pgTable('board_reports', {
 
 export const warRoomSessions = pgTable('war_room_sessions', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     topic: text('topic'),
     consensus: text('consensus'),
     actionPlan: jsonb('action_plan'), // array of strings
@@ -345,7 +419,7 @@ export const warRoomSessions = pgTable('war_room_sessions', {
 
 export const agentInstructions = pgTable('agent_instructions', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull(),
+    userId: text('user_id').notNull(),
     agentId: text('agent_id'),
     instructions: text('instructions'),
     updatedAt: timestamp('updated_at').defaultNow(),
@@ -357,7 +431,7 @@ export const agentInstructions = pgTable('agent_instructions', {
 
 export const communityPosts = pgTable('community_posts', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     content: text('content').notNull(),
     image: text('image'),
     likes: integer('likes').default(0),
@@ -370,7 +444,7 @@ export const communityPosts = pgTable('community_posts', {
 export const communityComments = pgTable('community_comments', {
     id: serial('id').primaryKey(),
     postId: integer('post_id').notNull().references(() => communityPosts.id, { onDelete: 'cascade' }),
-    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     content: text('content').notNull(),
     createdAt: timestamp('created_at').defaultNow(),
 });
@@ -378,7 +452,7 @@ export const communityComments = pgTable('community_comments', {
 export const communityLikes = pgTable('community_likes', {
     id: serial('id').primaryKey(),
     postId: integer('post_id').notNull().references(() => communityPosts.id, { onDelete: 'cascade' }),
-    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     createdAt: timestamp('created_at').defaultNow(),
 });
 
@@ -400,7 +474,7 @@ export const challenges = pgTable('challenges', {
 
 export const userChallenges = pgTable('user_challenges', {
     id: serial('id').primaryKey(),
-    userId: integer('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     challengeId: integer('challenge_id').notNull().references(() => challenges.id, { onDelete: 'cascade' }),
     status: text('status').default('active').notNull(), // "active", "completed", "failed"
     progress: integer('progress').default(0),

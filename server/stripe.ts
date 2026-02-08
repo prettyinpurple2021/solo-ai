@@ -52,7 +52,7 @@ export const TIER_LIMITS = {
 /**
  * Get user's subscription tier
  */
-export async function getUserTier(userId: number): Promise<keyof typeof TIER_LIMITS> {
+export async function getUserTier(userId: string): Promise<keyof typeof TIER_LIMITS> {
     try {
         const sub = await db.select()
             .from(subscriptions)
@@ -77,7 +77,7 @@ export async function getUserTier(userId: number): Promise<keyof typeof TIER_LIM
 /**
  * Check if user can access a feature
  */
-export async function canAccessFeature(userId: number, feature: string): Promise<boolean> {
+export async function canAccessFeature(userId: string, feature: string): Promise<boolean> {
     const tier = await getUserTier(userId);
     const limits = TIER_LIMITS[tier];
 
@@ -89,16 +89,15 @@ export async function canAccessFeature(userId: number, feature: string): Promise
 /**
  * Get current storage usage (Total items)
  */
-async function getStorageUsage(userId: number): Promise<number> {
+async function getStorageUsage(userId: string): Promise<number> {
     try {
         // Count items in various tables
         const [decks] = await db.select({ count: count() })
             .from(pitchDecks)
             .where(eq(pitchDecks.userId, userId));
 
-        // Note: userId in competitorReports/businessContext might be text depending on schema version
-        // We ensure consistent string usage here as a safeguard
-        const userIdStr = userId.toString();
+        // userId is already string
+        const userIdStr = userId;
 
         const [reports] = await db.select({ count: count() })
             .from(competitorReports)
@@ -123,7 +122,7 @@ async function getStorageUsage(userId: number): Promise<number> {
  * Check if user has exceeded usage limits
  */
 export async function checkUsageLimit(
-    userId: number,
+    userId: string,
     type: 'aiGenerations' | 'competitors' | 'businesses' | 'storage'
 ): Promise<{ allowed: boolean; limit: number; current: number }> {
     try {
@@ -152,7 +151,7 @@ export async function checkUsageLimit(
 
         // Check specific resource counts
         if (type === 'businesses') {
-            const userIdStr = userId.toString();
+            const userIdStr = userId;
             const [countRes] = await db.select({ count: count() })
                 .from(businessContext)
                 .where(eq(businessContext.userId, userIdStr));
@@ -161,7 +160,7 @@ export async function checkUsageLimit(
         }
 
         if (type === 'competitors') {
-            const userIdStr = userId.toString();
+            const userIdStr = userId;
             const [countRes] = await db.select({ count: count() })
                 .from(competitorReports)
                 .where(eq(competitorReports.userId, userIdStr));
@@ -213,7 +212,7 @@ export async function checkUsageLimit(
  * Increment usage counter (Only for event-based limits like AI Generations)
  */
 export async function incrementUsage(
-    userId: number,
+    userId: string,
     type: 'aiGenerations'
 ): Promise<void> {
     try {

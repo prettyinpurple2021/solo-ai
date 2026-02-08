@@ -15,11 +15,11 @@ router.use(checkSuspended as any);
 // Get all contacts for authenticated user
 router.get('/', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
 
         const userContacts = await db.select()
             .from(contacts)
-            .where(eq(contacts.userId, Number(userId)))
+            .where(eq(contacts.userId, userId))
             .orderBy(desc(contacts.updatedAt));
 
         return res.json(userContacts);
@@ -32,14 +32,14 @@ router.get('/', async (req: Request, res: Response) => {
 // Get single contact by ID
 router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
         const contactId = Number(req.params.id);
 
         const contact = await db.select()
             .from(contacts)
             .where(and(
                 eq(contacts.id, contactId),
-                eq(contacts.userId, Number(userId))
+                eq(contacts.userId, userId)
             ))
             .limit(1);
 
@@ -57,7 +57,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Create new contact
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
         const { name, email, company, role, notes, linkedinUrl, tags, lastContact, relationship } = req.body;
 
         if (!name) {
@@ -66,7 +66,7 @@ router.post('/', async (req: Request, res: Response) => {
 
         const [newContact] = await db.insert(contacts)
             .values({
-                userId: Number(userId),
+                userId: userId,
                 name,
                 email,
                 company,
@@ -80,7 +80,7 @@ router.post('/', async (req: Request, res: Response) => {
             .returning();
 
         // Index for search
-        await SearchIndexer.indexContact(String(userId), newContact);
+        await SearchIndexer.indexContact(userId, newContact);
 
         return res.status(201).json(newContact);
     } catch (error) {
@@ -92,7 +92,7 @@ router.post('/', async (req: Request, res: Response) => {
 // Update contact
 router.put('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
         const contactId = Number(req.params.id);
         const { name, email, company, role, notes, linkedinUrl, tags, lastContact, relationship } = req.body;
 
@@ -101,7 +101,7 @@ router.put('/:id', async (req: Request, res: Response) => {
             .from(contacts)
             .where(and(
                 eq(contacts.id, contactId),
-                eq(contacts.userId, Number(userId))
+                eq(contacts.userId, userId)
             ))
             .limit(1);
 
@@ -126,7 +126,7 @@ router.put('/:id', async (req: Request, res: Response) => {
             .returning();
 
         // Update index
-        await SearchIndexer.indexContact(String(userId), updated);
+        await SearchIndexer.indexContact(userId, updated);
 
         return res.json(updated);
     } catch (error) {
@@ -138,7 +138,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 // Delete contact
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = ((req as unknown) as AuthRequest).userId!;
         const contactId = Number(req.params.id);
 
         // Verify ownership before deleting
@@ -146,7 +146,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
             .from(contacts)
             .where(and(
                 eq(contacts.id, contactId),
-                eq(contacts.userId, Number(userId))
+                eq(contacts.userId, userId)
             ))
             .limit(1);
 
@@ -158,7 +158,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
             .where(eq(contacts.id, contactId));
 
         // Remove from index
-        await SearchIndexer.removeFromIndex(String(userId), 'contact', String(contactId));
+        await SearchIndexer.removeFromIndex(userId, 'contact', String(contactId));
 
         return res.json({ success: true, message: 'Contact deleted' });
     } catch (error) {

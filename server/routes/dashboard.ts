@@ -17,12 +17,12 @@ router.get('/', authMiddleware, async (req: any, res: any) => {
 
         // 1. Fetch User Data
         // Users table uses integer ID
-        const user = await db.select().from(users).where(eq(users.id, numUserId)).limit(1);
+        const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
         // Handle case where user might be stored by stackUserId (text) if ID lookup fails
         let userData = user[0];
         if (!userData) {
-            const userByStackId = await db.select().from(users).where(eq(users.stackUserId, strUserId)).limit(1);
+            const userByStackId = await db.select().from(users).where(eq(users.stackUserId, userId)).limit(1);
             userData = userByStackId[0];
         }
 
@@ -31,7 +31,7 @@ router.get('/', authMiddleware, async (req: any, res: any) => {
         // 2. Fetch Today's Tasks
         // Tasks table uses text userId
         const userTasks = await db.select().from(tasks)
-            .where(eq(tasks.userId, strUserId))
+            .where(eq(tasks.userId, userId))
             .orderBy(desc(tasks.createdAt));
 
         // Since dueDate is missing in schema, we'll consider all 'todo'/'in_progress' tasks as active
@@ -45,13 +45,13 @@ router.get('/', authMiddleware, async (req: any, res: any) => {
         // 3. Fetch Active Goals (Business Context)
         // BusinessContext uses text userId
         // Schema doesn't have 'goals', so we'll return empty list (V1 Restriction)
-        const context = await db.select().from(businessContext).where(eq(businessContext.userId, strUserId)).limit(1);
+        const context = await db.select().from(businessContext).where(eq(businessContext.userId, userId)).limit(1);
         const activeGoals: any[] = [];
 
         // 4. Recent Conversations
         // ChatHistory uses text userId
         const recentChats = await db.select().from(chatHistory)
-            .where(eq(chatHistory.userId, strUserId))
+            .where(eq(chatHistory.userId, userId))
             .orderBy(desc(chatHistory.timestamp))
             .limit(3);
 

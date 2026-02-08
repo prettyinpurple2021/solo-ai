@@ -33,7 +33,10 @@ async function main() {
       fullSchema[table as string] = columnsResult.rows;
     }
 
-    console.log(JSON.stringify(fullSchema, null, 2));
+    // console.log(JSON.stringify(fullSchema, null, 2));
+    const fs = require('fs');
+    fs.writeFileSync('schema_dump.json', JSON.stringify(fullSchema, null, 2));
+    console.log('Schema dumped to schema_dump.json');
 
   } catch (error) {
     console.error('Introspection failed:', error);

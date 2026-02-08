@@ -91,7 +91,7 @@ router.get('/users', async (req: express.Request, res: express.Response) => {
 
 router.get('/users/:userId', async (req: express.Request, res: express.Response) => {
     try {
-        const userId = Number(req.params.userId);
+        const userId = req.params.userId;
         const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
         if (!user.length) {
@@ -113,9 +113,9 @@ router.get('/users/:userId', async (req: express.Request, res: express.Response)
 
 router.post('/users/:userId/suspend', async (req: express.Request, res: express.Response) => {
     try {
-        const userId = Number(req.params.userId);
+        const userId = req.params.userId;
         const { reason } = req.body;
-        const adminUserId = Number(((req as unknown) as AuthRequest).userId!);
+        const adminUserId = ((req as unknown) as AuthRequest).userId!;
 
         // Update user suspended status in database
         await db.update(users)
