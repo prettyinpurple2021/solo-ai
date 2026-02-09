@@ -1813,7 +1813,7 @@ export const competitorReports = pgTable("competitor_reports", {
     vulnerabilities: jsonb("vulnerabilities"),
     strengths: jsonb("strengths"),
     metrics: jsonb("metrics"),
-    generatedAt: timestamp("generated_at").defaultNow(),
+    generatedAt: timestamp("generated_at", { mode: 'string' }).defaultNow(),
 });
 
 export const sops = pgTable("sops", {

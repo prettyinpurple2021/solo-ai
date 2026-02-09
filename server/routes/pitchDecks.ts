@@ -77,7 +77,7 @@ router.post('/', async (req: Request, res: Response) => {
             const [updated] = await db.update(pitchDecks)
                 .set({
                     title,
-                    slides,
+                    content: slides,
                     updatedAt: new Date().toISOString()
                 })
                 .where(eq(pitchDecks.id, id))
@@ -91,7 +91,7 @@ router.post('/', async (req: Request, res: Response) => {
                     id,
                     userId: userId,
                     title,
-                    slides,
+                    content: slides,
                     createdAt: generatedAt ? new Date(generatedAt).toISOString() : new Date().toISOString()
                 })
                 .returning();
@@ -127,7 +127,7 @@ router.put('/:id', async (req: Request, res: Response) => {
         const [updated] = await db.update(pitchDecks)
             .set({
                 title,
-                slides,
+                content: slides,
                 updatedAt: new Date().toISOString()
             })
             .where(eq(pitchDecks.id, deckId))
