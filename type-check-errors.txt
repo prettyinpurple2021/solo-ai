@@ -1,0 +1,4 @@
+﻿
+> solosuccess-ai@0.0.0 type-check
+> cross-env NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit
+

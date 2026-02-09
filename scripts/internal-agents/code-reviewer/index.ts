@@ -1,8 +1,9 @@
 
 import { generateText } from 'ai';
-import { getAgentConfig } from '../shared/config';
+import { getAgentConfig } from '../shared/index';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 export async function run() {
   const filePath = process.argv[2];
@@ -47,6 +48,6 @@ export async function run() {
   }
 }
 
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
     run().catch(console.error);
 }

@@ -3,6 +3,7 @@ import { generateText } from 'ai';
 import { getAgentConfig } from '../shared';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
 export async function run() {
   const prompt = process.argv.slice(2).join(' ');
@@ -43,6 +44,6 @@ export async function run() {
   }
 }
 
-if (require.main === module) {
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
     run().catch(console.error);
 }
