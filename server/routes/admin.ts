@@ -91,7 +91,7 @@ router.get('/users', async (req: express.Request, res: express.Response) => {
 
 router.get('/users/:userId', async (req: express.Request, res: express.Response) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.params.userId as string;
         const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
         if (!user.length) {
@@ -113,7 +113,7 @@ router.get('/users/:userId', async (req: express.Request, res: express.Response)
 
 router.post('/users/:userId/suspend', async (req: express.Request, res: express.Response) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.params.userId as string;
         const { reason } = req.body;
         const adminUserId = ((req as unknown) as AuthRequest).userId!;
 
