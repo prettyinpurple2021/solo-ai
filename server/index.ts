@@ -168,6 +168,7 @@ import resourcesRouter from './routes/resources';
 import searchRouter from './routes/search';
 import notificationsRouter from './routes/notifications';
 import aiRouter from './routes/ai';
+import briefcaseRouter from './routes/briefcase';
 
 // ... (imports)
 
@@ -179,6 +180,7 @@ app.use('/api/resources', resourcesRouter);
 app.use('/api/ai', aiRouter);
 app.use('/api/search', searchRouter);
 app.use('/api/notifications', notificationsRouter);
+app.use('/api/unified-briefcase', briefcaseRouter);
 
 // Auth Routes
 app.post('/api/auth/signup', async (req: Request, res: Response) => {

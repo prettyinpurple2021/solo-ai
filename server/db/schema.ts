@@ -1,4 +1,4 @@
-import { pgTable, index, foreignKey, text, boolean, jsonb, integer, timestamp, varchar, uniqueIndex, unique, numeric, check, serial, primaryKey, pgSequence, pgEnum, vector } from "drizzle-orm/pg-core"
+import { pgTable, index, foreignKey, text, boolean, jsonb, integer, timestamp, varchar, uniqueIndex, unique, numeric, check, serial, primaryKey, pgSequence, pgEnum, vector, bigint } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const feedbackStatus = pgEnum("feedback_status", ['pending', 'in_progress', 'resolved', 'closed', 'dismissed'])
@@ -2025,4 +2025,73 @@ export const usageTracking = pgTable("usage_tracking", {
   businessProfiles: integer("business_profiles").default(0),
   createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
   updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+});
+
+export const userBriefcases = pgTable("user_briefcases", {
+	id: varchar({ length: 255 }).primaryKey().notNull(),
+	userId: varchar("user_id", { length: 255 }).notNull(),
+	name: varchar({ length: 255 }).notNull(),
+	description: text(),
+	isDefault: boolean("is_default").default(false),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+}, (table) => [
+	index("user_briefcases_user_id_idx").using("btree", table.userId.asc().nullsLast().op("text_ops")),
+	index("user_briefcases_default_idx").using("btree", table.userId.asc().nullsLast().op("text_ops"), table.isDefault.asc().nullsLast().op("bool_ops")),
+]);
+
+export const briefcaseItems = pgTable("briefcase_items", {
+	id: varchar({ length: 255 }).primaryKey().notNull(),
+	briefcaseId: varchar("briefcase_id", { length: 255 }).notNull(),
+	userId: varchar("user_id", { length: 255 }).notNull(),
+	type: varchar({ length: 50 }).notNull(),
+	title: varchar({ length: 255 }).notNull(),
+	description: text(),
+	content: jsonb(),
+	blobUrl: text("blob_url"),
+	fileSize: bigint("file_size", { mode: 'number' }),
+	mimeType: varchar("mime_type", { length: 255 }),
+	tags: text().array().default(sql`'{}'::text[]`),
+	metadata: jsonb().default({}),
+	isPrivate: boolean("is_private").default(true),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+}, (table) => [
+	index("briefcase_items_briefcase_id_idx").using("btree", table.briefcaseId.asc().nullsLast().op("text_ops")),
+	index("briefcase_items_user_id_idx").using("btree", table.userId.asc().nullsLast().op("text_ops")),
+	index("briefcase_items_type_idx").using("btree", table.type.asc().nullsLast().op("text_ops")),
+	index("briefcase_items_tags_idx").using("gin", table.tags),
+	check("briefcase_items_type_check", sql`type IN ('avatar', 'chat', 'brand', 'template_save', 'document', 'ai_interaction')`),
+]);
+
+export const businessContext = pgTable("business_context", {
+	id: serial("id").primaryKey(),
+	userId: text("user_id").notNull(),
+	companyName: text("company_name"),
+	founderName: text("founder_name"),
+	industry: text("industry"),
+	description: text("description"),
+	brandDna: jsonb("brand_dna"),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow()
+});
+
+export const dailyIntelligence = pgTable("daily_intelligence", {
+	id: serial("id").primaryKey(),
+	userId: text("user_id").notNull(),
+	date: text("date").notNull(),
+	priorityActions: jsonb("priority_actions"),
+	alerts: jsonb("alerts"),
+	insights: jsonb("insights"),
+	motivationalMessage: text("motivational_message"),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow()
+});
+
+export const adminActions = pgTable("admin_actions", {
+	id: serial("id").primaryKey(),
+	adminUserId: text("admin_user_id").notNull(),
+	action: text("action").notNull(),
+	targetUserId: text("target_user_id"),
+	details: jsonb("details"),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow()
 });

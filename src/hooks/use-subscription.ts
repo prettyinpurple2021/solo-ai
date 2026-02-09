@@ -1,7 +1,6 @@
-"use client"
-
 import { useState, useEffect, useCallback } from "react"
 import { useUser } from "@/lib/auth-client"
+import { apiClient, endpoints } from "@/lib/api-client"
 
 // Public Price IDs - MUST be set in .env using NEXT_PUBLIC_ prefix
 const PLANS = {
@@ -75,12 +74,12 @@ export function useSubscription() {
       setIsLoading(true)
       
       // 1. Fetch Subscription Status
-      const subRes = await fetch(`/api/stripe/subscription?userId=${user.id}`, {
+      const subRes = await apiClient.get(`${endpoints.stripe.subscription}?userId=${user.id}`, {
         headers: { 'x-user-id': user.id } // Redundancy for middleware
       })
       
-      if (subRes.ok) {
-        const subData = await subRes.json()
+      if (subRes.data) {
+        const subData = subRes.data
         setSubscription({
           plan: subData.tier || 'free',
           status: subData.status || 'free',
@@ -91,15 +90,15 @@ export function useSubscription() {
       }
 
       // 2. Fetch Usage Statistics
-      const usageRes = await fetch(`/api/stripe/usage?userId=${user.id}`, {
+      const usageRes = await apiClient.get(`${endpoints.stripe.usage}?userId=${user.id}`, {
         headers: { 'x-user-id': user.id }
       })
 
-      if (usageRes.ok) {
-        const usageData = await usageRes.json()
+      if (usageRes.data) {
+        const usageData = usageRes.data
         // Map backend usage to frontend state
         // Note: The backend returns a simpler object, so we merge it with TIER_LIMITS
-        const currentTier = (subRes.ok ? (await subRes.clone().json()).tier : 'free') as keyof typeof TIER_LIMITS
+        const currentTier = (subRes.data ? subRes.data.tier : 'free') as keyof typeof TIER_LIMITS
         const limits = TIER_LIMITS[currentTier] || TIER_LIMITS.free
 
         setUsage({
@@ -135,20 +134,20 @@ export function useSubscription() {
 
     try {
       setIsLoading(true)
-      const res = await fetch('/api/stripe/create-checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      const res = await apiClient.post(endpoints.stripe.createCheckoutSession, 
+        {
           priceId,
           userId: user.id
-        })
-      })
+        },
+        {
+           headers: { 'x-user-id': user.id }
+        }
+      )
 
-      const data = await res.json()
-      if (data.url) {
-        window.location.href = data.url
+      if (res.data.url) {
+        window.location.href = res.data.url
       } else {
-        throw new Error(data.error || "Failed to create checkout session")
+        throw new Error(res.data.error || "Failed to create checkout session")
       }
     } catch (error) {
         console.error("Upgrade failed:", error)
@@ -162,15 +161,13 @@ export function useSubscription() {
 
     try {
       setIsLoading(true)
-      const res = await fetch('/api/stripe/customer-portal', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId: user.id })
-      })
+      const res = await apiClient.post(endpoints.stripe.customerPortal,
+        { userId: user.id },
+        { headers: { 'x-user-id': user.id } }
+      )
 
-      const data = await res.json()
-      if (data.url) {
-        window.location.href = data.url
+      if (res.data.url) {
+        window.location.href = res.data.url
       } else {
          // Fallback if no subscription exists
          throw new Error("No active subscription to manage")

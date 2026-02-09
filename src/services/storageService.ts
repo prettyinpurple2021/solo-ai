@@ -1,4 +1,5 @@
 import { logError, logWarn, logInfo } from '@/lib/logger';
+import { apiClient } from '@/lib/api-client';
 import {
     UserProgress, Task, ChatMessage, CompetitorReport, BusinessContext, BrandDNA,
     PitchDeck, CreativeAsset, Contact, LaunchStrategy, TribeBlueprint,
@@ -134,13 +135,14 @@ async function apiCall<T>(
             options.body = JSON.stringify(body);
         }
 
-        const response = await fetch(`${API_URL}${endpoint}`, options);
+        const response = await apiClient.request({
+            method,
+            url: endpoint,
+            data: body,
+            headers: options.headers as any // Cast because axios headers are slightly different type
+        });
 
-        if (!response.ok) {
-            throw new Error(`API call failed: ${response.statusText}`);
-        }
-
-        const data = await response.json();
+        const data = response.data;
 
         // Cache in localStorage for offline fallback
         if (fallbackKey && data) {

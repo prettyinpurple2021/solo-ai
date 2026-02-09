@@ -1,4 +1,6 @@
 
+import { apiClient, endpoints } from '@/lib/api-client'
+
 interface ChatMessage {
   role: string
   content: string
@@ -44,15 +46,7 @@ class BriefcaseAutoSaver {
     // Set new debounced save
     const timeout = setTimeout(async () => {
       try {
-        const response = await fetch('/api/unified-briefcase', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            ...(typeof window !== 'undefined' && localStorage.getItem('authToken')
-              ? { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-              : {})
-          },
-          body: JSON.stringify({
+        const response = await apiClient.post(endpoints.briefcase.base, {
             type: 'chat',
             title: this.generateChatTitle(title, messages, agentName),
             content: { messages },
@@ -61,15 +55,16 @@ class BriefcaseAutoSaver {
               messageCount: messages.length,
               conversationId
             }
+          }, {
+            headers: {
+              ...(typeof window !== 'undefined' && localStorage.getItem('authToken')
+                ? { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+                : {})
+            }
           })
-        })
 
-        if (!response.ok) {
-          const result = await response.json()
-          throw new Error(result.error || 'Failed to save chat')
-        }
-
-        logInfo('Chat conversation saved to briefcase:', conversationId)
+          // Axios throws on error statuses by default, so we land in catch block.
+          logInfo('Chat conversation saved to briefcase:', conversationId)
 
       } catch (error) {
         logError('Auto-save chat error:', error)
@@ -91,15 +86,7 @@ class BriefcaseAutoSaver {
     progress: number
   ) {
     try {
-      const response = await fetch('/api/unified-briefcase', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(typeof window !== 'undefined' && localStorage.getItem('authToken')
-            ? { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-            : {})
-        },
-        body: JSON.stringify({
+      const response = await apiClient.post(endpoints.briefcase.base, {
           type: 'template_save',
           title: `${title} (${progress}% complete)`,
           content,
@@ -108,13 +95,15 @@ class BriefcaseAutoSaver {
             progress,
             autoSaved: true
           }
+        }, {
+          headers: {
+            ...(typeof window !== 'undefined' && localStorage.getItem('authToken')
+              ? { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+              : {})
+          }
         })
-      })
 
-      if (!response.ok) {
-        const result = await response.json()
-        throw new Error(result.error || 'Failed to save template')
-      }
+      logInfo('Template progress saved to briefcase:', templateSlug)
 
       logInfo('Template progress saved to briefcase:', templateSlug)
 
@@ -131,25 +120,17 @@ class BriefcaseAutoSaver {
     brandData: unknown
   ) {
     try {
-      const response = await fetch('/api/unified-briefcase', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(typeof window !== 'undefined' && localStorage.getItem('authToken')
-            ? { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-            : {})
-        },
-        body: JSON.stringify({
+      const response = await apiClient.post(endpoints.briefcase.base, {
           type: 'brand',
           title,
           content: brandData
+        }, {
+          headers: {
+            ...(typeof window !== 'undefined' && localStorage.getItem('authToken')
+              ? { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+              : {})
+          }
         })
-      })
-
-      if (!response.ok) {
-        const result = await response.json()
-        throw new Error(result.error || 'Failed to save brand work')
-      }
 
       logInfo('Brand work saved to briefcase:', title)
 
