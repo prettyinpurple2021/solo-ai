@@ -1763,7 +1763,7 @@ export const account = pgTable("account", {
 export const pitchDecks = pgTable("pitch_decks", {
   id: text().primaryKey().notNull(),
   userId: text("user_id").notNull(),
-  name: varchar({ length: 255 }).notNull(),
+  title: varchar({ length: 255 }).notNull(),
   content: jsonb().default({}),
   version: integer().default(1),
   isTemplate: boolean("is_template").default(false),
@@ -1771,6 +1771,22 @@ export const pitchDecks = pgTable("pitch_decks", {
   thumbnail: varchar({ length: 1000 }),
   createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
   updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+});
+
+export const contacts = pgTable("contacts", {
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    name: text("name").notNull(),
+    email: text("email"),
+    company: text("company"),
+    role: text("role"),
+    notes: text("notes"),
+    linkedinUrl: text("linkedin_url"),
+    tags: text("tags").array(),
+    lastContact: timestamp("last_contact", { mode: 'string' }),
+    relationship: text("relationship"),
+    createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
 });
 
 export const searchIndex = pgTable("search_index", {
@@ -1788,14 +1804,16 @@ export const searchIndex = pgTable("search_index", {
 });
 
 export const competitorReports = pgTable("competitor_reports", {
-  id: text().primaryKey().notNull(),
-  userId: text("user_id").notNull(),
-  competitorId: text("competitor_id"),
-  title: varchar({ length: 255 }).notNull(),
-  type: varchar({ length: 50 }).notNull(),
-  content: jsonb().default({}),
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    competitorName: text("competitor_name").notNull(),
+    threatLevel: text("threat_level"),
+    missionBrief: text("mission_brief"),
+    intel: jsonb("intel"),
+    vulnerabilities: jsonb("vulnerabilities"),
+    strengths: jsonb("strengths"),
+    metrics: jsonb("metrics"),
+    generatedAt: timestamp("generated_at").defaultNow(),
 });
 
 export const sops = pgTable("sops", {
@@ -1844,13 +1862,10 @@ export const productSpecs = pgTable("product_specs", {
 });
 
 export const pivotAnalyses = pgTable("pivot_analyses", {
-  id: text().primaryKey().notNull(),
-  userId: text("user_id").notNull(),
-  title: varchar({ length: 255 }).notNull(),
-  scenario: text(),
-  impact: jsonb().default({}),
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    gaps: jsonb("gaps"),
+    generatedAt: timestamp("generated_at").defaultNow(),
 });
 
 export const legalDocs = pgTable("legal_docs", {
@@ -1941,14 +1956,13 @@ export const tribeBlueprints = pgTable("tribe_blueprints", {
 });
 
 export const boardReports = pgTable("board_reports", {
-  id: text().primaryKey().notNull(),
-  userId: text("user_id").notNull(),
-  title: varchar({ length: 255 }).notNull(),
-  period: varchar({ length: 50 }),
-  content: jsonb().default({}),
-  status: varchar({ length: 50 }).default('draft'),
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    ceoScore: integer("ceo_score"),
+    consensus: text("consensus"),
+    executiveSummary: text("executive_summary"),
+    grades: jsonb("grades"),
+    generatedAt: timestamp("generated_at").defaultNow(),
 });
 
 export const agentInstructions = pgTable("agent_instructions", {
@@ -1962,16 +1976,13 @@ export const agentInstructions = pgTable("agent_instructions", {
 });
 
 export const warRoomSessions = pgTable("war_room_sessions", {
-  id: text().primaryKey().notNull(),
-  userId: text("user_id").notNull(),
-  title: varchar({ length: 255 }).notNull(),
-  objective: text(),
-  participants: jsonb().default([]),
-  status: varchar({ length: 50 }).default('active'),
-  startedAt: timestamp("started_at", { mode: 'string' }).defaultNow(),
-  endedAt: timestamp("ended_at", { mode: 'string' }),
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    topic: text("topic"),
+    consensus: text("consensus"),
+    actionPlan: jsonb("action_plan"),
+    dialogue: jsonb("dialogue"),
+    createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const notifications = pgTable("notifications", {
@@ -2095,3 +2106,17 @@ export const adminActions = pgTable("admin_actions", {
 	details: jsonb("details"),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow()
 });
+
+
+
+export const chatHistory = pgTable("chat_history", {
+	id: serial("id").primaryKey(),
+	userId: text("user_id").notNull(),
+	agentId: text("agent_id").notNull(),
+	role: text("role").notNull(),
+	text: text("text").notNull(),
+	timestamp: bigint("timestamp", { mode: "number" }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow()
+}, (table) => [
+	index("chat_history_user_agent_idx").using("btree", table.userId, table.agentId),
+]);

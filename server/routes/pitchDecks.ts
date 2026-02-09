@@ -78,7 +78,7 @@ router.post('/', async (req: Request, res: Response) => {
                 .set({
                     title,
                     slides,
-                    updatedAt: new Date()
+                    updatedAt: new Date().toISOString()
                 })
                 .where(eq(pitchDecks.id, id))
                 .returning();
@@ -92,7 +92,7 @@ router.post('/', async (req: Request, res: Response) => {
                     userId: userId,
                     title,
                     slides,
-                    createdAt: generatedAt ? new Date(generatedAt) : new Date()
+                    createdAt: generatedAt ? new Date(generatedAt).toISOString() : new Date().toISOString()
                 })
                 .returning();
 
@@ -128,7 +128,7 @@ router.put('/:id', async (req: Request, res: Response) => {
             .set({
                 title,
                 slides,
-                updatedAt: new Date()
+                updatedAt: new Date().toISOString()
             })
             .where(eq(pitchDecks.id, deckId))
             .returning();

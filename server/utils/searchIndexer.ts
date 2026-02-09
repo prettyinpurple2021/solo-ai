@@ -84,7 +84,7 @@ export class SearchIndexer {
                         title,
                         content,
                         tags,
-                        updatedAt: new Date()
+                        updatedAt: new Date().toISOString()
                     })
                     .where(eq(searchIndex.id, existing[0].id));
             } else {

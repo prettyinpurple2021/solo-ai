@@ -378,7 +378,7 @@ app.post('/api/user/progress', async (req: Request, res: Response) => {
         }
 
         const updated = await db.update(users)
-            .set({ xp, level, totalActions, updatedAt: new Date() })
+            .set({ xp, level, totalActions, updatedAt: new Date().toISOString() })
             .where(eq(users.id, user[0].id))
             .returning();
 
@@ -692,8 +692,12 @@ app.post('/api/reports', async (req: Request, res: Response) => {
             userId,
             competitorName: report.competitorName,
             threatLevel: report.threatLevel,
-            data: report,
-            generatedAt: new Date(report.generatedAt || Date.now())
+            missionBrief: report.missionBrief || '',
+            intel: report.intel || [],
+            vulnerabilities: report.vulnerabilities || [],
+            strengths: report.strengths || [],
+            metrics: report.metrics || {},
+            generatedAt: new Date(report.generatedAt || Date.now()).toISOString()
         });
 
         await invalidateCache(`reports:${userId}`);

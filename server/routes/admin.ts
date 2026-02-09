@@ -121,7 +121,7 @@ router.post('/users/:userId/suspend', async (req: express.Request, res: express.
         await db.update(users)
             .set({
                 suspended: true,
-                suspendedAt: new Date(),
+                suspendedAt: new Date().toISOString(),
                 suspendedReason: reason || 'Account suspended by administrator'
             })
             .where(eq(users.id, userId));

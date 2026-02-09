@@ -31,12 +31,11 @@ async function createAdminUser() {
         email,
         password: hashedPassword,
         name: fullName,
-        full_name: fullName,
         username,
         role: 'admin',
-        createdAt: new Date(),
-        updatedAt: new Date(),
-        emailVerified: new Date(), // Now allowed
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        emailVerified: new Date().toISOString(), // Now allowed
         subscriptionTier: 'free',
         subscriptionStatus: 'active',
         onboardingCompleted: true,

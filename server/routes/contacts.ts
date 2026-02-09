@@ -74,7 +74,7 @@ router.post('/', async (req: Request, res: Response) => {
                 notes,
                 linkedinUrl,
                 tags: tags as string[],
-                lastContact: lastContact ? new Date(lastContact) : null,
+                lastContact: lastContact ? new Date(lastContact).toISOString() : null,
                 relationship
             })
             .returning();
@@ -118,9 +118,9 @@ router.put('/:id', async (req: Request, res: Response) => {
                 notes,
                 linkedinUrl,
                 tags,
-                lastContact: lastContact ? new Date(lastContact) : null,
+                lastContact: lastContact ? new Date(lastContact).toISOString() : null,
                 relationship,
-                updatedAt: new Date()
+                updatedAt: new Date().toISOString()
             })
             .where(eq(contacts.id, contactId))
             .returning();

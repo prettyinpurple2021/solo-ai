@@ -63,7 +63,7 @@ const getDeepMindContext = async (userId: string) => {
         const activeTasks = userTasks.filter(t => t.status !== 'done');
         if (activeTasks.length > 0) {
             tasksContext = activeTasks.map(t =>
-                `- [${t.priority.toUpperCase()}] ${t.title} (Assignee: ${t.assignee.toUpperCase()}, Status: ${t.status})`
+                `- [${(t.priority || 'MEDIUM').toUpperCase()}] ${t.title} (Status: ${t.status})`
             ).join('\n');
         }
     }
