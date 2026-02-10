@@ -65,7 +65,7 @@ export async function generateUserGuide(topic: string): Promise<string> {
     Requirements:
     - Use "USER MODE" (Instructional, simple, encouraging).
     - Format: Markdown with Frontmatter.
-    - Frontmatter keys: title, excerpt, date, category ("User Guide").
+    - Frontmatter keys: title, excerpt, date ("${new Date().toISOString().split('T')[0]}"), category ("User Guide").
     - Structure:
         - Introduction (Why this matters)
         - Prerequisities (if any)

@@ -18,14 +18,16 @@ import { Metadata } from 'next'
 // I will use a simple text display for now and maybe suggest `react-markdown` later.
 // Actually, I'll use a basic custom renderer for headers/paragraphs to make it look decent.
 
+
 type Props = {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const post = getPostData(params.slug)
+  const { slug } = await params
+  const post = getPostData(slug)
   if (!post) return { title: 'Post Not Found' }
   return {
     title: `${post.title} | SoloSuccess AI`,
@@ -33,8 +35,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default function Post({ params }: Props) {
-  const post = getPostData(params.slug)
+export default async function Post({ params }: Props) {
+  const { slug } = await params
+  const post = getPostData(slug)
 
   if (!post) {
     notFound()

@@ -20,7 +20,8 @@ export async function draftBlogPost(topic: string): Promise<string> {
     - Include a Frontmatter block at the very top:
       ---
       title: "Catchy Title Here"
-      date: "${new Date().toISOString().split('T')[0]}"
+      title: "Catchy Title Here"
+      date: "${new Date().toISOString().split('T')[0]}" (DO NOT CHANGE THIS DATE)
       excerpt: "1-2 sentence summary for SEO and previews."
       category: "Choose one: Building in Public, Technical Deep Dive, Growth, or Automation"
       readTime: "Estimated read time (e.g., 5 min read)"
