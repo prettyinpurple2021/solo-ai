@@ -26,10 +26,12 @@ router.post('/generate-slide-content', async (req: Request, res: Response) => {
             suggestedImageQuery: z.string().describe("Search query to find a relevant image")
         });
 
+        type SlideContent = z.infer<typeof schema>;
+
         // Use Google Gemini via Vercel AI SDK
         const { object } = await generateObject({
             model: google('models/gemini-1.5-flash-latest'),
-            schema,
+            schema: schema as any,
             prompt: `
                 You are a professional pitch deck consultant.
                 Task: Improve or generate content for a slide based on the following input: "${prompt}".
@@ -39,7 +41,7 @@ router.post('/generate-slide-content', async (req: Request, res: Response) => {
                 
                 Output: A JSON object with a title, bullet points, and an image search query.
             `,
-        });
+        }) as { object: SlideContent };
 
         // Convert bullet points to HTML for our text component
         const htmlContent = `
