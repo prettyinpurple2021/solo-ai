@@ -1,6 +1,4 @@
 
-
-
 import { generateText } from 'ai';
 
 import dotenv from 'dotenv';
@@ -11,8 +9,6 @@ const envLocalPath = path.resolve(process.cwd(), '.env.local');
 dotenv.config({ path: envLocalPath });
 // Then load .env (defaults)
 dotenv.config();
-
-
 
 import { getAgentConfig } from '../shared/index';
 
@@ -78,4 +74,48 @@ export async function draftPost(commits: string): Promise<string> {
   }
 }
 
-
+export async function generateEngagementPost(): Promise<string> {
+    const founderConfig = getAgentConfig('social');
+    if (!founderConfig) {
+      return "Error: Could not load social agent configuration.";
+    }
+  
+    const prompt = `
+      Generate a "Build-in-Public" tweet about the philosophy or experience of building a solo AI product.
+      - Focus on "the journey", "learning", "shipping", or "AI tools".
+      - Be authentic, humble, but ambitious.
+      - Ask a question or share a relatable struggle/win.
+      - Keep it under 280 characters.
+      - No emojis unless they fit the "builder" vibe (🚀, 🛠️, 🐛).
+      - No hashtags except maybe #buildinpublic.
+      - Plain text only.
+    `;
+  
+    try {
+      const { text } = await generateText({
+        model: founderConfig.model,
+        system: founderConfig.systemPrompt,
+        prompt: prompt,
+      });
+      
+      return text.trim().replace(/^"|"$/g, '');
+    } catch (error: any) {
+      console.warn("⚠️  Primary model (Haiku) generated failed:", error.message || error);
+      
+      if (founderConfig.fallback) {
+        console.log("🔄  Retrying with fallback model...");
+        try {
+          const { text } = await generateText({
+            model: founderConfig.fallback,
+            system: founderConfig.systemPrompt,
+            prompt: prompt,
+          });
+          return text.trim().replace(/^"|"$/g, '');
+        } catch (retryError) {
+          console.error("❌  Retry failed:", retryError);
+          return "Failed to generate engagement post.";
+        }
+      }
+      return "Failed to generate engagement post.";
+    }
+  }

@@ -9,7 +9,9 @@ const args = process.argv.slice(3);
 async function main() {
   switch (command) {
     case 'social':
-      await runSocial(); 
+      // Pass all remaining args (e.g., --engagement, --dry-run)
+      process.argv.splice(2, 1); 
+      await runSocial();
       break;
     
     case 'generate':
@@ -36,6 +38,24 @@ async function main() {
       await runCommitter();
       break;
 
+    case 'blog':
+      process.argv.splice(2, 1); // Remove 'blog'
+      const { run: runWriter } = await import('./blog-writer/index');
+      await runWriter();
+      break;
+
+    case 'seo':
+      process.argv.splice(2, 1); // Remove 'seo'
+      const { run: runSEO } = await import('./seo-optimizer/index');
+      await runSEO();
+      break;
+
+    case 'docs':
+      process.argv.splice(2, 1); // Remove 'docs'
+      const { run: runDocs } = await import('./docs-maintainer/index');
+      await runDocs();
+      break;
+
     case 'help':
     default:
       console.log(`
@@ -48,6 +68,9 @@ Commands:
   generate    - Run the Code Generator (arguments: "prompt")
   review      - Run the Code Reviewer (arguments: file-path)
   commit      - Run the Repo Committer (analyzes git diff, suggests commit msg)
+  blog        - Run the Blog Writer (arguments: write "Topic")
+  seo         - Run the SEO Optimizer (arguments: analyze "slug")
+  docs        - Run the Docs Maintainer (arguments: "readme" or "guide")
       `);
       break;
   }

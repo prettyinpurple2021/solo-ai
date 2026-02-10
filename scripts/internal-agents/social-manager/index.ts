@@ -1,71 +1,76 @@
 
-
-import { getRecentCommits } from './git-monitor';
-import { draftPost } from './post-drafter';
-import { postToX } from './browser-poster';
-import readline from 'readline';
+import { execSync } from 'child_process';
+import { draftPost, generateEngagementPost } from './post-drafter';
+import { postTweet } from './twitter-client';
 import { fileURLToPath } from 'url';
 
-const ask = (query: string): Promise<string> => {
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-  return new Promise(resolve => rl.question(query, ans => {
-    rl.close();
-    resolve(ans);
-  }));
-};
-
 export async function run() {
-  console.log("🤖 SoloSuccess Autonomous Social Agent");
-  console.log("-----------------------------------------");
+  console.log("🐦 Internal Agent: Social Media Manager");
+  console.log("-------------------------------------");
 
-  // Configurable via argv if needed (e.g. process.argv[2])
-  const hours = 24;
+  // Check for mode arguments
+  const args = process.argv.slice(2);
+  const mode = args.includes('--engagement') ? 'engagement' : 'update';
 
-  console.log(`Checking for project updates in the last ${hours} hours...`);
-  const commits = getRecentCommits(hours);
+  if (mode === 'engagement') {
+      console.log("🎨 Mode: Engagement Post (Autopilot)");
+      const postContent = await generateEngagementPost();
+      
+      if (!postContent || postContent.includes("Failed")) {
+          console.error("❌ Failed to generate engagement post.");
+          return;
+      }
 
-  console.log(`Debug: Commits fetched. Length: ${commits?.length}`);
+      console.log(`\n📝 Generated Engagement Tweet:\n"${postContent}"\n`);
+      
+      if (args.includes('--dry-run')) {
+          console.log("Creation Successful. [DRY-RUN] Skipping actual post.");
+          return;
+      }
 
-  if (!commits || commits.includes("No recent commits found.")) {
-    console.log("No updates found. Exiting.");
-    process.exit(0);
+      console.log("🚀 Autopilot: Posting to X...");
+      await postTweet(postContent);
+      return;
   }
 
-  console.log("\nFound updates (first 500 chars):");
-  console.log((commits.substring(0, 500) + (commits.length > 500 ? "..." : "")).replace(/\n/g, '\n> '));
-
-  console.log("\nDrafting post using Build-in-Public Founder persona...");
-  let draft = "";
+  // Default Mode: Update based on git commits
+  console.log("🔍 Mode: Dev Update (Autopilot)");
+  
+  // 1. Get recent git commits (last 24 hours)
+  let commits = '';
   try {
-     draft = await draftPost(commits);
-     console.log("Debug: Draft generated successfully.");
-  } catch (err) {
-      console.error("Debug: Error drafting post:", err);
-      draft = "Error generating draft.";
+    commits = execSync('git log --since="24 hours ago" --oneline').toString();
+  } catch (e) {
+    console.warn("Could not fetch git logs, assuming no recent changes.");
   }
 
-
-  console.log("\n-----------------------------------------");
-  console.log("Draft Post:");
-  console.log(`"${draft}"`);
-  console.log("-----------------------------------------");
-
-  const answer = await ask('Do you want to post this to X? (y = yes, n = no, m = manual edit): ');
-
-  if (answer.toLowerCase().startsWith('y')) {
-    await postToX(draft);
-  } else if (answer.toLowerCase().startsWith('m')) {
-    const customText = await ask('Enter custom post text: ');
-    await postToX(customText);
-  } else {
-    console.log("Aborted.");
+  if (!commits) {
+    console.log("No commits in the last 24 hours. Skipping update post.");
+    return;
   }
+
+  console.log(`Found recent commits:\n${commits.substring(0, 200)}...`);
+
+  // 2. Draft the post
+  const draft = await draftPost(commits);
+  
+  if (draft.includes("No recent updates")) {
+      console.log("Agent decided no update is needed based on commits.");
+      return;
+  }
+
+  console.log(`\n📝 Generated Update Tweet:\n"${draft}"\n`);
+
+  if (args.includes('--dry-run')) {
+      console.log("Creation Successful. [DRY-RUN] Skipping actual post.");
+      return;
+  }
+
+  // 3. Post to X (Autopilot)
+  console.log("🚀 Autopilot: Posting to X...");
+  await postTweet(draft);
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   run().catch(console.error);
 }
-
