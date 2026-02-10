@@ -1,24 +1,48 @@
 import { Slide, SlideComponent } from "@/hooks/use-pitch-deck"
 import { motion, PanInfo } from "framer-motion"
 import { useState, useRef, useEffect } from "react"
-import { GripHorizontal } from "lucide-react"
+import { GripHorizontal, Trash2 } from "lucide-react"
 
 interface CanvasProps {
   slide: Slide | null
   scale?: number
   onUpdateComponent?: (componentId: string, updates: Partial<SlideComponent>) => void
+  onDeleteComponent?: (componentId: string) => void
+  selectedId?: string | null
+  onSelectComponent?: (id: string | null) => void
 }
 
-export function Canvas({ slide, scale = 1, onUpdateComponent }: CanvasProps) {
-  const [selectedId, setSelectedId] = useState<string | null>(null)
+export function Canvas({ slide, scale = 1, onUpdateComponent, onDeleteComponent, selectedId, onSelectComponent }: CanvasProps) {
   const canvasRef = useRef<HTMLDivElement>(null)
 
   // Deselect on clicking background
   const handleBackgroundClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
-      setSelectedId(null)
+      onSelectComponent?.(null)
     }
   }
+
+  // Handle Keyboard Delete
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if (!selectedId) return
+        
+        // Don't delete if editing text (handled in component) or if input focused
+        if (document.activeElement?.tagName === 'INPUT' || document.activeElement?.tagName === 'TEXTAREA' || (document.activeElement as HTMLElement).isContentEditable) {
+            return
+        }
+
+        if (e.key === 'Delete' || e.key === 'Backspace') {
+            if (selectedId) {
+                onDeleteComponent?.(selectedId)
+                onSelectComponent?.(null)
+            }
+        }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedId, onDeleteComponent, onSelectComponent])
 
   if (!slide) {
     return (
@@ -60,8 +84,12 @@ export function Canvas({ slide, scale = 1, onUpdateComponent }: CanvasProps) {
                 key={comp.id} 
                 component={comp} 
                 isSelected={selectedId === comp.id}
-                onSelect={() => setSelectedId(comp.id)}
+                onSelect={() => onSelectComponent?.(comp.id)}
                 onUpdate={(updates) => onUpdateComponent?.(comp.id, updates)}
+                onDelete={() => {
+                    onDeleteComponent?.(comp.id)
+                    onSelectComponent?.(null)
+                }}
                 scale={scale}
              />
           ))
@@ -82,10 +110,11 @@ interface ComponentRendererProps {
     isSelected: boolean
     onSelect: () => void
     onUpdate: (updates: Partial<SlideComponent>) => void
+    onDelete: () => void
     scale: number
 }
 
-function ComponentRenderer({ component, isSelected, onSelect, onUpdate, scale }: ComponentRendererProps) {
+function ComponentRenderer({ component, isSelected, onSelect, onUpdate, onDelete, scale }: ComponentRendererProps) {
     const { position, style, type, content } = component
     const [isEditing, setIsEditing] = useState(false)
     const textRef = useRef<HTMLDivElement>(null)
@@ -196,6 +225,18 @@ function ComponentRenderer({ component, isSelected, onSelect, onUpdate, scale }:
                     {/* Rotation Handle */}
                     <div className="absolute -top-6 left-1/2 -translate-x-1/2 w-4 h-4 bg-white border border-neon-cyan rounded-full flex items-center justify-center cursor-ew-resize">
                         <div className="w-1 h-1 bg-neon-cyan rounded-full" />
+                    </div>
+
+                    {/* Delete Action (Floating above) */}
+                    <div 
+                        onMouseDown={(e) => {
+                            e.stopPropagation() // Prevent dragging
+                            onDelete()
+                        }}
+                        className="absolute -top-8 right-0 bg-red-500 text-white p-1 rounded cursor-pointer hover:bg-red-600 shadow-md transform hover:scale-110 transition-all"
+                        title="Delete (Backspace)"
+                    >
+                        <Trash2 className="w-3 h-3" />
                     </div>
                 </>
             )}

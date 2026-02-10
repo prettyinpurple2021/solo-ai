@@ -30,7 +30,7 @@ export default function PitchDeckEditor({ params }: EditorPageProps) {
   }, [params])
 
   // Only invoke hook if we have an ID, otherwise pass empty string to avoid errors/maximize defined behavior
-  const { deck, loading, error, updateSlide, addSlide, addComponent, updateComponent } = usePitchDeck(deckId || '')
+  const { deck, loading, error, updateSlide, addSlide, addComponent, updateComponent, deleteComponent } = usePitchDeck(deckId || '')
   const [activeSlideId, setActiveSlideId] = useState<string | null>(null)
 
   // Set first slide as active when deck loads
@@ -68,6 +68,8 @@ export default function PitchDeckEditor({ params }: EditorPageProps) {
         </div>
     )
   }
+
+  const [selectedComponentId, setSelectedComponentId] = useState<string | null>(null)
 
   // Find active slide object
   const activeSlide = deck.slides.find(s => s.id === activeSlideId) || deck.slides[0]
@@ -139,6 +141,9 @@ export default function PitchDeckEditor({ params }: EditorPageProps) {
                 slide={activeSlide} 
                 scale={0.8} // Default zoom
                 onUpdateComponent={(compId, updates) => updateComponent(activeSlide.id, compId, updates)}
+                onDeleteComponent={(compId) => deleteComponent(activeSlide.id, compId)}
+                selectedId={selectedComponentId}
+                onSelectComponent={setSelectedComponentId}
             />
             
             {/* Zoom Controls (Floating) */}
@@ -150,9 +155,9 @@ export default function PitchDeckEditor({ params }: EditorPageProps) {
         </main>
 
         {/* Right Sidebar */}
-        {/* Right Sidebar */}
         <PropertiesPanel 
             activeSlide={activeSlide} 
+            selectedComponentId={selectedComponentId}
             onUpdateComponent={(compId, updates) => updateComponent(activeSlide.id, compId, updates)}
             onAddComponent={(type, content) => addComponent(activeSlide.id, type, content)}
         />
