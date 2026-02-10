@@ -98,6 +98,101 @@ router.put('/:id', async (req: Request, res: Response) => {
     }
 });
 
+// --- Components ---
+
+// Add a component to a slide
+router.post('/:id/components', async (req: Request, res: Response) => {
+    try {
+        const userId = ((req as unknown) as AuthRequest).userId!;
+        const slideId = req.params.id;
+        const { type, content, position, style, animation, zIndex } = req.body;
+
+        // Verify slide ownership
+        const slide = await db.select().from(slides).where(eq(slides.id, slideId)).limit(1);
+        if (!slide.length) return res.status(404).json({ error: 'Slide not found' });
+
+        const deck = await db.select().from(pitchDecks)
+            .where(and(eq(pitchDecks.id, slide[0].deckId), eq(pitchDecks.userId, userId)))
+            .limit(1);
+        if (!deck.length) return res.status(403).json({ error: 'Unauthorized' });
+
+        const newComponentId = crypto.randomUUID();
+        const [component] = await db.insert(slideComponents).values({
+            id: newComponentId,
+            slideId,
+            type,
+            content,
+            position,
+            style: style || {},
+            animation: animation || {},
+            zIndex: zIndex || 0
+        }).returning();
+
+        return res.status(201).json(component);
+
+    } catch (error) {
+        console.error('Error adding component:', error);
+        return res.status(500).json({ error: 'Failed to add component' });
+    }
+});
+
+// Update a component
+router.put('/:slideId/components/:componentId', async (req: Request, res: Response) => {
+    try {
+        const userId = ((req as unknown) as AuthRequest).userId!;
+        const { slideId, componentId } = req.params;
+        const updates = req.body;
+
+        // Verify slide ownership
+        const slide = await db.select().from(slides).where(eq(slides.id, slideId)).limit(1);
+        if (!slide.length) return res.status(404).json({ error: 'Slide not found' });
+
+        const deck = await db.select().from(pitchDecks)
+            .where(and(eq(pitchDecks.id, slide[0].deckId), eq(pitchDecks.userId, userId)))
+            .limit(1);
+        if (!deck.length) return res.status(403).json({ error: 'Unauthorized' });
+
+        const [updated] = await db.update(slideComponents)
+            .set({ ...updates, updatedAt: new Date().toISOString() })
+            .where(and(eq(slideComponents.id, componentId), eq(slideComponents.slideId, slideId)))
+            .returning();
+
+        if (!updated) return res.status(404).json({ error: 'Component not found' });
+
+        return res.json(updated);
+
+    } catch (error) {
+        console.error('Error updating component:', error);
+        return res.status(500).json({ error: 'Failed to update component' });
+    }
+});
+
+// Delete a component
+router.delete('/:slideId/components/:componentId', async (req: Request, res: Response) => {
+    try {
+        const userId = ((req as unknown) as AuthRequest).userId!;
+        const { slideId, componentId } = req.params;
+
+        // Verify slide ownership
+        const slide = await db.select().from(slides).where(eq(slides.id, slideId)).limit(1);
+        if (!slide.length) return res.status(404).json({ error: 'Slide not found' });
+
+        const deck = await db.select().from(pitchDecks)
+            .where(and(eq(pitchDecks.id, slide[0].deckId), eq(pitchDecks.userId, userId)))
+            .limit(1);
+        if (!deck.length) return res.status(403).json({ error: 'Unauthorized' });
+
+        await db.delete(slideComponents)
+            .where(and(eq(slideComponents.id, componentId), eq(slideComponents.slideId, slideId)));
+
+        return res.status(204).send();
+
+    } catch (error) {
+        console.error('Error deleting component:', error);
+        return res.status(500).json({ error: 'Failed to delete component' });
+    }
+});
+
 // Delete a slide
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
