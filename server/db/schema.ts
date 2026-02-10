@@ -1761,17 +1761,68 @@ export const account = pgTable("account", {
 ]);
 
 export const pitchDecks = pgTable("pitch_decks", {
-  id: text().primaryKey().notNull(),
-  userId: text("user_id").notNull(),
-  title: varchar({ length: 255 }).notNull(),
-  content: jsonb().default({}),
-  version: integer().default(1),
-  isTemplate: boolean("is_template").default(false),
-  theme: varchar({ length: 50 }),
-  thumbnail: varchar({ length: 1000 }),
-  createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
-});
+	id: text().primaryKey().notNull(),
+	userId: text("user_id").notNull(),
+	title: varchar({ length: 255 }).notNull(),
+	description: text(),
+	theme: varchar({ length: 50 }).default('modern'),
+	thumbnail: varchar({ length: 1000 }),
+	isPublic: boolean("is_public").default(false),
+	isTemplate: boolean("is_template").default(false),
+	version: integer().default(1),
+	status: varchar({ length: 50 }).default('draft'),
+	viewCount: integer("view_count").default(0),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+}, (table) => [
+	index("pitch_decks_user_id_idx").using("btree", table.userId.asc().nullsLast().op("text_ops")),
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "pitch_decks_user_id_users_id_fk"
+		}).onDelete("cascade"),
+]);
+
+export const slides = pgTable("slides", {
+	id: text().primaryKey().notNull(),
+	deckId: text("deck_id").notNull(),
+	order: integer().notNull(),
+	layout: varchar({ length: 50 }).default('blank'),
+	title: varchar({ length: 255 }),
+	content: jsonb().default({}),
+	notes: text(),
+	isVisible: boolean("is_visible").default(true),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+}, (table) => [
+	index("slides_deck_id_idx").using("btree", table.deckId.asc().nullsLast().op("text_ops")),
+	index("slides_deck_order_idx").using("btree", table.deckId.asc().nullsLast().op("text_ops"), table.order.asc().nullsLast().op("int4_ops")),
+	foreignKey({
+			columns: [table.deckId],
+			foreignColumns: [pitchDecks.id],
+			name: "slides_deck_id_pitch_decks_id_fk"
+		}).onDelete("cascade"),
+]);
+
+export const slideComponents = pgTable("slide_components", {
+	id: text().primaryKey().notNull(),
+	slideId: text("slide_id").notNull(),
+	type: varchar({ length: 50 }).notNull(),
+	content: jsonb().notNull(),
+	position: jsonb().notNull(), // x, y, width, height, rotation
+	style: jsonb().default({}),
+	animation: jsonb().default({}),
+	zIndex: integer("z_index").default(0),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
+}, (table) => [
+	index("slide_components_slide_id_idx").using("btree", table.slideId.asc().nullsLast().op("text_ops")),
+	foreignKey({
+			columns: [table.slideId],
+			foreignColumns: [slides.id],
+			name: "slide_components_slide_id_slides_id_fk"
+		}).onDelete("cascade"),
+]);
 
 export const contacts = pgTable("contacts", {
     id: serial("id").primaryKey(),
