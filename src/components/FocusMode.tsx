@@ -88,7 +88,7 @@ export const FocusMode: React.FC<FocusModeProps> = ({ activeTask, onExit, onComp
         <div className="fixed inset-0 z-[100] bg-dark-bg flex flex-col items-center justify-center overflow-hidden animate-in fade-in duration-700">
 
             {/* Background Effects */}
-            <div className={`absolute inset-0 bg-gradient-to-b from-neon-cyan/10 to-dark-bg pointer-events-none transition-opacity duration-[4s] ${pulse ? 'opacity-50' : 'opacity-20'}`} />
+            <div className={`absolute inset-0 bg-gradient-to-b from-neon-cyan/10 to-dark-bg pointer-events-none transition-opacity ${pulse ? 'opacity-50' : 'opacity-20'}`} style={{ transitionDuration: '4000ms' }} />
             <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none"></div>
 
             {/* Main Container */}
@@ -110,7 +110,7 @@ export const FocusMode: React.FC<FocusModeProps> = ({ activeTask, onExit, onComp
 
                 {/* Timer Ring */}
                 <div className="relative mb-12 group">
-                    <div className={`absolute inset-0 rounded-full bg-neon-cyan/20 blur-3xl transition-all duration-[4s] ${pulse ? 'scale-110 opacity-40' : 'scale-90 opacity-10'}`}></div>
+                    <div className={`absolute inset-0 rounded-full bg-neon-cyan/20 blur-3xl transition-all ${pulse ? 'scale-110 opacity-40' : 'scale-90 opacity-10'}`} style={{ transitionDuration: '4000ms' }}></div>
 
                     <div className="w-72 h-72 md:w-96 md:h-96 rounded-full border-8 border-gray-800 flex items-center justify-center relative bg-dark-bg">
                         {/* Progress Circle */}

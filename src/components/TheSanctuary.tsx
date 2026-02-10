@@ -117,8 +117,8 @@ export const TheSanctuary: React.FC = () => {
                         {breathing && (
                             <div className="mb-12 relative">
                                 <div
-                                    className="w-48 h-48 rounded-full border-2 border-neon-purple/50 bg-dark-card backdrop-blur-sm flex items-center justify-center transition-transform duration-[4s] ease-in-out shadow-[0_0_30px_rgba(179,0,255,0.2)]"
-                                    style={{ transform: `scale(${breathScale})` }}
+                                    className="w-48 h-48 rounded-full border-2 border-neon-purple/50 bg-dark-card backdrop-blur-sm flex items-center justify-center transition-transform ease-in-out shadow-[0_0_30px_rgba(179,0,255,0.2)]"
+                                    style={{ transform: `scale(${breathScale})`, transitionDuration: '4000ms' }}
                                 >
                                     <span className="text-xs font-mono uppercase tracking-widest text-neon-purple">
                                         {breathScale > 1.2 ? 'Exhale' : 'Inhale'}
