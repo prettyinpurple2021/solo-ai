@@ -6,7 +6,7 @@ import { Calendar, User, Clock, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import ReactMarkdown from 'react-markdown' // We might need to install this or handle markdown rendering
-import { Metadata } from 'next'
+// Metadata import handled in next block
 
 // Add markdown rendering support
 // Note: Ideally we'd use a markdown component here. For now, we'll display raw text or simple HTML.
@@ -19,13 +19,19 @@ import { Metadata } from 'next'
 // Actually, I'll use a basic custom renderer for headers/paragraphs to make it look decent.
 
 
+import { ResolvingMetadata, Metadata } from 'next'
+
 type Props = {
   params: Promise<{
     slug: string
   }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const { slug } = await params
   const post = getPostData(slug)
   if (!post) return { title: 'Post Not Found' }
@@ -35,7 +41,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function Post({ params }: Props) {
+export default async function Post({ params, searchParams }: Props) {
   const { slug } = await params
   const post = getPostData(slug)
 
