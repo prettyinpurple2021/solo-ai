@@ -63,7 +63,7 @@ router.post('/', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId!;
-        const slideId = req.params.id;
+        const slideId = req.params.id as string;
         const { layout, title, notes, isVisible, content } = req.body;
 
         // Verify ownership via join (Slide -> Deck -> User)
@@ -102,7 +102,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId!;
-        const slideId = req.params.id;
+        const slideId = req.params.id as string;
 
         const slide = await db.select().from(slides).where(eq(slides.id, slideId)).limit(1);
         if (!slide.length) return res.status(404).json({ error: 'Slide not found' });
@@ -128,7 +128,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 router.post('/:id/components', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId!;
-        const slideId = req.params.id;
+        const slideId = req.params.id as string;
         const { type, content, position, style, animation, zIndex } = req.body;
 
         // Auth check
@@ -163,7 +163,7 @@ router.post('/:id/components', async (req: Request, res: Response) => {
 router.put('/components/:id', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId!;
-        const compId = req.params.id;
+        const compId = req.params.id as string;
         const { content, position, style, animation, zIndex } = req.body;
 
         // Auth check... a bit repetitive, but necessary without eager loading
@@ -199,7 +199,7 @@ router.put('/components/:id', async (req: Request, res: Response) => {
 router.delete('/components/:id', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId!;
-        const compId = req.params.id;
+        const compId = req.params.id as string;
 
         const comp = await db.select().from(slideComponents).where(eq(slideComponents.id, compId)).limit(1);
         if (!comp.length) return res.status(404).json({ error: 'Component not found' });
