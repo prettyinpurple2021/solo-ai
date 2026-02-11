@@ -104,7 +104,8 @@ router.put('/:id', async (req: Request, res: Response) => {
 router.post('/:id/components', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId!;
-        const slideId = req.params.id;
+        const { id } = req.params;
+        const slideId = Array.isArray(id) ? id[0] : id;
         const { type, content, position, style, animation, zIndex } = req.body;
 
         // Verify slide ownership
