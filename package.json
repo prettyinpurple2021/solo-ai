@@ -13,6 +13,7 @@
     "type-check:server": "cd server && tsc --noEmit",
     "internal:docs": "ts-node scripts/internal/doc-maintainer.ts",
     "internal:audit": "ts-node scripts/internal/launch-readiness.ts",
+    "internal:features": "ts-node scripts/internal/feature-inventory.ts",
     "dev:all": "concurrently \"npm run dev\" \"cd server && npm run dev\"",
     "db:generate": "drizzle-kit generate --config=server/drizzle.config.ts",
     "db:push": "drizzle-kit push --config=server/drizzle.config.ts",

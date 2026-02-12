@@ -76,58 +76,55 @@ export const SUBSCRIPTION_TIERS = {
   LAUNCH: {
     id: 'launch',
     name: 'Launch',
+    priceId: STRIPE_PRICES.LAUNCH,
     price: 0,
     period: 'month',
-    description: 'Perfect for ambitious beginners ready to start their empire',
+    description: 'Perfect for getting started with AI-powered business tools',
     features: [
-      'Access to 2 AI agents (Nova & Echo)',
-      '5 AI conversations per day',
-      'Basic task automation',
-      'Email support',
-      'Community access',
-      'Mobile app access'
+      'Access to Aura (Wellness Agent)',
+      '10 AI conversations per day',
+      '50MB secure storage',
+      'Basic analytics',
+      'Community support'
     ],
     limits: {
-      aiAgents: 2,
-      dailyConversations: 5,
-      fileStorage: '1GB',
-      goals: 5,
-      tasks: 20,
-      competitors: 3,
-      templates: 5
+      aiAgents: 1,
+      dailyConversations: 10,
+      fileStorage: '50MB',
+      teamMembers: 1,
+      analytics: 'basic'
     },
+    agents: ['aura'],
     stripePriceId: STRIPE_PRICES.LAUNCH,
     popular: false
   },
   ACCELERATOR: {
     id: 'accelerator',
     name: 'Accelerator',
-    price: 19,
+    priceId: STRIPE_PRICES.ACCELERATOR_MONTHLY, // Assuming this maps to monthly
+    price: 29.99,
     period: 'month',
-    yearlyPrice: 190,
+    yearlyPrice: 299.99, // Assuming a yearly price
     yearlyPeriod: 'year',
-    description: 'For solo founders ready to scale their empire',
+    description: 'Supercharge your growth with advanced AI agents',
     features: [
-      'Access to all 8 AI agents',
-      'Unlimited AI conversations',
-      'Advanced automation',
-      'Priority support',
+      'Access to Aura, Blaze, Glitch, Vex',
+      '100 AI conversations per day',
+      '1GB secure storage',
+      'Idea Incinerator access',
+      'Tactical Roadmap access',
       'Advanced analytics',
-      'File management (10GB)',
-      'Competitive intelligence',
-      'Guardian AI compliance',
-      'Template library access',
-      'API access'
+      'Priority support',
+      'Custom branding'
     ],
     limits: {
-      aiAgents: 8,
-      dailyConversations: -1, // Unlimited
-      fileStorage: '10GB',
-      goals: -1, // Unlimited
-      tasks: -1, // Unlimited
-      competitors: 10,
-      templates: -1 // Unlimited
+      aiAgents: 5,
+      dailyConversations: 100,
+      fileStorage: '1GB',
+      teamMembers: 3,
+      analytics: 'advanced'
     },
+    agents: ['aura', 'blaze', 'glitch', 'vex', 'sales'],
     stripePriceId: STRIPE_PRICES.ACCELERATOR_MONTHLY,
     stripeYearlyPriceId: STRIPE_PRICES.ACCELERATOR_YEARLY,
     popular: true
