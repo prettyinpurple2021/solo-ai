@@ -3,6 +3,7 @@ import { stripe, PRICE_IDS } from '../stripe';
 import { db } from '../db';
 import { subscriptions, users, usageTracking } from '../db/schema';
 import { eq } from 'drizzle-orm';
+import { logError } from '../utils/logger';
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ router.post('/create-checkout-session', async (req, res) => {
 
         return res.json({ url: session.url });
     } catch (error: any) {
-        console.error('Stripe Checkout Error:', error);
+        logError('Stripe Checkout Error', error);
         return res.status(500).json({ error: error.message });
     }
 });
@@ -67,7 +68,7 @@ router.get('/subscription', async (req, res) => {
 
         return res.json(sub[0]);
     } catch (error) {
-        console.error('Error fetching subscription:', error);
+        logError('Error fetching subscription', error);
         return res.status(500).json({ error: 'Failed to fetch subscription' });
     }
 });
@@ -100,7 +101,7 @@ router.get('/usage', async (req, res) => {
 
         return res.json(usage[0]);
     } catch (error) {
-        console.error('Error fetching usage:', error);
+        logError('Error fetching usage', error);
         return res.status(500).json({ error: 'Failed to fetch usage' });
     }
 });
@@ -130,7 +131,7 @@ router.post('/customer-portal', async (req, res) => {
 
         return res.json({ url: session.url });
     } catch (error: any) {
-        console.error('Customer Portal Error:', error);
+        logError('Customer Portal Error', error);
         return res.status(500).json({ error: error.message });
     }
 });
@@ -146,7 +147,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
         if (!sig || !endpointSecret) throw new Error('Missing signature or secret');
         event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
     } catch (err: any) {
-        console.error(`Webhook Error: ${err.message}`);
+        logError(`Webhook Error: ${err.message}`, err);
         return res.status(400).send(`Webhook Error: ${err.message}`);
     }
 

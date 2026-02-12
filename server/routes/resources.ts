@@ -10,6 +10,7 @@ import {
 } from '../db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { logError } from '../utils/logger';
 
 const router = Router();
 
@@ -27,7 +28,7 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
 
             return res.json(items);
         } catch (error) {
-            console.error(`Error fetching ${path}:`, error);
+            logError(`Error fetching ${path}`, error);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     });
@@ -48,7 +49,7 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
             const result = await db.insert(table).values(data).returning();
             return res.json((result as any[])[0]);
         } catch (error) {
-            console.error(`Error creating ${path}:`, error);
+            logError(`Error creating ${path}`, error);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     });
@@ -64,7 +65,7 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
             );
             return res.json({ success: true });
         } catch (error) {
-            console.error(`Error deleting ${path}:`, error);
+            logError(`Error deleting ${path}`, error);
             return res.status(500).json({ error: 'Internal Server Error' });
         }
     });

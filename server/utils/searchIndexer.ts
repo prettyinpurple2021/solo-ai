@@ -1,6 +1,7 @@
 import { db } from '../db';
 import { searchIndex } from '../db/schema';
 import { eq, and } from 'drizzle-orm';
+import { logError } from './logger';
 
 export class SearchIndexer {
     /**
@@ -17,7 +18,7 @@ export class SearchIndexer {
                 ['task', task.status, task.priority, task.assignee]
             );
         } catch (error) {
-            console.error('Failed to index task:', error);
+            logError('Failed to index task', error);
         }
     }
 
@@ -35,7 +36,7 @@ export class SearchIndexer {
                 ['contact', ...(contact.tags || [])]
             );
         } catch (error) {
-            console.error('Failed to index contact:', error);
+            logError('Failed to index contact', error);
         }
     }
 
@@ -53,7 +54,7 @@ export class SearchIndexer {
                 ['report', 'intel', report.threatLevel]
             );
         } catch (error) {
-            console.error('Failed to index report:', error);
+            logError('Failed to index report', error);
         }
     }
 
@@ -98,7 +99,7 @@ export class SearchIndexer {
                 });
             }
         } catch (error) {
-            console.error(`Error indexing ${type} ${id}:`, error);
+            logError(`Error indexing ${type} ${id}`, error);
         }
     }
 
@@ -115,7 +116,7 @@ export class SearchIndexer {
                 )
             );
         } catch (error) {
-            console.error(`Error removing from index ${type} ${id}:`, error);
+            logError(`Error removing from index ${type} ${id}`, error);
         }
     }
 }

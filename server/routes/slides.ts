@@ -4,6 +4,7 @@ import { slides, slideComponents, pitchDecks } from '../db/schema';
 import { eq, and, desc, asc } from 'drizzle-orm';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';
+import { logError } from '../utils/logger';
 
 const router = express.Router();
 
@@ -54,7 +55,7 @@ router.post('/', async (req: Request, res: Response) => {
 
         return res.status(201).json(newSlide);
     } catch (error) {
-        console.error('Error creating slide:', error);
+        logError('Error creating slide', error);
         return res.status(500).json({ error: 'Failed to create slide' });
     }
 });
@@ -93,7 +94,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 
         return res.json(updated);
     } catch (error) {
-        console.error('Error updating slide:', error);
+        logError('Error updating slide', error);
         return res.status(500).json({ error: 'Failed to update slide' });
     }
 });
@@ -132,7 +133,7 @@ router.post('/:id/components', async (req: Request, res: Response) => {
         return res.status(201).json(component);
 
     } catch (error) {
-        console.error('Error adding component:', error);
+        logError('Error adding component', error);
         return res.status(500).json({ error: 'Failed to add component' });
     }
 });
@@ -165,7 +166,7 @@ router.put('/:slideId/components/:componentId', async (req: Request, res: Respon
         return res.json(updated);
 
     } catch (error) {
-        console.error('Error updating component:', error);
+        logError('Error updating component', error);
         return res.status(500).json({ error: 'Failed to update component' });
     }
 });
@@ -193,7 +194,7 @@ router.delete('/:slideId/components/:componentId', async (req: Request, res: Res
         return res.status(204).send();
 
     } catch (error) {
-        console.error('Error deleting component:', error);
+        logError('Error deleting component', error);
         return res.status(500).json({ error: 'Failed to delete component' });
     }
 });
@@ -217,7 +218,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
         return res.json({ success: true });
     } catch (error) {
-        console.error('Error deleting slide:', error);
+        logError('Error deleting slide', error);
         return res.status(500).json({ error: 'Failed to delete slide' });
     }
 });
@@ -254,7 +255,7 @@ router.post('/:id/components', async (req: Request, res: Response) => {
 
         return res.status(201).json(newComp);
     } catch (error) {
-        console.error('Error creating component:', error);
+        logError('Error creating component', error);
         return res.status(500).json({ error: 'Failed to create component' });
     }
 });
@@ -290,7 +291,7 @@ router.put('/components/:id', async (req: Request, res: Response) => {
 
         return res.json(updated);
     } catch (error) {
-        console.error('Error updating component:', error);
+        logError('Error updating component', error);
         return res.status(500).json({ error: 'Failed to update component' });
     }
 });
@@ -314,7 +315,7 @@ router.delete('/components/:id', async (req: Request, res: Response) => {
 
         return res.json({ success: true });
     } catch (error) {
-        console.error('Error deleting component:', error);
+        logError('Error deleting component', error);
         return res.status(500).json({ error: 'Failed to delete component' });
     }
 });

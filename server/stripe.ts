@@ -3,6 +3,7 @@ import Stripe from 'stripe';
 import { db } from './db';
 import { subscriptions, usageTracking, pitchDecks, competitorReports, businessContext, contacts } from './db/schema';
 import { eq, and, count } from 'drizzle-orm';
+import { logError } from './utils/logger';
 
 // Initialize Stripe with secret key from environment
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
@@ -69,7 +70,7 @@ export async function getUserTier(userId: string): Promise<keyof typeof TIER_LIM
         const tier = sub[0].tier as keyof typeof TIER_LIMITS;
         return TIER_LIMITS[tier] ? tier : 'free';
     } catch (error) {
-        console.error('Error fetching user tier:', error);
+        logError('Error fetching user tier', error);
         return 'free';
     }
 }
@@ -113,7 +114,7 @@ async function getStorageUsage(userId: string): Promise<number> {
 
         return (decks?.count || 0) + (reports?.count || 0) + (businesses?.count || 0) + (contactList?.count || 0);
     } catch (error) {
-        console.error('Error calculating storage:', error);
+        logError('Error calculating storage', error);
         return 0;
     }
 }
@@ -202,7 +203,7 @@ export async function checkUsageLimit(
             current
         };
     } catch (error) {
-        console.error('Error checking usage limit:', error);
+        logError('Error checking usage limit', error);
         // On error, allow the action to prevent blocking users
         return { allowed: true, limit: -1, current: 0 };
     }
@@ -244,6 +245,6 @@ export async function incrementUsage(
                 });
         }
     } catch (error) {
-        console.error('Error incrementing usage:', error);
+        logError('Error incrementing usage', error);
     }
 }

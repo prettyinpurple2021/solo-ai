@@ -5,6 +5,7 @@ import { users, subscriptions, adminActions, usageTracking } from '../db/schema'
 import { eq, desc, count, sql } from 'drizzle-orm';
 import { requireAdmin, verifyAdminPin } from '../middleware/admin';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { logError } from '../utils/logger';
 
 const router = express.Router();
 
@@ -41,7 +42,7 @@ router.post('/verify-pin', async (req, res) => {
 
         return res.json({ success: true, adminToken });
     } catch (error) {
-        console.error('PIN verification error:', error);
+        logError('PIN verification error', error);
         return res.status(500).json({ error: 'Verification failed' });
     }
 });
@@ -152,7 +153,7 @@ router.post('/users/:userId/suspend', async (req: express.Request, res: express.
 
         return res.json({ success: true, message: 'User suspended successfully' });
     } catch (error) {
-        console.error('Error suspending user:', error);
+        logError('Error suspending user', error);
         return res.status(500).json({ error: 'Failed to suspend user' });
     }
 });

@@ -22,7 +22,7 @@ import slidesRouter from './routes/slides';
 import stripeRouter from './routes/stripe';
 import path from 'path';
 import { setIo, broadcastToUser } from './realtime';
-import { logWarn, logError } from './utils/logger';
+import { logInfo, logWarn, logError } from './utils/logger';
 import rateLimit from 'express-rate-limit';
 
 const app = express();
@@ -121,7 +121,7 @@ async function getCached<T>(key: string): Promise<T | null> {
         const cached = await redis.get(key);
         return cached as T | null;
     } catch (error) {
-        console.error('Redis get error:', error);
+        logError('Redis get error', error);
         return null;
     }
 }
@@ -130,7 +130,7 @@ async function setCache(key: string, value: any, ttl: number = CACHE_TTL): Promi
     try {
         await redis.setex(key, ttl, JSON.stringify(value));
     } catch (error) {
-        console.error('Redis set error:', error);
+        logError('Redis set error', error);
     }
 }
 
@@ -139,7 +139,7 @@ async function invalidateCache(pattern: string): Promise<void> {
         // Invalidate by deleting
         await redis.del(pattern);
     } catch (error) {
-        console.error('Redis invalidate error:', error);
+        logError('Redis invalidate error', error);
     }
 }
 
@@ -212,7 +212,7 @@ app.post('/api/auth/signup', async (req: Request, res: Response) => {
 
         return res.json({ token, user: newUser[0] });
     } catch (error: any) {
-        console.error('Signup error:', error);
+        logError('Signup error', error);
         return res.status(500).json({ error: `Signup failed: ${error.message}` });
     }
 });
@@ -239,7 +239,7 @@ app.post('/api/auth/login', async (req: Request, res: Response) => {
 
         return res.json({ token, user: user[0] });
     } catch (error) {
-        console.error('Login error:', error);
+        logError('Login error', error);
         return res.status(500).json({ error: 'Login failed' });
     }
 });
@@ -290,7 +290,7 @@ app.post('/api/generate', async (req: Request, res: Response) => {
             return res.json({ text: result.text || '' });
         }
     } catch (error) {
-        console.error("Generation error:", error);
+        logError("Generation error", error);
         return res.status(500).json({ error: 'Generation failed' });
     }
 });
@@ -355,7 +355,7 @@ app.get('/api/user', async (req: Request, res: Response) => {
         await setCache(cacheKey, user[0]);
         return res.json(user[0]);
     } catch (error) {
-        console.error(error);
+        logError('Error fetching user', error);
         return res.status(500).json({ error: 'Failed to fetch user' });
     }
 });
@@ -449,7 +449,7 @@ app.post('/api/tasks', async (req: Request, res: Response) => {
 
         return res.json(result[0]);
     } catch (error) {
-        console.error(error);
+        logError('Error saving task', error);
         return res.status(500).json({ error: 'Failed to save task' });
     }
 });
@@ -591,7 +591,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
 
         return res.json({ success: true });
     } catch (error) {
-        console.error(error);
+        logError('Failed to save chat', error);
         return res.status(500).json({ error: 'Failed to save chat' });
     }
 });

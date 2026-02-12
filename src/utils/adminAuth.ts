@@ -2,6 +2,8 @@
  * Client-side admin session validation utilities
  */
 
+import { logError } from '@/lib/logger';
+
 const ADMIN_SESSION_KEY = 'admin_session';
 const ADMIN_SESSION_EXPIRES_KEY = 'admin_session_expires';
 
@@ -21,7 +23,7 @@ export function isAdminSessionValid(): boolean {
         const expires = Number(expiresStr);
         return Date.now() < expires;
     } catch (error) {
-        console.error('Error checking admin session:', error);
+        logError('Error checking admin session', { error });
         return false;
     }
 }
@@ -48,7 +50,7 @@ export function setAdminSession(token: string, expiresInMs: number = 2 * 60 * 60
         sessionStorage.setItem(ADMIN_SESSION_KEY, token);
         sessionStorage.setItem(ADMIN_SESSION_EXPIRES_KEY, String(Date.now() + expiresInMs));
     } catch (error) {
-        console.error('Error setting admin session:', error);
+        logError('Error setting admin session', { error });
     }
 }
 
@@ -60,7 +62,7 @@ export function clearAdminSession(): void {
         sessionStorage.removeItem(ADMIN_SESSION_KEY);
         sessionStorage.removeItem(ADMIN_SESSION_EXPIRES_KEY);
     } catch (error) {
-        console.error('Error clearing admin session:', error);
+        logError('Error clearing admin session', { error });
     }
 }
 

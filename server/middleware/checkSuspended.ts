@@ -3,6 +3,7 @@ import { db } from '../db';
 import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
 import { AuthRequest } from './auth';
+import { logError } from '../utils/logger';
 
 /**
  * Middleware to check if user account is suspended
@@ -40,7 +41,7 @@ export const checkSuspended = async (req: Request, res: Response, next: NextFunc
 
         next();
     } catch (error) {
-        console.error('Error checking suspension status:', error);
+        logError('Error checking suspension status', error);
         res.status(500).json({ error: 'Failed to verify account status' });
         return;
     }

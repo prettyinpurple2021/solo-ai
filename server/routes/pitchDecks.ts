@@ -4,6 +4,7 @@ import { pitchDecks, slides, slideComponents } from '../db/schema';
 import { eq, and, desc, asc } from 'drizzle-orm';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';
+import { logError } from '../utils/logger';
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router.get('/', async (req: Request, res: Response) => {
 
         return res.json(decks);
     } catch (error) {
-        console.error('Error fetching pitch decks:', error);
+        logError('Error fetching pitch decks', error);
         return res.status(500).json({ error: 'Failed to fetch pitch decks' });
     }
 });
@@ -72,7 +73,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 
         return res.json({ ...deck[0], slides: slidesWithComponents });
     } catch (error) {
-        console.error('Error fetching pitch deck:', error);
+        logError('Error fetching pitch deck', error);
         return res.status(500).json({ error: 'Failed to fetch pitch deck' });
     }
 });
@@ -138,7 +139,7 @@ router.post('/', async (req: Request, res: Response) => {
 
         return res.status(201).json({ success: true, id });
     } catch (error) {
-        console.error('Error saving pitch deck:', error);
+        logError('Error saving pitch deck', error);
         return res.status(500).json({ error: 'Failed to save pitch deck' });
     }
 });
@@ -178,7 +179,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 
         return res.json(updated);
     } catch (error) {
-        console.error('Error updating pitch deck:', error);
+        logError('Error updating pitch deck', error);
         return res.status(500).json({ error: 'Failed to update pitch deck' });
     }
 });
@@ -207,7 +208,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
         return res.json({ success: true, message: 'Pitch deck deleted' });
     } catch (error) {
-        console.error('Error deleting pitch deck:', error);
+        logError('Error deleting pitch deck', error);
         return res.status(500).json({ error: 'Failed to delete pitch deck' });
     }
 });

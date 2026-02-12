@@ -4,6 +4,7 @@ import { searchIndex } from '../db/schema';
 import { eq, and, or, ilike, desc } from 'drizzle-orm';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { SearchIndexer } from '../utils/searchIndexer';
+import { logError } from '../utils/logger';
 
 const router = Router();
 
@@ -46,7 +47,7 @@ router.post('/', (authMiddleware as any), async (req: Request, res: Response) =>
 
         return res.json(formatted);
     } catch (error) {
-        console.error('Search error:', error);
+        logError('Search error', error);
         return res.status(500).json({ error: 'Search failed' });
     }
 });

@@ -6,6 +6,7 @@ import { businessContext, tasks, competitorReports, boardReports, pivotAnalyses,
 import { eq, desc, and } from 'drizzle-orm';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { SYSTEM_INSTRUCTIONS, AGENTS, AgentId } from '../constants';
+import { logError } from '../utils/logger';
 
 const router = Router();
 
@@ -171,7 +172,7 @@ router.post('/chat', (authMiddleware as any), requireAi, async (req: Request, re
         res.json({ text: result.text || "No response." });
 
     } catch (error) {
-        console.error("AI Chat Error:", error);
+        logError("AI Chat Error", error);
         res.status(500).json({ error: 'Generation failed' });
     }
 });
@@ -240,7 +241,7 @@ router.post('/competitor-report', (authMiddleware as any), requireAi, async (req
 
         res.json(reportData);
     } catch (error) {
-        console.error("Competitor Report Error:", error);
+        logError("Competitor Report Error", error);
         res.status(500).json({ error: 'Generation failed' });
     }
 });
@@ -354,7 +355,7 @@ router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request
 
         return res.json({ ...data, date: new Date().toLocaleDateString() });
     } catch (error) {
-        console.error("Briefing error:", error);
+        logError("Briefing error", error);
         return res.status(500).json({ error: 'Generation failed' });
     }
 });

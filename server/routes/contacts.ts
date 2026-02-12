@@ -5,6 +5,7 @@ import { eq, and, desc } from 'drizzle-orm';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';
 import { SearchIndexer } from '../utils/searchIndexer';
+import { logError } from '../utils/logger';
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ router.get('/', async (req: Request, res: Response) => {
 
         return res.json(userContacts);
     } catch (error) {
-        console.error('Error fetching contacts:', error);
+        logError('Error fetching contacts', error);
         return res.status(500).json({ error: 'Failed to fetch contacts' });
     }
 });
@@ -49,7 +50,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 
         return res.json(contact[0]);
     } catch (error) {
-        console.error('Error fetching contact:', error);
+        logError('Error fetching contact', error);
         return res.status(500).json({ error: 'Failed to fetch contact' });
     }
 });
@@ -84,7 +85,7 @@ router.post('/', async (req: Request, res: Response) => {
 
         return res.status(201).json(newContact);
     } catch (error) {
-        console.error('Error creating contact:', error);
+        logError('Error creating contact', error);
         return res.status(500).json({ error: 'Failed to create contact' });
     }
 });
@@ -130,7 +131,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 
         return res.json(updated);
     } catch (error) {
-        console.error('Error updating contact:', error);
+        logError('Error updating contact', error);
         return res.status(500).json({ error: 'Failed to update contact' });
     }
 });
@@ -162,7 +163,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
         return res.json({ success: true, message: 'Contact deleted' });
     } catch (error) {
-        console.error('Error deleting contact:', error);
+        logError('Error deleting contact', error);
         return res.status(500).json({ error: 'Failed to delete contact' });
     }
 });

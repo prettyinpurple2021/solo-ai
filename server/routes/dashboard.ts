@@ -3,6 +3,7 @@ import { db } from '../db';
 import { users, tasks, businessContext, chatHistory,} from '../db/schema';
 import { eq, desc, and, gte } from 'drizzle-orm';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { logError } from '../utils/logger';
 
 const router = Router();
 
@@ -134,7 +135,7 @@ router.get('/', authMiddleware, async (req: any, res: any) => {
             }
            
         } catch (e) {
-            console.error('Insight generation failed', e);
+            logError('Insight generation failed', e);
         }
 
         const insights = [
@@ -210,7 +211,7 @@ router.get('/', authMiddleware, async (req: any, res: any) => {
         });
 
     } catch (error) {
-        console.error('Dashboard error:', error);
+        logError('Dashboard error', error);
         res.status(500).json({ error: 'Failed to load dashboard' });
     }
 });
