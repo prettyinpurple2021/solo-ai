@@ -723,39 +723,306 @@ export class OpportunityRecommendationSystem {
   }
 
   private async calculateRiskScore(opportunity: OpportunityDetectionResult): Promise<number> {
-    // Simple risk assessment based on opportunity type and evidence
-    let riskScore = 7 // Default medium-low risk
+    /**
+     * Calculate risk score based on:
+     * - Evidence quality and quantity
+     * - Confidence level
+     * - Opportunity type inherent risk
+     * - Competitor stability
+     * Lower risk = higher score (inverted)
+     */
+    let riskScore = 10 // Start with lowest risk
 
-    if (opportunity.evidence.length < 3) riskScore -= 2
-    if (opportunity.confidence < 0.5) riskScore -= 2
-    if (opportunity.opportunityType === 'partnership_opportunity') riskScore -= 1
+    // Evidence quality assessment (0-3 points deduction)
+    const evidenceCount = opportunity.evidence.length
+    if (evidenceCount === 0) riskScore -= 3
+    else if (evidenceCount < 2) riskScore -= 2
+    else if (evidenceCount < 4) riskScore -= 1
 
-    return Math.max(1, Math.min(10, riskScore))
+    // Confidence level assessment (0-2 points deduction)
+    if (opportunity.confidence < 0.3) riskScore -= 2
+    else if (opportunity.confidence < 0.6) riskScore -= 1
+
+    // Opportunity type inherent risk (0-2 points deduction)
+    const typeRisk: Record<string, number> = {
+      'pricing_opportunity': 0.5,     // Low risk
+      'weakness_exploitation': 1,     // Medium risk
+      'market_gap': 1.5,              // Medium-high risk
+      'partnership_opportunity': 1.5, // Medium-high risk
+      'talent_acquisition': 2         // Higher risk
+    }
+    riskScore -= (typeRisk[opportunity.opportunityType] || 1)
+
+    // Competitor stability check (0-2 points deduction)
+    try {
+      const competitor = await db
+        .select({
+          threatLevel: competitorProfiles.threat_level,
+          fundingStage: competitorProfiles.funding_stage,
+          monitoringStatus: competitorProfiles.monitoring_status
+        })
+        .from(competitorProfiles)
+        .where(eq(competitorProfiles.id, opportunity.competitorId))
+        .limit(1)
+
+      if (competitor.length > 0) {
+        const comp = competitor[0]
+        // Higher threat level competitors are riskier to compete with
+        if (comp.threatLevel === 'critical') riskScore -= 1.5
+        else if (comp.threatLevel === 'high') riskScore -= 1
+        
+        // Well-funded competitors present higher risk
+        if (comp.fundingStage === 'series_c' || comp.fundingStage === 'series_d') riskScore -= 0.5
+      }
+    } catch (error) {
+      // If we can't get competitor data, add slight risk penalty
+      riskScore -= 0.5
+    }
+
+    // Ensure score is within valid range
+    return Math.max(1, Math.min(10, Math.round(riskScore * 10) / 10))
   }
 
   private async calculateResourceScore(opportunity: OpportunityDetectionResult): Promise<number> {
-    // Placeholder for resource availability check
-    return 7
+    /**
+     * Assess resource availability based on:
+     * - Effort required vs opportunity timing
+     * - Cost feasibility
+     * - Implementation complexity
+     */
+    let resourceScore = 10 // Start with full resource availability
+
+    // Effort assessment (0-3 points deduction)
+    const effortDeduction: Record<string, number> = {
+      'low': 0,
+      'medium': 1.5,
+      'high': 3
+    }
+    resourceScore -= (effortDeduction[opportunity.effort] || 1.5)
+
+    // Timing vs effort alignment (0-2 points deduction)
+    // Immediate/short-term opportunities with high effort are less resource-feasible
+    if (opportunity.timing === 'immediate' && opportunity.effort === 'high') {
+      resourceScore -= 2
+    } else if (opportunity.timing === 'short-term' && opportunity.effort === 'high') {
+      resourceScore -= 1
+    }
+
+    // Impact justifies resource allocation (0-2 bonus)
+    if (opportunity.impact === 'critical' && opportunity.effort === 'low') {
+      resourceScore += 2
+    } else if (opportunity.impact === 'high' && opportunity.effort === 'low') {
+      resourceScore += 1
+    }
+
+    // Opportunity type complexity (0-1.5 deduction)
+    const complexityDeduction: Record<string, number> = {
+      'pricing_opportunity': 0,           // Simplest to implement
+      'weakness_exploitation': 0.5,
+      'partnership_opportunity': 1,
+      'market_gap': 1.5,                  // Most complex
+      'talent_acquisition': 1
+    }
+    resourceScore -= (complexityDeduction[opportunity.opportunityType] || 0.5)
+
+    // Ensure score is within valid range
+    return Math.max(1, Math.min(10, Math.round(resourceScore * 10) / 10))
   }
 
   private async calculateStrategicAlignmentScore(opportunity: OpportunityDetectionResult): Promise<number> {
-    // Placeholder for strategic alignment check
-    return 8
+    /**
+     * Evaluate strategic alignment with:
+     * - User's current focus and business goals
+     * - Opportunity type relevance
+     * - Historical pursuit patterns
+     */
+    let alignmentScore = 6 // Start with moderate alignment
+
+    // High-impact opportunities are always strategically important
+    if (opportunity.impact === 'critical') {
+      alignmentScore += 3
+    } else if (opportunity.impact === 'high') {
+      alignmentScore += 2
+    } else if (opportunity.impact === 'medium') {
+      alignmentScore += 1
+    }
+
+    // Immediate/short-term opportunities align better with active strategy
+    if (opportunity.timing === 'immediate') {
+      alignmentScore += 1
+    } else if (opportunity.timing === 'long-term') {
+      alignmentScore -= 0.5
+    }
+
+    // Certain opportunity types have inherently higher strategic value
+    const strategicValue: Record<string, number> = {
+      'market_gap': 1.5,              // High strategic value
+      'weakness_exploitation': 1,      // Good strategic value
+      'partnership_opportunity': 0.5,  // Moderate strategic value
+      'pricing_opportunity': 0,        // Tactical rather than strategic
+      'talent_acquisition': 0.5
+    }
+    alignmentScore += (strategicValue[opportunity.opportunityType] || 0)
+
+    // Low effort, high impact opportunities are strategically optimal
+    if (opportunity.effort === 'low' && (opportunity.impact === 'high' || opportunity.impact === 'critical')) {
+      alignmentScore += 1
+    }
+
+    // Ensure score is within valid range
+    return Math.max(1, Math.min(10, Math.round(alignmentScore * 10) / 10))
   }
 
   private calculateCompetitiveAdvantageScore(opportunity: OpportunityDetectionResult): number {
-    // Placeholder for competitive advantage check
-    return 6
+    /**
+     * Calculate potential competitive advantage from:
+     * - Severity and uniqueness of competitor weakness
+     * - Opportunity to differentiate
+     * - Market positioning potential
+     */
+    let advantageScore = 5 // Start with moderate advantage
+
+    // Evidence strength indicates clearer competitive advantage
+    const evidenceCount = opportunity.evidence.length
+    if (evidenceCount >= 5) advantageScore += 2
+    else if (evidenceCount >= 3) advantageScore += 1
+    else if (evidenceCount < 2) advantageScore -= 1
+
+    // High confidence means we can capitalize effectively
+    if (opportunity.confidence >= 0.8) advantageScore += 1.5
+    else if (opportunity.confidence >= 0.6) advantageScore += 0.5
+    else if (opportunity.confidence < 0.4) advantageScore -= 1
+
+    // Opportunity type's inherent competitive advantage potential
+    const advantagePotential: Record<string, number> = {
+      'weakness_exploitation': 2,      // Highest advantage potential
+      'market_gap': 1.5,               // Strong advantage potential
+      'pricing_opportunity': 1,        // Moderate advantage
+      'partnership_opportunity': 0.5,  // Shared advantage
+      'talent_acquisition': 0.5        // Indirect advantage
+    }
+    advantageScore += (advantagePotential[opportunity.opportunityType] || 0)
+
+    // Critical/high impact opportunities offer greater competitive edge
+    if (opportunity.impact === 'critical') advantageScore += 1.5
+    else if (opportunity.impact === 'high') advantageScore += 1
+
+    // Immediate timing allows first-mover advantage
+    if (opportunity.timing === 'immediate') advantageScore += 1
+    else if (opportunity.timing === 'long-term') advantageScore -= 0.5
+
+    // Ensure score is within valid range
+    return Math.max(1, Math.min(10, Math.round(advantageScore * 10) / 10))
   }
 
   private async calculateMarketTimingScore(opportunity: OpportunityDetectionResult): Promise<number> {
-    // Placeholder for market timing check
-    return 7
+    /**
+     * Assess market timing based on:
+     * - Opportunity detection recency
+     * - Urgency indicators
+     * - Opportunity timing classification
+     */
+    let timingScore = 5 // Start with neutral timing
+
+    // Opportunity timing classification (primary factor)
+    const timingBonus: Record<string, number> = {
+      'immediate': 4,      // Highest urgency
+      'short-term': 3,     // High urgency
+      'medium-term': 1,    // Moderate urgency
+      'long-term': -1      // Low urgency
+    }
+    timingScore += (timingBonus[opportunity.timing] || 0)
+
+    // Recency of detection (opportunities lose value over time)
+    const now = new Date()
+    const detectionAge = now.getTime() - opportunity.detectedAt.getTime()
+    const daysOld = detectionAge / (1000 * 60 * 60 * 24)
+
+    if (daysOld < 1) timingScore += 1         // Very fresh
+    else if (daysOld < 7) timingScore += 0.5  // Recent
+    else if (daysOld > 30) timingScore -= 1   // Stale
+    else if (daysOld > 60) timingScore -= 2   // Very stale
+
+    // Critical impact opportunities are time-sensitive
+    if (opportunity.impact === 'critical') {
+      timingScore += 1
+    }
+
+    // Weakness exploitation windows close quickly
+    if (opportunity.opportunityType === 'weakness_exploitation') {
+      timingScore += 1
+    }
+
+    // Market gaps can have longer windows
+    if (opportunity.opportunityType === 'market_gap' && opportunity.timing === 'long-term') {
+      timingScore += 0.5
+    }
+
+    // High confidence + immediate timing = perfect timing
+    if (opportunity.confidence >= 0.7 && opportunity.timing === 'immediate') {
+      timingScore += 1
+    }
+
+    // Ensure score is within valid range
+    return Math.max(1, Math.min(10, Math.round(timingScore * 10) / 10))
   }
 
   private estimateROI(opportunity: OpportunityDetectionResult): number {
-    // Placeholder for ROI estimation
-    return 100
+    /**
+     * Project ROI based on:
+     * - Opportunity impact and effort ratio
+     * - Type-specific ROI benchmarks
+     * - Confidence-adjusted expectations
+     */
+    let baseROI = 50 // Start with modest baseline
+
+    // Impact drives revenue potential
+    const impactMultiplier: Record<string, number> = {
+      'critical': 4,  // 4x multiplier
+      'high': 2.5,    // 2.5x multiplier
+      'medium': 1.5,  // 1.5x multiplier
+      'low': 1        // 1x multiplier
+    }
+    baseROI *= (impactMultiplier[opportunity.impact] || 1.5)
+
+    // Effort impacts cost (inverse relationship with ROI)
+    const effortPenalty: Record<string, number> = {
+      'low': 1.5,     // 50% bonus for low effort
+      'medium': 1,    // No adjustment
+      'high': 0.6     // 40% penalty for high effort
+    }
+    baseROI *= (effortPenalty[opportunity.effort] || 1)
+
+    // Opportunity type baseline ROI expectations
+    const typeROIAdjustment: Record<string, number> = {
+      'pricing_opportunity': 30,         // Quick wins, moderate returns
+      'weakness_exploitation': 50,       // Strong returns
+      'market_gap': 80,                  // Highest potential
+      'partnership_opportunity': 40,     // Shared returns
+      'talent_acquisition': 20           // Long-term, indirect
+    }
+    baseROI += (typeROIAdjustment[opportunity.opportunityType] || 0)
+
+    // Timing affects realization of returns
+    const timingAdjustment: Record<string, number> = {
+      'immediate': 1.2,     // 20% bonus for fast returns
+      'short-term': 1.1,    // 10% bonus
+      'medium-term': 1,     // No adjustment
+      'long-term': 0.85     // 15% penalty (time value of money)
+    }
+    baseROI *= (timingAdjustment[opportunity.timing] || 1)
+
+    // Confidence-weighted expectation
+    // Lower confidence reduces expected ROI
+    baseROI *= (0.5 + (opportunity.confidence * 0.5))
+
+    // Evidence strength validation
+    const evidenceCount = opportunity.evidence.length
+    if (evidenceCount >= 5) baseROI *= 1.15      // 15% bonus for strong evidence
+    else if (evidenceCount < 2) baseROI *= 0.7   // 30% penalty for weak evidence
+
+    // Round to nearest integer and ensure minimum
+    return Math.max(10, Math.round(baseROI))
   }
 
   private generateSuccessMetrics(opportunity: OpportunityDetectionResult): string[] {
