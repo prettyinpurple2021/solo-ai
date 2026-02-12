@@ -4,23 +4,24 @@
  */
 
 import { listStripeCustomers, getStripeCustomersPaginated, isStripeConfigured } from '@/lib/stripe'
+import { logError, logInfo } from '@/lib/logger'
 
 // Example 1: Simple customer listing (as requested)
 async function listCustomers() {
   try {
     // Check if Stripe is configured
     if (!isStripeConfigured()) {
-      console.log('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
+      logInfo('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.')
       return []
     }
 
     // List customers (equivalent to your requested code)
     const customers = await listStripeCustomers()
-    console.log('Customers:', customers)
+    logInfo('Found customers via Stripe API', { count: customers.length })
     
     return customers
   } catch (error) {
-    console.error('Error listing customers:', error)
+    logError('Error listing customers', error)
     return []
   }
 }
@@ -30,22 +31,21 @@ async function listCustomersWithPagination() {
   try {
     const result = await getStripeCustomersPaginated(10) // Get 10 customers per page
     
-    console.log(`Found ${result.customers.length} customers`)
-    console.log(`Has more: ${result.hasMore}`)
+    logInfo(`Found ${result.customers.length} customers`)
     
     // Process customers
     result.customers.forEach((customer, index) => {
-      console.log(`${index + 1}. ${customer.email || 'No email'} (ID: ${customer.id})`)
+      logInfo(`${index + 1}. ${customer.email || 'No email'} (ID: ${customer.id})`)
     })
     
     // If there are more customers, you can get the next page
     if (result.hasMore && result.nextStartingAfter) {
       const nextPage = await getStripeCustomersPaginated(10, result.nextStartingAfter)
-      console.log(`Next page: ${nextPage.customers.length} customers`)
+      logInfo(`Next page: ${nextPage.customers.length} customers`)
     }
     
   } catch (error) {
-    console.error('Error listing customers with pagination:', error)
+    logError('Error listing customers with pagination', error)
   }
 }
 

@@ -145,16 +145,16 @@ async function invalidateCache(pattern: string): Promise<void> {
 
 // WebSocket connection handling
 io.on('connection', (socket: Socket) => {
-    console.log('Client connected:', socket.id);
+    logInfo('Client connected', { socketId: socket.id });
 
     // Join user-specific room
     socket.on('join', (userId: string) => {
         socket.join(`user:${userId}`);
-        console.log(`User ${userId} joined their room`);
+        logInfo(`User ${userId} joined their room`);
     });
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected:', socket.id);
+        logInfo('Client disconnected', { socketId: socket.id });
     });
 });
 
@@ -753,7 +753,7 @@ app.use((err: Error, req: express.Request, res: express.Response, arg_express: e
 });
 
 httpServer.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-    console.log(`WebSocket server active`);
-    console.log(`Redis cache: ${process.env.UPSTASH_REDIS_REST_URL ? '✅ Connected' : '❌ Not configured'}`);
+    logInfo(`Server running on http://localhost:${PORT}`);
+    logInfo(`WebSocket server active`);
+    logInfo(`Redis cache: ${process.env.UPSTASH_REDIS_REST_URL ? '✅ Connected' : '❌ Not configured'}`);
 });

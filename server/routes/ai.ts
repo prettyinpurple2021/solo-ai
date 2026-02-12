@@ -292,6 +292,7 @@ router.post('/war-room', (authMiddleware as any), requireAi, async (req: Request
         });
         return res.json(JSON.parse(response.text || '{}'));
     } catch (error) {
+        logError("War Room Error", error);
         return res.status(500).json({ error: 'Generation failed' });
     }
 });
@@ -390,6 +391,7 @@ router.post('/tactical-plan', (authMiddleware as any), requireAi, async (req: Re
         });
         return res.json(JSON.parse(response.text || '[]'));
     } catch (error) {
+        logError("Tactical Plan Error", error);
         return res.status(500).json({ error: 'Generation failed' });
     }
 });
@@ -414,7 +416,10 @@ router.post('/incinerator', (authMiddleware as any), requireAi, async (req: Requ
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { roastSummary: { type: Type.STRING }, survivalScore: { type: Type.NUMBER }, feedback: { type: Type.ARRAY, items: { type: Type.STRING } }, rewrittenContent: { type: Type.STRING } } } }
         });
         return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) { 
+        logError("Incinerator Error", error);
+        return res.status(500).json({ error: 'Generation failed' }); 
+    }
 });
 
 // Pitch Deck
@@ -430,7 +435,10 @@ router.post('/pitch-deck', (authMiddleware as any), requireAi, async (req: Reque
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, slides: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, keyPoint: { type: Type.STRING }, content: { type: Type.ARRAY, items: { type: Type.STRING } }, visualIdea: { type: Type.STRING } } } } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) { 
+        logError("Pitch Deck Ai Error", error);
+        return res.status(500).json({ error: 'Generation failed' }); 
+    }
 });
 
 // Blue Oceans
@@ -446,7 +454,10 @@ router.post('/blue-oceans', (authMiddleware as any), requireAi, async (req: Requ
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { currentIndustry: { type: Type.STRING }, gaps: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, description: { type: Type.STRING }, competitionScore: { type: Type.NUMBER }, profitabilityScore: { type: Type.NUMBER }, soloFitScore: { type: Type.NUMBER }, whyItWorks: { type: Type.STRING }, firstStep: { type: Type.STRING } } } } } } }
         });
         return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) { 
+        logError("Blue Oceans Error", error);
+        return res.status(500).json({ error: 'Generation failed' }); 
+    }
 });
 
 // Tribe Blueprint
@@ -463,7 +474,10 @@ router.post('/tribe-blueprint', (authMiddleware as any), requireAi, async (req: 
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { manifesto: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, enemy: { type: Type.STRING }, belief: { type: Type.STRING }, tagline: { type: Type.STRING } } }, rituals: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, frequency: { type: Type.STRING }, description: { type: Type.STRING }, action: { type: Type.STRING } } } }, engagementLoops: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Tribe Blueprint Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Amplified Content
@@ -480,7 +494,10 @@ router.post('/amplified-content', (authMiddleware as any), requireAi, async (req
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { sourceTitle: { type: Type.STRING }, twitterThread: { type: Type.ARRAY, items: { type: Type.STRING } }, linkedinPost: { type: Type.STRING }, tiktokScript: { type: Type.STRING }, newsletterSection: { type: Type.STRING } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Amplified Content Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Social Strategy
@@ -496,7 +513,10 @@ router.post('/social-strategy', (authMiddleware as any), requireAi, async (req: 
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { pillars: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, description: { type: Type.STRING } } } }, cadence: { type: Type.STRING }, personaTactics: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { persona: { type: Type.STRING }, tactic: { type: Type.STRING } } } }, sampleHooks: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Social Strategy Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Launch Strategy
@@ -513,7 +533,10 @@ router.post('/launch-strategy', (authMiddleware as any), requireAi, async (req: 
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { productName: { type: Type.STRING }, launchDate: { type: Type.STRING }, phases: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, events: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { day: { type: Type.STRING }, title: { type: Type.STRING }, description: { type: Type.STRING }, owner: { type: Type.STRING }, channel: { type: Type.STRING } } } } } } } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Launch Strategy Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // --- OPS & HR ---
@@ -532,7 +555,10 @@ router.post('/job-description', (authMiddleware as any), requireAi, async (req: 
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { roleTitle: { type: Type.STRING }, hook: { type: Type.STRING }, responsibilities: { type: Type.ARRAY, items: { type: Type.STRING } }, requirements: { type: Type.ARRAY, items: { type: Type.STRING } }, perks: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Job Description AI Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Interview Guide
@@ -549,7 +575,10 @@ router.post('/interview-guide', (authMiddleware as any), requireAi, async (req: 
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { roleTitle: { type: Type.STRING }, questions: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { question: { type: Type.STRING }, whatToLookFor: { type: Type.STRING }, redFlag: { type: Type.STRING } } } } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Interview Guide AI Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // SOP
@@ -566,7 +595,10 @@ router.post('/sop', (authMiddleware as any), requireAi, async (req: Request, res
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { taskName: { type: Type.STRING }, goal: { type: Type.STRING }, steps: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { step: { type: Type.NUMBER }, action: { type: Type.STRING }, details: { type: Type.STRING } } } }, definitionOfDone: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("SOP AI Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Board Report
@@ -584,7 +616,10 @@ router.post('/board-report', (authMiddleware as any), requireAi, async (req: Req
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { ceoScore: { type: Type.NUMBER }, executiveSummary: { type: Type.STRING }, consensus: { type: Type.STRING }, grades: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { agentId: { type: Type.STRING }, department: { type: Type.STRING }, grade: { type: Type.STRING }, score: { type: Type.NUMBER }, summary: { type: Type.STRING }, keyIssue: { type: Type.STRING } } } } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), date: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Board Report AI Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Financial Audit
@@ -599,7 +634,10 @@ router.post('/financial-audit', (authMiddleware as any), requireAi, async (req: 
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { runwayScore: { type: Type.NUMBER }, verdict: { type: Type.STRING }, strategicMoves: { type: Type.ARRAY, items: { type: Type.STRING } }, riskFactors: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
         });
         return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Financial Audit Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Tech Audit
@@ -614,7 +652,10 @@ router.post('/tech-audit', (authMiddleware as any), requireAi, async (req: Reque
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { score: { type: Type.NUMBER }, verdict: { type: Type.STRING }, pros: { type: Type.ARRAY, items: { type: Type.STRING } }, cons: { type: Type.ARRAY, items: { type: Type.STRING } }, recommendations: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
         });
         return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Tech Audit Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // --- LEGAL & SALES ---
@@ -633,7 +674,10 @@ router.post('/cold-email', (authMiddleware as any), requireAi, async (req: Reque
             config: { responseMimeType: "text/plain" }
         });
         return res.json({ text: response.text || "" });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Cold Email Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Negotiation Prep
@@ -650,7 +694,10 @@ router.post('/negotiation-prep', (authMiddleware as any), requireAi, async (req:
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { strategy: { type: Type.STRING }, leveragePoints: { type: Type.ARRAY, items: { type: Type.STRING } }, psychologicalProfile: { type: Type.STRING }, openingLine: { type: Type.STRING } } } }
         });
         return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Negotiation Prep Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Draft Legal Doc
@@ -668,7 +715,10 @@ router.post('/legal-doc', (authMiddleware as any), requireAi, async (req: Reques
             config: { responseMimeType: "text/plain" }
         });
         return res.json({ text: response.text || "" });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Legal Doc Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Analyze Contract
@@ -686,7 +736,10 @@ router.post('/contract-analysis', (authMiddleware as any), requireAi, async (req
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { safetyScore: { type: Type.NUMBER }, verdict: { type: Type.STRING }, criticalRisks: { type: Type.ARRAY, items: { type: Type.STRING } }, suggestions: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
         });
         return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Contract Analysis Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // --- MENTAL & ROLEPLAY ---
@@ -703,7 +756,10 @@ router.post('/stoic-coaching', (authMiddleware as any), requireAi, async (req: R
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { reframing: { type: Type.STRING }, stoicQuote: { type: Type.STRING }, actionableStep: { type: Type.STRING }, breathingExercise: { type: Type.BOOLEAN } } } }
         });
         return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Stoic Coaching Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Roleplay Reply
@@ -718,7 +774,10 @@ router.post('/roleplay-reply', (authMiddleware as any), requireAi, async (req: R
             config: { responseMimeType: "text/plain" }
         });
         return res.json({ text: response.text || "..." });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Roleplay Reply Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Roleplay Feedback
@@ -733,7 +792,10 @@ router.post('/roleplay-feedback', (authMiddleware as any), requireAi, async (req
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { score: { type: Type.NUMBER }, strengths: { type: Type.ARRAY, items: { type: Type.STRING } }, weaknesses: { type: Type.ARRAY, items: { type: Type.STRING } }, proTip: { type: Type.STRING } } } }
         });
         return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Roleplay Feedback error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // --- MISC ---
@@ -753,7 +815,10 @@ router.post('/brand-image', (authMiddleware as any), requireAi, async (req: Requ
         });
         const b64 = response.generatedImages?.[0]?.image?.imageBytes;
         return res.json({ image: b64 ? `data:image/jpeg;base64,${b64}` : null });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Brand Image Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Code Solution
@@ -764,11 +829,14 @@ router.post('/code-solution', (authMiddleware as any), requireAi, async (req: Re
 
         const response = await ai!.models.generateContent({
             model: 'gemini-2.5-flash',
-            contents: prompt,
+            contents: problem,
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { language: { type: Type.STRING }, code: { type: Type.STRING }, explanation: { type: Type.STRING } } } }
         });
         return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Code Solution Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Simulation
@@ -783,7 +851,10 @@ router.post('/simulation', (authMiddleware as any), requireAi, async (req: Reque
             config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { likelyCase: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, probability: { type: Type.NUMBER }, timeline: { type: Type.STRING }, description: { type: Type.STRING }, keyEvents: { type: Type.ARRAY, items: { type: Type.STRING } } } }, bestCase: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, probability: { type: Type.NUMBER }, timeline: { type: Type.STRING }, description: { type: Type.STRING }, keyEvents: { type: Type.ARRAY, items: { type: Type.STRING } } } }, worstCase: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, probability: { type: Type.NUMBER }, timeline: { type: Type.STRING }, description: { type: Type.STRING }, keyEvents: { type: Type.ARRAY, items: { type: Type.STRING } } } }, strategicAdvice: { type: Type.STRING } } } }
         });
         return res.json({ ...JSON.parse(response.text || '{}'), id: `sim-${Date.now()}`, timestamp: new Date().toISOString() });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Simulation Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 // Market Pulse
@@ -801,7 +872,10 @@ router.post('/market-pulse', (authMiddleware as any), requireAi, async (req: Req
         const grounding = response.candidates?.[0]?.groundingMetadata;
         const sources = grounding?.groundingChunks?.map((c: any) => c.web).filter((w: any) => w) || [];
         return res.json({ content: response.text || "", sources });
-    } catch (error) { return res.status(500).json({ error: 'Generation failed' }); }
+    } catch (error) {
+        logError("Market Pulse Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
 });
 
 export default router;
