@@ -11,6 +11,8 @@
     "type-check": "concurrently \"npm run type-check:web\" \"npm run type-check:server\"",
     "type-check:web": "cross-env NODE_OPTIONS='--max-old-space-size=16384' tsc --noEmit",
     "type-check:server": "cd server && tsc --noEmit",
+    "internal:docs": "ts-node scripts/internal/doc-maintainer.ts",
+    "internal:audit": "ts-node scripts/internal/launch-readiness.ts",
     "dev:all": "concurrently \"npm run dev\" \"cd server && npm run dev\"",
     "db:generate": "drizzle-kit generate --config=server/drizzle.config.ts",
     "db:push": "drizzle-kit push --config=server/drizzle.config.ts",
@@ -119,6 +121,7 @@
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
     "typescript": "~5.8.2"
   },
   "overrides": {
