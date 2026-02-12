@@ -40,9 +40,17 @@ test.describe('Authentication Flow', () => {
     await page.goto('/sign-in');
     
     // Fill in valid test credentials
-    // Note: These should be environment variables in a real test
-    await page.getByLabel(/email/i).fill(process.env.TEST_USER_EMAIL || 'test@example.com');
-    await page.getByLabel(/password/i).fill(process.env.TEST_USER_PASSWORD || 'password123');
+    // Fill in valid test credentials
+    const email = process.env.TEST_USER_EMAIL;
+    const password = process.env.TEST_USER_PASSWORD;
+
+    if (!email || !password) {
+      test.skip(true, 'TEST_USER_EMAIL and TEST_USER_PASSWORD must be set');
+      return;
+    }
+
+    await page.getByLabel(/email/i).fill(email);
+    await page.getByLabel(/password/i).fill(password);
     
     // Submit form
     await page.getByRole('button', { name: /sign in/i }).click();

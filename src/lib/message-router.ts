@@ -404,7 +404,7 @@ export class MessageRouter {
         this.addToQueue(agentId, message)
         
         // Delivery confirmed (V1: At-most-once delivery guarantee)
-        // In a real implementation, this would interface with the actual AI agents
+        // Delivered to agent queue. Processing is handled asynchronously by the collaboration hub.
         successful.push(agentId)
 
       } catch (error) {

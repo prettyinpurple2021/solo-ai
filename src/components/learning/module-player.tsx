@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ReactMarkdown from 'react-markdown';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -48,15 +49,15 @@ export function ModulePlayer({ module, onComplete, isCompleted = false }: Module
       <CardContent className="flex-1 p-0 overflow-hidden relative">
         <ScrollArea className="h-full p-6">
           <div className="prose dark:prose-invert max-w-none">
-            {/* Simulate content rendering */}
-            {module.content.split('\n').map((paragraph, i) => (
-              <p key={i} className="mb-4">{paragraph}</p>
-            ))}
+            <ReactMarkdown>{module.content}</ReactMarkdown>
             
-            {/* Placeholder for video or rich content */}
+            {/* Video content support */}
             {module.type === 'video' && (
-               <div className="aspect-video bg-muted flex items-center justify-center rounded-lg mt-4">
-                 <Play className="w-12 h-12 opacity-50" />
+               <div className="aspect-video bg-muted flex items-center justify-center rounded-lg mt-4 border border-border">
+                 <div className="text-center">
+                    <Play className="w-12 h-12 opacity-50 mx-auto mb-2" />
+                    <p className="text-sm text-muted-foreground">Video playback not available in offline mode</p>
+                 </div>
                </div>
             )}
           </div>

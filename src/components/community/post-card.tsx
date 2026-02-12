@@ -72,7 +72,24 @@ export function PostCard({ post }: { post: PostProps }) {
             success: 'Post reported to admins.',
             error: 'Failed to report.'
         });
-    }
+        try {
+            const response = await fetch(`/api/community/posts/${post.id}/report`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ reason: 'Inappropriate content' }) // Simple default reason for now, could be a modal
+            });
+
+            if (!response.ok) throw new Error('Failed to report');
+
+            toast.success("Post reported", {
+                description: "Thank you for helping keep our community safe."
+            });
+        } catch (error) {
+            toast.error("Error", {
+                description: "Failed to report post. Please try again."
+            });
+        }
+    };
 
     return (
         <Card className="hover:border-indigo-200 transition-colors cursor-pointer">
@@ -113,7 +130,7 @@ export function PostCard({ post }: { post: PostProps }) {
                 <p className="text-sm text-muted-foreground line-clamp-3 whitespace-pre-line">{post.content}</p>
             </CardContent>
             <CardFooter className="p-4 pt-0 flex items-center gap-4 text-muted-foreground">
-                <Button 
+                <Button
                     variant="ghost" 
                     size="sm" 
                     className={`gap-2 ${liked ? 'text-red-500 hover:text-red-600' : ''}`}

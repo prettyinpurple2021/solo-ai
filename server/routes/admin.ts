@@ -1,5 +1,6 @@
 import express from 'express';
 import { db } from '../db';
+import jwt from 'jsonwebtoken';
 import { users, subscriptions, adminActions, usageTracking } from '../db/schema';
 import { eq, desc, count, sql } from 'drizzle-orm';
 import { requireAdmin, verifyAdminPin } from '../middleware/admin';
@@ -15,8 +16,9 @@ router.post('/verify-pin', async (req, res) => {
     try {
         const { pin } = req.body;
         const userEmail = ((req as unknown) as AuthRequest).userEmail;
+        const userId = ((req as unknown) as AuthRequest).userId;
 
-        if (!userEmail || !pin) {
+        if (!userEmail || !pin || !userId) {
             return res.status(400).json({ error: 'Missing requirements' });
         }
 
@@ -25,7 +27,19 @@ router.post('/verify-pin', async (req, res) => {
             return res.status(401).json({ error: 'Invalid PIN' });
         }
 
-        return res.json({ success: true });
+        // Generate Admin Session JWT Token
+        const adminToken = jwt.sign(
+            { 
+                userId, 
+                email: userEmail, 
+                role: 'admin', 
+                adminSession: true 
+            },
+            process.env.JWT_SECRET || 'fallback-secret-change-me',
+            { expiresIn: '2h' }
+        );
+
+        return res.json({ success: true, adminToken });
     } catch (error) {
         console.error('PIN verification error:', error);
         return res.status(500).json({ error: 'Verification failed' });
@@ -75,7 +89,9 @@ router.get('/users', async (req: express.Request, res: express.Response) => {
             createdAt: users.createdAt,
             lastActive: users.updatedAt,
             subscription: subscriptions.tier,
-            status: subscriptions.status
+            status: subscriptions.status,
+            suspended: users.suspended,
+            suspendedReason: users.suspendedReason
         })
             .from(users)
             .leftJoin(subscriptions, eq(users.id, subscriptions.userId))

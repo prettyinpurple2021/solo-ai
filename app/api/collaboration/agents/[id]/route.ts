@@ -70,14 +70,15 @@ export async function GET(
         status: sessionState?.status || 'unknown',
         createdAt: session.createdAt,
         lastActivity: sessionState?.lastActivity,
-        participantCount: session.participatingAgents.length
+        participantCount: session.participatingAgents.length,
+        sessionMetrics: sessionState?.sessionMetrics,
+        completedTasks: sessionState?.completedTasks
       }
     }))
 
     // Calculate performance metrics
     const totalResponseTime = agentSessions.reduce((sum, session) => {
-      const sessionState = sessionManager.getSessionState(session.id)
-      return sum + (sessionState?.sessionMetrics?.averageResponseTime || 0)
+      return sum + (session.sessionMetrics?.averageResponseTime || 0)
     }, 0)
 
     const averageResponseTime = agentSessions.length > 0 
@@ -108,8 +109,7 @@ export async function GET(
           averageResponseTime,
           totalSessions: agentSessions.length,
           completedTasks: agentSessions.reduce((sum, session) => {
-            const sessionState = sessionManager.getSessionState(session.id)
-            return sum + (sessionState?.completedTasks?.length || 0)
+            return sum + (session.completedTasks?.length || 0)
           }, 0)
         }
       },

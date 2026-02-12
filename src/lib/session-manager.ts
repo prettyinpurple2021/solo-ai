@@ -509,11 +509,7 @@ export class SessionManager {
    * Get session state
    * Reconstructed from DB or metadata
    */
-  getSessionState(sessionId: string): SessionState | null {
-    // Note: This needs to be async in a real DB world.
-    // TEMPORARY: Return null. Callers must use async version.
-    return null; 
-  }
+
   
   // Async version of getSessionState
   async getSessionStateAsync(sessionId: string): Promise<SessionState | null> {

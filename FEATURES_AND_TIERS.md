@@ -5,9 +5,11 @@
 ## 1. Feature Value Matrix
 
 ### 🤖 Core AI Agents (The Team)
+
 *Each agent is a distinct specialized feature.*
 
 ### 🤖 Core AI Agents (The Team)
+
 *The 8 Solopreneur Success Agents + Aura (Wellness).*
 
 | Agent Name | Role | Value | Recommended Tier |
@@ -48,34 +50,38 @@
 ## 2. Proposed Tier Structure & Limits
 
 ### 🚀 Launch Tier (Free)
-*   **Authentication**: Secure Login (NextAuth).
-*   **Access**: Basic Dashboard, Profile, Settings.
-*   **Chat Limits**: 10 msgs/day (Text only, Basic models).
-*   **Briefcase**: 50MB Storage Limit.
-*   **Agents**: Access to **Aura** (Wellness) only.
+
+* **Authentication**: Secure Login (NextAuth).
+* **Access**: Basic Dashboard, Profile, Settings.
+* **Chat Limits**: 10 msgs/day (Text only, Basic models).
+* **Briefcase**: 50MB Storage Limit.
+* **Agents**: Access to **Aura** (Wellness) only.
 
 ### ⚡ Accelerator Tier ($19/mo)
-*   **Agents**: Access to **Aura, Blaze, Glitch, Vex**.
-*   **Tools**: Idea Incinerator, Tactical Roadmap, The Scout.
-*   **Chat Limits**: 100 msgs/day (Standard models).
-*   **Briefcase**: 1GB Storage Limit.
-*   **Includes**: Priority Support.
+
+* **Agents**: Access to **Aura, Blaze, Glitch, Vex**.
+* **Tools**: Idea Incinerator, Tactical Roadmap, The Scout.
+* **Chat Limits**: 100 msgs/day (Standard models).
+* **Briefcase**: 1GB Storage Limit.
+* **Includes**: Priority Support.
 
 ### 👑 Dominator Tier ($29/mo)
-*   **Agents**: **FULL TEAM ACCESS** (Roxy, Lexi, Nova, Echo, Lumi, Blaze, Glitch, Vex, Aura).
-*   **Tools**: The War Room, The Ironclad, Competitor Stalker, The Boardroom.
-*   **Chat Limits**: **UNLIMITED** text generation. High limits for complex tasks.
-*   **Briefcase**: 10GB Storage Limit.
-*   **Includes**: Custom Agent Builder.
+
+* **Agents**: **FULL TEAM ACCESS** (Roxy, Lexi, Nova, Echo, Lumi, Blaze, Glitch, Vex, Aura).
+* **Tools**: The War Room, The Ironclad, Competitor Stalker, The Boardroom.
+* **Chat Limits**: **UNLIMITED** text generation. High limits for complex tasks.
+* **Briefcase**: 10GB Storage Limit.
+* **Includes**: Custom Agent Builder.
 
 ---
 
 ## 3. Implementation Plan
-1.  **Update `subscription-utils.ts`**:
-    *   Define `AGENT_ACCESS` map (Tier -> Allowed Agents).
-    *   Define `STORAGE_LIMITS` (Free: 50MB, Accelerator: 1GB, Dominator: 10GB).
-    *   Define `CHAT_LIMITS` (Daily message caps).
-2.  **Enforce in UI**:
-    *   Hide/Lock Agents based on tier.
-    *   Show "Storage Full" warning in Briefcase.
-    *   Show "Upgrade to Chat" when limit reached.
+
+1. **Update `subscription-utils.ts`**:
+    * Define `AGENT_ACCESS` map (Tier -> Allowed Agents).
+    * Define `STORAGE_LIMITS` (Free: 50MB, Accelerator: 1GB, Dominator: 10GB).
+    * Define `CHAT_LIMITS` (Daily message caps).
+2. **Enforce in UI**:
+    * Hide/Lock Agents based on tier.
+    * Show "Storage Full" warning in Briefcase.
+    * Show "Upgrade to Chat" when limit reached.

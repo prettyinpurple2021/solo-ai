@@ -54,21 +54,71 @@ export default function TeamPage() {
   }
 
   const startListening = () => {
-    setIsListening(true)
-    // Voice recognition would be implemented here
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+      alert('Speech recognition is not supported in this browser.');
+      return;
+    }
+
+    // @ts-ignore - separate declaration for browser compatibility
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = 'en-US';
+
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setMessage(transcript);
+      // Optional: Auto-send after voice input
+      // handleSendMessage(); 
+    };
+
+    recognition.onerror = (event: any) => {
+      console.error('Speech recognition error', event.error);
+      setIsListening(false);
+    };
+
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+
+    recognition.start();
   }
 
   const stopListening = () => {
+    // Logic handled by recognition.stop() usually, or we can manually force stop if we kept the instance ref
     setIsListening(false)
   }
 
-  const speak = (_text: string) => {
-    setIsSpeaking(true)
-    // Text-to-speech would be implemented here
-    setTimeout(() => setIsSpeaking(false), 2000) // Mock duration
+  const speak = (text: string) => {
+    if (!('speechSynthesis' in window)) {
+      console.warn('Text-to-speech not supported');
+      return;
+    }
+    
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    // Try to find a voice that matches the agent's personality/gender if possible
+    // For now, we use the default
+    
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+
+    window.speechSynthesis.speak(utterance);
   }
 
   const stopSpeaking = () => {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
     setIsSpeaking(false)
   }
 
@@ -186,7 +236,7 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
@@ -316,7 +366,7 @@ export default function TeamPage() {
                             </Button>
                           </div>
 
-                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
+                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan">
                             <MessageCircle className="w-3 h-3" />
                             <span>{messages.length} messages</span>
                           </div>
@@ -346,7 +396,7 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
@@ -460,7 +510,7 @@ export default function TeamPage() {
                             </Button>
                           </div>
 
-                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
+                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan">
                             <MessageCircle className="w-3 h-3" />
                             <span>{messages.length} messages</span>
                           </div>
@@ -490,7 +540,7 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
@@ -604,7 +654,7 @@ export default function TeamPage() {
                             </Button>
                           </div>
 
-                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
+                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan">
                             <MessageCircle className="w-3 h-3" />
                             <span>{messages.length} messages</span>
                           </div>
@@ -634,7 +684,7 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
@@ -748,7 +798,7 @@ export default function TeamPage() {
                             </Button>
                           </div>
 
-                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
+                          <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan">
                             <MessageCircle className="w-3 h-3" />
                             <span>{messages.length} messages</span>
                           </div>
@@ -779,7 +829,7 @@ export default function TeamPage() {
                       <div>
                         <h2 className="text-xl font-bold">{selectedAgent.name}</h2>
                         <p className="text-sm text-primary font-medium">{selectedAgent.role}</p>
-                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono mt-1">
+                        <p className="text-xs font-mono text-gray-400 hover:text-neon-cyan mt-1">
                           {selectedAgent.specialty}
                         </p>
                       </div>
@@ -899,7 +949,7 @@ export default function TeamPage() {
                         </Button>
                       </div>
 
-                      <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan text-gray-400 font-mono">
+                      <div className="flex items-center space-x-2 text-xs font-mono text-gray-400 hover:text-neon-cyan">
                         <MessageCircle className="w-3 h-3" />
                         <span>{messages.length} messages</span>
                       </div>
