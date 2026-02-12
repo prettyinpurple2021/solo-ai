@@ -1,5 +1,9 @@
-import { logError,} from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { getSql } from "@/lib/api-utils"
+import { generateObject } from "ai"
+import { openai } from "@/lib/ai-config"
+import { z } from "zod"
+
 
 
 export interface TrainingInteraction {
@@ -229,7 +233,8 @@ export class TrainingDataCollector {
           averageRating: parseFloat(String(row.avg_rating || '0')),
           totalInteractions: parseInt(String(row.total_interactions || '0'))
         })),
-        commonFailurePatterns: [], // TODO: Implement pattern analysis
+        commonFailurePatterns: await this.analyzeFailurePatterns(userId, timeRange),
+
         userSatisfactionTrends: trendsResult.map((row: any) => ({
           date: String(row.date),
           averageRating: parseFloat(String(row.avg_rating || '0')),
@@ -323,6 +328,60 @@ export class TrainingDataCollector {
     } catch (error) {
       logError('Error exporting training data:', error)
       throw new Error('Failed to export training data')
+    }
+  }
+
+  async analyzeFailurePatterns(userId: string, timeRange?: { start: Date; end: Date }): Promise<TrainingMetrics['commonFailurePatterns']> {
+    try {
+      const sql = getSql()
+      
+      // Fetch recent low-rated or failed interactions (sample up to 50 for analysis)
+      const failedInteractions = timeRange 
+        ? await sql`
+          SELECT user_message, agent_response, user_feedback, agent_id
+          FROM agent_training_interactions 
+          WHERE user_id = ${userId} 
+            AND (success = false OR user_rating < 3)
+            AND timestamp BETWEEN ${timeRange.start} AND ${timeRange.end}
+          ORDER BY timestamp DESC
+          LIMIT 50
+        ` as any[]
+        : await sql`
+          SELECT user_message, agent_response, user_feedback, agent_id
+          FROM agent_training_interactions 
+          WHERE user_id = ${userId} 
+            AND (success = false OR user_rating < 3)
+          ORDER BY timestamp DESC
+          LIMIT 50
+        ` as any[]
+
+      if (failedInteractions.length === 0) return []
+
+      // Format data for AI analysis
+      const interactionsText = failedInteractions.map(i => 
+        `Agent: ${i.agent_id}\nUser: ${i.user_message}\nResponse: ${i.agent_response}\nFeedback: ${i.user_feedback || 'None'}`
+      ).join('\n---\n')
+
+      const result = (await generateObject({
+        model: openai("gpt-4o"),
+        schema: z.object({
+          patterns: z.array(z.object({
+            pattern: z.string().describe("Concise description of the failure pattern"),
+            frequency: z.number().describe("Number of occurrences in the provided sample"),
+            agents: z.array(z.string()).describe("IDs of agents exhibiting this pattern")
+          }))
+        }) as any,
+        prompt: `Analyze the following failed or low-rated AI agent interactions and identify common failure patterns. 
+        Cluster similar issues together (e.g., "Hallucination of links", "Lack of empathy", "Technical error").
+21: 
+        Interactions:
+        ${interactionsText}`
+      })) as any;
+
+      return result.object.patterns
+    } catch (error) {
+      logError('Error analyzing failure patterns:', error)
+      return []
     }
   }
 }

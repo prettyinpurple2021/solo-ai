@@ -1,5 +1,7 @@
 import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
+import { TrafficService } from "@/lib/traffic-service"
+
 
 // Context7 Verified Implementation
 // Reference: NextAuth.js Middleware Route Protection
@@ -52,6 +54,31 @@ export default auth((req) => {
 
   // Add custom header for backend to read if needed
   response.headers.set('x-analytics-session-id', sessionId || '')
+
+  // ---------------------------------------------------------
+  // Persist Traffic Log (Phase 3)
+  // ---------------------------------------------------------
+  const isApiRequest = pathname.startsWith('/api')
+  const isExcluded = pathname.includes('.') // Static files, images, etc.
+  
+  if (!isApiRequest && !isExcluded && sessionId) {
+    // Non-blocking log persistence
+    TrafficService.logRequest({
+      sessionId,
+      userId: req.auth?.user?.id,
+      url: req.url,
+      referrer: req.headers.get('referer') || undefined,
+      userAgent: req.headers.get('user-agent') || undefined,
+      ipAddress: req.headers.get('x-forwarded-for') || undefined,
+      metadata: {
+        method: req.method,
+        geo: (req as any).geo, // Next.js specific geo info if available
+      }
+    }).catch(err => {
+      // Silently catch errors in middleware to prevent disrupting user experience
+      console.error('[Middleware] Traffic log failed:', err)
+    })
+  }
 
   return response
 })

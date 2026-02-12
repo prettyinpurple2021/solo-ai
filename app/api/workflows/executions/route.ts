@@ -44,18 +44,24 @@ export async function GET(req: Request) {
 
        // Parse logs to reconstruct steps
        // We expect logs to contain metadata with nodeId and status
+       const workflowNodes = (execution.workflow.nodes as any[]) || []
        const steps = (execution.logs as any[] || []).reduce<any[]>((acc, log) => {
            if (log.metadata?.nodeId && log.metadata?.status) {
+                const node = workflowNodes.find(n => n.id === log.metadata.nodeId)
+                const nodeName = node?.name || (node?.data as any)?.label || `Node ${log.metadata.nodeId}`
+                
                 const existingStep = acc.find(s => s.nodeId === log.metadata.nodeId)
                 if (existingStep) {
                     if (log.metadata.status === 'completed' || log.metadata.status === 'failed') {
                         existingStep.status = log.metadata.status
                         existingStep.completedAt = log.timestamp
                         existingStep.output = log.metadata.result || log.metadata.error
+                        existingStep.name = nodeName
                     }
                 } else {
                     acc.push({
                         nodeId: log.metadata.nodeId,
+                        name: nodeName,
                         status: log.metadata.status,
                         startedAt: log.timestamp,
                         completedAt: log.metadata.status === 'completed' ? log.timestamp : null,

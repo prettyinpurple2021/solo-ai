@@ -917,12 +917,22 @@ export class WorkflowEngine {
    * Get execution by ID
    */
   async getExecution(executionId: string | number): Promise<WorkflowExecution | undefined> {
-    const [execution] = await db.select().from(workflowExecutions).where(eq(workflowExecutions.id, Number(executionId)))
-    if (!execution) return undefined
+    const [result] = await db.select({
+      execution: workflowExecutions,
+      workflow: workflows
+    })
+    .from(workflowExecutions)
+    .leftJoin(workflows, eq(workflowExecutions.workflow_id, workflows.id))
+    .where(eq(workflowExecutions.id, Number(executionId)))
+    
+    if (!result) return undefined
+
+    const { execution, workflow } = result
 
     return {
       id: execution.id,
       workflowId: execution.workflow_id,
+      workflowName: workflow?.name,
       status: execution.status as any,
       startedAt: execution.started_at!,
       completedAt: execution.completed_at,
@@ -938,22 +948,56 @@ export class WorkflowEngine {
    * Get executions for a workflow
    */
   async getWorkflowExecutions(workflowId: string | number): Promise<WorkflowExecution[]> {
-    const executions = await db.select()
-      .from(workflowExecutions)
-      .where(eq(workflowExecutions.workflow_id, Number(workflowId)))
-      .orderBy(desc(workflowExecutions.started_at))
+    const results = await db.select({
+      execution: workflowExecutions,
+      workflow: workflows
+    })
+    .from(workflowExecutions)
+    .leftJoin(workflows, eq(workflowExecutions.workflow_id, workflows.id))
+    .where(eq(workflowExecutions.workflow_id, Number(workflowId)))
+    .orderBy(desc(workflowExecutions.started_at))
 
-    return executions.map(e => ({
-      id: e.id,
-      workflowId: e.workflow_id,
-      status: e.status as any,
-      startedAt: e.started_at!,
-      completedAt: e.completed_at,
-      executionTime: e.duration || 0,
-      startedBy: e.user_id,
-      nodeResults: new Map(Object.entries(e.output as Record<string, unknown> || {})),
-      variables: e.variables as any,
-      logs: e.logs as any
+    return results.map(({ execution, workflow }) => ({
+      id: execution.id,
+      workflowId: execution.workflow_id,
+      workflowName: workflow?.name,
+      status: execution.status as any,
+      startedAt: execution.started_at!,
+      completedAt: execution.completed_at,
+      executionTime: execution.duration || 0,
+      startedBy: execution.user_id,
+      nodeResults: new Map(Object.entries(execution.output as Record<string, unknown> || {})),
+      variables: execution.variables as any,
+      logs: execution.logs as any
+    }))
+  }
+
+  /**
+   * Get recent executions by user
+   */
+  async getExecutionsByUser(userId: string, limit: number = 20): Promise<WorkflowExecution[]> {
+    const results = await db.select({
+      execution: workflowExecutions,
+      workflow: workflows
+    })
+    .from(workflowExecutions)
+    .leftJoin(workflows, eq(workflowExecutions.workflow_id, workflows.id))
+    .where(eq(workflowExecutions.user_id, userId))
+    .orderBy(desc(workflowExecutions.started_at))
+    .limit(limit)
+
+    return results.map(({ execution, workflow }) => ({
+      id: execution.id,
+      workflowId: execution.workflow_id,
+      workflowName: workflow?.name,
+      status: execution.status as any,
+      startedAt: execution.started_at!,
+      completedAt: execution.completed_at,
+      executionTime: execution.duration || 0,
+      startedBy: execution.user_id,
+      nodeResults: new Map(Object.entries(execution.output as Record<string, unknown> || {})),
+      variables: execution.variables as any,
+      logs: execution.logs as any
     }))
   }
 

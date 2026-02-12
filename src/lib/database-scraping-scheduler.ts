@@ -395,23 +395,75 @@ export class ScrapingScheduler {
   }
 
   /**
-   * Simple cron parser (placeholder for full implementation)
+   * Simple cron parser to calculate next run time
    */
   private parseBasicCron(expression: string): Date | null {
     try {
-      // Very basic support for "0 * * * *" (hourly) type simple checks
-      const parts = expression.split(' ')
-      if (parts.length !== 5) return null
-      
-      const now = new Date()
-      // If hourly (* * * * *)
-      if (expression === '0 * * * *') {
-         return new Date(now.setHours(now.getHours() + 1, 0, 0, 0))
+      const parts = expression.split(/\s+/);
+      if (parts.length !== 5) return null;
+
+      const now = new Date();
+      const next = new Date(now);
+      next.setSeconds(0, 0);
+
+      const [min, hour, day, month, dayOfWeek] = parts;
+
+      // Helper to parse cron field
+      const parseField = (field: string, minLimit: number, maxLimit: number): number[] => {
+        if (field === '*') {
+          return Array.from({ length: maxLimit - minLimit + 1 }, (_, i) => i + minLimit);
+        }
+        if (field.includes('/')) {
+          const [range, step] = field.split('/');
+          const stepVal = parseInt(step, 10);
+          let start = minLimit;
+          let end = maxLimit;
+          if (range !== '*') {
+            const [rStart, rEnd] = range.split('-').map(v => parseInt(v, 10));
+            start = rStart;
+            end = rEnd || maxLimit;
+          }
+          const values: number[] = [];
+          for (let i = start; i <= end; i += stepVal) {
+            values.push(i);
+          }
+          return values;
+        }
+        if (field.includes(',')) {
+          return field.split(',').map(v => parseInt(v, 10));
+        }
+        if (field.includes('-')) {
+          const [start, end] = field.split('-').map(v => parseInt(v, 10));
+          return Array.from({ length: end - start + 1 }, (_, i) => i + start);
+        }
+        return [parseInt(field, 10)];
+      };
+
+      const allowedMins = parseField(min, 0, 59);
+      const allowedHours = parseField(hour, 0, 23);
+      const allowedDays = parseField(day, 1, 31);
+      const allowedMonths = parseField(month, 1, 12); // 1-12
+      const allowedDaysOfWeek = parseField(dayOfWeek, 0, 6); // 0-6 (Sun-Sat)
+
+      // Find next occurrence (limited to searching 1 year ahead)
+      for (let i = 1; i <= 525600; i++) {
+        next.setMinutes(next.getMinutes() + 1);
+        
+        if (
+          allowedMins.includes(next.getMinutes()) &&
+          allowedHours.includes(next.getHours()) &&
+          allowedDays.includes(next.getDate()) &&
+          allowedMonths.includes(next.getMonth() + 1) &&
+          allowedDaysOfWeek.includes(next.getDay())
+        ) {
+          return next;
+        }
       }
-      // Default fallback
-      return new Date(now.getTime() + 60 * 60 * 1000)
+
+      return null;
     } catch (e) {
-      return null
+      logError('Error parsing cron expression:', e);
+      return null;
     }
   }
 

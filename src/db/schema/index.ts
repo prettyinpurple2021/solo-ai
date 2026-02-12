@@ -10,3 +10,4 @@ export * from './wellness';
 export * from './relations'; 
 export * from './community'; 
 export * from './webhook-events'; 
+export * from './analytics';

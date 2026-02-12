@@ -150,10 +150,16 @@ export const learningModules = pgTable('learning_modules', {
     id: text('id').primaryKey().$defaultFn(() => uuidv4()),
     path_id: text('path_id').notNull().references(() => learningPaths.id, { onDelete: 'cascade' }),
     title: varchar('title', { length: 255 }).notNull(),
+    description: text('description'),
     content: text('content').notNull(), // markdown or video URL
     module_type: varchar('module_type', { length: 50 }).default('article'), // article, video, quiz
     order: integer('order').notNull(),
     duration_minutes: integer('duration_minutes').default(15),
+    difficulty: varchar('difficulty', { length: 50 }).default('beginner'),
+    skills_covered: jsonb('skills_covered').default('[]'),
+    prerequisites: jsonb('prerequisites').default('[]'),
+    created_at: timestamp('created_at').defaultNow(),
+    updated_at: timestamp('updated_at').defaultNow(),
 });
   
 export const userLearningProgress = pgTable('user_learning_progress', {

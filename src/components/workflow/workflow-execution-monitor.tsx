@@ -213,7 +213,7 @@ export function WorkflowExecutionMonitor({
                             currentStep: data.data.status === 'running' ? 'Processing...' : null,
                             steps: data.data.steps.map((s: any) => ({
                                 id: s.nodeId, // Use nodeId as step ID
-                                name: `Node ${s.nodeId}`, // Placeholder name, could look up real node name if we had workflow def here
+                                name: s.name || `Node ${s.nodeId}`, 
                                 status: s.status,
                                 startedAt: s.startedAt ? new Date(s.startedAt) : undefined,
                                 completedAt: s.completedAt ? new Date(s.completedAt) : undefined,

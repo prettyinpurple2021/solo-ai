@@ -666,17 +666,101 @@ export class SessionManager {
   /**
    * Restore session from checkpoint
    */
-  async restoreFromCheckpoint(sessionId: string, arg_string: string): Promise<boolean> {
-     // TODO: Implement restore logic
-     return false
+  async restoreFromCheckpoint(sessionId: string, checkpointId: string): Promise<boolean> {
+    try {
+      const checkpoint = await db.query.collaborationCheckpoints.findFirst({
+        where: and(
+          eq(collaborationCheckpoints.id, checkpointId),
+          eq(collaborationCheckpoints.session_id, sessionId)
+        )
+      })
+
+      if (!checkpoint) {
+        throw new Error(`Checkpoint ${checkpointId} not found for session ${sessionId}`)
+      }
+
+      const state = checkpoint.state as SessionState
+
+      // Restore session record
+      await db.update(collaborationSessions)
+        .set({
+          status: state.status,
+          configuration: state.configuration,
+          metadata: {
+            // Reconstruct metadata from checkpoint state
+            completedTasks: state.completedTasks,
+            pendingTasks: state.pendingTasks,
+            messageCount: state.messageCount,
+            participantCount: state.participantCount
+          },
+          updated_at: new Date()
+        })
+        .where(eq(collaborationSessions.id, sessionId))
+
+      // Notify agents
+      await this.sendSystemMessage(
+        sessionId,
+        `Session has been restored from checkpoint: ${checkpoint.description || checkpointId}`,
+        { restoredFrom: checkpointId, timestamp: checkpoint.timestamp }
+      )
+
+      logInfo(`✅ Session ${sessionId} restored from checkpoint ${checkpointId}`)
+      return true
+    } catch (error) {
+      logError(`Error restoring session from checkpoint: ${error}`)
+      return false
+    }
   }
 
   /**
    * Update session task status
    */
-  async updateTaskStatus(sessionId: string, arg_string: string, status: 'completed' | 'pending'): Promise<boolean> {
-      // Logic could be implemented if we parse metadata
-     return false
+  async updateTaskStatus(sessionId: string, taskId: string, status: 'completed' | 'pending'): Promise<boolean> {
+    try {
+      const session = await db.query.collaborationSessions.findFirst({
+        where: eq(collaborationSessions.id, sessionId)
+      })
+
+      if (!session) throw new Error("Session not found")
+
+      const metadata = (session.metadata as any) || {}
+      let pendingTasks = (metadata.pendingTasks as string[]) || []
+      let completedTasks = (metadata.completedTasks as string[]) || []
+
+      if (status === 'completed') {
+        // Move from pending to completed
+        pendingTasks = pendingTasks.filter(id => id !== taskId)
+        if (!completedTasks.includes(taskId)) {
+          completedTasks.push(taskId)
+        }
+      } else {
+        // Move from completed to pending
+        completedTasks = completedTasks.filter(id => id !== taskId)
+        if (!pendingTasks.includes(taskId)) {
+          pendingTasks.push(taskId)
+        }
+      }
+
+      await db.update(collaborationSessions)
+        .set({
+          metadata: {
+            ...metadata,
+            pendingTasks,
+            completedTasks
+          },
+          updated_at: new Date()
+        })
+        .where(eq(collaborationSessions.id, sessionId))
+
+      // Auto-checkpoint on task update
+      await this.createCheckpoint(sessionId, `Task ${taskId} status changed to ${status}`)
+
+      logInfo(`✅ Task ${taskId} in session ${sessionId} marked as ${status}`)
+      return true
+    } catch (error) {
+      logError(`Error updating task status: ${error}`)
+      return false
+    }
   }
 
   /**

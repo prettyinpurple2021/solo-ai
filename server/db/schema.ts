@@ -645,11 +645,17 @@ export const competitorAlerts = pgTable("competitor_alerts", {
 export const learningModules = pgTable("learning_modules", {
 	id: text().primaryKey().notNull(),
 	title: varchar({ length: 255 }).notNull(),
+	description: text(),
 	content: text().notNull(),
 	durationMinutes: integer("duration_minutes").default(15),
 	pathId: text("path_id").notNull(),
 	moduleType: varchar("module_type", { length: 50 }).default('article'),
 	order: integer().notNull(),
+	difficulty: varchar({ length: 50 }).default('beginner'),
+	skillsCovered: jsonb("skills_covered").default([]),
+	prerequisites: jsonb("prerequisites").default([]),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),
 }, (table) => [
 	foreignKey({
 			columns: [table.pathId],

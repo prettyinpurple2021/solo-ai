@@ -1,4 +1,4 @@
-import { db } from "@/db";
+import { db } from "@/lib/database-client";
 import { 
     learningPaths, 
     learningModules, 
@@ -7,7 +7,12 @@ import {
     userCompetitiveStats 
 } from "@/db/schema";
 import { eq, and, asc, desc, sql } from "drizzle-orm";
-import { logError, logWarn } from "@/lib/logger";
+import { logError, logWarn, logInfo } from "@/lib/logger";
+import { generateObject } from "ai";
+import { openai } from "@/lib/ai-config";
+import { z } from "zod";
+
+
 
 export interface LearningPathWithModules {
   id: string;
@@ -221,66 +226,35 @@ export class LearningEngine {
     `;
 
     try {
-        // OpenAI Integration
-        if (process.env.OPENAI_API_KEY) {
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
+        const result = (await generateObject({
+            model: openai("gpt-4o"),
+            schema: z.object({
+                gaps: z.array(z.object({
+                    skill: z.string(),
+                    gap_level: z.enum(["low", "medium", "high", "critical"]),
+                    recommended_modules: z.array(z.string()),
+                    reasoning: z.string()
+                }))
+            }) as any,
+            prompt: `
+              Analyze this user's learning progress and identify skill gaps.
+              
+              Completed Modules:
+              ${completedTitles}
+              
+              Available Curriculum:
+              ${availableTitles}
+              
+              Return a JSON array of up to 3 skill gaps.
+            `
+        })) as any;
 
-            try {
-                const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        model: 'gpt-4o',
-                        messages: [
-                            { role: 'system', content: 'You are an expert educational AI advisor. Return ONLY valid JSON.' },
-                            { role: 'user', content: prompt }
-                        ],
-                        temperature: 0.3
-                    }),
-                    signal: controller.signal
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    const content = data.choices[0]?.message?.content;
-                    if (content) {
-                        // Safe JSON extraction
-                        const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || content.match(/```([\s\S]*?)```/);
-                        const jsonStr = jsonMatch ? jsonMatch[1].trim() : content.trim();
-                        return JSON.parse(jsonStr);
-                    }
-                }
-            } finally {
-                clearTimeout(timeoutId);
-            }
-        }
-        
-        // Google Gemini Integration
-        if (process.env.GOOGLE_AI_API_KEY) {
-             const { GoogleGenerativeAI } = await import('@google/generative-ai');
-             const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
-             const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
-             
-             // Gemini doesn't support abundant signal directly in node client easily without fetch wrap, 
-             // but we can rely on internal timeouts or wrap generation if needed. 
-             // For now, prompt is simple.
-             const result = await model.generateContent(prompt);
-             const response = await result.response;
-             const text = response.text();
-             // Safe JSON extraction
-             const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/) || text.match(/```([\s\S]*?)```/);
-             const jsonStr = jsonMatch ? jsonMatch[1].trim() : text.trim();
-             return JSON.parse(jsonStr);
-        }
-
+        return result.object.gaps;
     } catch (e) {
         logError('AI Skill Gap Analysis failed', e as Error);
         // Fallthrough to fallback
     }
+
 
     // Fallback if AI fails or no keys
     // Simple fallback: Recommend next incomplete modules in order.
@@ -298,16 +272,41 @@ export class LearningEngine {
   }
 
   /**
-   * Create skill assessment (Placeholder for quiz logic)
+   * Create skill assessment with AI-generated questions
    */
-  async createSkillAssessment(skillId: string, assessmentData: any) {
-    return {
-        id: `assess_${Date.now()}`,
+  async createSkillAssessment(skillId: string, assessmentData: { skillName: string, difficulty?: string }) {
+    try {
+      const { skillName, difficulty = 'intermediate' } = assessmentData;
+      
+      const result = (await generateObject({
+        model: openai("gpt-4o"),
+        schema: z.object({
+          title: z.string(),
+          questions: z.array(z.object({
+            question: z.string(),
+            options: z.array(z.string()).length(4),
+            correctAnswerIndex: z.number().min(0).max(3),
+            explanation: z.string(),
+            difficulty: z.enum(['beginner', 'intermediate', 'advanced'])
+          }))
+        }) as any,
+        prompt: `Generate a skill assessment quiz for "${skillName}" at ${difficulty} level.
+        The quiz should have 5 challenging questions that test practical knowledge and theoretical understanding.
+        Ensure each question has exactly 4 options and a clear explanation for why the correct answer is right.`
+      })) as any;
+
+      return {
+        id: `assess_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`,
         skillId,
-        questions: 5,
-        estimated_time: 10
-    };
+        ...result.object,
+        estimated_time_minutes: 10
+      };
+    } catch (error) {
+      logError('Failed to create skill assessment:', error);
+      throw new Error('Assessment generation failed');
+    }
   }
+
 
   /**
    * Get personalized recommendations
