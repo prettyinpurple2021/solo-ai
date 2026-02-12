@@ -141,7 +141,9 @@ router.post('/:id/components', async (req: Request, res: Response) => {
 router.put('/:slideId/components/:componentId', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId!;
-        const { slideId, componentId } = req.params;
+        const { slideId: rawSlideId, componentId: rawComponentId } = req.params;
+        const slideId = Array.isArray(rawSlideId) ? rawSlideId[0] : rawSlideId;
+        const componentId = Array.isArray(rawComponentId) ? rawComponentId[0] : rawComponentId;
         const updates = req.body;
 
         // Verify slide ownership
@@ -172,7 +174,9 @@ router.put('/:slideId/components/:componentId', async (req: Request, res: Respon
 router.delete('/:slideId/components/:componentId', async (req: Request, res: Response) => {
     try {
         const userId = ((req as unknown) as AuthRequest).userId!;
-        const { slideId, componentId } = req.params;
+        const { slideId: rawSlideId, componentId: rawComponentId } = req.params;
+        const slideId = Array.isArray(rawSlideId) ? rawSlideId[0] : rawSlideId;
+        const componentId = Array.isArray(rawComponentId) ? rawComponentId[0] : rawComponentId;
 
         // Verify slide ownership
         const slide = await db.select().from(slides).where(eq(slides.id, slideId)).limit(1);
