@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
+import { logError, logWarn } from "@/lib/logger";
 
 export interface UseVoiceInputResult {
   isListening: boolean;
@@ -45,7 +46,7 @@ export function useVoiceInput(): UseVoiceInputResult {
         };
 
         recognitionInstance.onerror = (event: any) => {
-          console.error("Speech recognition error", event.error);
+          logError("Speech recognition error", event.error);
           setIsListening(false);
           toast.error("Voice input error: " + event.error);
         };
@@ -56,7 +57,7 @@ export function useVoiceInput(): UseVoiceInputResult {
 
         setRecognition(recognitionInstance);
       } else {
-         console.warn("Speech Recognition not supported in this browser.");
+         logWarn("Speech Recognition not supported in this browser.");
       }
     }
   }, []);
@@ -68,7 +69,7 @@ export function useVoiceInput(): UseVoiceInputResult {
         setIsListening(true);
         toast.info("Listening...");
       } catch (error) {
-        console.error("Failed to start recognition", error);
+        logError("Failed to start recognition", error);
         toast.error("Could not start voice input.");
       }
     } else if (!recognition) {

@@ -4,6 +4,7 @@ import { generateObject, generateText } from 'ai';
 import { z } from 'zod';
 import { authMiddleware, AuthRequest } from '../../middleware/auth';
 import { checkSuspended } from '../../middleware/checkSuspended';
+import { logError } from '../../utils/logger';
 
 const router = express.Router();
 
@@ -58,7 +59,7 @@ router.post('/generate-slide-content', async (req: Request, res: Response) => {
         });
 
     } catch (error) {
-        console.error('AI Generation Error:', error);
+        logError('AI Generation Error', error);
         return res.status(500).json({ error: 'Failed to generate content' });
     }
 });
@@ -75,7 +76,7 @@ router.post('/rewrite', async (req: Request, res: Response) => {
 
         res.json({ rewritten });
     } catch (error) {
-        console.error('AI Rewrite Error:', error);
+        logError('AI Rewrite Error', error);
         res.status(500).json({ error: 'Failed to rewrite text' });
     }
 });

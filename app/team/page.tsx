@@ -24,6 +24,7 @@ import { CostBenefitMatrix} from "@/components/decision-frameworks/cost-benefit-
 import { SpadeFramework} from "@/components/decision-frameworks/spade-framework"
 import { FiveWhysAnalysis} from "@/components/decision-frameworks/five-whys-analysis"
 import { SubscriptionGuard} from "@/components/subscription/subscription-guard"
+import { logError, logWarn } from "@/lib/logger"
 
 export default function TeamPage() {
   const [selectedAgent, setSelectedAgent] = useState(aiAgents[0])
@@ -79,7 +80,7 @@ export default function TeamPage() {
     };
 
     recognition.onerror = (event: any) => {
-      console.error('Speech recognition error', event.error);
+      logError('Speech recognition error', event.error);
       setIsListening(false);
     };
 
@@ -97,7 +98,7 @@ export default function TeamPage() {
 
   const speak = (text: string) => {
     if (!('speechSynthesis' in window)) {
-      console.warn('Text-to-speech not supported');
+      logWarn('Text-to-speech not supported');
       return;
     }
     

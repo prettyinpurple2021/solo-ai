@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
+import { logError } from '@/lib/logger';
 
 export interface PitchDeck {
   id: string;
@@ -36,7 +37,7 @@ export function usePitchDecks() {
       setDecks(data);
       setError(null);
     } catch (err) {
-      console.error('Error fetching decks:', err);
+      logError('Error fetching decks', err);
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
       toast.error('Failed to load pitch decks');
     } finally {
@@ -66,7 +67,7 @@ export function usePitchDecks() {
       await fetchDecks(); // Refresh list
       return data;
     } catch (err) {
-      console.error('Error creating deck:', err);
+      logError('Error creating deck', err);
       toast.error('Failed to create pitch deck');
       throw err;
     }
@@ -87,7 +88,7 @@ export function usePitchDecks() {
       toast.success('Pitch deck deleted');
       setDecks(prev => prev.filter(d => d.id !== id));
     } catch (err) {
-       console.error('Error deleting deck:', err);
+       logError('Error deleting deck', err);
        toast.error('Failed to delete pitch deck');
     }
   };

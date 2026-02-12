@@ -8,6 +8,7 @@ import { Users, ArrowRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { logError } from "@/lib/logger"
 
 export default function CollaborationDashboard() {
   const router = useRouter()
@@ -26,7 +27,7 @@ export default function CollaborationDashboard() {
         setActiveSessions(data.data.sessions)
       }
     } catch (error) {
-      console.error("Failed to load sessions", error)
+      logError("Failed to load sessions", error)
     } finally {
       setLoading(false)
     }

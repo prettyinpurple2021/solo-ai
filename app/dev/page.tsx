@@ -7,6 +7,7 @@ import { useState, useEffect } from "react"
 import { Loader2, GraduationCap, Users, Trophy } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
+import { logError } from "@/lib/logger"
 
 export default function DevToolsPage() {
     const [loading, setLoading] = useState<string | null>(null)
@@ -36,7 +37,7 @@ export default function DevToolsPage() {
                 toast.error(`Failed to seed ${name}: ${text}`)
             }
         } catch (e) {
-            console.error(`Dev Tools Seed Error [${url}]:`, e);
+            logError(`Dev Tools Seed Error [${url}]`, e);
             toast.error(`Error connecting to ${url}: ${(e as Error).message || 'Unknown error'}`)
         } finally {
             setLoading(null)

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import { PitchDeck } from './use-pitch-decks';
+import { logError } from '@/lib/logger';
 
 export interface SlideComponent {
     id: string;
@@ -56,7 +57,7 @@ export function usePitchDeck(id: string) {
             setDeck(data);
             setError(null);
         } catch (err) {
-            console.error('Error fetching deck:', err);
+            logError('Error fetching deck', err);
             setError(err instanceof Error ? err.message : 'Unknown error');
             toast.error('Failed to load pitch deck');
         } finally {
@@ -95,7 +96,7 @@ export function usePitchDeck(id: string) {
 
             if (!response.ok) throw new Error('Failed to save slide');
         } catch (err) {
-            console.error('Error saving slide:', err);
+            logError('Error saving slide', err);
             toast.error('Failed to save changes');
             fetchDeck(); // Revert
         }
@@ -131,7 +132,7 @@ export function usePitchDeck(id: string) {
             });
             return newSlide;
         } catch (err) {
-             console.error('Error adding slide:', err);
+             logError('Error adding slide', err);
              toast.error('Failed to add slide');
         }
     };
@@ -178,7 +179,7 @@ export function usePitchDeck(id: string) {
             });
             return newComponent;
         } catch (err) {
-             console.error('Error adding component:', err);
+             logError('Error adding component', err);
              toast.error('Failed to add element');
         }
     };
@@ -219,7 +220,7 @@ export function usePitchDeck(id: string) {
             if (!response.ok) throw new Error('Failed to save component');
 
         } catch (err) {
-            console.error('Error saving component:', err);
+            logError('Error saving component', err);
              // toast.error('Failed to save moving element'); // Too noisy for drag
         }
     };
@@ -246,11 +247,10 @@ export function usePitchDeck(id: string) {
             }
 
             await fetch(`/api/slides/${slideId}/components/${componentId}`, {
-                method: 'DELETE',
                 headers
             });
         } catch (err) {
-            console.error('Error deleting component:', err);
+            logError('Error deleting component', err);
             toast.error('Failed to delete element');
             fetchDeck(); // Revert
         }

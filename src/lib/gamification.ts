@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { achievements, userAchievements } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
+import { logWarn } from "@/lib/logger";
 
 export class GamificationEngine {
   private userId: string;
@@ -76,7 +77,7 @@ export class GamificationEngine {
     });
 
     if (!badge) {
-        console.warn(`Gamification: Tried to unlock unknown badge '${badgeName}'`);
+        logWarn(`Gamification: Tried to unlock unknown badge '${badgeName}'`);
         return false;
     }
 
