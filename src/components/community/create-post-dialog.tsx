@@ -1,5 +1,6 @@
 'use client'
 
+import { logError } from "@/lib/logger"
 import { Button } from "@/components/ui/button"
 import {
   Dialog,
@@ -60,7 +61,7 @@ export function CreatePostDialog({ topics, triggerClassName }: { topics: Topic[]
             }
         } catch (error) {
             toast.error("An unexpected error occurred.")
-            console.error(error)
+            logError('Failed to create post', { error })
         } finally {
             setLoading(false)
         }

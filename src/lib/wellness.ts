@@ -1,4 +1,5 @@
 import { db } from "@/db";
+import { logError } from "@/lib/logger";
 import { moodEntries, focusSessions, users } from "@/db/schema";
 import { eq, desc, avg, sql, and, gte } from "drizzle-orm";
 
@@ -70,7 +71,7 @@ export class WellnessEngine {
 
       if (result.length === 0) {
           // Explicitly handle missing user case
-          console.error(`WellnessEngine: Failed to award XP. User ${this.userId} not found.`);
+          logError(`WellnessEngine: Failed to award XP. User ${this.userId} not found`, { userId: this.userId });
           throw new Error(`User ${this.userId} not found when awarding XP`);
       }
   }

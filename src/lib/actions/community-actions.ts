@@ -4,6 +4,7 @@ import { db } from "@/db";
 import { communityPosts, communityComments, communityTopics, users, postLikes, commentLikes } from "@/db/schema";
 import { eq, desc, and, sql, count, inArray } from "drizzle-orm";
 import { authenticateAction } from "@/lib/auth-server"; 
+import { logError } from "@/lib/logger";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
 
@@ -102,7 +103,7 @@ export async function createPost(data: z.infer<typeof createPostSchema>) {
         const engine = new WellnessEngine(user.id);
         await engine.awardXP(10); 
     } catch (e) {
-        console.error("Failed to award XP for post", e);
+        logError("Failed to award XP for post", { error: e });
     }
 
     revalidatePath('/community');
@@ -148,14 +149,14 @@ export async function addComment(data: z.infer<typeof createCommentSchema>) {
             const engine = new WellnessEngine(user.id);
             await engine.awardXP(5);
         } catch (e) {
-            console.error("XP Award Failed", e);
+            logError("XP Award Failed", { error: e });
         }
 
         revalidatePath(`/community`);
         return { success: true };
 
     } catch (e) {
-        console.error("Comment failed", e);
+        logError("Comment failed", { error: e });
         return { success: false, error: "Failed to post comment" };
     }
 }
@@ -241,7 +242,7 @@ export async function toggleLike(entityType: 'post' | 'comment', entityId: strin
         return { success: true, liked: isLiked };
 
     } catch (e) {
-        console.error("Toggle Like Failed", e);
+        logError("Toggle Like Failed", { error: e });
         return { success: false, error: "Action failed" };
     }
 }

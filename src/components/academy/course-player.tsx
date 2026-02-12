@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { logError } from "@/lib/logger"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { CheckCircle, Circle, PlayCircle, ChevronLeft, ChevronRight, Menu, PartyPopper } from "lucide-react"
@@ -51,7 +52,7 @@ export function CoursePlayer({ pathId }: CoursePlayerProps) {
           setActiveModule(firstUncompleted || data.modules[0])
         }
       } catch (error) {
-        console.error("Error fetching path", error)
+        logError("Error fetching path", { error })
       } finally {
         setLoading(false)
       }
@@ -90,7 +91,7 @@ export function CoursePlayer({ pathId }: CoursePlayerProps) {
             }
         }
     } catch (error) {
-        console.error("Failed to update progress", error)
+        logError("Failed to update progress", { error })
     }
   }
 
@@ -223,7 +224,7 @@ const parseQuizContent = (content?: string): Question[] => {
         const parsed = JSON.parse(content);
         return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
-        console.error("Failed to parse quiz content", e);
+        logError("Failed to parse quiz content", { error: e });
         return [];
     }
 };

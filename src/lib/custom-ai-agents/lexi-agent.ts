@@ -1,4 +1,5 @@
 import { analytics } from "@/lib/analytics"
+import { logError } from "@/lib/logger"
 import { CustomAgent, AgentResponse } from "./core-agent"
 import { openai } from "@ai-sdk/openai"
 
@@ -37,7 +38,7 @@ export class LexiAgent extends CustomAgent {
         predictiveMetrics = await analytics.getPredictiveMetrics()
     } catch (error) {
         // Fallback if analytics service fails
-        console.error("Failed to fetch predictive metrics:", error)
+        logError("Failed to fetch predictive metrics", { error })
         predictiveMetrics = {
             revenueForecast: 0,
             userGrowthForecast: 0,

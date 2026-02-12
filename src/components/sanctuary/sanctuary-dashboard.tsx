@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { logError } from "@/lib/logger"
 import { MoodTracker } from "./mood-tracker"
 import { FocusTimer } from "./focus-timer"
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
@@ -18,7 +19,7 @@ export function SanctuaryDashboard() {
             setStats(await res.json())
         }
       } catch (e) {
-          console.error(e)
+          logError('Failed to fetch wellness stats', { error: e })
       } finally {
           setLoading(false)
       }

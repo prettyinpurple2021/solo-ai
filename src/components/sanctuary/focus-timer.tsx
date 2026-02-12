@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import { logError } from "@/lib/logger"
 import { Button } from "@/components/ui/button"
 import { Play, Pause, Square, Trophy } from "lucide-react"
 import { toast } from "sonner"
@@ -34,7 +35,7 @@ export function FocusTimer() {
               toast.error(errData.error || "Failed to save session");
           }
       } catch (e) {
-          console.error(e)
+          logError('Failed to save focus session', { error: e })
           toast.error("Error saving focus session");
       }
   }, [duration])

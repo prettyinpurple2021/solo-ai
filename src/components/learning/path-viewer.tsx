@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { logError } from "@/lib/logger";
 import { ModulePlayer } from "@/components/learning/module-player";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, ArrowLeft } from "lucide-react";
@@ -59,7 +60,7 @@ export function PathViewer({ path,}: PathViewerProps) {
 
     } catch (error) {
       toast.error("Error saving progress");
-      console.error(error);
+      logError('Failed to save learning progress', { error });
     }
   };
 

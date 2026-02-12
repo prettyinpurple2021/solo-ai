@@ -1,5 +1,6 @@
 'use client'
 
+import { logError } from "@/lib/logger"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
@@ -52,7 +53,7 @@ export function PostCard({ post }: { post: PostProps }) {
                 await navigator.share(shareData);
                 toast.success("Shared successfully!");
             } catch (err) {
-                console.error("Share failed", err);
+                logError("Share failed", { error: err });
             }
         } else {
             try {

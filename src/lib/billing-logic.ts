@@ -1,4 +1,5 @@
 import { db } from "@/db"; // Use the Next.js alias for shared code
+import { logError } from "@/lib/logger";
 import { users, briefcases } from "@/db/schema";
 import { competitorProfiles } from "@/db/schema/intelligence";
 import { eq, count } from "drizzle-orm";
@@ -77,7 +78,7 @@ export async function getUserTier(userId: number | string): Promise<Tier> {
         const tier = user[0].tier as Tier;
         return TIER_LIMITS[tier] ? tier : 'free';
     } catch (error) {
-        console.error('Error fetching user tier:', error);
+        logError('Error fetching user tier', { error, userId });
         return 'free';
     }
 }
@@ -119,7 +120,7 @@ export async function hasReachedLimit(userId: number | string, resource: 'busine
 
         return currentCount >= limit;
     } catch (error) {
-        console.error(`Error checking limits for ${resource}:`, error);
+        logError(`Error checking limits for ${resource}`, { error, userId, resource });
         return true; // Fail safe
     }
 }

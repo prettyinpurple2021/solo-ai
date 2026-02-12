@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
+import { logError } from "@/lib/logger"
 import { motion } from "framer-motion"
 import { Send, Bot, Clock, Users, Play, Pause, Square, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -86,7 +87,7 @@ export function ActiveSessionView({ sessionId }: ActiveSessionViewProps) {
         setMessages(msgsData.data.messages)
       }
     } catch (error) {
-      console.error("Error fetching session data:", error)
+      logError("Error fetching session data", { error })
     } finally {
       setIsLoading(false)
     }

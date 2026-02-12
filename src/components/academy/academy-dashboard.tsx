@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { logError } from "@/lib/logger"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -37,7 +38,7 @@ export function AcademyDashboard() {
         if (pathsRes.ok) setPaths(await pathsRes.json())
         if (recsRes.ok) setRecommendations(await recsRes.json())
       } catch (error) {
-        console.error("Failed to fetch academy data", error)
+        logError("Failed to fetch academy data", { error })
       } finally {
         setLoading(false)
       }

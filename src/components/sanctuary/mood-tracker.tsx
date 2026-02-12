@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { logError } from "@/lib/logger"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
 import { Label } from "@/components/ui/label"
@@ -34,7 +35,7 @@ export function MoodTracker() {
             toast.error("Failed to log mood")
         }
     } catch (error) {
-        console.error(error)
+        logError('Failed to log mood', { error })
         toast.error("Error logging mood")
     } finally {
         setLoading(false)

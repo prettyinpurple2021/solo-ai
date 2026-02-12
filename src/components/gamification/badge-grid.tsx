@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { logError } from "@/lib/logger";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -31,7 +32,7 @@ export function BadgeGrid() {
           setBadges(data);
         }
       } catch (error) {
-        console.error("Failed to fetch badges", error);
+        logError("Failed to fetch badges", { error });
       } finally {
         setLoading(false);
       }

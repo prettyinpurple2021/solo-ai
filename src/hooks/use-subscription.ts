@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { useUser } from "@/lib/auth-client"
 import { apiClient, endpoints } from "@/lib/api-client"
+import { logError } from "@/lib/logger"
 
 // Public Price IDs - MUST be set in .env using NEXT_PUBLIC_ prefix
 const PLANS = {
@@ -111,7 +112,7 @@ export function useSubscription() {
         })
       }
     } catch (error) {
-      console.error("Failed to fetch subscription:", error)
+      logError("Failed to fetch subscription", { error })
     } finally {
       setIsLoading(false)
     }
@@ -127,7 +128,7 @@ export function useSubscription() {
     
     const priceId = PLANS[planKey]?.priceId
     if (!priceId) {
-       console.error("Missing Price ID for plan:", planKey)
+       logError("Missing Price ID for plan", { planKey })
        alert("Configuration Error: Missing Price ID. Please contact support.")
        return
     }
@@ -150,7 +151,7 @@ export function useSubscription() {
         throw new Error(res.data.error || "Failed to create checkout session")
       }
     } catch (error) {
-        console.error("Upgrade failed:", error)
+        logError("Upgrade failed", { error })
         alert("Failed to start upgrade process.")
         setIsLoading(false)
     }
@@ -173,7 +174,7 @@ export function useSubscription() {
          throw new Error("No active subscription to manage")
       }
     } catch (error) {
-       console.error("Portal failed:", error)
+       logError("Portal failed", { error })
        alert("Could not access billing portal. You may not have an active subscription yet.")
        setIsLoading(false)
     }
