@@ -2,6 +2,7 @@ import { logError, logWarn,} from '@/lib/logger'
 import { db } from '@/db';
 import { competitorProfiles, intelligenceData, socialMediaConnections } from '@/db/schema';
 import { eq, and } from 'drizzle-orm';
+import { TwitterApi } from 'twitter-api-v2';
 
 
 // Types for social media data
@@ -725,58 +726,57 @@ export class SocialMediaMonitor {
     return posts
   }
 
-  private async fetchTwitterPostsWithToken(accessToken: string, arg_string: string, handle: string): Promise<SocialMediaPost[]> {
-    // Use OAuth 1.0a for user authentication (accessToken + tokenSecret)
-    // For OAuth 2.0, just use accessToken as Bearer token
+  private async fetchTwitterPostsWithToken(accessToken: string, tokenSecret: string, handle: string): Promise<SocialMediaPost[]> {
     if (!accessToken) {
-      throw new Error('Twitter access token not available. Please reconnect your account.')
+      throw new Error('Twitter access token not available.')
     }
 
     try {
-      // Remove @ symbol if present
-      const username = handle.replace('@', '')
-      
-      // For OAuth 1.0a, we need to sign requests with accessToken + tokenSecret
-      // For OAuth 2.0, we can use accessToken as Bearer token
-      // This is a simplified version - full OAuth 1.0a signing would require a library like oauth-1.0a
-      
-      // Step 1: Get user ID from username (using OAuth 2.0 Bearer token for simplicity)
-      const userResponse = await fetch(
-        `https://api.twitter.com/2/users/by/username/${encodeURIComponent(username)}`,
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
-        }
-      )
+      let client: TwitterApi;
 
-      if (!userResponse.ok) {
-        throw new Error(`Twitter API error: ${userResponse.status}`)
+      // Determine Auth type based on presence of secrets and token secrets
+      // If we have API Key/Secret and Token Secret, use OAuth 1.0a (User Context)
+      if (process.env.TWITTER_API_KEY && process.env.TWITTER_API_SECRET && tokenSecret) {
+          client = new TwitterApi({
+              appKey: process.env.TWITTER_API_KEY,
+              appSecret: process.env.TWITTER_API_SECRET,
+              accessToken: accessToken,
+              accessSecret: tokenSecret,
+          });
+      } else {
+          // Fallback to OAuth 2.0 Bearer Token (User Context)
+          client = new TwitterApi(accessToken);
       }
 
-      const userData = await userResponse.json()
-      const userId = userData.data?.id
+      const roClient = client.readOnly;
 
-      if (!userId) {
-        throw new Error(`Twitter user not found: ${username}`)
+      // Step 1: Get user ID from username 
+      // handle might start with @
+      const username = handle.replace('@', '');
+      const user = await roClient.v2.userByUsername(username);
+
+      if (!user.data) {
+        throw new Error(`Twitter user not found: ${username}`);
       }
 
       // Step 2: Get user's tweets
-      const tweetsResponse = await fetch(
-        `https://api.twitter.com/2/users/${userId}/tweets?max_results=50&tweet.fields=created_at,public_metrics,lang&expansions=attachments.media_keys&media.fields=url,type`,
-        {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
-        }
-      )
+      const tweetsPaginator = await roClient.v2.userTimeline(user.data.id, {
+          max_results: 50,
+          "tweet.fields": ["created_at", "public_metrics", "lang", "author_id"],
+          expansions: ["attachments.media_keys", "author_id"],
+          "media.fields": ["url", "type", "preview_image_url"]
+      });
 
-      if (!tweetsResponse.ok) {
-        throw new Error(`Twitter tweets API error: ${tweetsResponse.status}`)
-      }
+      // Pass the whole paginator object (which has .data and .includes) to logic
+      // We manually construct the object shape expected by transformTwitterPosts
+      // to match what twitter-api-v2 returns in .data and .includes
+      const apiData = {
+          data: tweetsPaginator.data.data,
+          includes: tweetsPaginator.includes
+      };
 
-      const tweetsData = await tweetsResponse.json()
-      return this.transformTwitterPosts(tweetsData, handle)
+      return this.transformTwitterPosts(apiData, handle);
+
     } catch (error) {
       logError('Twitter API fetch failed:', error)
       throw error
@@ -831,138 +831,194 @@ export class SocialMediaMonitor {
   }
 
   private async fetchFacebookPostsWithToken(accessToken: string, pageIdentifier: string): Promise<SocialMediaPost[]> {
-    // Use user's stored access token
     if (!accessToken) {
-      throw new Error('Facebook access token not available. Please reconnect your account.')
+      throw new Error('Facebook access token not available.')
     }
 
     try {
-      // Handle can be page ID or page username
-      let pageId = pageIdentifier.includes('/') ? pageIdentifier.split('/').pop() : pageIdentifier
+      // If pageIdentifier is provided, use it. Otherwise default to 'me'
+      // Only use 'me' if the token is a Page Token or we want User posts (deprecated for pages)
+      // Usually for Page management, we need a Page Access Token and Page ID.
+      // If the user provided a token, it might be a User Token. 
+      // We'll try to use it directly or fetch Page ID.
       
-      // Step 1: Get page ID if handle is a username
-      if (!pageId?.match(/^\d+$/)) {
-        const pageResponse = await fetch(
-          `https://graph.facebook.com/v18.0/${encodeURIComponent(pageId || '')}?fields=id,name&access_token=${accessToken}`
-        )
-        
-        if (pageResponse.ok) {
-          const pageData = await pageResponse.json()
-          pageId = pageData.id || pageId
-        }
+      let targetId = pageIdentifier || 'me';
+
+      // If identifier is a URL or full handle, try to extract ID or username
+      if (targetId.includes('/')) {
+        targetId = targetId.split('/').pop() || 'me';
       }
 
-      // Step 2: Fetch page posts
-      const postsResponse = await fetch(
-        `https://graph.facebook.com/v18.0/${pageId}/posts?fields=id,message,created_time,shares,likes.summary(true),comments.summary(true),permalink_url&limit=50&access_token=${accessToken}`
-      )
-
-      if (!postsResponse.ok) {
-        throw new Error(`Facebook API error: ${postsResponse.status}`)
+      // If it looks like a username (not numeric), we try to resolve it
+      if (targetId !== 'me' && !targetId.match(/^\d+$/)) {
+          const idResponse = await fetch(
+            `https://graph.facebook.com/v19.0/?id=${targetId}&access_token=${accessToken}`
+          );
+          if (idResponse.ok) {
+              const idData = await idResponse.json();
+              targetId = idData.id;
+          }
       }
 
-      const postsData = await postsResponse.json()
-      return this.transformFacebookPosts(postsData, pageIdentifier)
+      const fields = 'id,message,created_time,full_picture,permalink_url,shares,comments.summary(true),likes.summary(true),from';
+      const response = await fetch(
+          `https://graph.facebook.com/v19.0/${targetId}/posts?fields=${fields}&limit=50&access_token=${accessToken}`
+      );
+
+      if (!response.ok) {
+          // If 'me' failed, maybe it's because we need a Page ID or the token is for a User who has Pages
+          // But for now, just log and throw/return
+          logError(`Facebook API error: ${response.status} ${response.statusText}`);
+          throw new Error(`Facebook API error: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return this.transformFacebookPosts(data, pageIdentifier);
     } catch (error) {
-      logError('Facebook API fetch failed:', error)
-      throw error
+      logError('Facebook API fetch failed:', error);
+      throw error;
     }
   }
 
   private async fetchFacebookCompetitorPosts(accessToken: string, competitorHandle: string): Promise<SocialMediaPost[]> {
-    // Fetch competitor's public page posts
-    return this.fetchFacebookPostsWithToken(accessToken, competitorHandle)
+    // Competitor handle might be a username or ID. 
+    // fetchFacebookPostsWithToken handles resolving username to ID.
+    return this.fetchFacebookPostsWithToken(accessToken, competitorHandle);
   }
 
   private transformFacebookPosts(apiData: any, handle: string): SocialMediaPost[] {
-    const posts: SocialMediaPost[] = []
-    const postsList = apiData.data || []
-    
-    for (const post of postsList) {
-      const likes = post.likes?.summary?.total_count || post.likes?.summary?.can_like ? 0 : 0
-      const comments = post.comments?.summary?.total_count || 0
-      const shares = post.shares?.count || 0
-      
-      posts.push({
-        id: post.id,
-        platform: 'facebook',
-        content: post.message || 'No message',
-        author: handle,
-        publishedAt: post.created_time ? new Date(post.created_time) : new Date(),
-        engagement: {
-          likes,
-          shares,
-          comments,
-          views: 0, // Facebook doesn't provide view counts in basic API
-          engagementRate: 0
-        },
-        mediaUrls: [],
-        hashtags: this.extractHashtags(post.message || ''),
-        mentions: this.extractMentions(post.message || ''),
-        url: post.permalink_url || `https://facebook.com/${handle}/posts/${post.id}`
-      })
-    }
-    
-    return posts
+    const postsList = apiData.data || [];
+    return postsList.map((post: any) => ({
+      id: post.id,
+      platform: 'facebook',
+      content: post.message || post.story || 'No content',
+      author: post.from?.name || handle,
+      publishedAt: post.created_time ? new Date(post.created_time) : new Date(),
+      engagement: {
+        likes: post.likes?.summary?.total_count || 0,
+        shares: post.shares?.count || 0,
+        comments: post.comments?.summary?.total_count || 0,
+        views: 0,
+        engagementRate: 0
+      },
+      mediaUrls: post.full_picture ? [post.full_picture] : [],
+      hashtags: this.extractHashtags(post.message || ''),
+      mentions: this.extractMentions(post.message || ''),
+      url: post.permalink_url || `https://facebook.com/${post.id}`
+    }));
   }
 
   private async fetchInstagramPostsWithToken(accessToken: string, instagramAccountId: string): Promise<SocialMediaPost[]> {
-    // Use user's stored access token and account ID
-    if (!accessToken || !instagramAccountId) {
-      throw new Error('Instagram access token or account ID not available. Please reconnect your account.')
+    if (!accessToken) {
+      throw new Error('Instagram access token not available.')
     }
 
     try {
-      // Fetch Instagram media (posts)
-      const mediaResponse = await fetch(
-        `https://graph.facebook.com/v18.0/${instagramAccountId}/media?fields=id,caption,media_type,media_url,permalink,timestamp,like_count,comments_count&limit=50&access_token=${accessToken}`
-      )
-
-      if (!mediaResponse.ok) {
-        throw new Error(`Instagram API error: ${mediaResponse.status}`)
+      // If instagramAccountId is provided (from our DB connection), use it.
+      // If not, we might need to find the IG Business Account ID associated with the user.
+      let targetId = instagramAccountId;
+      
+      if (!targetId || targetId === 'me') {
+          // Fetch IG Business Account ID from 'me/accounts'
+          const meResponse = await fetch(`https://graph.facebook.com/v19.0/me/accounts?fields=instagram_business_account&access_token=${accessToken}`);
+          if (meResponse.ok) {
+             const meData = await meResponse.json();
+             // Assuming the first page has the IG account we want, or we iterate.
+             // For simplicity, take the first one that has an IG account.
+             const pageWithIg = meData.data?.find((p: any) => p.instagram_business_account);
+             if (pageWithIg) {
+                 targetId = pageWithIg.instagram_business_account.id;
+             }
+          }
       }
 
-      const mediaData = await mediaResponse.json()
-      return this.transformInstagramPosts(mediaData, instagramAccountId)
+      if (!targetId || targetId === 'me') {
+          // If still no ID, we can't fetch.
+          throw new Error('No Instagram Business Account found for this user.');
+      }
+
+      const mediaResponse = await fetch(
+        `https://graph.facebook.com/v19.0/${targetId}/media?fields=id,caption,media_type,media_url,permalink,thumbnail_url,timestamp,like_count,comments_count&limit=50&access_token=${accessToken}`
+      );
+
+      if (!mediaResponse.ok) {
+        throw new Error(`Instagram API error: ${mediaResponse.status}`);
+      }
+
+      const mediaData = await mediaResponse.json();
+      return this.transformInstagramPosts(mediaData, targetId);
+
     } catch (error) {
-      logError('Instagram API fetch failed:', error)
-      throw error
+      logError('Instagram API fetch failed:', error);
+      throw error;
     }
   }
 
-  private async fetchInstagramCompetitorPosts(accessToken: string, arg_string: string): Promise<SocialMediaPost[]> {
-    // For competitor monitoring, we'd need their Instagram Business Account ID
-    // This requires the competitor's account to be connected or publicly accessible
-    // Simplified: try to fetch using handle (may not work without proper setup)
-    throw new Error('Instagram competitor monitoring requires competitor\'s Instagram Business Account ID')
+  private async fetchInstagramCompetitorPosts(accessToken: string, handle: string): Promise<SocialMediaPost[]> {
+    try {
+       // 1. Get My IG Business Account ID (needed for Business Discovery)
+       // We can iterate pages to find one with IG account
+       const meResponse = await fetch(`https://graph.facebook.com/v19.0/me/accounts?fields=instagram_business_account&access_token=${accessToken}`);
+       
+       let myIgId = '';
+       if (meResponse.ok) {
+           const meData = await meResponse.json();
+           const pageWithIg = meData.data?.find((p: any) => p.instagram_business_account);
+           if (pageWithIg) {
+               myIgId = pageWithIg.instagram_business_account.id;
+           }
+       }
+
+       if (!myIgId) {
+           // If we can't find our own IG ID, we can't use Business Discovery
+           // Fallback: If handle is 'me' or matches us, try fetchInstagramPostsWithToken?
+           if (handle === 'me') {
+               return this.fetchInstagramPostsWithToken(accessToken, 'me'); 
+           }
+           throw new Error('Instagram Business Discovery requires a linked Instagram Business Account.');
+       }
+
+       // 2. Use Business Discovery to fetch competitor media
+       const discoveryResponse = await fetch(
+           `https://graph.facebook.com/v19.0/${myIgId}?fields=business_discovery.username(${handle}){media{id,caption,media_url,media_type,like_count,comments_count,timestamp,permalink}}&access_token=${accessToken}`
+       );
+
+       if (!discoveryResponse.ok) {
+           logWarn(`Instagram Business Discovery failed for ${handle}: ${discoveryResponse.statusText}`);
+           return [];
+       }
+
+       const discoveryData = await discoveryResponse.json();
+       const mediaData = discoveryData.business_discovery?.media || { data: [] };
+       
+       return this.transformInstagramPosts(mediaData, handle);
+
+    } catch (error) {
+        logError('Instagram Competitor fetch failed:', error);
+        return [];
+    }
   }
 
   private transformInstagramPosts(apiData: any, handle: string): SocialMediaPost[] {
-    const posts: SocialMediaPost[] = []
-    const mediaList = apiData.data || []
-    
-    for (const media of mediaList) {
-      posts.push({
-        id: media.id,
-        platform: 'instagram',
-        content: media.caption || 'No caption',
-        author: handle,
-        publishedAt: media.timestamp ? new Date(media.timestamp) : new Date(),
-        engagement: {
-          likes: media.like_count || 0,
-          shares: 0, // Instagram doesn't provide share count in basic API
-          comments: media.comments_count || 0,
-          views: 0, // Requires Instagram Insights API
-          engagementRate: 0
-        },
-        mediaUrls: media.media_url ? [media.media_url] : [],
-        hashtags: this.extractHashtags(media.caption || ''),
-        mentions: this.extractMentions(media.caption || ''),
-        url: media.permalink || `https://instagram.com/p/${media.id}`
-      })
-    }
-    
-    return posts
+    const mediaList = apiData.data || [];
+    return mediaList.map((media: any) => ({
+      id: media.id,
+      platform: 'instagram',
+      content: media.caption || 'No caption',
+      author: handle,
+      publishedAt: media.timestamp ? new Date(media.timestamp) : new Date(),
+      engagement: {
+        likes: media.like_count || 0,
+        shares: 0,
+        comments: media.comments_count || 0,
+        views: 0,
+        engagementRate: 0
+      },
+      mediaUrls: media.media_url ? [media.media_url] : [],
+      hashtags: this.extractHashtags(media.caption || ''),
+      mentions: this.extractMentions(media.caption || ''),
+      url: media.permalink || `https://instagram.com/p/${media.id}`
+    }));
   }
 
   private async fetchYouTubePostsWithToken(accessToken: string, channelIdentifier: string): Promise<SocialMediaPost[]> {
@@ -1115,227 +1171,7 @@ export class SocialMediaMonitor {
     return [...new Set(matches)]
   }
 
-  // Removed all mock data generation methods - production requires real API credentials
-  // All social media platforms now use their respective APIs:
-  // - LinkedIn: LINKEDIN_ACCESS_TOKEN
-  // - Twitter: TWITTER_BEARER_TOKEN
-  // - Facebook: FACEBOOK_ACCESS_TOKEN
-  // - Instagram: FACEBOOK_ACCESS_TOKEN + INSTAGRAM_BUSINESS_ACCOUNT_ID
-  // - YouTube: YOUTUBE_API_KEY
-  
-  // Legacy mock method removed - no longer used
-  private generateRealisticLinkedInPosts(handle: string): SocialMediaPost[] {
-    const posts: SocialMediaPost[] = [];
-    const now = new Date();
-    
-    const linkedinContent = [
-      "Excited to share our latest product update that will revolutionize how businesses manage their workflows!",
-      "Our team is growing! We're looking for talented developers to join our mission.",
-      "Industry insights: The future of business automation is here. Here's what you need to know.",
-      "Customer success story: How [Company] increased productivity by 300% using our platform.",
-      "Thought leadership: Why data-driven decisions are crucial for modern businesses.",
-      "Partnership announcement: We're thrilled to announce our collaboration with [Partner].",
-      "Product launch: Introducing our new AI-powered analytics dashboard.",
-      "Company culture: Behind the scenes of our innovative development process.",
-      "Market analysis: Trends shaping the business software industry in 2024.",
-      "Team spotlight: Meet the brilliant minds behind our latest breakthrough."
-    ];
-    
-    for (let i = 0; i < 8; i++) {
-      const postDate = new Date(now.getTime() - (i * 2 * 24 * 60 * 60 * 1000)); // Every 2 days
-      posts.push({
-        id: `linkedin_${handle}_${i}`,
-        platform: 'linkedin',
-        content: linkedinContent[i] || linkedinContent[0],
-        author: handle,
-        publishedAt: postDate,
-        engagement: {
-          likes: Math.floor(Math.random() * 500) + 50,
-          shares: Math.floor(Math.random() * 100) + 10,
-          comments: Math.floor(Math.random() * 50) + 5,
-          views: Math.floor(Math.random() * 2000) + 200,
-          engagementRate: Math.random() * 0.05 + 0.02
-        },
-        mediaUrls: [],
-        hashtags: ['#business', '#innovation', '#technology', '#growth'],
-        mentions: [],
-        url: `https://linkedin.com/company/${handle}/posts/${i}`
-      });
-    }
-    
-    return posts;
-  }
 
-  private generateRealisticTwitterPosts(handle: string): SocialMediaPost[] {
-    const posts: SocialMediaPost[] = [];
-    const now = new Date();
-    
-    const twitterContent = [
-      "Just shipped a major update! 🚀 Our users are going to love the new features.",
-      "Thread: 5 lessons learned from building a successful SaaS business 🧵",
-      "Excited to be speaking at @TechConf2024 about the future of business automation!",
-      "Our team is hiring! Looking for passionate developers to join us. DM for details.",
-      "Customer feedback: 'This tool has transformed how we work.' Thank you! 🙏",
-      "Breaking: We just hit 10K users! Thank you to our amazing community.",
-      "Product tip: Here's how to maximize your productivity with our platform.",
-      "Industry news: The business software market is evolving rapidly. Here's why.",
-      "Behind the scenes: A day in the life of our development team.",
-      "Partnership update: Excited about our new integration with @PartnerApp!"
-    ];
-    
-    for (let i = 0; i < 12; i++) {
-      const postDate = new Date(now.getTime() - (i * 6 * 60 * 60 * 1000)); // Every 6 hours
-      posts.push({
-        id: `twitter_${handle}_${i}`,
-        platform: 'twitter',
-        content: twitterContent[i] || twitterContent[0],
-        author: handle,
-        publishedAt: postDate,
-        engagement: {
-          likes: Math.floor(Math.random() * 200) + 20,
-          shares: Math.floor(Math.random() * 50) + 5,
-          comments: Math.floor(Math.random() * 30) + 3,
-          views: Math.floor(Math.random() * 1000) + 100,
-          engagementRate: Math.random() * 0.08 + 0.03
-        },
-        mediaUrls: [],
-        hashtags: ['#SaaS', '#Productivity', '#Tech', '#Business'],
-        mentions: ['@TechConf2024', '@PartnerApp'],
-        url: `https://twitter.com/${handle}/status/${Date.now() + i}`
-      });
-    }
-    
-    return posts;
-  }
-
-  private generateRealisticFacebookPosts(handle: string): SocialMediaPost[] {
-    const posts: SocialMediaPost[] = [];
-    const now = new Date();
-    
-    const facebookContent = [
-      "We're excited to announce our latest product update! This new feature will help businesses streamline their operations like never before.",
-      "Our team is growing and we're looking for talented individuals to join us on this exciting journey.",
-      "Customer success story: Learn how [Company] achieved remarkable results using our platform.",
-      "Industry insights: The business software landscape is changing rapidly. Here's what you need to know.",
-      "Product launch: Introducing our new AI-powered analytics tool that will revolutionize data analysis.",
-      "Partnership announcement: We're thrilled to partner with [Company] to bring you even better solutions.",
-      "Company update: Behind the scenes of our innovative development process.",
-      "Market analysis: Key trends shaping the future of business automation.",
-      "Team spotlight: Meet the amazing people who make our platform possible.",
-      "Thought leadership: Why customer-centric design is crucial for business success."
-    ];
-    
-    for (let i = 0; i < 6; i++) {
-      const postDate = new Date(now.getTime() - (i * 3 * 24 * 60 * 60 * 1000)); // Every 3 days
-      posts.push({
-        id: `facebook_${handle}_${i}`,
-        platform: 'facebook',
-        content: facebookContent[i] || facebookContent[0],
-        author: handle,
-        publishedAt: postDate,
-        engagement: {
-          likes: Math.floor(Math.random() * 300) + 30,
-          shares: Math.floor(Math.random() * 80) + 8,
-          comments: Math.floor(Math.random() * 40) + 4,
-          views: Math.floor(Math.random() * 1500) + 150,
-          engagementRate: Math.random() * 0.06 + 0.03
-        },
-        mediaUrls: [],
-        hashtags: ['#Business', '#Innovation', '#Technology', '#Growth'],
-        mentions: [],
-        url: `https://facebook.com/${handle}/posts/${Date.now() + i}`
-      });
-    }
-    
-    return posts;
-  }
-
-  private generateRealisticInstagramPosts(handle: string): SocialMediaPost[] {
-    const posts: SocialMediaPost[] = [];
-    const now = new Date();
-    
-    const instagramContent = [
-      "🚀 Excited to share our latest product update! Swipe to see what's new.",
-      "👥 Our amazing team is growing! We're hiring talented developers.",
-      "📈 Customer success story: How [Company] achieved 300% productivity increase.",
-      "💡 Industry insights: The future of business automation is here.",
-      "🎉 Product launch: Our new AI-powered analytics dashboard is live!",
-      "🤝 Partnership announcement: Thrilled to collaborate with [Partner].",
-      "🏢 Behind the scenes: A day in the life of our development team.",
-      "📊 Market analysis: Trends shaping business software in 2024.",
-      "⭐ Team spotlight: Meet the brilliant minds behind our platform.",
-      "🎯 Thought leadership: Why customer-centric design matters."
-    ];
-    
-    for (let i = 0; i < 10; i++) {
-      const postDate = new Date(now.getTime() - (i * 1.5 * 24 * 60 * 60 * 1000)); // Every 1.5 days
-      posts.push({
-        id: `instagram_${handle}_${i}`,
-        platform: 'instagram',
-        content: instagramContent[i] || instagramContent[0],
-        author: handle,
-        publishedAt: postDate,
-        engagement: {
-          likes: Math.floor(Math.random() * 400) + 40,
-          shares: Math.floor(Math.random() * 60) + 6,
-          comments: Math.floor(Math.random() * 35) + 3,
-          views: Math.floor(Math.random() * 1200) + 120,
-          engagementRate: Math.random() * 0.07 + 0.04
-        },
-        mediaUrls: [`https://instagram.com/p/${Date.now() + i}`],
-        hashtags: ['#Business', '#Innovation', '#Tech', '#Growth', '#Productivity'],
-        mentions: [],
-        url: `https://instagram.com/p/${Date.now() + i}`
-      });
-    }
-    
-    return posts;
-  }
-
-  private generateRealisticYouTubePosts(handle: string): SocialMediaPost[] {
-    const posts: SocialMediaPost[] = [];
-    const now = new Date();
-    
-    const youtubeContent = [
-      "Product Demo: How to Use Our New AI Analytics Dashboard",
-      "Customer Success Story: 300% Productivity Increase with Our Platform",
-      "Industry Analysis: The Future of Business Automation",
-      "Team Interview: Meet the Developers Behind Our Platform",
-      "Tutorial: Getting Started with Our Business Management Tools",
-      "Webinar: Best Practices for Business Process Optimization",
-      "Product Launch: Introducing Our Latest Feature Update",
-      "Case Study: How [Company] Transformed Their Operations",
-      "Behind the Scenes: Our Development Process",
-      "Market Trends: What's Next in Business Software"
-    ];
-    
-    for (let i = 0; i < 5; i++) {
-      const postDate = new Date(now.getTime() - (i * 7 * 24 * 60 * 60 * 1000)); // Every week
-      posts.push({
-        id: `youtube_${handle}_${i}`,
-        platform: 'youtube',
-        content: youtubeContent[i] || youtubeContent[0],
-        author: handle,
-        publishedAt: postDate,
-        engagement: {
-          likes: Math.floor(Math.random() * 1000) + 100,
-          shares: Math.floor(Math.random() * 200) + 20,
-          comments: Math.floor(Math.random() * 100) + 10,
-          views: Math.floor(Math.random() * 5000) + 500,
-          engagementRate: Math.random() * 0.04 + 0.02
-        },
-        mediaUrls: [`https://youtube.com/watch?v=${Date.now() + i}`],
-        hashtags: ['#Business', '#Tutorial', '#ProductDemo', '#SuccessStory'],
-        mentions: [],
-        url: `https://youtube.com/watch?v=${Date.now() + i}`
-      });
-    }
-    
-    return posts;
-  }
-
-  // Removed generateMockPosts - production requires real API credentials
-  // All methods now throw errors if API credentials are not configured
 
   private async analyzeSinglePostSentiment(content: string): Promise<SentimentScore> {
     // Use OpenAI or Google AI for sentiment analysis

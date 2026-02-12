@@ -39,20 +39,17 @@ export async function getUserIdFromSession(request?: NextRequest): Promise<strin
  * Extract user ID from request (supports both JWT and simple user ID header)
  */
 export async function getUserIdFromRequest(request: NextRequest): Promise<string | null> {
-  // First try session
+  // Only use session for authentication
   const userId = await getUserIdFromSession(request)
   if (userId) return userId
-
-  // Fallback to user-id header (for development/testing)
-  const userIdHeader = request.headers.get('x-user-id')
-  if (userIdHeader) return userIdHeader
 
   return null
 }
 
-// Deprecated functions that we keep for signature compatibility but stub
+// Replaced with actual NextAuth session token handling
 export async function createToken(userId: string, arg_string: string): Promise<string> {
-  return "mock-token"
+   logError('createToken is deprecated and insecure. Use NextAuth session management.');
+   throw new Error('createToken is deprecated. Use NextAuth.');
 }
 
 export async function verifyToken(request: NextRequest): Promise<string | null> {

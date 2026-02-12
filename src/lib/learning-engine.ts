@@ -7,6 +7,7 @@ import {
     userCompetitiveStats 
 } from "@/db/schema";
 import { eq, and, asc, desc, sql } from "drizzle-orm";
+import { logError, logWarn } from "@/lib/logger";
 
 export interface LearningPathWithModules {
   id: string;
@@ -178,20 +179,109 @@ export class LearningEngine {
    */
   async analyzeSkillGaps() {
     const progress = await this.getUserProgress();
-    const completedModuleIds = progress
-        .filter(p => p.status === 'completed')
-        .map(p => p.module_id);
     
-    if (completedModuleIds.length === 0) {
-        return [{ skill: "General Business", gap_level: "high", recommended_modules: [] }];
+    // Fetch full module details for context
+    const allModules = await db.query.learningModules.findMany();
+    const modulesMap = new Map(allModules.map(m => [m.id, m]));
+    
+    const completedModules = progress
+        .filter(p => p.status === 'completed')
+        .map(p => modulesMap.get(p.module_id))
+        .filter((m): m is typeof allModules[0] => !!m);
+        
+    // If no progress, return fundamental gaps
+    if (completedModules.length === 0) {
+        return [{ 
+            skill: "Business Foundations", 
+            gap_level: "critical", 
+            recommended_modules: allModules.slice(0, 3).map(m => m.title)
+        }];
     }
 
-    // Join with modules to see categories (Naive implementation)
-    // In a real app, we'd have a complex skill matrix.
-    // Here we just check for basic diversity in learning.
+    // Prepare data for AI analysis
+    const completedTitles = completedModules.map(m => `- ${m.title} (${m.module_type})`).join('\n');
+    const availableTitles = allModules.map(m => `- ${m.title} (${m.module_type})`).join('\n');
+
+    const prompt = `
+      Analyze this user's learning progress and identify skill gaps.
+      
+      Completed Modules:
+      ${completedTitles}
+      
+      Available Curriculum:
+      ${availableTitles}
+      
+      Return a JSON array of objects with these fields:
+      - skill: string (The missing skill area)
+      - gap_level: "low" | "medium" | "high" | "critical"
+      - recommended_modules: string[] (Titles of modules from the available curriculum that would fill this gap)
+      - reasoning: string (Brief explanation)
+      
+      Limit to top 3 gaps.
+    `;
+
+    try {
+        // OpenAI Integration
+        if (process.env.OPENAI_API_KEY) {
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    model: 'gpt-4o',
+                    messages: [
+                        { role: 'system', content: 'You are an expert educational AI advisor. Return ONLY valid JSON.' },
+                        { role: 'user', content: prompt }
+                    ],
+                    temperature: 0.3
+                })
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                const content = data.choices[0]?.message?.content;
+                const jsonStr = content.replace(/```json|```/g, '').trim();
+                return JSON.parse(jsonStr);
+            }
+        }
+        
+        // Google Gemini Integration
+        if (process.env.GOOGLE_AI_API_KEY) {
+             const { GoogleGenerativeAI } = await import('@google/generative-ai');
+             const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
+             const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+             
+             const result = await model.generateContent(prompt);
+             const response = await result.response;
+             const text = response.text();
+             const jsonStr = text.replace(/```json|```/g, '').trim();
+             return JSON.parse(jsonStr);
+        }
+
+    } catch (e) {
+        logError('AI Skill Gap Analysis failed', e as Error);
+        // Fallthrough to fallback
+    }
+
+    // Fallback if AI fails or no keys
+    const categoriesMap = new Map<string, number>();
+    completedModules.forEach(m => {
+        // Assuming path can be joined to get category, but finding module's path ID is harder without joining query.
+        // We'll just use title keywords as a proxy for now or skip category complexity.
+        // Simple fallback: Recommend next incomplete modules in order.
+    });
+
+    const incompleteModules = allModules.filter(m => !completedModules.find(cm => cm.id === m.id));
     
     return [
-      { skill: "Advanced Market Analysis", gap_level: "medium", recommended_modules: [] }
+      { 
+          skill: "Next Logical Step", 
+          gap_level: "medium", 
+          recommended_modules: incompleteModules.slice(0, 2).map(m => m.title),
+          reasoning: "Based on standard curriculum progression."
+      }
     ];
   }
 

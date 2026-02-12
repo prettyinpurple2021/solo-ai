@@ -152,18 +152,20 @@ export class WebScrapingService {
       // Rate limiting
       await this.respectRateLimit(this.getDomain(url))
 
-      // Perform the scraping (simplified without cheerio)
+      // Perform the scraping using cheerio
       const result = await this.executeWithRetry(async () => {
         const response = await this.fetchWithTimeout(url)
         const html = response.body
+        const $ = cheerio.load(html)
         
-        // Simple text extraction without cheerio
-        const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i)
-        const title = titleMatch ? titleMatch[1].trim() : ''
+        // Robust extraction with cheerio
+        const title = $('title').first().text().trim() || 
+                      $('meta[property="og:title"]').attr('content') || 
+                      $('h1').first().text().trim() || ''
         
-        const descMatch = html.match(/<meta[^>]*name=["']description["'][^>]*content=["']([^"']*)["']/i) ||
-                         html.match(/<meta[^>]*property=["']og:description["'][^>]*content=["']([^"']*)["']/i)
-        const description = descMatch ? descMatch[1] : undefined
+        const description = $('meta[name="description"]').attr('content') ||
+                            $('meta[property="og:description"]').attr('content') ||
+                            $('meta[name="twitter:description"]').attr('content') || undefined
         
         return {
           url,
@@ -658,54 +660,62 @@ export class WebScrapingService {
 
   private extractPricingData(html: string, url: string): PricingData | null {
     try {
+      const $ = cheerio.load(html)
       const plans: PricingPlan[] = []
       
-      // Find all pricing plan divs using regex
-      // Match <div class="pricing-plan [optional classes]">...</div>
-      const pricingPlanRegex = /<div[^>]*class="[^"]*pricing-plan[^"]*"[^>]*>([\s\S]*?)<\/div>\s*(?=<div[^>]*class="[^"]*pricing-plan|<\/body|$)/gi
+      // Selectors for common pricing table structures
+      const planSelectors = [
+        '.pricing-plan', '.plan', '.pricing-card', '.price-card', 
+        '[data-testid="pricing-plan"]', '.tier', '.package'
+      ]
       
-      let planMatch
-      while ((planMatch = pricingPlanRegex.exec(html)) !== null) {
-        const planHtml = planMatch[0]
-        const planContent = planMatch[1]
+      // Try to find container
+      let $plans = $('');
+      for (const selector of planSelectors) {
+         if ($(selector).length > 0) {
+             $plans = $(selector);
+             break;
+         }
+      }
+
+      if ($plans.length === 0) {
+          // Fallback: look for generic divs that contain price-like text
+          // This is harder with cheerio generally, so we rely on the specific classes for now
+          // or we can try to find elements with "price" in class name
+          $plans = $('div[class*="pricing"], div[class*="plan"], div[class*="tier"]');
+      }
+      
+      $plans.each((_, element) => {
+        const $plan = $(element)
         
-        // Extract plan name from <h3> tag
-        const nameMatch = planContent.match(/<h3[^>]*>([^<]+)<\/h3>/i)
-        const name = nameMatch ? nameMatch[1].trim() : ''
+        // Extract name
+        const name = $plan.find('h1, h2, h3, h4, .name, .title, .plan-name').first().text().trim()
         
-        // Extract price from .price div
-        const priceMatch = planContent.match(/<div[^>]*class="[^"]*price[^"]*"[^>]*>([^<]+)<\/div>/i)
-        const priceText = priceMatch ? priceMatch[1].trim() : ''
+        // Extract price
+        const priceText = $plan.find('.price, .amount, .cost, .value, h1, h2, h3').text().trim()
         const price = this.extractPrice(priceText)
         
-        // Extract features from <ul> list
-        const features: string[] = []
-        const ulMatch = planContent.match(/<ul[^>]*>([\s\S]*?)<\/ul>/i)
-        if (ulMatch) {
-          const ulContent = ulMatch[1]
-          const featureRegex = /<li[^>]*>([^<]+)<\/li>/gi
-          let featureMatch
-          while ((featureMatch = featureRegex.exec(ulContent)) !== null) {
-            features.push(featureMatch[1].trim())
-          }
-        }
-        
-        // Check if this plan is popular (has "popular" class)
-        const isPopular = /class="[^"]*\bpopular\b[^"]*"/.test(planHtml)
-        
-        // Detect interval from price text
-        const interval = this.detectInterval(priceText)
-        
         if (name && price !== null) {
-          plans.push({
-            name,
-            price,
-            interval,
-            features,
-            isPopular,
-          })
+             const features: string[] = []
+             $plan.find('ul li, .features li, .feature').each((_, li) => {
+                 const text = $(li).text().trim()
+                 if (text) features.push(text)
+             })
+             
+             const isPopular = $plan.attr('class')?.includes('popular') || 
+                               $plan.find('.popular, .best-value, .recommended').length > 0 || false
+
+             const interval = this.detectInterval(priceText)
+             
+             plans.push({
+                 name,
+                 price,
+                 interval,
+                 features,
+                 isPopular
+             })
         }
-      }
+      })
       
       if (plans.length === 0) {
         return null
