@@ -223,27 +223,39 @@ export class LearningEngine {
     try {
         // OpenAI Integration
         if (process.env.OPENAI_API_KEY) {
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'gpt-4o',
-                    messages: [
-                        { role: 'system', content: 'You are an expert educational AI advisor. Return ONLY valid JSON.' },
-                        { role: 'user', content: prompt }
-                    ],
-                    temperature: 0.3
-                })
-            });
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
-            if (response.ok) {
-                const data = await response.json();
-                const content = data.choices[0]?.message?.content;
-                const jsonStr = content.replace(/```json|```/g, '').trim();
-                return JSON.parse(jsonStr);
+            try {
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: 'gpt-4o',
+                        messages: [
+                            { role: 'system', content: 'You are an expert educational AI advisor. Return ONLY valid JSON.' },
+                            { role: 'user', content: prompt }
+                        ],
+                        temperature: 0.3
+                    }),
+                    signal: controller.signal
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    const content = data.choices[0]?.message?.content;
+                    if (content) {
+                        // Safe JSON extraction
+                        const jsonMatch = content.match(/```json\n([\s\S]*?)\n```/) || content.match(/```([\s\S]*?)```/);
+                        const jsonStr = jsonMatch ? jsonMatch[1].trim() : content.trim();
+                        return JSON.parse(jsonStr);
+                    }
+                }
+            } finally {
+                clearTimeout(timeoutId);
             }
         }
         
@@ -253,10 +265,15 @@ export class LearningEngine {
              const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
              const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
              
+             // Gemini doesn't support abundant signal directly in node client easily without fetch wrap, 
+             // but we can rely on internal timeouts or wrap generation if needed. 
+             // For now, prompt is simple.
              const result = await model.generateContent(prompt);
              const response = await result.response;
              const text = response.text();
-             const jsonStr = text.replace(/```json|```/g, '').trim();
+             // Safe JSON extraction
+             const jsonMatch = text.match(/```json\n([\s\S]*?)\n```/) || text.match(/```([\s\S]*?)```/);
+             const jsonStr = jsonMatch ? jsonMatch[1].trim() : text.trim();
              return JSON.parse(jsonStr);
         }
 
@@ -266,12 +283,7 @@ export class LearningEngine {
     }
 
     // Fallback if AI fails or no keys
-    const categoriesMap = new Map<string, number>();
-    completedModules.forEach(m => {
-        // Assuming path can be joined to get category, but finding module's path ID is harder without joining query.
-        // We'll just use title keywords as a proxy for now or skip category complexity.
-        // Simple fallback: Recommend next incomplete modules in order.
-    });
+    // Simple fallback: Recommend next incomplete modules in order.
 
     const incompleteModules = allModules.filter(m => !completedModules.find(cm => cm.id === m.id));
     

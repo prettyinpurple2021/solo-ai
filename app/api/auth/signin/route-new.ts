@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate JWT token using centralized utility
-    const token = await createToken(user.id, user.email)
+    const token = await createToken(user.id)
 
     // Prepare user data for response (exclude sensitive fields)
     const userData = {

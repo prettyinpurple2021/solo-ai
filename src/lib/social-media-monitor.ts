@@ -771,7 +771,7 @@ export class SocialMediaMonitor {
       // We manually construct the object shape expected by transformTwitterPosts
       // to match what twitter-api-v2 returns in .data and .includes
       const apiData = {
-          data: tweetsPaginator.data.data,
+          data: tweetsPaginator.data, // .data on paginator IS the array of tweets
           includes: tweetsPaginator.includes
       };
 
@@ -857,6 +857,8 @@ export class SocialMediaMonitor {
           if (idResponse.ok) {
               const idData = await idResponse.json();
               targetId = idData.id;
+          } else {
+              logWarn(`Failed to resolve Facebook ID for ${targetId}: ${idResponse.status} ${idResponse.statusText}`);
           }
       }
 

@@ -20,7 +20,7 @@ export default auth((req) => {
   if (isProtectedPath && !isLoggedIn) {
      const signInUrl = new URL('/auth/signin', req.url)
      // Add callbackUrl to redirect back after login
-     signInUrl.searchParams.set('callbackUrl', pathname)
+     signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search)
      return NextResponse.redirect(signInUrl)
   }
 

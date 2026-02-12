@@ -1,262 +1,202 @@
-import { logError, logInfo,} from '@/lib/logger'
-import { NextRequest, NextResponse } from 'next/server'
-import { getStripe, STRIPE_WEBHOOK_EVENTS } from '@/lib/stripe'
 import { headers } from 'next/headers'
-import Stripe from 'stripe'
+import { NextResponse } from 'next/server'
+import { getStripe, STRIPE_WEBHOOK_EVENTS, SUBSCRIPTION_TIERS } from '@/lib/stripe'
+import { db } from '@/db'
+import { users, webhookEvents } from '@/db/schema'
+import { eq } from 'drizzle-orm'
+import { logError, logInfo } from '@/lib/logger'
+import type { Stripe } from 'stripe'
 
-import {
-  getUserByStripeCustomerId, updateUserSubscription, getSubscriptionTierFromPriceId
-} from '@/lib/stripe-db-utils'
+// Context7 Verified Implementation
+// Reference: Stripe Node Webhook Handling
+// https://context7.com/stripe/stripe-node
 
+export async function POST(req: Request) {
+  const body = await req.text()
+  const signature = (await headers()).get('stripe-signature') as string
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
+  if (!signature) {
+    logError('Missing stripe-signature header')
+    return new NextResponse('Missing stripe-signature', { status: 400 })
+  }
 
-export async function POST(request: NextRequest) {
+  const stripe = await getStripe()
+  if (!stripe) {
+    logError('Stripe not configured')
+    return new NextResponse('Stripe not configured', { status: 500 })
+  }
+
+  let event: Stripe.Event
+
   try {
-    const body = await request.text()
-
-    // Get Stripe instance
-    const stripe = await getStripe()
-    const signature = (await headers()).get('stripe-signature')
-    if (!stripe) {
-      return NextResponse.json(
-        { error: 'Stripe not configured' },
-        { status: 500 }
-      )
-    }
-
-    if (!signature) {
-      return NextResponse.json(
-        { error: 'Missing stripe-signature header' },
-        { status: 400 }
-      )
-    }
-
     if (!process.env.STRIPE_WEBHOOK_SECRET) {
-      throw new Error('STRIPE_WEBHOOK_SECRET is not set')
+        throw new Error('STRIPE_WEBHOOK_SECRET is not set');
     }
+    event = stripe.webhooks.constructEvent(
+      body,
+      signature,
+      process.env.STRIPE_WEBHOOK_SECRET
+    )
+  } catch (error: any) {
+    logError('Webhook signature verification failed', { error: error.message })
+    return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 })
+  }
 
-    // Verify webhook signature
+  // Idempotency check
+  try {
+    const existingEvent = await db.query.webhookEvents.findFirst({
+      where: eq(webhookEvents.id, event.id)
+    });
 
-    let event: import('stripe').Stripe.Event
-    try {
-      event = stripe.webhooks.constructEvent(
-        body,
-        signature,
-        process.env.STRIPE_WEBHOOK_SECRET
-      )
-    } catch (err) {
-      logError('Webhook signature verification failed:', err)
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 400 }
-      )
+    if (existingEvent) {
+      logInfo(`Webhook event ${event.id} already processed. Skipping.`);
+      return new NextResponse(null, { status: 200 });
     }
+  } catch (error: any) {
+    logError('Error checking for existing webhook event', { error: error.message });
+    // Continue processing if check fails, better to re-process than drop
+  }
 
-    // Handle the event
+  const subscription = event.data.object as Stripe.Subscription
+
+  try {
     switch (event.type) {
       case STRIPE_WEBHOOK_EVENTS.CUSTOMER_SUBSCRIPTION_CREATED:
-        await handleSubscriptionCreated(event.data.object as import('stripe').Stripe.Subscription)
+      case STRIPE_WEBHOOK_EVENTS.CUSTOMER_SUBSCRIPTION_UPDATED: {
+        const sub = event.data.object as Stripe.Subscription
+        await handleSubscriptionChange(sub)
         break
+      }
+      
+      case STRIPE_WEBHOOK_EVENTS.CUSTOMER_SUBSCRIPTION_DELETED: {
+        // Handle subscription cancellation
+        const sub = event.data.object as Stripe.Subscription;
+        // User's subscription is canceled immediately or at period end
+        // If deleted, it's gone.
+        await handleSubscriptionDeleted(sub);
+        break;
+      }
 
-      case STRIPE_WEBHOOK_EVENTS.CUSTOMER_SUBSCRIPTION_UPDATED:
-        await handleSubscriptionUpdated(event.data.object as import('stripe').Stripe.Subscription)
+      case STRIPE_WEBHOOK_EVENTS.INVOICE_PAYMENT_FAILED: {
+        const invoice = event.data.object as Stripe.Invoice
+        if (invoice.subscription) {
+            await handlePaymentFailed(invoice.subscription as string, invoice.customer as string);
+        }
         break
+      }
 
-      case STRIPE_WEBHOOK_EVENTS.CUSTOMER_SUBSCRIPTION_DELETED:
-        await handleSubscriptionDeleted(event.data.object as import('stripe').Stripe.Subscription)
-        break
-
-      case STRIPE_WEBHOOK_EVENTS.INVOICE_PAYMENT_SUCCEEDED:
-        await handlePaymentSucceeded(event.data.object as Stripe.Invoice)
-        break
-
-      case STRIPE_WEBHOOK_EVENTS.INVOICE_PAYMENT_FAILED:
-        await handlePaymentFailed(event.data.object as Stripe.Invoice)
-        break
-
-      case STRIPE_WEBHOOK_EVENTS.CUSTOMER_CREATED:
-        await handleCustomerCreated(event.data.object as Stripe.Customer)
-        break
-
-      case STRIPE_WEBHOOK_EVENTS.CUSTOMER_UPDATED:
-        await handleCustomerUpdated(event.data.object as Stripe.Customer)
-        break
+      case STRIPE_WEBHOOK_EVENTS.INVOICE_PAYMENT_SUCCEEDED: {
+        // Payment succeeded, we can extend access if we have specific logic,
+        // but subscription.updated usually covers status changes.
+        // We might want to log this or send a receipt.
+        break;
+      }
 
       default:
-        logInfo(`Unhandled event type: ${event.type}`)
+        // Unhandled event type
+        // console.log(`Unhandled event type ${event.type}`)
     }
 
-    return NextResponse.json({ received: true })
+    // Record processed event
+    await db.insert(webhookEvents).values({
+      id: event.id,
+      type: event.type,
+      status: 'processed',
+      data: event.data.object as any, // Cast to any to satisfy jsonb
+      created_at: new Date()
+    });
 
-  } catch (error) {
-    logError('Webhook error:', error)
-    return NextResponse.json(
-      { error: 'Webhook handler failed' },
-      { status: 500 }
-    )
+  } catch (error: any) {
+    logError('Error handling webhook event', { type: event.type, error: error.message })
+    return new NextResponse(`Error processing event: ${error.message}`, { status: 500 })
+  }
+
+  return new NextResponse(null, { status: 200 })
+}
+
+async function handleSubscriptionChange(subscription: Stripe.Subscription) {
+  const customerId = subscription.customer as string
+  const status = subscription.status
+  const priceId = subscription.items.data[0].price.id
+  
+  // Map price ID to tier
+  let tier = 'free'
+  
+  // Iterate strictly typed keys using explicit checks or manual fallback
+  // Using type guards to safely access stripeYearlyPriceId
+  const tiers = Object.values(SUBSCRIPTION_TIERS);
+  const matchedTier = tiers.find(t => t.stripePriceId === priceId) || 
+                      tiers.find(t => 'stripeYearlyPriceId' in t && t.stripeYearlyPriceId === priceId);
+
+  if (matchedTier) {
+    tier = matchedTier.id;
+  } else if (priceId === SUBSCRIPTION_TIERS.LAUNCH.stripePriceId || 
+             priceId === SUBSCRIPTION_TIERS.ACCELERATOR.stripePriceId || 
+             priceId === SUBSCRIPTION_TIERS.DOMINATOR.stripePriceId) {
+      // Fallback check if simple lookup fails
+       if (priceId === SUBSCRIPTION_TIERS.ACCELERATOR.stripePriceId) tier = 'accelerator';
+       else if (priceId === SUBSCRIPTION_TIERS.DOMINATOR.stripePriceId) tier = 'dominator';
+       else tier = 'launch'; 
+  }
+
+  // Update user in DB
+  let userId: string | undefined = subscription.metadata?.userId;
+  
+  if (!userId) {
+     // Try to find user by stripe_customer_id
+     const existingUser = await db.query.users.findFirst({
+         where: eq(users.stripe_customer_id, customerId)
+     });
+     userId = existingUser?.id;
+  }
+
+  if (userId) {
+      await db.update(users)
+        .set({
+            subscription_status: status,
+            subscription_tier: tier,
+            stripe_subscription_id: subscription.id,
+            current_period_start: new Date(subscription.current_period_start * 1000).toISOString() as any, // Drizzle timestamp mode string/date
+            current_period_end: new Date(subscription.current_period_end * 1000).toISOString() as any,
+            cancel_at_period_end: subscription.cancel_at_period_end,
+            stripe_customer_id: customerId // Ensure it's set
+        })
+        .where(eq(users.id, userId));
+      
+      logInfo(`Updated subscription for user ${userId} to ${tier} (${status})`);
+  } else {
+      logError(`User not found for subscription ${subscription.id} (Customer: ${customerId})`);
   }
 }
 
-// Handle subscription created
-async function handleSubscriptionCreated(subscription: import('stripe').Stripe.Subscription) {
-  try {
-    const customerId = subscription.customer as string
-    const priceId = subscription.items.data[0].price.id
+async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
+    const customerId = subscription.customer as string;
+    
+    // Downgrade to free
+    const result = await db.update(users)
+        .set({
+            subscription_status: 'canceled',
+            subscription_tier: 'free',
+            current_period_end: new Date().toISOString() as any, // Ends now
+            cancel_at_period_end: false
+        })
+        .where(eq(users.stripe_customer_id, customerId))
+        .returning({ id: users.id });
 
-    // Get user by Stripe customer ID
-    const user = await getUserByStripeCustomerId(customerId)
-    if (!user) {
-      logError('User not found for customer:', customerId)
-      return
-    }
-
-    // Determine subscription tier based on price ID
-    const tier = getSubscriptionTierFromPriceId(priceId)
-
-    // Update user subscription in database
-    const result = await updateUserSubscription(user.id, {
-      stripe_subscription_id: subscription.id,
-      stripe_customer_id: customerId,
-      subscription_tier: tier,
-      subscription_status: subscription.status,
-      current_period_start: new Date((subscription as any).current_period_start * 1000),
-      current_period_end: new Date((subscription as any).current_period_end * 1000),
-      cancel_at_period_end: subscription.cancel_at_period_end
-    })
-
-    if (result.success) {
-      logInfo(`Subscription created for user ${user.id} (customer ${customerId}): ${tier}`)
+    if (result.length > 0) {
+        logInfo(`Subscription deleted for customer ${customerId}, downgraded to free`);
     } else {
-      logError('Failed to update user subscription:', result.error)
+        logError(`Failed to downgrade user after subscription deletion: Customer ${customerId} not found`);
     }
-  } catch (error) {
-    logError('Error handling subscription created:', error)
-  }
 }
 
-// Handle subscription updated
-async function handleSubscriptionUpdated(subscription: import('stripe').Stripe.Subscription) {
-  try {
-    const customerId = subscription.customer as string
-    const priceId = subscription.items.data[0].price.id
-
-    // Get user by Stripe customer ID
-    const user = await getUserByStripeCustomerId(customerId)
-    if (!user) {
-      logError('User not found for customer:', customerId)
-      return
-    }
-
-    // Determine subscription tier based on price ID
-    const tier = getSubscriptionTierFromPriceId(priceId)
-
-    // Update user subscription in database
-    const result = await updateUserSubscription(user.id, {
-      subscription_tier: tier,
-      subscription_status: subscription.status,
-      current_period_start: new Date((subscription as any).current_period_start * 1000),
-      current_period_end: new Date((subscription as any).current_period_end * 1000),
-      cancel_at_period_end: subscription.cancel_at_period_end
-    })
-
-    if (result.success) {
-      logInfo(`Subscription updated for user ${user.id} (customer ${customerId}): ${tier}`)
-    } else {
-      logError('Failed to update user subscription:', result.error)
-    }
-  } catch (error) {
-    logError('Error handling subscription updated:', error)
-  }
-}
-
-// Handle subscription deleted
-async function handleSubscriptionDeleted(subscription: import('stripe').Stripe.Subscription) {
-  try {
-    const customerId = subscription.customer as string
-
-    // Get user by Stripe customer ID
-    const user = await getUserByStripeCustomerId(customerId)
-    if (!user) {
-      logError('User not found for customer:', customerId)
-      return
-    }
-
-    // Update user subscription in database - downgrade to launch tier
-    const result = await updateUserSubscription(user.id, {
-      subscription_tier: 'launch',
-      subscription_status: 'canceled',
-      stripe_subscription_id: undefined,
-      cancel_at_period_end: false
-    })
-
-    if (result.success) {
-      logInfo(`Subscription deleted for user ${user.id} (customer ${customerId}) - downgraded to launch`)
-    } else {
-      logError('Failed to update user subscription:', result.error)
-    }
-  } catch (error) {
-    logError('Error handling subscription deleted:', error)
-  }
-}
-
-// Handle payment succeeded
-async function handlePaymentSucceeded(invoice: Stripe.Invoice) {
-  try {
-    const customerId = invoice.customer as string
-    const subscriptionId = (invoice as any).subscription as string
-
-    // Update user payment status in database
-    // await updateUserPaymentStatus(user.id, {
-    //   last_payment_date: new Date(invoice.created * 1000),
-    //   next_payment_date: new Date(invoice.period_end * 1000),
-    //   payment_status: 'succeeded'
-    // })
-
-    logInfo(`Payment succeeded for customer ${customerId}, subscription ${subscriptionId}`)
-  } catch (error) {
-    logError('Error handling payment succeeded:', error)
-  }
-}
-
-// Handle payment failed
-async function handlePaymentFailed(invoice: Stripe.Invoice) {
-  try {
-    const customerId = invoice.customer as string
-    const subscriptionId = (invoice as any).subscription as string
-
-    // Update user payment status in database
-    // await updateUserPaymentStatus(user.id, {
-    //   payment_status: 'failed',
-    //   payment_failure_reason: invoice.last_payment_error?.message
-    // })
-
-    // Send notification to user about failed payment
-    // await sendPaymentFailedNotification(user.id, invoice)
-
-    logError(`Payment failed for customer ${customerId}, subscription ${subscriptionId}`)
-  } catch (error) {
-    logError('Error handling payment failed:', error)
-  }
-}
-
-// Handle customer created
-async function handleCustomerCreated(customer: Stripe.Customer) {
-  try {
-    logInfo(`Customer created: ${customer.id}`)
-    // Additional customer creation logic if needed
-  } catch (error) {
-    logError('Error handling customer created:', error)
-  }
-}
-
-// Handle customer updated
-async function handleCustomerUpdated(customer: Stripe.Customer) {
-  try {
-    logInfo(`Customer updated: ${customer.id}`)
-    // Additional customer update logic if needed
-  } catch (error) {
-    logError('Error handling customer updated:', error)
-  }
+async function handlePaymentFailed(subscriptionId: string, customerId: string) {
+     // Mark as past_due or similar
+     await db.update(users)
+        .set({
+            subscription_status: 'past_due'
+        })
+        .where(eq(users.stripe_customer_id, customerId));
+        
+     logInfo(`Payment failed for customer ${customerId}`);
 }

@@ -4,7 +4,8 @@ import { getSql } from "@/lib/api-utils"
 // --- CONSTANTS ---
 
 export const TIERS = {
-  FREE: 'launch',
+  FREE: 'free',
+  LAUNCH: 'launch',
   ACCELERATOR: 'accelerator',
   DOMINATOR: 'dominator'
 } as const;
@@ -28,6 +29,7 @@ export const AGENTS = {
 // 1. Agent Access Rules
 export const AGENT_ACCESS: Record<SubscriptionTier, string[]> = {
   [TIERS.FREE]: [AGENTS.AURA], // Basic Wellness only
+  [TIERS.LAUNCH]: [AGENTS.AURA], // Basic Wellness only
   [TIERS.ACCELERATOR]: [AGENTS.AURA, AGENTS.BLAZE, AGENTS.GLITCH, AGENTS.VEX, AGENTS.SALES],
   [TIERS.DOMINATOR]: Object.values(AGENTS), // All agents
 };
@@ -38,6 +40,7 @@ const GB = 1024 * MB;
 
 export const STORAGE_LIMITS: Record<SubscriptionTier, number> = {
   [TIERS.FREE]: 50 * MB,
+  [TIERS.LAUNCH]: 50 * MB,
   [TIERS.ACCELERATOR]: 1 * GB,
   [TIERS.DOMINATOR]: 10 * GB,
 };
@@ -46,6 +49,7 @@ export const STORAGE_LIMITS: Record<SubscriptionTier, number> = {
 // -1 means Unlimited
 export const CHAT_LIMITS: Record<SubscriptionTier, number> = {
   [TIERS.FREE]: 10,
+  [TIERS.LAUNCH]: 10,
   [TIERS.ACCELERATOR]: 100,
   [TIERS.DOMINATOR]: -1,
 };
@@ -53,6 +57,16 @@ export const CHAT_LIMITS: Record<SubscriptionTier, number> = {
 // 4. Feature Flags (Booleans)
 export const TIER_FEATURES = {
   [TIERS.FREE]: {
+    canUseWarRoom: false,
+    canUseIronclad: false,
+    canUseCompetitorStalker: false,
+    canUseIdeaIncinerator: false,
+    canUseTacticalRoadmap: false,
+    canUseBoardroom: false,
+    customBranding: false,
+    prioritySupport: false,
+  },
+  [TIERS.LAUNCH]: {
     canUseWarRoom: false,
     canUseIronclad: false,
     canUseCompetitorStalker: false,
