@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
     })
 
     // Get session state for additional details
-    const sessionState = sessionManager.getSessionState(session.id)
+    const sessionState = await sessionManager.getSessionStateAsync(session.id)
 
     return NextResponse.json({
       success: true,
