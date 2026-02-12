@@ -4,6 +4,7 @@ import { learningPaths, learningModules } from "@/db/schema";
 import { v4 as uuidv4 } from 'uuid';
 
 import { getJWTAuthenticatedUser } from "@/lib/auth-server";
+import { logError } from '@/lib/logger';
 
 export async function POST(req: Request) { // Changed to POST for security
   const user = await getJWTAuthenticatedUser();
@@ -96,7 +97,7 @@ export async function POST(req: Request) { // Changed to POST for security
 
     return NextResponse.json({ success: true, message: 'Seeded Academy Data' });
   } catch (err) {
-    console.error('Seeding error:', err);
+    logError('Seeding error', { error: err });
     return NextResponse.json({ error: 'Seeding failed' }, { status: 500 });
   }
 }

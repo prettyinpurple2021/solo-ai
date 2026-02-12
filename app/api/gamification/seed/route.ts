@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth-server';
 import { GamificationEngine } from '@/lib/gamification';
+import { logError } from '@/lib/logger';
 
 export async function POST(request: Request) {
   const { user, error } = await authenticateRequest();
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
     await GamificationEngine.seedDefaults();
     return NextResponse.json({ success: true, message: 'Badges seeded successfully' });
   } catch (err) {
-    console.error('Error seeding badges:', err);
+    logError('Error seeding badges', { error: err });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

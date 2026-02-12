@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth-server';
 import { WellnessEngine } from '@/lib/wellness';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 const moodSchema = z.object({
   energyLevel: z.number().min(1).max(5),
@@ -26,7 +27,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Use specific endpoints /mood or /focus' }, { status: 400 });
 
   } catch (err) {
-      console.error('Error in POST /api/wellness:', err);
+      logError('Error in POST /api/wellness', { error: err });
       return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
@@ -40,7 +41,7 @@ export async function GET() {
         const stats = await engine.getStats();
         return NextResponse.json(stats);
     } catch (err) {
-        console.error('Error fetching wellness stats:', err);
+        logError('Error fetching wellness stats', { error: err });
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

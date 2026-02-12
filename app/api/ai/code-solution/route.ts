@@ -1,6 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 export const maxDuration = 60;
 
@@ -23,7 +24,7 @@ export async function POST(req: Request) {
 
         return Response.json(object);
     } catch (error) {
-        console.error('Code Solution API Error:', error);
+        logError('Code Solution API Error', { error });
         return Response.json({ error: 'Failed to generate code solution' }, { status: 500 });
     }
 }

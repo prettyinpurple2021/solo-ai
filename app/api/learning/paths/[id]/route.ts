@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { LearningEngine } from '@/lib/learning-engine';
 import { auth } from '@/lib/auth';
+import { logError } from '@/lib/logger';
 
 export async function GET(
   req: Request,
@@ -22,7 +23,7 @@ export async function GET(
 
     return NextResponse.json(path);
   } catch (error) {
-    console.error('Error fetching learning path:', error);
+    logError('Error fetching learning path', { error });
     return NextResponse.json(
       { error: 'Failed to fetch learning path' },
       { status: 500 }

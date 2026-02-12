@@ -81,7 +81,7 @@ async function calculateUserStreak(userId: string): Promise<number> {
 
     return streak;
   } catch (error) {
-    console.error(`Error calculating streak for user ${userId}:`, error);
+    logError(`Error calculating streak for user ${userId}`, { error });
     return 0;
   }
 }

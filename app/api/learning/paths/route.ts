@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { LearningEngine } from '@/lib/learning-engine';
+import { logError } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -9,7 +10,7 @@ export async function GET() {
     const paths = await LearningEngine.getAllPaths();
     return NextResponse.json(paths);
   } catch (error) {
-    console.error('Error fetching learning paths:', error);
+    logError('Error fetching learning paths', { error });
     return NextResponse.json(
       { error: 'Failed to fetch learning paths' },
       { status: 500 }

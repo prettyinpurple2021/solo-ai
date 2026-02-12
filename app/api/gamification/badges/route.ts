@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth-server';
 import { GamificationEngine } from '@/lib/gamification';
+import { logError } from '@/lib/logger';
 
 export async function GET() {
   const { user, error } = await authenticateRequest();
@@ -11,7 +12,7 @@ export async function GET() {
     const badges = await engine.getBadges();
     return NextResponse.json(badges);
   } catch (err) {
-    console.error('Error fetching badges:', err);
+    logError('Error fetching badges', { error: err });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

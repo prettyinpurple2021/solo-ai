@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCommunityFeed, createPost } from "@/lib/actions/community-actions";
 import { authenticateRequest } from "@/lib/auth-server";
+import { logError } from '@/lib/logger';
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
@@ -10,7 +11,7 @@ export async function GET(request: Request) {
         const posts = await getCommunityFeed(topicId);
         return NextResponse.json(posts);
     } catch (e) {
-        console.error("API Error", e);
+        logError('API Error in GET /api/community', { error: e });
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
@@ -24,7 +25,7 @@ export async function POST(request: Request) {
         const result = await createPost(body); // This uses Zod internally
         return NextResponse.json(result);
     } catch (e: any) {
-        console.error("API Error", e);
+        logError('API Error in POST /api/community', { error: e });
         if (e.name === "ZodError") {
              // Sanitize Zod error
              const errors = e.issues?.map((i: any) => ({ path: i.path, message: i.message }));

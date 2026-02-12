@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     if (error instanceof z.ZodError) {
       return new NextResponse('Invalid request data', { status: 400 });
     }
-    console.error('[REPORTS_POST]', error);
+    logError('[REPORTS_POST]', { error });
     return new NextResponse('Internal Error', { status: 500 });
   }
 }

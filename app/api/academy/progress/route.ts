@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth-server';
 import { LearningEngine } from '@/lib/learning-engine';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 const progressSchema = z.object({
   moduleId: z.string(),
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, message: 'Progress updated' });
   } catch (err) {
-    console.error('Error updating progress:', err);
+    logError('Error updating progress', { error: err });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

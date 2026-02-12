@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { LearningEngine } from '@/lib/learning-engine';
 import { auth } from '@/lib/auth';
+import { logError } from '@/lib/logger';
 
 export async function GET() {
   try {
@@ -13,7 +14,7 @@ export async function GET() {
     const recommendations = await learningEngine.getPersonalizedRecommendations();
     return NextResponse.json(recommendations);
   } catch (error) {
-    console.error('Error fetching recommendations:', error);
+    logError('Error fetching recommendations', { error });
     return NextResponse.json(
       { error: 'Failed to fetch recommendations' },
       { status: 500 }

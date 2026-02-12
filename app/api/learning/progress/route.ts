@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { LearningEngine } from '@/lib/learning-engine';
 import { auth } from '@/lib/auth';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 const progressSchema = z.object({
   moduleId: z.string(),
@@ -21,7 +22,7 @@ export async function GET(req: Request) {
     // Transform to match UI expectations if needed, but schema is pretty clean
     return NextResponse.json(progress);
   } catch (error) {
-    console.error('Error fetching progress:', error);
+    logError('Error fetching progress', { error });
     return NextResponse.json(
       { error: 'Failed to fetch progress' },
       { status: 500 }
@@ -52,7 +53,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Error updating progress:', error);
+    logError('Error updating progress', { error });
     return NextResponse.json(
       { error: 'Failed to update progress' },
       { status: 500 }

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth-server';
 import { LearningEngine } from '@/lib/learning-engine';
+import { logError } from '@/lib/logger';
 
 export async function GET() {
   const { user, error } = await authenticateRequest();
@@ -15,7 +16,7 @@ export async function GET() {
     
     return NextResponse.json(recommendations);
   } catch (err) {
-    console.error('Error fetching recommendations:', err);
+    logError('Error fetching recommendations', { error: err });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

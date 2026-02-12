@@ -1,6 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 export const maxDuration = 60;
 
@@ -24,7 +25,7 @@ export async function POST(req: Request) {
 
         return Response.json(object);
     } catch (error) {
-        console.error('Negotiation Prep API Error:', error);
+        logError('Negotiation Prep API Error', { error });
         return Response.json({ error: 'Failed to generate negotiation prep' }, { status: 500 });
     }
 }

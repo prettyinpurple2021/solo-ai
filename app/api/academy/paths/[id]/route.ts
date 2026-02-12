@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth-server';
 import { LearningEngine } from '@/lib/learning-engine';
+import { logError } from '@/lib/logger';
 
 export async function GET(
   request: Request,
@@ -25,7 +26,7 @@ export async function GET(
     return NextResponse.json(path);
   } catch (err) {
     const { id } = await params;
-    console.error(`Error fetching path ${id}:`, err);
+    logError(`Error fetching path ${id}`, { error: err });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

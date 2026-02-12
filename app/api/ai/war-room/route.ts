@@ -1,6 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 export const maxDuration = 60;
 
@@ -46,7 +47,7 @@ Simulate a debate amongst yourselves about the user's topic: "${topic}".
 
         return Response.json(object);
     } catch (error) {
-        console.error('War Room API Error:', error);
+        logError('War Room API Error', { error });
         return Response.json({ error: 'Failed to generate war room simulation' }, { status: 500 });
     }
 }

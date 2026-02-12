@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "../../../../server/db"; // Use centralized DB client
 import { usageTracking } from "../../../../server/db/schema";
 import { eq } from "../../../../server/db";
+import { logError } from '@/lib/logger';
 
 export async function GET(req: NextRequest) {
   try {
@@ -29,7 +30,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json(usage[0]);
   } catch (error) {
-    console.error("Error fetching usage:", error);
+    logError('Error fetching usage', { error });
     return NextResponse.json({ error: "Failed to fetch usage stats" }, { status: 500 });
   }
 }

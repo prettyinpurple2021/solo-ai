@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { authenticateRequest } from '@/lib/auth-server';
 import { WellnessEngine } from '@/lib/wellness';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 const moodSchema = z.object({
   energyLevel: z.number().min(1).max(5),
@@ -33,7 +34,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    console.error('Error logging mood:', err);
+    logError('Error logging mood', { error: err });
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

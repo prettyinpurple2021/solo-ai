@@ -1,6 +1,7 @@
 import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
 
 export const maxDuration = 60;
 
@@ -34,7 +35,7 @@ Reply as the opponent. Stay in character. Be challenging if difficulty is high.
 
         return Response.json(object);
     } catch (error) {
-        console.error('Roleplay Reply API Error:', error);
+        logError('Roleplay Reply API Error', { error });
         return Response.json({ error: 'Failed to generate reply' }, { status: 500 });
     }
 }

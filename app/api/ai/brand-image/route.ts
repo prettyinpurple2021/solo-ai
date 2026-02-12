@@ -2,6 +2,7 @@
 
 import { openai } from '@ai-sdk/openai';
 import { experimental_generateImage as generateImage } from 'ai';
+import { logError } from '@/lib/logger';
 
 export const maxDuration = 60;
 
@@ -18,7 +19,7 @@ export async function POST(req: Request) {
 
         return Response.json({ image: image.base64 }); 
     } catch (error) {
-        console.error('Brand Image API Error:', error);
+        logError('Brand Image API Error', { error });
         return Response.json({ error: 'Failed to generate image' }, { status: 500 });
     }
 }

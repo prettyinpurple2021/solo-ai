@@ -4,6 +4,7 @@ import { communityTopics } from "@/db/schema/community";
 import { v4 as uuidv4 } from "uuid";
 import { getJWTAuthenticatedUser } from "@/lib/auth-server";
 import { eq } from "drizzle-orm";
+import { logError } from '@/lib/logger';
 
 export async function POST(req: NextRequest) {
     // 1. Auth Check (Basic for demonstration, ideally require Admin role)
@@ -49,7 +50,7 @@ export async function POST(req: NextRequest) {
 
         return NextResponse.json({ success: true, message: `Seeded ${seededCount} topics` });
     } catch (e) {
-        console.error("Seeding Error", e);
+        logError('Seeding Error', { error: e });
         return NextResponse.json({ error: "Failed to seed topics" }, { status: 500 });
     }
 }
