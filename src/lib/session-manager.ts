@@ -12,7 +12,7 @@ import {
   collaborationMessages,
   collaborationCheckpoints 
 } from '@/db/schema'
-import { eq, and, inArray, sql } from 'drizzle-orm'
+import { eq, and, inArray, lt, sql } from 'drizzle-orm'
 import type { 
   CollaborationSession, 
   AgentMessage, 
@@ -481,35 +481,6 @@ export class SessionManager {
     }
   }
 
-  /**
-   * Recovers hanging sessions that have been active for too long with no updates
-   */
-  async recoverHangingSessions(maxAgeMs: number = 3600000): Promise<number> {
-    try {
-      const cutoff = new Date(Date.now() - maxAgeMs)
-      
-      const hangingSessions = await db.query.collaborationSessions.findMany({
-        where: and(
-          eq(collaborationSessions.status, 'active'),
-          sql`${collaborationSessions.updated_at} < ${cutoff}`
-        )
-      })
-
-      if (hangingSessions.length === 0) return 0
-
-      logInfo(`Found ${hangingSessions.length} hanging sessions. Attempting recovery...`)
-
-      for (const session of hangingSessions) {
-        // For now, we'll mark them as 'paused' so they can be resumed or manually checked
-        await this.pauseSession(session.id, 'Automatic recovery: Session hanging for too long')
-      }
-
-      return hangingSessions.length
-    } catch (error) {
-      logError('Error during session recovery:', error)
-      return 0
-    }
-  }
 
   /**
    * Get session information (DB backed)
@@ -564,10 +535,10 @@ export class SessionManager {
         completedTasks: meta?.completedTasks || [],
         pendingTasks: meta?.pendingTasks || [],
         sessionMetrics: {
-            averageResponseTime: 0,
+            averageResponseTime: meta?.sessionMetrics?.averageResponseTime || 0,
             totalInteractions: session.messages.length,
-            successfulHandoffs: 0,
-            failedHandoffs: 0
+            successfulHandoffs: meta?.sessionMetrics?.successfulHandoffs || 0,
+            failedHandoffs: meta?.sessionMetrics?.failedHandoffs || 0
         },
         configuration: {
             autoArchiveAfter: 86400000,
@@ -823,6 +794,51 @@ export class SessionManager {
     })
 
     await this.messageRouter.broadcastMessage(systemMessage)
+  }
+
+  /**
+   * Recover hanging sessions (cleanup logic)
+   * Moves sessions without activity for > 24h to 'paused' and > 7d to 'archived'
+   */
+  async recoverHangingSessions(): Promise<{ recovered: number; archived: number }> {
+    try {
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000)
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+
+      // 1. Move inactive active sessions to paused
+      const hangingActive = await db.update(collaborationSessions)
+        .set({ status: 'paused', updated_at: new Date() })
+        .where(
+          and(
+            eq(collaborationSessions.status, 'active'),
+            lt(collaborationSessions.updated_at, oneDayAgo)
+          )
+        )
+        .returning({ id: collaborationSessions.id })
+
+      // 2. Move inactive paused sessions to archived
+      const hangingPaused = await db.update(collaborationSessions)
+        .set({ status: 'archived', updated_at: new Date() })
+        .where(
+          and(
+            eq(collaborationSessions.status, 'paused'),
+            lt(collaborationSessions.updated_at, sevenDaysAgo)
+          )
+        )
+        .returning({ id: collaborationSessions.id })
+
+      if (hangingActive.length > 0 || hangingPaused.length > 0) {
+        logInfo(`🏥 Session Recovery: Paused ${hangingActive.length} and Archived ${hangingPaused.length} hanging sessions.`)
+      }
+
+      return {
+        recovered: hangingActive.length,
+        archived: hangingPaused.length
+      }
+    } catch (error) {
+      logError('Error recovering hanging sessions:', error)
+      return { recovered: 0, archived: 0 }
+    }
   }
 
   /**

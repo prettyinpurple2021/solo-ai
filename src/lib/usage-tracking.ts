@@ -242,7 +242,7 @@ export async function hasAdvancedFeatureAccess(userId: string, feature: 'analyti
       case 'priority_support':
         return limits.aiAgents >= 5 // Accelerator or higher  
       case 'api_access':
-        return limits.aiAgents === 8 && limits.dailyConversations === -1 // Dominator only
+        return limits.aiAgents === 10 && limits.dailyConversations === -1 // Dominator only
       case 'custom_branding':
         return limits.aiAgents >= 5 // Accelerator or higher
       default:

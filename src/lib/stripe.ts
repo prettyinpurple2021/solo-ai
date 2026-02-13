@@ -101,14 +101,14 @@ export const SUBSCRIPTION_TIERS = {
   ACCELERATOR: {
     id: 'accelerator',
     name: 'Accelerator',
-    priceId: STRIPE_PRICES.ACCELERATOR_MONTHLY, // Assuming this maps to monthly
-    price: 29.99,
+    priceId: STRIPE_PRICES.ACCELERATOR_MONTHLY,
+    price: 19, // Matches Price ID comment ($19)
     period: 'month',
-    yearlyPrice: 299.99, // Assuming a yearly price
+    yearlyPrice: 190,
     yearlyPeriod: 'year',
     description: 'Supercharge your growth with advanced AI agents',
     features: [
-      'Access to Aura, Blaze, Glitch, Vex',
+      'Access to Aura, Blaze, Glitch, Vex, Sales',
       '100 AI conversations per day',
       '1GB secure storage',
       'Idea Incinerator access',
@@ -132,6 +132,7 @@ export const SUBSCRIPTION_TIERS = {
   DOMINATOR: {
     id: 'dominator',
     name: 'Dominator',
+    priceId: STRIPE_PRICES.DOMINATOR_MONTHLY,
     price: 29,
     period: 'month',
     yearlyPrice: 290,
@@ -139,10 +140,12 @@ export const SUBSCRIPTION_TIERS = {
     description: 'For empire builders who demand the best',
     features: [
       'Everything in Accelerator',
+      'Access to ALL AI agents (8+)',
+      'Unlimited AI conversations',
+      '100GB secure storage',
       'White-label options',
       'Advanced API access',
       'Custom integrations',
-      'File management (100GB)',
       'Priority feature requests',
       'Dedicated support',
       'Advanced analytics',
@@ -150,15 +153,16 @@ export const SUBSCRIPTION_TIERS = {
       'Team collaboration tools'
     ],
     limits: {
-      aiAgents: 8,
+      aiAgents: 10,
       dailyConversations: -1, // Unlimited
       fileStorage: '100GB',
       goals: -1, // Unlimited
       tasks: -1, // Unlimited
       competitors: -1, // Unlimited
       templates: -1, // Unlimited
-      teamMembers: 5
+      teamMembers: -1 // Unlimited to match subscription-utils.ts
     },
+    agents: ['roxy', 'lexi', 'nova', 'echo', 'glitch', 'blaze', 'vex', 'lumi', 'aura', 'sales'],
     stripePriceId: STRIPE_PRICES.DOMINATOR_MONTHLY,
     stripeYearlyPriceId: STRIPE_PRICES.DOMINATOR_YEARLY,
     popular: false

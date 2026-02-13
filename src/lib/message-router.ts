@@ -407,6 +407,13 @@ export class MessageRouter {
         // Delivered to agent queue. Processing is handled asynchronously by the collaboration hub.
         successful.push(agentId)
 
+        // Trigger response processing asynchronously (Revived AI Agents)
+        // We don't await this to keep delivery fast and non-blocking
+        // Loop prevention is handled within processAgentResponse
+        this.processAgentResponse(agentId, message).catch(err => 
+          logError(`Error in background agent processing for ${agentId}:`, err)
+        )
+
       } catch (error) {
         failed.push({ 
           agentId, 
@@ -428,9 +435,17 @@ export class MessageRouter {
    * Process a message for an AI agent and generate a response
    */
   private async processAgentResponse(agentId: string, message: AgentMessage): Promise<void> {
+    const startTime = Date.now()
     try {
       // Don't respond to own messages, broadcasts (unless tagged), or system notifications
       if (message.fromAgent === agentId || message.messageType === 'notification') {
+        return
+      }
+
+      // Loop Prevention: Hop Count Check
+      const hopCount = (message.metadata?.hopCount || 0) + 1
+      if (hopCount > 5) { // Maximum chain depth of 5
+        logInfo(`⚠️ Message ${message.id} reached hop limit of 5. Stopping propagation to prevent loops.`)
         return
       }
 
@@ -496,8 +511,10 @@ export class MessageRouter {
         timestamp: new Date(),
         priority: 'medium',
         metadata: {
+          ...message.metadata,
           replyTo: message.id,
-          processingTime: 0 // Could calculate
+          hopCount, // Persist and increment hop count
+          processingTime: Date.now() - startTime // Added processing time calculation
         }
       }
 
