@@ -30,11 +30,12 @@ export default auth((req) => {
   const response = NextResponse.next()
 
   // ---------------------------------------------------------
-  // Existing Analytics Session Logic (Preserved)
+  // Existing Analytics Session Logic (Preserved & Hardened)
   // ---------------------------------------------------------
   let sessionId = req.cookies.get('analytics_session_id')?.value
+  const isValidUuid = sessionId && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sessionId)
   
-  if (!sessionId) {
+  if (!isValidUuid) {
     sessionId = crypto.randomUUID()
     response.cookies.set('analytics_session_id', sessionId, {
       httpOnly: true,
@@ -44,7 +45,7 @@ export default auth((req) => {
     })
   } else {
      // Extend session expiry on activity
-     response.cookies.set('analytics_session_id', sessionId, {
+     response.cookies.set('analytics_session_id', sessionId as string, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

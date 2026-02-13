@@ -1,7 +1,6 @@
-
 import { db } from "../src/lib/database-client";
 import { learningPaths, learningModules } from "../src/db/schema";
-import { eq, isNull, and } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { generateObject } from "ai";
 import { openai } from "../src/lib/ai-config";
 import { z } from "zod";
@@ -10,6 +9,9 @@ import * as dotenv from "dotenv";
 
 // Load environment variables
 dotenv.config({ path: ".env.local" });
+
+// Helper for rate limiting
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 async function populateLearningMetadata() {
   logInfo("🚀 Starting Learning Module Metadata Population...");
@@ -74,7 +76,7 @@ async function populateLearningMetadata() {
     ];
 
     for (const group of baseModules) {
-      const path = allPaths.find(p => p.title === group.pathTitle);
+      const path = allPaths.find((p: typeof allPaths[number]) => p.title === group.pathTitle);
       if (!path) continue;
 
       for (const moduleData of group.modules) {
@@ -116,6 +118,10 @@ async function populateLearningMetadata() {
       logInfo(`Enriching module: ${module.title}...`);
 
       try {
+        // Rate limiting delay
+        await sleep(300);
+
+        const safeContent = module.content ?? '';
         const enrichment = await generateObject({
           model: openai("gpt-4o"),
           schema: z.object({
@@ -129,7 +135,7 @@ async function populateLearningMetadata() {
             Enrich a learning module with metadata.
             
             Module Title: ${module.title}
-            Content Preview: ${module.content.substring(0, 500)}...
+            Content Preview: ${safeContent.substring(0, 500)}...
             
             Provide a professional description, difficulty level, a list of specific skills covered, prerequisites, and an estimated duration in minutes.
           `

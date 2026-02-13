@@ -128,6 +128,58 @@ export class RevenueTrackingService {
   }
 
   /**
+   * Internal helper for making authenticated PayPal requests with automatic 401 retry
+   */
+  private static async paypalRequest(
+    connection: PaymentConnection,
+    method: 'GET' | 'POST',
+    endpoint: string,
+    params: Record<string, any> = {},
+    data: any = null
+  ): Promise<any> {
+    const baseUrl = process.env.PAYPAL_MODE === 'sandbox' 
+      ? 'https://api-m.sandbox.paypal.com' 
+      : 'https://api-m.paypal.com'
+
+    const makeRequest = async (token: string) => {
+      return await axios({
+        method,
+        url: `${baseUrl}${endpoint}`,
+        params,
+        data,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+    }
+
+    try {
+      if (!connection.access_token) throw new Error('No access token for PayPal')
+      return await makeRequest(connection.access_token)
+    } catch (error: any) {
+      if (error.response?.status === 401 && connection.refresh_token) {
+        logInfo('PayPal 401 detected, attempting token refresh...', { userId: connection.user_id })
+        const refreshed = await this.refreshToken(connection.user_id, 'paypal')
+        if (refreshed) {
+          // Re-fetch the connection to get the NEW access token
+          const [updatedConnection] = await db
+            .select()
+            .from(paymentProviderConnections)
+            .where(eq(paymentProviderConnections.id, connection.id))
+            .limit(1)
+          
+          if (updatedConnection?.access_token) {
+            logInfo('PayPal token refreshed. Retrying request.', { userId: connection.user_id })
+            return await makeRequest(updatedConnection.access_token)
+          }
+        }
+      }
+      throw error // Re-throw if refresh fails or wasn't a 401
+    }
+  }
+
+  /**
     * Stripe-specific MRR calculation
     */
    /**
@@ -147,7 +199,7 @@ export class RevenueTrackingService {
       for await (const subscription of stripe.subscriptions.list({
         status: 'active',
         limit: 100, // Max limit per page
-        expand: ['data.items'] // Ensure we get all line items
+        expand: ['data.items.data.price'] // Ensure we get price recurring info
       })) {
         
         // Iterate through all items in the subscription
@@ -157,27 +209,23 @@ export class RevenueTrackingService {
           if (price && price.recurring && typeof price.unit_amount === 'number') {
              const quantity = item.quantity || 1
              const amount = (price.unit_amount / 100) * quantity
+             const intervalCount = price.recurring.interval_count || 1
              
-             // Normalize to monthly MRR
+             // Normalize to monthly MRR using precise multipliers
              switch (price.recurring.interval) {
                case 'month':
-                 mrr += amount * (price.recurring.interval_count || 1) // Handle "every 3 months" etc? No, usually handled by division if it's billing frequency. 
-                 // Wait, interval_count of 3 months means billing every 3 months. So monthly revenue is Amount / 3.
-                 // Correction:
-                 const intervalCount = price.recurring.interval_count || 1
                  mrr += amount / intervalCount
                  break
                case 'year':
-                 mrr += amount / 12
+                 mrr += amount / (intervalCount * 12)
                  break
                case 'week':
-                 mrr += amount * 4.33 // Avg weeks in a month
+                 mrr += (amount / intervalCount) * 4.3333 
                  break
                case 'day': 
-                 mrr += amount * 30 // Avg days in a month
+                 mrr += (amount / intervalCount) * 30.4375
                  break
                default:
-                 // unexpected interval, default to straight addition if unknown (safest fallback or log warning)
                  logWarn(`Unknown recurring interval: ${price.recurring.interval}`, { subscriptionId: subscription.id })
                  break
              }
@@ -249,50 +297,37 @@ export class RevenueTrackingService {
     * Fetches active subscriptions and sums their monthly value
     */
   private static async calculatePayPalMRR(connection: PaymentConnection): Promise<number> {
-    if (!connection.access_token) return 0
     try {
-      const baseUrl = process.env.PAYPAL_MODE === 'sandbox' 
-        ? 'https://api-m.sandbox.paypal.com' 
-        : 'https://api-m.paypal.com'
-
-      const response = await axios.get(`${baseUrl}/v1/billing/subscriptions`, {
-        params: { 
+      let mrr = 0
+      let nextToken: string | undefined = undefined
+      
+      do {
+        const response = await this.paypalRequest(connection, 'GET', '/v1/billing/subscriptions', {
           status: 'ACTIVE',
           total_required: 'true',
-          page_size: 100 
-        },
-        headers: { 
-          'Authorization': `Bearer ${connection.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      })
+          page_size: 100,
+          ...(nextToken ? { next_page_token: nextToken } : {})
+        })
 
-      let mrr = 0
-      const subscriptions = response.data.subscriptions || []
-
-      for (const sub of subscriptions) {
-        // Try to derive monthly amount from last payment or plan info
-        // Note: For high precision, we'd fetch plan details, but last_payment is a good heuristic
-        const amountValue = sub.billing_info?.last_payment?.amount?.value
-        if (amountValue) {
-          const amount = parseFloat(amountValue)
-          // Default to monthly if we can't determine interval from subscription list
-          // Future optimization: fetch plans in batch to get exact intervals
-          mrr += amount 
+        const subscriptions = response.data.subscriptions || []
+        for (const sub of subscriptions) {
+          const amountValue = sub.billing_info?.last_payment?.amount?.value
+          if (amountValue) {
+            mrr += parseFloat(amountValue)
+          }
         }
-      }
+
+        const nextLink = (response.data.links || []).find((l: any) => l.rel === 'next')
+        if (nextLink) {
+           const url = new URL(nextLink.href)
+           nextToken = url.searchParams.get('next_page_token') || undefined
+        } else {
+           nextToken = undefined
+        }
+      } while (nextToken)
 
       return mrr
     } catch (error: any) {
-      if (error.response?.status === 401 && connection.refresh_token) {
-        // Token might be expired, try one refresh then retry
-        const refreshed = await this.refreshToken(connection.user_id, 'paypal')
-        if (refreshed) {
-           // We'd need the updated connection here, but for simplicity we log and return 0
-           // recommending a re-run of metrics update
-           logInfo('PayPal token refreshed during MRR calculation', { userId: connection.user_id })
-        }
-      }
       logError('PayPal MRR calculation failed:', error)
       return 0
     }
@@ -307,34 +342,33 @@ export class RevenueTrackingService {
     startDate: Date, 
     endDate: Date
   ): Promise<number> {
-    if (!connection.access_token) return 0
     try {
-      const baseUrl = process.env.PAYPAL_MODE === 'sandbox' 
-        ? 'https://api-m.sandbox.paypal.com' 
-        : 'https://api-m.paypal.com'
-
-      // PayPal Reporting API requires ISO dates
-      const response = await axios.get(`${baseUrl}/v1/reporting/transactions`, {
-        params: {
+      let total = 0
+      let currentPage = 1
+      let hasMore = true
+      
+      while (hasMore) {
+        const response = await this.paypalRequest(connection, 'GET', '/v1/reporting/transactions', {
           start_date: startDate.toISOString(),
           end_date: endDate.toISOString(),
-          fields: 'transaction_info'
-        },
-        headers: {
-          'Authorization': `Bearer ${connection.access_token}`,
-          'Content-Type': 'application/json'
-        }
-      })
+          fields: 'transaction_info',
+          page_size: 500,
+          page: currentPage
+        })
 
-      let total = 0
-      const transactions = response.data.transaction_details || []
-
-      for (const t of transactions) {
-        const info = t.transaction_info
-        if (info && info.transaction_status === 'S') {
-          const value = parseFloat(info.transaction_amount?.value || '0')
-          total += value
+        const transactions = response.data.transaction_details || []
+        for (const t of transactions) {
+          const info = t.transaction_info
+          if (info && info.transaction_status === 'S') {
+            total += parseFloat(info.transaction_amount?.value || '0')
+          }
         }
+
+        // Check if we need to fetch more pages
+        // The API returns total_pages or we check if we got a full page
+        const totalPages = response.data.total_pages || 1
+        hasMore = currentPage < totalPages && transactions.length > 0
+        currentPage++
       }
 
       return total
@@ -380,9 +414,19 @@ export class RevenueTrackingService {
       for (const conn of connections) {
         if (conn.provider === 'stripe' && conn.access_token) {
           const stripe = new Stripe(conn.access_token, { apiVersion: '2025-02-24.acacia' })
-          const subs = await stripe.subscriptions.list({ status: 'active', limit: 100 })
-          activeCount += subs.data.length
-          // Note: In production, we should handle pagination here too
+          for await (const _sub of stripe.subscriptions.list({ status: 'active', limit: 100 })) {
+            activeCount++
+          }
+        } else if (conn.provider === 'paypal') {
+          try {
+            const response = await this.paypalRequest(conn, 'GET', '/v1/billing/subscriptions', {
+               status: 'ACTIVE',
+               page_size: 1
+            })
+            activeCount += response.data.total_items || 0
+          } catch (err) {
+            logError('Failed to count PayPal subscriptions:', err)
+          }
         }
       }
 

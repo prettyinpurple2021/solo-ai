@@ -31,6 +31,12 @@ export interface LearningPathWithModules {
   }[];
 }
 
+export interface ProgressData {
+  completed: boolean;
+  metadata?: Record<string, any>;
+  last_position?: number;
+}
+
 export class LearningEngine {
   private userId: string;
 
@@ -73,9 +79,11 @@ export class LearningEngine {
     // For scalability, we'll fetch specific progress items.
     
     // Fetch all user progress entries for modules in this path
+    const moduleIds = path.modules.map(m => m.id);
     const progressEntries = await db.query.userLearningProgress.findMany({
         where: and(
-            eq(userLearningProgress.user_id, this.userId)
+            eq(userLearningProgress.user_id, this.userId),
+            sql`${userLearningProgress.module_id} IN ${moduleIds}`
         )
     });
 
@@ -104,7 +112,12 @@ export class LearningEngine {
   /**
    * Update user progress for a module and award XP
    */
-  async updateProgress(moduleId: string, status: "in_progress" | "completed") {
+  async updateProgress(
+    moduleId: string, 
+    status: "in_progress" | "completed", 
+    metadata?: Record<string, any>, 
+    lastPosition?: number
+  ) {
     const existing = await db.query.userLearningProgress.findFirst({
       where: and(
         eq(userLearningProgress.user_id, this.userId),
@@ -124,8 +137,10 @@ export class LearningEngine {
         .update(userLearningProgress)
         .set({
           status,
+          metadata: metadata || existing.metadata,
+          last_position: lastPosition !== undefined ? lastPosition : existing.last_position,
           last_accessed_at: now,
-          completed_at: status === "completed" ? now : existing.completed_at,
+          completed_at: status === "completed" ? (existing.completed_at || now) : existing.completed_at,
         })
         .where(eq(userLearningProgress.id, existing.id));
     } else {
@@ -137,6 +152,8 @@ export class LearningEngine {
         user_id: this.userId,
         module_id: moduleId,
         status,
+        metadata: metadata || {},
+        last_position: lastPosition || 0,
         last_accessed_at: now,
         completed_at: status === "completed" ? now : null,
       });
@@ -148,25 +165,14 @@ export class LearningEngine {
   }
 
   /**
-   * Award XP to user
+   * Award XP to user (Atomic update with quadratic level check)
    */
   private async awardXP(amount: number) {
-      // Fetch current XP
-      const user = await db.query.users.findFirst({
-          where: eq(users.id, this.userId),
-          columns: { xp: true, level: true }
-      });
-
-      if (!user) return;
-
-      const newXP = (user.xp || 0) + amount;
-      // Simple Level Formula: Level = Floor(sqrt(XP / 100)) + 1
-      const newLevel = Math.floor(Math.sqrt(newXP / 100)) + 1;
-
+      // Atomic increment and compute new level based on: level = floor(sqrt(xp/100)) + 1
       await db.update(users)
         .set({ 
-            xp: newXP,
-            level: newLevel
+            xp: sql`COALESCE(xp, 0) + ${amount}`,
+            level: sql`FLOOR(SQRT((COALESCE(xp, 0) + ${amount}) / 100)) + 1`
         })
         .where(eq(users.id, this.userId));
   }
@@ -174,9 +180,14 @@ export class LearningEngine {
   /**
    * Track progress (Alias for updateProgress with checks)
    */
-  async trackProgress(moduleId: string, progressData: any) {
+  async trackProgress(moduleId: string, progressData: ProgressData) {
      const status = progressData.completed ? "completed" : "in_progress";
-     await this.updateProgress(moduleId, status);
+     await this.updateProgress(
+         moduleId, 
+         status, 
+         progressData.metadata, 
+         progressData.last_position
+     );
   }
 
   /**
@@ -207,35 +218,19 @@ export class LearningEngine {
     const completedTitles = completedModules.map(m => `- ${m.title} (${m.module_type})`).join('\n');
     const availableTitles = allModules.map(m => `- ${m.title} (${m.module_type})`).join('\n');
 
-    const prompt = `
-      Analyze this user's learning progress and identify skill gaps.
-      
-      Completed Modules:
-      ${completedTitles}
-      
-      Available Curriculum:
-      ${availableTitles}
-      
-      Return a JSON array of objects with these fields:
-      - skill: string (The missing skill area)
-      - gap_level: "low" | "medium" | "high" | "critical"
-      - recommended_modules: string[] (Titles of modules from the available curriculum that would fill this gap)
-      - reasoning: string (Brief explanation)
-      
-      Limit to top 3 gaps.
-    `;
+    const skillGapSchema = z.object({
+      gaps: z.array(z.object({
+        skill: z.string(),
+        gap_level: z.enum(["low", "medium", "high", "critical"]),
+        recommended_modules: z.array(z.string()),
+        reasoning: z.string()
+      }))
+    });
 
     try {
-        const result = (await generateObject({
+        const result = await generateObject({
             model: openai("gpt-4o"),
-            schema: z.object({
-                gaps: z.array(z.object({
-                    skill: z.string(),
-                    gap_level: z.enum(["low", "medium", "high", "critical"]),
-                    recommended_modules: z.array(z.string()),
-                    reasoning: z.string()
-                }))
-            }) as any,
+            schema: skillGapSchema as any,
             prompt: `
               Analyze this user's learning progress and identify skill gaps.
               
@@ -247,7 +242,7 @@ export class LearningEngine {
               
               Return a JSON array of up to 3 skill gaps.
             `
-        })) as any;
+        }) as any;
 
         return result.object.gaps;
     } catch (e) {
@@ -278,22 +273,24 @@ export class LearningEngine {
     try {
       const { skillName, difficulty = 'intermediate' } = assessmentData;
       
-      const result = (await generateObject({
+      const assessmentSchema = z.object({
+        title: z.string(),
+        questions: z.array(z.object({
+          question: z.string(),
+          options: z.array(z.string()).length(4),
+          correctAnswerIndex: z.number().min(0).max(3),
+          explanation: z.string(),
+          difficulty: z.enum(['beginner', 'intermediate', 'advanced'])
+        }))
+      });
+
+      const result = await generateObject({
         model: openai("gpt-4o"),
-        schema: z.object({
-          title: z.string(),
-          questions: z.array(z.object({
-            question: z.string(),
-            options: z.array(z.string()).length(4),
-            correctAnswerIndex: z.number().min(0).max(3),
-            explanation: z.string(),
-            difficulty: z.enum(['beginner', 'intermediate', 'advanced'])
-          }))
-        }) as any,
+        schema: assessmentSchema as any,
         prompt: `Generate a skill assessment quiz for "${skillName}" at ${difficulty} level.
         The quiz should have 5 challenging questions that test practical knowledge and theoretical understanding.
         Ensure each question has exactly 4 options and a clear explanation for why the correct answer is right.`
-      })) as any;
+      }) as any;
 
       return {
         id: `assess_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`,
@@ -303,22 +300,36 @@ export class LearningEngine {
       };
     } catch (error) {
       logError('Failed to create skill assessment:', error);
-      throw new Error('Assessment generation failed');
+      throw new Error('Assessment generation failed', { cause: error });
     }
   }
 
 
   /**
-   * Get personalized recommendations
+   * Get personalized recommendations (Excluding paths user has already started)
    */
   async getPersonalizedRecommendations() {
-    // Return paths the user hasn't started yet
-    // simple logic: get all paths, filter out ones where all modules are done
-    // For MVP: Return 'beginner' paths first
-    return await db.query.learningPaths.findMany({
-      where: eq(learningPaths.difficulty, "beginner"),
-      limit: 3,
+    const startedPaths = await db.query.userLearningProgress.findMany({
+      where: eq(userLearningProgress.user_id, this.userId),
+      columns: { module_id: true }
     });
+
+    const startedModuleIds = startedPaths.map(p => p.module_id);
+    const startedModuleIdSet = new Set(startedModuleIds);
+
+    // This is a naive check; ideally we'd join but findMany doesn't support complex exclusions easily in query builder
+    // Fetch beginner paths and filter them
+    const paths = await db.query.learningPaths.findMany({
+      where: eq(learningPaths.difficulty, "beginner"),
+      with: {
+        modules: true
+      },
+      limit: 10 // Fetch a few more to filter
+    });
+
+    return paths
+      .filter(path => !path.modules.some(m => startedModuleIdSet.has(m.id)))
+      .slice(0, 3);
   }
 
   /**
@@ -343,12 +354,22 @@ export class LearningEngine {
         columns: { level: true, xp: true }
     });
 
+    const currentXP = user?.xp || 0;
+    const currentLevel = user?.level || 1;
+    
+    // Quadratic XP threshold: 100 * (level-1)^2 and 100 * level^2
+    const lowerThreshold = 100 * Math.pow(currentLevel - 1, 2);
+    const upperThreshold = 100 * Math.pow(currentLevel, 2);
+    const nextLevelProgress = upperThreshold > lowerThreshold 
+      ? ((currentXP - lowerThreshold) / (upperThreshold - lowerThreshold)) * 100
+      : 0;
+
     return {
       total_modules_completed: totalModulesCompleted,
       total_time_spent: totalModulesCompleted * 15, // Estimate 15 mins per module
-      current_level: user?.level || 1,
-      current_xp: user?.xp || 0,
-      next_level_progress: ((user?.xp || 0) % 100), // Simplified
+      current_level: currentLevel,
+      current_xp: currentXP,
+      next_level_progress: Math.max(0, Math.min(100, nextLevelProgress)),
       learning_velocity: "Steady",
       peer_rank: "Top 50%", 
     };

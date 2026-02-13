@@ -976,6 +976,9 @@ export class WorkflowEngine {
    * Get recent executions by user
    */
   async getExecutionsByUser(userId: string, limit: number = 20): Promise<WorkflowExecution[]> {
+    // Sanitize and clamp limit
+    const sanitizedLimit = Math.max(1, Math.min(100, Math.floor(limit)))
+    
     const results = await db.select({
       execution: workflowExecutions,
       workflow: workflows
@@ -984,7 +987,7 @@ export class WorkflowEngine {
     .leftJoin(workflows, eq(workflowExecutions.workflow_id, workflows.id))
     .where(eq(workflowExecutions.user_id, userId))
     .orderBy(desc(workflowExecutions.started_at))
-    .limit(limit)
+    .limit(sanitizedLimit)
 
     return results.map(({ execution, workflow }) => ({
       id: execution.id,

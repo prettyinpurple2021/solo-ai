@@ -184,9 +184,10 @@ export class ScrapingScheduler {
       }
     } else {
       // Failure - handle retry logic
-      const newRetryCount = currentJob.retry_count + 1
+      const currentRetryCount = currentJob.retry_count ?? 0;
+      const newRetryCount = currentRetryCount + 1;
       
-      if (newRetryCount >= currentJob.max_retries) {
+      if (newRetryCount >= (currentJob.max_retries ?? 3)) {
         // Max retries reached - mark as failed
         await db
           .update(scrapingJobs)
@@ -217,24 +218,35 @@ export class ScrapingScheduler {
 
   /**
    * Schedule a job for execution
+   * Handles JS setTimeout limits (2^31-1 ms) via recursive rescheduling
    */
   private scheduleJob(jobId: string, runAt: Date): void {
     // Clear existing timeout if any
     const existingTimeout = this.jobQueue.get(jobId)
     if (existingTimeout) {
       clearTimeout(existingTimeout)
+      this.jobQueue.delete(jobId)
     }
 
+    const MAX_TIMEOUT = 2147483647 // 2^31 - 1
     const delay = runAt.getTime() - Date.now()
     
     if (delay <= 0) {
       // Job should run immediately
       this.executeJob(jobId)
     } else {
-      // Schedule for future execution
+      // Schedule for future execution, capped at MAX_TIMEOUT
+      const actualDelay = Math.min(delay, MAX_TIMEOUT)
+      
       const timeout = setTimeout(() => {
-        this.executeJob(jobId)
-      }, delay)
+        this.jobQueue.delete(jobId)
+        if (delay > MAX_TIMEOUT) {
+          // Reschedule remaining time
+          this.scheduleJob(jobId, runAt)
+        } else {
+          this.executeJob(jobId)
+        }
+      }, actualDelay)
       
       this.jobQueue.set(jobId, timeout)
     }
@@ -366,6 +378,9 @@ export class ScrapingScheduler {
       case 'interval':
         // Frequency value is in minutes
         const minutes = parseInt(frequencyValue, 10)
+        if (isNaN(minutes) || minutes <= 0) {
+          throw new Error(`Invalid interval frequency: ${frequencyValue}`)
+        }
         return new Date(now.getTime() + minutes * 60 * 1000)
       
       case 'cron':
@@ -409,52 +424,88 @@ export class ScrapingScheduler {
       const [min, hour, day, month, dayOfWeek] = parts;
 
       // Helper to parse cron field
-      const parseField = (field: string, minLimit: number, maxLimit: number): number[] => {
+      const parseField = (field: string, minLimit: number, maxLimit: number, isDayOfWeek = false): number[] => {
+        const sanitize = (val: number) => {
+          let v = Math.max(minLimit, Math.min(maxLimit, Math.round(val)));
+          if (isDayOfWeek && v === 7) return 0; // POSIX 7 -> 0 (Sunday)
+          return v;
+        };
+
+        let result: number[] = [];
+
         if (field === '*') {
-          return Array.from({ length: maxLimit - minLimit + 1 }, (_, i) => i + minLimit);
-        }
-        if (field.includes('/')) {
+          result = Array.from({ length: maxLimit - minLimit + 1 }, (_, i) => i + minLimit);
+        } else if (field.includes('/')) {
           const [range, step] = field.split('/');
-          const stepVal = parseInt(step, 10);
+          const stepVal = Math.max(1, parseInt(step, 10) || 1);
           let start = minLimit;
           let end = maxLimit;
           if (range !== '*') {
             const [rStart, rEnd] = range.split('-').map(v => parseInt(v, 10));
-            start = rStart;
-            end = rEnd || maxLimit;
+            start = isNaN(rStart) ? minLimit : rStart;
+            end = isNaN(rEnd) ? maxLimit : rEnd;
           }
-          const values: number[] = [];
           for (let i = start; i <= end; i += stepVal) {
-            values.push(i);
+            result.push(i);
           }
-          return values;
+        } else if (field.includes(',')) {
+          // Split by comma and recursively parse each segment, then flatten and sort
+          const segments = field.split(',');
+          for (const segment of segments) {
+            const parsed = parseField(segment, minLimit, maxLimit, isDayOfWeek);
+            result.push(...parsed);
+          }
+        } else if (field.includes('-')) {
+          const [startStr, endStr] = field.split('-');
+          const start = parseInt(startStr, 10);
+          const end = parseInt(endStr, 10);
+          if (!isNaN(start) && !isNaN(end)) {
+            const s = Math.min(start, end);
+            const e = Math.max(start, end);
+            for (let i = s; i <= e; i++) {
+              result.push(i);
+            }
+          }
+        } else {
+          const val = parseInt(field, 10);
+          if (!isNaN(val)) result = [val];
         }
-        if (field.includes(',')) {
-          return field.split(',').map(v => parseInt(v, 10));
-        }
-        if (field.includes('-')) {
-          const [start, end] = field.split('-').map(v => parseInt(v, 10));
-          return Array.from({ length: end - start + 1 }, (_, i) => i + start);
-        }
-        return [parseInt(field, 10)];
+
+        // Final sanitization, deduplication and sorting
+        return Array.from(new Set(result.map(sanitize))).sort((a, b) => a - b);
       };
 
       const allowedMins = parseField(min, 0, 59);
       const allowedHours = parseField(hour, 0, 23);
       const allowedDays = parseField(day, 1, 31);
-      const allowedMonths = parseField(month, 1, 12); // 1-12
-      const allowedDaysOfWeek = parseField(dayOfWeek, 0, 6); // 0-6 (Sun-Sat)
+      const allowedMonths = parseField(month, 1, 12);
+      const allowedDaysOfWeek = parseField(dayOfWeek, 0, 7, true); // 0-7 allowed for parsing
+
+      // POSIX Behavior: If both are restricted (not '*'), then we match if EITHER matches.
+      const isDayRestricted = day !== '*';
+      const isDayOfWeekRestricted = dayOfWeek !== '*';
 
       // Find next occurrence (limited to searching 1 year ahead)
       for (let i = 1; i <= 525600; i++) {
         next.setMinutes(next.getMinutes() + 1);
         
+        const dayMatch = allowedDays.includes(next.getDate());
+        const dayOfWeekMatch = allowedDaysOfWeek.includes(next.getDay());
+        
+        let dateMatches = false;
+        if (isDayRestricted && isDayOfWeekRestricted) {
+          // Both restricted -> OR semantics
+          dateMatches = dayMatch || dayOfWeekMatch;
+        } else {
+          // One or neither restricted -> AND semantics (effectively just the restricted one)
+          dateMatches = dayMatch && dayOfWeekMatch;
+        }
+
         if (
           allowedMins.includes(next.getMinutes()) &&
           allowedHours.includes(next.getHours()) &&
-          allowedDays.includes(next.getDate()) &&
-          allowedMonths.includes(next.getMonth() + 1) &&
-          allowedDaysOfWeek.includes(next.getDay())
+          dateMatches &&
+          allowedMonths.includes(next.getMonth() + 1)
         ) {
           return next;
         }

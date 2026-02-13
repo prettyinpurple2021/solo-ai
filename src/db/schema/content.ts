@@ -167,6 +167,8 @@ export const userLearningProgress = pgTable('user_learning_progress', {
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     module_id: text('module_id').notNull().references(() => learningModules.id, { onDelete: 'cascade' }),
     status: varchar('status', { length: 50 }).default('not_started'), // in_progress, completed
+    metadata: jsonb('metadata').default({}),
+    last_position: integer('last_position'),
     completed_at: timestamp('completed_at'),
     last_accessed_at: timestamp('last_accessed_at').defaultNow(),
 });

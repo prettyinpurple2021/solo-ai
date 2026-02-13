@@ -12,7 +12,7 @@ import {
   collaborationMessages,
   collaborationCheckpoints 
 } from '@/db/schema'
-import { eq, and, inArray } from 'drizzle-orm'
+import { eq, and, inArray, sql } from 'drizzle-orm'
 import type { 
   CollaborationSession, 
   AgentMessage, 
@@ -478,6 +478,36 @@ export class SessionManager {
     } catch (error) {
       logError(`Error archiving session: ${error}`)
       return false
+    }
+  }
+
+  /**
+   * Recovers hanging sessions that have been active for too long with no updates
+   */
+  async recoverHangingSessions(maxAgeMs: number = 3600000): Promise<number> {
+    try {
+      const cutoff = new Date(Date.now() - maxAgeMs)
+      
+      const hangingSessions = await db.query.collaborationSessions.findMany({
+        where: and(
+          eq(collaborationSessions.status, 'active'),
+          sql`${collaborationSessions.updated_at} < ${cutoff}`
+        )
+      })
+
+      if (hangingSessions.length === 0) return 0
+
+      logInfo(`Found ${hangingSessions.length} hanging sessions. Attempting recovery...`)
+
+      for (const session of hangingSessions) {
+        // For now, we'll mark them as 'paused' so they can be resumed or manually checked
+        await this.pauseSession(session.id, 'Automatic recovery: Session hanging for too long')
+      }
+
+      return hangingSessions.length
+    } catch (error) {
+      logError('Error during session recovery:', error)
+      return 0
     }
   }
 

@@ -1,6 +1,7 @@
 import { db } from '@/db';
 import { trafficLogs } from '@/db/schema/analytics';
-import { logError } from '@/lib/logger';
+import { logError, logWarn } from '@/lib/logger';
+import { z } from 'zod';
 
 export interface TrafficData {
   sessionId: string;
@@ -12,16 +13,36 @@ export interface TrafficData {
   metadata?: Record<string, any>;
 }
 
+const UUID_SCHEMA = z.string().uuid();
+
 export class TrafficService {
   /**
    * Logs a page view or API request for analytics tracking
    */
   static async logRequest(data: TrafficData): Promise<void> {
     try {
+      // Validate sessionId is a UUID to prevent DB errors
+      const sessionIdParse = UUID_SCHEMA.safeParse(data.sessionId);
+      if (!sessionIdParse.success) {
+        logWarn('TrafficService: Invalid sessionId provided', { sessionId: data.sessionId });
+        return;
+      }
+
+      // We allow userId to be non-uuid as it might be a Clerk ID or similar string
+      
+      // Basic URL normalization
+      let sanitizedUrl = data.url;
+      try {
+        const urlObj = new URL(data.url, 'http://localhost');
+        sanitizedUrl = urlObj.toString();
+      } catch (e) {
+        logWarn('TrafficService: Invalid URL provided', { url: data.url });
+      }
+
       await db.insert(trafficLogs).values({
-        sessionId: data.sessionId,
+        sessionId: sessionIdParse.data,
         userId: data.userId || null,
-        url: data.url,
+        url: sanitizedUrl,
         referrer: data.referrer || null,
         userAgent: data.userAgent || null,
         ipAddress: data.ipAddress || null,
@@ -38,16 +59,25 @@ export class TrafficService {
    */
   static async getSessionAttribution(sessionId: string) {
     try {
+      const sessionIdParse = UUID_SCHEMA.safeParse(sessionId);
+      if (!sessionIdParse.success) return null;
+
       // Logic to find the first entry for this session to determine source
       const firstEntry = await db.query.trafficLogs.findFirst({
-        where: (logs, { eq }) => eq(logs.sessionId, sessionId),
+        where: (logs, { eq }) => eq(logs.sessionId, sessionIdParse.data),
         orderBy: (logs, { asc }) => [asc(logs.timestamp)],
       });
 
       if (!firstEntry) return null;
 
       const referrer = firstEntry.referrer || 'direct';
-      const url = new URL(firstEntry.url, 'http://localhost'); // base for relative urls
+      let url: URL;
+      try {
+        url = new URL(firstEntry.url, 'http://localhost');
+      } catch (e) {
+        return null;
+      }
+      
       const utmSource = url.searchParams.get('utm_source');
       const utmMedium = url.searchParams.get('utm_medium');
       const utmCampaign = url.searchParams.get('utm_campaign');
@@ -68,11 +98,16 @@ export class TrafficService {
     if (referrer === 'direct') return 'direct';
     try {
       const refUrl = new URL(referrer);
-      if (refUrl.hostname.includes('google.com')) return 'google';
-      if (refUrl.hostname.includes('facebook.com')) return 'facebook';
-      if (refUrl.hostname.includes('twitter.com') || refUrl.hostname.includes('t.co')) return 'twitter';
-      if (refUrl.hostname.includes('linkedin.com')) return 'linkedin';
-      return refUrl.hostname;
+      const host = refUrl.hostname.toLowerCase();
+      
+      if (host.includes('google.com')) return 'google';
+      if (host.includes('facebook.com') || host.includes('fb.com')) return 'facebook';
+      if (host.includes('twitter.com') || host.includes('t.co') || host.includes('x.com')) return 'twitter';
+      if (host.includes('linkedin.com')) return 'linkedin';
+      if (host.includes('instagram.com')) return 'instagram';
+      if (host.includes('youtube.com') || host.includes('youtu.be')) return 'youtube';
+      
+      return host;
     } catch {
       return 'unknown';
     }
