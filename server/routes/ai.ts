@@ -273,7 +273,21 @@ router.post('/war-room', (authMiddleware as any), requireAi, async (req: Request
             }
         }
 
-        const prompt = `${context}\n${deepMind}\n${historyContext}\nThe user has convened "The War Room" to discuss: "${topic}". Simulate a debate between Roxy, Echo, Lexi, Glitch. Return JSON with dialogue, consensus, and actionPlan.`;
+        const agentList = Object.values(AGENTS).map(a => `${a.name} (${a.title})`).join(', ');
+        const prompt = `
+            ${context}
+            ${deepMind}
+            ${historyContext}
+            === THE WAR ROOM ===
+            TOPIC: "${topic}"
+            
+            PARTICIPANTS: ${agentList}
+            
+            MISSION: Conduct a strategic debate between at least 4 relevant specialists from the team above. 
+            Ensure they clash on priorities (e.g., Aggressive Growth vs. Legal Risk vs. Technical Feasibility).
+            
+            Return JSON with dialogue, consensus, and actionable item plan.
+        `;
 
         const response = await ai!.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -290,7 +304,19 @@ router.post('/war-room', (authMiddleware as any), requireAi, async (req: Request
                 }
             }
         });
-        return res.json(JSON.parse(response.text || '{}'));
+
+        const data = JSON.parse(response.text || '{}');
+
+        // Persist the session
+        await db.insert(warRoomSessions).values({
+            userId,
+            topic,
+            consensus: data.consensus,
+            actionPlan: data.actionPlan,
+            dialogue: data.dialogue
+        });
+
+        return res.json(data);
     } catch (error) {
         logError("War Room Error", error);
         return res.status(500).json({ error: 'Generation failed' });

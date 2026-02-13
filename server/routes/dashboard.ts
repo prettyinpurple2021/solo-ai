@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { db } from '../db';
-import { users, tasks, businessContext, chatHistory,} from '../db/schema';
+import { users, tasks, businessContext, chatHistory, dailyIntelligence } from '../db/schema';
 import { eq, desc, and, gte } from 'drizzle-orm';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { logError } from '../utils/logger';
@@ -62,66 +62,50 @@ router.get('/', authMiddleware, async (req: any, res: any) => {
         
         try {
             // Check cache first
-            const todayStr = new Date().toISOString().split('T')[0]; // Schema expects text/date, check format
+            const todayStr = new Date().toISOString().split('T')[0]; 
             
-            // Try to fetch from DB if table exists in schema
             try {
-                // Determine if we have the table in the current schema object
-                // @ts-ignore - access global db schema or import
-                // We'll trust the import from relative path if we fix strictly
-                
-                // Let's assume dailyIntelligence is active in the schema import
-                // And use correct property names from server/db/schema.ts:
-                // motivationalMessage, date (text), userId (camelCase in generic, but snippet showed text("user_id"))
+                const cachedInsight = await db.select().from(dailyIntelligence)
+                    .where(and(
+                        eq(dailyIntelligence.userId, userId),
+                        eq(dailyIntelligence.date, todayStr)
+                    ))
+                    .limit(1);
+                    
+                if (cachedInsight[0] && cachedInsight[0].motivationalMessage) {
+                    dailyInsight = cachedInsight[0].motivationalMessage;
+                } else {
+                    // Generate new insight via Gemini
+                    if (process.env.GEMINI_API_KEY) {
+                        const { GoogleGenerativeAI } = await import('@google/generative-ai');
+                        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+                        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-                // We need to re-import schema to get the typed table
-                const schema = await import('../db/schema'); 
-                
-                if (schema.dailyIntelligence) {
-                     const cachedInsight = await db.select().from(schema.dailyIntelligence)
-                        .where(and(
-                            // @ts-ignore - schema mismatch resolution
-                            eq(schema.dailyIntelligence.userId, userId),
-                            // @ts-ignore
-                            eq(schema.dailyIntelligence.date, todayStr)
-                        ))
-                        .limit(1);
+                        const prompt = `
+                            Generate a single, short, motivating sentence (max 15 words) for a solopreneur.
+                            Context:
+                            - Completed tasks today: ${completedTasksCount}
+                            - Remaining tasks: ${userTasks.length - completedTasksCount}
+                            - Top pending task: "${userTasks[0]?.title || 'Planning'}"
+                            - Goal: Productivity and focus.
+                            Do not use hashtags. Be punchy and direct.
+                        `;
+
+                        const result = await model.generateContent(prompt);
+                        const response = await result.response;
+                        const text = response.text().trim();
                         
-                    if (cachedInsight[0] && cachedInsight[0].motivationalMessage) {
-                        dailyInsight = cachedInsight[0].motivationalMessage;
-                    } else {
-                        // Generate new insight via Gemini
-                        if (process.env.GOOGLE_AI_API_KEY) {
-                             const { GoogleGenerativeAI } = await import('@google/generative-ai');
-                             const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY);
-                             const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-                             const prompt = `
-                                Generate a single, short, motivating sentence (max 15 words) for a solopreneur.
-                                Context:
-                                - Completed tasks today: ${completedTasksCount}
-                                - Remaining tasks: ${userTasks.length - completedTasksCount}
-                                - Top pending task: "${userTasks[0]?.title || 'Planning'}"
-                                - Goal: Productivity and focus.
-                                Do not use hashtags. Be punchy and direct.
-                             `;
-
-                             const result = await model.generateContent(prompt);
-                             const response = await result.response;
-                             const text = response.text().trim();
-                             
-                             if (text) {
-                                dailyInsight = text;
-                                // Cache it
-                                await db.insert(schema.dailyIntelligence).values({
-                                    userId: userId,
-                                    date: todayStr,
-                                    motivationalMessage: text,
-                                    priorityActions: [],
-                                    alerts: [],
-                                    insights: []
-                                });
-                             }
+                        if (text) {
+                            dailyInsight = text;
+                            // Cache it
+                            await db.insert(dailyIntelligence).values({
+                                userId: userId,
+                                date: todayStr,
+                                motivationalMessage: text,
+                                priorityActions: [],
+                                alerts: [],
+                                insights: []
+                            });
                         }
                     }
                 }
@@ -133,7 +117,6 @@ router.get('/', authMiddleware, async (req: any, res: any) => {
                     dailyInsight = `You have ${userTasks.length} tasks on your plate. Focus on "${userTasks[0].title}" first.`;
                 }
             }
-           
         } catch (e) {
             logError('Insight generation failed', e);
         }

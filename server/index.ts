@@ -24,6 +24,7 @@ import path from 'path';
 import { setIo, broadcastToUser } from './realtime';
 import { logInfo, logWarn, logError } from './utils/logger';
 import rateLimit from 'express-rate-limit';
+import dashboardRouter from './routes/dashboard';
 
 const app = express();
 // Trust proxy for correct IP identification behind reverse proxies (e.g., Render, Heroku, AWS)
@@ -185,6 +186,7 @@ app.use('/api/ai/presentation', presentationAiRouter);
 app.use('/api/search', searchRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/unified-briefcase', briefcaseRouter);
+app.use('/api/dashboard', dashboardRouter);
 
 // Auth Routes
 app.post('/api/auth/signup', async (req: Request, res: Response) => {
@@ -581,7 +583,7 @@ app.post('/api/chat', async (req: Request, res: Response) => {
                 userId,
                 role: m.role,
                 text: m.text,
-                timestamp: String(m.timestamp)
+                timestamp: m.timestamp
             }));
             await db.insert(chatHistory).values(toInsert);
         }
@@ -672,8 +674,14 @@ app.get('/api/reports', async (req: Request, res: Response) => {
             .orderBy(desc(competitorReports.generatedAt));
 
         const formatted = reports.map((r: any) => ({
-            ...r.data as object,
             id: r.id,
+            competitorName: r.competitorName,
+            threatLevel: r.threatLevel,
+            missionBrief: r.missionBrief,
+            intel: r.intel,
+            vulnerabilities: r.vulnerabilities,
+            strengths: r.strengths,
+            metrics: r.metrics,
             generatedAt: r.generatedAt
         }));
 
