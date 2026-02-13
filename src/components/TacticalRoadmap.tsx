@@ -21,6 +21,12 @@ const getAgentColor = (id: AgentId) => {
         case AgentId.ECHO: return 'border-neon-magenta/50 text-neon-magenta';
         case AgentId.LEXI: return 'border-neon-cyan/50 text-neon-cyan';
         case AgentId.GLITCH: return 'border-neon-orange/50 text-neon-orange';
+        case AgentId.FINN: return 'border-emerald-500/50 text-emerald-400';
+        case AgentId.AURA: return 'border-sky-400/50 text-sky-400';
+        case AgentId.NOVA: return 'border-purple-400/50 text-purple-400';
+        case AgentId.BLAZE: return 'border-orange-500/50 text-orange-500';
+        case AgentId.VEX: return 'border-slate-400/50 text-slate-400';
+        case AgentId.LUMI: return 'border-violet-400/50 text-violet-400';
         default: return 'border-gray-500 text-gray-400';
     }
 };

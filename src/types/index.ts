@@ -3,7 +3,12 @@ export enum AgentId {
     ECHO = 'ECHO',
     LEXI = 'LEXI',
     GLITCH = 'GLITCH',
-    LUMI = 'LUMI'
+    LUMI = 'LUMI',
+    FINN = 'FINN',
+    AURA = 'AURA',
+    NOVA = 'NOVA',
+    BLAZE = 'BLAZE',
+    VEX = 'VEX'
 }
 
 export interface Agent {

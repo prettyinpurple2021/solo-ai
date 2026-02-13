@@ -367,7 +367,27 @@ router.post('/tactical-plan', (authMiddleware as any), requireAi, async (req: Re
         const { goal } = req.body;
         const userId = (req as AuthRequest).userId!;
         const context = await getContext(userId);
-        const prompt = `${context}\nGoal: "${goal}". Break into tasks for Roxy, Echo, Lexi, Glitch. Return JSON array of tasks.`;
+        const prompt = `
+            ${context}
+            === MISSION: TACTICAL ROADMAP GENERATION ===
+            Break the following goal into a sequence of highly actionable, professional tasks.
+            
+            GOAL: "${goal}"
+            
+            ASSIGNABLE AGENTS (Team SoloSuccess):
+            - Roxy: Business Coach / Strategy
+            - Finn: Profit & Cashflow Specialist
+            - Aura: Wellness Guardian / High Performance
+            - Echo: Marketing Guru
+            - Lexi: Legal Eagle
+            - Nova: Product Visionary
+            - Lumi: Compliance & QA
+            - Blaze: Sales & Growth
+            - Glitch: Systems & Tech expert
+            - Vex: Operations Manager
+            
+            Return a JSON array of tasks that efficiently utilize these specialists.
+        `;
 
         const response = await ai!.models.generateContent({
             model: 'gemini-2.5-flash',
@@ -874,6 +894,66 @@ router.post('/market-pulse', (authMiddleware as any), requireAi, async (req: Req
         return res.json({ content: response.text || "", sources });
     } catch (error) {
         logError("Market Pulse Error", error);
+        return res.status(500).json({ error: 'Generation failed' });
+    }
+});
+
+// Analyze Opportunity
+router.post('/analyze-opportunity', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+    try {
+        const { opportunity } = req.body;
+        const userId = (req as AuthRequest).userId!;
+        const context = await getContext(userId);
+        
+        const prompt = `
+            ${context}
+            === MISSION: STRATEGIC OPPORTUNITY ANALYSIS ===
+            Analyze the following detected opportunity and provide nuanced scoring.
+            
+            OPPORTUNITY:
+            Title: "${opportunity.title}"
+            Description: "${opportunity.description}"
+            Type: "${opportunity.opportunityType}"
+            Evidence: ${JSON.stringify(opportunity.evidence)}
+            
+            SCORING CRITERIA (0.0 to 10.0):
+            - impactScore: Expected revenue/growth impact.
+            - effortScore: Implementation difficulty (Inverted: 10.0 = Very Easy, 1.0 = Extremely Hard).
+            - timingScore: Market urgency/seasonality.
+            - riskScore: Likelihood of failure or competitor counter-move (Inverted: 10.0 = Low Risk, 1.0 = Critical Risk).
+            - resourceScore: Feasibility given current solo-founder constraints.
+            - strategicAlignmentScore: How well it fits the Brand DNA.
+            
+            Provide a detailed "verdict" and "actionableInsights" for each recommendation.
+        `;
+
+        const response = await ai!.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+            config: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                    type: Type.OBJECT,
+                    properties: {
+                        priorityScore: { type: Type.NUMBER },
+                        impactScore: { type: Type.NUMBER },
+                        effortScore: { type: Type.NUMBER },
+                        timingScore: { type: Type.NUMBER },
+                        confidenceScore: { type: Type.NUMBER },
+                        riskScore: { type: Type.NUMBER },
+                        resourceScore: { type: Type.NUMBER },
+                        strategicAlignmentScore: { type: Type.NUMBER },
+                        verdict: { type: Type.STRING },
+                        actionableInsights: { type: Type.ARRAY, items: { type: Type.STRING } }
+                    },
+                    required: ['priorityScore', 'impactScore', 'effortScore', 'timingScore', 'confidenceScore', 'riskScore', 'resourceScore', 'strategicAlignmentScore', 'verdict', 'actionableInsights']
+                }
+            }
+        });
+
+        return res.json(JSON.parse(response.text || '{}'));
+    } catch (error) {
+        logError("Analyze Opportunity Error", error);
         return res.status(500).json({ error: 'Generation failed' });
     }
 });

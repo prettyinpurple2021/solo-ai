@@ -345,5 +345,14 @@ export const geminiService = {
             logError('Product Spec Error:', error);
             return null;
         }
+    },
+
+    async analyzeOpportunity(opportunity: any): Promise<any> {
+        try {
+            return await apiService.post<any>('/ai/analyze-opportunity', { opportunity });
+        } catch (error) {
+            logError('Analyze Opportunity Error:', error);
+            return null;
+        }
     }
 };

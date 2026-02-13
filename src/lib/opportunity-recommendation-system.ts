@@ -2,6 +2,7 @@ import { db } from '@/lib/db'
 import { competitiveOpportunities, opportunityActions, opportunityMetrics, competitorProfiles } from '@/db/schema'
 import { eq, and, desc, asc, inArray, gte, not, isNull, sql } from 'drizzle-orm'
 import { logError } from '@/lib/logger'
+import { geminiService } from '@/services/geminiService'
 
 export interface OpportunityDetectionResult {
   id: string
@@ -96,86 +97,83 @@ export class OpportunityRecommendationSystem {
    */
   async calculatePriorityScore(opportunity: OpportunityDetectionResult): Promise<OpportunityPrioritization> {
     try {
-      // Impact scoring (0-10)
-      const impactScore = this.calculateImpactScore(opportunity)
-
-      // Effort scoring (0-10, inverted - lower effort = higher score)
-      const effortScore = this.calculateEffortScore(opportunity)
-
-      // Timing scoring (0-10)
-      const timingScore = this.calculateTimingScore(opportunity)
-
-      // Confidence scoring (0-10)
-      const confidenceScore = opportunity.confidence * 10
-
-      // Risk scoring (0-10, inverted - lower risk = higher score)
-      const riskScore = await this.calculateRiskScore(opportunity)
-
-      // Resource availability scoring (0-10)
-      const resourceScore = await this.calculateResourceScore(opportunity)
-
-      // Strategic alignment scoring (0-10)
-      const strategicAlignmentScore = await this.calculateStrategicAlignmentScore(opportunity)
-
-      // Competitive advantage scoring (0-10)
-      const competitiveAdvantageScore = this.calculateCompetitiveAdvantageScore(opportunity)
-
-      // Market timing scoring (0-10)
-      const marketTimingScore = await this.calculateMarketTimingScore(opportunity)
-
-      // Weighted priority score calculation
-      const weights = {
-        impact: 0.25,
-        effort: 0.15,
-        timing: 0.15,
-        confidence: 0.10,
-        risk: 0.10,
-        resource: 0.10,
-        strategicAlignment: 0.10,
-        competitiveAdvantage: 0.03,
-        marketTiming: 0.02
+      // Use AI for real strategic analysis instead of hardcoded maps
+      const aiAnalysis = await geminiService.analyzeOpportunity(opportunity);
+      
+      if (aiAnalysis) {
+        return {
+          opportunityId: opportunity.id,
+          priorityScore: aiAnalysis.priorityScore,
+          impactScore: aiAnalysis.impactScore,
+          effortScore: aiAnalysis.effortScore,
+          timingScore: aiAnalysis.timingScore,
+          confidenceScore: aiAnalysis.confidenceScore,
+          riskScore: aiAnalysis.riskScore,
+          resourceScore: aiAnalysis.resourceScore,
+          strategicAlignmentScore: aiAnalysis.strategicAlignmentScore,
+          competitiveAdvantageScore: aiAnalysis.strategicAlignmentScore, // Fallback to alignment
+          marketTimingScore: aiAnalysis.timingScore // Fallback to timing
+        };
       }
 
-      const priorityScore = (
-        impactScore * weights.impact +
-        effortScore * weights.effort +
-        timingScore * weights.timing +
-        confidenceScore * weights.confidence +
-        riskScore * weights.risk +
-        resourceScore * weights.resource +
-        strategicAlignmentScore * weights.strategicAlignment +
-        competitiveAdvantageScore * weights.competitiveAdvantage +
-        marketTimingScore * weights.marketTiming
-      )
-
-      return {
-        opportunityId: opportunity.id,
-        priorityScore,
-        impactScore,
-        effortScore,
-        timingScore,
-        confidenceScore,
-        riskScore,
-        resourceScore,
-        strategicAlignmentScore,
-        competitiveAdvantageScore,
-        marketTimingScore
-      }
+      // Fallback to legacy logic if AI is unavailable
+      return this.calculateFallbackPriorityScore(opportunity);
     } catch (error) {
       logError('Error calculating priority score:', error)
-      return {
-        opportunityId: opportunity.id,
-        priorityScore: 5,
-        impactScore: 5,
-        effortScore: 5,
-        timingScore: 5,
-        confidenceScore: 5,
-        riskScore: 5,
-        resourceScore: 5,
-        strategicAlignmentScore: 5,
-        competitiveAdvantageScore: 5,
-        marketTimingScore: 5
-      }
+      return this.calculateFallbackPriorityScore(opportunity);
+    }
+  }
+
+  /**
+   * Legacy hardcoded scoring for resilience
+   */
+  private async calculateFallbackPriorityScore(opportunity: OpportunityDetectionResult): Promise<OpportunityPrioritization> {
+    const impactScore = this.calculateImpactScore(opportunity)
+    const effortScore = this.calculateEffortScore(opportunity)
+    const timingScore = this.calculateTimingScore(opportunity)
+    const confidenceScore = opportunity.confidence * 10
+    const riskScore = await this.calculateRiskScore(opportunity)
+    const resourceScore = await this.calculateResourceScore(opportunity)
+    const strategicAlignmentScore = await this.calculateStrategicAlignmentScore(opportunity)
+    const competitiveAdvantageScore = this.calculateCompetitiveAdvantageScore(opportunity)
+    const marketTimingScore = await this.calculateMarketTimingScore(opportunity)
+
+    const weights = {
+      impact: 0.25,
+      effort: 0.15,
+      timing: 0.15,
+      confidence: 0.10,
+      risk: 0.10,
+      resource: 0.10,
+      strategicAlignment: 0.10,
+      competitiveAdvantage: 0.03,
+      marketTiming: 0.02
+    }
+
+    const priorityScore = (
+      impactScore * weights.impact +
+      effortScore * weights.effort +
+      timingScore * weights.timing +
+      confidenceScore * weights.confidence +
+      riskScore * weights.risk +
+      resourceScore * weights.resource +
+      strategicAlignmentScore * weights.strategicAlignment +
+      competitiveAdvantageScore * weights.competitiveAdvantage +
+      marketTimingScore * weights.marketTiming
+    )
+
+    return {
+      opportunityId: opportunity.id,
+      priorityScore,
+      impactScore,
+      effortScore,
+      timingScore,
+      confidenceScore,
+      riskScore,
+      resourceScore,
+      strategicAlignmentScore,
+      competitiveAdvantageScore,
+      marketTimingScore
     }
   }
 
