@@ -1,9 +1,9 @@
-
 import { db } from './db';
 import { sql } from 'drizzle-orm';
+import { logInfo, logError } from './utils/logger';
 
 async function main() {
-    console.log('Creating missing AI tables...');
+    logInfo('Creating missing AI tables...');
 
     // Competitor Reports
     await db.execute(sql`DROP TABLE IF EXISTS competitor_reports;`);
@@ -21,7 +21,7 @@ async function main() {
             generated_at TIMESTAMP DEFAULT NOW()
         );
     `);
-    console.log('Created competitor_reports');
+    logInfo('Created competitor_reports');
 
     // Board Reports
     await db.execute(sql`DROP TABLE IF EXISTS board_reports;`);
@@ -36,7 +36,7 @@ async function main() {
             generated_at TIMESTAMP DEFAULT NOW()
         );
     `);
-    console.log('Created board_reports');
+    logInfo('Created board_reports');
 
     // Pivot Analyses
     await db.execute(sql`DROP TABLE IF EXISTS pivot_analyses;`);
@@ -48,7 +48,7 @@ async function main() {
             generated_at TIMESTAMP DEFAULT NOW()
         );
     `);
-    console.log('Created pivot_analyses');
+    logInfo('Created pivot_analyses');
 
     // War Room Sessions
     await db.execute(sql`DROP TABLE IF EXISTS war_room_sessions;`);
@@ -63,7 +63,7 @@ async function main() {
             created_at TIMESTAMP DEFAULT NOW()
         );
     `);
-    console.log('Created war_room_sessions');
+    logInfo('Created war_room_sessions');
 
     // Contacts
     await db.execute(sql`DROP TABLE IF EXISTS contacts;`);
@@ -84,7 +84,7 @@ async function main() {
             updated_at TIMESTAMP DEFAULT NOW()
         );
     `);
-    console.log('Created contacts');
+    logInfo('Created contacts');
 
     // Pitch Decks (Update for title)
     // NOTE: This drops existing decks! In production, use ALTER TABLE. Here we assume localized dev/new schema.
@@ -103,13 +103,13 @@ async function main() {
             updated_at TIMESTAMP DEFAULT NOW()
         );
     `);
-    console.log('Recreated pitch_decks with correct schema');
+    logInfo('Recreated pitch_decks with correct schema');
 
-    console.log('All missing AI tables created successfully.');
+    logInfo('All missing AI tables created successfully.');
     process.exit(0);
 }
 
 main().catch((err) => {
-    console.error('Migration failed:', err);
+    logError('Migration failed', err);
     process.exit(1);
 });

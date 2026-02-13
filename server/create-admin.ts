@@ -3,6 +3,7 @@ import { users } from './db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import { logInfo, logError } from './utils/logger';
 
 async function createAdminUser() {
   const email = 'testadmin@solosuccess.ai';
@@ -11,19 +12,19 @@ async function createAdminUser() {
   const fullName = 'Test Admin';
   const role = 'admin';
 
-  console.log(`Checking if user ${email} already exists...`);
+  logInfo(`Checking if user ${email} already exists...`);
 
   try {
     const existingUser = await db.select().from(users).where(eq(users.email, email));
 
     if (existingUser.length > 0) {
-      console.log(`User ${email} already exists. Updating role to admin...`);
+      logInfo(`User ${email} already exists. Updating role to admin...`);
       await db.update(users)
         .set({ role: 'admin' })
         .where(eq(users.email, email));
-      console.log('User role updated successfully.');
+      logInfo('User role updated successfully.');
     } else {
-      console.log(`Creating new admin user ${email}...`);
+      logInfo(`Creating new admin user ${email}...`);
       const hashedPassword = await bcrypt.hash(password, 10);
       
       await db.insert(users).values({
@@ -42,10 +43,10 @@ async function createAdminUser() {
         isVerified: true,
       });
       
-      console.log('Admin user created successfully.');
+      logInfo('Admin user created successfully.');
     }
   } catch (error) {
-    console.error('Error creating admin user:', error);
+    logError('Error creating admin user', error);
   }
   process.exit(0);
 }

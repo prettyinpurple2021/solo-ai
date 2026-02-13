@@ -1,9 +1,9 @@
-
 import { db } from './db';
 import { sql } from 'drizzle-orm';
+import { logInfo, logError } from './utils/logger';
 
 async function main() {
-  console.log('Fixing users table id sequence...');
+  logInfo('Fixing users table id sequence...');
   try {
     // 1. Create sequence if not exists
     await db.execute(sql`CREATE SEQUENCE IF NOT EXISTS users_id_seq;`);
@@ -20,7 +20,7 @@ async function main() {
     // setval(seq, val, false) means nextval will be val.
     
     const nextVal = maxId + 1;
-    console.log(`Max ID is: ${maxId}, setting sequence to it.`);
+    logInfo(`Max ID is: ${maxId}, setting sequence to it.`);
     
     // Use raw string interpolation for the integer to avoid binding issues with setval
     // Ensure maxId is an integer
@@ -34,10 +34,10 @@ async function main() {
     // 3. Set default value for id column
     await db.execute(sql`ALTER TABLE users ALTER COLUMN id SET DEFAULT nextval('users_id_seq')`);
     
-    console.log(`Sequence fixed. Next ID will be > ${maxId}`);
+    logInfo(`Sequence fixed. Next ID will be > ${maxId}`);
     
   } catch (error) {
-    console.error('Fix failed:', error);
+    logError('Fix failed', error);
   }
   process.exit(0);
 }

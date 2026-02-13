@@ -1,9 +1,9 @@
-
 import { db } from './db';
 import { sql } from 'drizzle-orm';
+import { logInfo, logError } from './utils/logger';
 
 async function main() {
-  console.log('Starting manual migration...');
+  logInfo('Starting manual migration...');
 
   try {
     // Add role column if it doesn't exist
@@ -65,10 +65,10 @@ async function main() {
       $$;
     `);
 
-    console.log('Manual migration completed successfully.');
+    logInfo('Manual migration completed successfully.');
     process.exit(0);
   } catch (error) {
-    console.error('Migration failed:', error);
+    logError('Migration failed', error);
     process.exit(1);
   }
 }

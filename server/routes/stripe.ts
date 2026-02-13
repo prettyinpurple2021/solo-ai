@@ -3,7 +3,7 @@ import { stripe, PRICE_IDS } from '../stripe';
 import { db } from '../db';
 import { subscriptions, users, usageTracking } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { logError } from '../utils/logger';
+import { logError, logInfo } from '../utils/logger';
 
 const router = express.Router();
 
@@ -163,7 +163,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
             await handleSubscriptionUpdated(subscription);
             break;
         default:
-            console.log(`Unhandled event type ${event.type}`);
+            logInfo(`Unhandled event type ${event.type}`);
     }
 
     return res.send();

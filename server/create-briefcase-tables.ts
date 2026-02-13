@@ -1,19 +1,19 @@
-
 import postgres from 'postgres';
 import * as dotenv from 'dotenv';
 import path from 'path';
+import { logInfo, logError } from './utils/logger';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 
 if (!process.env.DATABASE_URL) {
-  console.error('DATABASE_URL is not set in .env.local');
+  logError('DATABASE_URL is not set in .env.local');
   process.exit(1);
 }
 
 const sql = postgres(process.env.DATABASE_URL);
 
 async function main() {
-  console.log('Creating briefcase tables...');
+  logInfo('Creating briefcase tables...');
   try {
     // user_briefcases
     await sql`
@@ -57,9 +57,9 @@ async function main() {
     // GIN index for tags
     await sql`CREATE INDEX IF NOT EXISTS briefcase_items_tags_idx ON briefcase_items USING GIN (tags);`;
 
-    console.log('Briefcase tables created successfully.');
+    logInfo('Briefcase tables created successfully.');
   } catch (e) {
-    console.error('Error creating tables:', e);
+    logError('Error creating tables', e);
   } finally {
     await sql.end();
   }

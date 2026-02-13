@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Progress } from "@/components/ui/progress"
 import { Trophy, Star } from "lucide-react"
+import { logWarn } from "@/lib/logger"
 
 interface UserStats {
   level: number
@@ -28,7 +29,7 @@ export function XpHud() {
         }
     } catch (e) {
         // Silent generic error or console warning
-        console.warn("Failed to fetch gamification stats", e);
+        logWarn("Failed to fetch gamification stats", { error: e });
     }
   }
 

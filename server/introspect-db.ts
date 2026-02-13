@@ -1,9 +1,9 @@
-
 import { db } from './db';
 import { sql } from 'drizzle-orm';
+import { logInfo, logError } from './utils/logger';
 
 async function main() {
-  console.log('Introspecting database schema...');
+  logInfo('Introspecting database schema...');
 
   try {
     // Get all tables
@@ -16,7 +16,7 @@ async function main() {
     `);
 
     const tables = tablesResult.rows.map(r => r.table_name);
-    console.log(`Found ${tables.length} tables:`, tables.join(', '));
+    logInfo(`Found ${tables.length} tables: ${tables.join(', ')}`);
 
     const fullSchema: any = {};
 
@@ -36,10 +36,10 @@ async function main() {
     // console.log(JSON.stringify(fullSchema, null, 2));
     const fs = require('fs');
     fs.writeFileSync('schema_dump.json', JSON.stringify(fullSchema, null, 2));
-    console.log('Schema dumped to schema_dump.json');
+    logInfo('Schema dumped to schema_dump.json');
 
   } catch (error) {
-    console.error('Introspection failed:', error);
+    logError('Introspection failed', error);
   }
   process.exit(0);
 }

@@ -1,6 +1,6 @@
-
 import { db } from './db';
 import { sql } from 'drizzle-orm';
+import { logInfo, logError } from './utils/logger';
 
 async function listTables() {
     try {
@@ -10,10 +10,10 @@ async function listTables() {
             WHERE table_schema = 'public' 
             AND table_type = 'BASE TABLE';
         `);
-        console.log('Database Tables:', result.rows.map((r: any) => r.table_name).sort());
+        logInfo('Database Tables:', { tables: result.rows.map((r: any) => r.table_name).sort() });
         process.exit(0);
     } catch (error) {
-        console.error('Error listing tables:', error);
+        logError('Error listing tables', error);
         process.exit(1);
     }
 }
