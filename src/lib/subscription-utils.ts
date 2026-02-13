@@ -23,14 +23,14 @@ export const AGENTS = {
   VEX: 'vex',
   LUMI: 'lumi',
   AURA: 'aura', 
-  SALES: 'sales', // Kept for backward compatibility if needed, though Blaze is the main sales engine
+  FINN: 'finn', // The Profit & Cashflow Specialist (formerly Sales)
 } as const;
 
 // 1. Agent Access Rules
 export const AGENT_ACCESS: Record<SubscriptionTier, string[]> = {
   [TIERS.FREE]: [AGENTS.AURA], // Basic Wellness only
   [TIERS.LAUNCH]: [AGENTS.AURA], // Basic Wellness only
-  [TIERS.ACCELERATOR]: [AGENTS.AURA, AGENTS.BLAZE, AGENTS.GLITCH, AGENTS.VEX, AGENTS.SALES],
+  [TIERS.ACCELERATOR]: [AGENTS.AURA, AGENTS.BLAZE, AGENTS.GLITCH, AGENTS.VEX, AGENTS.FINN],
   [TIERS.DOMINATOR]: Object.values(AGENTS), // All agents
 };
 
@@ -42,7 +42,7 @@ export const STORAGE_LIMITS: Record<SubscriptionTier, number> = {
   [TIERS.FREE]: 50 * MB,
   [TIERS.LAUNCH]: 50 * MB,
   [TIERS.ACCELERATOR]: 1 * GB,
-  [TIERS.DOMINATOR]: 10 * GB,
+  [TIERS.DOMINATOR]: 100 * GB,
 };
 
 // 3. Chat Limits (Messages per Day)

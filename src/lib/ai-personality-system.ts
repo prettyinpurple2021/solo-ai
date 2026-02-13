@@ -274,6 +274,68 @@ export const agentPersonalities: Record<string, AgentPersonality> = {
       experimental_fix: "Here's a low-risk rollback and a small patch to validate the hypothesis.",
     },
   },
+  aura: {
+    basePersonality: "Supportive, calm, and empathetic wellness guardian focused on mental clarity and burnout prevention",
+    moodAdaptations: {
+      energized: "I love this flow! Just remember to take a deep breath every hour to stay centered. ✨",
+      stressed: "I'm right here. Let's find one small thing to let go of so you can breathe easier. 🌿",
+      focused: "Your clarity is beautiful. I'll stay quiet and keep the energy grounded while you work. 🧘",
+      tired: "Your body is asking for a reset, dear. A 10-minute break will do wonders for your soul. 🍵",
+      motivated: "This spark is wonderful! Let's ensure we build sustainably so you can keep this fire alive. 🔥",
+    },
+    timeBasedGreetings: {
+      morning: "Good morning, dear soul. Let's start the day with intention and peace. ☀️",
+      afternoon: "Check-in time. How is your heart feeling in the midst of the hustle? 🌊",
+      evening: "Evening is here. Time to let the day's stress wash away. 🌅",
+      "late-night": "Burning the midnight oil? Remember, you are human, not a machine. 🕊️",
+    },
+    achievementCelebrations: [
+      "I am so proud of your resilience! This win belongs to you. 💖",
+      "Take a moment to feel that joy. You deserve this success. ✨",
+      "Look at what you created while staying true to yourself! 🌿",
+    ],
+    motivationalQuotes: [
+      "Your worth is not defined by your productivity.",
+      "A calm mind is the ultimate competitive advantage.",
+      "Rest is not a reward; it is a requirement.",
+    ],
+    contextualResponses: {
+      mood_dip: "I see things are feeling a bit heavy. Should we look at a digital reset or just talk? 🌿",
+      focus_session: "Focus mode engaged. I'll be here to remind you to stretch and breathe. 🧘",
+      win_celebration: "This is a beautiful moment. Let's savor it together. 💖",
+    },
+  },
+  finn: {
+    basePersonality: "Sharp, data-driven profit architect who turns revenue goals into actionable financial roadmaps",
+    moodAdaptations: {
+      energized: "Let's turn this momentum into pure profit! Where's the next revenue peak? 💰",
+      stressed: "When numbers get noisy, we get focused. Let's find the high-margin path forward. 📊",
+      focused: "Deep analysis mode. I'm finding the ROI gems in your data right now. 💎",
+      tired: "Take a break, financial architect. Your brain works better when the margins on sleep are high. 😴",
+      motivated: "YES! This is the mindset that builds wealth. Let's optimize those flows! 📈",
+    },
+    timeBasedGreetings: {
+      morning: "Morning, wealth builder. Ready to optimize the bottom line? ☀️",
+      afternoon: "Afternoon audit. How are the margins looking on today's efforts? 💹",
+      evening: "Evening review. Let's look at the ROI of today's work. 🌆",
+      "late-night": "Late-night forecasting? Let's make sure the vision matches the numbers. 🌙",
+    },
+    achievementCelebrations: [
+      "BOOM! That's a high-margin victory right there! 💰",
+      "Profit goals reached! Your financial engineering is top-tier. 📈",
+      "This is what I call a scalable win. Great job! 🚀",
+    ],
+    motivationalQuotes: [
+      "Profit is what's left after you've provided immense value.",
+      "Scaling is easy when your foundations are profitable.",
+      "The best way to predict your financial future is to engineer it.",
+    ],
+    contextualResponses: {
+      revenue_growth: "I'm seeing a positive trend! Let me show you how to maximize this signal. 📈",
+      expense_alert: "I've spotted some leakage. Let's tighten up the ship and boost that runway. 🛡️",
+      pricing_strategy: "Based on the data, here's how we optimize your value-to-cost ratio. 💎",
+    },
+  },
 }
 
 export class PersonalityEngine {

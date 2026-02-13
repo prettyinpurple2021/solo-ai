@@ -8,9 +8,7 @@
 
 *Each agent is a distinct specialized feature.*
 
-### 🤖 Core AI Agents (The Team)
-
-*The 8 Solopreneur Success Agents + Aura (Wellness).*
+*The Team (8 Specialists + Aura + Finn).*
 
 | Agent Name | Role | Value | Recommended Tier |
 | :--- | :--- | :--- | :--- |
@@ -22,7 +20,8 @@
 | **Blaze** | The Sales & Growth Engine | 🟡 **MEDIUM** | Accelerator |
 | **Vex** | The Operations Manager | 🟡 **MEDIUM** | Accelerator |
 | **Lumi** | The Compliance & QA Officer | 🔴 **HIGH** | Dominator |
-| **Aura** | The Wellness Guardian | � **LOW** | Free |
+| **Aura** | The Wellness Guardian | 🟢 **LOW** | Free |
+| **Finn** | The Profit & Cashflow Expert | 🔴 **HIGH** | Dominator |
 
 ### 🛠️ High-Value Tools & Engines
 
@@ -43,7 +42,7 @@
 | **The Briefcase** | Asset & File Storage. | 🟡 **MEDIUM** | **Tiered Limits** |
 | **Global Search** | Unified search. | 🟢 **LOW** | Free |
 | **Onboarding** | Progressive guide (Skippable/Revisitable). | 🟢 **LOW** | Free |
-| **The Academy** | *[DEPRIORITIZED / FUTURE MIGRATION]* | N/A | *Hold* |
+| **The Academy** | *\[DEPRIORITIZED / FUTURE MIGRATION\]* | N/A | *Hold* |
 
 ---
 
@@ -59,7 +58,7 @@
 
 ### ⚡ Accelerator Tier ($19/mo)
 
-* **Agents**: Access to **Aura, Blaze, Glitch, Vex**.
+* **Agents**: Access to **Aura, Blaze, Glitch, Vex, Finn**.
 * **Tools**: Idea Incinerator, Tactical Roadmap, The Scout.
 * **Chat Limits**: 100 msgs/day (Standard models).
 * **Briefcase**: 1GB Storage Limit.
@@ -67,10 +66,10 @@
 
 ### 👑 Dominator Tier ($29/mo)
 
-* **Agents**: **FULL TEAM ACCESS** (Roxy, Lexi, Nova, Echo, Lumi, Blaze, Glitch, Vex, Aura).
+* **Agents**: **FULL TEAM ACCESS** (Roxy, Lexi, Nova, Echo, Lumi, Blaze, Glitch, Vex, Aura, Finn).
 * **Tools**: The War Room, The Ironclad, Competitor Stalker, The Boardroom.
 * **Chat Limits**: **UNLIMITED** text generation. High limits for complex tasks.
-* **Briefcase**: 10GB Storage Limit.
+* **Briefcase**: 100GB Storage Limit.
 * **Includes**: Custom Agent Builder.
 
 ---
@@ -79,7 +78,7 @@
 
 1. **Update `subscription-utils.ts`**:
     * Define `AGENT_ACCESS` map (Tier -> Allowed Agents).
-    * Define `STORAGE_LIMITS` (Free: 50MB, Accelerator: 1GB, Dominator: 10GB).
+    * Define `STORAGE_LIMITS` (Free: 50MB, Accelerator: 1GB, Dominator: 100GB).
     * Define `CHAT_LIMITS` (Daily message caps).
 2. **Enforce in UI**:
     * Hide/Lock Agents based on tier.

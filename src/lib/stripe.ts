@@ -124,7 +124,7 @@ export const SUBSCRIPTION_TIERS = {
       teamMembers: 3,
       analytics: 'advanced'
     },
-    agents: ['aura', 'blaze', 'glitch', 'vex', 'sales'],
+    agents: ['aura', 'blaze', 'glitch', 'vex', 'finn'],
     stripePriceId: STRIPE_PRICES.ACCELERATOR_MONTHLY,
     stripeYearlyPriceId: STRIPE_PRICES.ACCELERATOR_YEARLY,
     popular: true
@@ -162,7 +162,7 @@ export const SUBSCRIPTION_TIERS = {
       templates: -1, // Unlimited
       teamMembers: -1 // Unlimited to match subscription-utils.ts
     },
-    agents: ['roxy', 'lexi', 'nova', 'echo', 'glitch', 'blaze', 'vex', 'lumi', 'aura', 'sales'],
+    agents: ['roxy', 'lexi', 'nova', 'echo', 'glitch', 'blaze', 'vex', 'lumi', 'aura', 'finn'],
     stripePriceId: STRIPE_PRICES.DOMINATOR_MONTHLY,
     stripeYearlyPriceId: STRIPE_PRICES.DOMINATOR_YEARLY,
     popular: false
