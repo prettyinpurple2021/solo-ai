@@ -2177,3 +2177,61 @@ export const chatHistory = pgTable("chat_history", {
 }, (table) => [
 	index("chat_history_user_agent_idx").using("btree", table.userId, table.agentId),
 ]);
+
+// Market Intelligence Tables
+export const marketIntelligenceCache = pgTable("market_intelligence_cache", {
+	id: text("id").primaryKey().notNull(),
+	source: text("source").notNull(), // 'brave_search', 'twitter', 'linkedin'
+	query: text("query").notNull(),
+	data: jsonb("data").notNull(),
+	expiresAt: timestamp("expires_at", { mode: 'string' }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	index("market_intelligence_cache_expires_at_idx").using("btree", table.expiresAt.asc().nullsLast().op("timestamp_ops")),
+	index("market_intelligence_cache_source_idx").using("btree", table.source.asc().nullsLast().op("text_ops")),
+]);
+
+export const competitorNewsArticles = pgTable("competitor_news_articles", {
+	id: text("id").primaryKey().notNull(),
+	competitorId: text("competitor_id"),
+	title: text("title").notNull(),
+	url: text("url").notNull(),
+	source: text("source").notNull(),
+	publishedAt: timestamp("published_at", { mode: 'string' }).notNull(),
+	summary: text("summary"),
+	sentiment: text("sentiment"), // 'positive', 'neutral', 'negative'
+	category: text("category"), // 'product_launch', 'funding', 'partnership', 'pricing'
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	index("competitor_news_articles_competitor_id_idx").using("btree", table.competitorId.asc().nullsLast().op("text_ops")),
+	index("competitor_news_articles_published_at_idx").using("btree", table.publishedAt.desc().nullsLast().op("timestamp_ops")),
+	index("competitor_news_articles_category_idx").using("btree", table.category.asc().nullsLast().op("text_ops")),
+	foreignKey({
+		columns: [table.competitorId],
+		foreignColumns: [competitorProfiles.id],
+		name: "competitor_news_articles_competitor_id_fk"
+	}).onDelete("cascade"),
+]);
+
+export const competitorSocialMentions = pgTable("competitor_social_mentions", {
+	id: text("id").primaryKey().notNull(),
+	competitorId: text("competitor_id"),
+	platform: text("platform").notNull(), // 'twitter', 'linkedin', 'facebook'
+	content: text("content").notNull(),
+	author: text("author"),
+	url: text("url"),
+	engagement: integer("engagement"), // likes, shares, comments
+	sentiment: text("sentiment"),
+	publishedAt: timestamp("published_at", { mode: 'string' }).notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	index("competitor_social_mentions_competitor_id_idx").using("btree", table.competitorId.asc().nullsLast().op("text_ops")),
+	index("competitor_social_mentions_platform_idx").using("btree", table.platform.asc().nullsLast().op("text_ops")),
+	index("competitor_social_mentions_published_at_idx").using("btree", table.publishedAt.desc().nullsLast().op("timestamp_ops")),
+	foreignKey({
+		columns: [table.competitorId],
+		foreignColumns: [competitorProfiles.id],
+		name: "competitor_social_mentions_competitor_id_fk"
+	}).onDelete("cascade"),
+]);
+
