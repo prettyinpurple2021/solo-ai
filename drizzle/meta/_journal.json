@@ -36,6 +36,13 @@
       "when": 1768527712199,
       "tag": "0004_add_users_bio",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1771180133636,
+      "tag": "0005_green_tigra",
+      "breakpoints": true
     }
   ]
 }
