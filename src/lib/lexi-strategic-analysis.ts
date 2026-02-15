@@ -4,12 +4,15 @@ import { db } from '@/db'
 import { intelligenceData, competitorProfiles } from '@/db/schema'
 import { eq, and, gte, desc, inArray, InferSelectModel } from 'drizzle-orm'
 import type { 
-  CompetitorProfile, 
-  IntelligenceData, 
-  AnalysisResult, 
-  Insight, 
-  Recommendation 
+  CompetitorProfile,
+  IntelligenceData,
+  AnalysisResult,
+  Insight,
+  Recommendation,
+  PromptIntelligenceData
 } from './competitor-intelligence-types'
+
+import { MarketIntelligenceService } from './market-intelligence-service'
 
 // Lexi-specific strategic analysis types
 export interface StrategicAnalysis {
@@ -298,6 +301,7 @@ export interface MitigationStrategy {
  */
 export class LexiStrategicAnalysis {
   private lexiConfig = getTeamMemberConfig('lexi')
+  private marketIntelligence = new MarketIntelligenceService()
 
   /**
    * Perform comprehensive competitive positioning analysis
@@ -305,9 +309,34 @@ export class LexiStrategicAnalysis {
   async analyzeCompetitivePositioning(competitorId: string, userId: string): Promise<CompetitivePositioningAnalysis> {
     const competitor = await this.getCompetitorProfile(competitorId)
     const allIntelligence = await this.getAllIntelligenceData(competitorId, 90)
+    
+    // Fetch real-time market intelligence
+    const realTimeNews = await this.marketIntelligence.getCompetitorNews(competitor.name)
+    const marketTrends = await this.marketIntelligence.getMarketTrends(competitor.industry || 'technology')
+    
+    // Combine database intelligence with real-time data for the prompt
+    const formattedRealTimeData: PromptIntelligenceData[] = [
+      ...realTimeNews.map(news => ({
+        sourceType: 'news' as const,
+        dataType: 'article',
+        extractedData: { title: news.title, summary: news.summary || '', url: news.url } as any,
+        collectedAt: new Date(news.publishedAt)
+      })),
+      ...marketTrends.map(trend => ({
+        sourceType: 'news' as const,
+        dataType: 'trend',
+        extractedData: { trend: trend.topic, description: trend.description } as any,
+        collectedAt: new Date()
+      }))
+    ]
+
     const marketData = await this.getMarketIntelligence(competitor.industry || '', 60)
 
-    const analysisPrompt = this.buildPositioningAnalysisPrompt(competitor, allIntelligence, marketData)
+    const analysisPrompt = this.buildPositioningAnalysisPrompt(
+      competitor, 
+      [...allIntelligence, ...formattedRealTimeData], 
+      marketData
+    )
 
     const { text } = await generateText({
       model: this.lexiConfig.model as any,
@@ -335,8 +364,22 @@ export class LexiStrategicAnalysis {
     )
 
     const industryData = industry ? await this.getMarketIntelligence(industry, 90) : []
+    
+    // Fetch real-time industry trends
+    const realTimeTrends = industry ? await this.marketIntelligence.getMarketTrends(industry) : []
+    
+    const formattedRealTimeTrends: PromptIntelligenceData[] = realTimeTrends.map(trend => ({
+        sourceType: 'news' as const,
+        dataType: 'trend',
+        extractedData: { title: trend.title, description: trend.description } as any,
+        collectedAt: new Date()
+    }))
 
-    const analysisPrompt = this.buildMarketTrendAnalysisPrompt(competitors, competitorIntelligence, industryData)
+    const analysisPrompt = this.buildMarketTrendAnalysisPrompt(
+      competitors, 
+      competitorIntelligence, 
+      [...industryData, ...formattedRealTimeTrends]
+    )
 
     const { text } = await generateText({
       model: this.lexiConfig.model as any,
@@ -360,15 +403,30 @@ export class LexiStrategicAnalysis {
    */
   async analyzeStrategicMoves(competitorId: string, userId: string): Promise<StrategicMoveAnalysis> {
     const competitor = await this.getCompetitorProfile(competitorId)
-    const hiringData = await this.getHiringIntelligence(competitorId, 180)
-    const investmentData = await this.getInvestmentIntelligence(competitorId, 365)
-    const partnershipData = await this.getPartnershipIntelligence(competitorId, 180)
+    const dbHiringData = await this.getHiringIntelligence(competitorId, 180)
+    const dbInvestmentData = await this.getInvestmentIntelligence(competitorId, 365)
+    const dbPartnershipData = await this.getPartnershipIntelligence(competitorId, 180)
+
+    // Fetch real-time specific intelligence
+    const [realTimeHiring, realTimeInvestment, realTimePartnership] = await Promise.all([
+      this.marketIntelligence.getCompetitorNews(`${competitor.name} hiring jobs recruiting`),
+      this.marketIntelligence.getCompetitorNews(`${competitor.name} investment funding raised acquisition`),
+      this.marketIntelligence.getCompetitorNews(`${competitor.name} partnership alliance collaboration`)
+    ])
+
+    const formatNews = (newsItems: any[]): PromptIntelligenceData[] => 
+      newsItems.map(item => ({
+        sourceType: 'news' as const,
+        dataType: 'article',
+        extractedData: { title: item.title, summary: item.description, url: item.url } as any,
+        collectedAt: new Date(item.published_at)
+      }))
 
     const analysisPrompt = this.buildStrategicMoveAnalysisPrompt(
       competitor, 
-      hiringData, 
-      investmentData, 
-      partnershipData
+      [...dbHiringData, ...formatNews(realTimeHiring)], 
+      [...dbInvestmentData, ...formatNews(realTimeInvestment)], 
+      [...dbPartnershipData, ...formatNews(realTimePartnership)]
     )
 
     const { text } = await generateText({
@@ -617,8 +675,8 @@ export class LexiStrategicAnalysis {
 
   private buildPositioningAnalysisPrompt(
     competitor: CompetitorProfile, 
-    intelligence: IntelligenceData[], 
-    marketData: IntelligenceData[]
+    intelligence: PromptIntelligenceData[], 
+    marketData: PromptIntelligenceData[]
   ): string {
     return `${this.lexiConfig.systemPrompt}
 
@@ -666,8 +724,8 @@ STRATEGIC POSITIONING ANALYSIS:`
 
   private buildMarketTrendAnalysisPrompt(
     competitors: CompetitorProfile[], 
-    competitorIntelligence: IntelligenceData[][], 
-    industryData: IntelligenceData[]
+    competitorIntelligence: PromptIntelligenceData[][], 
+    industryData: PromptIntelligenceData[]
   ): string {
     return `${this.lexiConfig.systemPrompt}
 
@@ -707,9 +765,9 @@ MARKET TREND ANALYSIS:`
 
   private buildStrategicMoveAnalysisPrompt(
     competitor: CompetitorProfile, 
-    hiringData: IntelligenceData[], 
-    investmentData: IntelligenceData[], 
-    partnershipData: IntelligenceData[]
+    hiringData: PromptIntelligenceData[], 
+    investmentData: PromptIntelligenceData[], 
+    partnershipData: PromptIntelligenceData[]
   ): string {
     return `${this.lexiConfig.systemPrompt}
 
@@ -750,7 +808,7 @@ STRATEGIC MOVE ANALYSIS:`
 
   private buildThreatAssessmentPrompt(
     competitor: CompetitorProfile, 
-    intelligence: IntelligenceData[], 
+    intelligence: PromptIntelligenceData[], 
     _profile: CompetitorProfile
   ): string {
     return `${this.lexiConfig.systemPrompt}
@@ -788,7 +846,7 @@ COMPETITIVE THREAT ASSESSMENT:`
 
   private buildOpportunityAnalysisPrompt(
     competitors: CompetitorProfile[], 
-    competitorIntelligence: IntelligenceData[][]
+    competitorIntelligence: PromptIntelligenceData[][]
   ): string {
     return `${this.lexiConfig.systemPrompt}
 

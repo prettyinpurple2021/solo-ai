@@ -170,6 +170,14 @@ export interface IntelligenceData {
   updatedAt: Date;
 }
 
+// Data subset for AI prompts
+export interface PromptIntelligenceData {
+  sourceType: SourceType;
+  dataType: string;
+  extractedData: any;
+  collectedAt: Date;
+}
+
 // Action Items for Alerts
 export interface ActionItem {
   id: string;

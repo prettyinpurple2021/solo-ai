@@ -9,8 +9,10 @@ import {
   IntelligenceData, 
   AnalysisResult, 
   Insight, 
-  Recommendation 
+  Recommendation,
+  PromptIntelligenceData 
 } from './competitor-intelligence-types'
+import { MarketIntelligenceService } from './market-intelligence-service'
 
 // Nova-specific product and design intelligence types
 export interface ProductIntelligenceAnalysis {
@@ -124,21 +126,50 @@ export interface ProductRoadmapPrediction {
  */
 export class NovaProductIntelligence {
   private novaConfig = getTeamMemberConfig('nova')
+  private marketIntelligence = new MarketIntelligenceService()
 
   /**
    * Analyze competitor product features and updates
    */
   async analyzeProductFeatures(competitorId: string, userId: string, days: number = 60): Promise<ProductFeatureAnalysis> {
     const competitor = await this.getCompetitorProfile(competitorId)
-    const websiteData = await this.getWebsiteIntelligence(competitorId, days)
-    const appStoreData = await this.getAppStoreIntelligence(competitorId, days)
-    const socialMediaData = await this.getSocialMediaIntelligence(competitorId, days)
+    const productAnnouncements = await this.marketIntelligence.searchProductAnnouncements(competitor.name, days)
+    const socialMentions = await this.marketIntelligence.getCompetitorSocialMentions(competitor.name, days)
+    const websiteData: any[] = []
+    const appStoreData: any[] = []
+    const socialMediaData: any[] = []
+
+    // Format real-time data for the prompt
+    const formattedRealTimeData: PromptIntelligenceData[] = [
+      ...productAnnouncements.map(item => ({
+        sourceType: 'news' as const,
+        dataType: 'product_announcement',
+        extractedData: { 
+          title: item.title, 
+          summary: item.description, 
+          url: item.url,
+          category: item.category 
+        } as any,
+        collectedAt: item.announcedAt
+      })),
+      ...socialMentions.slice(0, 10).map(item => ({
+        sourceType: 'social_media' as const,
+        dataType: 'social_mention',
+        extractedData: { 
+          content: item.content, 
+          platform: item.platform, 
+          sentiment: item.sentiment 
+        } as any,
+        collectedAt: item.publishedAt
+      }))
+    ]
 
     const analysisPrompt = this.buildProductFeatureAnalysisPrompt(
       competitor, 
       websiteData, 
       appStoreData, 
-      socialMediaData
+      socialMediaData,
+      formattedRealTimeData
     )
 
     const { text } = await generateText({
@@ -159,10 +190,27 @@ export class NovaProductIntelligence {
    */
   async analyzeUXTrends(competitorId: string, userId: string, days: number = 90): Promise<UXAnalysis> {
     const competitor = await this.getCompetitorProfile(competitorId)
-    const websiteData = await this.getWebsiteIntelligence(competitorId, days)
-    const appStoreData = await this.getAppStoreIntelligence(competitorId, days)
+    // Fetch real-time UX related news and sentiment
+    const uxNews = await this.marketIntelligence.searchCompetitorNews(`${competitor.name} "UX" OR "design" OR "user experience" OR "interface"`, days)
+    const socialMentions = await this.marketIntelligence.getCompetitorSocialMentions(competitor.name, days)
+    const websiteData: any[] = []
 
-    const analysisPrompt = this.buildUXTrendsAnalysisPrompt(competitor, websiteData)
+     const formattedRealTimeData: PromptIntelligenceData[] = [
+      ...uxNews.map(item => ({
+        sourceType: 'news' as const,
+        dataType: 'ux_news',
+        extractedData: { title: item.title, summary: item.summary, url: item.url } as any,
+        collectedAt: item.publishedAt
+      })),
+      ...socialMentions.slice(0, 15).map(item => ({
+        sourceType: 'social_media' as const,
+        dataType: 'social_sentiment',
+        extractedData: { content: item.content, sentiment: item.sentiment } as any,
+        collectedAt: item.publishedAt
+      }))
+    ]
+
+    const analysisPrompt = this.buildUXTrendsAnalysisPrompt(competitor, websiteData, formattedRealTimeData)
 
     const { text } = await generateText({
       model: this.novaConfig.model as any,
@@ -320,8 +368,32 @@ export class NovaProductIntelligence {
     return []
   }
 
-  private buildProductFeatureAnalysisPrompt(competitor: any, arg_any: any[], arg_any_2: any[], arg_any_3: any[]): string {
-    return `Analyze product features for ${competitor.name || 'competitor'}`
+  private buildProductFeatureAnalysisPrompt(
+    competitor: any, 
+    websiteData: any[], 
+    appStoreData: any[], 
+    socialMediaData: any[],
+    realTimeData: PromptIntelligenceData[] = []
+  ): string {
+    const realTimeContext = realTimeData.length > 0 
+      ? `
+      RECENT MARKET ACTIVITY (Real-time Data):
+      ${realTimeData.map(d => `- [${d.collectedAt.toISOString().split('T')[0]}] ${d.dataType}: ${JSON.stringify(d.extractedData)}`).join('\n')}
+      `
+      : 'No recent real-time product announcements found.'
+
+    return `
+      Analyze product features for ${competitor.name || 'competitor'}.
+      
+      ${realTimeContext}
+      
+      Focus on identifying:
+      1. New features recently launched
+      2. Updates to existing functionality
+      3. User sentiment regarding these features
+      
+      Provide a structured analysis of their product velocity and innovation.
+    `
   }
 
   private parseProductFeatureAnalysis(text: string, competitorId: string): ProductFeatureAnalysis {
@@ -338,8 +410,24 @@ export class NovaProductIntelligence {
     // Store in database - minimal implementation
   }
 
-  private buildUXTrendsAnalysisPrompt(competitor: any, arg_any: any[]): string {
-    return `Analyze UX trends for ${competitor.name || 'competitor'}`
+  private buildUXTrendsAnalysisPrompt(competitor: any, websiteData: any[], realTimeData: PromptIntelligenceData[] = []): string {
+    const realTimeContext = realTimeData.length > 0
+      ? `
+      REAL-TIME UX FEEDBACK:
+      ${realTimeData.map(d => `- ${JSON.stringify(d.extractedData)}`).join('\n')}
+      `
+      : 'No recent real-time UX feedback found.'
+
+    return `
+      Analyze UX trends for ${competitor.name || 'competitor'}.
+      
+      ${realTimeContext}
+      
+      Identify:
+      1. Emerging design patterns
+      2. User friction points from sentiment
+      3. UI/UX updates aimed at improving engagement
+    `
   }
 
   private parseUXTrendsAnalysis(text: string, competitorId: string): any {

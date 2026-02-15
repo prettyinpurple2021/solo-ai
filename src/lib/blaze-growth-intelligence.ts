@@ -10,8 +10,10 @@ import type {
   IntelligenceData, 
   AnalysisResult, 
   Insight, 
-  Recommendation 
+  Recommendation,
+  PromptIntelligenceData 
 } from './competitor-intelligence-types'
+import { MarketIntelligenceService } from './market-intelligence-service'
 
 // Blaze-specific pricing and growth intelligence types
 export interface GrowthIntelligenceAnalysis {
@@ -249,6 +251,7 @@ export interface CompetitivePositioning {
  */
 export class BlazeGrowthIntelligence {
   private blazeConfig = getTeamMemberConfig('blaze')
+  private marketIntelligence = new MarketIntelligenceService()
 
   /**
    * Analyze competitor pricing strategies and changes
@@ -287,6 +290,28 @@ export class BlazeGrowthIntelligence {
         return `Source: ${entry.sourceType} | Title: ${title} | Key Insights: ${insights}`
       })
       .join('\n')
+
+    // Fetch real-time pricing and funding news
+    const marketEvents = await this.marketIntelligence.searchFundingAndPricing(profile.name, 90)
+    
+    const formattedRealTimeData: PromptIntelligenceData[] = marketEvents.map(event => ({
+      sourceType: 'news' as const,
+      dataType: 'market_event',
+      extractedData: { 
+        title: event.title, 
+        description: event.description, 
+        type: event.type,
+        impact: event.impact 
+      } as any,
+      collectedAt: event.eventDate
+    }))
+
+    const realTimeContext = formattedRealTimeData.length > 0
+      ? `
+      RECENT MARKET EVENTS (Real-time):
+      ${formattedRealTimeData.map(d => `- [${d.collectedAt.toISOString().split('T')[0]}] ${d.extractedData.type}: ${d.extractedData.title} (${d.extractedData.impact} impact)`).join('\n')}
+      `
+      : 'No recent market events found.'
 
     const analysisPrompt = `
 You are Blaze, the growth and pricing strategist. Analyze the competitor's pricing strategy and respond with JSON that matches the following structure:
@@ -359,6 +384,8 @@ Competitor profile:
 
 Relevant intelligence data:
 ${pricingSummary || 'No direct pricing intelligence available - infer using competitor profile.'}
+
+${realTimeContext}
 `
 
     const { text } = await generateText({
@@ -469,6 +496,19 @@ ${pricingSummary || 'No direct pricing intelligence available - infer using comp
 
       const competitorProfile = competitor[0]
 
+      // Fetch real-time growth indicators
+      const fundingNews = await this.marketIntelligence.searchFundingAndPricing(competitorProfile.name, 180)
+      const expansionNews = await this.marketIntelligence.searchCompetitorNews(`${competitorProfile.name} expansion market entry new office`, 180)
+
+      const realTimeGrowthContext = `
+      REAL-TIME GROWTH SIGNALS:
+      Funding/Pricing Events:
+      ${fundingNews.map(n => `- ${n.eventDate.toISOString().split('T')[0]}: ${n.title} (${n.type})`).join('\n')}
+      
+      Expansion News:
+      ${expansionNews.slice(0, 5).map(n => `- ${n.publishedAt.toISOString().split('T')[0]}: ${n.title}`).join('\n')}
+      `
+
       const analysisPrompt = `
         As Blaze, analyze the growth strategy for competitor "${competitorProfile.name}".
         
@@ -484,6 +524,8 @@ ${pricingSummary || 'No direct pricing intelligence available - infer using comp
         - Key Insights: ${data.extractedData.keyInsights.join(', ')}
         - Topics: ${data.extractedData.topics.join(', ')}
         `).join('\n')}
+        
+        ${realTimeGrowthContext}
         
         Analyze:
         1. Growth metrics and trends

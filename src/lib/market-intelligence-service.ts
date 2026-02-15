@@ -1,4 +1,4 @@
-import { logError, logInfo, logWarn } from '@/lib/logger'
+import { logError, logInfo, logWarn } from './logger'
 import { db } from '@/db'
 import { marketIntelligenceCache, competitorNewsArticles, competitorSocialMentions } from '@/db/schema'
 import { eq, and, gte } from 'drizzle-orm'
@@ -32,7 +32,7 @@ export interface SocialMention {
   platform: 'twitter' | 'linkedin' | 'facebook' | 'instagram'
   content: string
   author?: string
-  url?: string
+  url: string
   engagement: number
   sentiment?: 'positive' | 'neutral' | 'negative'
   publishedAt: Date
@@ -429,7 +429,7 @@ export class MarketIntelligenceService {
           return null
         }
 
-        return {
+        const mention: SocialMention = {
           id: nanoid(),
           platform,
           content: result.description || result.title,
@@ -438,6 +438,7 @@ export class MarketIntelligenceService {
           sentiment: this.detectSentiment(result.description || result.title),
           publishedAt,
         }
+        return mention
       })
       .filter((mention): mention is SocialMention => mention !== null)
       .sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime())
