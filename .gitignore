@@ -45,3 +45,8 @@ build/
 .env*.local
 next-env.d.ts
 .env.example
+
+# Large Files & Logs
+console_logs.txt
+server_console_audit.csv
+*.tsbuildinfo

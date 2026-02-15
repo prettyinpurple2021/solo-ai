@@ -1,0 +1,17 @@
+# Exclude large logs
+console_logs.txt
+server_console_audit.csv
+*.log
+
+# Exclude large directories and dev-specific folders
+.gitea
+.cursor
+.vscode
+.git
+node_modules
+test
+tests
+docs
+
+# Exclude build artifacts not needed for production build input
+*.tsbuildinfo
