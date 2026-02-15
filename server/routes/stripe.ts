@@ -1,5 +1,5 @@
 import express from 'express';
-import { stripe, PRICE_IDS } from '../stripe';
+import { stripe, PRICE_IDS } from '../stripe-config';
 import { db } from '../db';
 import { subscriptions, users, usageTracking } from '../db/schema';
 import { eq } from 'drizzle-orm';

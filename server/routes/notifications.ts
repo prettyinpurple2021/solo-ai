@@ -231,7 +231,7 @@ router.post('/send', async (req: Request, res: Response) => {
         }
 
         // Process in batches to avoid overwhelming DB/Socket
-        const results = [];
+        const results: number[] = [];
         
         for (const userId of targets) {
             try {

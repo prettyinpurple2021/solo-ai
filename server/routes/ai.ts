@@ -143,15 +143,9 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
         const userId = req.userId!;
 
         // --- TIER ENFORCEMENT ---
-        const userTier = await UsageTracker.getUserTier(userId) as any; // Cast to any to avoid complex SubscriptionTier import issues for now, or string.
-        // Actually, TIER_LEVELS key must be SubscriptionTier.
-        // Let's rely on the fact that TIER_LEVELS is imported or defined?
-        // Wait, TIER_LEVELS is NOT imported in ai.ts. It is defined in subscription.ts but not exported?
-        // It is NOT exported in subscription.ts in the snippet I saw!
-        // I need to duplicate TIER_LEVELS or export it from subscription.ts.
-        // Let's check subscription.ts again. Line 28: const TIER_LEVELS ... NOT exported.
-        // I should Export TIER_LEVELS from subscription.ts.
-        const tierLevel = TIER_LEVELS[userTier];
+        // Cast to unknown then keyof typeof TIER_LEVELS to safely index
+        const userTier = await UsageTracker.getUserTier(userId);
+        const tierLevel = TIER_LEVELS[userTier as keyof typeof TIER_LEVELS] || 0;
 
         // Define Agent Tiers (Must match frontend logic)
         const FREE_AGENTS = ['aura'];
@@ -210,11 +204,11 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
         // Increment usage stats
         await UsageTracker.incrementUsage(userId, 'conversations', 1);
         
-        res.json({ text: result.text || "No response." });
+        return res.json({ text: result.text || "No response." });
 
     } catch (error) {
         logError("AI Chat Error", error);
-        res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ error: 'Generation failed' });
     }
 });
 

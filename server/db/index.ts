@@ -31,7 +31,7 @@ connectDB();
 
 import * as relations from './relations';
 
-export const db = drizzle(client, { schema: { ...schema, ...relations } });
+export const db = drizzle(client as any, { schema: { ...schema, ...relations } });
 
 // Re-export common operators to avoid "dual package hazard"
 export { eq, gt, lt, gte, lte, ne, isNull, isNotNull, inArray, notInArray, exists, notExists, and, or, not, asc, desc, sql } from 'drizzle-orm';

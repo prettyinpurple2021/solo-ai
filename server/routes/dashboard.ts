@@ -129,7 +129,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
             }
         ];
 
-        res.json({
+        return res.json({
             user: {
                 id: userData.id,
                 name: userData.name,
@@ -194,7 +194,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
 
     } catch (error) {
         logError('Dashboard error', error);
-        res.status(500).json({ error: 'Failed to load dashboard' });
+        return res.status(500).json({ error: 'Failed to load dashboard' });
     }
 });
 

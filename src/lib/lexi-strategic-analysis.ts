@@ -311,8 +311,8 @@ export class LexiStrategicAnalysis {
     const allIntelligence = await this.getAllIntelligenceData(competitorId, 90)
     
     // Fetch real-time market intelligence
-    const realTimeNews = await this.marketIntelligence.getCompetitorNews(competitor.name)
-    const marketTrends = await this.marketIntelligence.getMarketTrends(competitor.industry || 'technology')
+    const realTimeNews = await this.marketIntelligence.searchCompetitorNews(competitor.name)
+    const marketTrends = await this.marketIntelligence.getIndustryTrends(competitor.industry || 'technology')
     
     // Combine database intelligence with real-time data for the prompt
     const formattedRealTimeData: PromptIntelligenceData[] = [
@@ -366,7 +366,7 @@ export class LexiStrategicAnalysis {
     const industryData = industry ? await this.getMarketIntelligence(industry, 90) : []
     
     // Fetch real-time industry trends
-    const realTimeTrends = industry ? await this.marketIntelligence.getMarketTrends(industry) : []
+    const realTimeTrends = industry ? await this.marketIntelligence.getIndustryTrends(industry) : []
     
     const formattedRealTimeTrends: PromptIntelligenceData[] = realTimeTrends.map(trend => ({
         sourceType: 'news' as const,
@@ -409,9 +409,9 @@ export class LexiStrategicAnalysis {
 
     // Fetch real-time specific intelligence
     const [realTimeHiring, realTimeInvestment, realTimePartnership] = await Promise.all([
-      this.marketIntelligence.getCompetitorNews(`${competitor.name} hiring jobs recruiting`),
-      this.marketIntelligence.getCompetitorNews(`${competitor.name} investment funding raised acquisition`),
-      this.marketIntelligence.getCompetitorNews(`${competitor.name} partnership alliance collaboration`)
+      this.marketIntelligence.searchCompetitorNews(`${competitor.name} hiring jobs recruiting`),
+      this.marketIntelligence.searchCompetitorNews(`${competitor.name} investment funding raised acquisition`),
+      this.marketIntelligence.searchCompetitorNews(`${competitor.name} partnership alliance collaboration`)
     ])
 
     const formatNews = (newsItems: any[]): PromptIntelligenceData[] => 

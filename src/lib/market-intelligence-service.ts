@@ -68,6 +68,7 @@ export interface TrendData {
   volume: number
   sources: string[]
   timeframe: string
+  title?: string
 }
 
 interface BraveSearchResult {
@@ -399,10 +400,14 @@ export class MarketIntelligenceService {
           sentiment: this.detectSentiment(result.title + ' ' + (result.description || '')),
           category: (this.detectCategory(result.title + ' ' + (result.description || '')) || 'general') as NewsArticle['category'],
           relevanceScore: this.calculateRelevance(result, competitorName),
-        }
+        } as NewsArticle
       })
       .filter((article): article is NewsArticle => article !== null)
-      .sort((a, b) => b.publishedAt.getTime() - a.publishedAt.getTime())
+      .sort((a, b) => {
+        const timeA = a?.publishedAt?.getTime() || 0;
+        const timeB = b?.publishedAt?.getTime() || 0;
+        return timeB - timeA;
+      })
   }
 
   /**
@@ -534,6 +539,7 @@ export class MarketIntelligenceService {
       .map(([topic, sources]) => ({
         id: nanoid(),
         topic,
+        title: topic,
         description: sources[0].description || '',
         trend: 'rising' as const, // Would need time-series data for accurate trend
         volume: sources.length,
@@ -560,7 +566,7 @@ export class MarketIntelligenceService {
         .where(
           and(
             eq(marketIntelligenceCache.id, cacheKey),
-            gte(marketIntelligenceCache.expiresAt, now)
+            gte(marketIntelligenceCache.expiresAt as any, now.toISOString())
           )
         )
         .limit(1)
