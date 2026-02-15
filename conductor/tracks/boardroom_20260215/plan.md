@@ -9,9 +9,9 @@ This plan outlines the steps to implement the core multi-agent collaboration inf
 - [x] Task: Implement Multi-Agent Orchestrator 5c14cbf
     - [x] Write tests for agent sequencing logic
     - [x] Implement logic to manage turn-taking among AI agents
-- [ ] Task: Create Boardroom API endpoints
-    - [ ] Write tests for session creation and message fetching
-    - [ ] Implement Express routes for Boardroom management
+- [x] Task: Create Boardroom API endpoints efa1213
+    - [x] Write tests for session creation and message fetching
+    - [x] Implement Express routes for Boardroom management
 - [ ] Task: Conductor - User Manual Verification 'Phase 1: Core Orchestration Engine' (Protocol in workflow.md)
 
 ## Phase 2: Real-time Communication (Socket.IO)
