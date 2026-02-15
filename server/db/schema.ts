@@ -2235,3 +2235,40 @@ export const competitorSocialMentions = pgTable("competitor_social_mentions", {
 	}).onDelete("cascade"),
 ]);
 
+
+export const boardroomSessions = pgTable("boardroom_sessions", {
+	id: text().primaryKey().notNull(),
+	userId: text("user_id").notNull(),
+	title: varchar({ length: 255 }).notNull(),
+	status: varchar({ length: 50 }).default("active"),
+	context: jsonb().default({}),
+	metadata: jsonb().default({}),
+	createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+	updatedAt: timestamp("updated_at", { mode: "string" }).defaultNow(),
+}, (table) => [
+	index("boardroom_sessions_user_id_idx").using("btree", table.userId.asc().nullsLast().op("text_ops")),
+	foreignKey({
+			columns: [table.userId],
+			foreignColumns: [users.id],
+			name: "boardroom_sessions_user_id_users_id_fk"
+		}).onDelete("cascade"),
+]);
+
+export const boardroomMessages = pgTable("boardroom_messages", {
+	id: text().primaryKey().notNull(),
+	sessionId: text("session_id").notNull(),
+	agentId: varchar("agent_id", { length: 50 }).notNull(),
+	role: varchar({ length: 20 }).notNull(),
+	content: text().notNull(),
+	metadata: jsonb().default({}),
+	createdAt: timestamp("created_at", { mode: "string" }).defaultNow(),
+}, (table) => [
+	index("boardroom_messages_session_id_idx").using("btree", table.sessionId.asc().nullsLast().op("text_ops")),
+	index("boardroom_messages_created_at_idx").using("btree", table.createdAt.asc().nullsLast().op("timestamp_ops")),
+	foreignKey({
+			columns: [table.sessionId],
+			foreignColumns: [boardroomSessions.id],
+			name: "boardroom_messages_session_id_boardroom_sessions_id_fk"
+		}).onDelete("cascade"),
+]);
+
