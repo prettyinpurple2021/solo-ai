@@ -13,22 +13,28 @@ export function PricingPage() {
     const user = session?.user;
     const [loadingTier, setLoadingTier] = useState<string | null>(null);
 
-    const handleUpgrade = async (tier: string, priceId: string | undefined) => {
+    const handleUpgrade = async (tier: 'accelerator' | 'dominator' | 'solo' | 'pro' | 'agency', billing: 'monthly' | 'yearly' = 'monthly') => {
         if (!user || !user.id) {
             // Redirect to login if not logged in
             window.location.href = '/sign-in';
             return;
         }
 
-        if (!priceId) {
-            logError('Price ID missing for tier:', tier);
+        // Map legacy UI keys to new backend tiers if necessary, or just use new ones
+        // The UI uses 'solo', 'pro', 'agency', but backend expects 'accelerator', 'dominator'
+        let backendTier = tier;
+        if (tier === 'solo') backendTier = 'accelerator';
+        if (tier === 'pro') backendTier = 'dominator';
+        if (tier === 'agency') {
+            alert('Agency plan is currently unavailable. Please contact support.');
             return;
         }
 
         try {
             setLoadingTier(tier);
             const response = await apiService.post('/stripe/create-checkout-session', {
-                priceId,
+                tier: backendTier,
+                billing,
                 userId: user.id
             });
 
@@ -43,11 +49,7 @@ export function PricingPage() {
         }
     };
 
-    const PRICE_IDS = {
-        solo: process.env.NEXT_PUBLIC_STRIPE_SOLO_PRICE_ID,
-        pro: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID,
-        agency: process.env.NEXT_PUBLIC_STRIPE_AGENCY_PRICE_ID,
-    };
+
 
     return (
         <MarketingLayout>
@@ -61,10 +63,10 @@ export function PricingPage() {
                     </p>
                 </div>
 
-                <div className="grid md:grid-cols-4 gap-6 max-w-7xl mx-auto">
-                    {/* Free Plan */}
+                <div className="grid md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                    {/* Launch Plan (Replced Free) */}
                     <PricingCard
-                        title="Free"
+                        title="Launch"
                         price="$0"
                         description="For the curious explorer."
                         features={[
@@ -79,10 +81,10 @@ export function PricingPage() {
                         variant="ghost"
                     />
 
-                    {/* Solo Plan */}
+                    {/* Accelerator Plan (Was Solo) */}
                     <PricingCard
-                        title="Solo"
-                        price="$29"
+                        title="Accelerator"
+                        price="$19"
                         period="/month"
                         description="For the side-hustler."
                         isPopular
@@ -94,15 +96,15 @@ export function PricingPage() {
                             "50 Research Credits",
                             "Full Tool Access"
                         ]}
-                        onUpgrade={() => handleUpgrade('solo', PRICE_IDS.solo)}
+                        onUpgrade={() => handleUpgrade('solo')}
                         isLoading={loadingTier === 'solo'}
                         variant="lime"
                     />
 
-                    {/* Pro Plan */}
+                    {/* Dominator Plan (Was Pro) */}
                     <PricingCard
-                        title="Pro"
-                        price="$49"
+                        title="Dominator"
+                        price="$29"
                         period="/month"
                         description="For the full-time founder."
                         features={[
@@ -113,28 +115,9 @@ export function PricingPage() {
                             "200 Research Credits",
                             "Priority Support"
                         ]}
-                        onUpgrade={() => handleUpgrade('pro', PRICE_IDS.pro)}
+                        onUpgrade={() => handleUpgrade('pro')}
                         isLoading={loadingTier === 'pro'}
                         variant="purple"
-                    />
-
-                    {/* Agency Plan */}
-                    <PricingCard
-                        title="Agency"
-                        price="$99"
-                        period="/month"
-                        description="For power users & teams."
-                        features={[
-                            "Unlimited Businesses",
-                            "Unlimited Storage",
-                            "Unlimited Everything",
-                            "50 Competitors Tracked",
-                            "1000 Research Credits",
-                            "API Access"
-                        ]}
-                        onUpgrade={() => handleUpgrade('agency', PRICE_IDS.agency)}
-                        isLoading={loadingTier === 'agency'}
-                        variant="cyan"
                     />
                 </div>
             </div>

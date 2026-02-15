@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, Ban, CheckCircle,} from 'lucide-react';
 import { logError } from '@/lib/logger';
+import { API_URL } from '@/lib/api-client';
 
 interface User {
     id: number;
@@ -24,7 +25,6 @@ export function UserTable() {
     const fetchUsers = async () => {
         try {
             const token = localStorage.getItem('token');
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
             const res = await fetch(`${API_URL}/api/admin/users`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -42,7 +42,6 @@ export function UserTable() {
 
         try {
             const token = localStorage.getItem('token');
-            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
             await fetch(`${API_URL}/api/admin/users/${userId}/suspend`, {
                 method: 'POST',
                 headers: {

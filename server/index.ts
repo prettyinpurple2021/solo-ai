@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import * as Sentry from '@sentry/node';
+
 import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server as SocketServer, Socket } from 'socket.io';
@@ -30,16 +30,6 @@ const app = express();
 // Trust proxy for correct IP identification behind reverse proxies (e.g., Render, Heroku, AWS)
 app.set('trust proxy', 1);
 
-// Initialize Sentry for Express backend (after app creation)
-Sentry.init({
-  dsn: process.env.SENTRY_DSN || "https://c658e25682ffbbce0cd373c74bf48f1d@o4510500686331904.ingest.us.sentry.io/4510500686659584",
-  environment: process.env.NODE_ENV || 'development',
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-  integrations: [
-    Sentry.httpIntegration(),
-    Sentry.expressIntegration(),
-  ],
-});
 
 const httpServer = createServer(app);
 // Allow localhost when NODE_ENV is undefined (local dev) or explicitly 'development'
@@ -72,12 +62,7 @@ const redis = new Redis({
     token: process.env.UPSTASH_REDIS_REST_TOKEN!,
 });
 
-// Sentry request middleware must be first
-const sentryRequestMiddleware =
-  (Sentry as any).Handlers?.requestHandler?.() ??
-  (Sentry as any).requestHandler?.() ??
-  ((req: express.Request, res: express.Response, next: express.NextFunction) => next());
-app.use(sentryRequestMiddleware);
+
 
 app.use(cors({
     origin: allowedOrigins,
@@ -741,12 +726,7 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-// Sentry error handler must be last, before any other error middleware
-const sentryErrorMiddleware =
-  (Sentry as any).Handlers?.errorHandler?.() ??
-  (Sentry as any).errorHandler?.() ??
-  ((err: unknown, arg_express: express.Request, res: express.Response, next: express.NextFunction) => next(err));
-app.use(sentryErrorMiddleware);
+
 
 // Express error handler
 app.use((err: Error, req: express.Request, res: express.Response, arg_express: express.NextFunction) => {

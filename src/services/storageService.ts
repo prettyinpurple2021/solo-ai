@@ -1,5 +1,5 @@
 import { logError, logWarn, logInfo } from '@/lib/logger';
-import { apiClient } from '@/lib/api-client';
+import { apiClient, API_URL } from '@/lib/api-client';
 import {
     UserProgress, Task, ChatMessage, CompetitorReport, BusinessContext, BrandDNA,
     PitchDeck, CreativeAsset, Contact, LaunchStrategy, TribeBlueprint,
@@ -9,7 +9,7 @@ import {
 } from '../types';
 
 // Configuration
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+// API_URL is imported from @/lib/api-client
 const USE_BACKEND = process.env.NEXT_PUBLIC_USE_BACKEND_STORAGE !== 'false'; // Default to true
 
 const DELAY = 50;

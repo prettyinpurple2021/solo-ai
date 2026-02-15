@@ -12,10 +12,20 @@ const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 // Create Checkout Session
 router.post('/create-checkout-session', async (req, res) => {
     try {
-        const { priceId, userId } = req.body;
+        const { tier, billing, userId } = req.body;
 
-        if (!priceId || !userId) {
-            return res.status(400).json({ error: 'Missing priceId or userId' });
+        if (!tier || !billing || !userId) {
+            return res.status(400).json({ error: 'Missing tier, billing cycle, or userId' });
+        }
+
+        // Validate tier
+        if (tier !== 'accelerator' && tier !== 'dominator') {
+             return res.status(400).json({ error: 'Invalid tier' });
+        }
+
+        const priceId = PRICE_IDS[tier as 'accelerator' | 'dominator'][billing as 'monthly' | 'yearly'];
+        if (!priceId) {
+             return res.status(400).json({ error: 'Price ID not configured for this selection' });
         }
 
         // Get user email
@@ -63,7 +73,7 @@ router.get('/subscription', async (req, res) => {
             .limit(1);
 
         if (!sub.length) {
-            return res.json({ tier: 'free', status: 'active' });
+            return res.json({ tier: 'launch', status: 'active' });
         }
 
         return res.json(sub[0]);
@@ -178,10 +188,10 @@ async function handleCheckoutCompleted(session: any) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
     const priceId = subscription.items.data[0].price.id;
 
-    let tier = 'free';
-    if (priceId === PRICE_IDS.solo) tier = 'solo';
-    if (priceId === PRICE_IDS.pro) tier = 'pro';
-    if (priceId === PRICE_IDS.agency) tier = 'agency';
+    let tier = 'launch';
+    
+    if (priceId === PRICE_IDS.accelerator.monthly || priceId === PRICE_IDS.accelerator.yearly) tier = 'accelerator';
+    if (priceId === PRICE_IDS.dominator.monthly || priceId === PRICE_IDS.dominator.yearly) tier = 'dominator';
 
     // Update or Insert Subscription
     // Check if exists
@@ -216,11 +226,10 @@ async function handleSubscriptionUpdated(subscription: any) {
     const status = subscription.status;
     const priceId = subscription.items.data[0].price.id;
 
-    let tier = 'free';
+    let tier = 'launch';
     if (status === 'active') {
-        if (priceId === PRICE_IDS.solo) tier = 'solo';
-        if (priceId === PRICE_IDS.pro) tier = 'pro';
-        if (priceId === PRICE_IDS.agency) tier = 'agency';
+        if (priceId === PRICE_IDS.accelerator.monthly || priceId === PRICE_IDS.accelerator.yearly) tier = 'accelerator';
+        if (priceId === PRICE_IDS.dominator.monthly || priceId === PRICE_IDS.dominator.yearly) tier = 'dominator';
     }
 
     await db.update(subscriptions)

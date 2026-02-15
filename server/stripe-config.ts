@@ -12,38 +12,39 @@ export const stripe = new (Stripe as any)(process.env.STRIPE_SECRET_KEY || '', {
 
 // Price IDs for each tier
 export const PRICE_IDS = {
-    free: '', // Free tier has no price ID
-    solo: process.env.STRIPE_SOLO_PRICE_ID || '',
-    pro: process.env.STRIPE_PRO_PRICE_ID || '',
-    agency: process.env.STRIPE_AGENCY_PRICE_ID || '',
+    launch: {
+        monthly: '',
+        yearly: ''
+    },
+    accelerator: {
+        monthly: process.env.STRIPE_ACCELERATOR_PRICE_ID || '',
+        yearly: process.env.STRIPE_ACCELERATOR_YEARLY_PRICE_ID || ''
+    },
+    dominator: {
+        monthly: process.env.STRIPE_DOMINATOR_PRICE_ID || '',
+        yearly: process.env.STRIPE_DOMINATOR_YEARLY_PRICE_ID || ''
+    }
 };
 
 // Tier limits for feature gating
 export const TIER_LIMITS = {
-    free: {
+    launch: {
         businesses: 1,
         storage: 5, // Total saved items
         aiGenerations: 10, // Daily limit (soft cap)
         competitors: 1,
         features: ['core', 'view_only']
     },
-    solo: {
-        businesses: 1,
+    accelerator: {
+        businesses: 3,
         storage: 50,
         aiGenerations: -1, // Unlimited
         competitors: 5,
         features: ['core', 'agents', 'basic_tools', 'advanced_tools']
     },
-    pro: {
-        businesses: 3,
-        storage: -1, // Unlimited
-        aiGenerations: -1,
-        competitors: 15,
-        features: ['core', 'agents', 'basic_tools', 'advanced_tools', 'email_integration', 'forecasting']
-    },
-    agency: {
+    dominator: {
         businesses: -1,
-        storage: -1,
+        storage: -1, // Unlimited
         aiGenerations: -1,
         competitors: 50,
         features: ['all', 'api_access', 'team_collaboration', 'whitelabel', 'custom_training']
@@ -60,18 +61,18 @@ export async function getUserTier(userId: string): Promise<keyof typeof TIER_LIM
             .where(eq(subscriptions.userId, userId))
             .limit(1);
 
-        // If no subscription or not active, return free
+        // If no subscription or not active, return launch
         if (!sub.length || sub[0].status !== 'active') {
-            return 'free';
+            return 'launch';
         }
 
         // Map old tiers to new ones if necessary
-        // Default to 'free' if tier is unrecognized or inactive
+        // Default to 'launch' if tier is unrecognized or inactive
         const tier = sub[0].tier as keyof typeof TIER_LIMITS;
-        return TIER_LIMITS[tier] ? tier : 'free';
+        return TIER_LIMITS[tier] ? tier : 'launch';
     } catch (error) {
         logError('Error fetching user tier', error);
-        return 'free';
+        return 'launch';
     }
 }
 

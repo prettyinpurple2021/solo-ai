@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.30.0",
-    "@sentry/node": "^10.38.0",
+
     "@types/bcrypt": "^6.0.0",
     "@upstash/redis": "^1.35.6",
     "bcrypt": "^6.0.0",

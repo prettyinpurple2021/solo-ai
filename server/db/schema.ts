@@ -1291,7 +1291,7 @@ export const users = pgTable("users", {
 	suspendedAt: timestamp("suspended_at", { mode: 'string' }),
 	suspendedReason: text("suspended_reason"),
 	stripeCustomerId: text("stripe_customer_id"),
-	subscriptionTier: text("subscription_tier").default('free').notNull(),
+	subscriptionTier: text("subscription_tier").default('launch').notNull(),
 	subscriptionStatus: text("subscription_status").default('active'),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow(),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow(),

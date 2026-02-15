@@ -3,6 +3,7 @@
 
 import { io, Socket } from 'socket.io-client';
 import { logInfo, logError } from '@/lib/logger';
+import { API_URL } from '@/lib/api-client';
 
 type UpdateCallback = (data: any) => void;
 
@@ -17,7 +18,7 @@ class RealtimeService {
         }
 
         this.userId = userId;
-        const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+        // API_URL imported from @/lib/api-client
 
         this.socket = io(API_URL, {
             transports: ['websocket', 'polling'],

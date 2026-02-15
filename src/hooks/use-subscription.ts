@@ -3,21 +3,18 @@ import { useUser } from "@/lib/auth-client"
 import { apiClient, endpoints } from "@/lib/api-client"
 import { logError } from "@/lib/logger"
 
-// Public Price IDs - MUST be set in .env using NEXT_PUBLIC_ prefix
+// Public Plans Configuration
 const PLANS = {
   launchpad: { // Solo
     id: 'launchpad',
-    priceId: process.env.NEXT_PUBLIC_STRIPE_SOLO_PRICE_ID || '',
     name: "Launchpad"
   },
   accelerator: { // Pro
     id: 'accelerator',
-    priceId: process.env.NEXT_PUBLIC_STRIPE_PRO_PRICE_ID || '',
     name: "Accelerator"
   },
   dominator: { // Agency
     id: 'dominator',
-    priceId: process.env.NEXT_PUBLIC_STRIPE_AGENCY_PRICE_ID || '',
     name: "Dominator"
   }
 }
@@ -125,19 +122,13 @@ export function useSubscription() {
 
   const upgradePlan = async (planKey: 'launchpad' | 'accelerator' | 'dominator') => {
     if (!user?.id) return
-    
-    const priceId = PLANS[planKey]?.priceId
-    if (!priceId) {
-       logError("Missing Price ID for plan", { planKey })
-       alert("Configuration Error: Missing Price ID. Please contact support.")
-       return
-    }
 
     try {
       setIsLoading(true)
       const res = await apiClient.post(endpoints.stripe.createCheckoutSession, 
         {
-          priceId,
+          tier: planKey === 'launchpad' ? 'launch' : planKey,
+          billing: 'monthly', // Defaulting to monthly for this hook unless extended
           userId: user.id
         },
         {
