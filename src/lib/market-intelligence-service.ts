@@ -591,13 +591,13 @@ export class MarketIntelligenceService {
           source: 'brave_search',
           query: cacheKey,
           data: data as any,
-          expiresAt,
+          expiresAt: expiresAt.toISOString(),
         })
         .onConflictDoUpdate({
           target: marketIntelligenceCache.id,
           set: {
             data: data as any,
-            expiresAt,
+            expiresAt: expiresAt.toISOString(),
           },
         })
 
