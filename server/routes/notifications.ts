@@ -187,4 +187,81 @@ router.put('/preferences', (authMiddleware as any), async (req: Request, res: Re
     }
 });
 
+// System send endpoint (called by job queue)
+router.post('/send', async (req: Request, res: Response) => {
+    try {
+        const isSystemJob = req.headers['x-system-job'] === 'true';
+        if (!isSystemJob) {
+            // If not a system job, require auth (though ideally this endpoint is internal only)
+            // For now, restrict to system jobs only
+            return res.status(401).json({ error: 'Unauthorized: System access only' });
+        }
+
+        const {
+            title,
+            body,
+            icon,
+            badge,
+            image,
+            data,
+            actions,
+            tag,
+            priority,
+            userIds,
+            allUsers
+        } = req.body;
+
+        if (!title || !body) {
+            return res.status(400).json({ error: 'Missing title or body' });
+        }
+
+        let targets: string[] = [];
+
+        if (allUsers) {
+             const allUserRecords = await db.query.users.findMany({
+                columns: { id: true }
+            });
+            targets = allUserRecords.map(u => u.id);
+        } else if (Array.isArray(userIds)) {
+            targets = userIds;
+        }
+
+        if (targets.length === 0) {
+            return res.json({ message: 'No targets found' });
+        }
+
+        // Process in batches to avoid overwhelming DB/Socket
+        const results = [];
+        
+        for (const userId of targets) {
+            try {
+                const [notification] = await db.insert(notifications).values({
+                    userId: userId,
+                    type: 'in_app', // Defaulting to in_app for now
+                    category: 'system',
+                    title: title,
+                    message: body,
+                    priority: priority || 'medium',
+                    actionUrl: data?.url || actions?.[0]?.url, // Try to extract URL from data or actions
+                    read: false,
+                    sentAt: new Date(),
+                    createdAt: new Date(),
+                }).returning();
+
+                // Broadcast real-time event
+                broadcastToUser(userId, 'notification:new', notification);
+                results.push(notification.id);
+            } catch (err) {
+                 logError(`Failed to send notification to user ${userId}`, err);
+            }
+        }
+
+        return res.json({ success: true, count: results.length });
+
+    } catch (error) {
+        logError('Error in send notification endpoint', error);
+        return res.status(500).json({ error: 'Failed to send notifications' });
+    }
+});
+
 export default router;

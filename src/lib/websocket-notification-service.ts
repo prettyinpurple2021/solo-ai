@@ -4,7 +4,7 @@ import { logError, logInfo, logWarn } from '@/lib/logger';
 
 type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
-type NotificationPayload = {
+export type NotificationPayload = {
   id: number;
   userId: number;
   type: string;
@@ -18,13 +18,13 @@ type NotificationPayload = {
   createdAt?: string | null;
 };
 
-type NotificationUpdatePayload = {
+export type NotificationUpdatePayload = {
   id?: number;
   read?: boolean;
   all?: boolean;
 };
 
-type NotificationDeletedPayload = { id: number };
+export type NotificationDeletedPayload = { id: number };
 
 type Listener<T> = (data: T) => void;
 
