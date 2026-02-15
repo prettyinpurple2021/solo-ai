@@ -12,15 +12,20 @@ export async function generateReadme(): Promise<string> {
 
     // Gather project context
     const packageJson = fs.readFileSync(path.join(process.cwd(), 'package.json'), 'utf8');
-    // Use exact absolute path for task.md as it resides outside the project root
-    const taskMd = fs.readFileSync('C:/Users/prett/.gemini/antigravity/brain/721cd51c-a782-485a-a407-43f415322a97/task.md', 'utf8');
+    
+    let roadMap = '';
+    try {
+        roadMap = fs.readFileSync(path.join(process.cwd(), 'ROADMAP.md'), 'utf8');
+    } catch (e) {
+        console.warn("ROADMAP.md not found, proceeding without it.");
+    }
 
     const prompt = `
     Generate a comprehensive README.md for this project.
     
     Context:
     Package.json: ${packageJson}
-    Task Status (task.md): ${taskMd}
+    Roadmap / Status: ${roadMap}
     
     Requirements:
     - Use "DEVELOPER MODE".

@@ -5,6 +5,7 @@ import { db } from '../db';
 import { briefcaseItems, userBriefcases } from '../db/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 import { logError } from '../utils/logger';
+import { UsageTracker } from '../utils/usage-tracker';
 
 const router = Router();
 
@@ -63,6 +64,15 @@ router.post('/', async (req: AuthRequest, res: Response) => {
             return res.status(400).json({ error: 'Type and title are required' });
         }
 
+        // Calculate approximate size
+        const payloadSize = JSON.stringify({ content, metadata, tags }).length;
+        
+        // Check storage limit
+        const hasSpace = await UsageTracker.checkLimit(userId, 'storage', payloadSize);
+        if (!hasSpace) {
+            return res.status(402).json({ error: 'Storage quota exceeded. Please upgrade your plan.' });
+        }
+
         // Ensure user has a default briefcase
         let defaultBriefcase = await db.select()
             .from(userBriefcases)
@@ -106,6 +116,9 @@ router.post('/', async (req: AuthRequest, res: Response) => {
             isPrivate: true
         }).returning();
 
+        // Increment usage
+        await UsageTracker.incrementUsage(userId, 'storage', payloadSize);
+
         return res.json({
             success: true,
             item: newItem[0]
@@ -140,6 +153,17 @@ router.delete('/', async (req: AuthRequest, res: Response) => {
                 eq(briefcaseItems.userId, userId)
             ))
             .returning();
+
+        if (result.length > 0) {
+            const item = result[0];
+            // Decrement usage
+            const payloadSize = JSON.stringify({ 
+                content: item.content, 
+                metadata: item.metadata, 
+                tags: item.tags 
+            }).length;
+            await UsageTracker.incrementUsage(userId, 'storage', -payloadSize);
+        }
 
         if (result.length === 0) {
             return res.status(404).json({ error: 'Item not found or unauthorized' });

@@ -1,8 +1,10 @@
-
 import { execSync } from 'child_process';
+import { getRecentCommits } from '../shared/git';
 import { draftPost, generateEngagementPost } from './post-drafter';
 import { postTweet } from './twitter-client';
 import { fileURLToPath } from 'url';
+
+import { loadState, updateAgentState } from '../shared/state';
 
 export async function run() {
   console.log("🐦 Internal Agent: Social Media Manager");
@@ -29,33 +31,47 @@ export async function run() {
       }
 
       console.log("🚀 Autopilot: Posting to X...");
-      await postTweet(postContent);
+      const success = await postTweet(postContent);
+      if (success) {
+        console.log("✅ Posted successfully.");
+      }
       return;
   }
 
   // Default Mode: Update based on git commits
   console.log("🔍 Mode: Dev Update (Autopilot)");
   
-  // 1. Get recent git commits (last 24 hours)
-  let commits = '';
-  try {
-    commits = execSync('git log --since="24 hours ago" --oneline').toString();
-  } catch (e) {
-    console.warn("Could not fetch git logs, assuming no recent changes.");
+  // 1. Load State
+  const state = loadState();
+  const lastHash = state.social?.lastProcessedCommitHash;
+
+  if (lastHash) {
+    console.log(`Checking for commits since: ${lastHash}`);
+  } else {
+    console.log(`No previous state found. Defauting to last 24 hours.`);
   }
 
-  if (!commits) {
-    console.log("No commits in the last 24 hours. Skipping update post.");
+  // 2. Get recent git commits
+  const { commits, latestHash } = getRecentCommits(lastHash);
+
+  if (!commits || commits.includes("No recent commits") || commits.includes("Error")) {
+    console.log("No new commits to share. Skipping update post.");
     return;
   }
 
   console.log(`Found recent commits:\n${commits.substring(0, 200)}...`);
 
-  // 2. Draft the post
+  // 3. Draft the post
   const draft = await draftPost(commits);
   
   if (draft.includes("No recent updates")) {
       console.log("Agent decided no update is needed based on commits.");
+      // Even if no tweet, we might want to update state to avoid re-checking these same commits forever?
+      // Actually, if it decided not to tweet, maybe we force update state so it doesn't get stuck?
+      // For now, let's ONLY update state if we successfully posted or explicitly skipped.
+      if (latestHash) {
+         updateAgentState('social', { lastProcessedCommitHash: latestHash, lastRun: new Date().toISOString() });
+      }
       return;
   }
 
@@ -66,9 +82,16 @@ export async function run() {
       return;
   }
 
-  // 3. Post to X (Autopilot)
+  // 4. Post to X (Autopilot)
   console.log("🚀 Autopilot: Posting to X...");
-  await postTweet(draft);
+  const success = await postTweet(draft);
+
+  if (success && latestHash) {
+      console.log(`✅ State updated: Last commit ${latestHash}`);
+      updateAgentState('social', { lastProcessedCommitHash: latestHash, lastRun: new Date().toISOString() });
+  } else if (!success) {
+      console.error("❌ Posting failed. State NOT updated (will retry next time).");
+  }
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

@@ -23,7 +23,7 @@ const PLANS = {
 }
 
 export interface Subscription {
-  plan: "free" | "solo" | "pro" | "agency"
+  plan: "free" | "launchpad" | "accelerator" | "dominator"
   status: "active" | "canceled" | "past_due" | "trialing" | "free"
   billingCycle: "monthly" | "yearly"
   nextBilling: string | null
@@ -41,9 +41,9 @@ export interface Usage {
 
 const TIER_LIMITS = {
   free: { conversations: 10, agents: 1, automations: 0, teamMembers: 1, storage: 5, aiGenerations: 10 },
-  solo: { conversations: 100, agents: 3, automations: 5, teamMembers: 1, storage: 50, aiGenerations: -1 },
-  pro: { conversations: -1, agents: 8, automations: 20, teamMembers: 3, storage: -1, aiGenerations: -1 },
-  agency: { conversations: -1, agents: -1, automations: -1, teamMembers: -1, storage: -1, aiGenerations: -1 }
+  launchpad: { conversations: 100, agents: 3, automations: 5, teamMembers: 1, storage: 50, aiGenerations: -1 },
+  accelerator: { conversations: -1, agents: 8, automations: 20, teamMembers: 3, storage: -1, aiGenerations: -1 },
+  dominator: { conversations: -1, agents: -1, automations: -1, teamMembers: -1, storage: -1, aiGenerations: -1 }
 }
 
 export function useSubscription() {

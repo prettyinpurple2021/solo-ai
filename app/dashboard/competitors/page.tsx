@@ -1,4 +1,5 @@
-"use client"
+
+import { FeatureGate } from "@/components/subscription/FeatureGate"
 
 
 export const dynamic = 'force-dynamic'
@@ -343,7 +344,8 @@ export default function CompetitorDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg p-6 relative">
+    <FeatureGate feature="competitor-stalker">
+      <div className="min-h-screen bg-dark-bg p-6 relative">
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center opacity-20 pointer-events-none" />
       <motion.div
         variants={containerVariants}
@@ -1267,5 +1269,6 @@ export default function CompetitorDashboardPage() {
         </motion.div>
       </motion.div>
     </div>
+    </FeatureGate>
   )
 }

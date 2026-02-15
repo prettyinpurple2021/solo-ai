@@ -1,4 +1,5 @@
-"use client"
+
+import { FeatureGate } from "@/components/subscription/FeatureGate"
 
 
 export const dynamic = 'force-dynamic'
@@ -112,6 +113,24 @@ const AI_AGENTS: Agent[] = [
     personality: "Root cause investigator, creative problem solver",
     capabilities: ["Five Whys Analysis", "Problem Solving", "Innovation", "Creative Solutions"],
     accent_color: "#EF4444"
+  },
+  {
+    id: "aura",
+    name: "aura",
+    display_name: "Aura",
+    description: "Wellness & Balance Guardian",
+    personality: "Calm, centered, holistic wellness advocate",
+    capabilities: ["Stress Management", "Work-Life Balance", "Mindfulness", "Burnout Prevention"],
+    accent_color: "#14B8A6"
+  },
+  {
+    id: "finn",
+    name: "finn",
+    display_name: "Finn",
+    description: "Profit & Cashflow Expert",
+    personality: "Financial wizard, ROI-focused, pragmatic strategist",
+    capabilities: ["Cashflow Analysis", "Profit Optimization", "Financial Modeling", "Expense Audit"],
+    accent_color: "#22C55E"
   }
 ]
 
@@ -401,7 +420,7 @@ export default function AgentsPage() {
   }
 
   return (
-    <>
+    <FeatureGate feature="unlimited-agents">
       <div className="min-h-screen bg-dark-bg p-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -430,41 +449,64 @@ export default function AgentsPage() {
               </div>
               <ScrollArea className="h-[calc(100vh-300px)]">
                 <div className="space-y-3">
-                  {AI_AGENTS.map((agent) => (
-                    <div
-                      key={agent.id}
-                      onClick={() => startNewConversation(agent)}
-                      className={`p-4 border rounded-none cursor-pointer transition-all hover:bg-neon-purple/5 hover:border-neon-purple/50 ${
-                        selectedAgent?.id === agent.id 
-                          ? 'border-neon-purple/50 bg-neon-purple/10' 
-                          : 'border-white/10 hover:border-neon-purple/30 bg-dark-bg/50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <AgentAvatar 
-                          displayName={agent.display_name}
-                          accentColor={agent.accent_color}
-                          size="md"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-sm text-white font-orbitron">{agent.display_name}</h3>
-                          <p className="text-xs text-gray-400 truncate font-mono">{agent.description}</p>
+                  {AI_AGENTS.map((agent) => {
+                    const card = (
+                      <div
+                        key={agent.id}
+                        onClick={() => startNewConversation(agent)}
+                        className={`p-4 border rounded-none cursor-pointer transition-all hover:bg-neon-purple/5 hover:border-neon-purple/50 ${
+                          selectedAgent?.id === agent.id 
+                            ? 'border-neon-purple/50 bg-neon-purple/10' 
+                            : 'border-white/10 hover:border-neon-purple/30 bg-dark-bg/50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <AgentAvatar 
+                            displayName={agent.display_name}
+                            accentColor={agent.accent_color}
+                            size="md"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-semibold text-sm text-white font-orbitron">{agent.display_name}</h3>
+                            <p className="text-xs text-gray-400 truncate font-mono">{agent.description}</p>
+                          </div>
+                        </div>
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          {agent.capabilities.slice(0, 2).map((capability, index) => (
+                            <Badge key={index} className="text-xs bg-neon-cyan/10 text-neon-cyan border-neon-cyan/30 font-mono rounded-none">
+                              {capability}
+                            </Badge>
+                          ))}
+                          {agent.capabilities.length > 2 && (
+                            <Badge className="text-xs bg-white/5 text-gray-400 border-white/10 font-mono rounded-none">
+                              +{agent.capabilities.length - 2} more
+                            </Badge>
+                          )}
                         </div>
                       </div>
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {agent.capabilities.slice(0, 2).map((capability, index) => (
-                          <Badge key={index} className="text-xs bg-neon-cyan/10 text-neon-cyan border-neon-cyan/30 font-mono rounded-none">
-                            {capability}
-                          </Badge>
-                        ))}
-                        {agent.capabilities.length > 2 && (
-                          <Badge className="text-xs bg-white/5 text-gray-400 border-white/10 font-mono rounded-none">
-                            +{agent.capabilities.length - 2} more
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                    )
+
+                    // Tier 1: Free Agents (Aura)
+                    if (agent.id === 'aura') {
+                      return card
+                    }
+
+                    // Tier 2: Accelerator Agents (Blaze, Glitch, Vex)
+                    if (['blaze', 'glitch', 'vex'].includes(agent.id)) {
+                      return (
+                        <FeatureGate key={agent.id} feature="pro-agents">
+                          {card}
+                        </FeatureGate>
+                      )
+                    }
+
+                    // Tier 3: Dominator Agents (Roxy, Lexi, Nova, Echo, Lumi, Finn)
+                    return (
+                        <FeatureGate key={agent.id} feature="elite-agents">
+                          {card}
+                        </FeatureGate>
+                    )
+                  })}
                 </div>
               </ScrollArea>
             </HudBorder>
@@ -743,6 +785,6 @@ export default function AgentsPage() {
           </DialogContent>
         </Dialog>
       </div>
-    </>
+    </FeatureGate>
   )
 }

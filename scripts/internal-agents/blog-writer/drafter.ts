@@ -73,6 +73,48 @@ export async function draftBlogPost(topic: string): Promise<string> {
     }
     return "Failed to generate blog post.";
   }
+
+}
+
+export async function draftDevlog(commits: string): Promise<string> {
+  const writerConfig = getAgentConfig('writer');
+  if (!writerConfig) return "Error: Config not found";
+
+  const prompt = `
+    Write a "Weekly Dev Update" (Devlog) for the SoloSuccess AI engineering blog.
+    
+    Data (Recent Git Commits):
+    ${commits}
+    
+    Requirements:
+    - Title: "Devlog: [Date Range] - [Major Feature/Theme]"
+    - Frontmatter keys: title, date ("${new Date().toISOString().split('T')[0]}"), excerpt, category ("Engineering Update"), readTime.
+    - Structure:
+      - 🚀 Major Ship (Pick the biggest feature)
+      - 🛠️ Improvements & Fixes (Group smaller processing/refactoring)
+      - 🔮 What's Next (Tease upcoming work)
+    - Tone: Transparent, nitty-gritty, "building in public".
+    - Mentions: Acknowledge the team's velocity.
+  `;
+
+  console.log(`🧠 Synthesizing Devlog from ${commits.split('\n').length} commits...`);
+
+  try {
+    const { text } = await generateText({
+      model: writerConfig.model,
+      system: writerConfig.systemPrompt,
+      prompt: prompt,
+    });
+    
+    let content = text.trim();
+    if (content.startsWith('```markdown')) content = content.replace(/^```markdown\n/, '').replace(/\n```$/, '');
+    else if (content.startsWith('```')) content = content.replace(/^```\n/, '').replace(/\n```$/, '');
+
+    return content;
+  } catch (error) {
+     console.warn("⚠️ Devlog generation failed:", error);
+     return "Failed to generate devlog.";
+  }
 }
 
 export function saveBlogPost(content: string, slug?: string): string {

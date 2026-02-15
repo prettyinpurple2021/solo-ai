@@ -7,6 +7,7 @@ import { eq, desc, and } from 'drizzle-orm';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
 import { SYSTEM_INSTRUCTIONS, AGENTS, AgentId } from '../constants';
 import { logError } from '../utils/logger';
+import { requireSubscription, checkUsage } from '../middleware/subscription';
 
 const router = Router();
 
@@ -135,7 +136,7 @@ const requireAi = (req: any, res: any, next: any) => {
 // --- ENDPOINTS ---
 
 // Generic Chat / Agent Response
-router.post('/chat', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/chat', (authMiddleware as any), requireAi, checkUsage('conversations', 1), async (req: Request, res: Response) => {
     try {
         const { agentId, history, message } = req.body;
         const userId = (req as AuthRequest).userId!;
@@ -178,7 +179,7 @@ router.post('/chat', (authMiddleware as any), requireAi, async (req: Request, re
 });
 
 // Competitor Report
-router.post('/competitor-report', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/competitor-report', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
         const { competitorName, agentId } = req.body;
         const userId = (req as AuthRequest).userId!;
@@ -247,7 +248,7 @@ router.post('/competitor-report', (authMiddleware as any), requireAi, async (req
 });
 
 // War Room
-router.post('/war-room', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/war-room', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
         const { topic, previousSessionId } = req.body;
         const userId = (req as AuthRequest).userId!;
@@ -445,7 +446,7 @@ router.post('/tactical-plan', (authMiddleware as any), requireAi, async (req: Re
 // --- MARKETING & STRATEGY ---
 
 // Incinerator
-router.post('/incinerator', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/incinerator', (authMiddleware as any), requireAi, requireSubscription('accelerator'), async (req: Request, res: Response) => {
     try {
         const { content, mode, brutality } = req.body;
         const userId = (req as AuthRequest).userId!;
@@ -747,7 +748,7 @@ router.post('/negotiation-prep', (authMiddleware as any), requireAi, async (req:
 });
 
 // Draft Legal Doc
-router.post('/legal-doc', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/legal-doc', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
         const { type, details } = req.body;
         const userId = (req as AuthRequest).userId!;
@@ -768,7 +769,7 @@ router.post('/legal-doc', (authMiddleware as any), requireAi, async (req: Reques
 });
 
 // Analyze Contract
-router.post('/contract-analysis', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/contract-analysis', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
         const { text } = req.body;
         const userId = (req as AuthRequest).userId!;
