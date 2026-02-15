@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { db } from '../db';
 import { users, tasks, businessContext, chatHistory, dailyIntelligence } from '../db/schema';
 import { eq, desc, and, gte } from 'drizzle-orm';

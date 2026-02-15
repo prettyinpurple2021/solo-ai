@@ -1,3 +1,4 @@
+"use client"
 
 import { FeatureGate } from "@/components/subscription/FeatureGate"
 

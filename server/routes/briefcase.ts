@@ -1,5 +1,5 @@
 
-import { Router, Response } from 'express';
+import { Router, Response, Request } from 'express';
 import { authMiddleware } from '../middleware/auth';
 import { db } from '../db';
 import { briefcaseItems, userBriefcases } from '../db/schema';
