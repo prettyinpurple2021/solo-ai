@@ -175,6 +175,8 @@ import briefcaseRouter from './routes/briefcase';
 
 // ... (imports)
 
+import competitorsRouter from './routes/competitors';
+
 app.use('/api/admin', adminRouter);
 app.use('/api/contacts', contactsRouter);
 app.use('/api/pitch-decks', pitchDecksRouter);
@@ -187,6 +189,7 @@ app.use('/api/search', searchRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/unified-briefcase', briefcaseRouter);
 app.use('/api/dashboard', dashboardRouter);
+app.use('/api/competitors', competitorsRouter);
 
 // Auth Routes
 app.post('/api/auth/signup', async (req: Request, res: Response) => {

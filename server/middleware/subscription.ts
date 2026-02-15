@@ -25,7 +25,7 @@ const getUserId = (req: Request): string | null => {
 };
 
 // Hierarchy of tiers for comparison
-const TIER_LEVELS: Record<SubscriptionTier, number> = {
+export const TIER_LEVELS: Record<SubscriptionTier, number> = {
     free: 0,
     launchpad: 1,
     accelerator: 2,
@@ -40,7 +40,7 @@ export const requireSubscription = (minTier: SubscriptionTier) => {
                 return res.status(401).json({ error: 'Unauthorized' });
             }
 
-            const currentTier = await UsageTracker.getUserTier(userId);
+            const currentTier = await UsageTracker.getUserTier(userId) as SubscriptionTier;
             
             if (TIER_LEVELS[currentTier] < TIER_LEVELS[minTier]) {
                 logWarn(`Access denied: User ${userId} is ${currentTier}, needed ${minTier}`);

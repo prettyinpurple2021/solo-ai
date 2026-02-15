@@ -4,20 +4,20 @@ import jwt from 'jsonwebtoken';
 import { users, subscriptions, adminActions, usageTracking } from '../db/schema';
 import { eq, desc, count, sql } from 'drizzle-orm';
 import { requireAdmin, verifyAdminPin } from '../middleware/admin';
-import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { logError } from '../utils/logger';
 
 const router = express.Router();
 
 // Apply auth middleware to all admin routes
-router.use(authMiddleware as any);
+router.use(authMiddleware);
 
 // Verify PIN endpoint (doesn't require admin role yet, used to elevate session)
 router.post('/verify-pin', async (req, res) => {
     try {
         const { pin } = req.body;
-        const userEmail = ((req as unknown) as AuthRequest).userEmail;
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userEmail = req.userEmail;
+        const userId = req.userId;
 
         if (!userEmail || !pin || !userId) {
             return res.status(400).json({ error: 'Missing requirements' });
@@ -132,7 +132,7 @@ router.post('/users/:userId/suspend', async (req: express.Request, res: express.
     try {
         const userId = req.params.userId as string;
         const { reason } = req.body;
-        const adminUserId = ((req as unknown) as AuthRequest).userId!;
+        const adminUserId = req.userId!;
 
         // Update user suspended status in database
         await db.update(users)

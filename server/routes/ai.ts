@@ -4,10 +4,11 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { db } from '../db';
 import { businessContext, tasks, competitorReports, boardReports, pivotAnalyses, warRoomSessions, dailyIntelligence } from '../db/schema';
 import { eq, desc, and } from 'drizzle-orm';
-import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { SYSTEM_INSTRUCTIONS, AGENTS, AgentId } from '../constants';
 import { logError } from '../utils/logger';
-import { requireSubscription, checkUsage } from '../middleware/subscription';
+import { requireSubscription, checkUsage, TIER_LEVELS } from '../middleware/subscription';
+import { UsageTracker } from '../utils/usage-tracker';
 
 const router = Router();
 
@@ -136,10 +137,45 @@ const requireAi = (req: any, res: any, next: any) => {
 // --- ENDPOINTS ---
 
 // Generic Chat / Agent Response
-router.post('/chat', (authMiddleware as any), requireAi, checkUsage('conversations', 1), async (req: Request, res: Response) => {
+router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), async (req: Request, res: Response) => {
     try {
         const { agentId, history, message } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
+
+        // --- TIER ENFORCEMENT ---
+        const userTier = await UsageTracker.getUserTier(userId) as any; // Cast to any to avoid complex SubscriptionTier import issues for now, or string.
+        // Actually, TIER_LEVELS key must be SubscriptionTier.
+        // Let's rely on the fact that TIER_LEVELS is imported or defined?
+        // Wait, TIER_LEVELS is NOT imported in ai.ts. It is defined in subscription.ts but not exported?
+        // It is NOT exported in subscription.ts in the snippet I saw!
+        // I need to duplicate TIER_LEVELS or export it from subscription.ts.
+        // Let's check subscription.ts again. Line 28: const TIER_LEVELS ... NOT exported.
+        // I should Export TIER_LEVELS from subscription.ts.
+        const tierLevel = TIER_LEVELS[userTier];
+
+        // Define Agent Tiers (Must match frontend logic)
+        const FREE_AGENTS = ['aura'];
+        const ACCELERATOR_AGENTS = ['blaze', 'glitch', 'vex'];
+        const DOMINATOR_AGENTS = ['roxy', 'lexi', 'nova', 'echo', 'lumi', 'finn'];
+
+        let requiredTierLevel = 0; // Free
+        if (DOMINATOR_AGENTS.includes(agentId)) {
+            requiredTierLevel = TIER_LEVELS['dominator'];
+        } else if (ACCELERATOR_AGENTS.includes(agentId)) {
+            requiredTierLevel = TIER_LEVELS['accelerator'];
+        } else if (!FREE_AGENTS.includes(agentId)) {
+            // Default to highest security if unknown agent
+            requiredTierLevel = TIER_LEVELS['dominator'];
+        }
+
+        if (tierLevel < requiredTierLevel) {
+             return res.status(403).json({ 
+                error: 'Upgrade required to access this agent.',
+                requiredLevel: requiredTierLevel,
+                currentLevel: tierLevel
+            });
+        }
+        // ------------------------
 
         const context = await getContext(userId);
         const deepMind = await getDeepMindContext(userId);
@@ -170,6 +206,10 @@ router.post('/chat', (authMiddleware as any), requireAi, checkUsage('conversatio
         });
 
         const result = await chat.sendMessage({ message });
+
+        // Increment usage stats
+        await UsageTracker.incrementUsage(userId, 'conversations', 1);
+        
         res.json({ text: result.text || "No response." });
 
     } catch (error) {
@@ -182,7 +222,7 @@ router.post('/chat', (authMiddleware as any), requireAi, checkUsage('conversatio
 router.post('/competitor-report', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
         const { competitorName, agentId } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const agent = AGENTS[agentId as keyof typeof AGENTS];
         const persona = SYSTEM_INSTRUCTIONS[agentId as keyof typeof SYSTEM_INSTRUCTIONS];
@@ -251,7 +291,7 @@ router.post('/competitor-report', (authMiddleware as any), requireAi, requireSub
 router.post('/war-room', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
         const { topic, previousSessionId } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const deepMind = await getDeepMindContext(userId);
 
@@ -327,7 +367,7 @@ router.post('/war-room', (authMiddleware as any), requireAi, requireSubscription
 // Daily Briefing
 router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
         // Check if already exists for today
@@ -392,7 +432,7 @@ router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request
 router.post('/tactical-plan', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { goal } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `
             ${context}
@@ -449,7 +489,7 @@ router.post('/tactical-plan', (authMiddleware as any), requireAi, async (req: Re
 router.post('/incinerator', (authMiddleware as any), requireAi, requireSubscription('accelerator'), async (req: Request, res: Response) => {
     try {
         const { content, mode, brutality } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const deepMind = await getDeepMindContext(userId);
         const prompt = `${context}\n${deepMind}\nIncinerator Mode. Content: "${content}". Mode: ${mode}. Brutality: ${brutality}. 
@@ -472,7 +512,7 @@ router.post('/incinerator', (authMiddleware as any), requireAi, requireSubscript
 // Pitch Deck
 router.post('/pitch-deck', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nGenerate 10-slide pitch deck. Return JSON with title, slides (title, keyPoint, content, visualIdea).`;
 
@@ -491,7 +531,7 @@ router.post('/pitch-deck', (authMiddleware as any), requireAi, async (req: Reque
 // Blue Oceans
 router.post('/blue-oceans', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nFind 3 Blue Ocean market gaps. Return JSON.`;
 
@@ -511,7 +551,7 @@ router.post('/blue-oceans', (authMiddleware as any), requireAi, async (req: Requ
 router.post('/tribe-blueprint', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { audience, enemy } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nGenerate Tribe Blueprint. Audience: ${audience}. Enemy: ${enemy}. Return JSON.`;
 
@@ -531,7 +571,7 @@ router.post('/tribe-blueprint', (authMiddleware as any), requireAi, async (req: 
 router.post('/amplified-content', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { source } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nAmplify content: "${source}". Return JSON with sourceTitle, twitterThread, linkedinPost, tiktokScript, newsletterSection.`;
 
@@ -550,7 +590,7 @@ router.post('/amplified-content', (authMiddleware as any), requireAi, async (req
 // Social Strategy
 router.post('/social-strategy', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nMISSION: SOCIAL STRATEGY (The Amplifier). Act as Echo (CMO). Analyze Brand DNA. Generate strategy. Return JSON.`;
 
@@ -570,7 +610,7 @@ router.post('/social-strategy', (authMiddleware as any), requireAi, async (req: 
 router.post('/launch-strategy', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { product, date } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nLaunch Strategy for "${product}" on ${date}. Return JSON with phases (name, events(day, title, description, owner, channel)).`;
 
@@ -592,7 +632,7 @@ router.post('/launch-strategy', (authMiddleware as any), requireAi, async (req: 
 router.post('/job-description', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { roleTitle, employmentType } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nMISSION: HIRE TALENT (The Scout). ROLE: "${roleTitle}". TYPE: "${employmentType}". Act as Roxy. Create Job Description. Return JSON with roleTitle, hook, responsibilities, requirements, perks.`;
 
@@ -612,7 +652,7 @@ router.post('/job-description', (authMiddleware as any), requireAi, async (req: 
 router.post('/interview-guide', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { roleTitle, keyFocus } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nMISSION: VET TALENT. ROLE: "${roleTitle}". FOCUS: "${keyFocus}". Act as Roxy & Glitch. Create Interview Guide. Return JSON with roleTitle, questions(question, whatToLookFor, redFlag).`;
 
@@ -632,7 +672,7 @@ router.post('/interview-guide', (authMiddleware as any), requireAi, async (req: 
 router.post('/sop', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { taskName } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nMISSION: DELEGATION SYSTEM (SOP). TASK: "${taskName}". Act as Roxy. Create SOP. Return JSON with taskName, goal, steps(step, action, details), definitionOfDone.`;
 
@@ -652,7 +692,7 @@ router.post('/sop', (authMiddleware as any), requireAi, async (req: Request, res
 router.post('/board-report', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { financials, tasks, reports, contacts } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const dataSummary = `FINANCIALS: Cash ${financials.currentCash}, Burn ${financials.monthlyBurn}, Revenue ${financials.monthlyRevenue}. OPS: ${tasks.length} total tasks. INTEL: ${reports.length} competitors. NETWORK: ${contacts.length} contacts.`;
         const prompt = `${context}\nGenerate Board Meeting Report based on data: ${dataSummary}. Return JSON with ceoScore, executiveSummary, consensus, grades(agentId, department, grade, score, summary, keyIssue).`;
@@ -711,7 +751,7 @@ router.post('/tech-audit', (authMiddleware as any), requireAi, async (req: Reque
 router.post('/cold-email', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { contact } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nDraft cold email for ${contact.name}, ${contact.role} at ${contact.company}. Notes: ${contact.notes}.`;
 
@@ -731,7 +771,7 @@ router.post('/cold-email', (authMiddleware as any), requireAi, async (req: Reque
 router.post('/negotiation-prep', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { contact } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nNegotiation prep for ${contact.name}. Return JSON with strategy, leveragePoints, psychologicalProfile, openingLine.`;
 
@@ -751,7 +791,7 @@ router.post('/negotiation-prep', (authMiddleware as any), requireAi, async (req:
 router.post('/legal-doc', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
         const { type, details } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const persona = SYSTEM_INSTRUCTIONS[AgentId.LUMI];
         const prompt = `${context}\n${persona}\nDraft ${type}. Details: ${details}. Include strict standard legal disclaimer that this is AI generated.`;
@@ -772,7 +812,7 @@ router.post('/legal-doc', (authMiddleware as any), requireAi, requireSubscriptio
 router.post('/contract-analysis', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
         const { text } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const persona = SYSTEM_INSTRUCTIONS[AgentId.LUMI];
         const prompt = `${context}\n${persona}\nAnalyze contract: ${text.substring(0, 20000)}. Return JSON with safetyScore, verdict, criticalRisks, suggestions.`;
@@ -851,7 +891,7 @@ router.post('/roleplay-feedback', (authMiddleware as any), requireAi, async (req
 router.post('/brand-image', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { promptUser, styleDesc } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nImage Gen: ${promptUser}. Style: ${styleDesc}.`;
 
@@ -907,7 +947,7 @@ router.post('/simulation', (authMiddleware as any), requireAi, async (req: Reque
 // Market Pulse
 router.post('/market-pulse', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nSearch for market trends/news for this industry. Summary bullet points.`;
 
@@ -929,7 +969,7 @@ router.post('/market-pulse', (authMiddleware as any), requireAi, async (req: Req
 router.post('/analyze-opportunity', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const { opportunity } = req.body;
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const context = await getContext(userId);
         
         const prompt = `

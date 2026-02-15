@@ -2,15 +2,14 @@ import { Router } from 'express';
 import { db } from '../db';
 import { users, tasks, businessContext, chatHistory, dailyIntelligence } from '../db/schema';
 import { eq, desc, and, gte } from 'drizzle-orm';
-import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { logError } from '../utils/logger';
 
 const router = Router();
 
-// @ts-ignore - Supress AuthRequest mismatch for legacy server
-router.get('/', authMiddleware, async (req: any, res: any) => {
+router.get('/', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId;
+        const userId = req.userId;
         if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
         // 1. Fetch User Data

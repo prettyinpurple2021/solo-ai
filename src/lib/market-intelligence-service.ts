@@ -1,6 +1,6 @@
 import { logError, logInfo, logWarn } from './logger'
-import { db } from '@/db'
-import { marketIntelligenceCache, competitorNewsArticles, competitorSocialMentions } from '@/db/schema'
+import { db } from '@/server/db'
+import { marketIntelligenceCache, competitorNewsArticles, competitorSocialMentions } from '@/server/db/schema'
 import { eq, and, gte } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 
@@ -385,7 +385,7 @@ export class MarketIntelligenceService {
         const publishedAt = this.parsePublishDate(result.age || result.page_age)
         
         // Filter out results older than maxDays
-        if (publishedAt < cutoffDate) {
+        if (publishedAt && publishedAt < cutoffDate) {
           return null
         }
 
@@ -395,9 +395,9 @@ export class MarketIntelligenceService {
           url: result.url,
           source: this.extractDomain(result.url),
           publishedAt,
-          summary: result.description,
-          sentiment: this.detectSentiment(result.title + ' ' + result.description),
-          category: this.detectCategory(result.title + ' ' + result.description),
+          summary: (result.description || '') as string,
+          sentiment: this.detectSentiment(result.title + ' ' + (result.description || '')),
+          category: (this.detectCategory(result.title + ' ' + (result.description || '')) || 'general') as NewsArticle['category'],
           relevanceScore: this.calculateRelevance(result, competitorName),
         }
       })

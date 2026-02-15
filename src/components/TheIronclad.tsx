@@ -4,6 +4,7 @@ import { geminiService } from '../services/geminiService';
 import { LegalDoc, LegalDocType, LegalAnalysis } from '../types';
 import { addXP, showToast } from '../services/gameService';
 import { soundService } from '../services/soundService';
+import { FeatureGate } from './subscription/FeatureGate';
 
 /**
  * TheIronclad component following Cyberpunk Design System v3
@@ -111,181 +112,183 @@ export const TheIronclad: React.FC = () => {
     }
 
     return (
-        <div className="min-h-[85vh] flex flex-col animate-in fade-in duration-500">
-            {/* Header */}
-            <div className="mb-6 flex items-end justify-between border-b border-gray-700 pb-6">
-                <div>
-                    <div className="flex items-center gap-2 text-neon-purple font-mono text-xs font-bold uppercase tracking-widest mb-2">
-                        <Scale size={14} /> Legal & Compliance
+        <FeatureGate feature="legal-tools">
+            <div className="min-h-[85vh] flex flex-col animate-in fade-in duration-500">
+                {/* Header */}
+                <div className="mb-6 flex items-end justify-between border-b border-gray-700 pb-6">
+                    <div>
+                        <div className="flex items-center gap-2 text-neon-purple font-mono text-xs font-bold uppercase tracking-widest mb-2">
+                            <Scale size={14} /> Legal & Compliance
+                        </div>
+                        <h2 className="font-orbitron text-4xl font-bold uppercase tracking-wider text-white">THE IRONCLAD</h2>
+                        <p className="font-mono text-gray-400 mt-2">Automated legal counsel provided by <span className="text-neon-purple font-bold">Lumi</span>.</p>
                     </div>
-                    <h2 className="font-orbitron text-4xl font-bold uppercase tracking-wider text-white">THE IRONCLAD</h2>
-                    <p className="font-mono text-gray-400 mt-2">Automated legal counsel provided by <span className="text-neon-purple font-bold">Lumi</span>.</p>
                 </div>
-            </div>
 
-            {/* Tabs */}
-            <div className="flex gap-4 mb-8 border-b border-gray-700 overflow-x-auto pb-1 scrollbar-hide">
-                <button
-                    onClick={() => setActiveTab('draft')}
-                    className={`pb-4 px-4 text-sm font-mono font-bold uppercase tracking-wider transition-all border-b-2 whitespace-nowrap ${activeTab === 'draft' ? 'border-neon-purple text-neon-purple' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
-                >
-                    <span className="flex items-center gap-2"><PenTool size={16} /> Drafter</span>
-                </button>
-                <button
-                    onClick={() => setActiveTab('review')}
-                    className={`pb-4 px-4 text-sm font-mono font-bold uppercase tracking-wider transition-all border-b-2 whitespace-nowrap ${activeTab === 'review' ? 'border-neon-purple text-neon-purple' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
-                >
-                    <span className="flex items-center gap-2"><ShieldAlert size={16} /> Loophole Scanner</span>
-                </button>
-            </div>
+                {/* Tabs */}
+                <div className="flex gap-4 mb-8 border-b border-gray-700 overflow-x-auto pb-1 scrollbar-hide">
+                    <button
+                        onClick={() => setActiveTab('draft')}
+                        className={`pb-4 px-4 text-sm font-mono font-bold uppercase tracking-wider transition-all border-b-2 whitespace-nowrap ${activeTab === 'draft' ? 'border-neon-purple text-neon-purple' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
+                    >
+                        <span className="flex items-center gap-2"><PenTool size={16} /> Drafter</span>
+                    </button>
+                    <button
+                        onClick={() => setActiveTab('review')}
+                        className={`pb-4 px-4 text-sm font-mono font-bold uppercase tracking-wider transition-all border-b-2 whitespace-nowrap ${activeTab === 'review' ? 'border-neon-purple text-neon-purple' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
+                    >
+                        <span className="flex items-center gap-2"><ShieldAlert size={16} /> Loophole Scanner</span>
+                    </button>
+                </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 h-full">
 
-                {/* Input Section */}
-                <div className="flex flex-col gap-4">
-                    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex-1 flex flex-col">
+                    {/* Input Section */}
+                    <div className="flex flex-col gap-4">
+                        <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 flex-1 flex flex-col">
 
-                        {activeTab === 'draft' ? (
-                            <>
-                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Document Configuration</h3>
-                                <div className="space-y-4 flex-1">
-                                    <div>
-                                        <label className="text-xs font-bold text-zinc-400 block mb-2">Document Type</label>
-                                        <select
-                                            value={docType}
-                                            onChange={(e) => setDocType(e.target.value as LegalDocType)}
-                                            className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-violet-500"
-                                        >
-                                            <option value="NDA">Non-Disclosure Agreement (NDA)</option>
-                                            <option value="Contractor Agreement">Independent Contractor Agreement</option>
-                                            <option value="SaaS Terms of Service">SaaS Terms of Service</option>
-                                            <option value="Privacy Policy">Privacy Policy</option>
-                                            <option value="Offer Letter">Employee Offer Letter</option>
-                                        </select>
+                            {activeTab === 'draft' ? (
+                                <>
+                                    <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Document Configuration</h3>
+                                    <div className="space-y-4 flex-1">
+                                        <div>
+                                            <label className="text-xs font-bold text-zinc-400 block mb-2">Document Type</label>
+                                            <select
+                                                value={docType}
+                                                onChange={(e) => setDocType(e.target.value as LegalDocType)}
+                                                className="w-full bg-black border border-zinc-700 rounded p-3 text-white focus:border-violet-500"
+                                            >
+                                                <option value="NDA">Non-Disclosure Agreement (NDA)</option>
+                                                <option value="Contractor Agreement">Independent Contractor Agreement</option>
+                                                <option value="SaaS Terms of Service">SaaS Terms of Service</option>
+                                                <option value="Privacy Policy">Privacy Policy</option>
+                                                <option value="Offer Letter">Employee Offer Letter</option>
+                                            </select>
+                                        </div>
+                                        <div className="flex-1 flex flex-col">
+                                            <label className="text-xs font-bold text-zinc-400 block mb-2">Key Details (Parties, Dates, Jurisdiction)</label>
+                                            <textarea
+                                                value={docDetails}
+                                                onChange={(e) => setDocDetails(e.target.value)}
+                                                className="w-full flex-1 bg-black border border-zinc-700 rounded p-4 text-sm text-white resize-none focus:border-violet-500"
+                                                placeholder="e.g. Between Acme Corp (Delaware) and John Doe. Effective Jan 1st. Standard confidentiality terms. NY Law."
+                                            />
+                                        </div>
                                     </div>
+                                    <button
+                                        onClick={handleDraft}
+                                        disabled={loading || !docDetails.trim()}
+                                        className="mt-6 w-full py-3 bg-violet-700 hover:bg-violet-600 text-white rounded font-bold uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-violet-900/20"
+                                    >
+                                        {loading ? <Loader2 size={16} className="animate-spin" /> : <><FileText size={16} /> Generate Document</>}
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Contract Analysis</h3>
                                     <div className="flex-1 flex flex-col">
-                                        <label className="text-xs font-bold text-zinc-400 block mb-2">Key Details (Parties, Dates, Jurisdiction)</label>
                                         <textarea
-                                            value={docDetails}
-                                            onChange={(e) => setDocDetails(e.target.value)}
-                                            className="w-full flex-1 bg-black border border-zinc-700 rounded p-4 text-sm text-white resize-none focus:border-violet-500"
-                                            placeholder="e.g. Between Acme Corp (Delaware) and John Doe. Effective Jan 1st. Standard confidentiality terms. NY Law."
+                                            value={contractText}
+                                            onChange={(e) => setContractText(e.target.value)}
+                                            className="w-full flex-1 bg-black border border-zinc-700 rounded p-4 text-sm text-white resize-none focus:border-violet-500 font-mono"
+                                            placeholder="Paste the full contract text here for analysis..."
                                         />
                                     </div>
+                                    <button
+                                        onClick={handleAnalyze}
+                                        disabled={loading || !contractText.trim()}
+                                        className="mt-6 w-full py-3 bg-red-900/50 hover:bg-red-900 text-red-200 border border-red-900 rounded font-bold uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                                    >
+                                        {loading ? <Loader2 size={16} className="animate-spin" /> : <><ShieldAlert size={16} /> Scan for Risks</>}
+                                    </button>
+                                </>
+                            )}
+
+                        </div>
+                    </div>
+
+                    {/* Output Section */}
+                    <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 relative overflow-hidden flex flex-col min-h-[500px]">
+                        {!draftResult && !analysisResult && !loading && (
+                            <div className="flex-1 flex flex-col items-center justify-center text-zinc-700 opacity-50">
+                                <Scale size={64} strokeWidth={1} />
+                                <p className="mt-4 font-mono uppercase tracking-widest text-sm">Awaiting Legal Input</p>
+                            </div>
+                        )}
+
+                        {loading && (
+                            <div className="flex-1 flex flex-col items-center justify-center text-violet-500">
+                                <Loader2 size={48} className="animate-spin mb-4" />
+                                <p className="font-mono uppercase tracking-widest animate-pulse">Consulting Lumi (The Sentinel)...</p>
+                            </div>
+                        )}
+
+                        {activeTab === 'draft' && draftResult && (
+                            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
+                                <div className="flex justify-between items-center mb-4 border-b border-zinc-800 pb-4">
+                                    <h3 className="font-bold text-white flex items-center gap-2"><CheckCircle2 className="text-emerald-500" size={18} /> Draft Ready</h3>
+                                    <button onClick={() => copyToClipboard(draftResult.content)} className="text-xs font-bold text-zinc-500 hover:text-white flex items-center gap-2 uppercase">
+                                        {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? 'Copied' : 'Copy Text'}
+                                    </button>
                                 </div>
-                                <button
-                                    onClick={handleDraft}
-                                    disabled={loading || !docDetails.trim()}
-                                    className="mt-6 w-full py-3 bg-violet-700 hover:bg-violet-600 text-white rounded font-bold uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2 shadow-lg shadow-violet-900/20"
-                                >
-                                    {loading ? <Loader2 size={16} className="animate-spin" /> : <><FileText size={16} /> Generate Document</>}
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <h3 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Contract Analysis</h3>
-                                <div className="flex-1 flex flex-col">
-                                    <textarea
-                                        value={contractText}
-                                        onChange={(e) => setContractText(e.target.value)}
-                                        className="w-full flex-1 bg-black border border-zinc-700 rounded p-4 text-sm text-white resize-none focus:border-violet-500 font-mono"
-                                        placeholder="Paste the full contract text here for analysis..."
-                                    />
+                                <div className="flex-1 bg-black border border-zinc-800 rounded-lg p-4 overflow-y-auto custom-scrollbar">
+                                    <pre className="whitespace-pre-wrap text-zinc-300 font-mono text-sm leading-relaxed">
+                                        {draftResult.content}
+                                    </pre>
                                 </div>
-                                <button
-                                    onClick={handleAnalyze}
-                                    disabled={loading || !contractText.trim()}
-                                    className="mt-6 w-full py-3 bg-red-900/50 hover:bg-red-900 text-red-200 border border-red-900 rounded font-bold uppercase tracking-widest transition-all disabled:opacity-50 flex items-center justify-center gap-2"
-                                >
-                                    {loading ? <Loader2 size={16} className="animate-spin" /> : <><ShieldAlert size={16} /> Scan for Risks</>}
-                                </button>
-                            </>
+                                <p className="text-[10px] text-red-500 font-mono mt-2 text-center uppercase">* Verify with legal counsel before use.</p>
+                            </div>
+                        )}
+
+                        {activeTab === 'review' && analysisResult && (
+                            <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
+                                <div className="flex items-start justify-between mb-6 pb-4 border-b border-zinc-800">
+                                    <div>
+                                        <h3 className="text-lg font-bold text-white">Contract Verdict</h3>
+                                        <p className="text-zinc-400 text-sm italic">"{analysisResult.verdict}"</p>
+                                    </div>
+                                    <div className="text-center bg-zinc-900 p-3 rounded border border-zinc-800">
+                                        <div className="text-[10px] font-bold text-zinc-500 uppercase">Safety Score</div>
+                                        <div className={`text-3xl font-black ${analysisResult.safetyScore > 80 ? 'text-emerald-500' : analysisResult.safetyScore > 50 ? 'text-yellow-500' : 'text-red-500'}`}>
+                                            {analysisResult.safetyScore}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-6 overflow-y-auto custom-scrollbar flex-1 pr-2">
+                                    <div className="bg-red-950/10 border border-red-900/30 p-4 rounded-lg">
+                                        <h4 className="text-xs font-bold text-red-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                            <AlertTriangle size={14} /> Critical Risks
+                                        </h4>
+                                        <ul className="space-y-2">
+                                            {analysisResult.criticalRisks.map((risk, i) => (
+                                                <li key={i} className="text-sm text-zinc-300 flex items-start gap-2">
+                                                    <span className="text-red-500 font-bold">×</span> {risk}
+                                                </li>
+                                            ))}
+                                            {analysisResult.criticalRisks.length === 0 && <li className="text-sm text-zinc-500 italic">No critical risks detected.</li>}
+                                        </ul>
+                                    </div>
+
+                                    <div className="bg-slate-900/30 border border-slate-800 p-4 rounded-lg">
+                                        <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                            <FileText size={14} /> Suggestions
+                                        </h4>
+                                        <ul className="space-y-2">
+                                            {analysisResult.suggestions.map((sug, i) => (
+                                                <li key={i} className="text-sm text-zinc-300 flex items-start gap-2">
+                                                    <span className="text-slate-500 font-bold">›</span> {sug}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
                         )}
 
                     </div>
                 </div>
-
-                {/* Output Section */}
-                <div className="bg-zinc-950 border border-zinc-800 rounded-xl p-6 relative overflow-hidden flex flex-col min-h-[500px]">
-                    {!draftResult && !analysisResult && !loading && (
-                        <div className="flex-1 flex flex-col items-center justify-center text-zinc-700 opacity-50">
-                            <Scale size={64} strokeWidth={1} />
-                            <p className="mt-4 font-mono uppercase tracking-widest text-sm">Awaiting Legal Input</p>
-                        </div>
-                    )}
-
-                    {loading && (
-                        <div className="flex-1 flex flex-col items-center justify-center text-violet-500">
-                            <Loader2 size={48} className="animate-spin mb-4" />
-                            <p className="font-mono uppercase tracking-widest animate-pulse">Consulting Lumi (The Sentinel)...</p>
-                        </div>
-                    )}
-
-                    {activeTab === 'draft' && draftResult && (
-                        <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500 relative">
-                            <div className="flex justify-between items-center mb-4 border-b border-zinc-800 pb-4">
-                                <h3 className="font-bold text-white flex items-center gap-2"><CheckCircle2 className="text-emerald-500" size={18} /> Draft Ready</h3>
-                                <button onClick={() => copyToClipboard(draftResult.content)} className="text-xs font-bold text-zinc-500 hover:text-white flex items-center gap-2 uppercase">
-                                    {copied ? <Check size={14} /> : <Copy size={14} />} {copied ? 'Copied' : 'Copy Text'}
-                                </button>
-                            </div>
-                            <div className="flex-1 bg-black border border-zinc-800 rounded-lg p-4 overflow-y-auto custom-scrollbar">
-                                <pre className="whitespace-pre-wrap text-zinc-300 font-mono text-sm leading-relaxed">
-                                    {draftResult.content}
-                                </pre>
-                            </div>
-                            <p className="text-[10px] text-red-500 font-mono mt-2 text-center uppercase">* Verify with legal counsel before use.</p>
-                        </div>
-                    )}
-
-                    {activeTab === 'review' && analysisResult && (
-                        <div className="flex-1 flex flex-col animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="flex items-start justify-between mb-6 pb-4 border-b border-zinc-800">
-                                <div>
-                                    <h3 className="text-lg font-bold text-white">Contract Verdict</h3>
-                                    <p className="text-zinc-400 text-sm italic">"{analysisResult.verdict}"</p>
-                                </div>
-                                <div className="text-center bg-zinc-900 p-3 rounded border border-zinc-800">
-                                    <div className="text-[10px] font-bold text-zinc-500 uppercase">Safety Score</div>
-                                    <div className={`text-3xl font-black ${analysisResult.safetyScore > 80 ? 'text-emerald-500' : analysisResult.safetyScore > 50 ? 'text-yellow-500' : 'text-red-500'}`}>
-                                        {analysisResult.safetyScore}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-6 overflow-y-auto custom-scrollbar flex-1 pr-2">
-                                <div className="bg-red-950/10 border border-red-900/30 p-4 rounded-lg">
-                                    <h4 className="text-xs font-bold text-red-500 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                        <AlertTriangle size={14} /> Critical Risks
-                                    </h4>
-                                    <ul className="space-y-2">
-                                        {analysisResult.criticalRisks.map((risk, i) => (
-                                            <li key={i} className="text-sm text-zinc-300 flex items-start gap-2">
-                                                <span className="text-red-500 font-bold">×</span> {risk}
-                                            </li>
-                                        ))}
-                                        {analysisResult.criticalRisks.length === 0 && <li className="text-sm text-zinc-500 italic">No critical risks detected.</li>}
-                                    </ul>
-                                </div>
-
-                                <div className="bg-slate-900/30 border border-slate-800 p-4 rounded-lg">
-                                    <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
-                                        <FileText size={14} /> Suggestions
-                                    </h4>
-                                    <ul className="space-y-2">
-                                        {analysisResult.suggestions.map((sug, i) => (
-                                            <li key={i} className="text-sm text-zinc-300 flex items-start gap-2">
-                                                <span className="text-slate-500 font-bold">›</span> {sug}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                </div>
             </div>
-        </div>
+        </FeatureGate>
     );
 };

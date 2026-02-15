@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { db } from '../db';
 import { notifications, notificationPreferences } from '../db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { broadcastToUser } from '../realtime';
 import { z } from 'zod';
 import { logError } from '../utils/logger';
@@ -20,9 +20,9 @@ const CreateNotificationSchema = z.object({
 });
 
 // Get all notifications
-router.get('/', (authMiddleware as any), async (req: Request, res: Response) => {
+router.get('/', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
 
         const userNotifications = await db.select().from(notifications)
             .where(eq(notifications.userId, userId))
@@ -37,9 +37,9 @@ router.get('/', (authMiddleware as any), async (req: Request, res: Response) => 
 });
 
 // Create notification and emit real-time event
-router.post('/create', (authMiddleware as any), async (req: Request, res: Response) => {
+router.post('/create', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const parsed = CreateNotificationSchema.safeParse(req.body);
 
         if (!parsed.success) {
@@ -69,9 +69,9 @@ router.post('/create', (authMiddleware as any), async (req: Request, res: Respon
 });
 
 // Mark as read
-router.post('/:id/read', (authMiddleware as any), async (req: Request, res: Response) => {
+router.post('/:id/read', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const notificationId = Number(req.params.id);
 
         const [updated] = await db.update(notifications)
@@ -92,9 +92,9 @@ router.post('/:id/read', (authMiddleware as any), async (req: Request, res: Resp
 });
 
 // Mark all as read
-router.post('/read-all', (authMiddleware as any), async (req: Request, res: Response) => {
+router.post('/read-all', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
 
         const updated = await db.update(notifications)
             .set({ read: true })
@@ -112,9 +112,9 @@ router.post('/read-all', (authMiddleware as any), async (req: Request, res: Resp
 });
 
 // Delete notification
-router.delete('/:id', (authMiddleware as any), async (req: Request, res: Response) => {
+router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const notificationId = Number(req.params.id);
 
         const deleted = await db.delete(notifications)
@@ -134,9 +134,9 @@ router.delete('/:id', (authMiddleware as any), async (req: Request, res: Respons
 });
 
 // Get preferences
-router.get('/preferences', (authMiddleware as any), async (req: Request, res: Response) => {
+router.get('/preferences', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
 
         const prefs = await db.select().from(notificationPreferences)
             .where(eq(notificationPreferences.userId, userId))
@@ -163,9 +163,9 @@ router.get('/preferences', (authMiddleware as any), async (req: Request, res: Re
 });
 
 // Update preferences
-router.put('/preferences', (authMiddleware as any), async (req: Request, res: Response) => {
+router.put('/preferences', authMiddleware, async (req: Request, res: Response) => {
     try {
-        const userId = (req as AuthRequest).userId!;
+        const userId = req.userId!;
         const newPrefs = req.body;
 
         const existing = await db.select().from(notificationPreferences)

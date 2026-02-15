@@ -9,7 +9,7 @@ import {
     competitorReports, agentInstructions
 } from '../db/schema';
 import { eq, desc, and } from 'drizzle-orm';
-import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { logError } from '../utils/logger';
 
 const router = Router();
@@ -19,7 +19,7 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
     // GET ALL
     router.get(`/${path}`, (authMiddleware as any), async (req: Request, res: Response) => {
         try {
-            const userId = (req as AuthRequest).userId;
+            const userId = req.userId;
             if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
             const items = await db.select().from(table)
@@ -36,7 +36,7 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
     // CREATE
     router.post(`/${path}`, (authMiddleware as any), async (req: Request, res: Response) => {
         try {
-            const userId = (req as AuthRequest).userId;
+            const userId = req.userId;
             if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
             const data = { ...req.body, userId: userId }; // Ensure userId is string
@@ -57,7 +57,7 @@ const createCrudRoutes = (path: string, table: any, dateField = 'generatedAt') =
     // DELETE
     router.delete(`/${path}/:id`, (authMiddleware as any), async (req: Request, res: Response) => {
         try {
-            const userId = (req as AuthRequest).userId;
+            const userId = req.userId;
             if (!userId) return res.status(401).json({ error: 'Unauthorized' });
 
             await db.delete(table).where(

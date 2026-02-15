@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { db } from '../db';
 import { contacts } from '../db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';
 import { SearchIndexer } from '../utils/searchIndexer';
 import { logError } from '../utils/logger';
@@ -16,7 +16,7 @@ router.use(checkSuspended as any);
 // Get all contacts for authenticated user
 router.get('/', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
 
         const userContacts = await db.select()
             .from(contacts)
@@ -33,7 +33,7 @@ router.get('/', async (req: Request, res: Response) => {
 // Get single contact by ID
 router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const contactId = Number(req.params.id);
 
         const contact = await db.select()
@@ -58,7 +58,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Create new contact
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const { name, email, company, role, notes, linkedinUrl, tags, lastContact, relationship } = req.body;
 
         if (!name) {
@@ -93,7 +93,7 @@ router.post('/', async (req: Request, res: Response) => {
 // Update contact
 router.put('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const contactId = Number(req.params.id);
         const { name, email, company, role, notes, linkedinUrl, tags, lastContact, relationship } = req.body;
 
@@ -139,7 +139,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 // Delete contact
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const contactId = Number(req.params.id);
 
         // Verify ownership before deleting

@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { db } from '../db';
 import { slides, slideComponents, pitchDecks } from '../db/schema';
 import { eq, and, desc, asc } from 'drizzle-orm';
-import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';
 import { logError } from '../utils/logger';
 
@@ -16,7 +16,7 @@ router.use(checkSuspended as any);
 // Add a new slide to a deck
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const { deckId, order, layout, title } = req.body;
 
         if (!deckId) {
@@ -63,7 +63,7 @@ router.post('/', async (req: Request, res: Response) => {
 // Update a slide
 router.put('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const slideId = req.params.id as string;
         const { layout, title, notes, isVisible, content } = req.body;
 
@@ -104,7 +104,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 // Add a component to a slide
 router.post('/:id/components', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const { id } = req.params;
         const slideId = Array.isArray(id) ? id[0] : id;
         const { type, content, position, style, animation, zIndex } = req.body;
@@ -141,7 +141,7 @@ router.post('/:id/components', async (req: Request, res: Response) => {
 // Update a component
 router.put('/:slideId/components/:componentId', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const { slideId: rawSlideId, componentId: rawComponentId } = req.params;
         const slideId = Array.isArray(rawSlideId) ? rawSlideId[0] : rawSlideId;
         const componentId = Array.isArray(rawComponentId) ? rawComponentId[0] : rawComponentId;
@@ -174,7 +174,7 @@ router.put('/:slideId/components/:componentId', async (req: Request, res: Respon
 // Delete a component
 router.delete('/:slideId/components/:componentId', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const { slideId: rawSlideId, componentId: rawComponentId } = req.params;
         const slideId = Array.isArray(rawSlideId) ? rawSlideId[0] : rawSlideId;
         const componentId = Array.isArray(rawComponentId) ? rawComponentId[0] : rawComponentId;
@@ -202,7 +202,7 @@ router.delete('/:slideId/components/:componentId', async (req: Request, res: Res
 // Delete a slide
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const slideId = req.params.id as string;
 
         const slide = await db.select().from(slides).where(eq(slides.id, slideId)).limit(1);
@@ -228,7 +228,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 // Add component to slide
 router.post('/:id/components', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const slideId = req.params.id as string;
         const { type, content, position, style, animation, zIndex } = req.body;
 
@@ -263,7 +263,7 @@ router.post('/:id/components', async (req: Request, res: Response) => {
 // Update component
 router.put('/components/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const compId = req.params.id as string;
         const { content, position, style, animation, zIndex } = req.body;
 
@@ -299,7 +299,7 @@ router.put('/components/:id', async (req: Request, res: Response) => {
 // Delete component
 router.delete('/components/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const compId = req.params.id as string;
 
         const comp = await db.select().from(slideComponents).where(eq(slideComponents.id, compId)).limit(1);

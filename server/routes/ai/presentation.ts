@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { google } from '@ai-sdk/google';
 import { generateObject, generateText } from 'ai';
 import { z } from 'zod';
-import { authMiddleware, AuthRequest } from '../../middleware/auth';
+import { authMiddleware } from '../../middleware/auth';
 import { checkSuspended } from '../../middleware/checkSuspended';
 import { logError } from '../../utils/logger';
 

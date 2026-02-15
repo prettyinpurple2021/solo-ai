@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { db } from '../db';
 import { pitchDecks, slides, slideComponents } from '../db/schema';
 import { eq, and, desc, asc } from 'drizzle-orm';
-import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';
 import { logError } from '../utils/logger';
 
@@ -15,7 +15,7 @@ router.use(checkSuspended as any);
 // Get all pitch decks for authenticated user
 router.get('/', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
 
         const decks = await db.select()
             .from(pitchDecks)
@@ -32,7 +32,7 @@ router.get('/', async (req: Request, res: Response) => {
 // Get single pitch deck by ID with full structure (slides & components)
 router.get('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const deckId = req.params.id as string;
 
         // 1. Fetch Deck
@@ -81,7 +81,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // Create pitch deck
 router.post('/', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         // `slides` in body should be an array of objects including their components
         const { id, title, theme, slides: initialSlides } = req.body;
 
@@ -147,7 +147,7 @@ router.post('/', async (req: Request, res: Response) => {
 // Update pitch deck metadata (Title, Theme, etc.) - DOES NOT Update Slides
 router.put('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const deckId = req.params.id as string;
         const { title, theme, status, description, isPublic, thumbnail } = req.body;
 
@@ -187,7 +187,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 // Delete pitch deck
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId!;
+        const userId = req.userId!;
         const deckId = req.params.id as string;
 
         // Verify ownership

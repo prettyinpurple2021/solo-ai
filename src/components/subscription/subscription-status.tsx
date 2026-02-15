@@ -8,6 +8,12 @@ import { Crown, Zap, Users, MessageSquare, Calendar, TrendingUp} from "lucide-re
 import { useSubscription} from "@/hooks/use-subscription"
 
 const PLAN_DETAILS = {
+  free: {
+    name: "Free",
+    icon: Users,
+    color: "from-gray-500 to-gray-600",
+    badge: "bg-gray-100 text-gray-700 border-gray-200",
+  },
   launchpad: {
     name: "Launchpad",
     icon: Zap,
@@ -90,8 +96,8 @@ export function SubscriptionStatus() {
             )}
 
             <div className="pt-4">
-              <Button variant="outline" className="w-full bg-transparent" disabled={subscription.plan === "agency"}>
-                {subscription.plan === "agency" ? "You're at the top!" : "Upgrade Plan"}
+              <Button variant="outline" className="w-full bg-transparent" disabled={subscription.plan === "dominator"}>
+                {subscription.plan === "dominator" ? "You're at the top!" : "Upgrade Plan"}
               </Button>
             </div>
           </div>

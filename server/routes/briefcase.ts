@@ -1,6 +1,6 @@
 
 import { Router, Response } from 'express';
-import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { authMiddleware } from '../middleware/auth';
 import { db } from '../db';
 import { briefcaseItems, userBriefcases } from '../db/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
@@ -14,7 +14,7 @@ router.use(authMiddleware);
 
 // GET /api/unified-briefcase
 // Get briefcase items with optional filtering
-router.get('/', async (req: AuthRequest, res: Response) => {
+router.get('/', async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
         const { type, limit, offset, search, briefcaseId } = req.query;
@@ -55,7 +55,7 @@ router.get('/', async (req: AuthRequest, res: Response) => {
 
 // POST /api/unified-briefcase
 // Save an item to the briefcase
-router.post('/', async (req: AuthRequest, res: Response) => {
+router.post('/', async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
         const { type, title, description, content, metadata, tags } = req.body;
@@ -138,7 +138,7 @@ router.post('/', async (req: AuthRequest, res: Response) => {
 // So it was `DELETE /api/unified-briefcase?id=...`
 // Express can handle this on `/` with DELETE method.
 
-router.delete('/', async (req: AuthRequest, res: Response) => {
+router.delete('/', async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
         const { id } = req.query;

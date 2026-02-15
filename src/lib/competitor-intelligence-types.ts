@@ -149,6 +149,12 @@ export interface Recommendation {
   actionItems: string[];
 }
 
+export interface PositioningRecommendation extends Recommendation {
+  marketingAngle: string;
+  targetSegment: string;
+  differentiationFactor: string;
+}
+
 // Intelligence Data Entry
 export interface IntelligenceData {
   id: string; // UUID text in DB

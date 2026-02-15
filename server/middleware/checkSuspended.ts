@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { db } from '../db';
 import { users } from '../db/schema';
 import { eq } from 'drizzle-orm';
-import { AuthRequest } from './auth';
+
 import { logError } from '../utils/logger';
 
 /**
@@ -11,7 +11,7 @@ import { logError } from '../utils/logger';
  */
 export const checkSuspended = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const userId = ((req as unknown) as AuthRequest).userId;
+        const userId = req.userId;
 
         if (!userId) {
             res.status(401).json({ error: 'Authentication required' });
