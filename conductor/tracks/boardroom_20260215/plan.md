@@ -6,9 +6,9 @@ This plan outlines the steps to implement the core multi-agent collaboration inf
 - [x] Task: Define Boardroom data models in Drizzle 14df362a
     - [x] Write schema for Boardroom sessions and messages
     - [x] Implement database migrations
-- [ ] Task: Implement Multi-Agent Orchestrator
-    - [ ] Write tests for agent sequencing logic
-    - [ ] Implement logic to manage turn-taking among AI agents
+- [x] Task: Implement Multi-Agent Orchestrator 5c14cbf
+    - [x] Write tests for agent sequencing logic
+    - [x] Implement logic to manage turn-taking among AI agents
 - [ ] Task: Create Boardroom API endpoints
     - [ ] Write tests for session creation and message fetching
     - [ ] Implement Express routes for Boardroom management
