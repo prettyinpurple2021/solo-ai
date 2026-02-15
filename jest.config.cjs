@@ -4,7 +4,7 @@ module.exports = {
   testEnvironment: 'node',
   testMatch: ['**/test/**/*.test.ts'],
   transform: {
-    '^.+\.tsx?$': [
+    '^.+\\.tsx?$': [
       'ts-jest',
       {
         useESM: true,
@@ -13,7 +13,7 @@ module.exports = {
   },
   extensionsToTreatAsEsm: ['.ts'],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '^@/server/(.*)$': '<rootDir>/server/$1'
+    '^@/server/(.*)$': '<rootDir>/server/$1',
+    '^@/(.*)$': '<rootDir>/src/$1'
   }
 };
