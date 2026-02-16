@@ -30,9 +30,9 @@ This plan outlines the steps to implement the core multi-agent collaboration inf
 - [x] Task: Integrate Socket.IO with Frontend b1a6bdf
     - [x] Write tests for real-time message handling in React
     - [x] Implement client-side socket logic for live discussion
-- [ ] Task: Implement Discussion Steering Controls
-    - [ ] Write tests for user intervention inputs
-    - [ ] Implement UI for user to interject or moderate the AI conversation
+- [x] Task: Implement Discussion Steering Controls b1a6bdf
+    - [x] Write tests for user intervention inputs
+    - [x] Implement UI for user to interject or moderate the AI conversation
 - [ ] Task: Conductor - User Manual Verification 'Phase 3: Frontend Interface' (Protocol in workflow.md)
 
 ## Phase 4: Persistence and Summarization
