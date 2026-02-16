@@ -161,11 +161,11 @@ import briefcaseRouter from './routes/briefcase';
 // ... (imports)
 
 import competitorsRouter from './routes/competitors';
-// import { boardroomRouter } from './routes/boardroom';
+import { boardroomRouter } from './src/routes/boardroom';
 
 // ...
 
-// app.use('/api/boardroom', boardroomRouter);
+app.use('/api/boardroom', boardroomRouter);
 
 // Auth Routes
 app.post('/api/auth/signup', async (req: Request, res: Response) => {
