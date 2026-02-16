@@ -1,111 +1,55 @@
-# SoloSuccess AI
+SoloSuccess AI - Project Rules & Production Mandate
+===================================================
 
-**SoloSuccess AI** is an advanced AI-powered platform designed to act as a virtual co-founder for solopreneurs. It provides a suite of specialized AI agents (the "C-Suite") and tools to automate tasks like pitch deck creation, business analytics, content strategy, and legal compliance.
+This file defines the strict operational standards for the **SoloSuccess AI** project. All AI agents, including Gemini CLI and Conductor, must adhere to these rules without exception.
+🛡️ The Production Mandate (Skills)
+-----------------------------------
 
-## 🏗️ Tech Stack
+### 1. High-Stakes Engineering
 
-### Frontend (Web)
-*   **Framework:** Next.js 16.1 (App Router)
-*   **Language:** TypeScript
-*   **Styling:** Tailwind CSS, `tailwindcss-animate`, `lucide-react`, `framer-motion`
-*   **State/Data:** `swr`, Server Actions
-*   **PWA:** `@ducanh2912/next-pwa`
+* **No Placeholders:** Never output comments like "In production, you would...". Implement the production version immediately.
 
-### Backend (Server)
-*   **Runtime:** Node.js with Express.js
-*   **Language:** TypeScript
-*   **Real-time:** Socket.IO
-*   **Database:** PostgreSQL (Neon / Local via Docker), managed with Drizzle ORM
-*   **Caching/Queue:** Upstash (Redis, QStash)
-*   **AI:** Vercel AI SDK, OpenAI, Anthropic, Google GenAI
-*   **Auth:** NextAuth.js v5 (Beta), @stackframe/stack
-*   **Payments:** Stripe
-*   **Email:** Resend
+* **Zero-TODO Policy:** Do not leave `// TODO` comments. If a feature is requested, build it fully. If it's out of scope, ask for clarification instead of mocking it.
 
-## 🚀 Getting Started
+* **Strict Typing:** All TypeScript code must use explicit interfaces/types. Avoid `any` at all costs.
 
-### Prerequisites
-*   Node.js (v20+ recommended)
-*   Docker (optional, for local DB)
-*   PostgreSQL (if not using Docker)
+### 2. Next.js 16.1 Standards
 
-### Installation
+* **Server Actions:** Use `'use server'` for all mutations. Implement proper `useActionState` (or `useFormState`) for UI feedback.
 
-1.  **Install Root Dependencies:**
-    ```bash
-    npm install
-    ```
+* **Security:** Always validate inputs using `zod` before processing. Check authentication in every Server Action using your `@stackframe/stack` or NextAuth logic.
 
-2.  **Install Server Dependencies:**
-    ```bash
-    cd server
-    npm install
-    cd ..
-    ```
+* **Performance:** Use Next.js `<Image />` component, font optimization, and `generateMetadata` for SEO.
 
-3.  **Environment Setup:**
-    *   Copy `.env.example` to `.env` (and `.env.local` if needed).
-    *   Configure database URLs, API keys (OpenAI, Stripe, etc.), and auth secrets.
+### 3. Backend & Database (Drizzle/Express)
 
-4.  **Database Setup:**
-    *   Start local Postgres (if using Docker):
-        ```bash
-        docker-compose up -d
-        ```
-    *   Push schema to database:
-        ```bash
-        npm run db:push
-        ```
+* **Transactional Integrity:** Use database transactions for multi-step operations (e.g., creating a user and a default 'Aura' agent).
 
-### Running the Application
+* **Error Handling:** Centralize Express error handling. All API responses must follow a consistent JSON structure: `{ success: boolean, data?: any, error?: string }`.
 
-To run both the Next.js frontend and the Express backend concurrently:
+🏗️ Tech Stack Context
+----------------------
 
-```bash
-npm run dev:all
-```
+* **Frontend:** Next.js (App Router), Tailwind, Framer Motion, SWR.
 
-*   **Frontend:** `http://localhost:3000`
-*   **Backend:** `http://localhost:5000`
-*   **Drizzle Studio:** `https://local.drizzle.studio` (via `npm run db:studio`)
+* **Backend:** Node.js/Express, Socket.IO, Drizzle ORM (PostgreSQL).
 
-## 📂 Project Structure
+* **Services:** Stripe (Payments), Resend (Email), Upstash (Redis/Queue).
 
-*   `app/`: Next.js App Router pages and layouts.
-*   `components/`: Reusable React components (UI, features, etc.).
-*   `server/`: Express.js backend application.
-    *   `index.ts`: Entry point.
-    *   `drizzle.config.ts`: Drizzle configuration for the server.
-*   `drizzle/`: Database migration files.
-*   `lib/`: Shared utility functions and libraries.
-*   `hooks/`: Custom React hooks.
-*   `public/`: Static assets.
-*   `scripts/`: Internal maintenance and audit scripts.
-*   `tests/` & `test/`: Testing directories (Jest/Playwright).
+📂 Architecture Strategy
+------------------------
 
-## 🛠️ Key Scripts
+* **Feature-First:** Group related components, hooks, and types within feature folders if they aren't globally reusable.
 
-| Command | Description |
-| :--- | :--- |
-| `npm run dev:all` | Starts both frontend and backend in development mode. |
-| `npm run build` | Builds the Next.js application for production. |
-| `npm run lint` | Runs ESLint. |
-| `npm run type-check` | Runs TypeScript type checking for both web and server. |
-| `npm run db:push` | Pushes Drizzle schema changes to the database. |
-| `npm run db:studio` | Opens Drizzle Studio to manage database content. |
-| `npm run internal:audit` | Runs the launch readiness audit script. |
+* **Real-time:** Ensure Socket.IO connections are properly cleaned up in `useEffect` hooks to prevent memory leaks.
 
-## 💎 Features & Tiers
+🚀 Execution Workflow
+---------------------
 
-The application is structured around a tiered subscription model:
+1. **Plan:** Every task begins with a `/conductor:newTrack`.
 
-*   **Launch (Free):** Basic access, limited storage (50MB), "Aura" agent only.
-*   **Accelerator ($19/mo):** Access to 5 core agents, tactical tools, 1GB storage.
-*   **Dominator ($29/mo):** Full "C-Suite" access (10 agents), advanced strategy tools ("War Room"), 100GB storage.
+2. **Review:** Before implementing, the `spec.md` must be reviewed for "production-readiness".
 
-**Core Agents:**
-*   **Roxy:** Business Coach/The Boss
-*   **Lexi:** Legal
-*   **Nova:** Product
-*   **Echo:** Marketing
-*   **Finn:** Finance
+3. **Verify:** After implementation, run `npm run type-check` and `npm run lint`.
+
+_Note: This document is the source of truth for all code generation. If a prompt conflicts with these rules, these rules take precedence._

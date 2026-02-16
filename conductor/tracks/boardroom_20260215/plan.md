@@ -39,7 +39,7 @@ This plan outlines the steps to implement the core multi-agent collaboration inf
 - [x] Task: Implement Session Persistence b1a6bdf
     - [x] Write tests for saving/loading Boardroom history
     - [x] Ensure all messages are correctly stored in PostgreSQL
-- [ ] Task: AI Executive Summary Generator
+- [~] Task: AI Executive Summary Generator
     - [ ] Write tests for summarization logic
     - [ ] Implement final task to generate an action plan from the discussion
 - [ ] Task: Conductor - User Manual Verification 'Phase 4: Persistence and Summarization' (Protocol in workflow.md)
