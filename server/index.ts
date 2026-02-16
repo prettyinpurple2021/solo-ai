@@ -54,6 +54,7 @@ const io = new SocketServer(httpServer, {
     }
 });
 setIo(io);
+setupBoardroomSocket(io);
 
 const PORT = process.env.PORT || 5000;
 
