@@ -35,4 +35,18 @@ describe("Boardroom Socket Namespace", () => {
       done();
     });
   });
+
+  it("should handle streaming agent responses", (done) => {
+    const chunks: string[] = [];
+    clientSocket.on("agent-chunk", (data) => {
+      chunks.push(data.chunk);
+      if (data.done) {
+        expect(chunks.join("")).toBe("Hello world");
+        done();
+      }
+    });
+
+    // We'll trigger a mock streaming event from the server side in the implementation
+    clientSocket.emit("test-trigger-stream", { sessionId: "session-123", text: "Hello world" });
+  });
 });
