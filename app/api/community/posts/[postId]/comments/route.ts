@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { postComments, posts } from '@/db/schema';
+import { postComments, posts } from '@/shared/db/schema';
 import { auth } from '@/lib/auth';
 import { desc, eq, sql } from 'drizzle-orm';
 import { logError } from '@/lib/logger';

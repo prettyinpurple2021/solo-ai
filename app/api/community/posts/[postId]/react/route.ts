@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { posts, postReactions } from '@/db/schema';
+import { posts, postReactions } from '@/shared/db/schema';
 import { auth } from '@/lib/auth';
 import { eq, and, sql } from 'drizzle-orm';
 import { logError } from '@/lib/logger';

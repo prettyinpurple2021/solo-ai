@@ -1,4 +1,4 @@
-import { db } from '@/db'
+import { db } from '@/db/index'
 import { paymentProviderConnections } from '@/shared/db/schema'
 import { eq, and, inArray } from 'drizzle-orm'
 import { logError, logWarn, logInfo } from '@/lib/logger'

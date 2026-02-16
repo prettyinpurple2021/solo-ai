@@ -1,7 +1,7 @@
 import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { db} from '@/db'
-import { intelligenceData, competitorProfiles} from '@/db/schema'
+import { intelligenceData, competitorProfiles} from '@/shared/db/schema'
 import { authenticateRequest} from '@/lib/auth-server'
 import { z} from 'zod'
 import { eq, and, desc, asc, gte, lte, inArray, sql} from 'drizzle-orm'

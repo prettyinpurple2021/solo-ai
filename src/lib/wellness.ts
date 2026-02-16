@@ -1,4 +1,4 @@
-import { db } from "@/db";
+import { db } from "@/db/index";
 import { logError } from "@/lib/logger";
 import { moodEntries, focusSessions, users } from "@/shared/db/schema";
 import { eq, desc, avg, sql, and, gte } from "drizzle-orm";

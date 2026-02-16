@@ -1,5 +1,5 @@
 import { logError,} from '@/lib/logger'
-import { db } from '@/db'
+import { db } from '@/db/index'
 import { intelligenceData,} from '@/shared/db/schema'
 import { eq, and, desc, gte, sql, inArray } from 'drizzle-orm'
 

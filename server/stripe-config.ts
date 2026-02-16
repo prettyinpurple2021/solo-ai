@@ -1,7 +1,7 @@
 // Stripe Integration Setup
 import Stripe from 'stripe';
 import { db } from './db';
-import { subscriptions, usageTracking, pitchDecks, competitorReports, businessContext, contacts } from './db/schema';
+import { subscriptions, usageTracking, pitchDecks, competitorReports, businessContext, contacts } from '../lib/shared/db/schema';
 import { eq, and, count } from 'drizzle-orm';
 import { logError } from './utils/logger';
 

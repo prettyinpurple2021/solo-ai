@@ -1,4 +1,4 @@
-import { db } from "@/db"; // Use the Next.js alias for shared code
+import { db } from "@/db/index"; // Use the Next.js alias for shared code
 import { logError } from "@/lib/logger";
 import { users, briefcases } from "@/shared/db/schema";
 import { competitorProfiles } from "@/shared/db/schema/intelligence";

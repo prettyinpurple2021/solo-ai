@@ -1,7 +1,7 @@
 'use server';
 
 
-import { db } from '@/db';
+import { db } from '@/db/index';
 import { users } from '@/shared/db/schema';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';

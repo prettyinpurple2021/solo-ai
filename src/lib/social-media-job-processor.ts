@@ -7,7 +7,7 @@ import {
   PostingFrequencyAnalysis, 
   AudienceAnalysis 
 } from './social-media-analysis-engine';
-import { db } from '@/db';
+import { db } from '@/db/index';
 import { competitorProfiles, competitorAlerts } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { CompetitorProfile } from '@/types/api';

@@ -4,7 +4,7 @@ import { authenticateRequest} from '@/lib/auth-server'
 import { rateLimitByIp} from '@/lib/rate-limit'
 import { opportunityRecommendationSystem} from '@/lib/opportunity-recommendation-system'
 import { db} from '@/db'
-import { competitiveOpportunities, opportunityActions, opportunityMetrics} from '@/db/schema'
+import { competitiveOpportunities, opportunityActions, opportunityMetrics} from '@/shared/db/schema'
 import { eq, and} from 'drizzle-orm'
 import { z} from 'zod'
 

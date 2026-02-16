@@ -1,5 +1,5 @@
 import { logError, logInfo,} from '@/lib/logger'
-import { db } from '@/db';
+import { db } from '@/db/index';
 import { competitorProfiles, scrapingJobs, scrapingJobResults } from '@/shared/db/schema';
 import { eq, and, lte } from 'drizzle-orm';
 import { socialMediaMonitor } from './social-media-monitor';

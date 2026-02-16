@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { feedback } from '@/db/schema';
+import { feedback } from '@/shared/db/schema';
 import { auth } from '@/lib/auth';
 import { logError } from '@/lib/logger';
 import { randomUUID } from 'crypto';

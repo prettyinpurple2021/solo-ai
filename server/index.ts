@@ -6,7 +6,7 @@ import { Server as SocketServer, Socket } from 'socket.io';
 import cors from 'cors';
 import { db } from './db';
 
-import { users, tasks, chatHistory, competitorReports, businessContext } from './db/schema';
+import { users, tasks, chatHistory, competitorReports, businessContext } from '../lib/shared/db/schema';
 import { eq, desc, and,} from 'drizzle-orm';
 
 import { GoogleGenAI } from '@google/genai';

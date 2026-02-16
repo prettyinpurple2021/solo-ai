@@ -1,6 +1,6 @@
 import { logError, logInfo,} from '@/lib/logger'
 import { eq, and, lte, desc, asc, sql, inArray, isNull, or } from 'drizzle-orm'
-import { db } from '@/db'
+import { db } from '@/db/index'
 import { scrapingJobs, scrapingJobResults, intelligenceData } from '@/shared/db/schema'
 import { v4 as uuidv4 } from 'uuid'
 

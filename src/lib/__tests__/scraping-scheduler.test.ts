@@ -11,7 +11,7 @@ jest.mock('uuid', () => {
 })
 
 // Mock the database
-jest.mock('@/db', () => ({
+jest.mock('@/db/index', () => ({
   db: {
     insert: jest.fn().mockReturnValue({
       // @ts-ignore - Drizzle mocking types

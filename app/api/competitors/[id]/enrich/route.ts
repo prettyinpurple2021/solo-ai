@@ -1,7 +1,7 @@
 import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { db} from '@/db'
-import { competitorProfiles} from '@/db/schema'
+import { competitorProfiles} from '@/shared/db/schema'
 import { authenticateRequest} from '@/lib/auth-server'
 import { rateLimitByIp} from '@/lib/rate-limit'
 

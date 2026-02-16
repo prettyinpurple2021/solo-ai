@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { scrapingJobs, scrapingJobResults, users, feedback, customReports, posts, postComments, challenges, challengeParticipants, analyticsEvents, briefcases, calendarConnections, chatConversations, chatMessages, competitiveOpportunities, competitors, deviceApprovals, documents, documentFolders, documentPermissions, documentShareLinks, documentVersions, competitorProfiles, competitorActivities, competitorAlerts, intelligenceData, learningPaths, learningModules, opportunityActions, opportunityMetrics, passwordResetTokens, paymentProviderConnections, goals, tasks, focusSessions, pushSubscriptions, session, socialMediaConnections, taskAnalytics, taskCategories, productivityInsights, workflowTemplates, templateDownloads, userAchievements, achievements, userApiKeys, userBrandSettings, userCompetitiveStats, userMfaSettings, templates, userSessions, userSettings, workflows, workflowExecutions, collaborationSessions, collaborationCheckpoints, collaborationMessages, collaborationParticipants, userLearningProgress, documentActivity, moodEntries, communityPosts, communityComments, communityTopics, follows, commentLikes, postLikes, postReactions, authenticator, account } from "./index";
+import { scrapingJobs, scrapingJobResults, users, feedback, customReports, posts, postComments, challenges, challengeParticipants, analyticsEvents, briefcases, calendarConnections, chatConversations, chatMessages, competitiveOpportunities, competitors, deviceApprovals, documents, documentFolders, documentPermissions, documentShareLinks, documentVersions, competitorProfiles, competitorActivities, competitorAlerts, intelligenceData, learningPaths, learningModules, opportunityActions, opportunityMetrics, passwordResetTokens, paymentProviderConnections, goals, tasks, focussessions, pushSubscriptions, sessions, socialMediaConnections, taskAnalytics, taskCategories, productivityInsights, workflowTemplates, templateDownloads, userAchievements, achievements, userApiKeys, userBrandSettings, userCompetitiveStats, userMfaSettings, templates, usersessions, userSettings, workflows, workflowExecutions, collaborationsessions, collaborationCheckpoints, collaborationMessages, collaborationParticipants, userLearningProgress, documentActivity, moodEntries, communityPosts, communityComments, communityTopics, follows, commentLikes, postLikes, postReactions, authenticators, accounts } from "./index";
 
 export const scrapingJobResultsRelations = relations(scrapingJobResults, ({one}) => ({
 	scrapingJob: one(scrapingJobs, {
@@ -71,10 +71,10 @@ export const usersRelations = relations(users, ({many}) => ({
 	posts: many(posts),
 	intelligenceData: many(intelligenceData),
 	goals: many(goals),
-	focusSessions: many(focusSessions),
+	focussessions: many(focussessions),
 	pushSubscriptions: many(pushSubscriptions),
 	scrapingJobs: many(scrapingJobs),
-	sessions: many(session),
+	sessions: many(sessions),
 	socialMediaConnections: many(socialMediaConnections),
 	taskAnalytics: many(taskAnalytics),
 	taskCategories: many(taskCategories),
@@ -88,12 +88,12 @@ export const usersRelations = relations(users, ({many}) => ({
 	templates: many(templates),
 	tasks: many(tasks),
 	workflowTemplates: many(workflowTemplates),
-	userSessions: many(userSessions),
+	usersessions: many(usersessions),
 	userSettings: many(userSettings),
 	workflows: many(workflows),
 	workflowExecutions: many(workflowExecutions),
 	learningPaths: many(learningPaths),
-	collaborationSessions: many(collaborationSessions),
+	collaborationsessions: many(collaborationsessions),
 	userLearningProgresses: many(userLearningProgress),
 	documentActivities: many(documentActivity),
 	moodEntries: many(moodEntries),
@@ -108,8 +108,8 @@ export const usersRelations = relations(users, ({many}) => ({
 	commentLikes: many(commentLikes),
 	postLikes: many(postLikes),
 	postReactions: many(postReactions),
-	authenticators: many(authenticator),
-	accounts: many(account),
+	authenticators: many(authenticators),
+	accounts: many(accounts),
 }));
 
 export const customReportsRelations = relations(customReports, ({one}) => ({
@@ -207,7 +207,7 @@ export const competitiveOpportunitiesRelations = relations(competitiveOpportunit
 		relationName: "competitiveOpportunities_userId_users_id"
 	}),
 	user_assignedTo: one(users, {
-		fields: [competitiveOpportunities.assignedTo],
+		fields: [competitiveOpportunities.assigned_to],
 		references: [users.id],
 		relationName: "competitiveOpportunities_assignedTo_users_id"
 	}),
@@ -227,7 +227,7 @@ export const deviceApprovalsRelations = relations(deviceApprovals, ({one}) => ({
 		relationName: "deviceApprovals_userId_users_id"
 	}),
 	user_approvedBy: one(users, {
-		fields: [deviceApprovals.approvedBy],
+		fields: [deviceApprovals.approved_by],
 		references: [users.id],
 		relationName: "deviceApprovals_approvedBy_users_id"
 	}),
@@ -239,7 +239,7 @@ export const documentsRelations = relations(documents, ({one, many}) => ({
 		references: [users.id]
 	}),
 	documentFolder: one(documentFolders, {
-		fields: [documents.folderId],
+		fields: [documents.folder_id],
 		references: [documentFolders.id]
 	}),
 	documentPermissions: many(documentPermissions),
@@ -275,7 +275,7 @@ export const documentPermissionsRelations = relations(documentPermissions, ({one
 		relationName: "documentPermissions_userId_users_id"
 	}),
 	user_grantedBy: one(users, {
-		fields: [documentPermissions.grantedBy],
+		fields: [documentPermissions.granted_by],
 		references: [users.id],
 		relationName: "documentPermissions_grantedBy_users_id"
 	}),
@@ -408,19 +408,19 @@ export const goalsRelations = relations(goals, ({one, many}) => ({
 	tasks: many(tasks),
 }));
 
-export const focusSessionsRelations = relations(focusSessions, ({one}) => ({
+export const focussessionsRelations = relations(focussessions, ({one}) => ({
 	task: one(tasks, {
-		fields: [focusSessions.task_id],
+		fields: [focussessions.task_id],
 		references: [tasks.id]
 	}),
 	user: one(users, {
-		fields: [focusSessions.user_id],
+		fields: [focussessions.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const tasksRelations = relations(tasks, ({one, many}) => ({
-	focusSessions: many(focusSessions),
+	focussessions: many(focussessions),
 	taskAnalytics: many(taskAnalytics),
 	user: one(users, {
 		fields: [tasks.user_id],
@@ -451,9 +451,9 @@ export const pushSubscriptionsRelations = relations(pushSubscriptions, ({one}) =
 	}),
 }));
 
-export const sessionRelations = relations(session, ({one}) => ({
+export const sessionsRelations = relations(sessions, ({one}) => ({
 	user: one(users, {
-		fields: [session.user_id],
+		fields: [sessions.user_id],
 		references: [users.id]
 	}),
 }));
@@ -559,9 +559,9 @@ export const templatesRelations = relations(templates, ({one}) => ({
 	}),
 }));
 
-export const userSessionsRelations = relations(userSessions, ({one}) => ({
+export const usersessionsRelations = relations(usersessions, ({one}) => ({
 	user: one(users, {
-		fields: [userSessions.user_id],
+		fields: [usersessions.user_id],
 		references: [users.id]
 	}),
 }));
@@ -592,9 +592,9 @@ export const workflowExecutionsRelations = relations(workflowExecutions, ({one})
 	}),
 }));
 
-export const collaborationSessionsRelations = relations(collaborationSessions, ({one, many}) => ({
+export const collaborationsessionsRelations = relations(collaborationsessions, ({one, many}) => ({
 	user: one(users, {
-		fields: [collaborationSessions.user_id],
+		fields: [collaborationsessions.user_id],
 		references: [users.id]
 	}),
 	collaborationCheckpoints: many(collaborationCheckpoints),
@@ -603,23 +603,23 @@ export const collaborationSessionsRelations = relations(collaborationSessions, (
 }));
 
 export const collaborationCheckpointsRelations = relations(collaborationCheckpoints, ({one}) => ({
-	collaborationSession: one(collaborationSessions, {
-		fields: [collaborationCheckpoints.session_id],
-		references: [collaborationSessions.id]
+	collaborationsessions: one(collaborationsessions, {
+		fields: [collaborationCheckpoints.sessions_id],
+		references: [collaborationsessions.id]
 	}),
 }));
 
 export const collaborationMessagesRelations = relations(collaborationMessages, ({one}) => ({
-	collaborationSession: one(collaborationSessions, {
-		fields: [collaborationMessages.session_id],
-		references: [collaborationSessions.id]
+	collaborationsessions: one(collaborationsessions, {
+		fields: [collaborationMessages.sessions_id],
+		references: [collaborationsessions.id]
 	}),
 }));
 
 export const collaborationParticipantsRelations = relations(collaborationParticipants, ({one}) => ({
-	collaborationSession: one(collaborationSessions, {
-		fields: [collaborationParticipants.session_id],
-		references: [collaborationSessions.id]
+	collaborationsessions: one(collaborationsessions, {
+		fields: [collaborationParticipants.sessions_id],
+		references: [collaborationsessions.id]
 	}),
 }));
 
@@ -675,7 +675,7 @@ export const communityCommentsRelations = relations(communityComments, ({one, ma
 export const communityPostsRelations = relations(communityPosts, ({one, many}) => ({
 	communityComments: many(communityComments),
 	communityTopic: one(communityTopics, {
-		fields: [communityPosts.topicId],
+		fields: [communityPosts.topic_id],
 		references: [communityTopics.id]
 	}),
 	user: one(users, {
@@ -735,16 +735,16 @@ export const postReactionsRelations = relations(postReactions, ({one}) => ({
 	}),
 }));
 
-export const authenticatorRelations = relations(authenticator, ({one}) => ({
+export const authenticatorsRelations = relations(authenticators, ({one}) => ({
 	user: one(users, {
-		fields: [authenticator.user_id],
+		fields: [authenticators.user_id],
 		references: [users.id]
 	}),
 }));
 
-export const accountRelations = relations(account, ({one}) => ({
+export const accountsRelations = relations(accounts, ({one}) => ({
 	user: one(users, {
-		fields: [account.user_id],
+		fields: [accounts.user_id],
 		references: [users.id]
 	}),
 }));

@@ -1,4 +1,4 @@
-import { db } from '@/db';
+import { db } from '@/db/index';
 import { competitorAlerts, competitorProfiles, intelligenceData } from '@/shared/db/schema';
 import { eq, and, desc, gte,} from 'drizzle-orm';
 

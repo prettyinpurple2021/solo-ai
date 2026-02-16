@@ -1,7 +1,7 @@
 
 import { logInfo, logWarn, logError } from "@/lib/logger"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
-import { db, getDb } from "@/db"
+import { db, getDb } from "@/db/index"
 import { users, accounts, sessions, verificationTokens } from "@/shared/db/schema"
 import NextAuth from "next-auth"
 import Credentials from "next-auth/providers/credentials"

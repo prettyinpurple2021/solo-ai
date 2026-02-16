@@ -1,4 +1,4 @@
-import { db } from '@/db';
+import { db } from '@/db/index';
 import { intelligenceData,} from '@/shared/db/schema';
 import { eq, and, gte, desc, InferSelectModel } from 'drizzle-orm';
 import type { SocialMediaPost, EngagementMetrics, SentimentScore } from './social-media-monitor';

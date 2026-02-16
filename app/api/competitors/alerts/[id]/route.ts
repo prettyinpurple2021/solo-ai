@@ -5,7 +5,7 @@ import { rateLimitByIp} from '@/lib/rate-limit';
 import { alertSystem} from '@/lib/competitor-alert-system';
 import { z} from 'zod';
 import { db } from '@/db';
-import { competitorAlerts } from '@/db/schema';
+import { competitorAlerts } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
 
 

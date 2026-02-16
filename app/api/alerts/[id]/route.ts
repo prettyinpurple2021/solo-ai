@@ -1,7 +1,7 @@
 import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { db} from '@/db'
-import { competitorAlerts, competitorProfiles, intelligenceData} from '@/db/schema'
+import { competitorAlerts, competitorProfiles, intelligenceData} from '@/shared/db/schema'
 import { authenticateRequest} from '@/lib/auth-server'
 import { CompetitiveIntelligenceGamificationTriggers} from '@/lib/competitive-intelligence-gamification-triggers'
 import { z} from 'zod'

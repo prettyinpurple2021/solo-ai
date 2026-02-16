@@ -1,5 +1,5 @@
 import { logError, logWarn,} from '@/lib/logger'
-import { db } from '@/db';
+import { db } from '@/db/index';
 import { competitorProfiles, intelligenceData, socialMediaConnections } from '@/shared/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { TwitterApi } from 'twitter-api-v2';

@@ -1,4 +1,4 @@
-import { db } from '@/db';
+import { db } from '@/db/index';
 import { trafficLogs } from '@/shared/db/schema/analytics';
 import { logError, logWarn } from '@/lib/logger';
 import { z } from 'zod';

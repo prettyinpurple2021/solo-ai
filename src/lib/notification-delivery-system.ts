@@ -566,7 +566,7 @@ Received: ${new Date(alert.created_at).toLocaleString()}
   async getNotificationPreferences(userId: string): Promise<NotificationPreferences> {
     try {
       // Lazy load DB imports to avoid circular dependencies if any
-      const { db } = await import('@/db');
+      const { db } = await import('@/db/index');
       const { userSettings } = await import('@/shared/db/schema');
       const { eq, and } = await import('drizzle-orm');
 
@@ -589,7 +589,7 @@ Received: ${new Date(alert.created_at).toLocaleString()}
 
   async updateNotificationPreferences(userId: string, preferences: NotificationPreferences): Promise<boolean> {
     try {
-      const { db } = await import('@/db');
+      const { db } = await import('@/db/index');
       const { userSettings } = await import('@/shared/db/schema');
       const { eq, and } = await import('drizzle-orm');
 

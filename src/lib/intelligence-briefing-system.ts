@@ -1,5 +1,5 @@
 import { logError, logInfo } from '@/lib/logger'
-import { db } from '@/db'
+import { db } from '@/db/index'
 import { competitorProfiles, intelligenceData, competitorAlerts } from '@/shared/db/schema'
 import { eq, desc, gte, and, sql } from 'drizzle-orm'
 // AI SDK removed - using worker-based approach

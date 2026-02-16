@@ -1,6 +1,6 @@
 import { logError, logInfo,} from '@/lib/logger'
 import { ScrapingScheduler } from './database-scraping-scheduler'
-import { db } from '@/db'
+import { db } from '@/db/index'
 import { scrapingJobs } from '@/shared/db/schema'
 import { eq, and,} from 'drizzle-orm'
 

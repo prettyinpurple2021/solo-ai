@@ -2,7 +2,7 @@ import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { getDb } from '@/lib/database-client'
-import { documents } from '@/db/schema'
+import { documents } from '@/shared/db/schema'
 import { eq, and } from 'drizzle-orm'
 
 export const runtime = 'edge'

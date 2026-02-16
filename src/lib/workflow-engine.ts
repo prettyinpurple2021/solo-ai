@@ -5,7 +5,7 @@
 
 import { logger, logError, logInfo } from '@/lib/logger'
 import { z } from 'zod'
-import { db } from '@/db'
+import { db } from '@/db/index'
 import { workflows, workflowExecutions,} from '@/shared/db/schema'
 import { eq, desc, count, sql, avg } from 'drizzle-orm'
 import { Parser } from 'expr-eval-fork'

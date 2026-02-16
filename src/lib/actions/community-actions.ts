@@ -1,6 +1,6 @@
 'use server'
 
-import { db } from "@/db";
+import { db } from "@/db/index";
 import { communityPosts, communityComments, communityTopics, users, postLikes, commentLikes } from "@/shared/db/schema";
 import { eq, desc, and, sql, count, inArray } from "drizzle-orm";
 import { authenticateAction } from "@/lib/auth-server"; 
