@@ -27,9 +27,9 @@ This plan outlines the steps to implement the core multi-agent collaboration inf
 - [x] Task: Create Boardroom UI Components b1a6bdf
     - [x] Write tests for the roundtable/chat visualization
     - [x] Implement the main Boardroom layout and session view
-- [ ] Task: Integrate Socket.IO with Frontend
-    - [ ] Write tests for real-time message handling in React
-    - [ ] Implement client-side socket logic for live discussion
+- [x] Task: Integrate Socket.IO with Frontend b1a6bdf
+    - [x] Write tests for real-time message handling in React
+    - [x] Implement client-side socket logic for live discussion
 - [ ] Task: Implement Discussion Steering Controls
     - [ ] Write tests for user intervention inputs
     - [ ] Implement UI for user to interject or moderate the AI conversation
