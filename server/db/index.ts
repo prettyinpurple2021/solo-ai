@@ -1,5 +1,5 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { Client } from 'pg';
+import { Pool } from 'pg';
 import * as schema from './schema';
 import dotenv from 'dotenv';
 import { logInfo, logWarn, logError } from '../utils/logger';
@@ -13,25 +13,30 @@ if (!connectionString) {
     logWarn("DATABASE_URL is not defined. The backend will crash if you try to query the DB.");
 }
 
-const client = new Client({
+const pool = new Pool({
     connectionString: connectionString,
+    max: 20, // Maximum number of clients in the pool
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 2000,
 });
 
-const connectDB = async () => {
-    try {
-        await client.connect();
-        logInfo("Connected to Neon Database");
-    } catch (err) {
-        logError("Failed to connect to Neon Database", err);
-    }
-};
+pool.on('error', (err) => {
+    logError('Unexpected error on idle client', err);
+    // Don't exit process, pool handles this
+});
 
-connectDB();
-
+// Test connection
+pool.connect()
+    .then(client => {
+        logInfo("Connected to Neon Database (Pool)");
+        client.release();
+    })
+    .catch(err => logError("Failed to connect to Neon Database", err));
 
 import * as relations from './relations';
 
-export const db = drizzle(client as any, { schema: { ...schema, ...relations } });
+// Drizzle supports Pool directly
+export const db = drizzle(pool as any, { schema: { ...schema, ...relations } });
 
 // Re-export common operators to avoid "dual package hazard"
 export { eq, gt, lt, gte, lte, ne, isNull, isNotNull, inArray, notInArray, exists, notExists, and, or, not, asc, desc, sql } from 'drizzle-orm';
