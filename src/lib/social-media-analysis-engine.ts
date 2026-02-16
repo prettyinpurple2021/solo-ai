@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { intelligenceData,} from '@/db/schema';
+import { intelligenceData,} from '@/shared/db/schema';
 import { eq, and, gte, desc, InferSelectModel } from 'drizzle-orm';
 import type { SocialMediaPost, EngagementMetrics, SentimentScore } from './social-media-monitor';
 

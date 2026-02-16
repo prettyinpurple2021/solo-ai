@@ -2,7 +2,7 @@ import { logError } from '@/lib/logger'
 import { generateText } from 'ai'
 import { getTeamMemberConfig } from './ai-config'
 import { db } from '@/db'
-import { intelligenceData, competitorProfiles } from '@/db/schema'
+import { intelligenceData, competitorProfiles } from '@/shared/db/schema'
 import { eq, and, gte, desc } from 'drizzle-orm'
 
 import type {

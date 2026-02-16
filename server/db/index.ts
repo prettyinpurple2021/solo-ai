@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import * as schema from './schema';
+import * as schema from '../../lib/shared/db/schema';
 import dotenv from 'dotenv';
 import { logInfo, logWarn, logError } from '../utils/logger';
 
@@ -33,10 +33,8 @@ pool.connect()
     })
     .catch(err => logError("Failed to connect to Neon Database", err));
 
-import * as relations from './relations';
-
 // Drizzle supports Pool directly
-export const db = drizzle(pool as any, { schema: { ...schema, ...relations } });
+export const db = drizzle(pool as any, { schema });
 
 // Re-export common operators to avoid "dual package hazard"
 export { eq, gt, lt, gte, lte, ne, isNull, isNotNull, inArray, notInArray, exists, notExists, and, or, not, asc, desc, sql } from 'drizzle-orm';

@@ -2,7 +2,7 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { stripe } from '@/lib/stripe';
 import { db } from '@/db';
-import { users } from '@/db/schema';
+import { users } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { logInfo, logError } from '@/lib/logger';
 import type { Stripe } from 'stripe';

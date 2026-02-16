@@ -1,6 +1,6 @@
 import { logError, logInfo } from '@/lib/logger'
 import { db } from '@/db'
-import { competitorProfiles, intelligenceData, competitorAlerts } from '@/db/schema'
+import { competitorProfiles, intelligenceData, competitorAlerts } from '@/shared/db/schema'
 import { eq, desc, gte, and, sql } from 'drizzle-orm'
 // AI SDK removed - using worker-based approach
 import { generateObject } from 'ai'

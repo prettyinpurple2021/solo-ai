@@ -1,5 +1,5 @@
 import { db } from '@/lib/db'
-import { competitiveOpportunities, opportunityActions, opportunityMetrics, competitorProfiles } from '@/db/schema'
+import { competitiveOpportunities, opportunityActions, opportunityMetrics, competitorProfiles } from '@/shared/db/schema'
 import { eq, and, desc, asc, inArray, gte, not, isNull, sql } from 'drizzle-orm'
 import { logError } from '@/lib/logger'
 import { geminiService } from '@/services/geminiService'

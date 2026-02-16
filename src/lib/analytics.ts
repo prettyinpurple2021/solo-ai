@@ -1,7 +1,7 @@
 import { logInfo, logError } from '@/lib/logger'
 import { NextRequest } from 'next/server'
 import { db } from '@/db'
-import { analyticsEvents, users, paymentProviderConnections } from '@/db/schema'
+import { analyticsEvents, users, paymentProviderConnections } from '@/shared/db/schema'
 import { desc, eq, sql, and, gte, isNotNull } from 'drizzle-orm'
 import { RevenueTrackingService } from './revenue-tracking'
 import { getRedisClient } from './upstash/clients'

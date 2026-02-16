@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { trafficLogs } from '@/db/schema/analytics';
+import { trafficLogs } from '@/shared/db/schema/analytics';
 import { logError, logWarn } from '@/lib/logger';
 import { z } from 'zod';
 

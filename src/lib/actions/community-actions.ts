@@ -1,7 +1,7 @@
 'use server'
 
 import { db } from "@/db";
-import { communityPosts, communityComments, communityTopics, users, postLikes, commentLikes } from "@/db/schema";
+import { communityPosts, communityComments, communityTopics, users, postLikes, commentLikes } from "@/shared/db/schema";
 import { eq, desc, and, sql, count, inArray } from "drizzle-orm";
 import { authenticateAction } from "@/lib/auth-server"; 
 import { logError } from "@/lib/logger";

@@ -11,7 +11,7 @@
 - [x] Task: Conductor - User Manual Verification 'Shared Internal Library Foundation' (Protocol in workflow.md)
 
 ## Phase 2: Database & Transaction Hardening
-- [ ] Task: Drizzle Schema Audit & Refactor
+- [~] Task: Drizzle Schema Audit & Refactor
     - [ ] Audit all schemas for strict nullability and indexing
     - [ ] Ensure `pgvector` alignment for Briefcase RAG
 - [ ] Task: Implement Transactional Orchestration

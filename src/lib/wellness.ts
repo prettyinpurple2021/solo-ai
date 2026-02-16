@@ -1,6 +1,6 @@
 import { db } from "@/db";
 import { logError } from "@/lib/logger";
-import { moodEntries, focusSessions, users } from "@/db/schema";
+import { moodEntries, focusSessions, users } from "@/shared/db/schema";
 import { eq, desc, avg, sql, and, gte } from "drizzle-orm";
 
 export class WellnessEngine {

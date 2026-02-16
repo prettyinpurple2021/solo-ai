@@ -1,5 +1,5 @@
 import { db } from '@/db';
-import { competitorAlerts, competitorProfiles, intelligenceData } from '@/db/schema';
+import { competitorAlerts, competitorProfiles, intelligenceData } from '@/shared/db/schema';
 import { eq, and, desc, gte,} from 'drizzle-orm';
 
 export interface AlertTrigger {

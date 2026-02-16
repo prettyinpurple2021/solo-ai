@@ -1,7 +1,7 @@
 import { drizzle } from 'drizzle-orm/neon-http'
 import type { NeonHttpDatabase } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
-import * as schema from '@/db/schema'
+import * as schema from '@/shared/db/schema'
 import { logger, logError, logInfo } from './logger'
 
 /**

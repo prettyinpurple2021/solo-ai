@@ -1,6 +1,6 @@
 import { logError, logInfo,} from '@/lib/logger'
 import { db } from '@/db';
-import { competitorProfiles, scrapingJobs, scrapingJobResults } from '@/db/schema';
+import { competitorProfiles, scrapingJobs, scrapingJobResults } from '@/shared/db/schema';
 import { eq, and, lte } from 'drizzle-orm';
 import { socialMediaMonitor } from './social-media-monitor';
 import { v4 as uuidv4 } from 'uuid';

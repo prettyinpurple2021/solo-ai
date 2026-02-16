@@ -1,5 +1,5 @@
 import { db } from '@/db'
-import { paymentProviderConnections } from '@/db/schema'
+import { paymentProviderConnections } from '@/shared/db/schema'
 import { eq, and, inArray } from 'drizzle-orm'
 import { logError, logWarn, logInfo } from '@/lib/logger'
 import Stripe from 'stripe'

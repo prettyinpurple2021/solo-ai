@@ -1,5 +1,5 @@
 import { db } from "@/db";
-import { achievements, userAchievements } from "@/db/schema";
+import { achievements, userAchievements } from "@/shared/db/schema";
 import { eq, and } from "drizzle-orm";
 import { logWarn } from "@/lib/logger";
 

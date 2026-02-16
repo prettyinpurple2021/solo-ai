@@ -1,7 +1,7 @@
 import { db } from "@/db"; // Use the Next.js alias for shared code
 import { logError } from "@/lib/logger";
-import { users, briefcases } from "@/db/schema";
-import { competitorProfiles } from "@/db/schema/intelligence";
+import { users, briefcases } from "@/shared/db/schema";
+import { competitorProfiles } from "@/shared/db/schema/intelligence";
 import { eq, count } from "drizzle-orm";
 
 // Tier limits for feature gating (Synced with server/routes/stripe.ts)

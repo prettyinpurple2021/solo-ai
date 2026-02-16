@@ -2,7 +2,7 @@
 
 
 import { db } from '@/db';
-import { users } from '@/db/schema';
+import { users } from '@/shared/db/schema';
 import bcrypt from 'bcryptjs';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';

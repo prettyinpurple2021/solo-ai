@@ -5,7 +5,7 @@ import {
     userLearningProgress, 
     users, 
     userCompetitiveStats 
-} from "@/db/schema";
+} from "@/shared/db/schema";
 import { eq, and, asc, desc, sql } from "drizzle-orm";
 import { logError, logWarn, logInfo } from "@/lib/logger";
 import { generateObject } from "ai";

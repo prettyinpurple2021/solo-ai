@@ -1,7 +1,7 @@
 import { generateText } from "ai"
 import { getTeamMemberConfig } from "./ai-config"
 import { db } from '@/db'
-import { competitorProfiles } from '@/db/schema'
+import { competitorProfiles } from '@/shared/db/schema'
 import { eq,} from 'drizzle-orm'
 
 import {

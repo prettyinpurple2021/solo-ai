@@ -11,7 +11,7 @@ import {
   collaborationParticipants, 
   collaborationMessages,
   collaborationCheckpoints 
-} from '@/db/schema'
+} from '@/shared/db/schema'
 import { eq, and, inArray, lt, sql } from 'drizzle-orm'
 import type { 
   CollaborationSession, 

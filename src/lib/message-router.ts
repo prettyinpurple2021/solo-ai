@@ -6,7 +6,7 @@
 import { logError, logInfo,} from '@/lib/logger'
 import { z } from 'zod'
 import { db } from '@/db'
-import { chatMessages, collaborationMessages } from '@/db/schema'
+import { chatMessages, collaborationMessages } from '@/shared/db/schema'
 import { eq, desc,} from 'drizzle-orm'
 import { generateText } from 'ai'
 import { getTeamMemberConfig } from '@/lib/ai-config'

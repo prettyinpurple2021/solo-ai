@@ -8,7 +8,7 @@ export default defineConfig({
     dbCredentials: {
         url: process.env.DATABASE_URL!
     },
-    schema: './src/db/schema/index.ts',
+    schema: './lib/shared/db/schema/index.ts',
     /**
      * Never edit the migrations directly, only use drizzle.
      * There are scripts in the package.json "db:generate" and "db:migrate" to handle this.

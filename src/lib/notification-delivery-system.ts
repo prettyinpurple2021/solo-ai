@@ -567,7 +567,7 @@ Received: ${new Date(alert.created_at).toLocaleString()}
     try {
       // Lazy load DB imports to avoid circular dependencies if any
       const { db } = await import('@/db');
-      const { userSettings } = await import('@/db/schema');
+      const { userSettings } = await import('@/shared/db/schema');
       const { eq, and } = await import('drizzle-orm');
 
       const settings = await db.select().from(userSettings).where(
@@ -590,7 +590,7 @@ Received: ${new Date(alert.created_at).toLocaleString()}
   async updateNotificationPreferences(userId: string, preferences: NotificationPreferences): Promise<boolean> {
     try {
       const { db } = await import('@/db');
-      const { userSettings } = await import('@/db/schema');
+      const { userSettings } = await import('@/shared/db/schema');
       const { eq, and } = await import('drizzle-orm');
 
       const existingSettings = await db.select().from(userSettings).where(

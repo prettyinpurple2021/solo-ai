@@ -1,6 +1,6 @@
 import { logError,} from '@/lib/logger'
 import { db } from '@/db'
-import { intelligenceData,} from '@/db/schema'
+import { intelligenceData,} from '@/shared/db/schema'
 import { eq, and, desc, gte, sql, inArray } from 'drizzle-orm'
 
 

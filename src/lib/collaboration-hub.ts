@@ -7,7 +7,7 @@ import { logError, logInfo,} from '@/lib/logger'
 import { z } from 'zod'
 import { MessageRouter } from './message-router'
 import { db } from '@/db'
-import { chatConversations } from '@/db/schema'
+import { chatConversations } from '@/shared/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { ContextManager } from './context-manager'
 
