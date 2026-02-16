@@ -22,6 +22,7 @@ import slidesRouter from './routes/slides';
 import stripeRouter from './routes/stripe';
 import path from 'path';
 import { setIo, broadcastToUser } from './realtime';
+import { setupBoardroomSocket } from './src/realtime/boardroom';
 import { logInfo, logWarn, logError } from './utils/logger';
 import rateLimit from 'express-rate-limit';
 import dashboardRouter from './routes/dashboard';

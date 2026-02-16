@@ -15,7 +15,7 @@ This plan outlines the steps to implement the core multi-agent collaboration inf
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Core Orchestration Engine' (Protocol in workflow.md) 630a641
 
 ## Phase 2: Real-time Communication (Socket.IO)
-- [ ] Task: Setup Boardroom Socket Namespace
+- [~] Task: Setup Boardroom Socket Namespace
     - [ ] Write tests for socket connection and room joining
     - [ ] Implement backend socket handlers for Boardroom events
 - [ ] Task: Implement Streaming Agent Responses
