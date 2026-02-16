@@ -15,6 +15,7 @@ module.exports = {
   extensionsToTreatAsEsm: ['.ts', '.tsx'],
   moduleNameMapper: {
     '^@/server/(.*)$': '<rootDir>/server/$1',
+    '^@/shared/(.*)$': '<rootDir>/lib/shared/$1',
     '^@/(.*)$': '<rootDir>/src/$1'
   }
 };

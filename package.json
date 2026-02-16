@@ -17,7 +17,8 @@
     "dev:all": "concurrently \"npm run dev\" \"cd server && npm run dev\"",
     "db:generate": "drizzle-kit generate --config=server/drizzle.config.ts",
     "db:push": "drizzle-kit push --config=server/drizzle.config.ts",
-    "db:studio": "drizzle-kit studio --config=server/drizzle.config.ts"
+    "db:studio": "drizzle-kit studio --config=server/drizzle.config.ts",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.15",

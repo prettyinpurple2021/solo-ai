@@ -40,6 +40,9 @@
       ],
       "@/server/*": [
         "./server/*"
+      ],
+      "@/shared/*": [
+        "./lib/shared/*"
       ]
     },
     "target": "ES2020"
