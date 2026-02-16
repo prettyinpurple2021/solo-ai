@@ -1,1 +1,42 @@
-$productContent
+# Product Definition: SoloSuccess AI
+
+## Initial Concept
+SoloSuccess AI justifies its subscription value by offering a comprehensive "AI C-Suite" that replaces expensive human consultants with specialized agents and high-powered tools. The core value lies in the "Dominator" class agents—like Roxy for business coaching, Lexi for legal advice, and Echo for marketing strategy—which are designed to provide expert-level guidance immediately. This value is amplified by exclusive "Engines" available in higher tiers, such as "The War Room" for strategic debate simulations, "The Ironclad" for automated legal documentation, and "The Boardroom" for multi-agent collaboration. The subscription model scales with business needs, offering the Accelerator Tier ($19/mo) for essential growth agents and planning tools, while the Dominator Tier ($29/mo) unlocks the full 10-agent team and unlimited capabilities, effectively delivering an entire executive board for a fraction of the cost of traditional consulting.
+
+## Technical Implementation Requirements
+
+### 1. Dominator Class Agents (Roxy, Lexi, Echo)
+- **Orchestration:** Each agent is a specialized LLM node with distinct system prompts and toolsets.
+- **Output Control:** All agent responses MUST be structured JSON, validated against Zod schemas before being presented to the UI.
+- **State Management:** Agent conversations are persisted in PostgreSQL via Drizzle ORM with full history versioning.
+
+### 2. The War Room (Strategic Debate Engine)
+- **Pattern:** Multi-agent orchestration using a finite-state machine (FSM).
+- **Logic:** Two or more agents (e.g., "The Optimist" vs. "The Skeptic") engage in a multi-turn debate.
+- **Synthesis:** A final "Judge" agent synthesizes the debate into a SWOT analysis and actionable risk report.
+
+### 3. The Ironclad (Legal & Compliance Engine)
+- **Architecture:** RAG (Retrieval-Augmented Generation) pipeline.
+- **Vector Store:** Uses pgvector with OpenAI/Cohere embeddings for legal pattern matching.
+- **Logic:** Context-aware document generation based on a verified library of legal templates and user-specific business metadata.
+
+### 4. The Boardroom (Collaboration Engine)
+- **Pattern:** Blackboard architecture for multi-agent collaboration.
+- **Protocol:** Agents share a global state to solve cross-functional problems (e.g., Roxy and Echo collaborating on a business plan update).
+- **Communication:** Real-time updates via Socket.IO for live agent collaboration visualization.
+
+## Production Constraints & Mandates
+
+### 1. Validation & Safety
+- **Schema Enforcement:** Zod validation is mandatory for ALL inputs (Client -> Server Actions, API routes, and DB writes).
+- **Type Safety:** 100% TypeScript coverage. `any` is strictly prohibited. Use explicit interfaces for all agent-generated content.
+
+### 2. Error Handling & Resilience
+- **Global Boundaries:** React Error Boundaries at the route level and component level for graceful degradation.
+- **Server Resilience:** All Server Actions must return a standardized `{ success: boolean, data?: T, error?: string }` response object.
+- **Logging:** Centralized error logging for all agentic failures (e.g., token limits, hallucination detection via self-critique).
+
+### 3. Infrastructure & Scaling
+- **Database:** Drizzle ORM + PostgreSQL with transactional integrity for all multi-step agent operations.
+- **Payments:** Strict gatekeeping of features via Stripe subscription status checks in middleware and Server Actions.
+- **Security:** CSRF protection, input sanitization, and session-based authentication via @stackframe/stack.
