@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import { Server } from "socket.io";
+const { Server } = require("socket.io");
 import { io as Client, Socket as ClientSocket } from "socket.io-client";
 import { setIo } from "../../../server/realtime";
 import { setupBoardroomSocket } from "../../../server/src/realtime/boardroom";
@@ -10,7 +10,9 @@ describe("Boardroom Socket Namespace", () => {
 
   beforeAll((done) => {
     const httpServer = createServer();
-    io = new Server(httpServer);
+    io = new Server(httpServer, {
+      wsEngine: require("ws").Server
+    });
     setIo(io);
     
     setupBoardroomSocket(io);
@@ -24,8 +26,8 @@ describe("Boardroom Socket Namespace", () => {
   });
 
   afterAll(() => {
-    io.close();
-    clientSocket.disconnect();
+    if (io) io.close();
+    if (clientSocket) clientSocket.disconnect();
   });
 
   it("should allow joining a session room", (done) => {

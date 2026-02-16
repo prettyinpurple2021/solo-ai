@@ -125,7 +125,8 @@
     "tailwindcss-animate": "^1.0.7",
     "ts-jest": "^29.4.6",
     "ts-node": "^10.9.2",
-    "typescript": "~5.8.2"
+    "typescript": "~5.8.2",
+    "ws": "^8.19.0"
   },
   "overrides": {
     "@types/react": "19.2.8",
