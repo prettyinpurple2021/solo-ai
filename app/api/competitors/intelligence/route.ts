@@ -5,7 +5,7 @@ import {
     competitorAlerts,
     competitorProfiles,
     intelligenceData
-} from '@/db/schema'
+} from '@/shared/db/schema'
 import { eq, desc, sql,} from 'drizzle-orm'
 import { verifyAuth } from '@/lib/auth-server'
 import { logError, logInfo } from '@/lib/logger'

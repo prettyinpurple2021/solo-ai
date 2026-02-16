@@ -4,7 +4,7 @@ import { authenticateRequest} from '@/lib/auth-server';
 import { rateLimitByIp} from '@/lib/rate-limit';
 import { socialMediaAnalysisEngine} from '@/lib/social-media-analysis-engine';
 import { db} from '@/db';
-import { competitorProfiles} from '@/db/schema';
+import { competitorProfiles} from '@/shared/db/schema';
 import { eq, and, inArray} from 'drizzle-orm';
 import { z} from 'zod';
 

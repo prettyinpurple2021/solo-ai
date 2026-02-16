@@ -3,7 +3,7 @@ import { NextRequest, NextResponse} from 'next/server'
 import { authenticateRequest} from '@/lib/auth-server'
 
 import { db } from '@/db'
-import { users, chatConversations, chatMessages } from '@/db/schema'
+import { users, chatConversations, chatMessages } from '@/shared/db/schema'
 import { eq } from 'drizzle-orm'
 import { v4 as uuidv4 } from 'uuid'
 import { rateLimitByIp} from '@/lib/rate-limit'

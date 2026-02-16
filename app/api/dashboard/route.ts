@@ -10,7 +10,7 @@ import {
   userAchievements,
   achievements,
   focusSessions
-} from '@/db/schema'
+} from '@/shared/db/schema'
 import { eq, and, gte, count, desc,} from 'drizzle-orm'
 
 import { logError,} from '@/lib/logger'

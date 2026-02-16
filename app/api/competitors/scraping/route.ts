@@ -5,7 +5,7 @@ import { queueProcessor} from '@/lib/scraping-queue-processor'
 import { authenticateRequest} from '@/lib/auth-server'
 import { getFeatureFlags } from '@/lib/feature-flags'
 import { db } from '@/db'
-import { scrapingJobs } from '@/db/schema'
+import { scrapingJobs } from '@/shared/db/schema'
 import { and, eq, gte } from 'drizzle-orm'
 import { rateLimitByIp} from '@/lib/rate-limit'
 

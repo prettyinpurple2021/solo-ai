@@ -1,7 +1,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/db';
-import { templates } from '@/db/schema';
+import { templates } from '@/shared/db/schema';
 import { logError } from '@/lib/logger';
 import { desc, like, or, and, eq } from 'drizzle-orm';
 

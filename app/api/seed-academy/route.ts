@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from "@/db";
-import { learningPaths, learningModules } from "@/db/schema";
+import { learningPaths, learningModules } from "@/shared/db/schema";
 import { v4 as uuidv4 } from 'uuid';
 
 import { getJWTAuthenticatedUser } from "@/lib/auth-server";

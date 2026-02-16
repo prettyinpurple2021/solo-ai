@@ -5,7 +5,7 @@ import { getSql } from '@/lib/api-utils'
 import { createErrorResponse } from '@/lib/api-response'
 import { logError, logInfo } from '@/lib/logger'
 import { db } from '@/db'
-import { competitorProfiles } from '@/db/schema'
+import { competitorProfiles } from '@/shared/db/schema'
 import { z } from 'zod'
 
 

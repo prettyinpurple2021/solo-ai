@@ -6,7 +6,7 @@ import { socialMediaJobProcessor} from '@/lib/social-media-job-processor';
 import { socialMediaScheduler} from '@/lib/social-media-scheduler';
 import { z} from 'zod';
 import { db } from '@/db';
-import { userSettings } from '@/db/schema';
+import { userSettings } from '@/shared/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 

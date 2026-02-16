@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { posts } from '@/db/schema'; // 'users' and 'postReactions' removed, 'comments' added as per instruction
+import { posts } from '@/shared/db/schema'; // 'users' and 'postReactions' removed, 'comments' added as per instruction
 import { auth } from '@/lib/auth';
 import { desc } from 'drizzle-orm';
 import { logError } from '@/lib/logger';

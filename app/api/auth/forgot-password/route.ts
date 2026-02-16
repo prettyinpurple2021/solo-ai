@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getDb } from '@/lib/database-client'
-import { users, passwordResetTokens } from '@/db/schema'
+import { users, passwordResetTokens } from '@/shared/db/schema'
 import { eq } from 'drizzle-orm'
 import { sendPasswordResetEmail } from '@/lib/email'
 import { logError, logInfo } from '@/lib/logger'

@@ -4,7 +4,7 @@ import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import { logApi, logError } from '@/lib/logger'
 import { getDb } from '@/lib/database-client'
-import { users } from '@/db/schema'
+import { users } from '@/shared/db/schema'
 import { eq } from 'drizzle-orm'
 
 export const runtime = 'nodejs'

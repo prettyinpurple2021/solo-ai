@@ -10,7 +10,7 @@ import { z } from 'zod'
 export const dynamic = 'force-dynamic'
 
 import { db } from '@/db'
-import { userSettings } from '@/db/schema'
+import { userSettings } from '@/shared/db/schema'
 import { eq, and } from 'drizzle-orm'
 
 const favoriteActionSchema = z.object({

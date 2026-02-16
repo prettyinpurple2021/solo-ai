@@ -4,7 +4,7 @@ import { getDb } from '@/lib/database-client'
 import { z } from 'zod'
 import { logError, logInfo } from '@/lib/logger'
 import { eq } from 'drizzle-orm'
-import { users } from '@/db/schema'
+import { users } from '@/shared/db/schema'
 
 
 

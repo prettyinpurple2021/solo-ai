@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { verifyAuth } from '@/lib/auth-server'
 import { logError, logInfo } from '@/lib/logger'
 import { db } from '@/db'
-import { paymentProviderConnections } from '@/db/schema'
+import { paymentProviderConnections } from '@/shared/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { z } from 'zod'
 

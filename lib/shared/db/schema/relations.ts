@@ -3,7 +3,7 @@ import { scrapingJobs, scrapingJobResults, users, feedback, customReports, posts
 
 export const scrapingJobResultsRelations = relations(scrapingJobResults, ({one}) => ({
 	scrapingJob: one(scrapingJobs, {
-		fields: [scrapingJobResults.jobId],
+		fields: [scrapingJobResults.job_id],
 		references: [scrapingJobs.id]
 	}),
 }));
@@ -11,18 +11,18 @@ export const scrapingJobResultsRelations = relations(scrapingJobResults, ({one})
 export const scrapingJobsRelations = relations(scrapingJobs, ({one, many}) => ({
 	scrapingJobResults: many(scrapingJobResults),
 	competitorProfile: one(competitorProfiles, {
-		fields: [scrapingJobs.competitorId],
+		fields: [scrapingJobs.competitor_id],
 		references: [competitorProfiles.id]
 	}),
 	user: one(users, {
-		fields: [scrapingJobs.userId],
+		fields: [scrapingJobs.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const feedbackRelations = relations(feedback, ({one}) => ({
 	user: one(users, {
-		fields: [feedback.userId],
+		fields: [feedback.user_id],
 		references: [users.id]
 	}),
 }));
@@ -114,18 +114,18 @@ export const usersRelations = relations(users, ({many}) => ({
 
 export const customReportsRelations = relations(customReports, ({one}) => ({
 	user: one(users, {
-		fields: [customReports.userId],
+		fields: [customReports.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const postCommentsRelations = relations(postComments, ({one}) => ({
 	post: one(posts, {
-		fields: [postComments.postId],
+		fields: [postComments.post_id],
 		references: [posts.id]
 	}),
 	user: one(users, {
-		fields: [postComments.authorId],
+		fields: [postComments.author_id],
 		references: [users.id]
 	}),
 }));
@@ -133,7 +133,7 @@ export const postCommentsRelations = relations(postComments, ({one}) => ({
 export const postsRelations = relations(posts, ({one, many}) => ({
 	postComments: many(postComments),
 	user: one(users, {
-		fields: [posts.authorId],
+		fields: [posts.author_id],
 		references: [users.id]
 	}),
 	postReactions: many(postReactions),
@@ -141,7 +141,7 @@ export const postsRelations = relations(posts, ({one, many}) => ({
 
 export const challengesRelations = relations(challenges, ({one, many}) => ({
 	user: one(users, {
-		fields: [challenges.createdBy],
+		fields: [challenges.created_by],
 		references: [users.id]
 	}),
 	challengeParticipants: many(challengeParticipants),
@@ -149,25 +149,25 @@ export const challengesRelations = relations(challenges, ({one, many}) => ({
 
 export const challengeParticipantsRelations = relations(challengeParticipants, ({one}) => ({
 	challenge: one(challenges, {
-		fields: [challengeParticipants.challengeId],
+		fields: [challengeParticipants.challenge_id],
 		references: [challenges.id]
 	}),
 	user: one(users, {
-		fields: [challengeParticipants.userId],
+		fields: [challengeParticipants.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const analyticsEventsRelations = relations(analyticsEvents, ({one}) => ({
 	user: one(users, {
-		fields: [analyticsEvents.userId],
+		fields: [analyticsEvents.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const briefcasesRelations = relations(briefcases, ({one, many}) => ({
 	user: one(users, {
-		fields: [briefcases.userId],
+		fields: [briefcases.user_id],
 		references: [users.id]
 	}),
 	goals: many(goals),
@@ -176,14 +176,14 @@ export const briefcasesRelations = relations(briefcases, ({one, many}) => ({
 
 export const calendarConnectionsRelations = relations(calendarConnections, ({one}) => ({
 	user: one(users, {
-		fields: [calendarConnections.userId],
+		fields: [calendarConnections.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const chatConversationsRelations = relations(chatConversations, ({one, many}) => ({
 	user: one(users, {
-		fields: [chatConversations.userId],
+		fields: [chatConversations.user_id],
 		references: [users.id]
 	}),
 	chatMessages: many(chatMessages),
@@ -195,14 +195,14 @@ export const chatMessagesRelations = relations(chatMessages, ({one}) => ({
 		references: [chatConversations.id]
 	}),
 	user: one(users, {
-		fields: [chatMessages.userId],
+		fields: [chatMessages.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const competitiveOpportunitiesRelations = relations(competitiveOpportunities, ({one}) => ({
 	user_userId: one(users, {
-		fields: [competitiveOpportunities.userId],
+		fields: [competitiveOpportunities.user_id],
 		references: [users.id],
 		relationName: "competitiveOpportunities_userId_users_id"
 	}),
@@ -215,14 +215,14 @@ export const competitiveOpportunitiesRelations = relations(competitiveOpportunit
 
 export const competitorsRelations = relations(competitors, ({one}) => ({
 	user: one(users, {
-		fields: [competitors.userId],
+		fields: [competitors.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const deviceApprovalsRelations = relations(deviceApprovals, ({one}) => ({
 	user_userId: one(users, {
-		fields: [deviceApprovals.userId],
+		fields: [deviceApprovals.user_id],
 		references: [users.id],
 		relationName: "deviceApprovals_userId_users_id"
 	}),
@@ -235,7 +235,7 @@ export const deviceApprovalsRelations = relations(deviceApprovals, ({one}) => ({
 
 export const documentsRelations = relations(documents, ({one, many}) => ({
 	user: one(users, {
-		fields: [documents.userId],
+		fields: [documents.user_id],
 		references: [users.id]
 	}),
 	documentFolder: one(documentFolders, {
@@ -251,11 +251,11 @@ export const documentsRelations = relations(documents, ({one, many}) => ({
 export const documentFoldersRelations = relations(documentFolders, ({one, many}) => ({
 	documents: many(documents),
 	user: one(users, {
-		fields: [documentFolders.userId],
+		fields: [documentFolders.user_id],
 		references: [users.id]
 	}),
 	documentFolder: one(documentFolders, {
-		fields: [documentFolders.parentId],
+		fields: [documentFolders.parent_id],
 		references: [documentFolders.id],
 		relationName: "documentFolders_parentId_documentFolders_id"
 	}),
@@ -266,11 +266,11 @@ export const documentFoldersRelations = relations(documentFolders, ({one, many})
 
 export const documentPermissionsRelations = relations(documentPermissions, ({one}) => ({
 	document: one(documents, {
-		fields: [documentPermissions.documentId],
+		fields: [documentPermissions.document_id],
 		references: [documents.id]
 	}),
 	user_userId: one(users, {
-		fields: [documentPermissions.userId],
+		fields: [documentPermissions.user_id],
 		references: [users.id],
 		relationName: "documentPermissions_userId_users_id"
 	}),
@@ -283,29 +283,29 @@ export const documentPermissionsRelations = relations(documentPermissions, ({one
 
 export const documentShareLinksRelations = relations(documentShareLinks, ({one}) => ({
 	document: one(documents, {
-		fields: [documentShareLinks.documentId],
+		fields: [documentShareLinks.document_id],
 		references: [documents.id]
 	}),
 	user: one(users, {
-		fields: [documentShareLinks.createdBy],
+		fields: [documentShareLinks.created_by],
 		references: [users.id]
 	}),
 }));
 
 export const documentVersionsRelations = relations(documentVersions, ({one}) => ({
 	document: one(documents, {
-		fields: [documentVersions.documentId],
+		fields: [documentVersions.document_id],
 		references: [documents.id]
 	}),
 	user: one(users, {
-		fields: [documentVersions.createdBy],
+		fields: [documentVersions.created_by],
 		references: [users.id]
 	}),
 }));
 
 export const competitorProfilesRelations = relations(competitorProfiles, ({one, many}) => ({
 	user: one(users, {
-		fields: [competitorProfiles.userId],
+		fields: [competitorProfiles.user_id],
 		references: [users.id]
 	}),
 	competitorActivities: many(competitorActivities),
@@ -316,26 +316,26 @@ export const competitorProfilesRelations = relations(competitorProfiles, ({one, 
 
 export const competitorActivitiesRelations = relations(competitorActivities, ({one}) => ({
 	competitorProfile: one(competitorProfiles, {
-		fields: [competitorActivities.competitorId],
+		fields: [competitorActivities.competitor_id],
 		references: [competitorProfiles.id]
 	}),
 	user: one(users, {
-		fields: [competitorActivities.userId],
+		fields: [competitorActivities.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const competitorAlertsRelations = relations(competitorAlerts, ({one}) => ({
 	competitorProfile: one(competitorProfiles, {
-		fields: [competitorAlerts.competitorId],
+		fields: [competitorAlerts.competitor_id],
 		references: [competitorProfiles.id]
 	}),
 	user: one(users, {
-		fields: [competitorAlerts.userId],
+		fields: [competitorAlerts.user_id],
 		references: [users.id]
 	}),
 	intelligenceDatum: one(intelligenceData, {
-		fields: [competitorAlerts.intelligenceId],
+		fields: [competitorAlerts.intelligence_id],
 		references: [intelligenceData.id]
 	}),
 }));
@@ -343,18 +343,18 @@ export const competitorAlertsRelations = relations(competitorAlerts, ({one}) => 
 export const intelligenceDataRelations = relations(intelligenceData, ({one, many}) => ({
 	competitorAlerts: many(competitorAlerts),
 	competitorProfile: one(competitorProfiles, {
-		fields: [intelligenceData.competitorId],
+		fields: [intelligenceData.competitor_id],
 		references: [competitorProfiles.id]
 	}),
 	user: one(users, {
-		fields: [intelligenceData.userId],
+		fields: [intelligenceData.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const learningModulesRelations = relations(learningModules, ({one, many}) => ({
 	learningPath: one(learningPaths, {
-		fields: [learningModules.pathId],
+		fields: [learningModules.path_id],
 		references: [learningPaths.id]
 	}),
 	userLearningProgresses: many(userLearningProgress),
@@ -363,46 +363,46 @@ export const learningModulesRelations = relations(learningModules, ({one, many})
 export const learningPathsRelations = relations(learningPaths, ({one, many}) => ({
 	learningModules: many(learningModules),
 	user: one(users, {
-		fields: [learningPaths.createdBy],
+		fields: [learningPaths.created_by],
 		references: [users.id]
 	}),
 }));
 
 export const opportunityActionsRelations = relations(opportunityActions, ({one}) => ({
 	user: one(users, {
-		fields: [opportunityActions.userId],
+		fields: [opportunityActions.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const opportunityMetricsRelations = relations(opportunityMetrics, ({one}) => ({
 	user: one(users, {
-		fields: [opportunityMetrics.userId],
+		fields: [opportunityMetrics.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const passwordResetTokensRelations = relations(passwordResetTokens, ({one}) => ({
 	user: one(users, {
-		fields: [passwordResetTokens.userId],
+		fields: [passwordResetTokens.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const paymentProviderConnectionsRelations = relations(paymentProviderConnections, ({one}) => ({
 	user: one(users, {
-		fields: [paymentProviderConnections.userId],
+		fields: [paymentProviderConnections.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const goalsRelations = relations(goals, ({one, many}) => ({
 	user: one(users, {
-		fields: [goals.userId],
+		fields: [goals.user_id],
 		references: [users.id]
 	}),
 	briefcase: one(briefcases, {
-		fields: [goals.briefcaseId],
+		fields: [goals.briefcase_id],
 		references: [briefcases.id]
 	}),
 	tasks: many(tasks),
@@ -410,11 +410,11 @@ export const goalsRelations = relations(goals, ({one, many}) => ({
 
 export const focusSessionsRelations = relations(focusSessions, ({one}) => ({
 	task: one(tasks, {
-		fields: [focusSessions.taskId],
+		fields: [focusSessions.task_id],
 		references: [tasks.id]
 	}),
 	user: one(users, {
-		fields: [focusSessions.userId],
+		fields: [focusSessions.user_id],
 		references: [users.id]
 	}),
 }));
@@ -423,19 +423,19 @@ export const tasksRelations = relations(tasks, ({one, many}) => ({
 	focusSessions: many(focusSessions),
 	taskAnalytics: many(taskAnalytics),
 	user: one(users, {
-		fields: [tasks.userId],
+		fields: [tasks.user_id],
 		references: [users.id]
 	}),
 	goal: one(goals, {
-		fields: [tasks.goalId],
+		fields: [tasks.goal_id],
 		references: [goals.id]
 	}),
 	briefcase: one(briefcases, {
-		fields: [tasks.briefcaseId],
+		fields: [tasks.briefcase_id],
 		references: [briefcases.id]
 	}),
 	task: one(tasks, {
-		fields: [tasks.parentTaskId],
+		fields: [tasks.parent_task_id],
 		references: [tasks.id],
 		relationName: "tasks_parentTaskId_tasks_id"
 	}),
@@ -446,57 +446,57 @@ export const tasksRelations = relations(tasks, ({one, many}) => ({
 
 export const pushSubscriptionsRelations = relations(pushSubscriptions, ({one}) => ({
 	user: one(users, {
-		fields: [pushSubscriptions.userId],
+		fields: [pushSubscriptions.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const sessionRelations = relations(session, ({one}) => ({
 	user: one(users, {
-		fields: [session.userId],
+		fields: [session.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const socialMediaConnectionsRelations = relations(socialMediaConnections, ({one}) => ({
 	user: one(users, {
-		fields: [socialMediaConnections.userId],
+		fields: [socialMediaConnections.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const taskAnalyticsRelations = relations(taskAnalytics, ({one}) => ({
 	user: one(users, {
-		fields: [taskAnalytics.userId],
+		fields: [taskAnalytics.user_id],
 		references: [users.id]
 	}),
 	task: one(tasks, {
-		fields: [taskAnalytics.taskId],
+		fields: [taskAnalytics.task_id],
 		references: [tasks.id]
 	}),
 }));
 
 export const taskCategoriesRelations = relations(taskCategories, ({one}) => ({
 	user: one(users, {
-		fields: [taskCategories.userId],
+		fields: [taskCategories.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const productivityInsightsRelations = relations(productivityInsights, ({one}) => ({
 	user: one(users, {
-		fields: [productivityInsights.userId],
+		fields: [productivityInsights.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const templateDownloadsRelations = relations(templateDownloads, ({one}) => ({
 	workflowTemplate: one(workflowTemplates, {
-		fields: [templateDownloads.templateId],
+		fields: [templateDownloads.template_id],
 		references: [workflowTemplates.id]
 	}),
 	user: one(users, {
-		fields: [templateDownloads.userId],
+		fields: [templateDownloads.user_id],
 		references: [users.id]
 	}),
 }));
@@ -504,18 +504,18 @@ export const templateDownloadsRelations = relations(templateDownloads, ({one}) =
 export const workflowTemplatesRelations = relations(workflowTemplates, ({one, many}) => ({
 	templateDownloads: many(templateDownloads),
 	user: one(users, {
-		fields: [workflowTemplates.createdBy],
+		fields: [workflowTemplates.created_by],
 		references: [users.id]
 	}),
 }));
 
 export const userAchievementsRelations = relations(userAchievements, ({one}) => ({
 	user: one(users, {
-		fields: [userAchievements.userId],
+		fields: [userAchievements.user_id],
 		references: [users.id]
 	}),
 	achievement: one(achievements, {
-		fields: [userAchievements.achievementId],
+		fields: [userAchievements.achievement_id],
 		references: [achievements.id]
 	}),
 }));
@@ -526,56 +526,56 @@ export const achievementsRelations = relations(achievements, ({many}) => ({
 
 export const userApiKeysRelations = relations(userApiKeys, ({one}) => ({
 	user: one(users, {
-		fields: [userApiKeys.userId],
+		fields: [userApiKeys.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const userBrandSettingsRelations = relations(userBrandSettings, ({one}) => ({
 	user: one(users, {
-		fields: [userBrandSettings.userId],
+		fields: [userBrandSettings.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const userCompetitiveStatsRelations = relations(userCompetitiveStats, ({one}) => ({
 	user: one(users, {
-		fields: [userCompetitiveStats.userId],
+		fields: [userCompetitiveStats.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const userMfaSettingsRelations = relations(userMfaSettings, ({one}) => ({
 	user: one(users, {
-		fields: [userMfaSettings.userId],
+		fields: [userMfaSettings.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const templatesRelations = relations(templates, ({one}) => ({
 	user: one(users, {
-		fields: [templates.userId],
+		fields: [templates.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const userSessionsRelations = relations(userSessions, ({one}) => ({
 	user: one(users, {
-		fields: [userSessions.userId],
+		fields: [userSessions.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const userSettingsRelations = relations(userSettings, ({one}) => ({
 	user: one(users, {
-		fields: [userSettings.userId],
+		fields: [userSettings.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const workflowsRelations = relations(workflows, ({one, many}) => ({
 	user: one(users, {
-		fields: [workflows.userId],
+		fields: [workflows.user_id],
 		references: [users.id]
 	}),
 	workflowExecutions: many(workflowExecutions),
@@ -583,18 +583,18 @@ export const workflowsRelations = relations(workflows, ({one, many}) => ({
 
 export const workflowExecutionsRelations = relations(workflowExecutions, ({one}) => ({
 	workflow: one(workflows, {
-		fields: [workflowExecutions.workflowId],
+		fields: [workflowExecutions.workflow_id],
 		references: [workflows.id]
 	}),
 	user: one(users, {
-		fields: [workflowExecutions.userId],
+		fields: [workflowExecutions.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const collaborationSessionsRelations = relations(collaborationSessions, ({one, many}) => ({
 	user: one(users, {
-		fields: [collaborationSessions.userId],
+		fields: [collaborationSessions.user_id],
 		references: [users.id]
 	}),
 	collaborationCheckpoints: many(collaborationCheckpoints),
@@ -604,65 +604,65 @@ export const collaborationSessionsRelations = relations(collaborationSessions, (
 
 export const collaborationCheckpointsRelations = relations(collaborationCheckpoints, ({one}) => ({
 	collaborationSession: one(collaborationSessions, {
-		fields: [collaborationCheckpoints.sessionId],
+		fields: [collaborationCheckpoints.session_id],
 		references: [collaborationSessions.id]
 	}),
 }));
 
 export const collaborationMessagesRelations = relations(collaborationMessages, ({one}) => ({
 	collaborationSession: one(collaborationSessions, {
-		fields: [collaborationMessages.sessionId],
+		fields: [collaborationMessages.session_id],
 		references: [collaborationSessions.id]
 	}),
 }));
 
 export const collaborationParticipantsRelations = relations(collaborationParticipants, ({one}) => ({
 	collaborationSession: one(collaborationSessions, {
-		fields: [collaborationParticipants.sessionId],
+		fields: [collaborationParticipants.session_id],
 		references: [collaborationSessions.id]
 	}),
 }));
 
 export const userLearningProgressRelations = relations(userLearningProgress, ({one}) => ({
 	user: one(users, {
-		fields: [userLearningProgress.userId],
+		fields: [userLearningProgress.user_id],
 		references: [users.id]
 	}),
 	learningModule: one(learningModules, {
-		fields: [userLearningProgress.moduleId],
+		fields: [userLearningProgress.module_id],
 		references: [learningModules.id]
 	}),
 }));
 
 export const documentActivityRelations = relations(documentActivity, ({one}) => ({
 	document: one(documents, {
-		fields: [documentActivity.documentId],
+		fields: [documentActivity.document_id],
 		references: [documents.id]
 	}),
 	user: one(users, {
-		fields: [documentActivity.userId],
+		fields: [documentActivity.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const moodEntriesRelations = relations(moodEntries, ({one}) => ({
 	user: one(users, {
-		fields: [moodEntries.userId],
+		fields: [moodEntries.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const communityCommentsRelations = relations(communityComments, ({one, many}) => ({
 	communityPost: one(communityPosts, {
-		fields: [communityComments.postId],
+		fields: [communityComments.post_id],
 		references: [communityPosts.id]
 	}),
 	user: one(users, {
-		fields: [communityComments.userId],
+		fields: [communityComments.user_id],
 		references: [users.id]
 	}),
 	communityComment: one(communityComments, {
-		fields: [communityComments.parentId],
+		fields: [communityComments.parent_id],
 		references: [communityComments.id],
 		relationName: "communityComments_parentId_communityComments_id"
 	}),
@@ -679,7 +679,7 @@ export const communityPostsRelations = relations(communityPosts, ({one, many}) =
 		references: [communityTopics.id]
 	}),
 	user: one(users, {
-		fields: [communityPosts.userId],
+		fields: [communityPosts.user_id],
 		references: [users.id]
 	}),
 	postLikes: many(postLikes),
@@ -691,12 +691,12 @@ export const communityTopicsRelations = relations(communityTopics, ({many}) => (
 
 export const followsRelations = relations(follows, ({one}) => ({
 	user_followerId: one(users, {
-		fields: [follows.followerId],
+		fields: [follows.follower_id],
 		references: [users.id],
 		relationName: "follows_followerId_users_id"
 	}),
 	user_followingId: one(users, {
-		fields: [follows.followingId],
+		fields: [follows.following_id],
 		references: [users.id],
 		relationName: "follows_followingId_users_id"
 	}),
@@ -704,47 +704,47 @@ export const followsRelations = relations(follows, ({one}) => ({
 
 export const commentLikesRelations = relations(commentLikes, ({one}) => ({
 	communityComment: one(communityComments, {
-		fields: [commentLikes.commentId],
+		fields: [commentLikes.comment_id],
 		references: [communityComments.id]
 	}),
 	user: one(users, {
-		fields: [commentLikes.userId],
+		fields: [commentLikes.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const postLikesRelations = relations(postLikes, ({one}) => ({
 	communityPost: one(communityPosts, {
-		fields: [postLikes.postId],
+		fields: [postLikes.post_id],
 		references: [communityPosts.id]
 	}),
 	user: one(users, {
-		fields: [postLikes.userId],
+		fields: [postLikes.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const postReactionsRelations = relations(postReactions, ({one}) => ({
 	post: one(posts, {
-		fields: [postReactions.postId],
+		fields: [postReactions.post_id],
 		references: [posts.id]
 	}),
 	user: one(users, {
-		fields: [postReactions.userId],
+		fields: [postReactions.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const authenticatorRelations = relations(authenticator, ({one}) => ({
 	user: one(users, {
-		fields: [authenticator.userId],
+		fields: [authenticator.user_id],
 		references: [users.id]
 	}),
 }));
 
 export const accountRelations = relations(account, ({one}) => ({
 	user: one(users, {
-		fields: [account.userId],
+		fields: [account.user_id],
 		references: [users.id]
 	}),
 }));

@@ -4,7 +4,7 @@ import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import { z } from 'zod'
 import { getDb } from '@/lib/database-client'
-import { documents, userBrandSettings } from '@/db/schema'
+import { documents, userBrandSettings } from '@/shared/db/schema'
 import { and, desc, eq } from 'drizzle-orm'
 import JSZip from 'jszip'
 

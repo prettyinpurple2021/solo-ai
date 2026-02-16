@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/database-client'
-import { userSettings } from '@/db/schema'
+import { userSettings } from '@/shared/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { authenticateRequest } from '@/lib/auth-server'
 import { logError } from '@/lib/logger'

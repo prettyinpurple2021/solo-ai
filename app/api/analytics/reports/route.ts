@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { customReports } from '@/db/schema';
+import { customReports } from '@/shared/db/schema';
 import { auth } from '@/lib/auth';
 import { eq, desc } from 'drizzle-orm';
 import { z } from 'zod';

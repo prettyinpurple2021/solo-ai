@@ -2,7 +2,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/db'
 import { logError } from '@/lib/logger'
-import { workflowExecutions, workflows } from '@/db/schema'
+import { workflowExecutions, workflows } from '@/shared/db/schema'
 import { auth } from '@/lib/auth'
 import { desc, eq, and, like } from 'drizzle-orm'
 

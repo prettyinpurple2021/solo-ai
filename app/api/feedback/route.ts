@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { feedback } from '@/db/schema';
+import { feedback } from '@/shared/db/schema';
 import { auth } from '@/lib/auth';
 import { feedbackSchema } from '@/lib/validations/feedback';
 import { logger } from '@/lib/logger';

@@ -2,7 +2,7 @@ import { logError } from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { verifyToken} from '@/lib/auth-utils'
 import { getDb } from '@/lib/database-client'
-import { users} from '@/db/schema'
+import { users} from '@/shared/db/schema'
 import { eq} from 'drizzle-orm'
 
 

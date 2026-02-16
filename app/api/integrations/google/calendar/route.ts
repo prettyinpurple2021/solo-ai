@@ -3,7 +3,7 @@ import { google } from 'googleapis'
 import { verifyAuth } from '@/lib/auth-server'
 import { logError, logInfo } from '@/lib/logger'
 import { db } from '@/db'
-import { calendarConnections } from '@/db/schema'
+import { calendarConnections } from '@/shared/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { z } from 'zod'
 

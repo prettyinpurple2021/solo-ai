@@ -7,7 +7,7 @@ import {
   handleApiError 
 } from '@/lib/api-response'
 import { getDb } from '@/lib/database-client'
-import { users } from '@/db/schema'
+import { users } from '@/shared/db/schema'
 import { eq } from 'drizzle-orm'
 import { z } from 'zod'
 import { createToken } from '@/lib/auth-utils'

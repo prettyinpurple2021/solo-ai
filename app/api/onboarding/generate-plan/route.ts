@@ -1,7 +1,7 @@
 
 import { auth } from '@/lib/auth';
 import { db } from '@/db';
-import { goals, tasks, briefcases } from '@/db/schema';
+import { goals, tasks, briefcases } from '@/shared/db/schema';
 import { onboardingAI } from '@/services/onboarding-ai';
 import { ApiError, handleApiError, successResponse } from '@/lib/api-utils';
 import { logInfo,} from '@/lib/logger';

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getDb } from '@/lib/database-client'
-import { users, passwordResetTokens } from '@/db/schema'
+import { users, passwordResetTokens } from '@/shared/db/schema'
 import { eq, and, isNull } from 'drizzle-orm'
 import { logError, logInfo } from '@/lib/logger'
 import bcrypt from 'bcryptjs'

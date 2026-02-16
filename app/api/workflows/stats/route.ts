@@ -1,7 +1,7 @@
 
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { workflows, workflowExecutions, templates } from '@/db/schema';
+import { workflows, workflowExecutions, templates } from '@/shared/db/schema';
 import { logError } from '@/lib/logger';
 import { sql, desc } from 'drizzle-orm';
 

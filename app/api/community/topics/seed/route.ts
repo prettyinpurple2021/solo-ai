@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from "@/db";
-import { communityTopics } from "@/db/schema/community";
+import { communityTopics } from "@/shared/db/schema/community";
 import { v4 as uuidv4 } from "uuid";
 import { getJWTAuthenticatedUser } from "@/lib/auth-server";
 import { eq } from "drizzle-orm";

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { db } from '@/db'
-import { scrapingJobResults } from '@/db/schema'
+import { scrapingJobResults } from '@/shared/db/schema'
 import { eq,} from 'drizzle-orm'
 
 
