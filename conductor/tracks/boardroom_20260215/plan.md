@@ -18,9 +18,9 @@ This plan outlines the steps to implement the core multi-agent collaboration inf
 - [x] Task: Setup Boardroom Socket Namespace b1a6bdf
     - [x] Write tests for socket connection and room joining
     - [x] Implement backend socket handlers for Boardroom events
-- [ ] Task: Implement Streaming Agent Responses
-    - [ ] Write tests for chunked message delivery
-    - [ ] Implement server-side logic to stream AI output to clients
+- [x] Task: Implement Streaming Agent Responses b1a6bdf
+    - [x] Write tests for chunked message delivery
+    - [x] Implement server-side logic to stream AI output to clients
 - [ ] Task: Conductor - User Manual Verification 'Phase 2: Real-time Communication' (Protocol in workflow.md)
 
 ## Phase 3: Frontend Interface
