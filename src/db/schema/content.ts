@@ -173,18 +173,18 @@ export const userLearningProgress = pgTable('user_learning_progress', {
     last_accessed_at: timestamp('last_accessed_at').defaultNow(),
 });
   
-// Feedback table (placeholder - definition was late in file, but used here in relations potentially)
+// Feedback table
 export const feedbackTypeEnum = pgEnum('feedback_type', ['bug', 'feature_request', 'comment', 'error', 'other']);
 export const feedbackStatusEnum = pgEnum('feedback_status', ['pending', 'in_progress', 'resolved', 'closed', 'dismissed']);
-export const feedback = pgTable('feedback', { // Re-declaring for content
+export const feedback = pgTable('feedback', {
     id: text('id').primaryKey().$defaultFn(() => uuidv4()),
     user_id: text('user_id').references(() => users.id, { onDelete: 'set null' }),
-    type: text('type').notNull(),
+    type: feedbackTypeEnum('type').notNull(),
     title: text('title'),
     message: text('message').notNull(),
     browser_info: jsonb('browser_info'),
     screenshot_url: text('screenshot_url'),
-    status: text('status').notNull().default('pending'),
+    status: feedbackStatusEnum('status').notNull().default('pending'),
     priority: text('priority').notNull().default('medium'),
     created_at: timestamp('created_at').defaultNow(),
     updated_at: timestamp('updated_at').defaultNow(),

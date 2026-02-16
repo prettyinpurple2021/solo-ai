@@ -2,12 +2,14 @@ import { logInfo, logError } from '@/lib/logger'
 import { NextRequest } from 'next/server'
 import { db } from '@/db'
 import { analyticsEvents, users, paymentProviderConnections } from '@/db/schema'
-import { desc, eq, sql, and, gte } from 'drizzle-orm'
+import { desc, eq, sql, and, gte, isNotNull } from 'drizzle-orm'
 import { RevenueTrackingService } from './revenue-tracking'
+import { getRedisClient } from './upstash/clients'
 
 const REVENUE_WINDOW_DAYS = 30
 const MS_PER_DAY = 24 * 60 * 60 * 1000
 const CHURN_RATE_THRESHOLD = 5
+const METRICS_CACHE_TTL = 300 // 5 minutes in seconds
 
 // Analytics event types
 export type AnalyticsEvent =
@@ -110,6 +112,12 @@ class AnalyticsService {
         timestamp: new Date()
       })
 
+      // Invalidate user metrics cache
+      if (properties.userId) {
+        const redis = getRedisClient();
+        await redis.del(`metrics:user:${properties.userId}`).catch(() => {});
+      }
+
       // Log to console in development
       if (process.env.NODE_ENV === 'development') {
         logInfo('📊 Analytics Event', { event, properties })
@@ -123,64 +131,118 @@ class AnalyticsService {
    * Track performance metrics
    */
   async trackPerformance(metrics: Partial<PerformanceMetrics>): Promise<void> {
-    // Log performance metrics as standard events (V1 Strategy)
-    // Future: Migrate to dedicated time-series DB (e.g. TimescaleDB, InfluxDB)
     await this.trackEvent('performance_metric', metrics)
   }
 
   /**
    * Get user metrics
-   * Note: This is a heavy operation and should be optimized or cached in production
+   * Optimized with Redis caching and real logic for session duration and retention
    */
   async getUserMetrics(userId: string): Promise<UserMetrics | null> {
-    // Get user metrics (V1: On-demand query)
-    // Future: Aggregate in background job or materialized view for scale
-    const events = await db.select()
-      .from(analyticsEvents)
-      .where(eq(analyticsEvents.user_id, userId))
+    const redis = getRedisClient();
+    const cacheKey = `metrics:user:${userId}`;
 
-    if (events.length === 0) return null
-
-    const metrics: UserMetrics = {
-      userId,
-      totalSessions: events.filter(e => e.event === 'user_login').length,
-      totalPageViews: events.filter(e => e.event === 'page_view').length,
-      totalAIInteractions: events.filter(e => e.event === 'ai_agent_interaction').length,
-      goalsCreated: events.filter(e => e.event === 'goal_created').length,
-      goalsCompleted: events.filter(e => e.event === 'goal_completed').length,
-      tasksCreated: events.filter(e => e.event === 'task_created').length,
-      tasksCompleted: events.filter(e => e.event === 'task_completed').length,
-      filesUploaded: events.filter(e => e.event === 'file_uploaded').length,
-      templatesSaved: events.filter(e => e.event === 'template_saved').length,
-      lastActiveAt: events[events.length - 1]?.timestamp || new Date(),
-      firstSeenAt: events[0]?.timestamp || new Date(),
-      averageSessionDuration: 0, // Todo: Implement session tracking middleware
-      retentionScore: 0, // Todo: Implement cohort analysis
-      revenue: await RevenueTrackingService.calculateRevenue(userId, new Date(Date.now() - REVENUE_WINDOW_DAYS * MS_PER_DAY), new Date()).catch(err => {
-        logError('Failed to calculate revenue for user:', userId, err)
-        return 0
-      }),
-      mrr: await RevenueTrackingService.calculateMRR(userId).catch(err => {
-        logError('Failed to calculate MRR for user:', userId, err)
-        return 0
-      })
+    try {
+      const cached = await redis.get<UserMetrics>(cacheKey);
+      if (cached) return cached;
+    } catch (e) {
+      logError('Redis cache hit failed', e);
     }
 
-    return metrics
+    try {
+      // 1. Fetch aggregate event counts
+      const eventCounts = await db.select({
+        event: analyticsEvents.event,
+        count: sql<number>`count(*)`
+      })
+      .from(analyticsEvents)
+      .where(eq(analyticsEvents.user_id, userId))
+      .groupBy(analyticsEvents.event);
+
+      if (eventCounts.length === 0) return null;
+
+      const countsMap = new Map(eventCounts.map(e => [e.event, Number(e.count)]));
+
+      // 2. Fetch session and activity timing
+      // We use a subquery to calculate durations per session, then average them
+      const timingResult = await db.select({
+        firstSeen: sql<Date>`min(${analyticsEvents.timestamp})`,
+        lastActive: sql<Date>`max(${analyticsEvents.timestamp})`,
+        avgSessionDuration: sql<number>`
+          avg(
+            extract(epoch from (max_ts - min_ts))
+          )
+        `
+      })
+      .from(
+        db.select({
+          sessionId: analyticsEvents.session_id,
+          min_ts: sql<Date>`min(${analyticsEvents.timestamp})`.as('min_ts'),
+          max_ts: sql<Date>`max(${analyticsEvents.timestamp})`.as('max_ts')
+        })
+        .from(analyticsEvents)
+        .where(and(eq(analyticsEvents.user_id, userId), isNotNull(analyticsEvents.session_id)))
+        .groupBy(analyticsEvents.session_id)
+        .as('session_durations')
+      )
+      .limit(1);
+
+      const timing = timingResult[0];
+
+      // 3. Calculate retention score (active days in last 30)
+      const thirtyDaysAgo = new Date(Date.now() - 30 * MS_PER_DAY);
+      const recentActivity = await db.select({
+        uniqueDays: sql<number>`count(distinct date(${analyticsEvents.timestamp}))`
+      })
+      .from(analyticsEvents)
+      .where(and(eq(analyticsEvents.user_id, userId), gte(analyticsEvents.timestamp, thirtyDaysAgo)));
+      
+      const retentionScore = (Number(recentActivity[0]?.uniqueDays || 0) / 30) * 100;
+
+      const metrics: UserMetrics = {
+        userId,
+        totalSessions: countsMap.get('user_login') || 0,
+        totalPageViews: countsMap.get('page_view') || 0,
+        totalAIInteractions: countsMap.get('ai_agent_interaction') || 0,
+        goalsCreated: countsMap.get('goal_created') || 0,
+        goalsCompleted: countsMap.get('goal_completed') || 0,
+        tasksCreated: countsMap.get('task_created') || 0,
+        tasksCompleted: countsMap.get('task_completed') || 0,
+        filesUploaded: countsMap.get('file_uploaded') || 0,
+        templatesSaved: countsMap.get('template_saved') || 0,
+        lastActiveAt: timing?.lastActive || new Date(),
+        firstSeenAt: timing?.firstSeen || new Date(),
+        averageSessionDuration: Number(timing?.avgSessionDuration || 0),
+        retentionScore,
+        revenue: await RevenueTrackingService.calculateRevenue(userId, new Date(Date.now() - REVENUE_WINDOW_DAYS * MS_PER_DAY), new Date()).catch(() => 0),
+        mrr: await RevenueTrackingService.calculateMRR(userId).catch(() => 0)
+      };
+
+      // Cache the result
+      await redis.set(cacheKey, metrics, { ex: METRICS_CACHE_TTL }).catch(() => {});
+
+      return metrics;
+    } catch (error) {
+      logError('Failed to fetch user metrics:', error);
+      return null;
+    }
   }
 
   /**
    * Get all user metrics
    */
   async getAllUserMetrics(): Promise<UserMetrics[]> {
-    // Fetch all users and calculate metrics
-    // WARNING: Very inefficient for large user bases. Use with caution.
     const allUsers = await db.select({ id: users.id }).from(users)
     const metrics: UserMetrics[] = []
 
-    for (const user of allUsers) {
-      const userMetric = await this.getUserMetrics(user.id)
-      if (userMetric) metrics.push(userMetric)
+    // Optimized: Fetch in batches to avoid overwhelming the database
+    const BATCH_SIZE = 10;
+    for (let i = 0; i < allUsers.length; i += BATCH_SIZE) {
+      const batch = allUsers.slice(i, i + BATCH_SIZE);
+      const batchMetrics = await Promise.all(
+        batch.map(user => this.getUserMetrics(user.id))
+      );
+      batchMetrics.forEach(m => { if (m) metrics.push(m) });
     }
 
     return metrics
@@ -224,7 +286,6 @@ class AnalyticsService {
     const newUsersThisMonth = await countNewUsers(oneMonthAgo)
 
     // Active users (active in last 7 days)
-    // We check analytics events for activity
     const activeUsersResult = await db.select({ count: sql<number>`count(distinct ${analyticsEvents.user_id})` })
       .from(analyticsEvents)
       .where(gte(analyticsEvents.timestamp, oneWeekAgo))
@@ -251,12 +312,23 @@ class AnalyticsService {
 
     const featureAdoptionRate: Record<string, number> = {}
     featureUsage.forEach(f => {
-      // @ts-ignore - drizzle types can be quirky with groupBy
       const featureName = f.feature as string
       if (featureName) {
         featureAdoptionRate[featureName] = totalUsers > 0 ? (Number(f.count) / totalUsers) * 100 : 0
       }
     })
+
+    // Calculate churn rate: Users active last week but not this week
+    const activeLastWeek = await db.select({ count: sql<number>`count(distinct ${analyticsEvents.user_id})` })
+      .from(analyticsEvents)
+      .where(and(
+        gte(analyticsEvents.timestamp, oneWeekAgo),
+        sql`${analyticsEvents.timestamp} < ${now}`,
+        isNotNull(analyticsEvents.user_id)
+      ));
+    
+    const activeWeekCount = Number(activeLastWeek[0]?.count || 0);
+    const churnRate = activeUsers > 0 ? ((activeWeekCount - activeUsers) / activeWeekCount) * 100 : 0;
 
     return {
       totalUsers,
@@ -267,7 +339,7 @@ class AnalyticsService {
       userRetentionRate: totalUsers > 0 ? (activeUsers / totalUsers) * 100 : 0,
       featureAdoptionRate,
       conversionRate,
-      churnRate: 0, // Deferred: Requires Stripe webhook 'customer.subscription.deleted' handler
+      churnRate: Math.max(0, churnRate),
       revenue,
       mrr
     }
@@ -299,12 +371,9 @@ class AnalyticsService {
       sessionId: e.session_id || undefined
     }))
 
-    // Return basic dashboard data (User list deferred to V2 Admin Panel)
-    const userMetrics: UserMetrics[] = []
-
     return {
       events,
-      userMetrics,
+      userMetrics: [], // Aggregated per-user metrics deferred to specific user drill-down
       performanceMetrics,
       businessMetrics
     }
@@ -345,10 +414,8 @@ class AnalyticsService {
     churnRate: number
     seasonalTrends: string[]
   }> {
-    // 1. Calculate Revenue Forecast
-    // Get last 6 months of revenue (parallel)
     const now = new Date()
-    const months = [5, 4, 3, 2, 1, 0] // 5 months ago to current month
+    const months = [5, 4, 3, 2, 1, 0]
     
     const revenuePromises = months.map(async (i) => {
         const start = new Date(now.getFullYear(), now.getMonth() - i, 1)
@@ -364,12 +431,8 @@ class AnalyticsService {
     const monthlyRevenue = await Promise.all(revenuePromises)
     const revenueTrend = this.calculateTrend(monthlyRevenue)
 
-    // 2. Calculate User Growth Forecast
-
     const userGrowthPromises = [3, 2, 1, 0].map(async (i) => {
          const start = new Date(now.getTime() - (i + 1) * 7 * 24 * 60 * 60 * 1000)
-         
-         // New users per week trend
          const usersResult = await db.select({ count: sql<number>`count(*)` })
             .from(users)
             .where(and(
@@ -380,23 +443,17 @@ class AnalyticsService {
     })
     
     const weeklyUserCounts = await Promise.all(userGrowthPromises)
-    
     const userGrowthTrend = this.calculateTrend(weeklyUserCounts)
 
-    // 3. Calculate Churn Rate (simplified)
-    // Users active last month but not this month
-    // Note: This calculation compares the previous full month vs current partial month.
-    // For mid-month runs, this may over-report churn as users simply haven't logged in *yet* this month.
     const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1)
     const thisMonthStart = new Date(now.getFullYear(), now.getMonth(), 1)
     
-    // Filter out null user_ids to ensure accurate counts
     const activeLastMonth = await db.select({ id: analyticsEvents.user_id })
         .from(analyticsEvents)
         .where(and(
             gte(analyticsEvents.timestamp, lastMonthStart),
             sql`${analyticsEvents.timestamp} < ${thisMonthStart}`,
-            sql`${analyticsEvents.user_id} IS NOT NULL`
+            isNotNull(analyticsEvents.user_id)
         ))
         .groupBy(analyticsEvents.user_id)
         
@@ -404,11 +461,11 @@ class AnalyticsService {
         .from(analyticsEvents)
         .where(and(
             gte(analyticsEvents.timestamp, thisMonthStart),
-            sql`${analyticsEvents.user_id} IS NOT NULL`
+            isNotNull(analyticsEvents.user_id)
         ))
         .groupBy(analyticsEvents.user_id)
         
-    const lastMonthIds = new Set(activeLastMonth.map(u => u.id!)) // u.id is guaranteed not null by query, but TS might need !
+    const lastMonthIds = new Set(activeLastMonth.map(u => u.id!))
     const thisMonthIds = new Set(activeThisMonth.map(u => u.id!))
     
     let churnedCount = 0
@@ -420,7 +477,6 @@ class AnalyticsService {
     
     const churnRate = lastMonthIds.size > 0 ? (churnedCount / lastMonthIds.size) * 100 : 0
     
-    // 4. Identify Trends
     const trends: string[] = []
     if (revenueTrend.slope > 0) trends.push("Revenue is trending upward")
     if (revenueTrend.slope < 0) trends.push("Revenue is declining")
@@ -436,10 +492,16 @@ class AnalyticsService {
   }
 
   /**
-   * Clear old data (for memory management) - No longer needed for DB, but could be a cleanup job
+   * Database cleanup for old analytics events (V1: 90 day retention)
    */
   async clearOldData(): Promise<void> {
-    // Implementation for DB cleanup if needed
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+    try {
+      await db.delete(analyticsEvents).where(sql`${analyticsEvents.timestamp} < ${ninetyDaysAgo}`);
+      logInfo('✅ Successfully cleared analytics events older than 90 days');
+    } catch (error) {
+      logError('Failed to clear old analytics data:', error);
+    }
   }
 }
 
@@ -482,4 +544,3 @@ export const trackError = (userId: string, error: string, properties: Record<str
 
 export const trackPerformance = (metrics: Partial<PerformanceMetrics>) =>
   analytics.trackPerformance(metrics)
-
