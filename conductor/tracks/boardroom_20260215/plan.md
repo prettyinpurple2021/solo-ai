@@ -2,7 +2,7 @@
 
 This plan outlines the steps to implement the core multi-agent collaboration infrastructure for 'The Boardroom'.
 
-## Phase 1: Core Orchestration Engine (Backend) [checkpoint: 630a641]
+## Phase 1: Core Orchestration Engine (Backend) [checkpoint: b1a6bdf]
 - [x] Task: Define Boardroom data models in Drizzle 14df362a
     - [x] Write schema for Boardroom sessions and messages
     - [x] Implement database migrations
@@ -12,12 +12,12 @@ This plan outlines the steps to implement the core multi-agent collaboration inf
 - [x] Task: Create Boardroom API endpoints efa1213
     - [x] Write tests for session creation and message fetching
     - [x] Implement Express routes for Boardroom management
-- [x] Task: Conductor - User Manual Verification 'Phase 1: Core Orchestration Engine' (Protocol in workflow.md) 630a641
+- [x] Task: Conductor - User Manual Verification 'Phase 1: Core Orchestration Engine' (Protocol in workflow.md) b1a6bdf
 
 ## Phase 2: Real-time Communication (Socket.IO)
-- [~] Task: Setup Boardroom Socket Namespace
-    - [ ] Write tests for socket connection and room joining
-    - [ ] Implement backend socket handlers for Boardroom events
+- [x] Task: Setup Boardroom Socket Namespace b1a6bdf
+    - [x] Write tests for socket connection and room joining
+    - [x] Implement backend socket handlers for Boardroom events
 - [ ] Task: Implement Streaming Agent Responses
     - [ ] Write tests for chunked message delivery
     - [ ] Implement server-side logic to stream AI output to clients
