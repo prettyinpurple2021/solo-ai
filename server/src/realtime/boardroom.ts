@@ -1,5 +1,6 @@
 import { Server as SocketServer } from "socket.io";
-import { logInfo } from "../../utils/logger";
+import { logInfo, logError } from "../../utils/logger";
+import { BoardroomEventSchema } from "@/shared/schemas";
 
 export function setupBoardroomSocket(io: SocketServer) {
   const boardroomNamespace = io.of("/boardroom");
@@ -11,6 +12,22 @@ export function setupBoardroomSocket(io: SocketServer) {
       socket.join(`session:${sessionId}`);
       logInfo(`Client joined boardroom session: ${sessionId}`, { socketId: socket.id });
       socket.emit("joined", sessionId);
+    });
+
+    // Validated boardroom event handler
+    socket.on("boardroom-event", (data: any) => {
+      try {
+        const validatedEvent = BoardroomEventSchema.parse(data);
+        logInfo("Validated boardroom event received", { type: validatedEvent.type });
+        
+        // Broadcast the validated event to the session
+        // In a real scenario, we'd extract sessionId from context or payload
+        // For now, we'll assume a global broadcast or handle it per-session if available
+        boardroomNamespace.emit("event", validatedEvent);
+      } catch (error) {
+        logError("Invalid boardroom event received", { error, data });
+        socket.emit("error", { message: "Invalid event format", details: error });
+      }
     });
 
     // Mock streaming logic for testing/prototyping

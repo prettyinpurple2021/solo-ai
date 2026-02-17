@@ -75,6 +75,7 @@ components/
 
 **Location**: `/lib`, `/hooks`
 
+- **Shared Foundation Layer**: Standardized schemas and type definitions in `lib/shared/` ([Details](./shared-library.md))
 - **Custom Hooks**: Reusable state logic and side effects
 - **Utility Functions**: Helper functions and business rules
 - **State Management**: Context API and local component state

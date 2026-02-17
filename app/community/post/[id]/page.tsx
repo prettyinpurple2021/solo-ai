@@ -45,7 +45,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
         }
     };
 
-    const comments = post.comments.map(c => ({
+    const comments = post.comments.map((c: any) => ({
         id: c.id,
         content: c.content,
         created_at: c.created_at || new Date(),

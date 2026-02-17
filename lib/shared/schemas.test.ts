@@ -34,8 +34,8 @@ describe('Shared Schemas', () => {
       const validEvent = {
         type: 'agent_collaboration',
         payload: {
-          agents: ['roxy', 'echo'],
-          task: 'marketing_plan'
+          agentMessage: 'I need help with the marketing plan',
+          collaboratingAgentId: 'echo'
         },
         timestamp: new Date().toISOString()
       };

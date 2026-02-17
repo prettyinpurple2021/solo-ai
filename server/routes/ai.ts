@@ -9,6 +9,7 @@ import { SYSTEM_INSTRUCTIONS, AGENTS, AgentId } from '../constants';
 import { logError } from '../utils/logger';
 import { requireSubscription, checkUsage, TIER_LEVELS } from '../middleware/subscription';
 import { UsageTracker } from '../utils/usage-tracker';
+import { DominatorAgentOutputSchema } from '../../lib/shared/schemas';
 
 const router = Router();
 
@@ -208,7 +209,20 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
         // Increment usage stats
         await UsageTracker.incrementUsage(userId, 'conversations', 1);
         
-        return res.json({ text: result.text || "No response." });
+        // Standardize output using the shared schema
+        const output = {
+            agentId,
+            content: result.text || "No response.",
+            timestamp: new Date().toISOString()
+        };
+
+        const validatedOutput = DominatorAgentOutputSchema.parse(output);
+        
+        // Maintain backward compatibility for frontend that expects { text: string }
+        return res.json({ 
+            ...validatedOutput,
+            text: validatedOutput.content 
+        });
 
     } catch (error) {
         logError("AI Chat Error", error);

@@ -1,24 +1,13 @@
 import { NextResponse } from 'next/server'
 import { NextRequest } from 'next/server'
 import { logError } from './logger'
+import { ServerResponseSchema, type ServerResponse } from '@/shared/schemas'
 
 /**
  * Standardized API response utilities for consistent frontend/backend communication
  */
 
-export interface ApiResponse<T = any> {
-  success: boolean
-  data?: T
-  error?: string
-  message?: string
-  meta?: {
-    timestamp: string
-    requestId?: string
-    version?: string
-  }
-}
-
-export interface PaginatedResponse<T> extends ApiResponse<T[]> {
+export interface PaginatedResponse<T> extends ServerResponse<T[]> {
   pagination: {
     page: number
     limit: number
@@ -36,8 +25,8 @@ export function createSuccessResponse<T>(
   data: T,
   message?: string,
   status: number = 200
-): NextResponse<ApiResponse<T>> {
-  const response: ApiResponse<T> = {
+): NextResponse<ServerResponse<T>> {
+  const response: ServerResponse<T> = {
     success: true,
     data,
     message,
@@ -46,6 +35,9 @@ export function createSuccessResponse<T>(
       version: '1.0.0'
     }
   }
+
+  // Validate the response structure
+  ServerResponseSchema.parse(response);
 
   return NextResponse.json(response, { status })
 }
@@ -80,6 +72,9 @@ export function createPaginatedResponse<T>(
     }
   }
 
+  // Validate the base response structure
+  ServerResponseSchema.parse(response);
+
   return NextResponse.json(response, { status: 200 })
 }
 
@@ -90,8 +85,8 @@ export function createErrorResponse(
   error: string,
   status: number = 400,
   details?: any
-): NextResponse<ApiResponse> {
-  const response: ApiResponse = {
+): NextResponse<ServerResponse> {
+  const response: ServerResponse = {
     success: false,
     error,
     meta: {
@@ -99,6 +94,9 @@ export function createErrorResponse(
       version: '1.0.0'
     }
   }
+
+  // Validate the response structure
+  ServerResponseSchema.parse(response);
 
   // Log error for debugging
   logError('API Error Response:', {
@@ -114,7 +112,7 @@ export function createErrorResponse(
 /**
  * Handle API route errors consistently
  */
-export function handleApiError(error: unknown, context?: string): NextResponse<ApiResponse> {
+export function handleApiError(error: unknown, context?: string): NextResponse<ServerResponse> {
   const errorMessage = error instanceof Error ? error.message : 'An unexpected error occurred'
   const fullContext = context ? `${context}: ${errorMessage}` : errorMessage
 
@@ -147,7 +145,7 @@ export function handleApiError(error: unknown, context?: string): NextResponse<A
 export async function validateRequestBody<T>(
   request: Request,
   schema: any
-): Promise<{ success: true; data: T } | { success: false; error: NextResponse<ApiResponse> }> {
+): Promise<{ success: true; data: T } | { success: false; error: NextResponse<ServerResponse> }> {
   try {
     const body = await request.json()
     const validatedData = schema.parse(body)
@@ -167,7 +165,7 @@ export async function validateRequestBody<T>(
 export function validateQueryParams<T>(
   searchParams: URLSearchParams,
   schema: any
-): { success: true; data: T } | { success: false; error: NextResponse<ApiResponse> } {
+): { success: true; data: T } | { success: false; error: NextResponse<ServerResponse> } {
   try {
     const params = Object.fromEntries(searchParams.entries())
     const validatedData = schema.parse(params)
@@ -185,9 +183,9 @@ export function validateQueryParams<T>(
  * Standard API route wrapper with error handling
  */
 export function withApiHandler<T>(
-  handler: (request: Request) => Promise<NextResponse<ApiResponse<T>>>
+  handler: (request: Request) => Promise<NextResponse<ServerResponse<T>>>
 ) {
-  return async (request: Request): Promise<NextResponse<ApiResponse<T>>> => {
+  return async (request: Request): Promise<NextResponse<ServerResponse<T>>> => {
     try {
       return await handler(request)
     } catch (error) {
@@ -200,9 +198,9 @@ export function withApiHandler<T>(
  * Authentication middleware for API routes
  */
 export function withAuth<T>(
-  handler: (request: NextRequest, user: any) => Promise<NextResponse<ApiResponse<T>>>
+  handler: (request: NextRequest, user: any) => Promise<NextResponse<ServerResponse<T>>>
 ) {
-  return async (request: NextRequest | Request): Promise<NextResponse<ApiResponse<T>>> => {
+  return async (request: NextRequest | Request): Promise<NextResponse<ServerResponse<T>>> => {
     try {
       // Import here to avoid circular dependencies
       const { authenticateRequest } = await import('./auth-server')

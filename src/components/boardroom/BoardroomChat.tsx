@@ -106,7 +106,7 @@ export const BoardroomChat: React.FC<{ sessionId: string }> = ({ sessionId }) =>
       {/* Message Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 font-mono text-sm custom-scrollbar">
         {messages.map((m, i) => {
-          const agent = m.agentId === 'user' ? null : AGENTS[m.agentId as keyof typeof AGENTS] || AGENTS['roxy'];
+          const agent = m.agentId === 'user' ? null : AGENTS[m.agentId as keyof typeof AGENTS] || AGENTS['ROXY' as keyof typeof AGENTS];
           return (
             <div key={i} className={`flex ${m.agentId === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[80%] p-3 rounded-sm border ${
