@@ -1,5 +1,99 @@
 import { relations } from "drizzle-orm/relations";
-import { scrapingJobs, scrapingJobResults, users, feedback, customReports, posts, postComments, challenges, challengeParticipants, analyticsEvents, briefcases, calendarConnections, chatConversations, chatMessages, competitiveOpportunities, competitors, deviceApprovals, documents, documentFolders, documentPermissions, documentShareLinks, documentVersions, competitorProfiles, competitorActivities, competitorAlerts, intelligenceData, learningPaths, learningModules, opportunityActions, opportunityMetrics, passwordResetTokens, paymentProviderConnections, goals, tasks, focusSessions, pushSubscriptions, sessions, socialMediaConnections, taskAnalytics, taskCategories, productivityInsights, workflowTemplates, templateDownloads, userAchievements, achievements, userApiKeys, userBrandSettings, userCompetitiveStats, userMfaSettings, templates, userSessions, userSettings, workflows, workflowExecutions, collaborationSessions, collaborationCheckpoints, collaborationMessages, collaborationParticipants, userLearningProgress, documentActivity, moodEntries, communityPosts, communityComments, communityTopics, follows, commentLikes, postLikes, postReactions, authenticators, accounts } from "./index";
+
+import { 
+  users, 
+  accounts, 
+  sessions, 
+  authenticators, 
+  passwordResetTokens, 
+  userMfaSettings, 
+  deviceApprovals, 
+  userSessions, 
+  userApiKeys 
+} from "./users";
+
+import { 
+  feedback, 
+  documents, 
+  documentFolders, 
+  documentPermissions, 
+  documentShareLinks, 
+  documentVersions, 
+  documentActivity, 
+  learningPaths, 
+  learningModules, 
+  userLearningProgress 
+} from "./content";
+
+import { 
+  customReports, 
+  userBrandSettings, 
+  userSettings, 
+  goals, 
+  tasks, 
+  briefcases, 
+  taskAnalytics, 
+  taskCategories, 
+  productivityInsights, 
+  analyticsEvents, 
+  focusSessions, 
+  templates 
+} from "./business";
+
+import { 
+  communityPosts, 
+  communityComments, 
+  communityTopics, 
+  postLikes, 
+  commentLikes 
+} from "./community";
+
+import { 
+  posts, 
+  postComments, 
+  follows, 
+  postReactions, 
+  calendarConnections, 
+  socialMediaConnections, 
+  paymentProviderConnections, 
+  pushSubscriptions 
+} from "./social";
+
+import { 
+  competitors, 
+  competitorProfiles, 
+  competitorActivities, 
+  competitorAlerts, 
+  intelligenceData, 
+  scrapingJobs, 
+  scrapingJobResults, 
+  competitiveOpportunities, 
+  opportunityActions, 
+  opportunityMetrics 
+} from "./intelligence";
+
+import { 
+  workflows, 
+  workflowExecutions, 
+  workflowTemplates, 
+  templateDownloads, 
+  collaborationSessions, 
+  collaborationParticipants, 
+  collaborationMessages, 
+  collaborationCheckpoints, 
+  chatConversations, 
+  chatMessages 
+} from "./workflow";
+
+import { 
+  userCompetitiveStats, 
+  challenges, 
+  challengeParticipants, 
+  achievements, 
+  userAchievements 
+} from "./gamification";
+
+import { moodEntries } from "./wellness";
 
 export const scrapingJobResultsRelations = relations(scrapingJobResults, ({one}) => ({
 	scrapingJob: one(scrapingJobs, {
