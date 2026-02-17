@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../db';
-import { notifications, notificationPreferences } from '../db/schema';
+import { notifications, notificationPreferences } from '../../lib/shared/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { broadcastToUser } from '../realtime';
@@ -50,12 +50,12 @@ router.post('/create', authMiddleware, async (req: Request, res: Response) => {
         const [created] = await db.insert(notifications).values({
             userId: userId,
             type: payload.type,
-            category: payload.category,
             title: payload.title,
             message: payload.message,
             priority: payload.priority,
             actionUrl: payload.actionUrl,
-            read: false,
+            isRead: false,
+            metadata: { ...((payload as any).metadata || {}), category: payload.category },
             sentAt: payload.sentAt ?? new Date(),
             createdAt: new Date(),
         }).returning();
@@ -72,10 +72,10 @@ router.post('/create', authMiddleware, async (req: Request, res: Response) => {
 router.post('/:id/read', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
-        const notificationId = Number(req.params.id);
+        const notificationId = req.params.id;
 
         const [updated] = await db.update(notifications)
-            .set({ read: true })
+            .set({ isRead: true })
             .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)))
             .returning();
 
@@ -83,7 +83,7 @@ router.post('/:id/read', authMiddleware, async (req: Request, res: Response) => 
             return res.status(404).json({ error: 'Notification not found' });
         }
 
-        broadcastToUser(String(userId), 'notification:updated', { id: notificationId, read: true });
+        broadcastToUser(String(userId), 'notification:updated', { id: notificationId, isRead: true });
         return res.json(updated);
     } catch (error) {
         logError('Failed to mark notification as read', error);
@@ -97,12 +97,12 @@ router.post('/read-all', authMiddleware, async (req: Request, res: Response) => 
         const userId = req.userId!;
 
         const updated = await db.update(notifications)
-            .set({ read: true })
+            .set({ isRead: true })
             .where(eq(notifications.userId, userId))
             .returning({ id: notifications.id });
 
         if (updated.length > 0) {
-            broadcastToUser(String(userId), 'notification:updated', { read: true, all: true });
+            broadcastToUser(String(userId), 'notification:updated', { isRead: true, all: true });
         }
         return res.json({ success: true, updated: updated.length });
     } catch (error) {
@@ -115,7 +115,7 @@ router.post('/read-all', authMiddleware, async (req: Request, res: Response) => 
 router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
-        const notificationId = Number(req.params.id);
+        const notificationId = req.params.id;
 
         const deleted = await db.delete(notifications)
             .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)))
@@ -231,20 +231,20 @@ router.post('/send', async (req: Request, res: Response) => {
         }
 
         // Process in batches to avoid overwhelming DB/Socket
-        const results: number[] = [];
+        const results: string[] = [];
         
         for (const userId of targets) {
             try {
                 const [notification] = await db.insert(notifications).values({
                     userId: userId,
                     type: 'in_app', // Defaulting to in_app for now
-                    category: 'system',
                     title: title,
                     message: body,
                     priority: priority || 'medium',
                     actionUrl: data?.url || actions?.[0]?.url, // Try to extract URL from data or actions
-                    read: false,
+                    isRead: false,
                     sentAt: new Date(),
+                    metadata: { category: 'system', ...data }, // Moved category to metadata
                     createdAt: new Date(),
                 }).returning();
 

@@ -1,5 +1,5 @@
 import { createServer } from "http";
-const { Server } = require("socket.io");
+import { Server } from "socket.io";
 import { io as Client, Socket as ClientSocket } from "socket.io-client";
 import { setIo } from "../../../server/realtime";
 import { setupBoardroomSocket } from "../../../server/src/realtime/boardroom";

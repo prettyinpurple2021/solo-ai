@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../db';
-import { users, tasks, businessContext, chatHistory, dailyIntelligence } from '../db/schema';
+import { users, tasks, businessContext, chatHistory, dailyIntelligence } from '../../lib/shared/db/schema';
 import { eq, desc, and, gte } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { logError } from '../utils/logger';
@@ -25,8 +25,8 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
 
         // 2. Fetch Today's Tasks
         const userTasks = await db.select().from(tasks)
-            .where(eq(tasks.userId, userId))
-            .orderBy(desc(tasks.createdAt));
+            .where(eq(tasks.user_id, userId))
+            .orderBy(desc(tasks.created_at));
 
         const todaysTasks = userTasks
             .filter(t => t.status !== 'done')
@@ -41,7 +41,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
         // 4. Recent Conversations
         const recentChats = await db.select().from(chatHistory)
             .where(eq(chatHistory.userId, userId))
-            .orderBy(desc(chatHistory.timestamp))
+            .orderBy(desc(chatHistory.createdAt))
             .limit(3);
 
         const recentBriefcases: any[] = [];
@@ -50,7 +50,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
         const stats = {
             tasks_completed: completedTasksCount,
             total_tasks: userTasks.length,
-            focus_minutes: (userData.totalActions || 0) * 5,
+            focus_minutes: (userData.total_actions || 0) * 5,
             ai_interactions: recentChats.length,
             goals_achieved: 0,
             productivity_score: Math.min(100, Math.round((completedTasksCount / (userTasks.length || 1)) * 100))
@@ -67,12 +67,12 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
                 const cachedInsight = await db.select().from(dailyIntelligence)
                     .where(and(
                         eq(dailyIntelligence.userId, userId),
-                        eq(dailyIntelligence.date, todayStr)
+                        gte(dailyIntelligence.date, new Date(todayStr)) // Simple check for now, or use SQL
                     ))
                     .limit(1);
                     
-                if (cachedInsight[0] && cachedInsight[0].motivationalMessage) {
-                    dailyInsight = cachedInsight[0].motivationalMessage;
+                if (cachedInsight[0] && cachedInsight[0].summary) {
+                    dailyInsight = cachedInsight[0].summary;
                 } else {
                     // Generate new insight via Gemini
                     if (process.env.GEMINI_API_KEY) {
@@ -99,11 +99,10 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
                             // Cache it
                             await db.insert(dailyIntelligence).values({
                                 userId: userId,
-                                date: todayStr,
-                                motivationalMessage: text,
-                                priorityActions: [],
-                                alerts: [],
-                                insights: []
+                                date: new Date(),
+                                summary: text, // Storing motivational message in summary
+                                highlights: [],
+                                riskLevel: 'low',
                             });
                         }
                     }
@@ -166,7 +165,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
             recentConversations: recentChats.map(c => ({
                 id: String(c.id),
                 title: null,
-                last_message_at: new Date(Number(c.timestamp)).toISOString(),
+                last_message_at: c.createdAt ? new Date(c.createdAt).toISOString() : new Date().toISOString(),
                 agent: {
                     name: c.agentId,
                     display_name: c.agentId.toUpperCase(),

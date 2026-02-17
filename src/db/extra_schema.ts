@@ -1,22 +1,7 @@
-import { integer, pgTable, varchar, text, timestamp, boolean, index } from 'drizzle-orm/pg-core';
+import { integer, pgTable, varchar, text, timestamp, boolean, index, jsonb } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { v4 as uuidv4 } from 'uuid';
-import { users } from './schema';
-
-// Challenges table
-export const challenges = pgTable('challenges', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
-  title: varchar('title', { length: 255 }).notNull(),
-  description: text('description').notNull(),
-  category: varchar('category', { length: 100 }),
-  difficulty: varchar('difficulty', { length: 50 }).default('Easy'),
-  rewardPoints: integer('reward_points').default(0),
-  rewardBadge: varchar('reward_badge', { length: 255 }),
-  deadline: timestamp('deadline'),
-  is_active: boolean('is_active').default(true),
-  createdAt: timestamp('created_at').defaultNow(),
-  updatedAt: timestamp('updated_at').defaultNow(),
-});
+import { users, challenges } from '../../lib/shared/db/schema';
 
 // User Challenges table
 export const userChallenges = pgTable('user_challenges', {

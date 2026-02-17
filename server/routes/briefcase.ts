@@ -2,7 +2,7 @@
 import { Router, Response, Request } from 'express';
 import { authMiddleware } from '../middleware/auth';
 import { db } from '../db';
-import { briefcaseItems, userBriefcases } from '../db/schema';
+import { briefcases, briefcaseItems } from '../../lib/shared/db/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 import { logError } from '../utils/logger';
 import { UsageTracker } from '../utils/usage-tracker';
@@ -75,20 +75,20 @@ router.post('/', async (req: Request, res: Response) => {
 
         // Ensure user has a default briefcase
         let defaultBriefcase = await db.select()
-            .from(userBriefcases)
-            .where(and(eq(userBriefcases.userId, userId), eq(userBriefcases.isDefault, true)))
+            .from(briefcases)
+            .where(and(eq(briefcases.user_id, userId), eq(briefcases.is_default, true)))
             .limit(1);
 
         let briefcaseId;
 
         if (defaultBriefcase.length === 0) {
             // Create default briefcase
-            const newBriefcase = await db.insert(userBriefcases).values({
+            const newBriefcase = await db.insert(briefcases).values({
                 id: crypto.randomUUID(),
-                userId,
-                name: 'Main Briefcase',
+                user_id: userId,
+                title: 'Main Briefcase',
                 description: 'Default briefcase',
-                isDefault: true
+                is_default: true
             }).returning();
             briefcaseId = newBriefcase[0].id;
         } else {

@@ -365,7 +365,7 @@ app.post('/api/user/progress', async (req: Request, res: Response) => {
         }
 
         const updated = await db.update(users)
-            .set({ xp, level, totalActions, updatedAt: new Date().toISOString() })
+            .set({ xp, level, total_actions: totalActions, updated_at: new Date() })
             .where(eq(users.id, user[0].id))
             .returning();
 
@@ -394,8 +394,8 @@ app.get('/api/tasks', async (req: Request, res: Response) => {
         }
 
         const allTasks = await db.select().from(tasks)
-            .where(eq(tasks.userId, userId))
-            .orderBy(desc(tasks.createdAt));
+            .where(eq(tasks.user_id, userId))
+            .orderBy(desc(tasks.created_at));
 
         await setCache(cacheKey, allTasks);
         return res.json(allTasks);
@@ -413,7 +413,7 @@ app.post('/api/tasks', async (req: Request, res: Response) => {
 
         const taskData = { ...req.body, userId };
         const existing = await db.select().from(tasks).where(
-            and(eq(tasks.id, taskData.id), eq(tasks.userId, userId))
+            and(eq(tasks.id, taskData.id), eq(tasks.user_id, userId))
         );
 
         let result;
@@ -452,7 +452,7 @@ app.post('/api/tasks/batch', async (req: Request, res: Response) => {
         for (const t of taskList) {
             const taskData = { ...t, userId };
             const existing = await db.select().from(tasks).where(
-                and(eq(tasks.id, t.id), eq(tasks.userId, userId))
+                and(eq(tasks.id, t.id), eq(tasks.user_id, userId))
             );
 
             if (existing.length > 0) {
@@ -482,7 +482,7 @@ app.delete('/api/tasks/:id', async (req: Request, res: Response) => {
 
         const { id } = req.params;
         await db.delete(tasks).where(
-            and(eq(tasks.id, id as string), eq(tasks.userId, userId))
+            and(eq(tasks.id, id as string), eq(tasks.user_id, userId))
         );
 
         await invalidateCache(`tasks:${userId}`);
@@ -504,7 +504,7 @@ app.delete('/api/tasks', async (req: Request, res: Response) => {
             return res.status(401).json({ error: 'Unauthorized' });
         }
 
-        await db.delete(tasks).where(eq(tasks.userId, userId));
+        await db.delete(tasks).where(eq(tasks.user_id, userId));
         await invalidateCache(`tasks:${userId}`);
         broadcastToUser(userId, 'tasks:cleared', {});
 
@@ -690,7 +690,7 @@ app.post('/api/reports', async (req: Request, res: Response) => {
             vulnerabilities: report.vulnerabilities || [],
             strengths: report.strengths || [],
             metrics: report.metrics || {},
-            generatedAt: new Date(report.generatedAt || Date.now()).toISOString()
+            generatedAt: new Date(report.generatedAt || Date.now())
         });
 
         await invalidateCache(`reports:${userId}`);

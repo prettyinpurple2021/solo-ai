@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { db } from '../db';
-import { pitchDecks, slides, slideComponents } from '../db/schema';
+import { pitchDecks, slides, slideComponents } from '../../lib/shared/db/schema';
 import { eq, and, desc, asc } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';
@@ -172,7 +172,7 @@ router.put('/:id', async (req: Request, res: Response) => {
                 description,
                 isPublic,
                 thumbnail,
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date()
             })
             .where(eq(pitchDecks.id, deckId))
             .returning();

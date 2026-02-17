@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { db } from '../db';
-import { contacts } from '../db/schema';
+import { contacts } from '../../lib/shared/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';
@@ -75,7 +75,7 @@ router.post('/', async (req: Request, res: Response) => {
                 notes,
                 linkedinUrl,
                 tags: tags as string[],
-                lastContact: lastContact ? new Date(lastContact).toISOString() : null,
+                lastContact: lastContact ? new Date(lastContact) : null,
                 relationship
             })
             .returning();
@@ -119,9 +119,9 @@ router.put('/:id', async (req: Request, res: Response) => {
                 notes,
                 linkedinUrl,
                 tags,
-                lastContact: lastContact ? new Date(lastContact).toISOString() : null,
+                lastContact: lastContact ? new Date(lastContact) : null,
                 relationship,
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date()
             })
             .where(eq(contacts.id, contactId))
             .returning();

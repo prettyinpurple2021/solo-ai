@@ -60,12 +60,12 @@ export async function verifyAdminPin(email: string, pin: string): Promise<boolea
             where: eq(users.email, email)
         });
 
-        if (!user || !user.adminPinHash) {
+        if (!user || !user.admin_pin_hash) {
             return false;
         }
 
         // Compare PIN with stored hash
-        return await bcrypt.compare(pin, user.adminPinHash);
+        return await bcrypt.compare(pin, user.admin_pin_hash);
     } catch (error) {
         console.error('PIN verification error:', error);
         return false;
@@ -91,10 +91,10 @@ export async function logAdminAction(
 ) {
     try {
         await db.insert(adminActions).values({
-            adminUserId,
+            adminId: adminUserId,
             action,
             targetUserId,
-            details
+            metadata: details
         });
     } catch (error) {
         console.error('Failed to log admin action:', error);

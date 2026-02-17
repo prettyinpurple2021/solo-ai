@@ -61,6 +61,9 @@ export const dailyIntelligence = pgTable("daily_intelligence", {
   date: timestamp("date").defaultNow().notNull(),
   summary: text("summary").notNull(),
   highlights: jsonb("highlights").default([]),
+  priorityActions: jsonb("priority_actions").default([]),
+  alerts: jsonb("alerts").default([]),
+  motivationalMessage: text("motivational_message"),
   riskLevel: varchar("risk_level", { length: 20 }).default('low'),
   createdAt: timestamp("created_at").defaultNow(),
 }, (table) => ({

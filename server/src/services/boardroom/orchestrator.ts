@@ -1,5 +1,5 @@
-import { db } from "../../db";
-import { boardroomSessions, boardroomMessages } from "../../db/schema";
+import { db } from "../../../db";
+import { boardroomSessions, boardroomMessages } from "../../../../lib/shared/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { AgentId } from "../../../../src/types";
 
@@ -24,13 +24,13 @@ export class BoardroomOrchestrator {
 
   async saveMessage(sessionId: string, agentId: string, role: "user" | "assistant", content: string) {
     return await db.insert(boardroomMessages).values({
-      id: crypto.randomUUID(),
-      sessionId,
-      agentId,
-      role,
-      content,
-      createdAt: new Date().toISOString()
-    }).returning();
+            sessionId,
+            agentId,
+            role,
+            content,
+            metadata: {},
+            createdAt: new Date()
+        }).returning();
   }
 
   async getSessionHistory(sessionId: string) {

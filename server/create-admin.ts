@@ -34,13 +34,13 @@ async function createAdminUser() {
         name: fullName,
         username,
         role: 'admin',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        emailVerified: new Date().toISOString(), // Now allowed
-        subscriptionTier: 'free',
-        subscriptionStatus: 'active',
-        onboardingCompleted: true,
-        isVerified: true,
+        created_at: new Date(),
+        updated_at: new Date(),
+        emailVerified: new Date(),
+        subscription_tier: 'free',
+        subscription_status: 'active',
+        onboarding_completed: true,
+        is_verified: true,
       });
       
       logInfo('Admin user created successfully.');

@@ -1,7 +1,7 @@
 
 import { Redis } from '@upstash/redis';
 import { db } from '../db';
-import { users } from '../db/schema';
+import { users } from '../../lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { logError } from './logger';
 
@@ -42,7 +42,7 @@ export class UsageTracker {
         if (cached) return cached as SubscriptionTier;
 
         try {
-            const user = await db.select({ tier: users.subscriptionTier }).from(users).where(eq(users.id, userId)).limit(1);
+            const user = await db.select({ tier: users.subscription_tier }).from(users).where(eq(users.id, userId)).limit(1);
             const tier = normalizeTier(user[0]?.tier || 'free');
             
             // Cache for 10 minutes

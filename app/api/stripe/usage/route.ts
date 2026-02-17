@@ -1,7 +1,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "../../../../server/db"; // Use centralized DB client
-import { usageTracking } from "../../../../server/db/schema";
+import { usageTracking } from "@/shared/db/schema";
 import { eq } from "../../../../server/db";
 import { logError } from '@/lib/logger';
 

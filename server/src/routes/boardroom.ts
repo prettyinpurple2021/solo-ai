@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { BoardroomOrchestrator } from "../services/boardroom/orchestrator";
 import { db } from "../../db";
-import { boardroomSessions } from "../../db/schema";
+import { boardroomSessions } from "../../../lib/shared/db/schema";
 import { eq } from "drizzle-orm";
 
 export const boardroomRouter = Router();
@@ -15,12 +15,12 @@ boardroomRouter.post("/sessions", async (req, res) => {
   }
 
   const session = await db.insert(boardroomSessions).values({
-    id: crypto.randomUUID(),
     userId,
-    title: title || "New Strategic Session",
+    name: title || "New Strategic Session",
+    goal: "Strategic Planning",
     status: "active",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString()
+    createdAt: new Date(),
+    updatedAt: new Date()
   }).returning();
 
   res.status(201).json(session[0]);

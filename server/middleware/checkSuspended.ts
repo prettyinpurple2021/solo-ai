@@ -20,7 +20,7 @@ export const checkSuspended = async (req: Request, res: Response, next: NextFunc
 
         const user = await db.select({
             suspended: users.suspended,
-            suspendedReason: users.suspendedReason
+            suspendedReason: users.suspended_reason
         })
             .from(users)
             .where(eq(users.id, userId))

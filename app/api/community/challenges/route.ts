@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { challenges, userChallenges } from '@/db/extra_schema';
+import { challenges } from '@/shared/db/schema';
+import { userChallenges } from '@/db/extra_schema';
 import { desc, eq, sql } from 'drizzle-orm';
 
 import { auth } from '@/lib/auth';
@@ -19,16 +20,16 @@ export async function GET(_req: Request) {
             description: challenges.description,
             category: challenges.category,
             difficulty: challenges.difficulty,
-            rewardPoints: challenges.rewardPoints,
-            rewardBadge: challenges.rewardBadge,
+            rewardPoints: challenges.reward_points,
+            rewardBadge: challenges.reward_badge,
             deadline: challenges.deadline,
-            createdAt: challenges.createdAt,
+            createdAt: challenges.created_at,
             participantCount: sql<number>`count(${userChallenges.userId})`.mapWith(Number)
         })
         .from(challenges)
         .leftJoin(userChallenges, eq(challenges.id, userChallenges.challengeId))
         .groupBy(challenges.id)
-        .orderBy(desc(challenges.createdAt));
+        .orderBy(desc(challenges.created_at));
 
     // If userId is provided, fetch their status for each challenge
     let userStatuses: Record<string, string> = {};

@@ -1,5 +1,5 @@
 import { db } from '../db';
-import { searchIndex } from '../db/schema';
+import { searchIndex } from '../../lib/shared/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { logError } from './logger';
 
@@ -85,7 +85,7 @@ export class SearchIndexer {
                         title,
                         content,
                         tags,
-                        updatedAt: new Date().toISOString()
+                        updatedAt: new Date()
                     })
                     .where(eq(searchIndex.id, existing[0].id));
             } else {

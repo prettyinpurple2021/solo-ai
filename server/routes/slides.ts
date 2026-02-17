@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { db } from '../db';
-import { slides, slideComponents, pitchDecks } from '../db/schema';
+import { slides, slideComponents, pitchDecks } from '../../lib/shared/db/schema';
 import { eq, and, desc, asc } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';
@@ -87,7 +87,7 @@ router.put('/:id', async (req: Request, res: Response) => {
                 notes,
                 isVisible,
                 content,
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date()
             })
             .where(eq(slides.id, slideId))
             .returning();
@@ -284,7 +284,7 @@ router.put('/components/:id', async (req: Request, res: Response) => {
                 style,
                 animation,
                 zIndex,
-                updatedAt: new Date().toISOString()
+                updatedAt: new Date()
             })
             .where(eq(slideComponents.id, compId))
             .returning();

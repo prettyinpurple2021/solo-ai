@@ -1,7 +1,7 @@
 import express from 'express';
 import { stripe, PRICE_IDS } from '../stripe-config';
 import { db } from '../db';
-import { subscriptions, users, usageTracking } from '../db/schema';
+import { subscriptions, users, usageTracking } from '../../lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { logError, logInfo } from '../utils/logger';
 
@@ -203,7 +203,6 @@ async function handleCheckoutCompleted(session: any) {
                 stripeCustomerId: customerId,
                 stripeSubscriptionId: subscriptionId,
                 stripePriceId: priceId,
-                tier: tier,
                 status: 'active',
                 currentPeriodEnd: new Date(subscription.current_period_end * 1000)
             })
@@ -214,11 +213,15 @@ async function handleCheckoutCompleted(session: any) {
             stripeCustomerId: customerId,
             stripeSubscriptionId: subscriptionId,
             stripePriceId: priceId,
-            tier: tier,
             status: 'active',
             currentPeriodEnd: new Date(subscription.current_period_end * 1000)
         });
     }
+
+    // Update user tier
+    await db.update(users)
+        .set({ subscription_tier: tier })
+        .where(eq(users.id, userId));
 }
 
 async function handleSubscriptionUpdated(subscription: any) {
@@ -235,10 +238,19 @@ async function handleSubscriptionUpdated(subscription: any) {
     await db.update(subscriptions)
         .set({
             status: status,
-            tier: tier,
+            stripePriceId: priceId,
             currentPeriodEnd: new Date(subscription.current_period_end * 1000)
         })
         .where(eq(subscriptions.stripeSubscriptionId, subscriptionId));
+
+    // Update user tier
+    // We need to find the user associated with this subscription
+    const sub = await db.select().from(subscriptions).where(eq(subscriptions.stripeSubscriptionId, subscriptionId)).limit(1);
+    if (sub.length) {
+        await db.update(users)
+            .set({ subscription_tier: tier })
+            .where(eq(users.id, sub[0].userId));
+    }
 }
 
 export default router;

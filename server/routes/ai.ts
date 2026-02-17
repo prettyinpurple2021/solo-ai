@@ -2,8 +2,8 @@
 import { Router, Request, Response } from 'express';
 import { GoogleGenAI, Type } from '@google/genai';
 import { db } from '../db';
-import { businessContext, tasks, competitorReports, boardReports, pivotAnalyses, warRoomSessions, dailyIntelligence } from '../db/schema';
-import { eq, desc, and } from 'drizzle-orm';
+import { businessContext, tasks, competitorReports, boardReports, pivotAnalyses, warRoomSessions, dailyIntelligence, userBrandSettings, users } from '../../lib/shared/db/schema';
+import { eq, desc, and, gte } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { SYSTEM_INSTRUCTIONS, AGENTS, AgentId } from '../constants';
 import { logError } from '../utils/logger';
@@ -18,34 +18,38 @@ const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 // Helper: Get Business Context
 const getContext = async (userId: string) => {
-    const ctx = await db.select().from(businessContext).where(eq(businessContext.userId, userId)).limit(1);
-    if (!ctx.length) return "";
+    const brandSettings = await db.select().from(userBrandSettings).where(eq(userBrandSettings.user_id, userId)).limit(1);
+    const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
-    const c = ctx[0];
+    if (!brandSettings.length) return "";
+
+    const bs = brandSettings[0];
+    const u = user.length > 0 ? user[0] : { name: "Founder" };
+    
     let dnaContext = "";
-    if (c.brandDna) {
-        const dna = c.brandDna as any;
-        dnaContext = `
-        === BRAND DNA (THE CODEX) ===
-        TONE SETTINGS:
-        - Casualness: ${dna.tone?.formalVsCasual || 50}%
-        - Playfulness: ${dna.tone?.playfulVsSerious || 50}%
-        - Modernity: ${dna.tone?.modernVsClassic || 50}%
-        
-        TARGET AUDIENCE:
-        ${dna.personas?.map((p: any) => `- ${p.name}: ${p.description}`).join('\n') || ''}
-        
-        CORE VALUES: ${dna.coreValues?.join(', ') || ''}
-        BANNED WORDS: ${dna.bannedWords?.join(', ') || ''}
+    // Access brand_personality from userBrandSettings which corresponds to brand DNA
+    const brandPersonality = bs.brand_personality as any; // Assuming it holds tone/style info
+    
+    // Adapt to the expected structure or just log what we have
+    // The previous code expected metadata.brandDna.tone, etc.
+    // We'll construct a simplified version based on available data or just safely check.
+    
+    if (brandPersonality) {
+         // Assuming brand_personality might be an array or object. If specific structure isn't known, generic dump:
+         dnaContext = `
+        === BRAND DNA ===
+        Personality: ${JSON.stringify(brandPersonality)}
+        Target Audience: ${bs.target_audience || 'General'}
+        Industry: ${bs.industry || 'General'}
         `;
     }
 
     return `
     CONTEXT_AWARENESS_LAYER:
-    You are working for: "${c.companyName}"
-    Founder: "${c.founderName}"
-    Industry: "${c.industry}"
-    Description: "${c.description}"
+    You are working for: "${bs.company_name || 'Solo Company'}"
+    Founder: "${u.name || 'Founder'}"
+    Industry: "${bs.industry || 'General'}"
+    Description: "${bs.description || ''}"
     
     ${dnaContext}
 
@@ -57,8 +61,8 @@ const getContext = async (userId: string) => {
 const getDeepMindContext = async (userId: string) => {
     // Tasks
     const userTasks = await db.select().from(tasks)
-        .where(and(eq(tasks.userId, userId)))
-        .orderBy(desc(tasks.createdAt))
+        .where(and(eq(tasks.user_id, userId)))
+        .orderBy(desc(tasks.created_at))
         .limit(10);
 
     let tasksContext = "NO ACTIVE TASKS.";
@@ -292,7 +296,7 @@ router.post('/war-room', (authMiddleware as any), requireAi, requireSubscription
         let historyContext = "";
         if (previousSessionId) {
             const prevSession = await db.select().from(warRoomSessions)
-                .where(and(eq(warRoomSessions.id, Number(previousSessionId)), eq(warRoomSessions.userId, userId)))
+                .where(and(eq(warRoomSessions.id, previousSessionId), eq(warRoomSessions.userId, userId)))
                 .limit(1);
 
             if (prevSession.length > 0) {
@@ -362,22 +366,23 @@ router.post('/war-room', (authMiddleware as any), requireAi, requireSubscription
 router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
-        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        // Use a date object for comparison
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        // Check if already exists for today
+        // Check if already exists for today (created after midnight)
         const existing = await db.select().from(dailyIntelligence)
             .where(and(
                 eq(dailyIntelligence.userId, userId),
-                eq(dailyIntelligence.date, today)
+                gte(dailyIntelligence.date, today)
             ))
             .limit(1);
 
         if (existing.length > 0) {
             return res.json({
                 ...existing[0],
-                focusPoints: existing[0].priorityActions, // Map back to frontend expected format if needed, or update frontend
+                focusPoints: existing[0].priorityActions, // Map back to frontend expected format if needed
                 threatAlerts: existing[0].alerts,
-                // insights: existing[0].insights 
             });
         }
 
@@ -408,11 +413,13 @@ router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request
         // Save to DB
         await db.insert(dailyIntelligence).values({
             userId: userId,
-            date: today,
-            priorityActions: data.focusPoints,
-            alerts: data.threatAlerts,
-            insights: [], // Placeholder
-            motivationalMessage: data.motivationalQuote
+            date: new Date(),
+            summary: data.summary || "Daily Briefing", // Ensure required field
+            priorityActions: data.focusPoints || [],
+            alerts: data.threatAlerts || [],
+            highlights: [], 
+            motivationalMessage: data.motivationalQuote,
+            riskLevel: 'low'
         });
 
         return res.json({ ...data, date: new Date().toLocaleDateString() });

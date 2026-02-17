@@ -572,7 +572,7 @@ export class MarketIntelligenceService {
         .limit(1)
 
       if (result.length > 0) {
-        return result[0].data
+        return result[0].results
       }
 
       return null
@@ -596,14 +596,14 @@ export class MarketIntelligenceService {
           id: cacheKey,
           source: 'brave_search',
           query: cacheKey,
-          data: data as any,
-          expiresAt: expiresAt.toISOString(),
+          results: data as any,
+          expiresAt: expiresAt,
         })
         .onConflictDoUpdate({
           target: marketIntelligenceCache.id,
           set: {
-            data: data as any,
-            expiresAt: expiresAt.toISOString(),
+            results: data as any,
+            expiresAt: expiresAt,
           },
         })
 

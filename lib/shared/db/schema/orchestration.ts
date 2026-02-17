@@ -22,6 +22,7 @@ export const boardroomMessages = pgTable("boardroom_messages", {
   id: text("id").primaryKey().$defaultFn(() => uuidv4()),
   sessionId: text("session_id").notNull().references(() => boardroomSessions.id, { onDelete: 'cascade' }),
   agentId: varchar("agent_id", { length: 50 }).notNull(),
+  role: varchar("role", { length: 20 }).notNull(),
   content: text("content").notNull(),
   metadata: jsonb("metadata").default({}),
   createdAt: timestamp("created_at").defaultNow(),

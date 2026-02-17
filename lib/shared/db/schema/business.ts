@@ -92,6 +92,7 @@ export const launchStrategies = pgTable("launch_strategies", {
 export const subscriptions = pgTable("subscriptions", {
   id: text("id").primaryKey().$defaultFn(() => uuidv4()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  stripeCustomerId: varchar("stripe_customer_id", { length: 255 }),
   stripeSubscriptionId: varchar("stripe_subscription_id", { length: 255 }),
   stripePriceId: varchar("stripe_price_id", { length: 255 }),
   status: varchar("status", { length: 50 }).notNull(),
@@ -121,10 +122,29 @@ export const briefcases = pgTable('briefcases', {
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   status: varchar('status', { length: 50 }).default('active'),
+  is_default: boolean('is_default').default(false),
   metadata: jsonb('metadata'),
   created_at: timestamp('created_at').defaultNow(),
   updated_at: timestamp('updated_at').defaultNow(),
 });
+
+export const briefcaseItems = pgTable('briefcase_items', {
+  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  userId: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  briefcaseId: text('briefcase_id').references(() => briefcases.id, { onDelete: 'cascade' }),
+  type: varchar('type', { length: 50 }).notNull(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  content: jsonb('content'),
+  metadata: jsonb('metadata').default('{}'),
+  tags: jsonb('tags').default('[]'),
+  isPrivate: boolean('is_private').default(true),
+  createdAt: timestamp('created_at').defaultNow(),
+  updatedAt: timestamp('updated_at').defaultNow(),
+}, (table) => ({
+  userIdIdx: index('briefcase_items_user_id_idx').on(table.userId),
+  briefcaseIdIdx: index('briefcase_items_briefcase_id_idx').on(table.briefcaseId),
+}));
 
 // Goals table
 export const goals = pgTable('goals', {

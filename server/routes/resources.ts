@@ -4,10 +4,10 @@ import { db } from '../db';
 import {
     warRoomSessions, sops, jobDescriptions, interviewGuides,
     productSpecs, pivotAnalyses, legalDocs, trainingHistory,
-    simulations, campaigns, creativeAssets, codeSnippets,
+    campaigns, creativeAssets, codeSnippets,
     launchStrategies, tribeBlueprints, boardReports,
     competitorReports, agentInstructions
-} from '../db/schema';
+} from '../../lib/shared/db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { logError } from '../utils/logger';
@@ -80,7 +80,7 @@ createCrudRoutes('product-specs', productSpecs);
 createCrudRoutes('pivot-analyses', pivotAnalyses);
 createCrudRoutes('legal-docs', legalDocs);
 createCrudRoutes('training', trainingHistory, 'timestamp');
-createCrudRoutes('simulations', simulations, 'timestamp');
+
 createCrudRoutes('campaigns', campaigns);
 createCrudRoutes('creative', creativeAssets);
 createCrudRoutes('snippets', codeSnippets);

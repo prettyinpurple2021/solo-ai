@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { db } from '../db';
-import { competitors, competitorActivities, competitorAlerts } from '../db/schema';
+import { competitors, competitorActivities, competitorAlerts } from '../../lib/shared/db/schema';
 import { eq, desc, and, sql } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { requireSubscription } from '../middleware/subscription';
@@ -18,8 +18,8 @@ router.get('/', async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
         const comps = await db.select().from(competitors)
-            .where(eq(competitors.userId, userId))
-            .orderBy(desc(competitors.updatedAt));
+            .where(eq(competitors.user_id, userId))
+            .orderBy(desc(competitors.updated_at));
         
         return res.json({ competitors: comps });
     } catch (error) {
@@ -36,7 +36,7 @@ router.get('/stats', async (req: Request, res: Response) => {
         // Parallel queries for stats
         const [totalComps, activeMonitoring, criticalThreats, alerts] = await Promise.all([
             // Total Competitors
-            db.select({ count: sql<number>`count(*)` }).from(competitors).where(eq(competitors.userId, userId)),
+            db.select({ count: sql<number>`count(*)` }).from(competitors).where(eq(competitors.user_id, userId)),
             
             // Active Monitoring (assuming monitoringStatus is in another table or we mock it for now since schema is simple)
             // Wait, schema has `competitorProfiles` with `monitoringStatus`.
@@ -53,15 +53,15 @@ router.get('/stats', async (req: Request, res: Response) => {
             // Wait, `competitorProfiles` has `monitoringStatus`. `competitors` does NOT.
             // So `activeMonitoring` might need to be 0 or derived if I use `competitors`.
             
-            db.select({ count: sql<number>`count(*)` }).from(competitors).where(eq(competitors.userId, userId)), // Placeholder for active
+            db.select({ count: sql<number>`count(*)` }).from(competitors).where(eq(competitors.user_id, userId)), // Placeholder for active
             
             // Critical Threats (need to check JSON or if I use `competitorProfiles` it's a column)
             // `competitors` has jsonb `threats`.
             // Let's just return counts that exist.
-             db.select({ count: sql<number>`count(*)` }).from(competitors).where(eq(competitors.userId, userId)), // Placeholder
+             db.select({ count: sql<number>`count(*)` }).from(competitors).where(eq(competitors.user_id, userId)), // Placeholder
 
              // Alerts
-             db.select({ count: sql<number>`count(*)` }).from(competitorAlerts).where(eq(competitorAlerts.userId, userId)),
+             db.select({ count: sql<number>`count(*)` }).from(competitorAlerts).where(eq(competitorAlerts.user_id, userId)),
         ]);
 
         return res.json({
@@ -85,8 +85,8 @@ router.post('/', async (req: Request, res: Response) => {
         const { name, website, description } = req.body;
 
         const newComp = await db.insert(competitors).values({
-            id: crypto.randomUUID(),
-            userId,
+            // id: crypto.randomUUID(), // Let DB handle it
+            user_id: userId,
             name,
             website,
             description,

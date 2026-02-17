@@ -9,6 +9,7 @@ export const users = pgTable('users', {
   id: text('id').primaryKey().$defaultFn(() => uuidv4()),
   name: text('name'),
   email: text('email').notNull().unique(),
+  stackUserId: text('stack_user_id').unique(),
   emailVerified: timestamp('emailVerified', { mode: 'date' }),
   image: text('image'),
   password: text('password'), // For Credentials provider
@@ -20,6 +21,7 @@ export const users = pgTable('users', {
   level: integer('level').default(1),
   total_actions: integer('total_actions').default(0),
   suspended: boolean('suspended').default(false),
+  admin_pin_hash: text('admin_pin_hash'),
   suspended_at: timestamp('suspended_at'),
   suspended_reason: text('suspended_reason'),
   stripe_customer_id: text('stripe_customer_id'),
@@ -204,8 +206,11 @@ export const notifications = pgTable("notifications", {
   type: varchar("type", { length: 50 }).notNull(), // alert, reminder, achievement, system
   title: varchar("title", { length: 255 }).notNull(),
   message: text("message").notNull(),
+  priority: varchar("priority", { length: 20 }).default('medium'),
+  actionUrl: text("action_url"),
   isRead: boolean("is_read").default(false),
   metadata: jsonb("metadata").default({}),
+  sentAt: timestamp("sent_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
 }, (table) => ({
   userIdIdx: index("notifications_user_id_idx").on(table.userId),
