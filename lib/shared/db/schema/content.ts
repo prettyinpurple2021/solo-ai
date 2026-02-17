@@ -249,7 +249,7 @@ export const userLearningProgress = pgTable('user_learning_progress', {
 });
   
 // Feedback table
-export const feedbackTypeEnum = pgEnum('feedback_type', ['bug', 'feature_request', 'comment', 'error', 'other']);
+export const feedbackTypeEnum = pgEnum('feedback_type', ['bug', 'feature_request', 'comment', 'error', 'other', 'post_report']);
 export const feedbackStatusEnum = pgEnum('feedback_status', ['pending', 'in_progress', 'resolved', 'closed', 'dismissed']);
 export const feedback = pgTable('feedback', {
     id: text('id').primaryKey().$defaultFn(() => uuidv4()),

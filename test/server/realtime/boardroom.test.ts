@@ -13,9 +13,9 @@ describe("Boardroom Socket Namespace", () => {
     io = new Server(httpServer, {
       wsEngine: require("ws").Server
     });
-    setIo(io);
+    setIo(io as any);
     
-    setupBoardroomSocket(io);
+    setupBoardroomSocket(io as any);
 
     httpServer.listen(() => {
       const address = httpServer.address();

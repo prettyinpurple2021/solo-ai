@@ -4,10 +4,6 @@ import { auth } from '@/lib/auth';
 import { AgentCollaborationSystem} from "@/lib/custom-ai-agents/agent-collaboration-system"
 
 
-// Store collaboration systems per user (in production, use Redis or database)
-const userCollaborationSystems = new Map<string, AgentCollaborationSystem>()
-
-
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();
@@ -18,10 +14,9 @@ export async function POST(request: NextRequest) {
 
     const { action, workflowId, stream = false } = await request.json()
 
-    const collaborationSystem = userCollaborationSystems.get(userId)
-    if (!collaborationSystem) {
-      return NextResponse.json({ error: "No collaboration system found" }, { status: 404 })
-    }
+    // Initialize collaboration system for the current user
+    // The system will hydrate agent memory from the DB as needed
+    const collaborationSystem = new AgentCollaborationSystem(userId)
 
     switch (action) {
       case "execute":
@@ -118,28 +113,68 @@ export async function POST(request: NextRequest) {
           }, { status: 400 })
         }
 
-        // Create custom workflow
-        const customWorkflow = {
-          id: `workflow_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          name,
-          description: description || "Custom workflow",
-          steps: steps.map((step: any, _index: number) => ({
-            agentId: step.agentId,
-            task: step.task,
-            dependencies: step.dependencies || [],
-            expectedOutcome: step.expectedOutcome || step.task
-          })),
-          status: "pending" as const,
-          results: {}
+        // Use Workflow Engine to persist the workflow
+        // This is handled internally by AgentCollaborationSystem.createWorkflow logic
+        // We'll simulate a primary request to trigger workflow creation
+        
+        // Note: For explicit workflow creation, we should ideally expose a direct method
+        // on collaborationSystem or use the workflow engine directly.
+        // For V1 robustness, we'll use the workflow engine directly here to ensure persistence.
+        
+        const { workflowEngine } = await import('@/lib/workflow-engine')
+        
+        interface WorkflowStepInput {
+          agentId: string;
+          task: string;
         }
 
-        // Store workflow (in production, save to database)
-        const workflows = collaborationSystem.getAllWorkflows()
-        workflows.set(customWorkflow.id, customWorkflow)
+        const nodes = steps.map((step: WorkflowStepInput, index: number) => ({
+            id: `node_${index}`,
+            type: 'ai_task',
+            name: step.task.substring(0, 30),
+            position: { x: 100, y: index * 150 + 100 },
+            config: {
+                task: 'custom',
+                agentId: step.agentId,
+                prompt: step.task,
+                model: 'gpt-4'
+            },
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            status: 'idle',
+            inputs: {},
+            outputs: {}
+        }))
+        
+        const edges = steps.slice(0, -1).map((_: WorkflowStepInput, index: number) => ({
+            id: `edge_${index}`,
+            source: `node_${index}`,
+            target: `node_${index + 1}`,
+            animated: true
+        }))
+
+        const newWorkflow = await workflowEngine.createWorkflow({
+            name,
+            description,
+            version: '1.0.0',
+            status: 'active',
+            triggerType: 'manual',
+            triggerConfig: {},
+            nodes: nodes as any,
+            edges,
+            variables: {},
+            settings: {
+                timeout: 300000,
+                retryAttempts: 3,
+                retryDelay: 5000,
+                parallelExecution: false,
+                errorHandling: 'stop'
+            }
+        }, userId)
 
         return NextResponse.json({
           success: true,
-          workflow: customWorkflow
+          workflow: newWorkflow
         })
 
       default:
@@ -166,21 +201,21 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const workflowId = searchParams.get("workflowId")
 
-    const collaborationSystem = userCollaborationSystems.get(userId)
-    if (!collaborationSystem) {
-      return NextResponse.json({ error: "No collaboration system found" }, { status: 404 })
-    }
+    const collaborationSystem = new AgentCollaborationSystem(userId)
 
     if (workflowId) {
-      // Get specific workflow
-      const workflow = collaborationSystem.getWorkflow(workflowId)
+      // Get specific workflow via engine (persisted)
+      const { workflowEngine } = await import('@/lib/workflow-engine')
+      const workflow = await workflowEngine.getWorkflow(workflowId)
+      
       if (!workflow) {
         return NextResponse.json({ error: "Workflow not found" }, { status: 404 })
       }
       return NextResponse.json({ workflow })
     } else {
-      // Get all workflows
-      const workflows = Array.from(collaborationSystem.getAllWorkflows().values())
+      // Get all workflows via engine (persisted)
+      const { workflowEngine } = await import('@/lib/workflow-engine')
+      const workflows = await workflowEngine.getWorkflowsByUser(userId)
       return NextResponse.json({ workflows })
     }
 

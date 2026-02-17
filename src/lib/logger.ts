@@ -77,18 +77,13 @@ class Logger {
           break
       }
     }
-    // In production, you might want to send logs to an external service
-    // like LogRocket, or a custom logging service
+    // Send logs to an external service or error tracking system if configured
     if (!this.isDevelopment && level <= LogLevel.WARN) {
       this.sendToExternalService(entry)
     }
   }
   private async sendToExternalService(entry: LogEntry): Promise<void> {
-    // This is where you would integrate with external logging services
     // Ensure logs are structured and formatted for observability stacks
-    // Example integrations:
-    // - LogRocket: LogRocket.captureException(entry.error)
-    // - Custom API: fetch('/api/logs', { method: 'POST', body: JSON.stringify(entry) })
     try {
       // Send to log ingestion endpoint if configured
       if (process.env.LOG_INGEST_URL) {
@@ -100,7 +95,7 @@ class Logger {
       }
     } catch (logError) {
       // Don't let logging errors break the application
-      // In production, we avoid console.error - could be sent to error tracking service
+      // Errors should be sent to an error tracking service if available
       if (this.isDevelopment && typeof console !== 'undefined' && console.error) {
         console.error('Failed to send log to external service:', logError)
       }

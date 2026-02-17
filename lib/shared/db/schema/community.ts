@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, text, timestamp, boolean, index, primaryKey, foreignKey } from 'drizzle-orm/pg-core';
+import { integer, pgTable, varchar, text, timestamp, boolean, index, primaryKey, foreignKey, jsonb } from 'drizzle-orm/pg-core';
 import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
@@ -19,10 +19,14 @@ export const communityPosts = pgTable('community_posts', {
   topic_id: text('topic_id').notNull().references(() => communityTopics.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 255 }).notNull(),
   content: text('content').notNull(), // Markdown supported
+  image: varchar('image', { length: 1000 }),
+  tags: jsonb('tags').default('[]'),
+  metadata: jsonb('metadata').default('{}'),
   is_pinned: boolean('is_pinned').default(false),
   view_count: integer('view_count').default(0),
   like_count: integer('like_count').default(0),
   comment_count: integer('comment_count').default(0),
+  shares_count: integer('shares_count').default(0),
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({

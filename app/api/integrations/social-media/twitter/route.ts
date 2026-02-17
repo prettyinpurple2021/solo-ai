@@ -5,6 +5,7 @@ import { db } from '@/db'
 import { socialMediaConnections } from '@/shared/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { z } from 'zod'
+import crypto from 'crypto'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,8 +13,18 @@ export const dynamic = 'force-dynamic'
 const TWITTER_AUTH_URL = 'https://twitter.com/i/oauth2/authorize'
 const TWITTER_TOKEN_URL = 'https://api.twitter.com/2/oauth2/token'
 
+// PKCE Helpers
+function generateCodeVerifier() {
+  return crypto.randomBytes(32).toString('base64url');
+}
+
+function generateCodeChallenge(verifier: string) {
+  return crypto.createHash('sha256').update(verifier).digest('base64url');
+}
+
 const PostSchema = z.object({
   code: z.string().optional(),
+  codeVerifier: z.string().optional(),
   state: z.string().optional(),
   clientId: z.string().optional(),
   clientSecret: z.string().optional(),
@@ -39,13 +50,15 @@ export async function GET(request: NextRequest) {
 
       const redirectUri = `${process.env.NEXT_PUBLIC_APP_URL}/api/integrations/social-media/twitter/callback`
       const state = userId
-      const codeChallenge = 'challenge' // In production, use PKCE code challenge
-      const codeChallengeMethod = 'plain'
+      
+      const codeVerifier = generateCodeVerifier()
+      const codeChallenge = generateCodeChallenge(codeVerifier)
+      const codeChallengeMethod = 'S256'
       const scopes = 'tweet.read users.read offline.access'
       
       const authUrl = `${TWITTER_AUTH_URL}?response_type=code&client_id=${encodeURIComponent(clientId)}&redirect_uri=${encodeURIComponent(redirectUri)}&state=${encodeURIComponent(state)}&scope=${encodeURIComponent(scopes)}&code_challenge=${codeChallenge}&code_challenge_method=${codeChallengeMethod}`
       
-      return NextResponse.json({ url: authUrl })
+      return NextResponse.json({ url: authUrl, codeVerifier })
     }
 
     if (action === 'status') {

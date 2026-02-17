@@ -22,22 +22,18 @@ import { CyberButton } from "@/components/cyber/CyberButton"
 
 import { SubscriptionInfo } from "@/lib/subscription-utils"
 import Link from 'next/link'
+import { PRICE_IDS } from "@/lib/stripe"
 
 export default function BillingPage() {
   const { user, loading } = useAuth()
   const { toast } = useToast()
-  const [isLoading,] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null)
 
   useEffect(() => {
     const fetchSubscription = async () => {
       try {
-        const token = localStorage.getItem('auth_token')
-        const response = await fetch('/api/billing/subscription', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
+        const response = await fetch('/api/billing/subscription')
         if (response.ok) {
           const data = await response.json()
           setSubscription(data)
@@ -52,20 +48,69 @@ export default function BillingPage() {
     }
   }, [user])
 
-  const handleManageBilling = () => {
+  const handleManageBilling = async () => {
+    setIsLoading(true)
     toast({
       title: "Billing Portal",
       description: "Redirecting to secure billing portal...",
     })
-    // In production, redirect to Stripe customer portal
+    
+    try {
+      const response = await fetch('/api/billing/portal', { method: 'POST' });
+      const data = await response.json();
+      
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Failed to open portal');
+      }
+    } catch (error) {
+      logError('Billing portal error:', error);
+      toast({
+        title: "Portal Error",
+        description: "Failed to open billing portal. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
-  const handleUpgrade = (tier: string) => {
+  const handleUpgrade = async (tier: string) => {
+    setIsLoading(true)
     toast({
       title: "Upgrade Initiated",
       description: `Processing upgrade to ${tier} plan...`,
     })
-    // In production, redirect to Stripe checkout
+    
+    try {
+      const priceId = tier === 'accelerator' ? PRICE_IDS.accelerator.monthly : 
+                      tier === 'dominator' ? PRICE_IDS.dominator.monthly : '';
+      
+      if (!priceId) throw new Error('Invalid tier selection');
+
+      const response = await fetch('/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ priceId })
+      });
+
+      const data = await response.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Checkout failed');
+      }
+    } catch (error) {
+      logError('Checkout error:', error);
+      toast({
+        title: "Checkout Error",
+        description: "Failed to initiate checkout. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   if (loading) {
@@ -166,7 +211,7 @@ export default function BillingPage() {
                         : '—'}
                     </p>
                   </div>
-                  <CyberButton size="lg" onClick={() => handleUpgrade('dominator')} variant="purple">
+                  <CyberButton size="lg" onClick={() => handleUpgrade('dominator')} variant="purple" disabled={isLoading}>
                     Upgrade Plan
                     <Zap className="w-4 h-4 ml-2" />
                   </CyberButton>
@@ -197,7 +242,7 @@ export default function BillingPage() {
                   variant="ghost"
                   className="w-full mb-8 border-neon-cyan/30 text-neon-cyan hover:bg-neon-cyan/10"
                   onClick={() => handleUpgrade('launch')}
-                  disabled={subscription?.tier === 'launch' || subscription?.tier === 'free'}
+                  disabled={subscription?.tier === 'launch' || subscription?.tier === 'free' || isLoading}
                 >
                   {subscription?.tier === 'launch' || subscription?.tier === 'free' ? 'Current Plan' : 'Downgrade'}
                 </CyberButton>
@@ -241,7 +286,7 @@ export default function BillingPage() {
                 <CyberButton
                   className="w-full mb-8 bg-neon-purple hover:bg-neon-purple/90"
                   onClick={() => handleUpgrade('accelerator')}
-                  disabled={subscription?.tier === 'accelerator'}
+                  disabled={subscription?.tier === 'accelerator' || isLoading}
                   variant="purple"
                 >
                   {subscription?.tier === 'accelerator' ? 'Current Plan' : 'Upgrade Now'}
@@ -288,7 +333,7 @@ export default function BillingPage() {
                   variant="ghost"
                   className="w-full mb-8 border-neon-magenta/30 text-neon-magenta hover:bg-neon-magenta/10"
                   onClick={() => handleUpgrade('dominator')}
-                  disabled={subscription?.tier === 'dominator'}
+                  disabled={subscription?.tier === 'dominator' || isLoading}
                 >
                   {subscription?.tier === 'dominator' ? 'Current Plan' : 'Upgrade Now'}
                 </CyberButton>

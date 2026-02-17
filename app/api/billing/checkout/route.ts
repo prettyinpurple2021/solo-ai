@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { authenticateRequest } from '@/lib/auth-server'
+import { auth } from '@/lib/auth'
+import { stripe } from '@/lib/stripe'
 import { logError, logInfo } from '@/lib/logger'
 
 export async function POST(req: NextRequest) {
     try {
-        const { user, error } = await authenticateRequest()
-        if (error || !user) {
+        const session = await auth()
+        if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
@@ -15,15 +16,29 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Price ID is required' }, { status: 400 })
         }
 
-        // In production, this would create a Stripe Checkout Session
-        // const session = await stripe.checkout.sessions.create({ ... })
+        logInfo(`Creating checkout session for user ${session.user.id}, price: ${priceId}`)
 
-        // Mock response
-        logInfo(`Mocking checkout session for price: ${priceId}`)
+        const checkoutSession = await stripe.checkout.sessions.create({
+            mode: 'subscription',
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price: priceId,
+                    quantity: 1,
+                },
+            ],
+            customer_email: session.user.email || undefined,
+            client_reference_id: session.user.id,
+            success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/pricing`,
+            metadata: {
+                userId: session.user.id,
+            }
+        });
 
         return NextResponse.json({
-            url: `/dashboard/billing?mock_checkout=true&priceId=${priceId}`,
-            message: 'Stripe is not configured in this environment.'
+            url: checkoutSession.url,
+            success: true
         })
 
     } catch (error) {

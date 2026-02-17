@@ -100,7 +100,7 @@ export function validateEnv() {
         logError("\n🔗 Documentation: Check README.md for detailed setup instructions")
       }
       
-      // In production, ALWAYS throw. In dev/test, only throw if requested.
+      // In production and when validation is required, throw immediately to prevent unstable startup
       if (process.env.NODE_ENV === "production" || process.env.VALIDATE_ENV === "true") {
         throw new Error("Environment validation failed: Missing required variables")
       }

@@ -1,5 +1,5 @@
 
-import { pgTable, text, varchar, timestamp, jsonb, index, foreignKey, serial, integer, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, jsonb, index, foreignKey, serial, integer, boolean, uniqueIndex } from "drizzle-orm/pg-core";
 import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
@@ -86,5 +86,18 @@ export const boardReports = pgTable("board_reports", {
   generatedAt: timestamp("generated_at").defaultNow(),
 }, (table) => ({
   userIdIdx: index("board_reports_user_id_idx").on(table.userId),
+}));
+
+// Agent Memory (Long-term persistent state for agents)
+export const agentMemory = pgTable("agent_memory", {
+  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  agentId: varchar("agent_id", { length: 50 }).notNull(),
+  memory: jsonb("memory").default({}), // Stores context, history, preferences, relationships
+  lastInteraction: timestamp("last_interaction").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+}, (table) => ({
+  userIdAgentIdIdx: uniqueIndex("agent_memory_user_agent_idx").on(table.userId, table.agentId),
 }));
 

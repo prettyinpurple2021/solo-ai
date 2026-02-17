@@ -1,26 +1,44 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { authenticateRequest } from '@/lib/auth-server'
+import { auth } from '@/lib/auth'
+import { stripe } from '@/lib/stripe'
+import { db } from '@/db'
+import { users } from '@/shared/db/schema'
+import { eq } from 'drizzle-orm'
 import { logError, logInfo } from '@/lib/logger'
 
 export async function POST(_req: NextRequest): Promise<NextResponse> {
     try {
-        const { user, error } = await authenticateRequest()
-        if (error || !user) {
+        const session = await auth()
+        if (!session?.user?.id) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        // In production, this would interact with Stripe
-        const stripePortalUrl = process.env.STRIPE_CUSTOMER_PORTAL_URL
+        // Get customer ID from database
+        const userResult = await db.select({
+            stripeCustomerId: users.stripe_customer_id
+        })
+        .from(users)
+        .where(eq(users.id, session.user.id))
+        .limit(1);
 
-        if (stripePortalUrl) {
-            return NextResponse.json({ url: stripePortalUrl })
+        const customerId = userResult[0]?.stripeCustomerId;
+
+        if (!customerId) {
+            return NextResponse.json({ 
+                error: 'No active subscription found. Please subscribe to a tier first.' 
+            }, { status: 404 })
         }
 
-        // Mock response for development or if Stripe is not configured
-        logInfo('Stripe portal URL not configured, returning mock URL')
-        return NextResponse.json({
-            url: '/dashboard/billing?mock_portal=true',
-            message: 'Stripe is not configured in this environment.'
+        logInfo(`Creating billing portal session for user ${session.user.id}, customer: ${customerId}`)
+
+        const portalSession = await stripe.billingPortal.sessions.create({
+            customer: customerId,
+            return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard/billing`,
+        });
+
+        return NextResponse.json({ 
+            url: portalSession.url,
+            success: true
         })
 
     } catch (error) {

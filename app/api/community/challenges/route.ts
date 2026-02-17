@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
 import { challenges } from '@/shared/db/schema';
-import { userChallenges } from '@/db/extra_schema';
+import { challengeParticipants } from '@/shared/db/schema';
 import { desc, eq, sql } from 'drizzle-orm';
 
 import { auth } from '@/lib/auth';
@@ -24,10 +24,10 @@ export async function GET(_req: Request) {
             rewardBadge: challenges.reward_badge,
             deadline: challenges.deadline,
             createdAt: challenges.created_at,
-            participantCount: sql<number>`count(${userChallenges.userId})`.mapWith(Number)
+            participantCount: sql<number>`count(${challengeParticipants.user_id})`.mapWith(Number)
         })
         .from(challenges)
-        .leftJoin(userChallenges, eq(challenges.id, userChallenges.challengeId))
+        .leftJoin(challengeParticipants, eq(challenges.id, challengeParticipants.challenge_id))
         .groupBy(challenges.id)
         .orderBy(desc(challenges.created_at));
 
@@ -35,14 +35,16 @@ export async function GET(_req: Request) {
     let userStatuses: Record<string, string> = {};
     if (userId) {
         const statuses = await db.select({
-            challengeId: userChallenges.challengeId,
-            status: userChallenges.status
+            challengeId: challengeParticipants.challenge_id,
+            status: challengeParticipants.status
         })
-        .from(userChallenges)
-        .where(eq(userChallenges.userId, userId));
+        .from(challengeParticipants)
+        .where(eq(challengeParticipants.user_id, userId));
         
         statuses.forEach(s => {
-            userStatuses[s.challengeId] = s.status || 'joined';
+            if (s.challengeId) {
+                userStatuses[s.challengeId] = s.status || 'joined';
+            }
         });
     }
 
@@ -83,7 +85,7 @@ export async function POST(req: Request) {
             description,
             category,
             difficulty,
-            rewardPoints: rewardPoints || 100,
+            reward_points: rewardPoints || 100,
             deadline: deadline ? new Date(deadline) : null,
         }).returning();
 

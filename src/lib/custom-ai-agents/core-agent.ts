@@ -2,6 +2,9 @@ import { logError } from '@/lib/logger'
 import { generateText } from 'ai'
 import { SimpleTrainingCollector } from "./training/simple-training-collector"
 import { z } from 'zod'
+import { db } from '@/db'
+import { agentMemory } from '@/shared/db/schema'
+import { eq, and } from 'drizzle-orm'
 
 
 export interface AgentCapabilities {
@@ -97,6 +100,57 @@ export abstract class CustomAgent {
     }
   }
 
+  // Initialize agent by loading memory from database
+  async initialize(): Promise<void> {
+    try {
+      const result = await db.select()
+        .from(agentMemory)
+        .where(and(
+          eq(agentMemory.userId, this.memory.userId),
+          eq(agentMemory.agentId, this.id)
+        ))
+        .limit(1);
+
+      if (result.length > 0 && result[0].memory) {
+        // Merge loaded memory with default structure to ensure type safety
+        const loadedMemory = result[0].memory as AgentMemory;
+        this.memory = {
+          ...this.memory,
+          ...loadedMemory,
+          // Ensure arrays are initialized if null in DB
+          history: loadedMemory.history || [],
+          relationships: loadedMemory.relationships || {}
+        };
+      }
+    } catch (error) {
+      logError(`Failed to load memory for agent ${this.id}`, error);
+      // We continue with empty memory rather than crashing, but log the error
+    }
+  }
+
+  // Persist current memory state to database
+  async persistMemory(): Promise<void> {
+    try {
+      await db.insert(agentMemory)
+        .values({
+          userId: this.memory.userId,
+          agentId: this.id,
+          memory: this.memory as any, // Cast to any for jsonb compatibility
+          lastInteraction: new Date()
+        })
+        .onConflictDoUpdate({
+          target: [agentMemory.userId, agentMemory.agentId],
+          set: {
+            memory: this.memory as any,
+            lastInteraction: new Date(),
+            updatedAt: new Date()
+          }
+        });
+    } catch (error) {
+      logError(`Failed to persist memory for agent ${this.id}`, error);
+    }
+  }
+
   // Core agent methods
   abstract processRequest(request: string, context?: Record<string, unknown>): Promise<AgentResponse>
   abstract collaborateWith(agentId: string, request: string): Promise<AgentResponse>
@@ -104,6 +158,9 @@ export abstract class CustomAgent {
   // Memory management
   updateMemory(updates: Partial<AgentMemory>): void {
     this.memory = { ...this.memory, ...updates }
+    // Auto-persist on memory updates to ensure data safety
+    // Fire and forget - don't block
+    this.persistMemory().catch(err => logError(`Auto-persist failed for ${this.id}`, err));
   }
 
   getMemory(): AgentMemory {
@@ -152,6 +209,9 @@ ${userContext ? `CURRENT REQUEST CONTEXT: ${JSON.stringify(userContext)}` : ""}
     } else {
       relationship.trustLevel = Math.max(0.0, relationship.trustLevel - 0.05)
     }
+    
+    // Auto-persist relationship changes
+    this.persistMemory().catch(err => logError(`Relationship persist failed for ${this.id}`, err));
   }
 
   // Task management
@@ -350,6 +410,9 @@ Do not include markdown code fences or additional commentary.`
     if (this.memory.history.length > 100) {
       this.memory.history = this.memory.history.slice(-100)
     }
+    
+    // Auto-persist new learning
+    this.persistMemory().catch(err => logError(`Learning persist failed for ${this.id}`, err));
   }
 
   // Record training data for analytics and fine-tuning

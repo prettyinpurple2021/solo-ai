@@ -318,10 +318,35 @@ export class PersonalizedLearningSystem {
     logInfo(`Tracking learning progress for user: ${userId}, module: ${moduleId}, progress: ${progress}%`)
     
     try {
-      // In production, this would update the database
-      const module = this.learningModules.find(m => m.id === moduleId)
-      if (module) {
-        module.completion_rate = progress
+      const { db } = await import('@/db/index')
+      const { userLearningProgress } = await import('@/shared/db/schema/content')
+      const { eq, and } = await import('drizzle-orm')
+
+      // Update or insert progress
+      const existing = await db.select().from(userLearningProgress)
+        .where(and(
+          eq(userLearningProgress.user_id, userId),
+          eq(userLearningProgress.module_id, moduleId)
+        ))
+        .limit(1)
+
+      if (existing.length > 0) {
+        await db.update(userLearningProgress)
+          .set({
+            status: progress >= 100 ? 'completed' : 'in_progress',
+            metadata: { ...((existing[0].metadata as any) || {}), progress },
+            completed_at: progress >= 100 ? new Date() : null,
+            last_accessed_at: new Date()
+          })
+          .where(eq(userLearningProgress.id, existing[0].id))
+      } else {
+        await db.insert(userLearningProgress).values({
+          user_id: userId,
+          module_id: moduleId,
+          status: progress >= 100 ? 'completed' : 'in_progress',
+          metadata: { progress },
+          completed_at: progress >= 100 ? new Date() : null
+        })
       }
       
       // Log completion milestone

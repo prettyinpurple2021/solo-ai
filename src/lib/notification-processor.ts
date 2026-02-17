@@ -83,12 +83,12 @@ export function getProcessorStatus(): { started: boolean, config: typeof PROCESS
   }
 }
 
-// Auto-start in production (with delay to allow environment setup)
+// Start the notification processor on server-side if autoStart is enabled
 if (typeof window === 'undefined' && PROCESSOR_CONFIG.autoStart) {
-  // Only run on server-side with a small delay
+  // Wait for 1s to allow initial environment setup
   setTimeout(() => {
     initializeNotificationProcessor().catch(error => {
       logError('Failed to auto-start notification processor:', error)
     })
-  }, 1000) // 1 second delay
+  }, 1000)
 }

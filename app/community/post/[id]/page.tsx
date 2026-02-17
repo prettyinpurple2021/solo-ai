@@ -20,8 +20,8 @@ async function getPost(id: string) {
                     author: true
                 }
             }
-        }
-    })
+        } as any
+    }) as any
 }
 
 export default async function PostPage({ params }: { params: Promise<{ id: string }> }) {

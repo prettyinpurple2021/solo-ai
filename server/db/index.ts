@@ -1,9 +1,8 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
 import * as sharedSchema from '../../lib/shared/db/schema';
-import * as extraSchema from '../../src/db/extra_schema';
 
-const schema = { ...sharedSchema, ...extraSchema };
+const schema = { ...sharedSchema };
 import dotenv from 'dotenv';
 import { logInfo, logWarn, logError } from '../utils/logger';
 

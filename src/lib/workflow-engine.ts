@@ -270,15 +270,44 @@ export class WorkflowEngine {
         to: z.string().email(),
         subject: z.string(),
         template: z.string().optional(),
+        body: z.string().optional(),
         variables: z.record(z.any()).optional()
       }),
       execute: async (config: unknown, _context) => {
-        const configTyped = config as { to: string; subject: string; template?: string; variables?: Record<string, unknown> }
-        logInfo('Sending email', { to: configTyped.to, subject: configTyped.subject })
-        // In production, integrate with Resend or similar
-        // Actions are simulated in this mode but logged for audit trail purposes
-        logInfo('[WorkflowEngine] Executing action: send_email', { to: configTyped.to });
-        return { sent: true, messageId: crypto.randomUUID(), timestamp: new Date().toISOString() }
+        const configTyped = config as { 
+          to: string; 
+          subject: string; 
+          template?: string; 
+          body?: string;
+          variables?: Record<string, unknown> 
+        }
+        
+        logInfo('Executing production email delivery', { to: configTyped.to, subject: configTyped.subject })
+        
+        try {
+          // Dynamic import to avoid heavy bundle in client if this class is used there
+          const { resend, FROM_EMAIL } = await import('@/lib/resend')
+          
+          if (!process.env.RESEND_API_KEY) {
+            throw new Error('RESEND_API_KEY is not configured. Email cannot be sent.')
+          }
+
+          const result = await resend.emails.send({
+            from: FROM_EMAIL,
+            to: configTyped.to,
+            subject: configTyped.subject,
+            html: configTyped.body || `Workflow Notification: ${configTyped.subject}`,
+          })
+
+          if (result.error) {
+            throw new Error(`Resend Error: ${result.error.message}`)
+          }
+
+          return { sent: true, messageId: result.data?.id, timestamp: new Date().toISOString() }
+        } catch (error) {
+          logError('Production email delivery failed', error)
+          throw error
+        }
       }
     })
 

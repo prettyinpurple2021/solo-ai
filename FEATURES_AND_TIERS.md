@@ -12,64 +12,64 @@
 
 | Agent Name | Role | Value | Recommended Tier |
 | :--- | :--- | :--- | :--- |
-| **Roxy** | The Boss / Business Coach | 🔴 **HIGH** | Dominator |
-| **Lexi** | The Legal Eagle | 🔴 **HIGH** | Dominator |
-| **Nova** | The Product Visionary | 🔴 **HIGH** | Dominator |
-| **Echo** | The Marketing Guru | 🔴 **HIGH** | Dominator |
-| **Glitch** | The Systems & Tech Expert | 🟡 **MEDIUM** | Accelerator |
-| **Blaze** | The Sales & Growth Engine | 🟡 **MEDIUM** | Accelerator |
-| **Vex** | The Operations Manager | 🟡 **MEDIUM** | Accelerator |
-| **Lumi** | The Compliance & QA Officer | 🔴 **HIGH** | Dominator |
-| **Aura** | The Wellness Guardian | 🟢 **LOW** | Free |
-| **Finn** | The Profit & Cashflow Expert | 🔴 **HIGH** | Dominator |
+| **Roxy** | Strategic Operations Architect | 🔴 **HIGH** | Singularity|
+| **Lexi** | Legal & Compliance Protocol | 🔴 **HIGH** | Singularity |
+| **Nova** | Product Visionary System | 🔴 **HIGH** | Singularity |
+| **Echo** | Viral Marketing Engine | 🔴 **HIGH** | Singularity |
+| **Glitch** | Systems Optimization Utility | 🟡 **MEDIUM** | Overclock |
+| **Blaze** | Revenue Growth Processor | 🟡 **MEDIUM** | Overclock |
+| **Vex** | Operations Efficiency Unit | 🟡 **MEDIUM** | Overclock |
+| **Lumi** | Quality Assurance Sentinel | 🔴 **HIGH** | Singularity |
+| **Aura** | Wellness & Balance Subroutine | 🟢 **LOW** | Free |
+| **Finn** | Financial Logistics Core | 🔴 **HIGH** | Singularity |
 
 ### 🛠️ High-Value Tools & Engines
 
 | Feature / Component | Description | Value | Recommended Tier |
 | :--- | :--- | :--- | :--- |
-| **The War Room** | AI-driven strategic debate simulations. | 🔴 **HIGH** | Dominator |
-| **The Ironclad** | Automated legal counsel & doc generation. | 🔴 **HIGH** | Dominator |
-| **Competitor Stalker** | Deep-dive competitor tracking. | 🔴 **HIGH** | Dominator |
-| **The Boardroom** | Multi-agent collaboration (Agents talking to agents). | 🔴 **HIGH** | Dominator |
-| **Idea Incinerator** | "Roast" or "Forge" content validation. | 🟡 **MEDIUM** | Accelerator |
-| **Tactical Roadmap** | AI-generated project plans. | 🟡 **MEDIUM** | Accelerator |
-| **The Scout** | Lead generation & market research. | 🟡 **MEDIUM** | Accelerator |
+| **Strategy Nexus** | AI-driven strategic debate simulations. | 🔴 **HIGH** | Singularity |
+| **Compliance Grid** | Automated legal counsel & doc generation. | 🔴 **HIGH** | Singularity |
+| **Market Recon** | Deep-dive competitor tracking. | 🔴 **HIGH** | Singularity |
+| **Neural Syndicate** | Multi-agent collaboration (Agents talking to agents). | 🔴 **HIGH** | Singularity |
+| **Validation Forge** | "Roast" or "Forge" content validation. | 🟡 **MEDIUM** | Overclock |
+| **Tactical Roadmap** | AI-generated project plans. | 🟡 **MEDIUM** | Overclock |
+| **The Scout** | Lead generation & market research. | 🟡 **MEDIUM** | Overclock |
 
 ### 📂 Storage & Utility
 
 | Feature | Description | Value | Tier / Limit |
 | :--- | :--- | :--- | :--- |
-| **The Briefcase** | Asset & File Storage. | 🟡 **MEDIUM** | **Tiered Limits** |
+| **Data Vault** | Asset & File Storage. | 🟡 **MEDIUM** | **Tiered Limits** |
 | **Global Search** | Unified search. | 🟢 **LOW** | Free |
 | **Onboarding** | Progressive guide (Skippable/Revisitable). | 🟢 **LOW** | Free |
-| **The Academy** | *\[DEPRIORITIZED / FUTURE MIGRATION\]* | N/A | *Hold* |
+| **Download Center** | *\[DEPRIORITIZED / FUTURE MIGRATION\]* | N/A | *Hold* |
 
 ---
 
 ## 2. Proposed Tier Structure & Limits
 
-### 🚀 Launch Tier (Free)
+### 🚀 Initiate Tier (Free)
 
 * **Authentication**: Secure Login (NextAuth).
 * **Access**: Basic Dashboard, Profile, Settings.
 * **Chat Limits**: 10 msgs/day (Text only, Basic models).
-* **Briefcase**: 50MB Storage Limit.
+* **Data Vault**: 50MB Storage Limit.
 * **Agents**: Access to **Aura** (Wellness) only.
 
-### ⚡ Accelerator Tier ($19/mo)
+### ⚡ Overclock Tier ($19/mo)
 
 * **Agents**: Access to **Aura, Blaze, Glitch, Vex, Finn**.
-* **Tools**: Idea Incinerator, Tactical Roadmap, The Scout.
+* **Tools**: Validation Forge, Tactical Roadmap, The Scout.
 * **Chat Limits**: 100 msgs/day (Standard models).
-* **Briefcase**: 1GB Storage Limit.
+* **Data Vault**: 1GB Storage Limit.
 * **Includes**: Priority Support.
 
-### 👑 Dominator Tier ($29/mo)
+### 👑 Singularity Tier ($29/mo)
 
 * **Agents**: **FULL TEAM ACCESS** (Roxy, Lexi, Nova, Echo, Lumi, Blaze, Glitch, Vex, Aura, Finn).
-* **Tools**: The War Room, The Ironclad, Competitor Stalker, The Boardroom.
+* **Tools**: Strategy Nexus, Compliance Grid, Market Recon, Neural Syndicate.
 * **Chat Limits**: **UNLIMITED** text generation. High limits for complex tasks.
-* **Briefcase**: 100GB Storage Limit.
+* **Data Vault**: 100GB Storage Limit.
 * **Includes**: Custom Agent Builder.
 
 ---
@@ -78,9 +78,9 @@
 
 1. **Update `subscription-utils.ts`**:
     * Define `AGENT_ACCESS` map (Tier -> Allowed Agents).
-    * Define `STORAGE_LIMITS` (Free: 50MB, Accelerator: 1GB, Dominator: 100GB).
+    * Define `STORAGE_LIMITS` (Free: 50MB, Overclock: 1GB, Singularity: 100GB).
     * Define `CHAT_LIMITS` (Daily message caps).
 2. **Enforce in UI**:
     * Hide/Lock Agents based on tier.
-    * Show "Storage Full" warning in Briefcase.
+    * Show "Storage Full" warning in Data Vault.
     * Show "Upgrade to Chat" when limit reached.

@@ -11,7 +11,8 @@ boardroomRouter.post("/sessions", async (req, res) => {
   const { title, userId } = req.body;
   
   if (!userId) {
-    return res.status(400).json({ error: "userId is required" });
+    res.status(400).json({ error: "userId is required" });
+    return;
   }
 
   const session = await db.insert(boardroomSessions).values({

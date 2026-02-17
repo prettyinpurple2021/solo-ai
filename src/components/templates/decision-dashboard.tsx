@@ -138,18 +138,22 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
   const getAIInsights = async () => {
     setIsAnalyzing(true)
     try {
-      // Simulate AI analysis - in production, call your AI API
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      const insights: string[] = [
-        `Based on your options, Option 1 shows the highest impact potential (${(_data as any).options[0]?.impactScore || 50}/100)`,
-        `Consider the time constraints: your deadline is ${(_data as any).context?.includes('urgent') ? 'tight' : 'reasonable'}`,
-        `Resource allocation is a key factor - ensure you have bandwidth for implementation`,
-        `Risk mitigation strategies should be developed for high-risk options`,
-        `Stakeholder buy-in will be crucial for success`
-      ]
-      
-      setAiInsights(insights.slice(0, Math.min(3, (_data as any).options.length + 1)))
+      const response = await fetch('/api/ai/analyze-decision', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          decisionTitle: _data.decisionTitle,
+          context: _data.context,
+          options: _data.options
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to get AI insights');
+      }
+
+      const { insights } = await response.json();
+      setAiInsights(insights);
     } catch (error) {
       logError('Failed to get AI insights:', error)
     } finally {

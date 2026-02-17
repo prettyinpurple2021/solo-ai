@@ -147,7 +147,6 @@ export async function GET(req: NextRequest) {
         const competitorCount = Number(totalCompetitors[0]?.count || 0)
         
         // Calculate market share estimate based on intelligence data volume
-        // This is a simplified calculation - in production, use actual market data
         const intelligenceVolume = await db
             .select({ count: sql<number>`count(*)` })
             .from(intelligenceData)

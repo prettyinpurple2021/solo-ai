@@ -1,45 +1,46 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { posts } from '@/shared/db/schema'; // 'users' and 'postReactions' removed, 'comments' added as per instruction
+import { communityPosts } from '@/shared/db/schema';
 import { auth } from '@/lib/auth';
 import { desc } from 'drizzle-orm';
 import { logError } from '@/lib/logger';
 
-export async function GET(_req: Request) { // req prefixed with underscore
+export async function GET(_req: Request) {
   try {
-    const session = await auth(); // Or however auth is handled
+    const session = await auth();
     const currentUserId = session?.user?.id;
 
     // Fetch posts with author details
-    // Note: Drizzle's query builder or relational query is cleaner
-    const allPosts = await db.query.posts.findMany({
-      orderBy: [desc(posts.created_at)],
+    const allPosts = await db.query.communityPosts.findMany({
+      orderBy: (posts, { desc }) => [desc(posts.created_at)],
       with: {
-        author: true,
-        reactions: true, 
+        author: true, // Relation name is 'author' in communityPostsRelations
+        postLikes: true, // Relation name is 'postLikes'
       }
     });
 
     const formattedPosts = allPosts.map(post => {
-      // Check for 'like' specifically or just any reaction. 
-      // For the UI's simple heart, we check for 'like'.
-      const isLiked = currentUserId ? post.reactions.some(r => r.user_id === currentUserId && r.type === 'like') : false;
+      const isLiked = currentUserId ? post.postLikes.some(l => l.user_id === currentUserId) : false;
+      
+      // Access author via the relation 'author'
+      const author = post.author;
+
       return {
         id: post.id,
         author: {
-          name: post.author.full_name || post.author.name || "Unknown Agent",
-          avatar: post.author.image,
-          level: post.author.level || 1,
-          title: post.author.role === 'admin' ? 'System Administrator' : 'Operative',
-          verified: post.author.is_verified || false,
+          name: author?.full_name || author?.name || "Unknown Agent",
+          avatar: author?.image,
+          level: author?.level || 1,
+          title: author?.role === 'admin' ? 'System Administrator' : 'Operative',
+          verified: author?.is_verified || false,
         },
         content: post.content,
         image: post.image,
         timestamp: post.created_at ? new Date(post.created_at).toLocaleDateString() : 'Unknown',
-        likes: post.likes_count || 0,
-        comments: post.comments_count || 0,
+        likes: post.like_count || 0,
+        comments: post.comment_count || 0,
         shares: post.shares_count || 0,
-        achievement: post.achievement_context as any,
+        achievement: (post.metadata as any)?.achievement_context,
         isLiked,
         tags: post.tags as string[] || [],
       };
@@ -59,17 +60,38 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { content, image, tags } = await req.json();
+    const { content, image, tags, achievement_context } = await req.json();
 
     if (!content) {
       return NextResponse.json({ error: 'Content is required' }, { status: 400 });
     }
 
-    const [newPost] = await db.insert(posts).values({
-      author_id: session.user.id,
+    // Insert into communityPosts
+    // Note: topic_id is required by schema but not provided in request?
+    // We strictly need a topic_id. For now, we might default to a 'General' topic or fail if not provided.
+    // However, the original code didn't provide topic_id. 
+    // IF the schema enforces topic_id NOT NULL (it does), we must provide it.
+    // I will fetch the 'General' topic or create it if missing.
+    
+    // Quick fix: allow topic_id to be nullable in schema? No, that breaks integrity.
+    // I will try to find a default topic.
+    const defaultTopic = await db.query.communityTopics.findFirst();
+    const topicId = defaultTopic?.id;
+
+    if (!topicId) {
+        // Fallback or error? 
+        // We'll throw for now as system should have topics.
+        return NextResponse.json({ error: 'No community topics found' }, { status: 500 });
+    }
+
+    const [newPost] = await db.insert(communityPosts).values({
+      user_id: session.user.id,
+      topic_id: topicId,
+      title: 'Untitled', // Schema requires title
       content,
       image,
       tags: tags || [],
+      metadata: achievement_context ? { achievement_context } : {},
     }).returning();
 
     return NextResponse.json({ success: true, post: newPost });

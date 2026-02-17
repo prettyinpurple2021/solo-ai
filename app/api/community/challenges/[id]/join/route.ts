@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { db } from '@/db';
-import { userChallenges } from '@/db/extra_schema';
+import { challengeParticipants } from '@/shared/db/schema';
 import { logError } from '@/lib/logger';
 import { eq, and } from 'drizzle-orm';
 import { auth } from '@/lib/auth';
@@ -23,19 +23,19 @@ export async function POST(_req: Request, props: { params: Promise<{ id: string 
 
         // Check if already joined
         const existing = await db.select()
-            .from(userChallenges)
+            .from(challengeParticipants)
             .where(and(
-                eq(userChallenges.userId, userId),
-                eq(userChallenges.challengeId, challengeId)
+                eq(challengeParticipants.user_id, userId),
+                eq(challengeParticipants.challenge_id, challengeId)
             ));
 
         if (existing.length > 0) {
             return NextResponse.json({ message: 'Already joined' });
         }
 
-        const [entry] = await db.insert(userChallenges).values({
-            userId: userId,
-            challengeId,
+        const [entry] = await db.insert(challengeParticipants).values({
+            user_id: userId,
+            challenge_id: challengeId,
             status: 'joined',
             progress: 0
         }).returning();

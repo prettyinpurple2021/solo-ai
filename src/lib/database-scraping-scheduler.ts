@@ -3,6 +3,7 @@ import { eq, and, lte, desc, asc, sql, inArray, isNull, or } from 'drizzle-orm'
 import { db } from '@/db/index'
 import { scrapingJobs, scrapingJobResults, intelligenceData } from '@/shared/db/schema'
 import { v4 as uuidv4 } from 'uuid'
+import parser from 'cron-parser'
 
 
 export type JobType = 'website' | 'pricing' | 'products' | 'jobs' | 'social'

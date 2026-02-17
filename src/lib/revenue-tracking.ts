@@ -519,7 +519,7 @@ export class RevenueTrackingService {
             ? 'https://api-m.sandbox.paypal.com' 
             : 'https://api-m.paypal.com'
 
-          // In production, Client ID and Secret would be in ENV
+          // Use production environment variables for PayPal credentials
           const clientId = process.env.PAYPAL_CLIENT_ID
           const clientSecret = process.env.PAYPAL_CLIENT_SECRET
 
