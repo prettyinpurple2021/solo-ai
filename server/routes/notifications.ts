@@ -72,7 +72,7 @@ router.post('/create', authMiddleware, async (req: Request, res: Response) => {
 router.post('/:id/read', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
-        const notificationId = req.params.id;
+        const notificationId = req.params.id as string;
 
         const [updated] = await db.update(notifications)
             .set({ isRead: true })
@@ -115,7 +115,7 @@ router.post('/read-all', authMiddleware, async (req: Request, res: Response) => 
 router.delete('/:id', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
-        const notificationId = req.params.id;
+        const notificationId = req.params.id as string;
 
         const deleted = await db.delete(notifications)
             .where(and(eq(notifications.id, notificationId), eq(notifications.userId, userId)))
