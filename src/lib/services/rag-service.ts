@@ -53,8 +53,8 @@ export class RagService {
   static formatResultsForPrompt(results: RagSearchResult[]): string {
     if (results.length === 0) return '';
 
-    let context = '\n\n## Briefcase Knowledge Base (Contextual Research)\n';
-    context += 'The following information was retrieved from your briefcase and internal documents. Use these as primary sources and CITE them using [Source ID] notation.\n\n';
+    let context = `\n\n## Briefcase Knowledge Base (Contextual Research)\n`;
+    context += `The following information was retrieved from your briefcase and internal documents. Use these as primary sources and CITE them using [Source ID] notation.\n\n`;
 
     results.forEach((result, index) => {
       const sourceId = index + 1;
@@ -62,7 +62,7 @@ export class RagService {
       context += `Content: ${result.content.substring(0, 500)}${result.content.length > 500 ? '...' : ''}\n\n`;
     });
 
-    context += 'Instructions: When using the information above, refer to it explicitly. If the information is insufficient, state that your internal research returned limited results for that specific detail.';
+    context += `Instructions: When using the information above, refer to it explicitly. If the information is insufficient, state that your internal research returned limited results for that specific detail.`;
     
     return context;
   }
