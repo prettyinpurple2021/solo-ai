@@ -1,31 +1,36 @@
 import React from 'react';
 import { useSubscription } from '@/hooks/use-subscription';
-import { UpgradePrompt, Tier } from './UpgradePrompt';
+import { UpgradePrompt } from './UpgradePrompt';
+
+export type Tier = 'launch' | 'accelerator' | 'dominator';
 
 export type FeatureKey = 
     | 'war-room'
     | 'competitor-stalker'
     | 'legal-tools'
     | 'advanced-incinerator'
+    | 'multi-agent-collaboration'
+    | 'strategy-nexus'
     | 'unlimited-agents'
     | 'pro-agents'
     | 'elite-agents';
 
 const FEATURE_REQUIREMENTS: Record<FeatureKey, Tier> = {
     'war-room': 'dominator',
-    'competitor-stalker': 'dominator',
+    'competitor-stalker': 'accelerator',
     'legal-tools': 'dominator',
     'advanced-incinerator': 'accelerator',
+    'multi-agent-collaboration': 'dominator',
+    'strategy-nexus': 'dominator',
     'unlimited-agents': 'accelerator',
     'pro-agents': 'accelerator',
     'elite-agents': 'dominator'
 };
 
 const TIER_LEVELS: Record<Tier, number> = {
-    'free': 0,
-    'launchpad': 1,
-    'accelerator': 2,
-    'dominator': 3
+    'launch': 0,
+    'accelerator': 1,
+    'dominator': 2
 };
 
 interface FeatureGateProps {
@@ -38,12 +43,11 @@ export function FeatureGate({ feature, children, fallback }: FeatureGateProps) {
     const { subscription, isLoading } = useSubscription();
 
     if (isLoading) {
-        // Show a simple loading state or nothing while checking
-        return <div className="w-full h-32 flex items-center justify-center text-muted-foreground animate-pulse">Checking access rights...</div>;
+        return <div className="w-full h-32 flex items-center justify-center text-muted-foreground animate-pulse font-mono">Verifying authentication...</div>;
     }
 
     const requiredTier = FEATURE_REQUIREMENTS[feature];
-    const currentTier = subscription.plan;
+    const currentTier = (subscription?.plan || 'launch') as Tier;
 
     const currentLevel = TIER_LEVELS[currentTier] || 0;
     const requiredLevel = TIER_LEVELS[requiredTier] || 0;

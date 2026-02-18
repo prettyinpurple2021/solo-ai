@@ -53,6 +53,30 @@ export const BoardroomEventSchema = z.discriminatedUnion("type", [
 export type BoardroomEvent = z.infer<typeof BoardroomEventSchema>;
 
 /**
+ * Chat related schemas
+ */
+export const ChatMessageSchema = z.object({
+  role: z.enum(['user', 'assistant', 'system']),
+  content: z.string().min(1),
+  agentId: z.string().optional(),
+});
+
+export const ChatRequestSchema = z.object({
+  message: z.string().min(1),
+  agentId: z.string().optional(),
+  conversationId: z.string().uuid().optional(),
+});
+
+/**
+ * User and Profile related schemas
+ */
+export const UserUpdateSchema = z.object({
+  full_name: z.string().min(2).optional(),
+  bio: z.string().max(500).optional(),
+  image: z.string().url().optional(),
+});
+
+/**
  * Standardized server response format for all Server Actions and API routes.
  */
 export const ServerResponseSchema = z.object({

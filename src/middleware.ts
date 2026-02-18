@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth"
 import { NextResponse } from "next/server"
 import { TrafficService } from "@/lib/traffic-service"
-import { logError } from "@/lib/logger"
+import { logError, logInfo } from "@/lib/logger"
+import { canAccess } from "@/lib/subscription-gating"
 
 
 // Context7 Verified Implementation
@@ -10,6 +11,7 @@ import { logError } from "@/lib/logger"
 
 export default auth((req) => {
   const isLoggedIn = !!req.auth
+  const user = req.auth?.user
   const { pathname } = req.nextUrl
 
   // Define protected paths
@@ -19,12 +21,29 @@ export default auth((req) => {
     pathname.startsWith('/settings') ||
     pathname.startsWith('/onboarding')
 
-  // Redirect unauthenticated users to sign-in page
+  // 1. Redirect unauthenticated users to sign-in page
   if (isProtectedPath && !isLoggedIn) {
      const signInUrl = new URL('/auth/signin', req.url)
      // Add callbackUrl to redirect back after login
      signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search)
      return NextResponse.redirect(signInUrl)
+  }
+
+  // 2. Feature Gating based on Subscription Tier
+  if (isLoggedIn) {
+    const userTier = user?.subscription_tier || 'launch'
+    
+    // Check if the current path is gated
+    const gatedPaths = ['/dashboard/competitors', '/dashboard/collaboration', '/dashboard/strategy-nexus', '/dashboard/compliance-grid']
+    const activeGate = gatedPaths.find(p => pathname.startsWith(p))
+    
+    if (activeGate && !canAccess(userTier as string, activeGate)) {
+      logInfo('Access Denied: Tier too low', { userId: user?.id, tier: userTier, path: pathname })
+      const upgradeUrl = new URL('/pricing', req.url)
+      upgradeUrl.searchParams.set('reason', 'tier_low')
+      upgradeUrl.searchParams.set('feature', activeGate)
+      return NextResponse.redirect(upgradeUrl)
+    }
   }
 
   // Proceed with response

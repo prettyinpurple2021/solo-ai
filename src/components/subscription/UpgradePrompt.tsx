@@ -1,11 +1,11 @@
 import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useSubscription } from '@/hooks/use-subscription';
-import { Rocket, Shield, Zap, Lock } from 'lucide-react';
+import { Rocket, Shield, Zap, Lock, Terminal as TerminalIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { CyberButton } from '@/components/cyber/CyberButton';
+import { HudBorder } from '@/components/cyber/HudBorder';
 
-export type Tier = 'free' | 'launchpad' | 'accelerator' | 'dominator';
+export type Tier = 'launch' | 'accelerator' | 'dominator';
 
 interface UpgradePromptProps {
     requiredTier: Tier;
@@ -14,23 +14,22 @@ interface UpgradePromptProps {
 }
 
 const TIER_DETAILS: Record<Tier, { name: string; icon: any; color: string; benefits: string[] }> = {
-    free: { name: 'Free', icon:  Shield, color: 'text-gray-500', benefits: [] },
-    launchpad: { 
-        name: 'Launchpad', 
+    launch: { 
+        name: 'Launch', 
         icon: Rocket, 
-        color: 'text-blue-500',
-        benefits: ['100 Conversations/day', '3 AI Agents', '50MB Storage']
+        color: 'text-neon-cyan',
+        benefits: ['100 Conversations/day', 'Aura AI Agent', '50MB Storage']
     },
     accelerator: { 
         name: 'Accelerator', 
         icon: Zap, 
-        color: 'text-purple-500',
+        color: 'text-neon-purple',
         benefits: ['Unlimited Conversations', '8 AI Agents', 'Advanced Incinerator', '1GB Storage']
     },
     dominator: { 
         name: 'Dominator', 
         icon: Shield, 
-        color: 'text-red-500',
+        color: 'text-neon-magenta',
         benefits: ['Unlimited Everything', 'War Room Access', 'Competitor Stalker', 'Legal Tools', '100GB Storage']
     }
 };
@@ -42,48 +41,55 @@ export function UpgradePrompt({ requiredTier, featureName, className }: UpgradeP
     if (!tier) return null;
 
     const handleUpgrade = () => {
-        // Cast to match the literal type expected by upgradePlan
-        if (requiredTier === 'launchpad' || requiredTier === 'accelerator' || requiredTier === 'dominator') {
-            upgradePlan(requiredTier);
-        }
+        upgradePlan(requiredTier as any);
     };
 
     return (
-        <Card className={cn("w-full max-w-md mx-auto border-2 border-dashed bg-muted/30", className)}>
-            <CardHeader className="text-center pb-2">
-                <div className={cn("w-12 h-12 mx-auto rounded-full bg-muted flex items-center justify-center mb-4", tier.color)}>
-                    <Lock className="w-6 h-6" />
-                </div>
-                <CardTitle className="text-2xl font-bold">Unlock {featureName}</CardTitle>
-                <CardDescription>
-                    This is a premium feature available on the <span className={cn("font-semibold", tier.color)}>{tier.name}</span> plan.
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <div className="space-y-4">
-                    <div className="text-sm font-medium text-muted-foreground text-center mb-2">
-                        Get access to:
+        <HudBorder className={cn("w-full max-w-md mx-auto bg-dark-card/80 backdrop-blur-sm", className)}>
+            <div className="text-center p-8 space-y-6">
+                <div className="flex justify-center">
+                    <div className="p-4 bg-dark-bg border border-neon-cyan/20 rounded-none relative group">
+                        <div className="absolute inset-0 bg-neon-cyan/5 blur-lg group-hover:bg-neon-cyan/10 transition-all" />
+                        <Lock className="w-8 h-8 text-neon-cyan relative z-10" />
                     </div>
-                    <ul className="grid gap-2">
+                </div>
+                
+                <div className="space-y-2">
+                    <h2 className="text-2xl font-orbitron font-bold text-white uppercase tracking-tight">
+                        Unlock {featureName}
+                    </h2>
+                    <p className="text-sm text-gray-400 font-mono">
+                        This module requires <span className={cn("font-bold uppercase", tier.color)}>{tier.name}</span> authorization.
+                    </p>
+                </div>
+
+                <div className="space-y-4 py-4 border-y border-white/5">
+                    <p className="text-[10px] font-mono font-bold text-gray-500 uppercase tracking-[0.2em]">
+                        Tier Benefits
+                    </p>
+                    <ul className="space-y-3 text-left">
                         {tier.benefits.map((benefit, index) => (
-                            <li key={index} className="flex items-center gap-2 text-sm">
-                                <tier.icon className={cn("w-4 h-4", tier.color)} />
+                            <li key={index} className="flex items-center gap-3 text-sm font-mono text-gray-300">
+                                <tier.icon className={cn("w-4 h-4 shrink-0", tier.color)} />
                                 <span>{benefit}</span>
                             </li>
                         ))}
                     </ul>
                 </div>
-            </CardContent>
-            <CardFooter>
-                <Button 
+
+                <CyberButton 
                     onClick={handleUpgrade} 
-                    className="w-full font-semibold" 
-                    size="lg"
+                    className="w-full font-orbitron font-bold uppercase" 
+                    variant={requiredTier === 'dominator' ? 'magenta' : 'purple'}
                     disabled={isLoading}
                 >
                     {isLoading ? 'Processing...' : `Upgrade to ${tier.name}`}
-                </Button>
-            </CardFooter>
-        </Card>
+                </CyberButton>
+                
+                <p className="text-[9px] text-gray-600 font-mono uppercase tracking-widest animate-pulse">
+                    Secure Connection Established // Tier Check Required
+                </p>
+            </div>
+        </HudBorder>
     );
 }

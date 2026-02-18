@@ -1,7 +1,8 @@
 import { db } from '../db';
 import { searchIndex } from '../../lib/shared/db/schema';
 import { eq, and } from 'drizzle-orm';
-import { logError } from './logger';
+import { logError, logInfo } from './logger';
+import { generateEmbedding } from './embeddings';
 
 export class SearchIndexer {
     /**
@@ -59,7 +60,7 @@ export class SearchIndexer {
     }
 
     /**
-     * Index a generic entity
+     * Index a generic entity with vector embeddings
      */
     static async indexEntity(
         userId: string,
@@ -70,6 +71,9 @@ export class SearchIndexer {
         tags: string[] = []
     ) {
         try {
+            logInfo(`Generating embedding for ${type} ${id}...`);
+            const embedding = await generateEmbedding(`${title}\n${content}`);
+
             // Check if exists
             const existing = await db.select().from(searchIndex).where(
                 and(
@@ -85,6 +89,7 @@ export class SearchIndexer {
                         title,
                         content,
                         tags,
+                        embedding,
                         updatedAt: new Date()
                     })
                     .where(eq(searchIndex.id, existing[0].id));
@@ -95,7 +100,8 @@ export class SearchIndexer {
                     entityId: id,
                     title,
                     content,
-                    tags
+                    tags,
+                    embedding
                 });
             }
         } catch (error) {

@@ -13,6 +13,7 @@ import { gateConversation, gateAgentAccess } from '@/lib/feature-gate-middleware
 import { incrementConversationCount, trackAgentAccess } from '@/lib/usage-tracking'
 import { openai } from '@ai-sdk/openai'
 import { streamText } from 'ai'
+import { RagService } from '@/lib/services/rag-service'
 
 // Using Node.js runtime for database and complex operations
 export const runtime = 'nodejs'
@@ -79,10 +80,14 @@ export async function POST(request: NextRequest) {
     // Increment conversation count
     await incrementConversationCount(user.id)
 
-    // Get competitive intelligence context
+    // 1. Semantic Search (RAG) - Get context from briefcase
+    const ragResults = await RagService.search(user.id, message);
+    const ragContext = RagService.formatResultsForPrompt(ragResults);
+
+    // 2. Get competitive intelligence context
     const competitiveContext = await CompetitiveIntelligenceContextService.getCompetitiveContext(user.id, agentId || 'general')
     
-    // Get agent-specific prompts with competitive intelligence integration
+    // 3. Get agent-specific prompts with competitive intelligence integration
     const agentPrompts = CompetitiveIntelligenceContextService.getAgentCompetitivePrompts()
     
     // Get agent personality based on agentId
@@ -153,7 +158,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Call OpenAI Worker via service binding
-    const systemPrompt = `${agentPersonality} You are helping a SoloSuccess AI user. Be helpful, professional, and use frameworks when appropriate.${competitiveContextString}`
+    const systemPrompt = `${agentPersonality} You are helping a SoloSuccess AI user. Be helpful, professional, and use frameworks when appropriate.${ragContext}${competitiveContextString}`
     
     // Get the service binding from the environment
     const env = process.env as unknown as Env

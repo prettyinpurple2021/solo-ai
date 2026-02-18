@@ -131,14 +131,22 @@ async function invalidateCache(pattern: string): Promise<void> {
     }
 }
 
+import { z } from 'zod';
+
 // WebSocket connection handling
 io.on('connection', (socket: Socket) => {
     logInfo('Client connected', { socketId: socket.id });
 
-    // Join user-specific room
-    socket.on('join', (userId: string) => {
-        socket.join(`user:${userId}`);
-        logInfo(`User ${userId} joined their room`);
+    // Join user-specific room with validation
+    socket.on('join', (userId: any) => {
+        try {
+            const validatedUserId = z.string().min(1).parse(userId);
+            socket.join(`user:${validatedUserId}`);
+            logInfo(`User ${validatedUserId} joined their room`);
+        } catch (error) {
+            logError('Invalid join event', { error, userId });
+            socket.emit('error', { message: 'Invalid user ID' });
+        }
     });
 
     socket.on('disconnect', () => {
