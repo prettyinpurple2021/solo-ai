@@ -1,6 +1,6 @@
 import { integer, pgTable, varchar, text, timestamp, boolean, index, primaryKey, foreignKey, jsonb } from 'drizzle-orm/pg-core';
 import { v4 as uuidv4 } from 'uuid';
-import { users } from './users.ts';
+import { users } from './users';
 
 export const communityTopics = pgTable('community_topics', {
   id: text('id').primaryKey().$defaultFn(() => uuidv4()),

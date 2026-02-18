@@ -107,47 +107,49 @@ export async function POST(request: NextRequest) {
       message
     )
 
-    // Ensure user exists in database (using Drizzle `db`)
-    const existing = await db.select().from(users).where(eq(users.id, user.id))
-    if (existing.length === 0) {
-      // Insert only the columns that exist on the Drizzle users table to avoid type errors
-      await db.insert(users).values({
-        id: user.id || '',
-        email: user.email || '',
-        password: '',
-        full_name: user.full_name || '',
-        image: user.avatar_url || '',
-        subscription_tier: 'free',
-        onboarding_completed: false,
+    // Ensure user exists and create conversation/initial message atomically
+    const conversationId = uuidv4();
+    await db.transaction(async (tx) => {
+      // 1. Ensure user exists
+      const existing = await tx.select().from(users).where(eq(users.id, user.id));
+      if (existing.length === 0) {
+        await tx.insert(users).values({
+          id: user.id || '',
+          email: user.email || '',
+          password: '',
+          full_name: user.full_name || '',
+          image: user.avatar_url || '',
+          subscription_tier: 'free',
+          onboarding_completed: false,
+          created_at: new Date(),
+          updated_at: new Date()
+        });
+      }
+
+      // 2. Save conversation
+      await tx.insert(chatConversations).values({
+        id: conversationId,
+        user_id: user.id,
+        title: '',
+        agent_id: agentId || 'general',
+        agent_name: agentId || 'general',
+        last_message: message,
+        last_message_at: new Date(),
+        message_count: 1,
         created_at: new Date(),
         updated_at: new Date()
       });
-    }
 
-    // Save conversation to database (chat tables)
-    const conversationId = uuidv4()
-    await db.insert(chatConversations).values({
-      id: conversationId,
-      user_id: user.id,
-      title: '',
-      agent_id: agentId || 'general',
-      agent_name: agentId || 'general',
-      last_message: message,
-      last_message_at: new Date(),
-      message_count: 1,
-      created_at: new Date(),
-      updated_at: new Date()
-    });
-
-    // Insert the initial user message
-    await db.insert(chatMessages).values({
-      id: uuidv4(),
-      conversation_id: conversationId,
-      user_id: user.id,
-      role: 'user',
-      content: message,
-      metadata: {},
-      created_at: new Date()
+      // 3. Insert the initial user message
+      await tx.insert(chatMessages).values({
+        id: uuidv4(),
+        conversation_id: conversationId,
+        user_id: user.id,
+        role: 'user',
+        content: message,
+        metadata: {},
+        created_at: new Date()
+      });
     });
 
     // Call OpenAI Worker via service binding

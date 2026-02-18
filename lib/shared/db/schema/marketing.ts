@@ -1,6 +1,6 @@
 import { pgTable, text, varchar, timestamp, jsonb, integer, index } from "drizzle-orm/pg-core";
 import { v4 as uuidv4 } from 'uuid';
-import { users } from './users.ts';
+import { users } from './users';
 
 // Marketing Campaigns
 export const campaigns = pgTable("campaigns", {

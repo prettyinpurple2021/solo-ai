@@ -193,35 +193,36 @@ async function handleCheckoutCompleted(session: any) {
     if (priceId === PRICE_IDS.accelerator.monthly || priceId === PRICE_IDS.accelerator.yearly) tier = 'accelerator';
     if (priceId === PRICE_IDS.dominator.monthly || priceId === PRICE_IDS.dominator.yearly) tier = 'dominator';
 
-    // Update or Insert Subscription
-    // Check if exists
-    const existing = await db.select().from(subscriptions).where(eq(subscriptions.userId, userId));
+    // Update or Insert Subscription and user tier atomically
+    await db.transaction(async (tx) => {
+        const existing = await tx.select().from(subscriptions).where(eq(subscriptions.userId, userId));
 
-    if (existing.length) {
-        await db.update(subscriptions)
-            .set({
+        if (existing.length) {
+            await tx.update(subscriptions)
+                .set({
+                    stripeCustomerId: customerId,
+                    stripeSubscriptionId: subscriptionId,
+                    stripePriceId: priceId,
+                    status: 'active',
+                    currentPeriodEnd: new Date(subscription.current_period_end * 1000)
+                })
+                .where(eq(subscriptions.userId, userId));
+        } else {
+            await tx.insert(subscriptions).values({
+                userId,
                 stripeCustomerId: customerId,
                 stripeSubscriptionId: subscriptionId,
                 stripePriceId: priceId,
                 status: 'active',
                 currentPeriodEnd: new Date(subscription.current_period_end * 1000)
-            })
-            .where(eq(subscriptions.userId, userId));
-    } else {
-        await db.insert(subscriptions).values({
-            userId,
-            stripeCustomerId: customerId,
-            stripeSubscriptionId: subscriptionId,
-            stripePriceId: priceId,
-            status: 'active',
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000)
-        });
-    }
+            });
+        }
 
-    // Update user tier
-    await db.update(users)
-        .set({ subscription_tier: tier })
-        .where(eq(users.id, userId));
+        // Update user tier
+        await tx.update(users)
+            .set({ subscription_tier: tier })
+            .where(eq(users.id, userId));
+    });
 }
 
 async function handleSubscriptionUpdated(subscription: any) {
@@ -235,22 +236,24 @@ async function handleSubscriptionUpdated(subscription: any) {
         if (priceId === PRICE_IDS.dominator.monthly || priceId === PRICE_IDS.dominator.yearly) tier = 'dominator';
     }
 
-    await db.update(subscriptions)
-        .set({
-            status: status,
-            stripePriceId: priceId,
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000)
-        })
-        .where(eq(subscriptions.stripeSubscriptionId, subscriptionId));
+    await db.transaction(async (tx) => {
+        await tx.update(subscriptions)
+            .set({
+                status: status,
+                stripePriceId: priceId,
+                currentPeriodEnd: new Date(subscription.current_period_end * 1000)
+            })
+            .where(eq(subscriptions.stripeSubscriptionId, subscriptionId));
 
-    // Update user tier
-    // We need to find the user associated with this subscription
-    const sub = await db.select().from(subscriptions).where(eq(subscriptions.stripeSubscriptionId, subscriptionId)).limit(1);
-    if (sub.length) {
-        await db.update(users)
-            .set({ subscription_tier: tier })
-            .where(eq(users.id, sub[0].userId));
-    }
+        // Update user tier
+        // We need to find the user associated with this subscription
+        const sub = await tx.select().from(subscriptions).where(eq(subscriptions.stripeSubscriptionId, subscriptionId)).limit(1);
+        if (sub.length) {
+            await tx.update(users)
+                .set({ subscription_tier: tier })
+                .where(eq(users.id, sub[0].userId));
+        }
+    });
 }
 
 export default router;

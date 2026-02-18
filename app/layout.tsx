@@ -19,6 +19,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import { OfflineProvider } from "@/components/providers/offline-provider"
 import PWAInstallPrompt from "@/components/mobile/pwa-install-prompt"
 import { GlobalNotificationCenter } from "@/components/notifications/GlobalNotificationCenter"
+import { AmplitudeAnalytics } from "@/components/analytics/AmplitudeAnalytics"
 
 // Font configuration - Cyberpunk Design System v3 fonts
 const orbitronFont = Orbitron({ 
@@ -337,6 +338,7 @@ export default function RootLayout({
         {appShell}
         <Analytics />
         <SpeedInsights />
+        <AmplitudeAnalytics />
       </body>
     </html>
   )

@@ -556,8 +556,9 @@ export class SessionManager {
 
   
   // Async version of getSessionState
-  async getSessionStateAsync(sessionId: string): Promise<SessionState | null> {
-     const session = await db.query.collaborationSessions.findFirst({
+  async getSessionStateAsync(sessionId: string, tx?: any): Promise<SessionState | null> {
+     const client = tx || db
+     const session = await client.query.collaborationSessions.findFirst({
         where: eq(collaborationSessions.id, sessionId),
         with: { participants: true, messages: true }
      })
@@ -684,14 +685,15 @@ export class SessionManager {
   /**
    * Create a checkpoint for session state
    */
-  async createCheckpoint(sessionId: string, description: string): Promise<string> {
+  async createCheckpoint(sessionId: string, description: string, tx?: any): Promise<string> {
     try {
-      const state = await this.getSessionStateAsync(sessionId)
+      const client = tx || db
+      const state = await this.getSessionStateAsync(sessionId, tx)
       if (!state) return ""
 
       const checkpointId = crypto.randomUUID()
       
-      await db.insert(collaborationCheckpoints).values({
+      await client.insert(collaborationCheckpoints).values({
         id: checkpointId,
         session_id: sessionId,
         description,

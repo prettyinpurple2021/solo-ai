@@ -1,8 +1,7 @@
 
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum, vector, serial } from 'drizzle-orm/pg-core';
 import { v4 as uuidv4 } from 'uuid';
-import { users } from './users.ts';
-import { competitorProfiles } from './intelligence.ts'; // For self-reference in intelligenceData if needed, but it's already in the same file.
+import { users } from './users';
 
 // Contacts
 export const contacts = pgTable("contacts", {

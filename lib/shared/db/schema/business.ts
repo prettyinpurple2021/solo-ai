@@ -1,7 +1,7 @@
 
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
 import { v4 as uuidv4 } from 'uuid';
-import { users } from './users.ts';
+import { users } from './users';
 
 // User Settings table
 export const userSettings = pgTable('user_settings', {
