@@ -1,75 +1,95 @@
-import Link from "next/link"
-import { ArrowLeft, Crown} from "lucide-react"
-import { Button} from "@/components/ui/button"
+'use client';
 
-// Force dynamic rendering to avoid static generation issues
-export const dynamic = 'force-dynamic'
+import Link from "next/link"
+import { ArrowLeft, Home, LayoutDashboard } from "lucide-react"
+import { CyberPageLayout } from "@/components/cyber/CyberPageLayout"
+import { CyberButton } from "@/components/cyber/CyberButton"
+import { HudBorder } from "@/components/cyber/HudBorder"
+import { GlitchText } from "@/components/cyber/GlitchText"
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-dark-bg">
-      <div className="w-full max-w-3xl text-center">
-        {/* SoloSuccess Crown Logo */}
-        <div className="flex justify-center mb-6">
-          <div className="p-4 bg-neon-purple/20 border-2 border-neon-purple/50 rounded-full shadow-[0_0_20px_rgba(179,0,255,0.3)]">
-            <Crown className="h-12 w-12 text-neon-purple" />
-          </div>
-        </div>
-
-        {/* 404 Typography */}
-        <div className="mb-6">
-          <h1 className="text-6xl font-bold font-orbitron text-white mb-2 uppercase tracking-wider">404</h1>
-          <h2 className="text-2xl font-bold font-orbitron text-neon-cyan mb-2 uppercase tracking-wider">Page Not Found</h2>
-          <p className="text-gray-300 font-mono">
-            The page you&apos;re looking for doesn&apos;t exist or has been moved.
-          </p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-3 max-w-md mx-auto">
-          <Button asChild className="w-full">
-            <Link href="/">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Home
-            </Link>
-          </Button>
+    <CyberPageLayout showNav={true} showFooter={true}>
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="w-full max-w-4xl text-center z-10">
           
-          <Button variant="outline" asChild className="w-full">
-            <Link href="/dashboard">
-              <Crown className="mr-2 h-4 w-4" />
-              Go to Dashboard
-            </Link>
-          </Button>
-        </div>
+          {/* 404 Glitch Header */}
+          <div className="mb-8 relative">
+            <h1 className="text-9xl font-bold font-orbitron text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan via-white to-neon-magenta mb-2 select-none">
+              <GlitchText>404</GlitchText>
+            </h1>
+            <div className="text-2xl font-bold font-orbitron text-neon-cyan tracking-[0.5em] uppercase animate-pulse">
+              System Error // Page Not Found
+            </div>
+          </div>
 
-        {/* Smart Links */}
-        <div className="mt-10 text-left">
-          <h3 className="text-lg font-bold font-orbitron text-white mb-3 uppercase tracking-wider">Popular Destinations</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <Link href="/pricing" className="rounded-sm border-2 border-gray-700 p-4 hover:border-neon-purple hover:shadow-[0_0_15px_rgba(179,0,255,0.3)] bg-dark-card transition-all">
-              <div className="font-bold font-mono text-neon-purple uppercase tracking-wider">Pricing</div>
-              <div className="text-sm text-gray-300 font-mono mt-1">See plans for Solo Founders and Small Business Owners</div>
+          <p className="text-gray-400 font-mono mb-12 max-w-lg mx-auto border-l-2 border-neon-cyan/30 pl-4 py-2 text-left">
+            <span className="text-neon-cyan">root@solosuccess:~$</span> The requested resource could not be located in the neural network. Signal lost.
+          </p>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+            <Link href="/">
+              <CyberButton variant="cyan" size="lg" className="w-full sm:w-auto">
+                <Home className="mr-2 h-4 w-4" />
+                Return to Base
+              </CyberButton>
             </Link>
-            <Link href="/pricing/launch" className="rounded-sm border-2 border-gray-700 p-4 hover:border-neon-lime hover:shadow-[0_0_15px_rgba(57,255,20,0.3)] bg-dark-card transition-all">
-              <div className="font-bold font-mono text-neon-lime uppercase tracking-wider">Launch (Free)</div>
-              <div className="text-sm text-gray-300 font-mono mt-1">Start free with AI Business Assistant</div>
-            </Link>
-            <Link href="/blog" className="rounded-sm border-2 border-gray-700 p-4 hover:border-neon-cyan hover:shadow-[0_0_15px_rgba(11,228,236,0.3)] bg-dark-card transition-all">
-              <div className="font-bold font-mono text-neon-cyan uppercase tracking-wider">Boss Blog</div>
-              <div className="text-sm text-gray-300 font-mono mt-1">Guides on automation, marketing, and growth</div>
-            </Link>
-            <Link href="/features" className="rounded-sm border-2 border-gray-700 p-4 hover:border-neon-magenta hover:shadow-[0_0_15px_rgba(255,0,110,0.3)] bg-dark-card transition-all">
-              <div className="font-bold font-mono text-neon-magenta uppercase tracking-wider">Features</div>
-              <div className="text-sm text-gray-300 font-mono mt-1">Explore your virtual AI team</div>
+            
+            <Link href="/dashboard">
+              <CyberButton variant="ghost" size="lg" className="w-full sm:w-auto">
+                <LayoutDashboard className="mr-2 h-4 w-4" />
+                Access Dashboard
+              </CyberButton>
             </Link>
           </div>
-        </div>
 
-        {/* Help Text */}
-        <p className="mt-6 text-sm text-gray-400 font-mono">
-          Need help? <Link href="/contact" className="text-neon-cyan hover:text-neon-cyan/80 hover:underline transition-colors">Contact support</Link>
-        </p>
+          {/* Smart Links Grid */}
+          <div className="text-left max-w-3xl mx-auto">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="h-2 w-2 bg-neon-magenta rounded-full animate-ping" />
+              <h3 className="text-sm font-bold font-orbitron text-gray-400 uppercase tracking-widest">
+                Alternate Routes found:
+              </h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Link href="/pricing" className="group">
+                <HudBorder variant="purple" className="h-full p-6 group-hover:bg-neon-purple/5 transition-colors">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-bold font-orbitron text-neon-purple text-lg group-hover:text-white transition-colors">
+                      Pricing Protocols
+                    </div>
+                    <div className="text-xs font-mono text-neon-purple/60 border border-neon-purple/30 px-2 py-0.5 rounded">
+                      Commercial
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-400 font-mono">
+                    Access upgraded system capabilities and AI reinforcements.
+                  </div>
+                </HudBorder>
+              </Link>
+
+              <Link href="/features" className="group">
+                <HudBorder variant="cyan" className="h-full p-6 group-hover:bg-neon-cyan/5 transition-colors">
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="font-bold font-orbitron text-neon-cyan text-lg group-hover:text-white transition-colors">
+                      System Features
+                    </div>
+                    <div className="text-xs font-mono text-neon-cyan/60 border border-neon-cyan/30 px-2 py-0.5 rounded">
+                      Modules
+                    </div>
+                  </div>
+                  <div className="text-sm text-gray-400 font-mono">
+                    Explore available AI agents and automation tools.
+                  </div>
+                </HudBorder>
+              </Link>
+            </div>
+          </div>
+
+        </div>
       </div>
-    </div>
+    </CyberPageLayout>
   )
 }

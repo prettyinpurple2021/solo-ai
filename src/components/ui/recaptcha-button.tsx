@@ -3,14 +3,15 @@
 import { logError, logWarn, logInfo,} from '@/lib/logger'
 import { ReactNode} from "react"
 import { motion} from "framer-motion"
-import { BossButton, type BossButtonProps} from "./boss-button"
+import { CyberButton } from "@/components/cyber/CyberButton"
+import { ComponentProps } from "react"
 import { useRecaptcha, useRecaptchaForm} from "@/hooks/use-recaptcha"
 import { RECAPTCHA_ACTIONS, type RecaptchaAction} from "@/lib/recaptcha-client"
 import { Shield, AlertCircle,} from "lucide-react"
 import { RECAPTCHA_CONFIG} from "@/lib/recaptcha-client"
 
 
-interface RecaptchaButtonProps extends Omit<BossButtonProps, 'onClick'> {
+interface RecaptchaButtonProps extends Omit<ComponentProps<typeof CyberButton>, 'onClick' | 'onError'> {
   children: ReactNode
   action?: RecaptchaAction
   minScore?: number
@@ -140,15 +141,14 @@ export function RecaptchaButton({
 
   return (
     <div className="space-y-2">
-      <BossButton
+      <CyberButton
         {...buttonProps}
         onClick={handleClick}
         disabled={!isReady || isLoading}
-        loading={isLoading}
         className={`relative ${className}`}
       >
         {getButtonContent()}
-      </BossButton>
+      </CyberButton>
       
       {error && (
         <motion.div
@@ -181,7 +181,6 @@ export function RecaptchaSignupButton({ children, ...props }: Omit<RecaptchaButt
     <RecaptchaButton 
       action={RECAPTCHA_ACTIONS.SIGNUP}
       variant="cyan"
-      crown
       {...props}
     >
       {children}

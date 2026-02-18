@@ -8,8 +8,9 @@ import { Textarea} from "@/components/ui/textarea"
 import { Label} from "@/components/ui/label"
 import { Slider} from "@/components/ui/slider"
 import { Button} from "@/components/ui/button"
-import { BossButton} from "@/components/ui/boss-button"
-import { BossCard} from "@/components/ui/boss-card"
+
+import { CyberButton } from "@/components/cyber/CyberButton"
+import { HudBorder } from "@/components/cyber/HudBorder"
 import { Badge} from "@/components/ui/badge"
 import { Progress} from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
@@ -536,17 +537,18 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
 
         {/* Step 1: Strategy Setup */}
         <TabsContent value="step-1" className="space-y-6">
-          <BossCard>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-purple-600" />
-                Social Media Strategy Foundation
-              </CardTitle>
-              <CardDescription>
-                Define your brand's social media strategy and objectives
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <HudBorder className="p-6">
+            <div className="space-y-6">
+              <div className="flex flex-col space-y-1.5">
+                <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                  <Target className="w-5 h-5 text-purple-600" />
+                  Social Media Strategy Foundation
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Define your brand&apos;s social media strategy and objectives
+                </p>
+              </div>
+              <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="brand-name">Brand Name *</Label>
@@ -659,33 +661,35 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
                   ))}
                 </div>
               </div>
-            </CardContent>
-          </BossCard>
+              </div>
+            </div>
+          </HudBorder>
 
           <div className="flex justify-end">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               disabled={!data.brandName || !data.targetAudience}
-              crown
+              variant="cyan"
             >
               Next: Platform Setup
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 2: Platform Configuration */}
         <TabsContent value="step-2" className="space-y-6">
-          <BossCard>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Share2 className="w-5 h-5 text-purple-600" />
-                Platform Configuration
-              </CardTitle>
-              <CardDescription>
-                Set up your social media platforms and posting strategies
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
+          <HudBorder className="p-6">
+            <div className="space-y-6">
+               <div className="flex flex-col space-y-1.5">
+                <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                  <Share2 className="w-5 h-5 text-purple-600" />
+                  Platform Configuration
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Set up your social media platforms and posting strategies
+                </p>
+              </div>
+              <div>
               <div className="grid gap-6">
                 {data.platforms.map((platform) => (
                   <motion.div
@@ -808,40 +812,42 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </BossCard>
+              </div>
+            </div>
+          </HudBorder>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(1)}
               variant="secondary"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               disabled={!data.platforms.some(p => p.enabled)}
-              crown
+              variant="cyan"
             >
               Next: Content Planning
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 3: Content Strategy */}
         <TabsContent value="step-3" className="space-y-6">
           <div className="grid gap-6">
-            <BossCard>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Edit3 className="w-5 h-5 text-purple-600" />
-                  Content Mix Strategy
-                </CardTitle>
-                <CardDescription>
-                  Define your content distribution strategy
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            <HudBorder className="p-6">
+              <div className="space-y-6">
+                <div className="flex flex-col space-y-1.5">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    <Edit3 className="w-5 h-5 text-purple-600" />
+                    Content Mix Strategy
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Define your content distribution strategy
+                  </p>
+                </div>
+                <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
                   <div>
                     <Label className="text-sm">Educational: {data.contentMix.educational}%</Label>
@@ -924,29 +930,31 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
                     }
                   </AlertDescription>
                 </Alert>
-              </CardContent>
-            </BossCard>
+              </div>
+            </div>
+          </HudBorder>
 
-            <BossCard>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-purple-600" />
-                  Content Calendar
-                </CardTitle>
-                <CardDescription>
-                  Plan and schedule your social media posts
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            <HudBorder className="p-6">
+              <div className="space-y-6">
+                <div className="flex flex-col space-y-1.5">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-purple-600" />
+                    Content Calendar
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Plan and schedule your social media posts
+                  </p>
+                </div>
+                <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold">Scheduled Posts</h4>
                     <p className="text-sm text-gray-600">Create and organize your content pipeline</p>
                   </div>
-                  <BossButton onClick={addContentPost} variant="outline" size="sm">
+                  <CyberButton onClick={addContentPost} variant="ghost" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Post
-                  </BossButton>
+                  </CyberButton>
                 </div>
 
                 <div className="space-y-4">
@@ -1081,39 +1089,41 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
                     <p className="text-sm">Start building your content calendar</p>
                   </div>
                 )}
-              </CardContent>
-            </BossCard>
+              </div>
+            </div>
+          </HudBorder>
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
-              crown
+              variant="cyan"
             >
               Next: Hashtag Strategy
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 4: Hashtag Strategy */}
         <TabsContent value="step-4" className="space-y-6">
-          <BossCard>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Hash className="w-5 h-5 text-purple-600" />
-                Hashtag Strategy
-              </CardTitle>
-              <CardDescription>
-                Create targeted hashtag sets for better discoverability
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+            <HudBorder className="p-6">
+              <div className="space-y-6">
+                <div className="flex flex-col space-y-1.5">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    <Hash className="w-5 h-5 text-purple-600" />
+                    Hashtag Strategy
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Create targeted hashtag sets for better discoverability
+                  </p>
+                </div>
+                <div className="space-y-6">
               <div>
                 <Label htmlFor="hashtag-strategy">Overall Hashtag Strategy</Label>
                 <Textarea
@@ -1132,10 +1142,10 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
                     <h4 className="font-semibold">Hashtag Sets</h4>
                     <p className="text-sm text-gray-600">Create themed hashtag collections</p>
                   </div>
-                  <BossButton onClick={addHashtagSet} variant="outline" size="sm">
+                  <CyberButton onClick={addHashtagSet} variant="ghost" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Set
-                  </BossButton>
+                  </CyberButton>
                 </div>
 
                 <div className="space-y-4">
@@ -1258,7 +1268,7 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
                 )}
               </div>
 
-              <div className="bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 border-2 border-neon-cyan/50 p-4 rounded-sm border">
+              <div className="bg-gradient-to-r from-neon-cyan/10 to-neon-purple/10 border-2 border-neon-cyan/50 p-4 rounded-sm">
                 <h4 className="font-semibold mb-2 flex items-center gap-2">
                   <Lightbulb className="w-4 h-4" />
                   Hashtag Best Practices
@@ -1278,49 +1288,51 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
                   </div>
                 </div>
               </div>
-            </CardContent>
-          </BossCard>
+              </div>
+            </div>
+          </HudBorder>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(5)}
-              crown
+              variant="cyan"
             >
               Next: Analytics & Goals
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 5: Analytics & Goals */}
         <TabsContent value="step-5" className="space-y-6">
           <div className="grid gap-6">
-            <BossCard>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-purple-600" />
-                  Goals & KPIs
-                </CardTitle>
-                <CardDescription>
-                  Set measurable goals for your social media strategy
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            <HudBorder className="p-6">
+              <div className="space-y-6">
+                <div className="flex flex-col space-y-1.5">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    <Target className="w-5 h-5 text-purple-600" />
+                    Goals & KPIs
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Set measurable goals for your social media strategy
+                  </p>
+                </div>
+                <div className="space-y-6">
                 <div>
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h4 className="font-semibold">Social Media Goals</h4>
                       <p className="text-sm text-gray-600">Define specific, measurable objectives</p>
                     </div>
-                    <BossButton onClick={addSocialGoal} variant="outline" size="sm">
+                    <CyberButton onClick={addSocialGoal} variant="ghost" size="sm">
                       <Plus className="w-4 h-4 mr-2" />
                       Add Goal
-                    </BossButton>
+                    </CyberButton>
                   </div>
 
                   <div className="space-y-4">
@@ -1441,20 +1453,22 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
                     </div>
                   )}
                 </div>
-              </CardContent>
-            </BossCard>
+              </div>
+            </div>
+          </HudBorder>
 
-            <BossCard>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-purple-600" />
-                  Analytics & Engagement
-                </CardTitle>
-                <CardDescription>
-                  Configure tracking and engagement strategies
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            <HudBorder className="p-6">
+              <div className="space-y-6">
+                <div className="flex flex-col space-y-1.5">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-purple-600" />
+                    Analytics & Engagement
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Configure tracking and engagement strategies
+                  </p>
+                </div>
+                <div className="space-y-6">
                 <div>
                   <Label>Key Metrics to Track</Label>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
@@ -1559,31 +1573,31 @@ export default function SocialMediaStrategy({ template, onSave, onExport }: Soci
                     <span>Track Competitor Performance</span>
                   </label>
                 </div>
-              </CardContent>
-            </BossCard>
+              </div>
+            </div>
+          </HudBorder>
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
               variant="outline"
             >
               Previous
-            </BossButton>
+            </CyberButton>
             <div className="flex gap-2">
-              <BossButton 
+              <CyberButton 
                 onClick={handleSave}
-                variant="empowerment"
-                crown
+                variant="neon"
               >
                 Save Strategy
-              </BossButton>
-              <BossButton 
+              </CyberButton>
+              <CyberButton 
                 onClick={() => handleExport('pdf')}
-                variant="accent"
+                variant="secondary"
               >
                 Export PDF
-              </BossButton>
+              </CyberButton>
             </div>
           </div>
         </TabsContent>

@@ -57,6 +57,24 @@ export interface LeaderboardEntry {
   streak: number;
 }
 
+export interface CommunityComment {
+  id: string;
+  postId: string;
+  content: string;
+  author: {
+    id: string;
+    name: string;
+    avatar: string;
+    level: number;
+    title: string;
+    verified: boolean;
+  };
+  timestamp: string;
+  likes: number;
+  isSolution: boolean;
+  isLiked: boolean;
+}
+
 export class CommunityService {
   static async getPosts(userId?: string): Promise<CommunityPost[]> {
     const posts = await db.select({
@@ -167,6 +185,57 @@ export class CommunityService {
       title: u.title || 'Operative',
       points: u.points || 0,
       streak: u.streak
+    }));
+  }
+
+  static async getComments(postId: string, userId?: string): Promise<CommunityComment[]> {
+    const comments = await db.select({
+      id: communityComments.id,
+      postId: communityComments.post_id,
+      content: communityComments.content,
+      createdAt: communityComments.created_at,
+      likes: communityComments.like_count,
+      isSolution: communityComments.is_solution,
+      author: {
+        id: users.id,
+        name: users.full_name,
+        avatar: users.image,
+        level: users.level,
+        title: users.role,
+        verified: users.onboarding_completed
+      }
+    })
+    .from(communityComments)
+    .innerJoin(users, eq(communityComments.user_id, users.id))
+    .where(eq(communityComments.post_id, postId))
+    .orderBy(desc(communityComments.created_at)); // Newest first
+
+    // Check for user likes
+    let userLikes: Set<string> = new Set();
+    if (userId) {
+        // Assuming there is a commentLikes table
+         /* const likes = await db.select({ commentId: commentLikes.comment_id })
+             .from(commentLikes)
+             .where(eq(commentLikes.user_id, userId));
+         userLikes = new Set(likes.map(l => l.commentId)); */
+    }
+
+    return comments.map(c => ({
+      id: c.id,
+      postId: c.postId,
+      content: c.content,
+      timestamp: c.createdAt.toLocaleDateString(),
+      likes: c.likes,
+      isSolution: c.isSolution,
+      isLiked: userLikes.has(c.id),
+      author: {
+        id: c.author.id,
+        name: c.author.name || 'Unknown',
+        avatar: c.author.avatar || '/default-user.svg',
+        level: c.author.level || 1,
+        title: c.author.title || 'Operative',
+        verified: c.author.verified || false
+      }
     }));
   }
 }

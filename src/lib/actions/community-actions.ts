@@ -14,6 +14,8 @@ import { eq, and, sql } from 'drizzle-orm';
 import { authenticateAction } from '@/lib/auth-server';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { logError } from '@/lib/logger';
+import { CommunityService } from '@/lib/services/community-service';
 
 const postSchema = z.object({
   content: z.string().min(1),
@@ -112,4 +114,47 @@ export async function deletePost(postId: string) {
 
   revalidatePath('/dashboard/nexus');
   return { success: true };
+}
+
+export async function addComment(postId: string, content: string) {
+  try {
+    const { user } = await authenticateAction();
+    if (!user) throw new Error('Unauthorized');
+
+    if (!content.trim()) throw new Error('Content is required');
+
+    // Insert comment
+    await db.insert(communityComments).values({
+      post_id: postId,
+      user_id: user.id,
+      content: content.trim(),
+    });
+
+    // Increment comment count on post
+    await db.update(communityPosts)
+      .set({ 
+        comment_count: sql`${communityPosts.comment_count} + 1`,
+        updated_at: new Date()
+      })
+      .where(eq(communityPosts.id, postId));
+
+    revalidatePath('/dashboard/nexus');
+    return { success: true };
+  } catch (error: any) {
+    if (error instanceof Error) {
+        logError('Failed to add comment', error);
+    } else {
+        logError('Failed to add comment', { error: String(error) });
+    }
+    return { success: false, error: 'Failed to add comment' };
+  }
+}
+
+export async function toggleLike(postId: string) {
+    return reactToPost(postId, 'like');
+}
+
+export async function fetchComments(postId: string) {
+    const { user } = await authenticateAction();
+    return CommunityService.getComments(postId, user?.id);
 }

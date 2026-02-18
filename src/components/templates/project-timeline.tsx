@@ -8,8 +8,8 @@ import { Textarea} from "@/components/ui/textarea"
 import { Label} from "@/components/ui/label"
 import { Slider} from "@/components/ui/slider"
 import { Button} from "@/components/ui/button"
-import { BossButton} from "@/components/ui/boss-button"
-import { BossCard} from "@/components/ui/boss-card"
+import { CyberButton } from "@/components/cyber/CyberButton"
+import { HudBorder } from "@/components/cyber/HudBorder"
 import { Badge} from "@/components/ui/badge"
 import { Progress} from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
@@ -566,17 +566,18 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
 
         {/* Step 1: Project Setup */}
         <TabsContent value="step-1" className="space-y-6">
-          <BossCard>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Target className="w-5 h-5 text-purple-600" />
-                Project Setup
-              </CardTitle>
-              <CardDescription>
-                Define your project&apos;s basic information and constraints
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <HudBorder className="p-6">
+            <div className="space-y-6">
+              <div className="flex flex-col space-y-1.5">
+                <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                  <Target className="w-5 h-5 text-purple-600" />
+                  Project Setup
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Define your project&apos;s basic information and constraints
+                </p>
+              </div>
+              <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="project-name">Project Name *</Label>
@@ -737,42 +738,44 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                   <li>Consider dependencies between tasks when planning</li>
                 </ul>
               </div>
-            </CardContent>
-          </BossCard>
+              </div>
+            </div>
+          </HudBorder>
 
           <div className="flex justify-end">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               disabled={!data.projectName}
-              crown
+              variant="cyan"
             >
               Next: Team & Resources
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 2: Team Management */}
         <TabsContent value="step-2" className="space-y-6">
-          <BossCard>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-purple-600" />
-                Team & Resources
-              </CardTitle>
-              <CardDescription>
-                Add team members and define their roles and availability
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <HudBorder className="p-6">
+            <div className="space-y-6">
+              <div className="flex flex-col space-y-1.5">
+                <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                   <Users className="w-5 h-5 text-purple-600" />
+                   Team & Resources
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                   Add team members and define their roles and availability
+                </p>
+              </div>
+              <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Team Members</h4>
                   <p className="text-sm text-gray-600">Manage your project team and their capabilities</p>
                 </div>
-                  <BossButton onClick={addResource} variant="outline" size="sm">
+                  <CyberButton onClick={addResource} variant="cyan" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Team Member
-                  </BossButton>
+                  </CyberButton>
               </div>
 
               <div className="space-y-4">
@@ -919,22 +922,23 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                   </div>
                 </div>
               )}
-            </CardContent>
-          </BossCard>
+              </div>
+            </div>
+          </HudBorder>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(1)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
-              crown
+              variant="cyan"
             >
               Next: Tasks & Timeline
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
@@ -942,26 +946,28 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
         <TabsContent value="step-3" className="space-y-6">
           <div className="grid gap-6">
             {/* Tasks */}
-            <BossCard>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5 text-purple-600" />
-                  Tasks & Timeline
-                </CardTitle>
-                <CardDescription>
-                  Create and organize your project tasks and dependencies
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
+            {/* Tasks */}
+            <HudBorder className="p-6">
+              <div className="space-y-6">
+                <div className="flex flex-col space-y-1.5">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    <Calendar className="w-5 h-5 text-purple-600" />
+                    Tasks & Timeline
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Create and organize your project tasks and dependencies
+                  </p>
+                </div>
+                <div className="space-y-6">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-semibold">Project Tasks</h4>
                     <p className="text-sm text-gray-600">Break down your project into manageable tasks</p>
                   </div>
-                  <BossButton onClick={addTask} variant="outline" size="sm">
+                  <CyberButton onClick={() => addTask()} variant="outline" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Task
-                  </BossButton>
+                  </CyberButton>
                 </div>
 
                 <div className="space-y-4">
@@ -1164,176 +1170,52 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                     <p className="text-sm">Add tasks to build your project timeline</p>
                   </div>
                 )}
-              </CardContent>
-            </BossCard>
+              </div>
+            </div>
+          </HudBorder>
 
-            {/* Milestones */}
-            <BossCard>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Flag className="w-5 h-5 text-purple-600" />
-                  Project Milestones
-                </CardTitle>
-                <CardDescription>
-                  Define key project milestones and deliverables
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h4 className="font-semibold">Milestones</h4>
-                    <p className="text-sm text-gray-600">Mark important checkpoints in your project</p>
-                  </div>
-                  <BossButton onClick={addMilestone} variant="outline" size="sm">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add Milestone
-                  </BossButton>
-                </div>
 
-                <div className="space-y-4">
-                  {data.milestones.map((milestone: ProjectMilestone) => (
-                    <motion.div
-                      key={milestone.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="p-4 border rounded-sm"
-                    >
-                      <div className="flex justify-between items-start mb-3">
-                        <Input
-                          placeholder="Milestone title"
-                          value={milestone.name}
-                          onChange={(e) => updateMilestone(milestone.id, { name: e.target.value })}
-                          className="font-medium flex-1 mr-4"
-                        />
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeMilestone(milestone.id)}
-                        >
-                          <Minus className="w-4 h-4" />
-                        </Button>
-                      </div>
-
-                      <Textarea
-                        placeholder="Milestone description and success criteria..."
-                        value={milestone.description}
-                        onChange={(e) => updateMilestone(milestone.id, { description: e.target.value })}
-                        className="mb-3"
-                        rows={2}
-                      />
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <div>
-                          <Label className="text-sm">Target Date</Label>
-                          <Input
-                            type="date"
-                            value={milestone.date.toISOString().split('T')[0]}
-                            onChange={(e) => updateMilestone(milestone.id, { date: new Date(e.target.value) })}
-                            className="mt-1"
-                          />
-                        </div>
-                        <div>
-                          <Label className="text-sm">Status</Label>
-                          <Select 
-                            value={milestone.status} 
-                            onValueChange={(value: string) => updateMilestone(milestone.id, { status: value as ProjectMilestone['status'] })}
-                          >
-                            <SelectTrigger className="mt-1">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="upcoming">Upcoming</SelectItem>
-                              <SelectItem value="achieved">Achieved</SelectItem>
-                              <SelectItem value="missed">Missed</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="flex items-center space-x-2 mt-6">
-                          <Label className="text-sm">Color</Label>
-                          <div className="flex gap-2 mt-1">
-                            {['#8B5CF6', '#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6'].map(color => (
-                              <button
-                                key={color}
-                                className="w-8 h-8 rounded border-2 border-gray-300 hover:border-gray-400"
-                                style={{ backgroundColor: color }}
-                                onClick={() => updateMilestone(milestone.id, { color })}
-                                title={`Select ${color} color`}
-                                aria-label={`Select ${color} color`}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center justify-between mt-3 pt-3 border-t">
-                        <div className="flex items-center gap-2">
-                        <div>
-                          <Label className="text-sm">Key Deliverables (comma-separated)</Label>
-                          <Textarea
-                            placeholder="e.g., Design mockups, User testing report, Final presentation"
-                            value={milestone.deliverables.join(", ")}
-                            onChange={(e) => updateMilestone(milestone.id, { 
-                              deliverables: e.target.value.split(",").map(d => d.trim()).filter(Boolean) 
-                            })}
-                            className="mt-1"
-                            rows={2}
-                          />
-                        </div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-
-                {data.milestones.length === 0 && (
-                  <div className="text-center py-8 text-gray-500">
-                    <Flag className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                    <p>No milestones defined yet</p>
-                    <p className="text-sm">Add key milestones to track progress</p>
-                  </div>
-                )}
-              </CardContent>
-            </BossCard>
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
-              crown
+              variant="cyan"
             >
               Next: Milestones
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 4: Milestones */}
         <TabsContent value="step-4" className="space-y-6">
-          <BossCard>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Flag className="w-5 h-5 text-purple-600" />
-                Project Milestones
-              </CardTitle>
-              <CardDescription>
-                Define key project milestones and deliverable checkpoints
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <HudBorder className="p-6">
+            <div className="space-y-6">
+              <div className="flex flex-col space-y-1.5">
+                <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                  <Flag className="w-5 h-5 text-purple-600" />
+                  Project Milestones
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Define key project milestones and deliverable checkpoints
+                </p>
+              </div>
+              <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Milestones</h4>
                   <p className="text-sm text-gray-600">Track important project checkpoints and deliverables</p>
                 </div>
-                <BossButton onClick={addMilestone} variant="outline" size="sm">
+                <CyberButton onClick={addMilestone} variant="outline" size="sm">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Milestone
-                </BossButton>
+                </CyberButton>
               </div>
 
               <div className="space-y-4">
@@ -1440,47 +1322,49 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                   <p className="text-sm">Add milestones to track key project checkpoints</p>
                 </div>
               )}
-            </CardContent>
-          </BossCard>
+              </div>
+            </div>
+          </HudBorder>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(5)}
-              crown
+              variant="cyan"
             >
               Next: Risk Management
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 5: Risk Management */}
         <TabsContent value="step-5" className="space-y-6">
-          <BossCard>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <AlertCircle className="w-5 h-5 text-purple-600" />
-                Risk Management
-              </CardTitle>
-              <CardDescription>
-                Identify and manage potential project risks
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
+          <HudBorder className="p-6">
+            <div className="space-y-6">
+              <div className="flex flex-col space-y-1.5">
+                <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                  <AlertCircle className="w-5 h-5 text-purple-600" />
+                  Risk Management
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  Identify and manage potential project risks
+                </p>
+              </div>
+              <div className="space-y-6">
               <div className="flex items-center justify-between">
                 <div>
                   <h4 className="font-semibold">Project Risks</h4>
                   <p className="text-sm text-gray-600">Identify potential issues and mitigation strategies</p>
                 </div>
-                <BossButton onClick={addRisk} variant="outline" size="sm">
+                <CyberButton onClick={addRisk} variant="outline" size="sm">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Risk
-                </BossButton>
+                </CyberButton>
               </div>
 
               <div className="space-y-4">
@@ -1661,22 +1545,23 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                   </div>
                 </div>
               )}
-            </CardContent>
-          </BossCard>
+                </div>
+              </div>
+            </HudBorder>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(6)}
-              crown
+              variant="cyan"
             >
               Next: Timeline View
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
         
@@ -1684,17 +1569,18 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
         <TabsContent value="step-6" className="space-y-6">
           <div className="grid gap-6">
             {/* Project Overview */}
-            <BossCard>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-purple-600" />
-                Project Timeline & Analytics
-                </CardTitle>
-                <CardDescription>
-                Visualize your project timeline and track progress
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
+            <HudBorder className="p-6">
+              <div className="space-y-6">
+                <div className="flex flex-col space-y-1.5">
+                  <h3 className="text-2xl font-semibold leading-none tracking-tight flex items-center gap-2">
+                    <BarChart3 className="w-5 h-5 text-purple-600" />
+                    Project Timeline & Analytics
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Visualize your project timeline and track progress
+                  </p>
+                </div>
+                <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                   <div className="text-center p-4 border rounded-sm">
                     <div className="text-2xl font-bold text-purple-900">{analytics.totalProgress}%</div>
@@ -1840,31 +1726,31 @@ export default function ProjectTimeline({ template: _template, onSave: _onSave, 
                     </div>
                   </div>
                 </div>
-              </CardContent>
-            </BossCard>
+                </div>
+              </div>
+            </HudBorder>
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(5)}
               variant="outline"
             >
               Previous
-            </BossButton>
+            </CyberButton>
             <div className="flex gap-2">
-              <BossButton 
+              <CyberButton 
                 onClick={handleSave}
-                variant="purple"
-                crown
+                variant="neon"
               >
                 Save Project
-              </BossButton>
-              <BossButton 
+              </CyberButton>
+              <CyberButton 
                 onClick={() => handleExport('pdf')}
                 variant="cyan"
               >
                 Export Timeline
-              </BossButton>
+              </CyberButton>
             </div>
           </div>
         </TabsContent>

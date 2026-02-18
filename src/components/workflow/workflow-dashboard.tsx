@@ -17,7 +17,7 @@ import {  Plus,
   Clock,
   Eye
 } from 'lucide-react'
-import { BossButton } from '@/components/ui/boss-button'
+import { CyberButton } from '@/components/cyber/CyberButton'
 import { Badge } from '@/components/ui/badge'
 import { VisualWorkflowBuilder } from './visual-workflow-builder'
 import { WorkflowTemplates } from './workflow-templates'
@@ -56,8 +56,8 @@ interface WorkflowDashboardProps {
     className?: string
 }
 
-// Map PrimaryButton to BossButton for compatibility
-const PrimaryButton = BossButton
+// Map PrimaryButton to CyberButton for compatibility
+const PrimaryButton = CyberButton
 export function WorkflowDashboard({ className = "" }: WorkflowDashboardProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'builder' | 'templates' | 'executions'>('overview')
   const [stats, setStats] = useState<WorkflowStats>(INITIAL_STATS)

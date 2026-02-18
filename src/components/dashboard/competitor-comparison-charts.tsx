@@ -6,7 +6,7 @@ import { motion} from "framer-motion"
 import { 
   BarChart3, TrendingUp, Users, DollarSign, Globe, Target, Zap, ArrowUp, ArrowDown, Minus,} from "lucide-react"
 
-import { BossCard} from "@/components/ui/boss-card"
+import { HudBorder } from "@/components/cyber/HudBorder"
 
 import { Badge} from "@/components/ui/badge"
 import { Progress} from "@/components/ui/progress"
@@ -169,11 +169,11 @@ export function CompetitorComparisonCharts({
 
   if (loading) {
     return (
-      <BossCard className={className}>
+      <HudBorder className={className}>
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
         </div>
-      </BossCard>
+      </HudBorder>
     )
   }
 
@@ -181,7 +181,7 @@ export function CompetitorComparisonCharts({
     <div className={className}>
       <div className="space-y-6">
         {/* Header and Controls */}
-        <BossCard variant="purple" crown>
+        <HudBorder variant="magenta">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div>
               <h3 className="text-xl font-bold text-gradient flex items-center space-x-2">
@@ -235,11 +235,11 @@ export function CompetitorComparisonCharts({
               </Select>
             </div>
           </div>
-        </BossCard>
+        </HudBorder>
 
         {/* Chart Visualization */}
         {chartType === "bar" && (
-          <BossCard>
+          <HudBorder>
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h4 className="font-semibold flex items-center space-x-2">
@@ -289,7 +289,7 @@ export function CompetitorComparisonCharts({
                   })}
               </div>
             </div>
-          </BossCard>
+          </HudBorder>
         )}
 
         {chartType === "comparison" && (
@@ -301,7 +301,7 @@ export function CompetitorComparisonCharts({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
               >
-                <BossCard>
+                <HudBorder>
                   <div className="space-y-4">
                     {/* Competitor Header */}
                     <div className="flex items-center justify-between">
@@ -372,7 +372,7 @@ export function CompetitorComparisonCharts({
                       </span>
                     </div>
                   </div>
-                </BossCard>
+                </HudBorder>
               </motion.div>
             ))}
           </div>
@@ -381,7 +381,7 @@ export function CompetitorComparisonCharts({
 
 
         {/* Summary Stats */}
-        <BossCard variant="purple" crown>
+        <HudBorder variant="magenta">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-gradient mb-1">
@@ -419,7 +419,7 @@ export function CompetitorComparisonCharts({
               </div>
             </div>
           </div>
-        </BossCard>
+        </HudBorder>
       </div>
     </div>
   )

@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { FeatureGate } from '@/components/subscription/FeatureGate';
 import { CyberButton } from '@/components/cyber/CyberButton';
 import { HudBorder } from '@/components/cyber/HudBorder';
+import { cn } from '@/lib/utils';
 
 interface WarRoomClientProps {
   initialSessions: WarRoomSession[];

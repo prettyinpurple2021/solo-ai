@@ -51,12 +51,14 @@ Simulate a debate amongst yourselves about the user's topic: "${validated.topic}
 - Ensure the advice is practical for a solopreneur (one person team).
     `;
 
-    const { object } = await generateObject({
+    const result = await generateObject({
       model: openai('gpt-4o'),
       system: systemPrompt,
       prompt: `Simulate the debate for topic: ${validated.topic}`,
       schema: schema as any,
     });
+
+    const object = result.object as z.infer<typeof schema>;
 
     // Save result to DB
     const [newSession] = await db.insert(warRoomSessions).values({
@@ -73,8 +75,12 @@ Simulate a debate amongst yourselves about the user's topic: "${validated.topic}
 
     revalidatePath('/dashboard/war-room');
     return { success: true, session: newSession };
-  } catch (err) {
-    logError('War Room Simulation Failed', err);
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+        logError('War Room Simulation Failed', err);
+    } else {
+        logError('War Room Simulation Failed', { error: String(err) });
+    }
     throw new Error("Simulation failed");
   }
 }
