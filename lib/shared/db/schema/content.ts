@@ -16,8 +16,8 @@ export const pitchDecks = pgTable("pitch_decks", {
   version: integer("version").default(1),
   status: varchar("status", { length: 50 }).default('draft'),
   viewCount: integer("view_count").default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index("pitch_decks_user_id_idx").on(table.userId),
 }));
@@ -32,8 +32,8 @@ export const slides = pgTable("slides", {
   content: jsonb("content").default({}),
   notes: text("notes"),
   isVisible: boolean("is_visible").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
   deckIdIdx: index("slides_deck_id_idx").on(table.deckId),
   deckOrderIdx: index("slides_deck_order_idx").on(table.deckId, table.order),
@@ -49,8 +49,8 @@ export const slideComponents = pgTable("slide_components", {
   style: jsonb("style").default({}),
   animation: jsonb("animation").default({}),
   zIndex: integer("z_index").default(0),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
   slideIdIdx: index("slide_components_slide_id_idx").on(table.slideId),
 }));
@@ -61,8 +61,8 @@ export const trainingHistory = pgTable("training_history", {
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   moduleId: text("module_id").notNull(),
   score: integer("score"),
-  completedAt: timestamp("completed_at").defaultNow(),
-  createdAt: timestamp("created_at").defaultNow(),
+  completedAt: timestamp("completed_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Code Snippets
@@ -73,8 +73,8 @@ export const codeSnippets = pgTable("code_snippets", {
   language: varchar("language", { length: 50 }).notNull(),
   code: text("code").notNull(),
   description: text("description"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // Document Folders table
@@ -87,10 +87,10 @@ export const documentFolders = pgTable('document_folders', {
   color: varchar('color', { length: 7 }).default('#8B5CF6'),
   icon: varchar('icon', { length: 50 }),
   is_default: boolean('is_default').default(false),
-  file_count: integer('file_count').default(0),
-  total_size: integer('total_size').default(0),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  file_count: integer('file_count').default(0).notNull(),
+  total_size: integer('total_size').default(0).notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index('document_folders_user_id_idx').on(table.user_id),
   parentIdIdx: index('document_folders_parent_id_idx').on(table.parent_id),
@@ -111,20 +111,20 @@ export const documents = pgTable('documents', {
   file_type: varchar('file_type', { length: 50 }).notNull(),
   mime_type: varchar('mime_type', { length: 100 }).notNull(),
   size: integer('size').notNull(),
-  file_url: varchar('file_url', { length: 1000 }), 
-  category: varchar('category', { length: 100 }).default('uncategorized'),
+  file_url: varchar('file_url', { length: 1000 }).notNull(), 
+  category: varchar('category', { length: 100 }).default('uncategorized').notNull(),
   description: text('description'),
-  tags: jsonb('tags').default('[]'),
-  metadata: jsonb('metadata').default('{}'),
-  ai_insights: jsonb('ai_insights').default('{}'),
+  tags: jsonb('tags').default('[]').notNull(),
+  metadata: jsonb('metadata').default('{}').notNull(),
+  ai_insights: jsonb('ai_insights').default('{}').notNull(),
   embedding: vector("embedding", { dimensions: 1536 }),
-  is_favorite: boolean('is_favorite').default(false),
-  is_public: boolean('is_public').default(false),
-  download_count: integer('download_count').default(0),
-  view_count: integer('view_count').default(0),
+  is_favorite: boolean('is_favorite').default(false).notNull(),
+  is_public: boolean('is_public').default(false).notNull(),
+  download_count: integer('download_count').default(0).notNull(),
+  view_count: integer('view_count').default(0).notNull(),
   last_accessed: timestamp('last_accessed'),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index('documents_user_id_idx').on(table.user_id),
   folderIdIdx: index('documents_folder_id_idx').on(table.folder_id),
@@ -148,7 +148,7 @@ export const documentVersions = pgTable('document_versions', {
   checksum: varchar('checksum', { length: 128 }),
   change_summary: text('change_summary'),
   created_by: text('created_by').notNull().references(() => users.id),
-  created_at: timestamp('created_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
   documentIdIdx: index('document_versions_document_id_idx').on(table.document_id),
   versionNumberIdx: index('document_versions_version_number_idx').on(table.version_number),
@@ -163,9 +163,9 @@ export const documentPermissions = pgTable('document_permissions', {
   email: varchar('email', { length: 255 }),
   role: varchar('role', { length: 20 }).notNull().default('viewer'),
   granted_by: text('granted_by').notNull().references(() => users.id),
-  granted_at: timestamp('granted_at').defaultNow(),
+  granted_at: timestamp('granted_at').defaultNow().notNull(),
   expires_at: timestamp('expires_at'),
-  is_active: boolean('is_active').default(true),
+  is_active: boolean('is_active').default(true).notNull(),
 }, (table) => ({
   documentIdIdx: index('document_permissions_document_id_idx').on(table.document_id),
   userIdIdx: index('document_permissions_user_id_idx').on(table.user_id),
@@ -183,11 +183,11 @@ export const documentShareLinks = pgTable('document_share_links', {
   permissions: varchar('permissions', { length: 20 }).notNull().default('view'),
   expires_at: timestamp('expires_at'),
   max_access_count: integer('max_access_count'),
-  access_count: integer('access_count').default(0),
-  download_enabled: boolean('download_enabled').default(true),
-  require_auth: boolean('require_auth').default(false),
-  is_active: boolean('is_active').default(true),
-  created_at: timestamp('created_at').defaultNow(),
+  access_count: integer('access_count').default(0).notNull(),
+  download_enabled: boolean('download_enabled').default(true).notNull(),
+  require_auth: boolean('require_auth').default(false).notNull(),
+  is_active: boolean('is_active').default(true).notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
   documentIdIdx: index('document_share_links_document_id_idx').on(table.document_id),
   createdByIdx: index('document_share_links_created_by_idx').on(table.created_by),
@@ -201,8 +201,8 @@ export const documentActivity = pgTable('document_activity', {
   document_id: text('document_id').notNull().references(() => documents.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   action: varchar('action', { length: 50 }).notNull(),
-  details: jsonb('details').default('{}'),
-  timestamp: timestamp('timestamp').defaultNow(),
+  details: jsonb('details').default('{}').notNull(),
+  timestamp: timestamp('timestamp').defaultNow().notNull(),
 }, (table) => ({
     documentIdIdx: index('document_activity_document_id_idx').on(table.document_id),
     userIdIdx: index('document_activity_user_id_idx').on(table.user_id),
@@ -215,10 +215,10 @@ export const learningPaths = pgTable('learning_paths', {
     description: text('description').notNull(),
     category: varchar('category', { length: 100 }).notNull(), // marketing, finance, etc.
     difficulty: varchar('difficulty', { length: 50 }).notNull(), // beginner, intermediate, advanced
-    tags: jsonb('tags').default('[]'),
+    tags: jsonb('tags').default('[]').notNull(),
     created_by: text('created_by').references(() => users.id, { onDelete: 'set null' }),
-    is_public: boolean('is_public').default(false),
-    created_at: timestamp('created_at').defaultNow(),
+    is_public: boolean('is_public').default(false).notNull(),
+    created_at: timestamp('created_at').defaultNow().notNull(),
 });
   
 export const learningModules = pgTable('learning_modules', {
@@ -227,25 +227,25 @@ export const learningModules = pgTable('learning_modules', {
     title: varchar('title', { length: 255 }).notNull(),
     description: text('description'),
     content: text('content').notNull(), // markdown or video URL
-    module_type: varchar('module_type', { length: 50 }).default('article'), // article, video, quiz
+    module_type: varchar('module_type', { length: 50 }).default('article').notNull(), // article, video, quiz
     order: integer('order').notNull(),
-    duration_minutes: integer('duration_minutes').default(15),
-    difficulty: varchar('difficulty', { length: 50 }).default('beginner'),
-    skills_covered: jsonb('skills_covered').default('[]'),
-    prerequisites: jsonb('prerequisites').default('[]'),
-    created_at: timestamp('created_at').defaultNow(),
-    updated_at: timestamp('updated_at').defaultNow(),
+    duration_minutes: integer('duration_minutes').default(15).notNull(),
+    difficulty: varchar('difficulty', { length: 50 }).default('beginner').notNull(),
+    skills_covered: jsonb('skills_covered').default('[]').notNull(),
+    prerequisites: jsonb('prerequisites').default('[]').notNull(),
+    created_at: timestamp('created_at').defaultNow().notNull(),
+    updated_at: timestamp('updated_at').defaultNow().notNull(),
 });
   
 export const userLearningProgress = pgTable('user_learning_progress', {
     id: text('id').primaryKey().$defaultFn(() => uuidv4()),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     module_id: text('module_id').notNull().references(() => learningModules.id, { onDelete: 'cascade' }),
-    status: varchar('status', { length: 50 }).default('not_started'), // in_progress, completed
-    metadata: jsonb('metadata').default({}),
+    status: varchar('status', { length: 50 }).default('not_started').notNull(), // in_progress, completed
+    metadata: jsonb('metadata').default({}).notNull(),
     last_position: integer('last_position'),
     completed_at: timestamp('completed_at'),
-    last_accessed_at: timestamp('last_accessed_at').defaultNow(),
+    last_accessed_at: timestamp('last_accessed_at').defaultNow().notNull(),
 });
   
 // Feedback table
@@ -261,6 +261,6 @@ export const feedback = pgTable('feedback', {
     screenshot_url: text('screenshot_url'),
     status: feedbackStatusEnum('status').notNull().default('pending'),
     priority: text('priority').notNull().default('medium'),
-    created_at: timestamp('created_at').defaultNow(),
-    updated_at: timestamp('updated_at').defaultNow(),
+    created_at: timestamp('created_at').defaultNow().notNull(),
+    updated_at: timestamp('updated_at').defaultNow().notNull(),
 });

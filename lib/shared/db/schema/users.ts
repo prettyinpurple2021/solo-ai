@@ -34,8 +34,8 @@ export const users = pgTable('users', {
   date_of_birth: timestamp('date_of_birth'),
   is_verified: boolean('is_verified').default(false),
   onboarding_completed: boolean('onboarding_completed').notNull().default(false),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 });
 
 export const accounts = pgTable(

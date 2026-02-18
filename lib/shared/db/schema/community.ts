@@ -1,6 +1,6 @@
 import { integer, pgTable, varchar, text, timestamp, boolean, index, primaryKey, foreignKey, jsonb } from 'drizzle-orm/pg-core';
 import { v4 as uuidv4 } from 'uuid';
-import { users } from './users';
+import { users } from './users.ts';
 
 export const communityTopics = pgTable('community_topics', {
   id: text('id').primaryKey().$defaultFn(() => uuidv4()),
@@ -8,9 +8,9 @@ export const communityTopics = pgTable('community_topics', {
   slug: varchar('slug', { length: 50 }).notNull().unique(), // e.g. "general", "wins"
   description: text('description'),
   icon: varchar('icon', { length: 50 }), // Lucide icon name
-  order: integer('order').default(0),
-  is_active: boolean('is_active').default(true),
-  created_at: timestamp('created_at').defaultNow(),
+  order: integer('order').default(0).notNull(),
+  is_active: boolean('is_active').default(true).notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const communityPosts = pgTable('community_posts', {
@@ -20,13 +20,13 @@ export const communityPosts = pgTable('community_posts', {
   title: varchar('title', { length: 255 }).notNull(),
   content: text('content').notNull(), // Markdown supported
   image: varchar('image', { length: 1000 }),
-  tags: jsonb('tags').default('[]'),
-  metadata: jsonb('metadata').default('{}'),
-  is_pinned: boolean('is_pinned').default(false),
-  view_count: integer('view_count').default(0),
-  like_count: integer('like_count').default(0),
-  comment_count: integer('comment_count').default(0),
-  shares_count: integer('shares_count').default(0),
+  tags: jsonb('tags').default('[]').notNull(),
+  metadata: jsonb('metadata').default('{}').notNull(),
+  is_pinned: boolean('is_pinned').default(false).notNull(),
+  view_count: integer('view_count').default(0).notNull(),
+  like_count: integer('like_count').default(0).notNull(),
+  comment_count: integer('comment_count').default(0).notNull(),
+  shares_count: integer('shares_count').default(0).notNull(),
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
@@ -41,10 +41,10 @@ export const communityComments = pgTable('community_comments', {
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   parent_id: text('parent_id'), 
   content: text('content').notNull(),
-  is_solution: boolean('is_solution').default(false), 
-  like_count: integer('like_count').default(0),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  is_solution: boolean('is_solution').default(false).notNull(), 
+  like_count: integer('like_count').default(0).notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
     postIdIdx: index('community_comments_post_id_idx').on(table.post_id),
     userIdIdx: index('community_comments_user_id_idx').on(table.user_id),
@@ -59,7 +59,7 @@ export const communityComments = pgTable('community_comments', {
 export const postLikes = pgTable('post_likes', {
     post_id: text('post_id').notNull().references(() => communityPosts.id, { onDelete: 'cascade' }),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-    created_at: timestamp('created_at').defaultNow(),
+    created_at: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
     pk: primaryKey({ columns: [table.post_id, table.user_id] }),
     postIdIdx: index('post_likes_post_id_idx').on(table.post_id),
@@ -69,7 +69,7 @@ export const postLikes = pgTable('post_likes', {
 export const commentLikes = pgTable('comment_likes', {
     comment_id: text('comment_id').notNull().references(() => communityComments.id, { onDelete: 'cascade' }),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-    created_at: timestamp('created_at').defaultNow(),
+    created_at: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
     pk: primaryKey({ columns: [table.comment_id, table.user_id] }),
     commentIdIdx: index('comment_likes_comment_id_idx').on(table.comment_id),

@@ -4,9 +4,10 @@ import { db } from '@/db';
 import { goals, tasks, briefcases } from '@/shared/db/schema';
 import { onboardingAI } from '@/services/onboarding-ai';
 import { ApiError, handleApiError, successResponse } from '@/lib/api-utils';
-import { logInfo,} from '@/lib/logger';
+import { logInfo, logError } from '@/lib/logger';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
+import { eq, and } from 'drizzle-orm';
 
 export async function POST(req: Request) {
   try {
@@ -58,58 +59,41 @@ export async function POST(req: Request) {
 
     logInfo('AI Roadmap Generated', { userId, phases: launchPlan.roadmap.length });
 
-    // 2. Save detailed roadmap to DB
-    // First, verify or create a default "Launch Mission" briefcase
-    let briefcaseId: string;
-    
-    // Check for existing "Empire Launch Mission" briefcase for this user
-    // Since we don't have eq/and helpers imported from drizzle-orm, we will use sql-like query or just simple insert if not found logic
-    // But better to just try/catch unique constraint or query first if possible.
-    // Assuming we have access to eq/and. I need to verify imports first.
-    // Actually, I don't see eq/and imports. I should use db.query provided by Drizzle if available, or just use the findFirst approach.
-    // However, I can't easily add imports without seeing the file structure properly.
-    // I see `import { db } from '@/db';` so I probably have access to Drizzle query builder.
-    // I'll assume standard Drizzle usage. I'll add the necessary imports to the top of the file in a separate chunk.
-    
-    const existingBriefcase = await db.query.briefcases.findFirst({
-      where: (briefcases, { eq, and }) => and(
-        eq(briefcases.user_id, userId),
-        eq(briefcases.title, 'Empire Launch Mission')
-      )
-    });
-
-    if (existingBriefcase) {
-      briefcaseId = existingBriefcase.id;
-    } else {
-      const newBriefcaseId = uuidv4();
-      await db.insert(briefcases).values({
-        id: newBriefcaseId,
-        user_id: userId,
-        title: 'Empire Launch Mission',
-        description: 'Your AI-generated roadmap to launch your business.',
-        status: 'active'
+    // 2. Save detailed roadmap to DB using a transaction
+    const result = await db.transaction(async (tx) => {
+      // Find or create "Empire Launch Mission" briefcase
+      let briefcaseId: string;
+      
+      const existingBriefcase = await tx.query.briefcases.findFirst({
+        where: (briefcases, { eq, and }) => and(
+          eq(briefcases.user_id, userId),
+          eq(briefcases.title, 'Empire Launch Mission')
+        )
       });
-      briefcaseId = newBriefcaseId;
-    }
 
-    // 3. Create Goals (Phases) and Tasks
-    // Use serialized operations to prevent FK race conditions
-    // Insert Goals first, then their Tasks
-    
-    const goalOperations: any[] = [];
-    const taskOperations: any[] = [];
+      if (existingBriefcase) {
+        briefcaseId = existingBriefcase.id;
+      } else {
+        const newBriefcaseId = uuidv4();
+        await tx.insert(briefcases).values({
+          id: newBriefcaseId,
+          user_id: userId,
+          title: 'Empire Launch Mission',
+          description: 'Your AI-generated roadmap to launch your business.',
+          status: 'active'
+        });
+        briefcaseId = newBriefcaseId;
+      }
 
-    // Organize data structures
-    for (const phase of launchPlan.roadmap) {
-      const goalId = uuidv4();
-      const goalDueDate = new Date();
-      // Heuristic: Set due date 7 days * phase index from now
-      const weekIndex = launchPlan.roadmap.indexOf(phase);
-      goalDueDate.setDate(goalDueDate.getDate() + (7 * (weekIndex + 1)));
+      // Create Goals (Phases) and Tasks
+      for (const phase of launchPlan.roadmap) {
+        const goalId = uuidv4();
+        const goalDueDate = new Date();
+        const weekIndex = launchPlan.roadmap.indexOf(phase);
+        goalDueDate.setDate(goalDueDate.getDate() + (7 * (weekIndex + 1)));
 
-      // Prepare Goal Insert
-      goalOperations.push(
-        db.insert(goals).values({
+        // Insert Goal
+        await tx.insert(goals).values({
           id: goalId,
           user_id: userId,
           briefcase_id: briefcaseId,
@@ -117,13 +101,11 @@ export async function POST(req: Request) {
           status: 'pending',
           priority: 'high',
           due_date: goalDueDate
-        })
-      );
+        });
 
-      // Prepare Task Inserts linked to this Goal
-      for (const task of phase.tasks) {
-        taskOperations.push(
-          db.insert(tasks).values({
+        // Insert Tasks for this Goal
+        for (const task of phase.tasks) {
+          await tx.insert(tasks).values({
             id: uuidv4(),
             user_id: userId,
             goal_id: goalId,
@@ -133,28 +115,21 @@ export async function POST(req: Request) {
             status: 'pending',
             priority: 'medium',
             estimated_minutes: task.estimatedMinutes
-          })
-        );
+          });
+        }
       }
-    }
 
-    // Execute Goal inserts first & await completion to satisfy FK constraints
-    if (goalOperations.length > 0) {
-      await Promise.all(goalOperations);
-    }
-    
-    // Then execute Task inserts
-    if (taskOperations.length > 0) {
-      await Promise.all(taskOperations);
-    }
+      return { briefcaseId };
+    });
 
     return successResponse({
       message: 'Empire Roadmap generated successfully',
-      briefcaseId,
+      briefcaseId: result.briefcaseId,
       roadmap: launchPlan
     });
 
   } catch (error) {
+    logError('Onboarding Roadmap Failed', error);
     return handleApiError(error);
   }
 }

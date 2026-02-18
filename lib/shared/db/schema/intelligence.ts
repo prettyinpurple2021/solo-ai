@@ -1,7 +1,8 @@
 
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum, vector, serial } from 'drizzle-orm/pg-core';
 import { v4 as uuidv4 } from 'uuid';
-import { users } from './users';
+import { users } from './users.ts';
+import { competitorProfiles } from './intelligence.ts'; // For self-reference in intelligenceData if needed, but it's already in the same file.
 
 // Contacts
 export const contacts = pgTable("contacts", {
@@ -16,9 +17,11 @@ export const contacts = pgTable("contacts", {
   tags: text("tags").array(),
   lastContact: timestamp("last_contact"),
   relationship: text("relationship"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index("contacts_user_id_idx").on(table.userId),
+}));
 
 // Competitor Reports
 export const competitorReports = pgTable("competitor_reports", {
@@ -27,20 +30,24 @@ export const competitorReports = pgTable("competitor_reports", {
   competitorName: text("competitor_name").notNull(),
   threatLevel: text("threat_level"),
   missionBrief: text("mission_brief"),
-  intel: jsonb("intel"),
-  vulnerabilities: jsonb("vulnerabilities"),
-  strengths: jsonb("strengths"),
-  metrics: jsonb("metrics"),
-  generatedAt: timestamp("generated_at").defaultNow(),
-});
+  intel: jsonb("intel").default('[]').notNull(),
+  vulnerabilities: jsonb("vulnerabilities").default('[]').notNull(),
+  strengths: jsonb("strengths").default('[]').notNull(),
+  metrics: jsonb("metrics").default('{}').notNull(),
+  generatedAt: timestamp("generated_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index("competitor_reports_user_id_idx").on(table.userId),
+}));
 
 // Pivot Analyses
 export const pivotAnalyses = pgTable("pivot_analyses", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
-  gaps: jsonb("gaps"),
-  generatedAt: timestamp("generated_at").defaultNow(),
-});
+  gaps: jsonb("gaps").default('[]').notNull(),
+  generatedAt: timestamp("generated_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index("pivot_analyses_user_id_idx").on(table.userId),
+}));
 
 // Business Context (Unified Context for Agents)
 export const businessContext = pgTable("business_context", {
@@ -48,10 +55,11 @@ export const businessContext = pgTable("business_context", {
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   contextType: varchar("context_type", { length: 50 }).notNull(), // goals, values, mission, operations
   content: text("content").notNull(),
-  metadata: jsonb("metadata").default({}),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  metadata: jsonb("metadata").default('{}').notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index("business_context_user_id_idx").on(table.userId),
+  typeIdx: index("business_context_type_idx").on(table.contextType),
 }));
 
 // Daily Intelligence
@@ -60,12 +68,12 @@ export const dailyIntelligence = pgTable("daily_intelligence", {
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   date: timestamp("date").defaultNow().notNull(),
   summary: text("summary").notNull(),
-  highlights: jsonb("highlights").default([]),
-  priorityActions: jsonb("priority_actions").default([]),
-  alerts: jsonb("alerts").default([]),
+  highlights: jsonb("highlights").default('[]').notNull(),
+  priorityActions: jsonb("priority_actions").default('[]').notNull(),
+  alerts: jsonb("alerts").default('[]').notNull(),
   motivationalMessage: text("motivational_message"),
-  riskLevel: varchar("risk_level", { length: 20 }).default('low'),
-  createdAt: timestamp("created_at").defaultNow(),
+  riskLevel: varchar("risk_level", { length: 20 }).default('low').notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index("daily_intel_user_id_idx").on(table.userId),
   dateIdx: index("daily_intel_date_idx").on(table.date),
@@ -78,7 +86,7 @@ export const marketIntelligenceCache = pgTable("market_intelligence_cache", {
   results: jsonb("results").notNull(),
   source: varchar("source", { length: 50 }).notNull(),
   expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
   queryIdx: index("market_intel_query_idx").on(table.query),
 }));
@@ -92,8 +100,10 @@ export const competitorNewsArticles = pgTable("competitor_news_articles", {
   content: text("content"),
   sentiment: decimal("sentiment", { precision: 3, scale: 2 }),
   publishedAt: timestamp("published_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  competitorIdIdx: index("competitor_news_comp_id_idx").on(table.competitorId),
+}));
 
 // Competitor Social Mentions
 export const competitorSocialMentions = pgTable("competitor_social_mentions", {
@@ -102,10 +112,12 @@ export const competitorSocialMentions = pgTable("competitor_social_mentions", {
   platform: varchar("platform", { length: 50 }).notNull(),
   content: text("content").notNull(),
   author: varchar("author", { length: 100 }),
-  engagement: integer("engagement").default(0),
+  engagement: integer("engagement").default(0).notNull(),
   mentionDate: timestamp("mention_date").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+}, (table) => ({
+  competitorIdIdx: index("competitor_social_comp_id_idx").on(table.competitorId),
+}));
 
 // Search Index table for RAG and global search
 export const searchIndex = pgTable("search_index", {
@@ -115,11 +127,11 @@ export const searchIndex = pgTable("search_index", {
   entityId: text("entity_id").notNull(),
   title: varchar("title", { length: 255 }).notNull(),
   content: text("content").notNull(),
-  tags: jsonb("tags").default([]),
-  metadata: jsonb("metadata").default({}),
+  tags: jsonb("tags").default('[]').notNull(),
+  metadata: jsonb("metadata").default('{}').notNull(),
   embedding: vector("embedding", { dimensions: 1536 }),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index("search_index_user_id_idx").on(table.userId),
   entityTypeIdx: index("search_index_entity_type_idx").on(table.entityType),
@@ -133,14 +145,16 @@ export const competitors = pgTable('competitors', {
   name: varchar('name', { length: 255 }).notNull(),
   website: varchar('website', { length: 500 }),
   description: text('description'),
-  strengths: jsonb('strengths').default('[]'),
-  weaknesses: jsonb('weaknesses').default('[]'),
-  opportunities: jsonb('opportunities').default('[]'),
-  threats: jsonb('threats').default('[]'),
+  strengths: jsonb('strengths').default('[]').notNull(),
+  weaknesses: jsonb('weaknesses').default('[]').notNull(),
+  opportunities: jsonb('opportunities').default('[]').notNull(),
+  threats: jsonb('threats').default('[]').notNull(),
   market_position: varchar('market_position', { length: 100 }),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
-});
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index('competitors_user_id_idx').on(table.user_id),
+}));
 
 // Competitor Profiles table (Detailed)
 export const competitorProfiles = pgTable('competitor_profiles', {
@@ -157,16 +171,16 @@ export const competitorProfiles = pgTable('competitor_profiles', {
   funding_stage: varchar('funding_stage', { length: 50 }),
   threat_level: varchar('threat_level', { length: 20 }).notNull().default('medium'),
   monitoring_status: varchar('monitoring_status', { length: 20 }).notNull().default('active'),
-  social_media_handles: jsonb('social_media_handles').default('{}'),
-  key_personnel: jsonb('key_personnel').default('[]'),
-  products: jsonb('products').default('[]'),
-  market_position: jsonb('market_position').default('{}'),
-  competitive_advantages: jsonb('competitive_advantages').default('[]'),
-  vulnerabilities: jsonb('vulnerabilities').default('[]'),
-  monitoring_config: jsonb('monitoring_config').default('{}'),
+  social_media_handles: jsonb('social_media_handles').default('{}').notNull(),
+  key_personnel: jsonb('key_personnel').default('[]').notNull(),
+  products: jsonb('products').default('[]').notNull(),
+  market_position: jsonb('market_position').default('{}').notNull(),
+  competitive_advantages: jsonb('competitive_advantages').default('[]').notNull(),
+  vulnerabilities: jsonb('vulnerabilities').default('[]').notNull(),
+  monitoring_config: jsonb('monitoring_config').default('{}').notNull(),
   last_analyzed: timestamp('last_analyzed'),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index('competitor_profiles_user_id_idx').on(table.user_id),
   threatLevelIdx: index('competitor_profiles_threat_level_idx').on(table.threat_level),
@@ -184,16 +198,16 @@ export const intelligenceData = pgTable('intelligence_data', {
   source_url: varchar('source_url', { length: 1000 }),
   data_type: varchar('data_type', { length: 100 }).notNull(),
   raw_content: jsonb('raw_content'),
-  extracted_data: jsonb('extracted_data').default('{}'),
-  analysis_results: jsonb('analysis_results').default('[]'),
-  confidence: decimal('confidence', { precision: 3, scale: 2 }).default('0.00'),
+  extracted_data: jsonb('extracted_data').default('{}').notNull(),
+  analysis_results: jsonb('analysis_results').default('[]').notNull(),
+  confidence: decimal('confidence', { precision: 3, scale: 2 }).default('0.00').notNull(),
   importance: varchar('importance', { length: 20 }).notNull().default('medium'),
-  tags: jsonb('tags').default('[]'),
-  collected_at: timestamp('collected_at').defaultNow(),
+  tags: jsonb('tags').default('[]').notNull(),
+  collected_at: timestamp('collected_at').defaultNow().notNull(),
   processed_at: timestamp('processed_at'),
   expires_at: timestamp('expires_at'),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   competitorIdIdx: index('intelligence_data_competitor_id_idx').on(table.competitor_id),
   userIdIdx: index('intelligence_data_user_id_idx').on(table.user_id),
@@ -214,14 +228,14 @@ export const competitorAlerts = pgTable('competitor_alerts', {
   severity: varchar('severity', { length: 20 }).notNull().default('info'),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
-  source_data: jsonb('source_data').default('{}'),
-  action_items: jsonb('action_items').default('[]'),
-  recommended_actions: jsonb('recommended_actions').default('[]'),
-  is_read: boolean('is_read').default(false),
-  is_archived: boolean('is_archived').default(false),
+  source_data: jsonb('source_data').default('{}').notNull(),
+  action_items: jsonb('action_items').default('[]').notNull(),
+  recommended_actions: jsonb('recommended_actions').default('[]').notNull(),
+  is_read: boolean('is_read').default(false).notNull(),
+  is_archived: boolean('is_archived').default(false).notNull(),
   acknowledged_at: timestamp('acknowledged_at'),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   competitorIdIdx: index('competitor_alerts_competitor_id_idx').on(table.competitor_id),
   userIdIdx: index('competitor_alerts_user_id_idx').on(table.user_id),
@@ -249,8 +263,8 @@ export const scrapingJobs = pgTable('scraping_jobs', {
   max_retries: integer('max_retries').notNull().default(3),
   status: varchar('status', { length: 20 }).notNull().default('pending'),
   config: jsonb('config').notNull().default('{}'),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   competitorIdIdx: index('scraping_jobs_competitor_id_idx').on(table.competitor_id),
   userIdIdx: index('scraping_jobs_user_id_idx').on(table.user_id),
@@ -270,8 +284,8 @@ export const scrapingJobResults = pgTable('scraping_job_results', {
   execution_time: integer('execution_time').notNull(),
   changes_detected: boolean('changes_detected').notNull().default(false),
   retry_count: integer('retry_count').notNull().default(0),
-  completed_at: timestamp('completed_at').defaultNow(),
-  created_at: timestamp('created_at').defaultNow(),
+  completed_at: timestamp('completed_at').defaultNow().notNull(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
   jobIdIdx: index('scraping_job_results_job_id_idx').on(table.job_id),
   successIdx: index('scraping_job_results_success_idx').on(table.success),
@@ -292,21 +306,21 @@ export const competitiveOpportunities = pgTable('competitive_opportunities', {
   effort: varchar('effort', { length: 20 }).notNull(),
   timing: varchar('timing', { length: 20 }).notNull(),
   priority_score: decimal('priority_score', { precision: 5, scale: 2 }).notNull(),
-  evidence: jsonb('evidence').default('[]'),
-  recommendations: jsonb('recommendations').default('[]'),
-  status: varchar('status', { length: 50 }).default('identified'),
+  evidence: jsonb('evidence').default('[]').notNull(),
+  recommendations: jsonb('recommendations').default('[]').notNull(),
+  status: varchar('status', { length: 50 }).default('identified').notNull(),
   assigned_to: text('assigned_to').references(() => users.id, { onDelete: 'set null' }),
   implementation_notes: text('implementation_notes'),
   roi_estimate: decimal('roi_estimate', { precision: 10, scale: 2 }),
   actual_roi: decimal('actual_roi', { precision: 10, scale: 2 }),
-  success_metrics: jsonb('success_metrics').default('{}'),
-  tags: jsonb('tags').default('[]'),
-  is_archived: boolean('is_archived').default(false),
-  detected_at: timestamp('detected_at').defaultNow(),
+  success_metrics: jsonb('success_metrics').default('{}').notNull(),
+  tags: jsonb('tags').default('[]').notNull(),
+  is_archived: boolean('is_archived').default(false).notNull(),
+  detected_at: timestamp('detected_at').defaultNow().notNull(),
   started_at: timestamp('started_at'),
   completed_at: timestamp('completed_at'),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index('competitive_opportunities_user_id_idx').on(table.user_id),
   competitorIdIdx: index('competitive_opportunities_competitor_id_idx').on(table.competitor_id),
@@ -326,18 +340,18 @@ export const opportunityActions = pgTable('opportunity_actions', {
   action_type: varchar('action_type', { length: 50 }).notNull(),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
-  priority: varchar('priority', { length: 20 }).default('medium'),
+  priority: varchar('priority', { length: 20 }).default('medium').notNull(),
   estimated_effort_hours: integer('estimated_effort_hours'),
   actual_effort_hours: integer('actual_effort_hours'),
   estimated_cost: decimal('estimated_cost', { precision: 10, scale: 2 }),
   actual_cost: decimal('actual_cost', { precision: 10, scale: 2 }),
   expected_outcome: text('expected_outcome'),
   actual_outcome: text('actual_outcome'),
-  status: varchar('status', { length: 50 }).default('pending'),
+  status: varchar('status', { length: 50 }).default('pending').notNull(),
   due_date: timestamp('due_date'),
   completed_at: timestamp('completed_at'),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   opportunityIdIdx: index('opportunity_actions_opportunity_id_idx').on(table.opportunity_id),
   userIdIdx: index('opportunity_actions_user_id_idx').on(table.user_id),
@@ -357,10 +371,10 @@ export const opportunityMetrics = pgTable('opportunity_metrics', {
   target_value: decimal('target_value', { precision: 15, scale: 4 }),
   current_value: decimal('current_value', { precision: 15, scale: 4 }),
   unit: varchar('unit', { length: 50 }),
-  measurement_date: timestamp('measurement_date').defaultNow(),
+  measurement_date: timestamp('measurement_date').defaultNow().notNull(),
   notes: text('notes'),
-  created_at: timestamp('created_at').defaultNow(),
-  updated_at: timestamp('updated_at').defaultNow(),
+  created_at: timestamp('created_at').defaultNow().notNull(),
+  updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   opportunityIdIdx: index('opportunity_metrics_opportunity_id_idx').on(table.opportunity_id),
   userIdIdx: index('opportunity_metrics_user_id_idx').on(table.user_id),
@@ -379,12 +393,12 @@ export const competitorActivities = pgTable('competitor_activities', {
     source_url: varchar('source_url', { length: 1000 }),
     source_type: varchar('source_type', { length: 50 }).notNull(),
     importance: varchar('importance', { length: 20 }).notNull().default('medium'),
-    confidence: decimal('confidence', { precision: 3, scale: 2 }).default('0.00'),
-    metadata: jsonb('metadata').default('{}'),
-    tags: jsonb('tags').default('[]'),
-    detected_at: timestamp('detected_at').defaultNow(),
-    created_at: timestamp('created_at').defaultNow(),
-    updated_at: timestamp('updated_at').defaultNow(),
+    confidence: decimal('confidence', { precision: 3, scale: 2 }).default('0.00').notNull(),
+    metadata: jsonb('metadata').default('{}').notNull(),
+    tags: jsonb('tags').default('[]').notNull(),
+    detected_at: timestamp('detected_at').defaultNow().notNull(),
+    created_at: timestamp('created_at').defaultNow().notNull(),
+    updated_at: timestamp('updated_at').defaultNow().notNull(),
   }, (table) => ({
     competitorIdIdx: index('competitor_activities_competitor_id_idx').on(table.competitor_id),
     userIdIdx: index('competitor_activities_user_id_idx').on(table.user_id),

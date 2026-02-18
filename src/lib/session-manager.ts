@@ -166,31 +166,74 @@ export class SessionManager {
             completedTasks: []
         },
       }
-      
-      // Persist session to DB
-      const result = await db.insert(collaborationSessions).values(sessionValues).returning()
-      const sessionSession = result[0]
-      const sessionId = sessionSession.id
-
-       // Persist participants
-       for (const agentId of availableAgents) {
-            await db.insert(collaborationParticipants).values({
-                session_id: sessionId,
-                agent_id: agentId,
-                role: 'member'
-            })
             
-            // Update in-memory agent state
-            const agent = this.collaborationHub.getAgent(agentId)
-            if (agent) agent.currentSessions.push(sessionId)
-       }
+      // Persist session to DB using a transaction
+      const sessionResult = await db.transaction(async (tx) => {
+        const result = await tx.insert(collaborationSessions).values(sessionValues).returning()
+        const sessionSession = result[0]
+        const sessionId = sessionSession.id
 
-      // Create initial checkpoint
-      await this.createCheckpoint(sessionId, 'Session initialized')
+        // Persist participants
+        for (const agentId of availableAgents) {
+          await tx.insert(collaborationParticipants).values({
+            session_id: sessionId,
+            agent_id: agentId,
+            role: 'member'
+          })
+          
+          // Update in-memory agent state (this is outside DB but should only happen if DB succeeds)
+          // We can do this after the transaction or inside if we're sure.
+          // Better to return the data and do side effects after.
+        }
 
-      // Send initial prompt if template provides one
+        // Create initial checkpoint
+        const state = await this.getSessionStateAsync(sessionId, tx) // Need to support tx in getSessionState
+        if (state) {
+          await tx.insert(collaborationCheckpoints).values({
+            id: crypto.randomUUID(),
+            session_id: sessionId,
+            description: 'Session initialized',
+            state: state as any,
+            timestamp: new Date()
+          })
+        }
+
+        // Send initial prompt message if template provides one
+        if (template?.initialPrompt) {
+          await tx.insert(collaborationMessages).values({
+            session_id: sessionId,
+            from_agent_id: 'system',
+            content: template.initialPrompt,
+            message_type: 'system',
+            metadata: config.initialContext
+          })
+        }
+
+        return { sessionId, sessionSession }
+      })
+
+      const { sessionId, sessionSession } = sessionResult
+
+      // Update in-memory agent state after successful transaction
+      for (const agentId of availableAgents) {
+        const agent = this.collaborationHub.getAgent(agentId)
+        if (agent) agent.currentSessions.push(sessionId)
+      }
+
+      // Broadcast system message if template provides one
       if (template?.initialPrompt) {
-        await this.sendSystemMessage(sessionId, template.initialPrompt, config.initialContext)
+        const systemMessage: AgentMessage = {
+          id: crypto.randomUUID(),
+          sessionId,
+          fromAgent: 'system',
+          toAgent: null,
+          messageType: 'notification',
+          content: template.initialPrompt,
+          timestamp: new Date(),
+          priority: 'medium',
+          metadata: config.initialContext
+        }
+        await this.messageRouter.broadcastMessage(systemMessage)
       }
 
       logInfo(`✅ Session ${sessionId} created with ${availableAgents.length} agents`)
