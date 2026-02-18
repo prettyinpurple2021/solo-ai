@@ -10,7 +10,7 @@ import {
   communityPosts,
   moodEntries,
   webhookEvents
-} from '../lib/shared/db/schema/index.ts';
+} from '../lib/shared/db/schema/index';
 import { getTableConfig } from 'drizzle-orm/pg-core';
 
 async function audit() {

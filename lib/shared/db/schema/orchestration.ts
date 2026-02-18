@@ -1,7 +1,7 @@
 
 import { pgTable, text, varchar, timestamp, jsonb, index, foreignKey, serial, integer, boolean, uniqueIndex } from "drizzle-orm/pg-core";
 import { v4 as uuidv4 } from 'uuid';
-import { users } from './users.ts';
+import { users } from './users';
 
 // Boardroom Sessions
 export const boardroomSessions = pgTable("boardroom_sessions", {
@@ -102,4 +102,3 @@ export const agentMemory = pgTable("agent_memory", {
 }, (table) => ({
   userIdAgentIdIdx: uniqueIndex("agent_memory_user_agent_idx").on(table.userId, table.agentId),
 }));
-

@@ -1,6 +1,6 @@
 import { pgTable, text, timestamp, integer, varchar, check, index } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-import { users } from './users.ts';
+import { users } from './users';
 import { v4 as uuidv4 } from 'uuid';
 
 // Mood/Energy Tracker

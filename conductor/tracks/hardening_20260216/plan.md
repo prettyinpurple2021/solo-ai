@@ -10,20 +10,22 @@
     - [x] Implement standardized Server Response interfaces
 - [x] Task: Conductor - User Manual Verification 'Shared Internal Library Foundation' (Protocol in workflow.md)
 
-## Phase 2: Database & Transaction Hardening
-- [~] Task: Drizzle Schema Audit & Refactor
-    - [ ] Audit all schemas for strict nullability and indexing
-    - [ ] Ensure `pgvector` alignment for Briefcase RAG
-- [ ] Task: Implement Transactional Orchestration
-    - [ ] Refactor multi-step agent workflows to use `db.transaction()`
-- [ ] Task: Conductor - User Manual Verification 'Database & Transaction Hardening' (Protocol in workflow.md)
+## Phase 2: Database & Transaction Hardening [COMPLETED]
+- [x] Task: Drizzle Schema Audit & Refactor
+    - [x] Audit all schemas for strict nullability and indexing
+    - [x] Ensure `pgvector` alignment for Briefcase RAG
+- [x] Task: Implement Transactional Orchestration
+    - [x] Refactor multi-step agent workflows to use `db.transaction()`
+- [x] Task: Conductor - User Manual Verification 'Database & Transaction Hardening' (Protocol in workflow.md)
 
-## Phase 3: Next.js 16.1 Architecture Migration
-- [ ] Task: RSC Data Fetching Migration
-    - [ ] Refactor existing routes to use React Server Components for data fetching
-- [ ] Task: Server Actions Migration
-    - [ ] Convert client-side mutations/API calls to `'use server'` actions
-    - [ ] Implement standardized error handling in all Server Actions
+## Phase 3: Next.js 16.1 Architecture Migration [IN PROGRESS]
+- [~] Task: RSC Data Fetching Migration
+    - [x] Refactor Dashboard, Templates, Competitors, Briefcase, and Slaylist to use RSC
+    - [ ] Complete remaining routes
+- [~] Task: Server Actions Migration
+    - [x] Implement Profile, Template, and Task Server Actions
+    - [x] Integrate Actions into Client Components
+    - [ ] Complete remaining mutations
 - [ ] Task: Conductor - User Manual Verification 'Next.js 16.1 Architecture Migration' (Protocol in workflow.md)
 
 ## Phase 4: Authentication & Feature Gating
