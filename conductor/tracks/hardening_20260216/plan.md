@@ -21,9 +21,12 @@
 ## Phase 3: Next.js 16.1 Architecture Migration [IN PROGRESS]
 - [~] Task: RSC Data Fetching Migration
     - [x] Refactor Dashboard, Templates, Competitors, Briefcase, and Slaylist to use RSC
-    - [ ] Complete remaining routes
+    - [x] Refactor Nexus and Collaboration to use RSC
+    - [~] Refactor War Room to use RSC
+    - [ ] Complete remaining routes (Intelligence details, Workflow builder)
 - [~] Task: Server Actions Migration
     - [x] Implement Profile, Template, and Task Server Actions
+    - [x] Implement Community and Collaboration Server Actions
     - [x] Integrate Actions into Client Components
     - [ ] Complete remaining mutations
 - [ ] Task: Conductor - User Manual Verification 'Next.js 16.1 Architecture Migration' (Protocol in workflow.md)
