@@ -9,7 +9,7 @@ SoloSuccess AI Platform is built as a modern, scalable web application using a s
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │                 │    │                 │    │                 │
-│   Next.js App   │────│   Neon DB       │────│   AI Services   │
+│   Next.js App   │────│   Express API   │────│   AI Services   │
 │   (Frontend)    │    │   (Backend)     │    │   (OpenAI, etc) │
 │                 │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
@@ -18,8 +18,8 @@ SoloSuccess AI Platform is built as a modern, scalable web application using a s
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │                 │    │                 │    │                 │
-│   Hosting       │    │   PostgreSQL    │    │   External APIs │
-│   Platform      │    │   (Database)    │    │   (Stripe, etc) │
+│   Vercel        │    │   Neon DB       │    │   External APIs │
+│   (Hosting)     │    │   (PostgreSQL)  │    │   (Stripe, etc) │
 │                 │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
 ```
@@ -40,7 +40,8 @@ SoloSuccess AI Platform is built as a modern, scalable web application using a s
 
 ### 3. **Real-Time Capabilities**
 
-- Supabase real-time subscriptions for live updates
+- **Socket.IO** for bi-directional event-based communication
+- **Redis (Upstash)** for pub/sub messaging and state management
 - Optimistic UI updates for better user experience
 - WebSocket connections for chat and collaboration features
 
@@ -73,8 +74,9 @@ components/
 
 ### 2. Business Logic Layer
 
-**Location**: `/lib`, `/hooks`
+**Location**: `/server`, `/lib`, `/hooks`
 
+- **Express Server**: Dedicated backend handling detailed business logic
 - **Shared Foundation Layer**: Standardized schemas and type definitions in `lib/shared/` ([Details](./shared-library.md))
 - **Custom Hooks**: Reusable state logic and side effects
 - **Utility Functions**: Helper functions and business rules
@@ -83,43 +85,41 @@ components/
 
 ```typescript
 // Example service structure
-lib/
-├── auth.ts          # Authentication logic
-├── ai-services.ts   # AI integration services
-├── database.ts      # Database utilities
-├── utils.ts         # General utilities
-└── types.ts         # Type definitions
+server/
+├── routes/          # API Route definitions
+├── db/              # Database connection and schema
+├── utils/           # Backend utilities
+└── index.ts         # Server entry point
 ```
 
 ### 3. Data Layer
 
-**Location**: `/app/api`, Supabase
+**Location**: `/server/db`, Neon, Upstash
 
-- **API Routes**: Next.js API routes for server-side logic
-- **Supabase Client**: Database operations and real-time subscriptions
+- **Neon (PostgreSQL)**: Serves as the primary relational database
+- **Drizzle ORM**: TypeScript ORM for type-safe database interactions
+- **Upstash Redis**: Used for caching and real-time pub/sub
 - **Data Validation**: Zod schemas for type-safe data validation
-- **Caching**: Strategic caching for performance optimization
 
 ### 4. External Integrations
 
 - **AI Services**: OpenAI, Anthropic, Google AI
-- **Authentication**: Supabase Auth with SSR support
+- **Authentication**: Custom Auth (JWT/Bcrypt) / Stack Auth
 - **Pricing Display**: Marketing-focused pricing tiers
-- **File Storage**: Supabase Storage for file uploads
 - **Email**: Resend for transactional emails
 
 ## 🔄 Data Flow
 
 ### 1. User Interaction Flow
 
-User Action → Component → Hook/Service → API Route → Supabase → Database
+User Action → Component → Hook/Service → Express API → Drizzle ORM → Neon DB
                 ↓
             UI Update ← State Update ← Response ← JSON ← Query Result
 
 ### 2. Real-Time Updates
 
 ```
-Database Change → Supabase Trigger → Real-time Channel → Client Subscription → UI Update
+Database/Event → Socket.IO Server → Redis Pub/Sub → Connected Clients → UI Update
 ```
 
 ### 3. AI Processing Flow
@@ -133,9 +133,9 @@ User Input → Context Building → AI Service → Response Processing → UI Di
 ### Authentication & Authorization
 
 - **JWT Tokens**: Secure token-based authentication
-- **Row Level Security**: Database-level access control
+- **Middleware Protection**: Express middleware for route validation
 - **Role-Based Access**: User roles and permissions
-- **Session Management**: Secure session handling
+- **Session Management**: Secure session handling via Redis/JWT
 
 ### Data Protection
 
