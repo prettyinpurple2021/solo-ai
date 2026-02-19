@@ -12,7 +12,7 @@
 
 | Agent Name | Role | Value | Recommended Tier |
 | :--- | :--- | :--- | :--- |
-| **Roxy** | Strategic Operations Architect | 🔴 **HIGH** | Singularity|
+| **Roxy** | Strategic Operations Architect | 🔴 **HIGH** | Singularity |
 | **Lexi** | Legal & Compliance Protocol | 🔴 **HIGH** | Singularity |
 | **Nova** | Product Visionary System | 🔴 **HIGH** | Singularity |
 | **Echo** | Viral Marketing Engine | 🔴 **HIGH** | Singularity |

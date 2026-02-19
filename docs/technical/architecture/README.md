@@ -6,7 +6,6 @@ SoloSuccess AI Platform is built as a modern, scalable web application using a s
 
 ## 📊 High-Level Architecture
 
-```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │                 │    │                 │    │                 │
 │   Next.js App   │────│   Express API   │────│   AI Services   │
@@ -22,7 +21,6 @@ SoloSuccess AI Platform is built as a modern, scalable web application using a s
 │   (Hosting)     │    │   (PostgreSQL)  │    │   (Stripe, etc) │
 │                 │    │                 │    │                 │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
-```
 
 ## 🎯 Core Design Principles
 
@@ -118,13 +116,13 @@ User Action → Component → Hook/Service → Express API → Drizzle ORM → N
 
 ### 2. Real-Time Updates
 
-```
+```text
 Database/Event → Socket.IO Server → Redis Pub/Sub → Connected Clients → UI Update
 ```
 
 ### 3. AI Processing Flow
 
-```
+```text
 User Input → Context Building → AI Service → Response Processing → UI Display
 ```
 
@@ -202,7 +200,7 @@ User Input → Context Building → AI Service → Response Processing → UI Di
 
 ### CI/CD Pipeline
 
-```
+```text
 GitHub Push → CI/CD Pipeline → Type Check → Lint → Deploy → Live
 ```
 
