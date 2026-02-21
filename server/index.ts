@@ -4,44 +4,23 @@ import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server as SocketServer, Socket } from 'socket.io';
 import cors from 'cors';
-import { db } from './db';
-
-import { users, tasks, chatHistory, competitorReports, businessContext } from '../src/lib/shared/db/schema';
-import { eq, desc, and,} from 'drizzle-orm';
-
-import { GoogleGenAI } from '@google/genai';
-import { Redis } from '@upstash/redis';
-import bcrypt from 'bcryptjs';
-import { generateToken, verifyToken } from './utils/jwt';
-
-import { SearchIndexer } from './utils/searchIndexer';
-import adminRouter from './routes/admin';
-import contactsRouter from './routes/contacts';
-import pitchDecksRouter from './routes/pitchDecks';
-import slidesRouter from './routes/slides';
-import stripeRouter from './routes/stripe';
-import path from 'path';
-import { setIo, broadcastToUser } from './realtime';
+import { setIo } from './realtime';
 import { setupBoardroomSocket } from './src/realtime/boardroom';
 import { logInfo, logWarn, logError } from './utils/logger';
-import rateLimit from 'express-rate-limit';
-import dashboardRouter from './routes/dashboard';
+import path from 'path';
+import { z } from 'zod';
+import { boardroomRouter } from './src/routes/boardroom';
 
 const app = express();
-// Trust proxy for correct IP identification behind reverse proxies (e.g., Render, Heroku, AWS)
 app.set('trust proxy', 1);
 
-
 const httpServer = createServer(app);
-// Allow localhost when NODE_ENV is undefined (local dev) or explicitly 'development'
-// Block localhost when NODE_ENV is 'production', 'staging', 'test', etc.
 const isDevelopment = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 const allowedOrigins = Array.from(
     new Set(
         [
             process.env.CLIENT_URL || "https://solosuccessai.fun",
             "https://solosuccessai.fun",
-            // Only allow localhost in development (undefined or 'development')
             ...(isDevelopment ? ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"] : []),
         ].filter(Boolean)
     )
@@ -53,18 +32,11 @@ const io = new SocketServer(httpServer, {
         methods: ["GET", "POST"],
     }
 });
+
 setIo(io);
 setupBoardroomSocket(io);
 
 const PORT = process.env.PORT || 5000;
-
-// Initialize Redis
-const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL!,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
-
-
 
 app.use(cors({
     origin: allowedOrigins,
@@ -72,680 +44,70 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Sanity check for critical env vars (log only, do not crash)
+// Sanity check for critical env vars
 const requiredEnv = [
     'DATABASE_URL',
     'UPSTASH_REDIS_REST_URL',
     'UPSTASH_REDIS_REST_TOKEN',
     'CLIENT_URL',
-    'OPENAI_API_KEY',
-    'STRIPE_SECRET_KEY',
 ];
 const missingEnv = requiredEnv.filter((key) => !process.env[key]);
 if (missingEnv.length > 0) {
-    logWarn('Missing critical environment variables', { missingEnv });
+    logWarn('Missing critical environment variables for Real-time Hub', { missingEnv });
 }
 
-// Middleware to extract user from Auth headers
-const getUserId = (req: express.Request): string | null => {
-    // Check for JWT first
-    const authHeader = req.headers.authorization;
-    if (authHeader?.startsWith('Bearer ')) {
-        const token = authHeader.substring(7);
-        const decoded = verifyToken(token);
-        if (decoded) return decoded.userId;
-    }
-
-    // Stack Auth sends user ID in x-stack-user-id header
-    const userId = req.headers['x-stack-user-id'] as string;
-    return userId || null;
-};
-
-// Cache helper functions
-const CACHE_TTL = 300; // 5 minutes
-
-async function getCached<T>(key: string): Promise<T | null> {
-    try {
-        const cached = await redis.get(key);
-        return cached as T | null;
-    } catch (error) {
-        logError('Redis get error', error);
-        return null;
-    }
-}
-
-async function setCache(key: string, value: any, ttl: number = CACHE_TTL): Promise<void> {
-    try {
-        await redis.setex(key, ttl, JSON.stringify(value));
-    } catch (error) {
-        logError('Redis set error', error);
-    }
-}
-
-async function invalidateCache(pattern: string): Promise<void> {
-    try {
-        // Invalidate by deleting
-        await redis.del(pattern);
-    } catch (error) {
-        logError('Redis invalidate error', error);
-    }
-}
-
-import { z } from 'zod';
-
-// WebSocket connection handling
+// WebSocket connection handling with strict validation
 io.on('connection', (socket: Socket) => {
-    logInfo('Client connected', { socketId: socket.id });
+    logInfo('Real-time client connected', { socketId: socket.id });
 
-    // Join user-specific room with validation
-    socket.on('join', (userId: any) => {
+    socket.on('join', (userId: string) => {
         try {
             const validatedUserId = z.string().min(1).parse(userId);
             socket.join(`user:${validatedUserId}`);
-            logInfo(`User ${validatedUserId} joined their room`);
+            logInfo(`User ${validatedUserId} joined real-time channel`);
         } catch (error) {
             logError('Invalid join event', { error, userId });
-            socket.emit('error', { message: 'Invalid user ID' });
+            socket.emit('error', { message: 'Invalid user context' });
         }
     });
 
     socket.on('disconnect', () => {
-        logInfo('Client disconnected', { socketId: socket.id });
+        logInfo('Real-time client disconnected', { socketId: socket.id });
     });
 });
 
-// Broadcast helper now provided by realtime.ts (setIo called above)
-
-// --- Routes ---
-
-import resourcesRouter from './routes/resources';
-
-// ... (imports)
-
-import searchRouter from './routes/search';
-import notificationsRouter from './routes/notifications';
-import aiRouter from './routes/ai';
-import presentationAiRouter from './routes/ai/presentation';
-import briefcaseRouter from './routes/briefcase';
-
-// ... (imports)
-
-import competitorsRouter from './routes/competitors';
-import { boardroomRouter } from './src/routes/boardroom';
-
-// ...
-
+// --- Orchestration Routes ---
 app.use('/api/boardroom', boardroomRouter);
-
-// Auth Routes
-app.post('/api/auth/signup', async (req: Request, res: Response) => {
-    try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
-
-        const existingUser = await db.select().from(users).where(eq(users.email, email)).limit(1);
-        if (existingUser.length > 0) {
-            return res.status(400).json({ error: 'User already exists' });
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = await db.insert(users).values({
-            id: crypto.randomUUID(),
-            email,
-            password: hashedPassword,
-        }).returning();
-
-        const token = generateToken(String(newUser[0].id), email);
-
-        return res.json({ token, user: newUser[0] });
-    } catch (error: any) {
-        logError('Signup error', error);
-        return res.status(500).json({ error: `Signup failed: ${error.message}` });
-    }
-});
-
-app.post('/api/auth/login', async (req: Request, res: Response) => {
-    try {
-        const { email, password } = req.body;
-
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
-
-        const user = await db.select().from(users).where(eq(users.email, email)).limit(1);
-        if (user.length === 0 || !user[0].password) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        const validPassword = await bcrypt.compare(password, user[0].password);
-        if (!validPassword) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        const token = generateToken(String(user[0].id), email);
-
-        return res.json({ token, user: user[0] });
-    } catch (error) {
-        logError('Login error', error);
-        return res.status(500).json({ error: 'Login failed' });
-    }
-});
-
-// AI Generation Proxy
-app.post('/api/generate', async (req: Request, res: Response) => {
-    try {
-        const { prompt, systemInstruction, model, history, temperature, maxOutputTokens } = req.body;
-        const apiKey = process.env.GEMINI_API_KEY;
-
-        if (!apiKey) {
-            return res.status(500).json({ error: 'Server configuration error: API Key missing' });
-        }
-
-        const ai = new GoogleGenAI({ apiKey });
-        const targetModel = model || 'gemini-2.5-flash';
-
-        if (history && Array.isArray(history)) {
-            const formattedHistory = history.map((h: any) => ({
-                role: h.role,
-                parts: [{ text: h.text }]
-            }));
-
-            const chat = ai.chats.create({
-                model: targetModel,
-                config: {
-                    systemInstruction,
-                    temperature: temperature || 0.8,
-                    maxOutputTokens
-                },
-                history: formattedHistory
-            });
-
-            const result = await chat.sendMessage({ message: prompt });
-            return res.json({ text: result.text || '' });
-        } else {
-            const chat = ai.chats.create({
-                model: targetModel,
-                config: {
-                    systemInstruction,
-                    temperature: temperature || 0.7,
-                    maxOutputTokens
-                },
-                history: []
-            });
-
-            const result = await chat.sendMessage({ message: prompt });
-            return res.json({ text: result.text || '' });
-        }
-    } catch (error) {
-        logError("Generation error", error);
-        return res.status(500).json({ error: 'Generation failed' });
-    }
-});
-
-// Root route for developer convenience (Development only)
-if (isDevelopment) {
-    app.get('/', (req: Request, res: Response) => {
-        res.send(`
-            <h1>SoloSuccess AI Backend is Running 🚀</h1>
-            <p>You are currently accessing the backend API server.</p>
-            <p>Please visit the frontend application at: <a href="${process.env.CLIENT_URL || 'http://localhost:3001'}">${process.env.CLIENT_URL || 'http://localhost:3001'}</a></p>
-        `);
-    });
-}
 
 // Health Check
 app.get('/api/health', (req: Request, res: Response) => {
     res.json({
         status: 'ok',
-        db: process.env.DATABASE_URL ? 'configured' : 'missing_env',
-        redis: process.env.UPSTASH_REDIS_REST_URL ? 'configured' : 'missing',
-        websocket: 'active'
+        service: 'SoloSuccess Real-time Hub',
+        websocket: 'active',
+        timestamp: new Date().toISOString()
     });
 });
 
-// User Progress
-app.get('/api/user', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        // Try cache first
-        const cacheKey = `user:${userId}`;
-        const cached = await getCached<any>(cacheKey);
-        if (cached) {
-            return res.json(cached);
-        }
-
-        // Get from database
-        let user;
-        // Get from database - check both ID and Stack ID
-        user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-        
-        if (user.length === 0) {
-            user = await db.select().from(users).where(eq(users.stackUserId, userId)).limit(1);
-        }
-
-        if (user.length === 0) {
-            // Create new user for Stack Auth (if not found by ID or Stack ID)
-            const newUser = await db.insert(users).values({
-                id: crypto.randomUUID(), // Explicitly generate ID
-                email: `${userId}@stack.auth`,
-                stackUserId: userId
-            }).returning();
-
-            await setCache(cacheKey, newUser[0]);
-            return res.json(newUser[0]);
-        }
-
-        await setCache(cacheKey, user[0]);
-        return res.json(user[0]);
-    } catch (error) {
-        logError('Error fetching user', error);
-        return res.status(500).json({ error: 'Failed to fetch user' });
-    }
-});
-
-app.post('/api/user/progress', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const { xp, level, totalActions } = req.body;
-
-        let user;
-        // Check both ID and Stack ID
-        user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
-        
-        if (user.length === 0) {
-            user = await db.select().from(users).where(eq(users.stackUserId, userId)).limit(1);
-        }
-
-        if (user.length === 0) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        const updated = await db.update(users)
-            .set({ xp, level, total_actions: totalActions, updated_at: new Date() })
-            .where(eq(users.id, user[0].id))
-            .returning();
-
-        // Invalidate cache
-        await invalidateCache(`user:${userId}`);
-
-        return res.json(updated[0]);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to update progress' });
-    }
-});
-
-// Tasks with multi-user support
-app.get('/api/tasks', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        // Try cache
-        const cacheKey = `tasks:${userId}`;
-        const cached = await getCached<any[]>(cacheKey);
-        if (cached) {
-            return res.json(cached);
-        }
-
-        const allTasks = await db.select().from(tasks)
-            .where(eq(tasks.user_id, userId))
-            .orderBy(desc(tasks.created_at));
-
-        await setCache(cacheKey, allTasks);
-        return res.json(allTasks);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to fetch tasks' });
-    }
-});
-
-app.post('/api/tasks', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const taskData = { ...req.body, userId };
-        const existing = await db.select().from(tasks).where(
-            and(eq(tasks.id, taskData.id), eq(tasks.user_id, userId))
-        );
-
-        let result;
-        if (existing.length > 0) {
-            result = await db.update(tasks).set(taskData).where(eq(tasks.id, taskData.id)).returning();
-        } else {
-            result = await db.insert(tasks).values(taskData).returning();
-        }
-
-        // Invalidate cache and broadcast
-        await invalidateCache(`tasks:${userId}`);
-        broadcastToUser(userId, 'task:updated', result[0]);
-
-        // Index for search
-        await SearchIndexer.indexTask(userId, result[0]);
-
-        return res.json(result[0]);
-    } catch (error) {
-        logError('Error saving task', error);
-        return res.status(500).json({ error: 'Failed to save task' });
-    }
-});
-
-app.post('/api/tasks/batch', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const taskList = req.body;
-        if (!Array.isArray(taskList)) {
-            return res.status(400).json({ error: "Expected array" });
-        }
-
-        for (const t of taskList) {
-            const taskData = { ...t, userId };
-            const existing = await db.select().from(tasks).where(
-                and(eq(tasks.id, t.id), eq(tasks.user_id, userId))
-            );
-
-            if (existing.length > 0) {
-                await db.update(tasks).set(taskData).where(eq(tasks.id, t.id));
-            } else {
-                await db.insert(tasks).values(taskData);
-            }
-            // Index each task
-            await SearchIndexer.indexTask(userId, taskData);
-        }
-
-        await invalidateCache(`tasks:${userId}`);
-        broadcastToUser(userId, 'tasks:batch_updated', taskList);
-
-        return res.json({ success: true });
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to batch save' });
-    }
-});
-
-app.delete('/api/tasks/:id', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const { id } = req.params;
-        await db.delete(tasks).where(
-            and(eq(tasks.id, id as string), eq(tasks.user_id, userId))
-        );
-
-        await invalidateCache(`tasks:${userId}`);
-        broadcastToUser(userId, 'task:deleted', { id });
-
-        // Remove from index
-        await SearchIndexer.removeFromIndex(userId, 'task', id as string);
-
-        return res.json({ success: true });
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to delete task' });
-    }
-});
-
-app.delete('/api/tasks', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        await db.delete(tasks).where(eq(tasks.user_id, userId));
-        await invalidateCache(`tasks:${userId}`);
-        broadcastToUser(userId, 'tasks:cleared', {});
-
-        return res.json({ success: true });
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to clear tasks' });
-    }
-});
-
-// Chat History with multi-user
-app.get('/api/chat/:agentId', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const cacheKey = `chat:${userId}:${req.params.agentId}`;
-        const cached = await getCached<any[]>(cacheKey);
-        if (cached) {
-            return res.json(cached);
-        }
-
-        const history = await db.select()
-            .from(chatHistory)
-            .where(
-                and(
-                    eq(chatHistory.agentId, req.params.agentId as string),
-                    eq(chatHistory.userId, userId)
-                )
-            )
-            .orderBy(chatHistory.id);
-
-        await setCache(cacheKey, history);
-        return res.json(history);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to fetch chat' });
-    }
-});
-
-app.post('/api/chat', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const { agentId, messages } = req.body;
-
-        await db.delete(chatHistory).where(
-            and(eq(chatHistory.agentId, agentId), eq(chatHistory.userId, userId))
-        );
-
-        if (messages.length > 0) {
-            const toInsert = messages.map((m: any) => ({
-                agentId,
-                userId,
-                role: m.role,
-                text: m.text,
-                timestamp: m.timestamp
-            }));
-            await db.insert(chatHistory).values(toInsert);
-        }
-
-        await invalidateCache(`chat:${userId}:${agentId}`);
-        broadcastToUser(userId, 'chat:updated', { agentId });
-
-        return res.json({ success: true });
-    } catch (error) {
-        logError('Failed to save chat', error);
-        return res.status(500).json({ error: 'Failed to save chat' });
-    }
-});
-
-// Business Context with multi-user
-app.get('/api/context', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const cacheKey = `context:${userId}`;
-        const cached = await getCached<any>(cacheKey);
-        if (cached) {
-            return res.json(cached);
-        }
-
-        const ctx = await db.select().from(businessContext)
-            .where(eq(businessContext.userId, userId))
-            .limit(1);
-
-        const result = ctx[0] || null;
-        await setCache(cacheKey, result);
-        return res.json(result);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to fetch context' });
-    }
-});
-
-app.post('/api/context', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const data = { ...req.body, userId };
-        const existing = await db.select().from(businessContext)
-            .where(eq(businessContext.userId, userId))
-            .limit(1);
-
-        let result;
-        if (existing.length > 0) {
-            result = await db.update(businessContext)
-                .set({ ...data, updatedAt: new Date() })
-                .where(eq(businessContext.id, existing[0].id))
-                .returning();
-        } else {
-            result = await db.insert(businessContext).values(data).returning();
-        }
-
-        await invalidateCache(`context:${userId}`);
-        broadcastToUser(userId, 'context:updated', result[0]);
-
-        return res.json(result[0]);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to save context' });
-    }
-});
-
-// Reports with multi-user
-app.get('/api/reports', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const cacheKey = `reports:${userId}`;
-        const cached = await getCached<any[]>(cacheKey);
-        if (cached) {
-            return res.json(cached);
-        }
-
-        const reports = await db.select().from(competitorReports)
-            .where(eq(competitorReports.userId, userId))
-            .orderBy(desc(competitorReports.generatedAt));
-
-        const formatted = reports.map((r: any) => ({
-            id: r.id,
-            competitorName: r.competitorName,
-            threatLevel: r.threatLevel,
-            missionBrief: r.missionBrief,
-            intel: r.intel,
-            vulnerabilities: r.vulnerabilities,
-            strengths: r.strengths,
-            metrics: r.metrics,
-            generatedAt: r.generatedAt
-        }));
-
-        await setCache(cacheKey, formatted);
-        return res.json(formatted);
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to fetch reports' });
-    }
-});
-
-app.post('/api/reports', async (req: Request, res: Response) => {
-    try {
-        const userId = getUserId(req);
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        const report = req.body;
-        await db.insert(competitorReports).values({
-            userId,
-            competitorName: report.competitorName,
-            threatLevel: report.threatLevel,
-            missionBrief: report.missionBrief || '',
-            intel: report.intel || [],
-            vulnerabilities: report.vulnerabilities || [],
-            strengths: report.strengths || [],
-            metrics: report.metrics || {},
-            generatedAt: new Date(report.generatedAt || Date.now())
-        });
-
-        await invalidateCache(`reports:${userId}`);
-        broadcastToUser(userId, 'report:created', report);
-
-        // Index for search
-        // Use regex replace to normalize ID if missing
-        const reportId = report.competitorName || 'unknown_id';
-        await SearchIndexer.indexReport(userId, { ...report, id: reportId });
-
-        return res.json({ success: true });
-    } catch (error) {
-        return res.status(500).json({ error: 'Failed to save report' });
-    }
-});
-
-// Serve static files in production
+// Serve static files in production (Frontend build)
 if (process.env.NODE_ENV === 'production') {
     const distPath = path.join(__dirname, '../../dist');
     app.use(express.static(distPath));
 
-    // Rate limiter for index.html (client-side routing)
-    const clientRouteLimiter = rateLimit({
-        windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 1000, // limit each IP to 1000 requests per windowMs
-        standardHeaders: 'draft-7', // Return rate limit info in the `RateLimit-*` headers
-        legacyHeaders: false, // Disable the `X-RateLimit-*` headers
-    });
-
-    // Handle client-side routing
-    app.get('*', clientRouteLimiter as unknown as express.RequestHandler, (req: Request, res: Response) => {
+    app.get('*', (req: Request, res: Response) => {
         if (!req.path.startsWith('/api')) {
             res.sendFile(path.join(distPath, 'index.html'));
         }
     });
 }
 
-
-
-// Express error handler
-app.use((err: Error, req: express.Request, res: express.Response, arg_express: express.NextFunction) => {
-    logError('Unhandled error in Express middleware', err, { path: req.path, method: req.method });
+// Global Error Handler
+app.use((err: Error, req: Request, res: Response, _next: express.NextFunction) => {
+    logError('Unhandled error in Real-time Hub', err, { path: req.path });
     res.status(500).json({ error: 'Internal server error' });
 });
 
 httpServer.listen(PORT, () => {
-    logInfo(`Server running on http://localhost:${PORT}`);
-    logInfo(`WebSocket server active`);
-    logInfo(`Redis cache: ${process.env.UPSTASH_REDIS_REST_URL ? '✅ Connected' : '❌ Not configured'}`);
+    logInfo(`🚀 Real-time Hub running on http://localhost:${PORT}`);
+    logInfo(`📡 WebSocket orchestration active`);
 });

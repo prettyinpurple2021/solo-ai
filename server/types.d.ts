@@ -1,8 +1,11 @@
-declare module '@sentry/node';
 
-declare namespace Express {
-    export interface Request {
-        userId?: string;
-        userEmail?: string;
+import { Express } from "express-serve-static-core";
+
+declare global {
+  namespace Express {
+    interface Request {
+      userId?: string;
+      userEmail?: string;
     }
+  }
 }

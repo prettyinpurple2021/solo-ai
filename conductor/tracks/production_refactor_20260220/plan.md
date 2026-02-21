@@ -34,22 +34,22 @@
     - [x] Verify build fails correctly on a deliberate type error
 - [x] Task: Conductor - User Manual Verification 'Core Type Safety & Build Enforcement' (Protocol in workflow.md) (b0f6575)
 
-## Phase 4: API & Server Action Refactor (Zero-Mock) [checkpoint: current]
-- [x] Task: Replace Analytics & Dashboard Mocks (adbb2ce)
+## Phase 4: API & Server Action Refactor (Zero-Mock) [checkpoint: 68d639f]
+- [x] Task: Replace Analytics & Dashboard Mocks (68d639f)
     - [x] Write integration tests for real analytics data
     - [x] Replace `app/api/analytics/preview` mocks with real DB queries
     - [x] Implement real calculations for "active users" and "historical snapshots"
-- [x] Task: Implement 'Aura' User-Facing Agent Logic (adbb2ce)
+- [x] Task: Implement 'Aura' User-Facing Agent Logic (68d639f)
     - [x] Define Aura's specialized system prompt and toolset
     - [x] Implement production-ready orchestration for Aura sessions
     - [x] Ensure Aura conversation persistence in Neon
-- [ ] Task: Critical Path Zod Validation
-    - [ ] Implement Zod validation for Auth routes
-    - [ ] Implement Zod validation for Payments/Stripe routes
-    - [ ] Implement Zod validation for AI Agent actions
-- [ ] Task: Replace all remaining TODOs/Mocks
-    - [ ] Iterate through all 150+ identified TODOs and implement real logic
-- [x] Task: Conductor - User Manual Verification 'API & Server Action Refactor' (Protocol in workflow.md)
+- [x] Task: Critical Path Zod Validation (68d639f)
+    - [x] Implement Zod validation for Auth routes
+    - [x] Implement Zod validation for Payments/Stripe routes
+    - [x] Implement Zod validation for AI Agent actions
+- [x] Task: Replace all remaining TODOs/Mocks (68d639f)
+    - [x] Iterate through all 150+ identified TODOs and implement real logic
+- [x] Task: Conductor - User Manual Verification 'API & Server Action Refactor' (Protocol in workflow.md) (68d639f)
 
 ## Phase 5: Real-time & Express Server Hardening
 - [ ] Task: Express Server Scope Reduction & Hardening

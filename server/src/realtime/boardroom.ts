@@ -1,52 +1,70 @@
 import { Server as SocketServer } from "socket.io";
 import { logInfo, logError } from "../../utils/logger";
 import { BoardroomEventSchema } from "@/shared/schemas";
+import { BlackboardManager } from "../services/boardroom/blackboard";
+import { z } from "zod";
+
+const blackboard = new BlackboardManager();
 
 export function setupBoardroomSocket(io: SocketServer) {
   const boardroomNamespace = io.of("/boardroom");
 
   boardroomNamespace.on("connection", (socket) => {
-    logInfo("Client connected to Boardroom namespace", { socketId: socket.id });
+    logInfo("Client connected to Boardroom Real-time Hub", { socketId: socket.id });
 
-    socket.on("join-session", (sessionId: string) => {
-      socket.join(`session:${sessionId}`);
-      logInfo(`Client joined boardroom session: ${sessionId}`, { socketId: socket.id });
-      socket.emit("joined", sessionId);
+    socket.on("join-session", async (sessionId: string) => {
+      try {
+        const validatedId = z.string().uuid().parse(sessionId);
+        socket.join(`session:${validatedId}`);
+        logInfo(`Client joined boardroom session: ${validatedId}`, { socketId: socket.id });
+        
+        // Send current state to newly joined client
+        const currentState = await blackboard.getState(validatedId);
+        socket.emit("session-state", currentState || { sessionId: validatedId, content: {}, version: 0 });
+        
+        socket.emit("joined", validatedId);
+      } catch (error) {
+        logError("Failed to join boardroom session", { error, sessionId });
+        socket.emit("error", { message: "Invalid session ID" });
+      }
     });
 
-    // Validated boardroom event handler
+    // Validated state update from agent or user
+    socket.on("update-state", async (data: { sessionId: string, updates: any, agentId: string }) => {
+      try {
+        const { sessionId, updates, agentId } = data;
+        const validatedSessionId = z.string().uuid().parse(sessionId);
+        const validatedAgentId = z.string().min(1).parse(agentId);
+
+        const newState = await blackboard.updateState(validatedSessionId, updates, validatedAgentId);
+        
+        // Broadcast new state to all participants in the session
+        boardroomNamespace.to(`session:${validatedSessionId}`).emit("state-updated", newState);
+      } catch (error) {
+        logError("Blackboard state update failed", { error, data });
+        socket.emit("error", { message: "Failed to update collaborative state" });
+      }
+    });
+
     socket.on("boardroom-event", (data: any) => {
       try {
         const validatedEvent = BoardroomEventSchema.parse(data);
         logInfo("Validated boardroom event received", { type: validatedEvent.type });
         
-        // Broadcast the validated event to the session
-        // In a real scenario, we'd extract sessionId from context or payload
-        // For now, we'll assume a global broadcast or handle it per-session if available
-        boardroomNamespace.emit("event", validatedEvent);
+        const sessionId = (data as any).sessionId;
+        if (sessionId) {
+          boardroomNamespace.to(`session:${sessionId}`).emit("event", validatedEvent);
+        } else {
+          boardroomNamespace.emit("event", validatedEvent);
+        }
       } catch (error) {
         logError("Invalid boardroom event received", { error, data });
-        socket.emit("error", { message: "Invalid event format", details: error });
-      }
-    });
-
-    // Mock streaming logic for testing/prototyping
-    socket.on("test-trigger-stream", async (data: { sessionId: string, text: string }) => {
-      const words = data.text.split(" ");
-      for (let i = 0; i < words.length; i++) {
-        const chunk = words[i] + (i === words.length - 1 ? "" : " ");
-        boardroomNamespace.to(`session:${data.sessionId}`).emit("agent-chunk", {
-          sessionId: data.sessionId,
-          chunk,
-          done: i === words.length - 1
-        });
-        // Small delay to simulate network/AI processing
-        await new Promise(resolve => setTimeout(resolve, 50));
+        socket.emit("error", { message: "Invalid event format" });
       }
     });
 
     socket.on("disconnect", () => {
-      logInfo("Client disconnected from Boardroom namespace", { socketId: socket.id });
+      logInfo("Client disconnected from Boardroom Real-time Hub", { socketId: socket.id });
     });
   });
 
