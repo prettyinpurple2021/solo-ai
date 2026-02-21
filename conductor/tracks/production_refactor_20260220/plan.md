@@ -13,16 +13,16 @@
     - [x] Run a global search and replace for relative imports to new aliases
 - [x] Task: Conductor - User Manual Verification 'Project Structure Consolidation' (Protocol in workflow.md) (c3b282f)
 
-## Phase 2: Database & Transaction Hardening
-- [ ] Task: Schema Audit & RLS Implementation
-    - [ ] Write tests for data isolation (RLS)
-    - [ ] Audit Drizzle schemas for nullability and indexes
-    - [ ] Implement Postgres CHECK constraints
-    - [ ] Implement Row Level Security for `users`, `briefcases`, and `tasks`
-- [ ] Task: Type Hardening & Transactional Integrity
-    - [ ] Fix `any` cast in `server/db/index.ts`
-    - [ ] Wrap Signups and Billing operations in `db.transaction()`
-- [ ] Task: Conductor - User Manual Verification 'Database & Transaction Hardening' (Protocol in workflow.md)
+## Phase 2: Database & Transaction Hardening [checkpoint: adbb2ce]
+- [x] Task: Schema Audit & RLS Implementation (adbb2ce)
+    - [x] Write tests for data isolation (RLS)
+    - [x] Audit Drizzle schemas for nullability and indexes
+    - [x] Implement Postgres CHECK constraints
+    - [x] Implement Row Level Security for `users`, `briefcases`, and `tasks`
+- [x] Task: Type Hardening & Transactional Integrity (adbb2ce)
+    - [x] Fix `any` cast in `server/db/index.ts`
+    - [x] Wrap Signups and Billing operations in `db.transaction()`
+- [x] Task: Conductor - User Manual Verification 'Database & Transaction Hardening' (Protocol in workflow.md) (adbb2ce)
 
 ## Phase 3: Core Type Safety & Build Enforcement
 - [ ] Task: Strict TypeScript Enforcement
@@ -39,6 +39,10 @@
     - [ ] Write integration tests for real analytics data
     - [ ] Replace `app/api/analytics/preview` mocks with real DB queries
     - [ ] Implement real calculations for "active users" and "historical snapshots"
+- [ ] Task: Implement 'Aura' User-Facing Agent Logic
+    - [ ] Define Aura's specialized system prompt and toolset
+    - [ ] Implement production-ready orchestration for Aura sessions
+    - [ ] Ensure Aura conversation persistence in Neon
 - [ ] Task: Critical Path Zod Validation
     - [ ] Implement Zod validation for Auth routes
     - [ ] Implement Zod validation for Payments/Stripe routes
