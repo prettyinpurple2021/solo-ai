@@ -9,7 +9,7 @@ if (!process.env.DATABASE_URL) {
 }
 
 export default defineConfig({
-    schema: './db/reset.schema.ts',
+    schema: './src/db/reset.schema.ts',
     out: './drizzle/reset', // Separate output dir
     dialect: 'postgresql',
     dbCredentials: {

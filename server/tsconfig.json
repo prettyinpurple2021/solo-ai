@@ -18,13 +18,13 @@
                 "./*"
             ],
             "@/shared/*": [
-                "../lib/shared/*"
+                "../src/lib/shared/*"
             ]
         }
     },
     "include": [
         "./**/*.ts",
-        "../lib/**/*.ts",
+        "../src/lib/shared/**/*.ts",
         "../src/db/**/*.ts"
     ],
     "exclude": [
