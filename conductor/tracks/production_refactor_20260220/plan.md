@@ -8,9 +8,9 @@
 - [x] Task: Consolidate components, hooks, and lib into `src/` (d5adf3c)
     - [x] Move root `components/` to `src/components/`
     - [x] Move root `hooks/`, `utils/`, `lib/` to `src/` equivalents
-- [ ] Task: Update path aliases and imports
-    - [ ] Update `tsconfig.json` paths
-    - [ ] Run a global search and replace for relative imports to new aliases
+- [x] Task: Update path aliases and imports (0709d4e)
+    - [x] Update `tsconfig.json` paths
+    - [x] Run a global search and replace for relative imports to new aliases
 - [ ] Task: Conductor - User Manual Verification 'Project Structure Consolidation' (Protocol in workflow.md)
 
 ## Phase 2: Database & Transaction Hardening
