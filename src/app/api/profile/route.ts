@@ -6,8 +6,6 @@ import { logError, logInfo } from '@/lib/logger'
 import { eq } from 'drizzle-orm'
 import { users } from '@/shared/db/schema'
 
-
-
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
@@ -29,8 +27,13 @@ export async function GET(request: NextRequest) {
       id: users.id,
       email: users.email,
       full_name: users.full_name,
+      name: users.name,
       bio: users.bio,
       image: users.image,
+      role: users.role,
+      xp: users.xp,
+      level: users.level,
+      total_actions: users.total_actions,
       subscription_tier: users.subscription_tier,
       subscription_status: users.subscription_status,
       stripe_customer_id: users.stripe_customer_id,
@@ -39,6 +42,8 @@ export async function GET(request: NextRequest) {
       current_period_end: users.current_period_end,
       cancel_at_period_end: users.cancel_at_period_end,
       onboarding_completed: users.onboarding_completed,
+      created_at: users.created_at,
+      updated_at: users.updated_at,
     })
       .from(users)
       .where(eq(users.id, user.id))
@@ -53,6 +58,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
 
+    // Merge some fields for frontend compatibility (e.g. storageService expects 'totalActions')
+    const profileData = {
+      ...rows[0],
+      name: rows[0].full_name || rows[0].name || '',
+      totalActions: rows[0].total_actions,
+      achievements: [] // Still empty for now, could join achievements table later
+    }
+
     logInfo('Profile fetched successfully', {
       route,
       userId: user.id,
@@ -60,7 +73,7 @@ export async function GET(request: NextRequest) {
       meta: { ip: request.headers.get('x-forwarded-for') || 'unknown' }
     })
 
-    return NextResponse.json(rows[0])
+    return NextResponse.json(profileData)
   } catch (err) {
     logError('Error fetching profile', {
       route,
@@ -134,7 +147,10 @@ export async function PATCH(request: NextRequest) {
         image: users.image,
         subscription_tier: users.subscription_tier,
         subscription_status: users.subscription_status,
-        onboarding_completed: users.onboarding_completed
+        onboarding_completed: users.onboarding_completed,
+        xp: users.xp,
+        level: users.level,
+        total_actions: users.total_actions
       })
 
     logInfo('Profile updated successfully', {

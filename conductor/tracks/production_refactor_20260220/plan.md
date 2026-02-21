@@ -1,7 +1,7 @@
 # Implementation Plan: Production-Ready Refactor
 
 ## Phase 1: Project Structure Consolidation
-- [ ] Task: Consolidate root `app` and `src/app` into unified `src/app`
+- [~] Task: Consolidate root `app` and `src/app` into unified `src/app`
     - [ ] Move root `app/` contents to `src/app/`
     - [ ] Merge duplicate logic in `src/app/api` and `app/api`, favoring `src/app` architecture
     - [ ] Remove empty root directories
