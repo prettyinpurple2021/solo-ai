@@ -36,7 +36,7 @@ pool.connect()
     .catch(err => logError("Failed to connect to Neon Database", err));
 
 // Drizzle supports Pool directly
-export const db = drizzle(pool as any, { schema });
+export const db = drizzle(pool, { schema });
 
 // Re-export common operators to avoid "dual package hazard"
 export { eq, gt, lt, gte, lte, ne, isNull, isNotNull, inArray, notInArray, exists, notExists, and, or, not, asc, desc, sql } from 'drizzle-orm';

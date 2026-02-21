@@ -9,17 +9,18 @@ export const pitchDecks = pgTable("pitch_decks", {
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
-  theme: varchar("theme", { length: 50 }).default('modern'),
+  theme: varchar("theme", { length: 50 }).notNull().default('modern'),
   thumbnail: varchar("thumbnail", { length: 1000 }),
-  isPublic: boolean("is_public").default(false),
-  isTemplate: boolean("is_template").default(false),
-  version: integer("version").default(1),
-  status: varchar("status", { length: 50 }).default('draft'),
-  viewCount: integer("view_count").default(0),
+  isPublic: boolean("is_public").notNull().default(false),
+  isTemplate: boolean("is_template").notNull().default(false),
+  version: integer("version").notNull().default(1),
+  status: varchar("status", { length: 50 }).notNull().default('draft'),
+  viewCount: integer("view_count").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index("pitch_decks_user_id_idx").on(table.userId),
+  statusIdx: index("pitch_decks_status_idx").on(table.status),
 }));
 
 // Slides table
@@ -27,11 +28,11 @@ export const slides = pgTable("slides", {
   id: text("id").primaryKey().$defaultFn(() => uuidv4()),
   deckId: text("deck_id").notNull().references(() => pitchDecks.id, { onDelete: 'cascade' }),
   order: integer("order").notNull(),
-  layout: varchar("layout", { length: 50 }).default('blank'),
+  layout: varchar("layout", { length: 50 }).notNull().default('blank'),
   title: varchar("title", { length: 255 }),
-  content: jsonb("content").default({}),
+  content: jsonb("content").notNull().default({}),
   notes: text("notes"),
-  isVisible: boolean("is_visible").default(true),
+  isVisible: boolean("is_visible").notNull().default(true),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
@@ -46,9 +47,9 @@ export const slideComponents = pgTable("slide_components", {
   type: varchar("type", { length: 50 }).notNull(),
   content: jsonb("content").notNull(),
   position: jsonb("position").notNull(), // x, y, width, height, rotation
-  style: jsonb("style").default({}),
-  animation: jsonb("animation").default({}),
-  zIndex: integer("z_index").default(0),
+  style: jsonb("style").notNull().default({}),
+  animation: jsonb("animation").notNull().default({}),
+  zIndex: integer("z_index").notNull().default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 }, (table) => ({
@@ -63,7 +64,10 @@ export const trainingHistory = pgTable("training_history", {
   score: integer("score"),
   completedAt: timestamp("completed_at").defaultNow().notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  userIdIdx: index("training_history_user_id_idx").on(table.userId),
+  moduleIdIdx: index("training_history_module_id_idx").on(table.moduleId),
+}));
 
 // Code Snippets
 export const codeSnippets = pgTable("code_snippets", {
@@ -75,7 +79,10 @@ export const codeSnippets = pgTable("code_snippets", {
   description: text("description"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  userIdIdx: index("code_snippets_user_id_idx").on(table.userId),
+  languageIdx: index("code_snippets_language_idx").on(table.language),
+}));
 
 // Document Folders table
 export const documentFolders = pgTable('document_folders', {
@@ -84,11 +91,11 @@ export const documentFolders = pgTable('document_folders', {
   parent_id: text('parent_id'),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
-  color: varchar('color', { length: 7 }).default('#8B5CF6'),
+  color: varchar('color', { length: 7 }).notNull().default('#8B5CF6'),
   icon: varchar('icon', { length: 50 }),
-  is_default: boolean('is_default').default(false),
-  file_count: integer('file_count').default(0).notNull(),
-  total_size: integer('total_size').default(0).notNull(),
+  is_default: boolean('is_default').notNull().default(false),
+  file_count: integer('file_count').notNull().default(0),
+  total_size: integer('total_size').notNull().default(0),
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
@@ -217,9 +224,12 @@ export const learningPaths = pgTable('learning_paths', {
     difficulty: varchar('difficulty', { length: 50 }).notNull(), // beginner, intermediate, advanced
     tags: jsonb('tags').default('[]').notNull(),
     created_by: text('created_by').references(() => users.id, { onDelete: 'set null' }),
-    is_public: boolean('is_public').default(false).notNull(),
+    is_public: boolean('is_public').notNull().default(false),
     created_at: timestamp('created_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  categoryIdx: index('learning_paths_category_idx').on(table.category),
+  difficultyIdx: index('learning_paths_difficulty_idx').on(table.difficulty),
+}));
   
 export const learningModules = pgTable('learning_modules', {
     id: text('id').primaryKey().$defaultFn(() => uuidv4()),
@@ -235,7 +245,9 @@ export const learningModules = pgTable('learning_modules', {
     prerequisites: jsonb('prerequisites').default('[]').notNull(),
     created_at: timestamp('created_at').defaultNow().notNull(),
     updated_at: timestamp('updated_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  pathIdIdx: index('learning_modules_path_id_idx').on(table.path_id),
+}));
   
 export const userLearningProgress = pgTable('user_learning_progress', {
     id: text('id').primaryKey().$defaultFn(() => uuidv4()),
@@ -246,7 +258,11 @@ export const userLearningProgress = pgTable('user_learning_progress', {
     last_position: integer('last_position'),
     completed_at: timestamp('completed_at'),
     last_accessed_at: timestamp('last_accessed_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  userIdIdx: index('user_learning_progress_user_id_idx').on(table.user_id),
+  moduleIdIdx: index('user_learning_progress_module_id_idx').on(table.module_id),
+  userModuleIdx: uniqueIndex('user_learning_progress_user_module_idx').on(table.user_id, table.module_id),
+}));
   
 // Feedback table
 export const feedbackTypeEnum = pgEnum('feedback_type', ['bug', 'feature_request', 'comment', 'error', 'other', 'post_report']);
@@ -263,4 +279,7 @@ export const feedback = pgTable('feedback', {
     priority: text('priority').notNull().default('medium'),
     created_at: timestamp('created_at').defaultNow().notNull(),
     updated_at: timestamp('updated_at').defaultNow().notNull(),
-});
+}, (table) => ({
+  userIdIdx: index('feedback_user_id_idx').on(table.user_id),
+  statusIdx: index('feedback_status_idx').on(table.status),
+}));

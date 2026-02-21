@@ -3,6 +3,7 @@ import type { NeonHttpDatabase } from 'drizzle-orm/neon-http'
 import { neon } from '@neondatabase/serverless'
 import * as schema from '@/shared/db/schema'
 import { logger, logError, logInfo } from './logger'
+import { sql } from 'drizzle-orm'
 
 /**
  * Centralized database client using Drizzle ORM
@@ -50,6 +51,21 @@ export function getDb() {
     }
   }
   return _db
+}
+
+/**
+ * Database transaction helper with User Context (for RLS)
+ */
+export async function withUserTransaction<T>(
+  userId: string,
+  callback: (tx: Tx) => Promise<T>
+): Promise<T> {
+  const db = getDb()
+  return await db.transaction(async (tx) => {
+    // Set the session-level user ID for RLS policies
+    await tx.execute(sql`SELECT set_config('auth.user_id', ${userId}, true)`);
+    return await callback(tx)
+  })
 }
 
 /**

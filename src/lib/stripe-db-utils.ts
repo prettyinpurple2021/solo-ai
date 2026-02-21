@@ -1,25 +1,28 @@
-import { logError,} from '@/lib/logger'
-import { neon } from '@neondatabase/serverless'
-
-
-function getSql() {
-  const url = process.env.DATABASE_URL
-  if (!url) {
-    throw new Error('DATABASE_URL is not set')
-  }
-  return neon(url)
-}
+import { logError } from '@/lib/logger'
+import { db } from '@/lib/database-client'
+import { users } from '@/shared/db/schema'
+import { eq, and, ne } from 'drizzle-orm'
 
 // Get user by Stripe customer ID
 export async function getUserByStripeCustomerId(customerId: string) {
   try {
-    const sql = getSql()
-    const users = await sql`
-      SELECT id, email, full_name, subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id, current_period_start, current_period_end, cancel_at_period_end
-      FROM users 
-      WHERE stripe_customer_id = ${customerId}
-    `
-    return users[0] || null
+    const results = await db.select({
+      id: users.id,
+      email: users.email,
+      full_name: users.full_name,
+      subscription_tier: users.subscription_tier,
+      subscription_status: users.subscription_status,
+      stripe_customer_id: users.stripe_customer_id,
+      stripe_subscription_id: users.stripe_subscription_id,
+      current_period_start: users.current_period_start,
+      current_period_end: users.current_period_end,
+      cancel_at_period_end: users.cancel_at_period_end
+    })
+    .from(users)
+    .where(eq(users.stripe_customer_id, customerId))
+    .limit(1)
+
+    return results[0] || null
   } catch (error) {
     logError('Error getting user by Stripe customer ID:', error)
     return null
@@ -40,9 +43,6 @@ export async function updateUserSubscription(
   }
 ) {
   try {
-    const sql = getSql()
-    
-    // Build the update object dynamically
     const updateData: any = {
       updated_at: new Date()
     }
@@ -79,21 +79,16 @@ export async function updateUserSubscription(
       return { success: false, error: 'No fields to update' }
     }
 
-    // Use template literal for the update query
-    const result = await sql`
-      UPDATE users 
-      SET 
-        stripe_subscription_id = ${updateData.stripe_subscription_id || null},
-        stripe_customer_id = ${updateData.stripe_customer_id || null},
-        subscription_tier = ${updateData.subscription_tier || null},
-        subscription_status = ${updateData.subscription_status || null},
-        current_period_start = ${updateData.current_period_start || null},
-        current_period_end = ${updateData.current_period_end || null},
-        cancel_at_period_end = ${updateData.cancel_at_period_end || null},
-        updated_at = NOW()
-      WHERE id = ${userId}
-      RETURNING id, subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id
-    `
+    const result = await db.update(users)
+      .set(updateData)
+      .where(eq(users.id, userId))
+      .returning({
+        id: users.id,
+        subscription_tier: users.subscription_tier,
+        subscription_status: users.subscription_status,
+        stripe_customer_id: users.stripe_customer_id,
+        stripe_subscription_id: users.stripe_subscription_id
+      })
     
     if (result.length === 0) {
       return { success: false, error: 'User not found' }
@@ -109,13 +104,16 @@ export async function updateUserSubscription(
 // Update user Stripe customer ID
 export async function updateUserStripeCustomerId(userId: string, customerId: string) {
   try {
-    const sql = getSql()
-    const result = await sql`
-      UPDATE users 
-      SET stripe_customer_id = ${customerId}, updated_at = NOW()
-      WHERE id = ${userId}
-      RETURNING id, stripe_customer_id
-    `
+    const result = await db.update(users)
+      .set({ 
+        stripe_customer_id: customerId, 
+        updated_at: new Date() 
+      })
+      .where(eq(users.id, userId))
+      .returning({
+        id: users.id,
+        stripe_customer_id: users.stripe_customer_id
+      })
     
     if (result.length === 0) {
       return { success: false, error: 'User not found' }
@@ -161,17 +159,18 @@ export function getSubscriptionTierFromPriceId(priceId: string): string {
 // Check if user has active subscription
 export async function hasActiveSubscription(userId: string): Promise<boolean> {
   try {
-    const sql = getSql()
-    const users = await sql`
-      SELECT subscription_status, subscription_tier
-      FROM users 
-      WHERE id = ${userId}
-    `
+    const results = await db.select({
+      subscription_status: users.subscription_status,
+      subscription_tier: users.subscription_tier
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1)
     
-    if (users.length === 0) return false
+    if (results.length === 0) return false
     
-    const user = users[0]
-    return user.subscription_status === 'active' && user.subscription_tier !== 'launch'
+    const user = results[0]
+    return user.subscription_status === 'active' && user.subscription_tier !== 'launch' && user.subscription_tier !== 'free'
   } catch (error) {
     logError('Error checking active subscription:', error)
     return false
@@ -181,15 +180,20 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
 // Get user subscription details
 export async function getUserSubscription(userId: string) {
   try {
-    const sql = getSql()
-    const users = await sql`
-      SELECT subscription_tier, subscription_status, stripe_customer_id, stripe_subscription_id, 
-             current_period_start, current_period_end, cancel_at_period_end
-      FROM users 
-      WHERE id = ${userId}
-    `
+    const results = await db.select({
+      subscription_tier: users.subscription_tier,
+      subscription_status: users.subscription_status,
+      stripe_customer_id: users.stripe_customer_id,
+      stripe_subscription_id: users.stripe_subscription_id, 
+      current_period_start: users.current_period_start,
+      current_period_end: users.current_period_end,
+      cancel_at_period_end: users.cancel_at_period_end
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1)
     
-    return users[0] || null
+    return results[0] || null
   } catch (error) {
     logError('Error getting user subscription:', error)
     return null

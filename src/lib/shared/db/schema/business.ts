@@ -237,6 +237,7 @@ export const templates = pgTable('templates', {
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
+  userIdIdx: index('templates_user_id_idx').on(table.user_id),
   categoryIdx: index('templates_category_idx').on(table.category),
   tierIdx: index('templates_tier_idx').on(table.tier),
 }));
