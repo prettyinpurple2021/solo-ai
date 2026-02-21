@@ -6,20 +6,34 @@ import { db } from '@/lib/database-client'
 import { users } from '@/shared/db/schema'
 import { eq, or } from 'drizzle-orm'
 import { enqueueOnboardingWorkflow } from '@/lib/onboarding/onboarding-queue'
+import { z } from 'zod'
 
 // Node.js runtime for signup
 export const runtime = 'nodejs'
 
+const signupSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  metadata: z.object({
+    username: z.string().optional().nullable(),
+    full_name: z.string().optional().nullable(),
+    date_of_birth: z.string().optional().nullable()
+  }).optional()
+})
+
 export async function POST(request: NextRequest) {
   try {
-    const { email, password, metadata } = await request.json()
+    const body = await request.json()
+    const result = signupSchema.safeParse(body)
 
-    if (!email || !password) {
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { error: 'Invalid input', details: result.error.flatten() },
         { status: 400 }
       )
     }
+
+    const { email, password, metadata } = result.data
 
     const normalizedEmail = email.toLowerCase()
     const usernameValue = (metadata?.username && String(metadata.username).trim().length > 0)
@@ -52,7 +66,7 @@ export async function POST(request: NextRequest) {
     const newUser = await db.transaction(async (tx) => {
       const [user] = await tx.insert(users).values({
         email: normalizedEmail,
-        password: passwordHash, // Assuming the column is 'password' or 'password_hash' based on schema. NextAuth uses 'password'
+        password: passwordHash,
         full_name: metadata?.full_name || '',
         username: usernameValue,
         date_of_birth: metadata?.date_of_birth ? new Date(metadata.date_of_birth) : null,

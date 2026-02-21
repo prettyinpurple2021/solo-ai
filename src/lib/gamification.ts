@@ -1,7 +1,7 @@
 import { db } from "@/db/index";
 import { achievements, userAchievements } from "@/shared/db/schema";
-import { eq, and } from "drizzle-orm";
-import { logWarn } from "@/lib/logger";
+import { eq } from "drizzle-orm";
+import { GamificationService } from "./services/gamification-service";
 
 export class GamificationEngine {
   private userId: string;
@@ -12,7 +12,6 @@ export class GamificationEngine {
 
   /**
    * Seed default system achievements.
-   *Ideally run by an admin or as a migration, but safe to run on startup/demand.
    */
   static async seedDefaults() {
     const defaultBadges = [
@@ -51,7 +50,7 @@ export class GamificationEngine {
       {
         name: "burnout_survivor",
         title: "Burnout Survivor",
-        description: "Logged energy level < 2 but kept going (Careful!).",
+        description: "Logged energy level < 2 but kept going.",
         icon: "❤️‍🩹",
         points: 150,
         category: "wellness"
@@ -59,8 +58,6 @@ export class GamificationEngine {
     ];
 
     for (const badge of defaultBadges) {
-        // Upsert logic or check-then-insert
-        // Drizzle's onConflictDoNothing with PG can be used if constraints exist
         await db.insert(achievements)
             .values(badge)
             .onConflictDoNothing({ target: achievements.name });
@@ -71,42 +68,11 @@ export class GamificationEngine {
    * Unlock a badge for the current user
    */
   async unlock(badgeName: string) {
-    // 1. Get the achievement ID
-    const badge = await db.query.achievements.findFirst({
-        where: eq(achievements.name, badgeName)
-    });
-
-    if (!badge) {
-        logWarn(`Gamification: Tried to unlock unknown badge '${badgeName}'`);
-        return false;
-    }
-
-    // 2. Check if already unlocked
-    const existing = await db.query.userAchievements.findFirst({
-        where: and(
-            eq(userAchievements.user_id, this.userId),
-            eq(userAchievements.achievement_id, badge.id)
-        )
-    });
-
-    if (existing) return false; // Already unlocked
-
-    // 3. Award Badge
-    await db.insert(userAchievements).values({
-        user_id: this.userId,
-        achievement_id: badge.id,
-        earned_at: new Date()
-    });
-
-    // TODO: We could also re-trigger XP award if the badge carries bonus points that aren't duplicative
-    // For now, badges are just prestige.
-
-    return true; // Newly unlocked
+    return await GamificationService.unlockBadge(this.userId, badgeName);
   }
 
   /**
-   * Get all badges for the user (unlocked and locked if you want to show grid)
-   * For now, returning list of all achievements with an 'unlocked' status
+   * Get all badges for the user with unlock status
    */
   async getBadges() {
     const allBadges = await db.query.achievements.findMany({
@@ -124,5 +90,12 @@ export class GamificationEngine {
         unlocked: unlockedIds.has(badge.id),
         earnedAt: myBadges.find(b => b.achievement_id === badge.id)?.earned_at || null
     }));
+  }
+
+  /**
+   * Get current user progress
+   */
+  async getProgress() {
+    return await GamificationService.getUserProgress(this.userId);
   }
 }

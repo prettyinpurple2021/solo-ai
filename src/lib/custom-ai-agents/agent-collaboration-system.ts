@@ -1,5 +1,6 @@
 import { logError, logWarn,} from '@/lib/logger'
 import { CustomAgent, AgentResponse,} from "./core-agent"
+import { AuraAgent } from "./aura-agent"
 import { RoxyAgent } from "./roxy-agent"
 import { BlazeAgent } from "./blaze-agent"
 import { EchoAgent } from "./echo-agent"
@@ -30,7 +31,8 @@ export class AgentCollaborationSystem {
   }
 
   private initializeAgents(): void {
-    // Initialize all 8 agents
+    // Initialize all 9 agents
+    this.agents.set("aura", new AuraAgent(this.userId))
     this.agents.set("roxy", new RoxyAgent(this.userId))
     this.agents.set("blaze", new BlazeAgent(this.userId))
     this.agents.set("echo", new EchoAgent(this.userId))
@@ -94,6 +96,11 @@ export class AgentCollaborationSystem {
   private determinePrimaryAgent(request: string, context: Record<string, any>): string {
     const requestLower = request.toLowerCase()
     
+    // Holistic guidance and orchestration (Aura)
+    if (requestLower.includes("aura") || requestLower.includes("holistic") || requestLower.includes("roadmap") || requestLower.includes("orchestrate") || requestLower.includes("vision")) {
+      return "aura"
+    }
+
     // Strategic decision-making
     if (requestLower.includes("decision") || requestLower.includes("strategy") || requestLower.includes("plan")) {
       return "roxy"
@@ -134,8 +141,8 @@ export class AgentCollaborationSystem {
       return "glitch"
     }
     
-    // Default to Roxy for general requests
-    return "roxy"
+    // Default to Aura for high-level guide
+    return "aura"
   }
 
   // Handle collaboration requests between agents

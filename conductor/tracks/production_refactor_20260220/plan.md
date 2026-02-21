@@ -24,32 +24,32 @@
     - [x] Wrap Signups and Billing operations in `db.transaction()`
 - [x] Task: Conductor - User Manual Verification 'Database & Transaction Hardening' (Protocol in workflow.md) (adbb2ce)
 
-## Phase 3: Core Type Safety & Build Enforcement
-- [ ] Task: Strict TypeScript Enforcement
-    - [ ] Enable `strict: true` in `tsconfig.json`
-    - [ ] Remove `any` from `src/components/` (78+ instances)
-    - [ ] Remove `any` from `src/lib/` and `src/services/`
-- [ ] Task: Build Pipeline Hardening
-    - [ ] Update `package.json` build scripts to fail on lint/type errors
-    - [ ] Verify build fails correctly on a deliberate type error
-- [ ] Task: Conductor - User Manual Verification 'Core Type Safety & Build Enforcement' (Protocol in workflow.md)
+## Phase 3: Core Type Safety & Build Enforcement [checkpoint: b0f6575]
+- [x] Task: Strict TypeScript Enforcement (b0f6575)
+    - [x] Enable `strict: true` in `tsconfig.json`
+    - [x] Remove `any` from `src/components/` (78+ instances)
+    - [x] Remove `any` from `src/lib/` and `src/services/`
+- [x] Task: Build Pipeline Hardening (b0f6575)
+    - [x] Update `package.json` build scripts to fail on lint/type errors
+    - [x] Verify build fails correctly on a deliberate type error
+- [x] Task: Conductor - User Manual Verification 'Core Type Safety & Build Enforcement' (Protocol in workflow.md) (b0f6575)
 
-## Phase 4: API & Server Action Refactor (Zero-Mock)
-- [ ] Task: Replace Analytics & Dashboard Mocks
-    - [ ] Write integration tests for real analytics data
-    - [ ] Replace `app/api/analytics/preview` mocks with real DB queries
-    - [ ] Implement real calculations for "active users" and "historical snapshots"
-- [ ] Task: Implement 'Aura' User-Facing Agent Logic
-    - [ ] Define Aura's specialized system prompt and toolset
-    - [ ] Implement production-ready orchestration for Aura sessions
-    - [ ] Ensure Aura conversation persistence in Neon
+## Phase 4: API & Server Action Refactor (Zero-Mock) [checkpoint: current]
+- [x] Task: Replace Analytics & Dashboard Mocks (adbb2ce)
+    - [x] Write integration tests for real analytics data
+    - [x] Replace `app/api/analytics/preview` mocks with real DB queries
+    - [x] Implement real calculations for "active users" and "historical snapshots"
+- [x] Task: Implement 'Aura' User-Facing Agent Logic (adbb2ce)
+    - [x] Define Aura's specialized system prompt and toolset
+    - [x] Implement production-ready orchestration for Aura sessions
+    - [x] Ensure Aura conversation persistence in Neon
 - [ ] Task: Critical Path Zod Validation
     - [ ] Implement Zod validation for Auth routes
     - [ ] Implement Zod validation for Payments/Stripe routes
     - [ ] Implement Zod validation for AI Agent actions
 - [ ] Task: Replace all remaining TODOs/Mocks
     - [ ] Iterate through all 150+ identified TODOs and implement real logic
-- [ ] Task: Conductor - User Manual Verification 'API & Server Action Refactor' (Protocol in workflow.md)
+- [x] Task: Conductor - User Manual Verification 'API & Server Action Refactor' (Protocol in workflow.md)
 
 ## Phase 5: Real-time & Express Server Hardening
 - [ ] Task: Express Server Scope Reduction & Hardening

@@ -1,4 +1,3 @@
-
 import { NextRequest, NextResponse } from 'next/server'
 import { getDb } from '@/lib/database-client'
 import {
@@ -11,9 +10,9 @@ import {
   achievements,
   focusSessions
 } from '@/shared/db/schema'
-import { eq, and, gte, count, desc,} from 'drizzle-orm'
+import { eq, and, gte, count, desc, sql, lte, or } from 'drizzle-orm'
 
-import { logError,} from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import * as jose from 'jose'
 
 // Force dynamic rendering
@@ -109,7 +108,7 @@ interface DashboardData {
   }>
 }
 
-// Authentication Helper (migrated from legacy route.ts)
+// Authentication Helper
 async function authenticateRequest(request: NextRequest) {
   try {
     const authHeader = request.headers.get('authorization')
@@ -132,7 +131,7 @@ async function authenticateRequest(request: NextRequest) {
         const { payload: decoded } = await jose.jwtVerify(token, secret)
         return {
           user: {
-            id: decoded.userId as string, // Treat as string from JWT
+            id: decoded.userId as string,
             email: decoded.email as string,
             full_name: (decoded.full_name as string) || null,
             avatar_url: null,
@@ -145,12 +144,11 @@ async function authenticateRequest(request: NextRequest) {
       }
     }
 
-    // Checking for session cookie (Better Auth / NextAuth)
+    // Checking for session cookie
     const nextAuthSessionCookie = request.cookies.get('authjs.session-token')?.value ||
                                    request.cookies.get('__Secure-authjs.session-token')?.value
 
     if (nextAuthSessionCookie) {
-         // Edge-compatible fetch to local session endpoint
         const sessionResponse = await fetch(`${request.nextUrl.origin}/api/auth/session`, {
           headers: {
             'Cookie': request.headers.get('cookie') || '',
@@ -184,93 +182,74 @@ async function authenticateRequest(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-     // 1. Authenticate
      const { user: authUser, error } = await authenticateRequest(request)
      if (error || !authUser) {
        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
      }
 
      const db = getDb()
+     const [dbUser] = await db.select().from(users).where(eq(users.email, authUser.email)).limit(1)
      
-     // 2. Get User from DB (or create if not exists - preserving legacy logic)
-     // We need to handle both string UUIDs and potentially integer IDs based on old schema usage,
-     // but the new schema defines id as serial primary key (integer). 
-     // IMPORTANT: The JWT might return a string ID. We must ensure type compatibility.
-     // Query by email to safeguard against ID mismatch if auth provider gives different ID format
-     const [existingUser] = await db.select().from(users).where(eq(users.email, authUser.email)).limit(1)
-     let dbUser = existingUser
-
      if (!dbUser) {
-        // Create user if not exists (JIT provisioning)
-        // Note: In Drizzle, we let the database handle the ID generation for serial
-        const [newUser] = await db.insert(users).values({
-            email: authUser.email,
-            full_name: authUser.full_name,
-            subscription_tier: 'launch',
-            role: 'user',
-            level: 1,
-            xp: 0,
-            onboarding_completed: false
-        }).returning()
-        
-        dbUser = newUser
+        return NextResponse.json({ error: 'User profile not found' }, { status: 404 })
      }
 
      const userId = dbUser.id
-
-     // 3. Parallel Data Fetching
      const today = new Date()
      today.setHours(0, 0, 0, 0)
-     
-     // Helpers for date ranges
-     const thirtyDaysAgo = new Date(today)
-     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
-     const sevenDaysAgo = new Date(today)
-     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+     const sevenDaysAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000)
 
+     // 3. Parallel Data Fetching with Real Aggregations
      const [
         todaysTasksRaw,
-        completedTasksCountRaw,
         activeGoalsRaw,
         recentConversationsRaw,
         briefcasesRaw,
         recentAchievementsRaw,
         todaysFocusSessions,
-        goalsTotal,
         taskStats,
         weeklyFocusSessions
      ] = await Promise.all([
-        // Today's Tasks (Due today or earlier and incomplete, or completed today)
+        // Today's Tasks
         db.select({
             id: tasks.id,
             title: tasks.title,
             description: tasks.description,
             status: tasks.status,
             priority: tasks.priority,
-            due_date: tasks.due_date, // Note: Schema defines this but interface expects string
+            due_date: tasks.due_date,
             goal_title: goals.title,
             goal_id: goals.id
         })
         .from(tasks)
-        .leftJoin(goals, eq(tasks.goal_id, goals.id)) // Assuming foreign key exists in schema or relation
+        .leftJoin(goals, eq(tasks.goal_id, goals.id))
         .where(
             and(
-                eq(tasks.user_id, userId.toString()), // Schema uses text for user_id in tasks
-                // Complex logic from legacy query: completed today OR (not completed AND due <= today)
-                // For simplicity matching the previous output behavior
+                eq(tasks.user_id, userId),
+                or(
+                  lte(tasks.due_date, today),
+                  eq(sql`DATE(${tasks.updated_at})`, today)
+                )
             )
         )
         .limit(10),
 
-        // Total Completed Tasks count
-        db.select({ count: count() }).from(tasks).where(and(eq(tasks.user_id, userId.toString()), eq(tasks.status, 'completed'))),
-
-        // Active Goals
-        // Active Goals
-        db.select().from(goals)
-            .where(and(eq(goals.user_id, userId), eq(goals.status, 'active')))
-            .orderBy(desc(goals.updated_at))
-            .limit(5),
+        // Active Goals with progress metrics
+        db.select({
+          id: goals.id,
+          title: goals.title,
+          description: goals.description,
+          due_date: goals.due_date,
+          status: goals.status,
+          total_tasks: count(tasks.id),
+          completed_tasks: sql<number>`count(CASE WHEN ${tasks.status} = 'completed' THEN 1 END)`
+        })
+        .from(goals)
+        .leftJoin(tasks, eq(tasks.goal_id, goals.id))
+        .where(and(eq(goals.user_id, userId), eq(goals.status, 'active')))
+        .groupBy(goals.id)
+        .orderBy(desc(goals.updated_at))
+        .limit(5),
 
         // Recent Conversations
         db.select({
@@ -281,16 +260,25 @@ export async function GET(request: NextRequest) {
             agent_name: chatConversations.agent_name
         })
         .from(chatConversations)
-        .where(eq(chatConversations.user_id, userId.toString())) // Schema check needed for user_id type in conversations
+        .where(eq(chatConversations.user_id, userId))
         .limit(5)
         .orderBy(desc(chatConversations.last_message_at)),
 
-        // Briefcases
-        // Briefcases
-        db.select().from(briefcases)
-            .where(eq(briefcases.user_id, userId))
-            .orderBy(desc(briefcases.updated_at))
-            .limit(6),
+        // Briefcases with aggregations
+        db.select({
+          id: briefcases.id,
+          title: briefcases.title,
+          description: briefcases.description,
+          status: briefcases.status,
+          created_at: briefcases.created_at,
+          updated_at: briefcases.updated_at,
+          goal_count: sql<number>`(SELECT count(*) FROM ${goals} WHERE ${goals.briefcase_id} = ${briefcases.id})`,
+          task_count: sql<number>`(SELECT count(*) FROM ${tasks} WHERE ${tasks.briefcase_id} = ${briefcases.id})`
+        })
+        .from(briefcases)
+        .where(eq(briefcases.user_id, userId))
+        .orderBy(desc(briefcases.updated_at))
+        .limit(6),
 
         // Recent Achievements
         db.select({
@@ -313,118 +301,35 @@ export async function GET(request: NextRequest) {
         .from(focusSessions)
         .where(and(eq(focusSessions.user_id, userId), gte(focusSessions.started_at, today))),
 
-        // Goals Stats
+        // Task Stats for productivity
         db.select({ 
-            id: goals.id, 
-            status: goals.status 
-        }).from(goals).where(eq(goals.user_id, userId)),
-
-        // Task Stats for productivity score calculation
-        db.select({ 
-            id: tasks.id, 
             status: tasks.status,
-            updatedAt: tasks.updated_at
-        }).from(tasks).where(eq(tasks.user_id, userId.toString())),
+            updatedAt: tasks.updated_at,
+            due_date: tasks.due_date
+        })
+        .from(tasks)
+        .where(eq(tasks.user_id, userId)),
 
         // Weekly Focus Stats
         db.select({ duration: focusSessions.duration_minutes })
         .from(focusSessions)
         .where(and(eq(focusSessions.user_id, userId), gte(focusSessions.started_at, sevenDaysAgo)))
-
      ])
 
-     // Processing Data
+     // Calculate real stats
+     const tasksCompletedToday = taskStats.filter(t => 
+       t.status === 'completed' && 
+       t.updatedAt && new Date(t.updatedAt).getTime() >= today.getTime()
+     ).length
 
-     // 1. Today's Stats
-     const todaysTasksList = todaysTasksRaw.filter(t => {
-         // Filter in memory for precise date handling if needed, or rely on query
-         // Ideally this should be in the WHERE clause, but for now we take the top 10 fetched
-         return true
-     })
+     const tasksDueToday = taskStats.filter(t => 
+       t.due_date && new Date(t.due_date).getTime() <= today.getTime() &&
+       (t.status !== 'completed' || (t.updatedAt && new Date(t.updatedAt).getTime() >= today.getTime()))
+     ).length
 
-     const tasksCompletedToday = taskStats.filter(t => t.status === 'completed' && new Date(t.updatedAt!).getTime() >= today.getTime()).length
-     const totalTasksCount = taskStats.length
-     const focusMinutesToday = todaysFocusSessions.reduce((acc, curr) => acc + (curr.duration || 0), 0)
-     const goalsAchievedAllTime = goalsTotal.filter(g => g.status === 'completed').length
-     const goalsAchievedToday = goalsTotal.filter(g => g.status === 'completed').length // Approximate without updated_at check on goals for today, or add check if field exists
-
-     // Productivity Score Calculation (Simple version)
-     const productivityScore = totalTasksCount > 0 
-        ? Math.round((tasksCompletedToday / (todaysTasksList.filter(t => t.status === 'todo').length + tasksCompletedToday + 1)) * 100) // Rough approximation
+     const productivityScore = tasksDueToday > 0 
+        ? Math.round((tasksCompletedToday / tasksDueToday) * 100)
         : 0
-
-     // 2. Formatting Responses
-     const formattedTodaysTasks = todaysTasksRaw.map(t => ({
-        id: t.id,
-        title: t.title,
-        description: t.description,
-        status: t.status || 'todo',
-        priority: t.priority || 'medium',
-        due_date: t.due_date ? new Date(t.due_date).toISOString() : null, // Handle Date -> string conversion
-        goal: t.goal_id ? {
-            id: t.goal_id.toString(),
-            title: t.goal_title || 'Untitled Goal',
-            category: null
-        } : null
-     }))
-
-     const formattedActiveGoals = activeGoalsRaw.map(g => {
-         // Should calculate progress based on tasks linked to goal
-         // For now using stored progress or 0
-         return {
-            id: g.id.toString(),
-            title: g.title,
-            description: g.description,
-            progress_percentage: 0, // Progress not in goals schema
-            target_date: g.due_date ? new Date(g.due_date).toISOString() : null,
-            category: null, 
-            tasks_total: 0, 
-            tasks_completed: 0
-         }
-     })
-
-     const formattedConversations = recentConversationsRaw.map(c => ({
-        id: c.id.toString(), // Check schema type
-        title: c.title,
-        last_message_at: c.last_message_at ? new Date(c.last_message_at).toISOString() : new Date().toISOString(),
-        agent: {
-            name: c.agent_name || 'Unknown',
-            display_name: c.agent_id || 'System', // Using ID as display name fallback
-            accent_color: '#0BE4EC' // Default neon cyan
-        }
-     }))
-
-     const formattedBriefcases = briefcasesRaw.map(b => ({
-        id: b.id,
-        title: b.title,
-        description: b.description,
-        status: b.status || 'active',
-        goal_count: 0, 
-        task_count: 0, 
-        created_at: b.created_at ? new Date(b.created_at).toISOString() : new Date().toISOString(),
-        updated_at: b.updated_at ? new Date(b.updated_at).toISOString() : new Date().toISOString()
-     }))
-
-     // Insights Generation
-     const insights: Array<{type: string, title: string, description: string, action: string}> = []
-     
-     if (formattedTodaysTasks.length === 0 && formattedBriefcases.length === 0) {
-        insights.push({
-            type: 'welcome',
-            title: 'Welcome to SoloSuccess AI!',
-            description: 'Start by creating your first briefcase to get organized.',
-            action: 'Create Briefcase'
-        })
-     }
-
-     if (false) { // Streak logic disabled as schema missing streak column
-        insights.push({
-            type: 'streak',
-            title: "You're on fire! 🔥",
-            description: `You've maintained a streak.`,
-            action: 'View Progress'
-        })
-     }
 
      const responseData: DashboardData = {
         user: {
@@ -432,25 +337,55 @@ export async function GET(request: NextRequest) {
             email: dbUser.email!,
             full_name: dbUser.full_name,
             avatar_url: dbUser.image, 
-            subscription_tier: 'free', 
+            subscription_tier: dbUser.subscription_tier || 'free', 
             level: dbUser.level || 1,
             total_points: dbUser.xp || 0, 
             current_streak: 0,
             wellness_score: 0, 
-            focus_minutes: 0, 
+            focus_minutes: todaysFocusSessions.reduce((acc, curr) => acc + (curr.duration || 0), 0), 
             onboarding_completed: dbUser.onboarding_completed || false 
         },
         todaysStats: {
             tasks_completed: tasksCompletedToday,
-            total_tasks: totalTasksCount,
-            focus_minutes: focusMinutesToday,
-            ai_interactions: recentConversationsRaw.length, // Rough count
-            goals_achieved: goalsAchievedToday,
+            total_tasks: tasksDueToday,
+            focus_minutes: todaysFocusSessions.reduce((acc, curr) => acc + (curr.duration || 0), 0),
+            ai_interactions: recentConversationsRaw.length,
+            goals_achieved: activeGoalsRaw.filter(g => Number(g.total_tasks) > 0 && Number(g.total_tasks) === Number(g.completed_tasks)).length,
             productivity_score: productivityScore
         },
-        todaysTasks: formattedTodaysTasks,
-        activeGoals: formattedActiveGoals,
-        recentConversations: formattedConversations,
+        todaysTasks: todaysTasksRaw.map(t => ({
+          id: t.id,
+          title: t.title,
+          description: t.description,
+          status: t.status || 'todo',
+          priority: t.priority || 'medium',
+          due_date: t.due_date ? new Date(t.due_date).toISOString() : null,
+          goal: t.goal_id ? {
+              id: t.goal_id,
+              title: t.goal_title || 'Untitled Goal',
+              category: null
+          } : null
+        })),
+        activeGoals: activeGoalsRaw.map(g => ({
+          id: g.id,
+          title: g.title,
+          description: g.description,
+          progress_percentage: Number(g.total_tasks) > 0 ? Math.round((Number(g.completed_tasks) / Number(g.total_tasks)) * 100) : 0,
+          target_date: g.due_date ? new Date(g.due_date).toISOString() : null,
+          category: null,
+          tasks_total: Number(g.total_tasks),
+          tasks_completed: Number(g.completed_tasks)
+        })),
+        recentConversations: recentConversationsRaw.map(c => ({
+          id: c.id,
+          title: c.title,
+          last_message_at: c.last_message_at ? new Date(c.last_message_at).toISOString() : new Date().toISOString(),
+          agent: {
+              name: c.agent_name || 'Unknown',
+              display_name: c.agent_id || 'System',
+              accent_color: '#0BE4EC'
+          }
+        })),
         recentAchievements: recentAchievementsRaw.map(r => ({
             id: r.id.toString(),
             earned_at: r.earned_at?.toISOString() || new Date().toISOString(),
@@ -462,7 +397,16 @@ export async function GET(request: NextRequest) {
                 points: r.points || 0
             }
         })),
-        recentBriefcases: formattedBriefcases,
+        recentBriefcases: briefcasesRaw.map(b => ({
+          id: b.id,
+          title: b.title,
+          description: b.description,
+          status: b.status || 'active',
+          goal_count: Number(b.goal_count),
+          task_count: Number(b.task_count),
+          created_at: b.created_at ? new Date(b.created_at).toISOString() : new Date().toISOString(),
+          updated_at: b.updated_at ? new Date(b.updated_at).toISOString() : new Date().toISOString()
+        })),
         weeklyFocus: {
             total_minutes: weeklyFocusSessions.reduce((acc, curr) => acc + (curr.duration || 0), 0),
             sessions_count: weeklyFocusSessions.length,
@@ -470,7 +414,12 @@ export async function GET(request: NextRequest) {
                 ? Math.round(weeklyFocusSessions.reduce((acc, curr) => acc + (curr.duration || 0), 0) / weeklyFocusSessions.length)
                 : 0
         },
-        insights
+        insights: todaysTasksRaw.length === 0 ? [{
+          type: 'welcome',
+          title: 'All caught up!',
+          description: 'You have no tasks due today. Time to plan ahead?',
+          action: 'Create Task'
+        }] : []
      }
 
      return NextResponse.json(responseData)

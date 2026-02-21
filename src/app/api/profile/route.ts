@@ -3,8 +3,8 @@ import { authenticateRequest } from '@/lib/auth-server'
 import { getDb } from '@/lib/database-client'
 import { z } from 'zod'
 import { logError, logInfo } from '@/lib/logger'
-import { eq } from 'drizzle-orm'
-import { users } from '@/shared/db/schema'
+import { eq, desc } from 'drizzle-orm'
+import { users, userAchievements, achievements } from '@/shared/db/schema'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
@@ -58,12 +58,26 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Profile not found' }, { status: 404 })
     }
 
-    // Merge some fields for frontend compatibility (e.g. storageService expects 'totalActions')
+    // Fetch real achievements
+    const myAchievements = await db.select({
+      id: userAchievements.id,
+      earned_at: userAchievements.earned_at,
+      title: achievements.title,
+      description: achievements.description,
+      icon: achievements.icon,
+      points: achievements.points
+    })
+    .from(userAchievements)
+    .innerJoin(achievements, eq(userAchievements.achievement_id, achievements.id))
+    .where(eq(userAchievements.user_id, user.id))
+    .orderBy(desc(userAchievements.earned_at))
+
+    // Merge fields for frontend compatibility
     const profileData = {
       ...rows[0],
       name: rows[0].full_name || rows[0].name || '',
       totalActions: rows[0].total_actions,
-      achievements: [] // Still empty for now, could join achievements table later
+      achievements: myAchievements
     }
 
     logInfo('Profile fetched successfully', {

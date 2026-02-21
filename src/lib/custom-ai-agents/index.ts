@@ -3,6 +3,7 @@ export { CustomAgent } from "./core-agent"
 export type { AgentCapabilities, AgentMemory, AgentTask, AgentResponse } from "./core-agent"
 
 // Individual agents
+export { AuraAgent } from "./aura-agent"
 export { RoxyAgent } from "./roxy-agent"
 export { BlazeAgent } from "./blaze-agent"
 export { EchoAgent } from "./echo-agent"

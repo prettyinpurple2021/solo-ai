@@ -1,5 +1,7 @@
 import { logError } from "@/lib/logger"
-import { getSql } from "@/lib/api-utils"
+import { db } from "@/db/index"
+import { users, chatConversations, documents } from "@/shared/db/schema"
+import { eq, and, gte, sql, count, sum } from "drizzle-orm"
 
 // --- CONSTANTS ---
 
@@ -23,15 +25,15 @@ export const AGENTS = {
   VEX: 'vex',
   LUMI: 'lumi',
   AURA: 'aura', 
-  FINN: 'finn', // The Profit & Cashflow Specialist (formerly Sales)
+  FINN: 'finn',
 } as const;
 
 // 1. Agent Access Rules
 export const AGENT_ACCESS: Record<SubscriptionTier, string[]> = {
-  [TIERS.FREE]: [AGENTS.AURA], // Basic Wellness only
-  [TIERS.LAUNCH]: [AGENTS.AURA], // Basic Wellness only
+  [TIERS.FREE]: [AGENTS.AURA],
+  [TIERS.LAUNCH]: [AGENTS.AURA],
   [TIERS.ACCELERATOR]: [AGENTS.AURA, AGENTS.BLAZE, AGENTS.GLITCH, AGENTS.VEX, AGENTS.FINN],
-  [TIERS.DOMINATOR]: Object.values(AGENTS), // All agents
+  [TIERS.DOMINATOR]: Object.values(AGENTS),
 };
 
 // 2. Storage Limits (in Bytes)
@@ -122,19 +124,20 @@ export interface SubscriptionInfo {
  */
 export async function getUserSubscription(userId: string): Promise<SubscriptionInfo> {
   try {
-    const sql = getSql();
-    const result = await sql`
-      SELECT subscription_tier, subscription_status FROM users WHERE id = ${userId}
-    ` as any[];
+    const [user] = await db.select({
+      tier: users.subscription_tier,
+      status: users.subscription_status
+    })
+    .from(users)
+    .where(eq(users.id, userId))
+    .limit(1);
 
-    if (result.length === 0) {
+    if (!user) {
       throw new Error('User not found')
     }
 
-    const { subscription_tier, subscription_status } = result[0]
-    // Default to FREE/LAUNCH if null
-    const tier = (subscription_tier || TIERS.FREE) as SubscriptionTier
-    const status = subscription_status || 'active'
+    const tier = (user.tier || TIERS.FREE) as SubscriptionTier
+    const status = user.status || 'active'
 
     return {
       tier,
@@ -143,7 +146,6 @@ export async function getUserSubscription(userId: string): Promise<SubscriptionI
     }
   } catch (error) {
     logError('Error fetching user subscription:', error)
-    // Return default free tier on error
     return {
       tier: TIERS.FREE,
       status: 'active',
@@ -168,7 +170,6 @@ function getFeaturesByTier(tier: SubscriptionTier): SubscriptionInfo['features']
     storageLimitBytes: 0
   };
 
-  // Safe fallback if tier is invalid
   if (!Object.values(TIERS).includes(tier)) {
     return { ...defaults, ...getFeaturesByTier(TIERS.FREE) };
   }
@@ -192,7 +193,7 @@ function getFeaturesByTier(tier: SubscriptionTier): SubscriptionInfo['features']
 }
 
 /**
- * Check if user has access to a specific CORE feature (War Room, Incinerator, etc.)
+ * Check if user has access to a specific CORE feature
  */
 export async function canAccessFeature(
   userId: string,
@@ -208,7 +209,6 @@ export async function canAccessFeature(
  */
 export async function canAccessAgent(userId: string, agentId: string): Promise<boolean> {
   const subscription = await getUserSubscription(userId);
-  // Normalize agent ID
   const normalizedId = agentId.toLowerCase();
   return subscription.features.allowedAgents.includes(normalizedId);
 }
@@ -221,44 +221,54 @@ export async function checkUsageLimit(
   limitType: 'agents' | 'conversations' | 'teamMembers' | 'storage'
 ): Promise<{ allowed: boolean; current: number; limit: number }> {
   const subscription = await getUserSubscription(userId)
-  const sql = getSql();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
   let current = 0
   let limit = 0
 
   switch (limitType) {
-    case 'agents':
-      // Count distinct agents chatted with today
-      const agentsResult = await sql`SELECT COUNT(DISTINCT agent_id) AS count FROM conversations 
-         WHERE user_id = ${userId} AND created_at >= CURRENT_DATE`
-      current = parseInt(agentsResult[0]?.count || '0')
-      limit = subscription.features.maxAgents
-      break
+    case 'agents': {
+      const [result] = await db.select({ value: count(sql`DISTINCT ${chatConversations.agent_id}`) })
+        .from(chatConversations)
+        .where(and(
+          eq(chatConversations.user_id, userId),
+          gte(chatConversations.created_at, today)
+        ));
+      current = result.value;
+      limit = subscription.features.maxAgents;
+      break;
+    }
       
-    case 'conversations':
-      // Check conversations today
-      const conversationResult = await sql`SELECT COUNT(*) as count FROM conversations 
-         WHERE user_id = ${userId} AND created_at >= CURRENT_DATE`
-      current = parseInt(conversationResult[0]?.count || '0')
-      limit = subscription.features.maxConversationsPerDay
-      break
+    case 'conversations': {
+      const [result] = await db.select({ value: count() })
+        .from(chatConversations)
+        .where(and(
+          eq(chatConversations.user_id, userId),
+          gte(chatConversations.created_at, today)
+        ));
+      current = result.value;
+      limit = subscription.features.maxConversationsPerDay;
+      break;
+    }
       
-    case 'teamMembers':
-      const teamResult = await sql`SELECT COUNT(*) AS count FROM team_members WHERE user_id = ${userId}`
-      current = parseInt(teamResult[0]?.count || '0')
-      limit = subscription.features.maxTeamMembers
-      break
+    case 'teamMembers': {
+      // Stub for future team feature
+      current = 1;
+      limit = subscription.features.maxTeamMembers;
+      break;
+    }
       
-    case 'storage':
-      // This would require a real query against your storage table/bucket tracking
-      // For now, we stub it or assume checking a 'storage_usage' column on users
-      const userResult = await sql`SELECT storage_usage_bytes FROM users WHERE id = ${userId}`;
-      current = parseInt(userResult[0]?.storage_usage_bytes || '0');
+    case 'storage': {
+      const [result] = await db.select({ value: sum(documents.size) })
+        .from(documents)
+        .where(eq(documents.user_id, userId));
+      current = Number(result.value || 0);
       limit = subscription.features.storageLimitBytes;
       break;
+    }
   }
 
-  // Handle Unlimited (-1)
   const isUnlimited = limit === -1;
   const allowed = isUnlimited || current < limit;
 
@@ -270,13 +280,18 @@ export async function checkUsageLimit(
 }
 
 /**
- * Update user subscription status (webhook)
+ * Update user subscription status
  */
 export async function updateSubscriptionStatus(
   userId: string,
   tier: string,
   status: string
 ): Promise<void> {
-  const sql = getSql();
-  await sql`UPDATE users SET subscription_tier = ${tier}, subscription_status = ${status}, updated_at = NOW() WHERE id = ${userId}`
+  await db.update(users)
+    .set({
+      subscription_tier: tier,
+      subscription_status: status,
+      updated_at: new Date()
+    })
+    .where(eq(users.id, userId));
 }
