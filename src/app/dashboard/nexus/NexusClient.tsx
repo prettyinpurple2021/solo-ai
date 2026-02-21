@@ -11,10 +11,12 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle} fr
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Button } from "@/components/ui/button"
 import {
   Users, Heart, MessageCircle, Share2, Trophy, Flame, Star, Sparkles, Plus, Send, Award, Target, Zap, Coffee, Rocket, Activity, Radio, Layers, MoreVertical, Trash2, Edit, UserPlus, ThumbsDown, XCircle, Loader2
 } from "lucide-react"
-import { CommunityPost, CommunityChallenge, LeaderboardEntry, CommunityComment } from "@/lib/services/community-service"
+import { CommunityChallenge, LeaderboardEntry } from "@/lib/services/community-service"
+import { PostProps, CommentProps } from "@/types/community"
 import { createPost, reactToPost, joinChallenge, deletePost, addComment, fetchComments } from "@/lib/actions/community-actions"
 import { toast } from "sonner"
 import { CyberButton } from "@/components/cyber/CyberButton"
@@ -23,7 +25,7 @@ import { GlitchText } from "@/components/cyber/GlitchText"
 import { cn } from "@/lib/utils"
 
 interface NexusClientProps {
-  initialPosts: CommunityPost[];
+  initialPosts: PostProps[];
   initialChallenges: CommunityChallenge[];
   initialLeaderboard: LeaderboardEntry[];
   user: any;
@@ -34,7 +36,7 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
   const [newPostContent, setNewPostContent] = useState("")
   const [showNewPost, setShowNewPost] = useState(false)
   
-  const [posts, setPosts] = useState<CommunityPost[]>(initialPosts)
+  const [posts, setPosts] = useState<PostProps[]>(initialPosts)
   const [challenges, setChallenges] = useState<CommunityChallenge[]>(initialChallenges)
   const [topOperatives, setTopOperatives] = useState<LeaderboardEntry[]>(initialLeaderboard)
   
@@ -42,7 +44,7 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
 
   // Comment logic
   const [viewingCommentsPostId, setViewingCommentsPostId] = useState<string | null>(null)
-  const [comments, setComments] = useState<CommunityComment[]>([])
+  const [comments, setComments] = useState<CommentProps[]>([])
   const [isLoadingComments, setIsLoadingComments] = useState(false)
   const [newComment, setNewComment] = useState("")
   const [isSubmittingComment, setIsSubmittingComment] = useState(false)
@@ -71,7 +73,7 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
     if (!newPostContent.trim()) return
     setIsPending(true)
     try {
-      await createPost({ content: newPostContent })
+      await createPost({ content: newPostContent, tags: [] })
       setNewPostContent("")
       setShowNewPost(false)
       toast.success("Transmission uploaded to the collective.")
@@ -97,7 +99,7 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
       // Optimistic update
       setPosts(posts.map(p => 
         p.id === postId 
-            ? { ...p, likes: p.isLiked ? p.likes - 1 : p.likes + 1, isLiked: !p.isLiked, userReaction: p.userReaction === type ? undefined : type }
+            ? { ...p, like_count: p.isLiked ? (p.like_count || 0) - 1 : (p.like_count || 0) + 1, isLiked: !p.isLiked }
             : p
       ))
     } catch (error) {
@@ -128,7 +130,7 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
           setComments(updatedComments);
           
           // Update post comment count locally
-          setPosts(posts.map(p => p.id === viewingCommentsPostId ? { ...p, comments: p.comments + 1 } : p));
+          setPosts(posts.map(p => p.id === viewingCommentsPostId ? { ...p, comment_count: (p.comment_count || 0) + 1 } : p));
       } catch (err) {
           toast.error("Failed to append comment.");
       } finally {
@@ -158,7 +160,7 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
           <div className="text-center space-y-3">
             <h1 className="text-4xl font-bold flex items-center justify-center gap-3 tracking-tighter">
               <Activity className="h-8 w-8 text-cyan-400" />
-              <GlitchText text="THE NEXUS" />
+              <GlitchText>THE NEXUS</GlitchText>
               <Layers className="h-8 w-8 text-purple-600" />
             </h1>
             <p className="text-lg text-cyan-100/80 font-mono">
@@ -244,27 +246,21 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
                     {/* Post Header */}
                     <div className="flex items-start gap-3 mb-4">
                         <Avatar className="h-12 w-12 ring-2 ring-cyan-900/50">
-                        <AvatarImage src={post.author.avatar || "/default-user.svg"} />
+                        <AvatarImage src={post.author.image || "/default-user.svg"} />
                         <AvatarFallback className="bg-zinc-900 text-cyan-400 font-bold">
-                            {post.author.name.charAt(0)}
+                            {post.author.name?.charAt(0) || 'U'}
                         </AvatarFallback>
                         </Avatar>
                         <div className="flex-1">
                         <div className="flex items-center gap-2">
                             <h4 className="font-bold text-white hover:text-cyan-400 transition-colors cursor-pointer">{post.author.name}</h4>
-                            {post.author.verified && (
-                            <Badge className="bg-cyan-500/20 text-cyan-300 border-cyan-500/50 text-[10px] px-1.5 py-0 rounded-none transform skew-x-[-10deg]">
-                                VERIFIED
-                            </Badge>
-                            )}
                             <Badge className="bg-purple-500/10 text-xs border-purple-500/50 text-purple-400">
                             Lvl {post.author.level}
                             </Badge>
                         </div>
                         <p className="text-xs text-gray-500 font-mono mt-0.5 flex items-center gap-1">
-                            <span className="text-purple-400/80">{post.author.title}</span>
                             <span className="text-gray-700">•</span>
-                            <span>{post.timestamp}</span>
+                            <span>{post.created_at.toLocaleDateString()}</span>
                         </p>
                         </div>
                         {user?.id === post.author.id && (
@@ -287,17 +283,6 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
                     <div className="space-y-3">
                         <p className="text-sm leading-relaxed text-gray-300 whitespace-pre-wrap">{post.content}</p>
 
-                        {post.image && (
-                        <div className="rounded-lg overflow-hidden border border-white/10 relative group">
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                            <img
-                                src={post.image || "/default-post.svg"}
-                                alt="Post content"
-                                className="w-full object-cover max-h-80"
-                            />
-                        </div>
-                        )}
-
                         {/* Tags */}
                         {post.tags && post.tags.length > 0 && (
                         <div className="flex flex-wrap gap-2 pt-2">
@@ -313,44 +298,23 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
                     {/* Post Actions */}
                     <div className="flex items-center justify-between mt-4 pt-4 border-t border-white/5">
                         <div className="flex items-center gap-4">
-                        <Popover>
-                            <PopoverTrigger asChild>
-                                <button
-                                    className={`flex items-center gap-1 hover:bg-pink-500/10 px-2 py-1 rounded transition-colors ${post.isLiked ? "text-pink-500" : "text-gray-400 hover:text-pink-400"}`}
-                                >
-                                    {post.userReaction && reactionIcons[post.userReaction] ? (
-                                        (() => {
-                                            const Icon = reactionIcons[post.userReaction];
-                                            return <Icon className="h-4 w-4 fill-current" />;
-                                        })()
-                                    ) : (
-                                        <Heart className={`h-4 w-4 ${post.isLiked ? "fill-current" : ""}`} />
-                                    )}
-                                    <span className="font-mono text-xs">{post.likes}</span>
-                                </button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-1 bg-zinc-950 border-purple-500/30 flex gap-1">
-                                {Object.entries(reactionIcons).map(([type, Icon]) => (
-                                    <button
-                                        key={type}
-                                        className={`h-8 w-8 flex items-center justify-center rounded hover:bg-white/10 transition-colors ${post.userReaction === type ? 'text-pink-500 bg-white/5' : 'text-gray-400'}`}
-                                        onClick={() => handleReaction(post.id, type)}
-                                    >
-                                        <Icon className="h-4 w-4" />
-                                    </button>
-                                ))}
-                            </PopoverContent>
-                        </Popover>
+                        <button
+                            className={`flex items-center gap-1 hover:bg-pink-500/10 px-2 py-1 rounded transition-colors ${post.isLiked ? "text-pink-500" : "text-gray-400 hover:text-pink-400"}`}
+                            onClick={() => handleReaction(post.id)}
+                        >
+                            <Heart className={`h-4 w-4 ${post.isLiked ? "fill-current" : ""}`} />
+                            <span className="font-mono text-xs">{post.like_count}</span>
+                        </button>
                         <button 
                             className="flex items-center gap-1 text-gray-400 hover:bg-cyan-500/10 hover:text-cyan-400 px-2 py-1 rounded transition-colors"
                             onClick={() => setViewingCommentsPostId(post.id)}
                         >
                             <MessageCircle className="h-4 w-4" />
-                            <span className="font-mono text-xs">{post.comments}</span>
+                            <span className="font-mono text-xs">{post.comment_count}</span>
                         </button>
                         <button className="flex items-center gap-1 text-gray-400 hover:bg-purple-500/10 hover:text-purple-400 px-2 py-1 rounded transition-colors">
                             <Share2 className="h-4 w-4" />
-                            <span className="font-mono text-xs">{post.shares}</span>
+                            <span className="font-mono text-xs">0</span>
                         </button>
                         </div>
                         <button className="text-xs text-purple-400 hover:text-purple-300 hover:bg-purple-500/10 font-mono px-2 py-1 rounded transition-colors flex items-center">
@@ -573,18 +537,18 @@ export function NexusClient({ initialPosts, initialChallenges, initialLeaderboar
                         {comments.map((comment) => (
                             <div key={comment.id} className="flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
                                 <Avatar className="h-8 w-8 mt-1">
-                                    <AvatarImage src={comment.author.avatar} />
-                                    <AvatarFallback>{comment.author.name.charAt(0)}</AvatarFallback>
+                                    <AvatarImage src={comment.author.image || "/default-user.svg"} />
+                                    <AvatarFallback>{comment.author.name?.charAt(0) || 'U'}</AvatarFallback>
                                 </Avatar>
                                 <div className="flex-1 bg-white/5 rounded p-3 border border-white/5">
                                     <div className="flex items-center justify-between mb-1">
                                         <span className="font-bold text-sm text-cyan-300">{comment.author.name}</span>
-                                        <span className="text-xs text-gray-500 font-mono">{comment.timestamp}</span>
+                                        <span className="text-xs text-gray-500 font-mono">{comment.created_at.toLocaleDateString()}</span>
                                     </div>
                                     <p className="text-sm text-gray-300">{comment.content}</p>
                                     <div className="mt-2 flex items-center gap-2">
                                         <button className="text-xs text-gray-500 hover:text-cyan-400 flex items-center gap-1 transition-colors">
-                                            <Heart className="h-3 w-3" /> {comment.likes}
+                                            <Heart className="h-3 w-3" /> {comment.like_count}
                                         </button>
                                     </div>
                                 </div>

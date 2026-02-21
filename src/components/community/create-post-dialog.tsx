@@ -46,7 +46,8 @@ export function CreatePostDialog({ topics, triggerClassName }: { topics: Topic[]
             const res = await createPost({
                 title,
                 content,
-                topicId
+                topicId,
+                tags: []
             })
             if (res.success) {
                 toast.success("Post created!")

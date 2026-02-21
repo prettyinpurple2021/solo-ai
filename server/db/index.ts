@@ -1,6 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import * as sharedSchema from '../../lib/shared/db/schema';
+import * as sharedSchema from '../../src/lib/shared/db/schema';
 
 const schema = { ...sharedSchema };
 import dotenv from 'dotenv';

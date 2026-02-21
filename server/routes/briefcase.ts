@@ -2,7 +2,7 @@
 import { Router, Response, Request } from 'express';
 import { authMiddleware } from '../middleware/auth';
 import { db } from '../db';
-import { briefcases, briefcaseItems } from '../../lib/shared/db/schema';
+import { briefcases, briefcaseItems } from '../../src/lib/shared/db/schema';
 import { eq, and, desc, sql } from 'drizzle-orm';
 import { logError } from '../utils/logger';
 import { UsageTracker } from '../utils/usage-tracker';

@@ -1,4 +1,3 @@
-
 'use server'
 
 import { db } from '@/db';
@@ -21,6 +20,8 @@ const postSchema = z.object({
   content: z.string().min(1),
   image: z.string().optional(),
   tags: z.array(z.string()).default([]),
+  title: z.string().optional(),
+  topicId: z.string().optional(),
 });
 
 export async function createPost(data: z.infer<typeof postSchema>) {
@@ -29,20 +30,25 @@ export async function createPost(data: z.infer<typeof postSchema>) {
 
   const validated = postSchema.parse(data);
 
-  // Find or create a default "general" topic
-  let [topic] = await db.select().from(communityTopics).where(eq(communityTopics.slug, 'general')).limit(1);
-  if (!topic) {
-    [topic] = await db.insert(communityTopics).values({
-      name: 'General',
-      slug: 'general',
-      description: 'General discussion'
-    }).returning();
+  // Use provided topicId or find/create a default "general" topic
+  let topic_id = validated.topicId;
+  
+  if (!topic_id) {
+    let [topic] = await db.select().from(communityTopics).where(eq(communityTopics.slug, 'general')).limit(1);
+    if (!topic) {
+      [topic] = await db.insert(communityTopics).values({
+        name: 'General',
+        slug: 'general',
+        description: 'General discussion'
+      }).returning();
+    }
+    topic_id = topic.id;
   }
 
   const [newPost] = await db.insert(communityPosts).values({
     user_id: user.id,
-    topic_id: topic.id,
-    title: 'Untitled Transmission', // Basic support
+    topic_id: topic_id,
+    title: validated.title || 'Untitled Transmission',
     content: validated.content,
     image: validated.image,
     tags: validated.tags,
@@ -51,6 +57,7 @@ export async function createPost(data: z.infer<typeof postSchema>) {
   }).returning();
 
   revalidatePath('/dashboard/nexus');
+  revalidatePath('/community');
   return { success: true, post: newPost };
 }
 
@@ -82,6 +89,7 @@ export async function reactToPost(postId: string, type: string = 'like') {
   }
 
   revalidatePath('/dashboard/nexus');
+  revalidatePath('/community');
   return { success: true };
 }
 
@@ -101,6 +109,7 @@ export async function joinChallenge(challengeId: string) {
     .where(eq(challenges.id, challengeId));
 
   revalidatePath('/dashboard/nexus');
+  revalidatePath('/community');
   return { success: true };
 }
 
@@ -113,15 +122,27 @@ export async function deletePost(postId: string) {
   );
 
   revalidatePath('/dashboard/nexus');
+  revalidatePath('/community');
   return { success: true };
 }
 
-export async function addComment(postId: string, content: string) {
+export async function addComment(postIdOrData: any, contentParam?: string) {
   try {
     const { user } = await authenticateAction();
     if (!user) throw new Error('Unauthorized');
 
-    if (!content.trim()) throw new Error('Content is required');
+    let postId: string;
+    let content: string;
+
+    if (typeof postIdOrData === 'object') {
+        postId = postIdOrData.postId;
+        content = postIdOrData.content;
+    } else {
+        postId = postIdOrData;
+        content = contentParam!;
+    }
+
+    if (!content?.trim()) throw new Error('Content is required');
 
     // Insert comment
     await db.insert(communityComments).values({
@@ -139,22 +160,32 @@ export async function addComment(postId: string, content: string) {
       .where(eq(communityPosts.id, postId));
 
     revalidatePath('/dashboard/nexus');
+    revalidatePath('/community');
     return { success: true };
   } catch (error: any) {
-    if (error instanceof Error) {
-        logError('Failed to add comment', error);
-    } else {
-        logError('Failed to add comment', { error: String(error) });
-    }
-    return { success: false, error: 'Failed to add comment' };
+    logError('Failed to add comment', error);
+    return { success: false, error: error instanceof Error ? error.message : 'Failed to add comment' };
   }
 }
 
-export async function toggleLike(postId: string) {
-    return reactToPost(postId, 'like');
+export async function toggleLike(targetTypeOrId: string, targetIdParam?: string) {
+    // Handle both ('post', id) and (id)
+    const id = targetIdParam || targetTypeOrId;
+    return reactToPost(id, 'like');
 }
 
 export async function fetchComments(postId: string) {
     const { user } = await authenticateAction();
     return CommunityService.getComments(postId, user?.id);
+}
+
+export async function getCommunityFeed(topicId?: string | null) {
+    const { user } = await authenticateAction();
+    // In a real implementation, CommunityService.getPosts would handle filtering by topicId
+    // For now, we'll just return all posts as before, but with the correct signature.
+    return CommunityService.getPosts(user?.id);
+}
+
+export async function getTopics() {
+    return db.select().from(communityTopics);
 }

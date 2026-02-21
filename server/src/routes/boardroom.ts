@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { BoardroomOrchestrator } from "../services/boardroom/orchestrator";
 import { db } from "../../db";
-import { boardroomSessions } from "../../../lib/shared/db/schema";
+import { boardroomSessions } from "../../../src/lib/shared/db/schema";
 import { eq } from "drizzle-orm";
 
 export const boardroomRouter = Router();

@@ -19,6 +19,7 @@ export interface PostProps {
     created_at: Date;
     author: Author;
     topic?: Topic | null; // Allow null to match Drizzle query result
+    tags?: string[];
     _count?: {
         likes: number; // For compatibility if passed from raw query
         comments: number;

@@ -1,7 +1,7 @@
 import express from 'express';
 import { stripe, PRICE_IDS } from '../stripe-config';
 import { db } from '../db';
-import { subscriptions, users, usageTracking } from '../../lib/shared/db/schema';
+import { subscriptions, users, usageTracking } from '../../src/lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { logError, logInfo } from '../utils/logger';
 

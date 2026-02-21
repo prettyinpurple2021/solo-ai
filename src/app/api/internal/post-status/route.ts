@@ -1,7 +1,6 @@
-
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/server/db';
-import { posts } from '@/server/db/schema';
+import { getDb } from '@/lib/database-client';
+import { communityPosts, communityTopics, users } from '@/shared/db/schema';
 import { desc, eq } from 'drizzle-orm';
 
 export async function POST(req: NextRequest) {
@@ -22,28 +21,33 @@ export async function POST(req: NextRequest) {
 
     console.log(`[Internal Agent] Received status update: ${content.substring(0, 50)}...`);
 
-    // In a real implementation, we would save this to a 'status_updates' table 
-    // or create a special kind of blog post. 
-    // Since we are expanding the system, let's create a specialized blog post for now 
-    // or just acknowledge for verification if the DB isn't ready for a specific 'Aura' type yet.
+    const db = getDb();
     
-    // For SoloSuccess AI, "Aura" or status updates are often shown in the dashboard.
-    // Let's create a blog post with a specific category for now.
-    
-    const slug = `update-${Date.now()}`;
-    
-    // We check if the posts table exists and has the expected structure
-    // This is a production-grade check
     try {
-        await db.insert(posts).values({
+        // Find or create "general" topic
+        let [topic] = await db.select().from(communityTopics).where(eq(communityTopics.slug, 'general')).limit(1);
+        if (!topic) {
+            [topic] = await db.insert(communityTopics).values({
+                name: 'General',
+                slug: 'general',
+                description: 'General discussion'
+            }).returning();
+        }
+
+        // Find an admin user to be the author
+        const [admin] = await db.select().from(users).where(eq(users.role, 'admin')).limit(1);
+        if (!admin) {
+            throw new Error('No admin user found to post status update');
+        }
+
+        await db.insert(communityPosts).values({
+            user_id: admin.id,
+            topic_id: topic.id,
             title: `Engineering Update: ${new Date().toLocaleDateString()}`,
             content: content,
-            slug: slug,
-            category: 'Engineering Update',
-            excerpt: content.substring(0, 150) + '...',
-            published: true,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            tags: ['engineering', 'update'],
+            created_at: new Date(),
+            updated_at: new Date(),
         });
         
         return NextResponse.json({ success: true, message: 'Status update posted successfully' });

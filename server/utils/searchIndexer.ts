@@ -1,5 +1,5 @@
 import { db } from '../db';
-import { searchIndex } from '../../lib/shared/db/schema';
+import { searchIndex } from '../../src/lib/shared/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { logError, logInfo } from './logger';
 import { generateEmbedding } from './embeddings';

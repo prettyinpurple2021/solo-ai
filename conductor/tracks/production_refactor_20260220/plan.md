@@ -1,13 +1,13 @@
 # Implementation Plan: Production-Ready Refactor
 
 ## Phase 1: Project Structure Consolidation
-- [~] Task: Consolidate root `app` and `src/app` into unified `src/app`
-    - [ ] Move root `app/` contents to `src/app/`
-    - [ ] Merge duplicate logic in `src/app/api` and `app/api`, favoring `src/app` architecture
-    - [ ] Remove empty root directories
-- [ ] Task: Consolidate components, hooks, and lib into `src/`
-    - [ ] Move root `components/` to `src/components/`
-    - [ ] Move root `hooks/`, `utils/`, `lib/` to `src/` equivalents
+- [x] Task: Consolidate root `app` and `src/app` into unified `src/app` (d5adf3c)
+    - [x] Move root `app/` contents to `src/app/`
+    - [x] Merge duplicate logic in `src/app/api` and `app/api`, favoring `src/app` architecture
+    - [x] Remove empty root directories
+- [x] Task: Consolidate components, hooks, and lib into `src/` (d5adf3c)
+    - [x] Move root `components/` to `src/components/`
+    - [x] Move root `hooks/`, `utils/`, `lib/` to `src/` equivalents
 - [ ] Task: Update path aliases and imports
     - [ ] Update `tsconfig.json` paths
     - [ ] Run a global search and replace for relative imports to new aliases

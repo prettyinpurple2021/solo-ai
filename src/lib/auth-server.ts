@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth"
 import { NextRequest, NextResponse } from "next/server"
-
+import { redirect } from "next/navigation"
 
 /**
  * Authenticate request using NextAuth
@@ -13,6 +13,17 @@ export async function authenticateRequest() {
   }
   
   return { user: null, error: "Unauthorized" }
+}
+
+/**
+ * Helper for Server Components to protect pages
+ */
+export async function authenticatePage() {
+  const session = await auth()
+  if (!session?.user) {
+    redirect('/login')
+  }
+  return { user: session.user }
 }
 
 /**

@@ -1,5 +1,5 @@
 import { db } from "../../../db";
-import { boardroomSessions, boardroomMessages } from "../../../../lib/shared/db/schema";
+import { boardroomSessions, boardroomMessages } from "../../../../src/lib/shared/db/schema";
 import { eq, asc } from "drizzle-orm";
 import { AgentId } from "../../../../src/types";
 

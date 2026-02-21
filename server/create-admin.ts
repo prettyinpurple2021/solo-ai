@@ -1,5 +1,5 @@
 import { db } from './db';
-import { users } from '../lib/shared/db/schema';
+import { users } from '../src/lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';

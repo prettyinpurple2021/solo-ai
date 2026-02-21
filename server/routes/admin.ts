@@ -1,7 +1,7 @@
 import express from 'express';
 import { db } from '../db';
 import jwt from 'jsonwebtoken';
-import { users, subscriptions, adminActions, usageTracking } from '../../lib/shared/db/schema';
+import { users, subscriptions, adminActions, usageTracking } from '../../src/lib/shared/db/schema';
 import { eq, desc, count, sql } from 'drizzle-orm';
 import { requireAdmin, verifyAdminPin } from '../middleware/admin';
 import { authMiddleware } from '../middleware/auth';

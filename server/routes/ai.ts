@@ -2,14 +2,14 @@
 import { Router, Request, Response } from 'express';
 import { GoogleGenAI, Type } from '@google/genai';
 import { db } from '../db';
-import { businessContext, tasks, competitorReports, boardReports, pivotAnalyses, warRoomSessions, dailyIntelligence, userBrandSettings, users } from '../../lib/shared/db/schema';
+import { businessContext, tasks, competitorReports, boardReports, pivotAnalyses, warRoomSessions, dailyIntelligence, userBrandSettings, users } from '../../src/lib/shared/db/schema';
 import { eq, desc, and, gte } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { SYSTEM_INSTRUCTIONS, AGENTS, AgentId } from '../constants';
 import { logError } from '../utils/logger';
 import { requireSubscription, checkUsage, TIER_LEVELS } from '../middleware/subscription';
 import { UsageTracker } from '../utils/usage-tracker';
-import { DominatorAgentOutputSchema } from '../../lib/shared/schemas';
+import { DominatorAgentOutputSchema } from '../../src/lib/shared/schemas';
 
 const router = Router();
 

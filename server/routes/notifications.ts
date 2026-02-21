@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../db';
-import { notifications, notificationPreferences } from '../../lib/shared/db/schema';
+import { notifications, notificationPreferences } from '../../src/lib/shared/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { broadcastToUser } from '../realtime';

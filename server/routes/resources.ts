@@ -7,7 +7,7 @@ import {
     campaigns, creativeAssets, codeSnippets,
     launchStrategies, tribeBlueprints, boardReports,
     competitorReports, agentInstructions
-} from '../../lib/shared/db/schema';
+} from '../../src/lib/shared/db/schema';
 import { eq, desc, and } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { logError } from '../utils/logger';

@@ -1,4 +1,3 @@
-
 import { db } from '@/db';
 import { 
   communityPosts, 
@@ -6,30 +5,11 @@ import {
   postLikes, 
   users, 
   challenges, 
-  challengeParticipants 
+  challengeParticipants,
+  communityTopics
 } from '@/shared/db/schema';
 import { eq, and, desc, sql, count } from 'drizzle-orm';
-
-export interface CommunityPost {
-  id: string;
-  author: {
-    id: string;
-    name: string;
-    avatar: string;
-    level: number;
-    title: string;
-    verified: boolean;
-  };
-  content: string;
-  image?: string;
-  timestamp: string;
-  likes: number;
-  comments: number;
-  shares: number;
-  isLiked: boolean;
-  userReaction?: string;
-  tags: string[];
-}
+import { PostProps, CommentProps, Author, Topic } from '@/types/community';
 
 export interface CommunityChallenge {
   id: string;
@@ -57,46 +37,33 @@ export interface LeaderboardEntry {
   streak: number;
 }
 
-export interface CommunityComment {
-  id: string;
-  postId: string;
-  content: string;
-  author: {
-    id: string;
-    name: string;
-    avatar: string;
-    level: number;
-    title: string;
-    verified: boolean;
-  };
-  timestamp: string;
-  likes: number;
-  isSolution: boolean;
-  isLiked: boolean;
-}
-
 export class CommunityService {
-  static async getPosts(userId?: string): Promise<CommunityPost[]> {
+  static async getPosts(userId?: string): Promise<PostProps[]> {
     const posts = await db.select({
       id: communityPosts.id,
+      title: communityPosts.title,
       content: communityPosts.content,
       image: communityPosts.image,
-      createdAt: communityPosts.created_at,
-      likes: communityPosts.like_count,
-      comments: communityPosts.comment_count,
-      shares: communityPosts.shares_count,
+      created_at: communityPosts.created_at,
+      like_count: communityPosts.like_count,
+      comment_count: communityPosts.comment_count,
       tags: communityPosts.tags,
       author: {
         id: users.id,
         name: users.full_name,
-        avatar: users.image,
+        image: users.image,
         level: users.level,
-        title: users.role,
-        verified: users.onboarding_completed // Approximation
+      },
+      topic: {
+        id: communityTopics.id,
+        name: communityTopics.name,
+        slug: communityTopics.slug,
+        icon: communityTopics.icon
       }
     })
     .from(communityPosts)
     .innerJoin(users, eq(communityPosts.user_id, users.id))
+    .innerJoin(communityTopics, eq(communityPosts.topic_id, communityTopics.id))
     .orderBy(desc(communityPosts.created_at))
     .limit(50);
 
@@ -110,23 +77,13 @@ export class CommunityService {
     }
 
     return posts.map(p => ({
-      id: p.id,
-      content: p.content,
-      image: p.image || undefined,
-      timestamp: p.createdAt.toLocaleDateString(),
-      likes: p.likes,
-      comments: p.comments,
-      shares: p.shares,
+      ...p,
       tags: p.tags as string[],
       isLiked: userLikes.has(p.id),
-      userReaction: userLikes.has(p.id) ? 'like' : undefined,
       author: {
-        id: p.author.id,
+        ...p.author,
         name: p.author.name || 'Unknown',
-        avatar: p.author.avatar || '/default-user.svg',
-        level: p.author.level || 1,
-        title: p.author.title || 'Operative',
-        verified: p.author.verified || false
+        image: p.author.image || '/default-user.svg'
       }
     }));
   }
@@ -188,53 +145,32 @@ export class CommunityService {
     }));
   }
 
-  static async getComments(postId: string, userId?: string): Promise<CommunityComment[]> {
+  static async getComments(postId: string, userId?: string): Promise<CommentProps[]> {
     const comments = await db.select({
       id: communityComments.id,
-      postId: communityComments.post_id,
       content: communityComments.content,
-      createdAt: communityComments.created_at,
-      likes: communityComments.like_count,
-      isSolution: communityComments.is_solution,
+      created_at: communityComments.created_at,
+      like_count: communityComments.like_count,
+      is_solution: communityComments.is_solution,
+      parent_id: communityComments.parent_id,
       author: {
         id: users.id,
         name: users.full_name,
-        avatar: users.image,
-        level: users.level,
-        title: users.role,
-        verified: users.onboarding_completed
+        image: users.image,
+        level: users.level
       }
     })
     .from(communityComments)
     .innerJoin(users, eq(communityComments.user_id, users.id))
     .where(eq(communityComments.post_id, postId))
-    .orderBy(desc(communityComments.created_at)); // Newest first
-
-    // Check for user likes
-    let userLikes: Set<string> = new Set();
-    if (userId) {
-        // Assuming there is a commentLikes table
-         /* const likes = await db.select({ commentId: commentLikes.comment_id })
-             .from(commentLikes)
-             .where(eq(commentLikes.user_id, userId));
-         userLikes = new Set(likes.map(l => l.commentId)); */
-    }
+    .orderBy(desc(communityComments.created_at));
 
     return comments.map(c => ({
-      id: c.id,
-      postId: c.postId,
-      content: c.content,
-      timestamp: c.createdAt.toLocaleDateString(),
-      likes: c.likes,
-      isSolution: c.isSolution,
-      isLiked: userLikes.has(c.id),
+      ...c,
       author: {
-        id: c.author.id,
+        ...c.author,
         name: c.author.name || 'Unknown',
-        avatar: c.author.avatar || '/default-user.svg',
-        level: c.author.level || 1,
-        title: c.author.title || 'Operative',
-        verified: c.author.verified || false
+        image: c.author.image || '/default-user.svg'
       }
     }));
   }

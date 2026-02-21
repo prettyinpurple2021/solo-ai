@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../db';
-import { searchIndex } from '../../lib/shared/db/schema';
+import { searchIndex } from '../../src/lib/shared/db/schema';
 import { eq, and, or, ilike, desc } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { SearchIndexer } from '../utils/searchIndexer';

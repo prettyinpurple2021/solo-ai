@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { db } from '../db';
-import { pitchDecks, slides, slideComponents } from '../../lib/shared/db/schema';
+import { pitchDecks, slides, slideComponents } from '../../src/lib/shared/db/schema';
 import { eq, and, desc, asc } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { checkSuspended } from '../middleware/checkSuspended';

@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { db } from '../db';
-import { users, tasks, businessContext, chatHistory, dailyIntelligence } from '../../lib/shared/db/schema';
+import { users, tasks, businessContext, chatHistory, dailyIntelligence } from '../../src/lib/shared/db/schema';
 import { eq, desc, and, gte } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { logError } from '../utils/logger';

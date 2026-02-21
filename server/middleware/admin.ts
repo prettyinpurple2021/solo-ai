@@ -2,7 +2,7 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import { db } from '../db';
-import { users, adminActions } from '../../lib/shared/db/schema';
+import { users, adminActions } from '../../src/lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
 
 // Extend Express Request to include user info

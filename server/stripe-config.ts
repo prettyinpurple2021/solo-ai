@@ -1,7 +1,7 @@
 // Stripe Integration Setup
 import Stripe from 'stripe';
 import { db } from './db';
-import { subscriptions, users } from '../lib/shared/db/schema';
+import { subscriptions, users } from '../src/lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { logError } from './utils/logger';
 

@@ -9,7 +9,7 @@ export interface PrimaryButtonProps extends Omit<ButtonHTMLAttributes<HTMLButton
   onClick?: MouseEventHandler<HTMLButtonElement>
   disabled?: boolean
   size?: 'sm' | 'md' | 'lg' | 'icon'
-  variant?: 'cyan' | 'magenta' | 'lime' | 'purple' | 'orange' | 'success' | 'warning' | 'error' | 'info' | 'outline' | 'ghost' | 'default' | 'secondary' | 'destructive' | 'link'
+  variant?: 'cyan' | 'magenta' | 'lime' | 'purple' | 'orange' | 'success' | 'warning' | 'error' | 'info' | 'outline' | 'ghost' | 'default' | 'secondary' | 'destructive' | 'link' | 'empowerment' | 'accent'
   className?: string
   asChild?: boolean
 }

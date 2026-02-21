@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import { db } from '../db';
-import { competitors, competitorActivities, competitorAlerts } from '../../lib/shared/db/schema';
+import { competitors, competitorActivities, competitorAlerts } from '../../src/lib/shared/db/schema';
 import { eq, desc, and, sql } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { requireSubscription } from '../middleware/subscription';
