@@ -2,6 +2,7 @@ import { execSync } from 'child_process';
 import { getRecentCommits } from '../shared/git';
 import { draftPost, generateEngagementPost } from './post-drafter';
 import { postTweet } from './twitter-client';
+import { postToWebsite } from './website-client';
 import { fileURLToPath } from 'url';
 
 import { loadState, updateAgentState } from '../shared/state';
@@ -33,7 +34,9 @@ export async function run() {
       console.log("🚀 Autopilot: Posting to X...");
       const success = await postTweet(postContent);
       if (success) {
-        console.log("✅ Posted successfully.");
+        console.log("✅ Posted successfully to X.");
+        // Also post to website
+        await postToWebsite(postContent);
       }
       return;
   }
@@ -89,6 +92,9 @@ export async function run() {
   if (success && latestHash) {
       console.log(`✅ State updated: Last commit ${latestHash}`);
       updateAgentState('social', { lastProcessedCommitHash: latestHash, lastRun: new Date().toISOString() });
+      
+      // Also post to website
+      await postToWebsite(draft);
   } else if (!success) {
       console.error("❌ Posting failed. State NOT updated (will retry next time).");
   }
