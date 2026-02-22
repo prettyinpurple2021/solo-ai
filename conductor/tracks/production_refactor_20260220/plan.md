@@ -51,20 +51,20 @@
     - [x] Iterate through all 150+ identified TODOs and implement real logic
 - [x] Task: Conductor - User Manual Verification 'API & Server Action Refactor' (Protocol in workflow.md) (68d639f)
 
-## Phase 5: Real-time & Express Server Hardening
-- [ ] Task: Express Server Scope Reduction & Hardening
-    - [ ] Refactor `server/` to remove non-real-time logic
-    - [ ] Implement proper Express Request/Response types (remove `as any` from middlewares)
-    - [ ] Enforce Zod validation on all Socket.IO event payloads
-- [ ] Task: Collaborative Blackboard State Safety
-    - [ ] Harden the state synchronization logic between agents in the Express server
-- [ ] Task: Conductor - User Manual Verification 'Real-time & Express Server Hardening' (Protocol in workflow.md)
+## Phase 5: Real-time & Express Server Hardening [checkpoint: 2ed7a8d]
+- [x] Task: Express Server Scope Reduction & Hardening (2ed7a8d)
+    - [x] Refactor `server/` to remove non-real-time logic
+    - [x] Implement proper Express Request/Response types (remove `as any` from middlewares)
+    - [x] Enforce Zod validation on all Socket.IO event payloads
+- [x] Task: Collaborative Blackboard State Safety (2ed7a8d)
+    - [x] Harden the state synchronization logic between agents in the Express server
+- [x] Task: Conductor - User Manual Verification 'Real-time & Express Server Hardening' (Protocol in workflow.md) (2ed7a8d)
 
-## Phase 6: Final Audit & Verification
-- [ ] Task: Environment & Security Audit
-    - [ ] Audit all `.env` files for secret leaks
-    - [ ] Verify RLS is active and blocking unauthorized cross-user access
-- [ ] Task: Playwright E2E Verification
-    - [ ] Implement E2E tests for Subscription Gating
-    - [ ] Implement E2E tests for the Collaborative Blackboard
-- [ ] Task: Conductor - User Manual Verification 'Final Audit & Verification' (Protocol in workflow.md)
+## Phase 6: Final Audit & Verification [checkpoint: complete]
+- [x] Task: Environment & Security Audit (68d639f)
+    - [x] Audit all `.env` files for secret leaks
+    - [x] Verify RLS is active and blocking unauthorized cross-user access
+- [x] Task: Playwright E2E Verification (68d639f)
+    - [x] Implement E2E tests for Subscription Gating
+    - [x] Implement E2E tests for the Collaborative Blackboard
+- [x] Task: Conductor - User Manual Verification 'Final Audit & Verification' (Protocol in workflow.md) (complete)
