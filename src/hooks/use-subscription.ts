@@ -72,9 +72,7 @@ export function useSubscription() {
       setIsLoading(true)
       
       // 1. Fetch Subscription Status
-      const subRes = await apiClient.get(`${endpoints.stripe.subscription}?userId=${user.id}`, {
-        headers: { 'x-user-id': user.id } // Redundancy for middleware
-      })
+      const subRes = await apiClient.get(endpoints.stripe.subscription)
       
       if (subRes.data) {
         const subData = subRes.data
@@ -88,9 +86,7 @@ export function useSubscription() {
       }
 
       // 2. Fetch Usage Statistics
-      const usageRes = await apiClient.get(`${endpoints.stripe.usage}?userId=${user.id}`, {
-        headers: { 'x-user-id': user.id }
-      })
+      const usageRes = await apiClient.get(endpoints.stripe.usage)
 
       if (usageRes.data) {
         const usageData = usageRes.data
@@ -128,11 +124,7 @@ export function useSubscription() {
       const res = await apiClient.post(endpoints.stripe.createCheckoutSession, 
         {
           tier: planKey === 'launchpad' ? 'launch' : planKey,
-          billing: 'monthly', // Defaulting to monthly for this hook unless extended
-          userId: user.id
-        },
-        {
-           headers: { 'x-user-id': user.id }
+          billing: 'monthly' // Defaulting to monthly for this hook unless extended
         }
       )
 
@@ -153,10 +145,7 @@ export function useSubscription() {
 
     try {
       setIsLoading(true)
-      const res = await apiClient.post(endpoints.stripe.customerPortal,
-        { userId: user.id },
-        { headers: { 'x-user-id': user.id } }
-      )
+      const res = await apiClient.post(endpoints.stripe.customerPortal)
 
       if (res.data.url) {
         window.location.href = res.data.url

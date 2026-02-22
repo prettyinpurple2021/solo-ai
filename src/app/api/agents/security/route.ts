@@ -1,5 +1,5 @@
-import { logError,} from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
+import { authenticateRequest } from '@/lib/auth-server'
 import { AgentSecurityManager} from '@/lib/custom-ai-agents/security/agent-security-manager'
 import { SecurityMiddleware} from '@/lib/custom-ai-agents/security/security-middleware'
 
@@ -68,8 +68,11 @@ export async function POST(request: NextRequest) {
 
 async function getSecurityMetrics(request: NextRequest) {
   try {
-    // Basic authentication check
-    const _userId = request.headers.get('x-user-id') || 'default-user'
+    const { user, error } = await authenticateRequest()
+    if (error || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const _userId = user.id
     
     const metrics = await securityManager.getSecurityMetrics()
     
@@ -88,7 +91,11 @@ async function getSecurityMetrics(request: NextRequest) {
 
 async function getUserPermissions(request: NextRequest) {
   try {
-    const _userId = request.headers.get('x-user-id') || 'default-user'
+    const { user, error } = await authenticateRequest()
+    if (error || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const _userId = user.id
     const agentId = request.nextUrl.searchParams.get('agentId')
 
     if (!agentId) {
@@ -190,7 +197,11 @@ async function grantPermission(request: NextRequest) {
     }
 
     // Check if the requesting user has permission to grant permissions
-    const requesterId = request.headers.get('x-user-id') || 'default-user'
+    const { user, error } = await authenticateRequest()
+    if (error || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const requesterId = user.id
     const canGrant = await securityManager.authorizeAgentAccess(
       requesterId, 
       'system', 
@@ -238,7 +249,11 @@ async function revokePermission(request: NextRequest) {
     }
 
     // Check if the requesting user has permission to revoke permissions
-    const requesterId = request.headers.get('x-user-id') || 'default-user'
+    const { user, error } = await authenticateRequest()
+    if (error || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    const requesterId = user.id
     const canRevoke = await securityManager.authorizeAgentAccess(
       requesterId, 
       'system', 

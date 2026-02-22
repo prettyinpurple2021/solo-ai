@@ -13,6 +13,9 @@ import { DominatorAgentOutputSchema } from '../../src/lib/shared/schemas';
 
 const router = Router();
 
+// Apply auth middleware to all AI routes
+router.use(authMiddleware);
+
 // Initialize Gemini
 const apiKey = process.env.GEMINI_API_KEY;
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;

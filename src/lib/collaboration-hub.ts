@@ -7,7 +7,7 @@ import { logError, logInfo,} from '@/lib/logger'
 import { z } from 'zod'
 import { MessageRouter } from './message-router'
 import { db } from '@/db/index'
-import { chatConversations } from '@/shared/db/schema'
+import { chatConversations, collaborationSessions, collaborationParticipants } from '@/shared/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { ContextManager } from './context-manager'
 
@@ -257,8 +257,35 @@ export class CollaborationHub {
         }
       }
 
-      // Store session
+      // Store session in memory
       this.activeSessions.set(sessionId, session)
+
+      // Persist session to database
+      await db.insert(collaborationSessions).values({
+        id: sessionId,
+        user_id: request.userId,
+        name: request.projectName || `Collaboration ${sessionId.substring(0, 8)}`,
+        goal: request.initialMessage || 'New Collaboration',
+        status: 'active',
+        configuration: request.context || {},
+        metadata: {
+            priority: request.priority || 'medium',
+            requestedAgents: request.requiredAgents || []
+        },
+        created_at: new Date(),
+        updated_at: new Date()
+      })
+
+      // Persist participants
+      for (const agent of participants) {
+        await db.insert(collaborationParticipants).values({
+            id: crypto.randomUUID(),
+            session_id: sessionId,
+            agent_id: agent.id,
+            role: agent.id === request.primaryAgent ? 'primary' : 'member',
+            joined_at: new Date()
+        })
+      }
 
       // Update agent status
       participants.forEach(agent => {

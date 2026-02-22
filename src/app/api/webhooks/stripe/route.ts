@@ -1,111 +1,141 @@
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
+import Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
-import { db } from '@/db';
+import { db } from '@/server/db';
 import { users } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
-import { logInfo, logError } from '@/lib/logger';
-import type { Stripe } from 'stripe';
+import { logError, logInfo } from '@/lib/logger';
+
+const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(req: Request) {
-    const body = await req.text();
-    const signature = (await headers()).get('stripe-signature') as string;
+  const body = await req.text();
+  const headersList = await headers();
+  const sig = headersList.get('stripe-signature');
 
-    let event: Stripe.Event;
+  if (!sig) {
+    return NextResponse.json({ error: 'Missing stripe-signature' }, { status: 400 });
+  }
 
-    try {
-        if (!process.env.STRIPE_WEBHOOK_SECRET) {
-            throw new Error('STRIPE_WEBHOOK_SECRET is missing');
+  if (!endpointSecret) {
+    logError('STRIPE_WEBHOOK_SECRET is not configured');
+    return NextResponse.json({ error: 'Webhook secret not configured' }, { status: 500 });
+  }
+
+  let event: Stripe.Event;
+
+  try {
+    event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+  } catch (err: any) {
+    logError(`Webhook Signature verification failed: ${err.message}`);
+    return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
+  }
+
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const session = event.data.object as Stripe.Checkout.Session;
+        const customerId = session.customer as string;
+        const subscriptionId = session.subscription as string;
+        const userId = session.metadata?.userId;
+
+        if (userId) {
+          // If we have a subscription, fetch it to get details
+          let tier = 'free';
+          if (subscriptionId) {
+            const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+            const priceId = subscription.items.data[0].price.id;
+            
+            // Map price ID to tier
+            if (priceId === process.env.STRIPE_ACCELERATOR_PRICE_ID || priceId === process.env.STRIPE_ACCELERATOR_YEARLY_PRICE_ID) {
+              tier = 'accelerator';
+            } else if (priceId === process.env.STRIPE_DOMINATOR_PRICE_ID || priceId === process.env.STRIPE_DOMINATOR_YEARLY_PRICE_ID) {
+              tier = 'dominator';
+            }
+          }
+
+          await db.update(users)
+            .set({
+              stripe_customer_id: customerId,
+              stripe_subscription_id: subscriptionId,
+              subscription_tier: tier,
+              subscription_status: 'active',
+              updated_at: new Date(),
+            })
+            .where(eq(users.id, userId));
+          
+          logInfo(`User ${userId} subscription activated via checkout: ${tier}`);
         }
-        event = stripe.webhooks.constructEvent(
-            body,
-            signature,
-            process.env.STRIPE_WEBHOOK_SECRET
-        );
-    } catch (error: any) {
-        logError('Webhook signature verification failed', { error: error.message });
-        return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
-    }
+        break;
+      }
 
-    const session = event.data.object as Stripe.Checkout.Session;
-
-    // Idempotency check using webhook_events table if it exists, or simple log
-    logInfo(`Processing webhook event: ${event.type}`, { id: event.id });
-
-    try {
-        switch (event.type) {
-            case 'checkout.session.completed':
-                await handleCheckoutSessionCompleted(session);
-                break;
-            case 'customer.subscription.created':
-            case 'customer.subscription.updated':
-                await handleSubscriptionChange(event.data.object as Stripe.Subscription);
-                break;
-            case 'customer.subscription.deleted':
-                await handleSubscriptionDeleted(event.data.object as Stripe.Subscription);
-                break;
-            case 'invoice.payment_failed':
-                await handlePaymentFailed(event.data.object as Stripe.Invoice);
-                break;
-            default:
-                // Unhandled event type
+      case 'customer.subscription.updated': {
+        const subscription = event.data.object as Stripe.Subscription;
+        const customerId = subscription.customer as string;
+        const priceId = subscription.items.data[0].price.id;
+        
+        let tier = 'free';
+        if (priceId === process.env.STRIPE_ACCELERATOR_PRICE_ID || priceId === process.env.STRIPE_ACCELERATOR_YEARLY_PRICE_ID) {
+          tier = 'accelerator';
+        } else if (priceId === process.env.STRIPE_DOMINATOR_PRICE_ID || priceId === process.env.STRIPE_DOMINATOR_YEARLY_PRICE_ID) {
+          tier = 'dominator';
         }
-    } catch (error: any) {
-        logError('Error processing webhook', { type: event.type, error: error.message });
-        return new NextResponse('Webhook handler failed', { status: 500 });
-    }
 
-    return new NextResponse('Received', { status: 200 });
-}
-
-async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-     if (!session.metadata?.userId) {
-        logError('Webhook: No userId in session metadata', { sessionId: session.id });
-        return;
-    }
-    // Logic to update user subscription status or credits
-}
-
-async function handleSubscriptionChange(subscription: Stripe.Subscription) {
-    // Sync subscription status, tier, current_period_end to DB
-    const userId = subscription.metadata?.userId;
-    if (!userId) return;
-
-    const priceId = subscription.items.data[0].price.id;
-    // Map priceId to tier... (simplified logic here)
-    let tier = 'free';
-    // Add mapping logic if needed
-
-    await db.update(users)
-        .set({
-            stripe_customer_id: subscription.customer as string,
-            stripe_subscription_id: subscription.id,
+        await db.update(users)
+          .set({
             subscription_tier: tier,
-            subscription_status: subscription.status,
-            current_period_end: new Date(subscription.current_period_end * 1000)
-        })
-        .where(eq(users.id, userId));
-}
+            subscription_status: subscription.status === 'active' ? 'active' : 'past_due',
+            current_period_end: new Date(subscription.current_period_end * 1000),
+            cancel_at_period_end: subscription.cancel_at_period_end,
+            updated_at: new Date(),
+          })
+          .where(eq(users.stripe_subscription_id, subscription.id));
+        
+        logInfo(`Subscription ${subscription.id} updated: ${tier} (${subscription.status})`);
+        break;
+      }
 
-async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
-    const userId = subscription.metadata?.userId;
-    if (!userId) return;
-
-    await db.update(users)
-        .set({
+      case 'customer.subscription.deleted': {
+        const subscription = event.data.object as Stripe.Subscription;
+        
+        await db.update(users)
+          .set({
             subscription_tier: 'free',
             subscription_status: 'canceled',
-            current_period_end: new Date(subscription.current_period_end * 1000)
-        })
-        .where(eq(users.id, userId));
-}
+            stripe_subscription_id: null,
+            updated_at: new Date(),
+          })
+          .where(eq(users.stripe_subscription_id, subscription.id));
+        
+        logInfo(`Subscription ${subscription.id} deleted. User moved back to free tier.`);
+        break;
+      }
 
-async function handlePaymentFailed(invoice: Stripe.Invoice) {
-    const subscriptionId = invoice.subscription as string;
-    if (!subscriptionId) return;
+      case 'invoice.payment_failed': {
+        const invoice = event.data.object as Stripe.Invoice;
+        const subscriptionId = invoice.subscription as string;
 
-    // We might want to mark user as past_due
-    await db.update(users)
-        .set({ subscription_status: 'past_due' })
-        .where(eq(users.stripe_subscription_id, subscriptionId));
+        if (subscriptionId) {
+          await db.update(users)
+            .set({
+              subscription_status: 'past_due',
+              updated_at: new Date(),
+            })
+            .where(eq(users.stripe_subscription_id, subscriptionId));
+          
+          logInfo(`Payment failed for subscription ${subscriptionId}. Status set to past_due.`);
+        }
+        break;
+      }
+
+      default:
+        logInfo(`Unhandled event type: ${event.type}`);
+    }
+
+    return NextResponse.json({ received: true });
+  } catch (error) {
+    logError('Error processing Stripe webhook:', error);
+    return NextResponse.json({ error: 'Webhook processing failed' }, { status: 500 });
+  }
 }

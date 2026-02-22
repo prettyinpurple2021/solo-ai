@@ -3,10 +3,10 @@
  * Supports point-to-point messaging, broadcasts, and priority handling
  */
 
-import { logError, logInfo,} from '@/lib/logger'
+import { logError, logInfo, logWarn } from '@/lib/logger'
 import { z } from 'zod'
 import { db } from '@/db/index'
-import { chatMessages, collaborationMessages } from '@/shared/db/schema'
+import { chatConversations, chatMessages, collaborationMessages, collaborationSessions } from '@/shared/db/schema'
 import { eq, desc,} from 'drizzle-orm'
 import { generateText } from 'ai'
 import { getTeamMemberConfig } from '@/lib/ai-config'
@@ -434,7 +434,7 @@ export class MessageRouter {
   /**
    * Process a message for an AI agent and generate a response
    */
-  private async processAgentResponse(agentId: string, message: AgentMessage): Promise<void> {
+  async processAgentResponse(agentId: string, message: AgentMessage): Promise<void> {
     const startTime = Date.now()
     try {
       // Don't respond to own messages, broadcasts (unless tagged), or system notifications
@@ -454,13 +454,35 @@ export class MessageRouter {
       if (!agent) return
 
       // Get conversation history (context)
-      // Limit to last 10 messages for context window
-      // Get conversation history (context)
-      // Limit to last 10 messages for completion context
-      const history = await db.select().from(chatMessages)
-        .where(eq(chatMessages.conversation_id, message.sessionId))
-        .orderBy(desc(chatMessages.created_at))
-        .limit(10)
+      // Determine session type and fetch relevant history
+      const session = this.collaborationHub.getSession(message.sessionId)
+      let history: any[] = []
+
+      if (session) {
+        // Collaboration session history
+        const collabHistory = await db.select().from(collaborationMessages)
+          .where(eq(collaborationMessages.session_id, message.sessionId))
+          .orderBy(desc(collaborationMessages.created_at))
+          .limit(10)
+        
+        history = collabHistory.map(msg => ({
+          role: msg.from_agent_id === 'user' ? 'user' : 'assistant',
+          content: msg.content,
+          metadata: { fromAgent: msg.from_agent_id }
+        }))
+      } else {
+        // Chat conversation history
+        const chatHistoryResult = await db.select().from(chatMessages)
+          .where(eq(chatMessages.conversation_id, message.sessionId))
+          .orderBy(desc(chatMessages.created_at))
+          .limit(10)
+        
+        history = chatHistoryResult.map(msg => ({
+          role: msg.role as 'user' | 'assistant',
+          content: msg.content,
+          metadata: msg.metadata
+        }))
+      }
 
       // Format history for AI
       const contextMessages = history.reverse().map(msg => {
@@ -583,29 +605,63 @@ export class MessageRouter {
   /**
    * Persist message to database
    */
-  private async persistMessage(message: AgentMessage, deliveryResult: MessageDeliveryResult): Promise<void> {
+  async persistMessage(message: AgentMessage, deliveryResult?: MessageDeliveryResult): Promise<void> {
     try {
       const session = this.collaborationHub.getSession(message.sessionId)
-      if (!session) return
-
-      // Determine role based on fromAgent
-      // If fromAgent is 'user' or matches session owner, it's 'user'
-      // Otherwise it's 'assistant'
-      const role = message.fromAgent === 'user' ? 'user' : 'assistant'
       
-      // Persist to collaboration messages table
-      await db.insert(collaborationMessages).values({
-        id: message.id,
-        session_id: message.sessionId,
-        from_agent_id: message.fromAgent,
-        content: message.content,
-        message_type: message.messageType,
-        metadata: {
-          ...message.metadata,
-          toAgent: message.toAgent,
-          deliveryStatus: deliveryResult.failed.length === 0 ? 'delivered' : 'partial'
+      if (session) {
+        // Persist to collaboration messages table
+        await db.insert(collaborationMessages).values({
+          id: message.id,
+          session_id: message.sessionId,
+          from_agent_id: message.fromAgent,
+          content: message.content,
+          message_type: message.messageType,
+          metadata: {
+            ...message.metadata,
+            toAgent: message.toAgent,
+            deliveryStatus: deliveryResult ? (deliveryResult.failed.length === 0 ? 'delivered' : 'partial') : 'delivered'
+          },
+          created_at: new Date()
+        })
+      } else {
+        // Check if it's a direct chat conversation
+        const chatConv = await db.select().from(chatConversations)
+          .where(eq(chatConversations.id, message.sessionId))
+          .limit(1)
+        
+        if (chatConv.length > 0) {
+          const conv = chatConv[0]
+          const role = message.fromAgent === 'user' ? 'user' : 'assistant'
+          
+          // Persist to chat messages table
+          await db.insert(chatMessages).values({
+            id: message.id,
+            conversation_id: message.sessionId,
+            user_id: conv.user_id,
+            role: role,
+            content: message.content,
+            metadata: {
+              ...message.metadata,
+              fromAgent: message.fromAgent,
+              toAgent: message.toAgent,
+              deliveryStatus: deliveryResult ? (deliveryResult.failed.length === 0 ? 'delivered' : 'failed') : 'delivered'
+            },
+            created_at: new Date()
+          })
+
+          // Update conversation metadata
+          await db.update(chatConversations)
+            .set({
+              last_message: message.content,
+              last_message_at: new Date(),
+              updated_at: new Date()
+            })
+            .where(eq(chatConversations.id, message.sessionId))
+        } else {
+          logWarn(`⚠️ Unknown session type for ID: ${message.sessionId}. Message not persisted.`)
         }
-      })
+      }
 
       logInfo(`📨 Message persisted: ${message.id} (${message.fromAgent} -> ${message.toAgent || 'broadcast'})`)
     } catch (error) {

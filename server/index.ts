@@ -1,18 +1,48 @@
 import 'dotenv/config';
-
+import * as Sentry from '@sentry/node';
 import express, { Request, Response } from 'express';
 import { createServer } from 'http';
-import { Server as SocketServer, Socket } from 'socket.io';
+import { Server as SocketServer } from 'socket.io';
 import cors from 'cors';
-import { setIo } from './realtime';
+import { setIo, broadcastToUser } from './realtime';
 import { setupBoardroomSocket } from './src/realtime/boardroom';
 import { logInfo, logWarn, logError } from './utils/logger';
 import path from 'path';
-import { z } from 'zod';
+import { verifyToken } from './utils/jwt';
+import { authMiddleware } from './middleware/auth';
+import cookieParser from 'cookie-parser';
+
+// Route Imports
+import { authRouter } from './routes/auth';
+import { userRouter } from './routes/user';
+import { tasksRouter } from './routes/tasks';
+import dashboardRouter from './routes/dashboard';
+import aiRouter from './routes/ai';
+import adminRouter from './routes/admin';
+import contactsRouter from './routes/contacts';
+import pitchDecksRouter from './routes/pitchDecks';
+import slidesRouter from './routes/slides';
+import stripeRouter from './routes/stripe';
+import resourcesRouter from './routes/resources';
+import searchRouter from './routes/search';
 import { boardroomRouter } from './src/routes/boardroom';
+import competitorsRouter from './routes/competitors';
+import notificationsRouter from './routes/notifications';
+import briefcaseRouter from './routes/briefcase';
 
 const app = express();
 app.set('trust proxy', 1);
+
+// Initialize Sentry
+Sentry.init({
+    dsn: process.env.SENTRY_DSN || "https://c658e25682ffbbce0cd373c74bf48f1d@o4510500686331904.ingest.us.sentry.io/4510500686659584",
+    environment: process.env.NODE_ENV || 'development',
+    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+    integrations: [
+        Sentry.httpIntegration(),
+        Sentry.expressIntegration(),
+    ],
+});
 
 const httpServer = createServer(app);
 const isDevelopment = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
@@ -30,84 +60,90 @@ const io = new SocketServer(httpServer, {
     cors: {
         origin: allowedOrigins,
         methods: ["GET", "POST"],
+        credentials: true
     }
+});
+
+// Socket.IO Hardening: JWT Middleware
+io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+    if (!token) {
+        logWarn(`Socket authentication failed: No token provided (${socket.id})`);
+        return next(new Error("Authentication error"));
+    }
+
+    const decoded = verifyToken(token);
+    if (!decoded) {
+        logWarn(`Socket authentication failed: Invalid token (${socket.id})`);
+        return next(new Error("Authentication error"));
+    }
+
+    // Attach verified identity to socket
+    socket.data.userId = decoded.userId;
+    next();
+});
+
+// Standard Socket handlers
+io.on('connection', (socket) => {
+    logInfo(`Client connected: ${socket.id} (User: ${socket.data.userId})`);
+
+    // SECURE Join: Only join the room belonging to the verified userId
+    socket.on('join', () => {
+        const userId = socket.data.userId;
+        socket.join(`user:${userId}`);
+        logInfo(`User ${userId} joined their secure room`);
+    });
+
+    socket.on('disconnect', () => {
+        logInfo(`Client disconnected: ${socket.id}`);
+    });
 });
 
 setIo(io);
 setupBoardroomSocket(io);
-
-const PORT = process.env.PORT || 5000;
 
 app.use(cors({
     origin: allowedOrigins,
     credentials: true
 }));
 app.use(express.json());
+app.use(cookieParser());
 
-// Sanity check for critical env vars
-const requiredEnv = [
-    'DATABASE_URL',
-    'UPSTASH_REDIS_REST_URL',
-    'UPSTASH_REDIS_REST_TOKEN',
-    'CLIENT_URL',
-];
-const missingEnv = requiredEnv.filter((key) => !process.env[key]);
-if (missingEnv.length > 0) {
-    logWarn('Missing critical environment variables for Real-time Hub', { missingEnv });
-}
+// Sentry request handler must be first among middleware
+app.use(Sentry.Handlers.requestHandler());
 
-// WebSocket connection handling with strict validation
-io.on('connection', (socket: Socket) => {
-    logInfo('Real-time client connected', { socketId: socket.id });
-
-    socket.on('join', (userId: string) => {
-        try {
-            const validatedUserId = z.string().min(1).parse(userId);
-            socket.join(`user:${validatedUserId}`);
-            logInfo(`User ${validatedUserId} joined real-time channel`);
-        } catch (error) {
-            logError('Invalid join event', { error, userId });
-            socket.emit('error', { message: 'Invalid user context' });
-        }
-    });
-
-    socket.on('disconnect', () => {
-        logInfo('Real-time client disconnected', { socketId: socket.id });
-    });
-});
-
-// --- Orchestration Routes ---
+// Routes
+app.use('/api/auth', authRouter);
+app.use('/api/user', userRouter);
+app.use('/api/tasks', tasksRouter);
+app.use('/api/dashboard', dashboardRouter);
+app.use('/api/ai', aiRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/contacts', contactsRouter);
+app.use('/api/pitch-decks', pitchDecksRouter);
+app.use('/api/slides', slidesRouter);
+app.use('/api/stripe', stripeRouter);
+app.use('/api/resources', resourcesRouter);
+app.use('/api/search', searchRouter);
 app.use('/api/boardroom', boardroomRouter);
+app.use('/api/competitors', competitorsRouter);
+app.use('/api/notifications', notificationsRouter);
+app.use('/api/briefcase', briefcaseRouter);
 
 // Health Check
-app.get('/api/health', (req: Request, res: Response) => {
+app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
-        service: 'SoloSuccess Real-time Hub',
+        db: process.env.DATABASE_URL ? 'configured' : 'missing_env',
         websocket: 'active',
         timestamp: new Date().toISOString()
     });
 });
 
-// Serve static files in production (Frontend build)
-if (process.env.NODE_ENV === 'production') {
-    const distPath = path.join(__dirname, '../../dist');
-    app.use(express.static(distPath));
+// Sentry error handler must be after all routes
+app.use(Sentry.Handlers.errorHandler());
 
-    app.get('*', (req: Request, res: Response) => {
-        if (!req.path.startsWith('/api')) {
-            res.sendFile(path.join(distPath, 'index.html'));
-        }
-    });
-}
-
-// Global Error Handler
-app.use((err: Error, req: Request, res: Response, _next: express.NextFunction) => {
-    logError('Unhandled error in Real-time Hub', err, { path: req.path });
-    res.status(500).json({ error: 'Internal server error' });
-});
-
+const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {
-    logInfo(`🚀 Real-time Hub running on http://localhost:${PORT}`);
-    logInfo(`📡 WebSocket orchestration active`);
+    logInfo(`Server running on port ${PORT}`);
 });

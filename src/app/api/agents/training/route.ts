@@ -71,8 +71,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const { user, error } = await authenticateRequest()
+    if (error || !user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
     const body = await request.json()
-    const { action, agentId, userId = "default-user", ...params } = body
+    const { action, agentId, ...params } = body
+    const userId = user.id
 
     const dataCollector = SimpleTrainingCollector.getInstance()
     const pipeline = new FineTuningPipeline()

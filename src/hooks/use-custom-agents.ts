@@ -112,11 +112,10 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
       abortControllerRef.current = new AbortController()
 
       // Step 1: Submit the job
-      const response = await fetch("/api/custom-agents", {
+      const response = await fetch("/api/agents", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-user-id": "default-user", 
         },
         body: JSON.stringify({
           message,
@@ -161,8 +160,7 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
             await new Promise(resolve => setTimeout(resolve, 1000))
             
             // Poll status
-            const pollResponse = await fetch(`/api/custom-agents?jobId=${jobId}`, {
-                headers: { "x-user-id": "default-user" },
+            const pollResponse = await fetch(`/api/agents?jobId=${jobId}`, {
                 signal: controller?.signal
             })
             
@@ -240,11 +238,10 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
     setError(null)
 
     try {
-      const response = await fetch("/api/custom-agents/workflow", {
+      const response = await fetch("/api/agents/workflow", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-user-id": "default-user",
         },
         body: JSON.stringify({
           action: "execute",
@@ -289,11 +286,10 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
     setError(null)
 
     try {
-      const response = await fetch("/api/custom-agents/workflow", {
+      const response = await fetch("/api/agents/workflow", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-user-id": "default-user",
         },
         body: JSON.stringify({
           action: "create",
@@ -331,10 +327,7 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
   // Get agents
   const getAgents = useCallback(async () => {
     try {
-      const response = await fetch("/api/custom-agents?action=agents", {
-        headers: {
-          "x-user-id": "default-user",
-        }
+      const response = await fetch("/api/agents?action=agents", {
       })
       
       if (!response.ok) {
@@ -356,10 +349,7 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
   // Get workflows
   const getWorkflows = useCallback(async () => {
     try {
-      const response = await fetch("/api/custom-agents/workflow", {
-        headers: {
-          "x-user-id": "default-user",
-        }
+      const response = await fetch("/api/agents/workflow", {
       })
       
       if (!response.ok) {
@@ -381,10 +371,7 @@ export function useCustomAgents(options: UseCustomAgentsOptions = {}): UseCustom
   // Get insights
   const getInsights = useCallback(async () => {
     try {
-      const response = await fetch("/api/custom-agents?action=insights", {
-        headers: {
-          "x-user-id": "default-user",
-        }
+      const response = await fetch("/api/agents?action=insights", {
       })
       
       if (!response.ok) {
