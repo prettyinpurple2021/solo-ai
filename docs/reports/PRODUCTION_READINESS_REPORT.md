@@ -1026,9 +1026,9 @@ With the completion of Batches 1-6 (fixing 60+ critical issues and cleaning API 
 
 After deployment completes, please manually verify these critical flows:
 
-1.  **Login/Register**: Create a new account. Verify redirect to dashboard.
-2.  **Dashboard**: Ensure widgets load without "Mock Data" labels.
-3.  **Agents**: Go to Collaboration -> Agent Team. Verify 8 agents load.
-4.  **Briefcase**: Upload a file. Create a share link.
-5.  **Settings**: Saves changes? (Env validation ensures DB connection).
+1. **Login/Register**: Create a new account. Verify redirect to dashboard.
+2. **Dashboard**: Ensure widgets load without "Mock Data" labels.
+3. **Agents**: Go to Collaboration -> Agent Team. Verify 8 agents load.
+4. **Briefcase**: Upload a file. Create a share link.
+5. **Settings**: Saves changes? (Env validation ensures DB connection).
 

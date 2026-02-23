@@ -196,17 +196,17 @@ function ComponentRenderer({ component, isSelected, onSelect, onUpdate, onDelete
                                 }
                             }}
                         >
-                            {content.text || content}
+                            {typeof content === 'object' && 'text' in content ? content.text : ''}
                         </div>
                     ) : (
                         <div 
                             className="w-full h-full p-2 whitespace-pre-wrap outline-none pointer-events-none"
-                            dangerouslySetInnerHTML={{ __html: content.text || content }} 
+                            dangerouslySetInnerHTML={{ __html: typeof content === 'object' && 'text' in content ? content.text : '' }} 
                         />
                     )
                 )}
                 {type === 'image' && (
-                    <img src={content.src} alt="Slide element" className="w-full h-full object-cover pointer-events-none" />
+                    <img src={typeof content === 'object' && 'url' in content ? content.url : ''} alt="Slide element" className="w-full h-full object-cover pointer-events-none" />
                 )}
                 {type === 'shape' && (
                     <div className="w-full h-full" style={{ backgroundColor: style.fill || '#ccc' }} />

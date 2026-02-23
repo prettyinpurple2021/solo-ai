@@ -50,7 +50,7 @@ export function PropertiesPanel({ activeSlide, selectedComponentId, onUpdateComp
             method: 'POST',
             headers,
             body: JSON.stringify({ 
-                text: textComp.content.text || textComp.content,
+                text: typeof textComp.content === 'object' && 'text' in textComp.content ? textComp.content.text : '',
                 tone: 'persuasive' 
             })
         })
