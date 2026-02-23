@@ -55,10 +55,10 @@ router.get('/', async (req, res) => {
         }
 
         await setCache(cacheKey, userResults[0]);
-        res.json(userResults[0]);
+        return res.json(userResults[0]);
     } catch (error) {
         logError('Fetch user error:', error);
-        res.status(500).json({ error: 'Failed to fetch user' });
+        return res.status(500).json({ error: 'Failed to fetch user' });
     }
 });
 
@@ -88,10 +88,10 @@ router.post('/progress', async (req, res) => {
             .returning();
 
         await invalidateCache(`user:${userId}`);
-        res.json(updated[0]);
+        return res.json(updated[0]);
     } catch (error) {
         logError('Update progress error:', error);
-        res.status(500).json({ error: 'Failed to update progress' });
+        return res.status(500).json({ error: 'Failed to update progress' });
     }
 });
 

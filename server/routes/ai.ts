@@ -290,7 +290,7 @@ const getDeepMindContext = async (userId: string) => {
 // Middleware to check API Key
 const requireAi = (req: Request, res: Response, next: NextFunction) => {
     if (!ai) return res.status(500).json({ success: false, error: 'Server AI configuration missing' });
-    next();
+    return next();
 };
 
 // --- ENDPOINTS ---
@@ -447,10 +447,10 @@ router.post('/competitor-report', requireAi, requireSubscription('dominator'), a
         });
 
         const reportData = JSON.parse(response.text || '{}');
-        res.json({ success: true, ...reportData });
+        return res.json({ success: true, ...reportData });
     } catch (error) {
         logError("Competitor Report Error", error);
-        res.status(500).json({ success: false, error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 

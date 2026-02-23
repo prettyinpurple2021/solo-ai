@@ -3,14 +3,34 @@ import { toast } from 'sonner';
 import { PitchDeck } from './use-pitch-decks';
 import { logError } from '@/lib/logger';
 
+export interface TextContent {
+    text: string;
+    fontSize?: number;
+    fontWeight?: string;
+    color?: string;
+    align?: 'left' | 'center' | 'right' | 'justify';
+}
+
+export interface ImageContent {
+    url: string;
+    alt?: string;
+    caption?: string;
+}
+
+export interface ChartContent {
+    type: string;
+    data: any[];
+    options?: Record<string, any>;
+}
+
 export interface SlideComponent {
     id: string;
     slideId: string;
     type: 'text' | 'image' | 'chart' | 'shape';
-    content: any;
+    content: TextContent | ImageContent | ChartContent | Record<string, any>;
     position: { x: number; y: number; width: number; height: number; rotation?: number };
-    style: any;
-    animation?: any;
+    style: Record<string, any>;
+    animation?: Record<string, any>;
     zIndex: number;
 }
 
@@ -39,11 +59,11 @@ export function usePitchDeck(id: string) {
         try {
             setLoading(true);
             const token = localStorage.getItem('authToken');
-            const headers: HeadersInit = {
+            const headers: Record<string, string> = {
                 'Content-Type': 'application/json'
             };
             if (token) {
-                (headers as any)['Authorization'] = `Bearer ${token}`;
+                headers['Authorization'] = `Bearer ${token}`;
             }
 
             const response = await fetch(`/api/pitch-decks/${id}`, { headers });
@@ -81,11 +101,11 @@ export function usePitchDeck(id: string) {
 
         try {
             const token = localStorage.getItem('authToken');
-            const headers: HeadersInit = { 
+            const headers: Record<string, string> = { 
                 'Content-Type': 'application/json',
             };
             if (token) {
-                (headers as any)['Authorization'] = `Bearer ${token}`;
+                headers['Authorization'] = `Bearer ${token}`;
             }
 
             const response = await fetch(`/api/slides/${slideId}`, {
@@ -105,11 +125,11 @@ export function usePitchDeck(id: string) {
     const addSlide = async (order?: number) => {
         try {
             const token = localStorage.getItem('authToken');
-            const headers: HeadersInit = { 
+            const headers: Record<string, string> = { 
                 'Content-Type': 'application/json',
             };
             if (token) {
-                (headers as any)['Authorization'] = `Bearer ${token}`;
+                headers['Authorization'] = `Bearer ${token}`;
             }
 
             const response = await fetch('/api/slides', {
@@ -140,11 +160,11 @@ export function usePitchDeck(id: string) {
     const addComponent = async (slideId: string, type: SlideComponent['type'], content: any) => {
         try {
             const token = localStorage.getItem('authToken');
-            const headers: HeadersInit = { 
+            const headers: Record<string, string> = { 
                 'Content-Type': 'application/json',
             };
             if (token) {
-                (headers as any)['Authorization'] = `Bearer ${token}`;
+                headers['Authorization'] = `Bearer ${token}`;
             }
 
             // Default position center of 16:9 slide (960x540)
@@ -200,11 +220,11 @@ export function usePitchDeck(id: string) {
         // Debounce actual API call? For now direct, assuming robust connection or local state management later
         try {
              const token = localStorage.getItem('authToken');
-            const headers: HeadersInit = { 
+            const headers: Record<string, string> = { 
                 'Content-Type': 'application/json',
             };
             if (token) {
-                (headers as any)['Authorization'] = `Bearer ${token}`;
+                headers['Authorization'] = `Bearer ${token}`;
             }
 
             // Note: API needs to support component updates specifically or we update the whole slide
@@ -239,11 +259,11 @@ export function usePitchDeck(id: string) {
 
         try {
              const token = localStorage.getItem('authToken');
-             const headers: HeadersInit = { 
+             const headers: Record<string, string> = { 
                 'Content-Type': 'application/json',
             };
             if (token) {
-                (headers as any)['Authorization'] = `Bearer ${token}`;
+                headers['Authorization'] = `Bearer ${token}`;
             }
 
             await fetch(`/api/slides/${slideId}/components/${componentId}`, {

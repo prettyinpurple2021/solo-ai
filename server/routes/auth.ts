@@ -38,7 +38,7 @@ router.post('/signup', async (req, res) => {
         const user = newUser[0];
         const token = generateToken(user.id, user.email);
 
-        res.status(201).json({
+        return res.status(201).json({
             token,
             user: {
                 id: user.id,
@@ -51,7 +51,7 @@ router.post('/signup', async (req, res) => {
             return res.status(400).json({ error: error.errors[0].message });
         }
         logError('Signup error:', error);
-        res.status(500).json({ error: 'Failed to create account' });
+        return res.status(500).json({ error: 'Failed to create account' });
     }
 });
 
@@ -75,7 +75,7 @@ router.post('/login', async (req, res) => {
 
         const token = generateToken(user.id, user.email);
 
-        res.json({
+        return res.json({
             token,
             user: {
                 id: user.id,
@@ -88,7 +88,7 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: error.errors[0].message });
         }
         logError('Login error:', error);
-        res.status(500).json({ error: 'Authentication failed' });
+        return res.status(500).json({ error: 'Authentication failed' });
     }
 });
 

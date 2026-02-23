@@ -41,10 +41,10 @@ router.get('/', async (req, res) => {
             .orderBy(desc(tasks.created_at));
 
         await setCache(cacheKey, allTasks);
-        res.json(allTasks);
+        return res.json(allTasks);
     } catch (error) {
         logError('Fetch tasks error:', error);
-        res.status(500).json({ error: 'Failed to fetch tasks' });
+        return res.status(500).json({ error: 'Failed to fetch tasks' });
     }
 });
 
@@ -68,10 +68,10 @@ router.post('/', async (req, res) => {
         broadcastToUser(userId, 'task:updated', result[0]);
         await SearchIndexer.indexTask(userId, result[0]);
 
-        res.json(result[0]);
+        return res.json(result[0]);
     } catch (error) {
         logError('Save task error:', error);
-        res.status(500).json({ error: 'Failed to save task' });
+        return res.status(500).json({ error: 'Failed to save task' });
     }
 });
 
@@ -96,10 +96,10 @@ router.post('/batch', async (req, res) => {
 
         await invalidateCache(`tasks:${userId}`);
         broadcastToUser(userId, 'tasks:batch_updated', taskList);
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
         logError('Batch save error:', error);
-        res.status(500).json({ error: 'Failed to batch save' });
+        return res.status(500).json({ error: 'Failed to batch save' });
     }
 });
 
@@ -114,10 +114,10 @@ router.delete('/:id', async (req, res) => {
         broadcastToUser(userId, 'task:deleted', { id });
         await SearchIndexer.removeFromIndex(userId, 'task', id);
 
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
         logError('Delete task error:', error);
-        res.status(500).json({ error: 'Failed to delete task' });
+        return res.status(500).json({ error: 'Failed to delete task' });
     }
 });
 
@@ -127,10 +127,10 @@ router.delete('/', async (req, res) => {
         await db.delete(tasks).where(eq(tasks.user_id, userId));
         await invalidateCache(`tasks:${userId}`);
         broadcastToUser(userId, 'tasks:cleared', {});
-        res.json({ success: true });
+        return res.json({ success: true });
     } catch (error) {
         logError('Clear tasks error:', error);
-        res.status(500).json({ error: 'Failed to clear tasks' });
+        return res.status(500).json({ error: 'Failed to clear tasks' });
     }
 });
 

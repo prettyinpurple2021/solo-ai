@@ -2,6 +2,7 @@ import { NextRequest, NextResponse} from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { AgentSecurityManager} from '@/lib/custom-ai-agents/security/agent-security-manager'
 import { SecurityMiddleware} from '@/lib/custom-ai-agents/security/security-middleware'
+import { logError } from '@/lib/logger'
 
 
 const securityManager = AgentSecurityManager.getInstance()

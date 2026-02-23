@@ -46,11 +46,6 @@ export async function getUserIdFromRequest(request: NextRequest): Promise<string
   return null
 }
 
-// Replaced with actual NextAuth session token handling
-export async function createToken(userId: string): Promise<string> {
-   logError('createToken is deprecated and insecure. Use NextAuth session management.');
-   throw new Error('createToken is deprecated. Use NextAuth.');
-}
 
 export async function verifyToken(request: NextRequest): Promise<string | null> {
   return await getUserIdFromSession(request)

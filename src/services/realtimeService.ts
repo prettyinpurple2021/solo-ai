@@ -5,11 +5,30 @@ import { io, Socket } from 'socket.io-client';
 import { logInfo, logError } from '@/lib/logger';
 import { API_URL } from '@/lib/api-client';
 
-type UpdateCallback = (data: any) => void;
+export type RealtimeEvent = 
+    | 'task:updated'
+    | 'task:deleted'
+    | 'tasks:batch_updated'
+    | 'tasks:cleared'
+    | 'chat:updated'
+    | 'context:updated'
+    | 'report:created';
+
+export interface RealtimeEventPayloads {
+    'task:updated': { id: string; status: string; [key: string]: any };
+    'task:deleted': { id: string };
+    'tasks:batch_updated': { ids: string[]; updates: any };
+    'tasks:cleared': {};
+    'chat:updated': any;
+    'context:updated': any;
+    'report:created': any;
+}
+
+type UpdateCallback<T extends RealtimeEvent> = (data: RealtimeEventPayloads[T]) => void;
 
 class RealtimeService {
     private socket: Socket | null = null;
-    private listeners: Map<string, Set<UpdateCallback>> = new Map();
+    private listeners: Map<RealtimeEvent, Set<UpdateCallback<any>>> = new Map();
     private userId: string | null = null;
 
     connect(userId: string) {
@@ -18,7 +37,6 @@ class RealtimeService {
         }
 
         this.userId = userId;
-        // API_URL imported from @/lib/api-client
 
         this.socket = io(API_URL, {
             transports: ['websocket', 'polling'],
@@ -86,7 +104,7 @@ class RealtimeService {
     }
 
     // Subscribe to events
-    on(event: string, callback: UpdateCallback) {
+    on<T extends RealtimeEvent>(event: T, callback: UpdateCallback<T>) {
         if (!this.listeners.has(event)) {
             this.listeners.set(event, new Set());
         }
@@ -94,7 +112,7 @@ class RealtimeService {
     }
 
     // Unsubscribe from events
-    off(event: string, callback: UpdateCallback) {
+    off<T extends RealtimeEvent>(event: T, callback: UpdateCallback<T>) {
         const listeners = this.listeners.get(event);
         if (listeners) {
             listeners.delete(callback);
@@ -102,7 +120,7 @@ class RealtimeService {
     }
 
     // Emit to local listeners
-    private emit(event: string, data: any) {
+    private emit<T extends RealtimeEvent>(event: T, data: RealtimeEventPayloads[T]) {
         const listeners = this.listeners.get(event);
         if (listeners) {
             listeners.forEach(callback => callback(data));

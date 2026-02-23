@@ -79,17 +79,21 @@ export const UserUpdateSchema = z.object({
 /**
  * Standardized server response format for all Server Actions and API routes.
  */
-export const ServerResponseSchema = z.object({
-  success: z.boolean(),
-  data: z.any().optional(),
-  error: z.string().optional(),
-  message: z.string().optional(),
-  meta: z.object({
-    timestamp: z.string().datetime(),
-    requestId: z.string().optional(),
-    version: z.string().optional(),
-  }).optional(),
-}).superRefine((data, ctx) => {
+/**
+ * Standardized server response format for all Server Actions and API routes.
+ */
+export function createServerResponseSchema<T extends z.ZodTypeAny>(dataSchema: T) {
+  return z.object({
+    success: z.boolean(),
+    data: dataSchema.optional(),
+    error: z.string().optional(),
+    message: z.string().optional(),
+    meta: z.object({
+      timestamp: z.string().datetime(),
+      requestId: z.string().optional(),
+      version: z.string().optional(),
+    }).optional(),
+  }).superRefine((data, ctx) => {
     if (data.success && data.data === undefined) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -105,6 +109,9 @@ export const ServerResponseSchema = z.object({
       });
     }
   });
+}
+
+export const ServerResponseSchema = createServerResponseSchema(z.any());
 
 
 export type ServerResponse<T = any> = {
