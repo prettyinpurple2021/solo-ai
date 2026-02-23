@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/use-auth"
 import { ProfileModal } from "@/components/profile/profile-modal"
 import { EnhancedProfileModal } from "@/components/profile/enhanced-profile-modal"
 
-export const dynamic = 'force-dynamic'
+
 
 export default function DashboardLayout({
   children,

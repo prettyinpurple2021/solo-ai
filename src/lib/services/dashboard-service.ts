@@ -48,8 +48,9 @@ export async function getDashboardData(userEmail: string): Promise<DashboardData
       status: tasks.status,
       priority: tasks.priority,
       due_date: tasks.due_date,
+      task_category: tasks.category,
       goal_title: goals.title,
-      goal_id: goals.id
+      goal_id: goals.id,
     })
     .from(tasks)
     .leftJoin(goals, eq(tasks.goal_id, goals.id))
@@ -134,21 +135,21 @@ export async function getDashboardData(userEmail: string): Promise<DashboardData
   const formattedTodaysTasks = todaysTasksRaw.map(t => ({
     id: String(t.id),
     title: t.title,
-    description: t.description,
+    description: t.description || null,
     status: t.status || 'todo',
     priority: t.priority || 'medium',
     due_date: t.due_date ? new Date(t.due_date).toISOString() : null,
     goal: t.goal_id ? {
       id: String(t.goal_id),
       title: t.goal_title || 'Untitled Goal',
-      category: null
+      category: t.task_category || null
     } : null
   }));
 
   const formattedActiveGoals = activeGoalsRaw.map(g => ({
     id: String(g.id),
     title: g.title,
-    description: g.description,
+    description: g.description || null,
     progress_percentage: 0,
     target_date: g.due_date ? new Date(g.due_date).toISOString() : null,
     category: null, 
@@ -158,11 +159,11 @@ export async function getDashboardData(userEmail: string): Promise<DashboardData
 
   const formattedConversations = recentConversationsRaw.map(c => ({
     id: String(c.id),
-    title: c.title,
+    title: c.title || null,
     last_message_at: c.last_message_at ? new Date(c.last_message_at).toISOString() : new Date().toISOString(),
     agent: {
-      name: c.agent_name || 'Unknown',
-      display_name: c.agent_id || 'System',
+      name: c.agent_name || 'Assistant',
+      display_name: c.agent_id || 'AI',
       accent_color: '#0BE4EC'
     }
   }));
