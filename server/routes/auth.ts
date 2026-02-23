@@ -32,7 +32,7 @@ router.post('/signup', async (req, res) => {
             email,
             password: hashedPassword,
             role: 'user',
-            createdAt: new Date(),
+            created_at: new Date(),
         }).returning();
 
         const user = newUser[0];

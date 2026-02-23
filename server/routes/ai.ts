@@ -1,6 +1,7 @@
 
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import { GoogleGenAI, Type } from '@google/genai';
+import { z } from 'zod';
 import { db } from '../db';
 import { businessContext, tasks, competitorReports, boardReports, pivotAnalyses, warRoomSessions, dailyIntelligence, userBrandSettings, users } from '../../src/lib/shared/db/schema';
 import { eq, desc, and, gte } from 'drizzle-orm';
@@ -10,6 +11,161 @@ import { logError } from '../utils/logger';
 import { requireSubscription, checkUsage, TIER_LEVELS } from '../middleware/subscription';
 import { UsageTracker } from '../utils/usage-tracker';
 import { DominatorAgentOutputSchema } from '../../src/lib/shared/schemas';
+
+// --- SCHEMAS ---
+const ChatRequestSchema = z.object({
+    agentId: z.string(),
+    history: z.array(z.object({
+        role: z.enum(['user', 'model']),
+        text: z.string()
+    })),
+    message: z.string()
+});
+
+const CompetitorReportSchema = z.object({
+    competitorName: z.string(),
+    agentId: z.string()
+});
+
+const WarRoomSchema = z.object({
+    topic: z.string(),
+    previousSessionId: z.string().optional()
+});
+
+const TacticalPlanSchema = z.object({
+    goal: z.string()
+});
+
+const TribeBlueprintSchema = z.object({
+    audience: z.string(),
+    enemy: z.string()
+});
+
+const AmplifiedContentSchema = z.object({
+    source: z.string()
+});
+
+const LaunchStrategySchema = z.object({
+    product: z.string(),
+    date: z.string()
+});
+
+const commonJobSchema = z.object({
+    roleTitle: z.string()
+});
+
+const JobDescriptionSchema = commonJobSchema.extend({
+    employmentType: z.string()
+});
+
+const InterviewGuideSchema = commonJobSchema.extend({
+    keyFocus: z.string()
+});
+
+const SopSchema = z.object({
+    taskName: z.string()
+});
+
+const IncineratorSchema = z.object({
+    content: z.string(),
+    mode: z.string(),
+    brutality: z.string()
+});
+
+const BoardReportSchema = z.object({
+    financials: z.object({
+        currentCash: z.number(),
+        monthlyBurn: z.number(),
+        monthlyRevenue: z.number()
+    }),
+    tasks: z.array(z.record(z.unknown())),
+    reports: z.array(z.record(z.unknown())),
+    contacts: z.array(z.record(z.unknown()))
+});
+
+const FinancialAuditSchema = z.object({
+    financials: z.record(z.unknown())
+});
+
+const TechAuditSchema = z.object({
+    stack: z.string()
+});
+
+const commonContactTargetSchema = z.object({
+    name: z.string(),
+    role: z.string().optional(),
+    company: z.string().optional(),
+    notes: z.string().optional()
+});
+
+const ColdEmailSchema = z.object({
+    contact: commonContactTargetSchema
+});
+
+const NegotiationPrepSchema = z.object({
+    contact: commonContactTargetSchema,
+    dealContext: z.string(),
+    otherParty: z.string(),
+    goals: z.string()
+});
+
+const RoleplayReplySchema = z.object({
+    scenario: z.object({
+        title: z.string(),
+        opponentRole: z.string()
+    }),
+    history: z.array(z.object({ role: z.string(), parts: z.array(z.object({ text: z.string() })) })),
+    userInput: z.string()
+});
+
+const BrandImageSchema = z.object({
+    promptUser: z.string(),
+    styleDesc: z.string().optional()
+});
+
+const CodeSolutionSchema = z.object({
+    problem: z.string()
+});
+
+const SimulationSchema = z.object({
+    scenario: z.string()
+});
+
+const MarketPulseSchema = z.object({
+    industry: z.string().optional()
+});
+
+const AnalyzeOpportunitySchema = z.object({
+    opportunity: z.object({
+        title: z.string(),
+        description: z.string(),
+        opportunityType: z.string(),
+        evidence: z.unknown()
+    })
+});
+
+const RoleplayFeedbackSchema = z.object({
+    scenario: z.object({
+        moduleTitle: z.string()
+    }),
+    history: z.array(z.object({ role: z.string(), parts: z.array(z.object({ text: z.string() })) }))
+});
+
+const StoicCoachingSchema = z.object({
+    mood: z.string().optional(),
+    stressLevel: z.string().optional(),
+    primaryBlocker: z.string().optional(),
+    message: z.string().optional()
+});
+
+const LegalDocSchema = z.object({
+    type: z.string(),
+    details: z.string()
+});
+
+const ContractAnalysisSchema = z.object({
+    text: z.string()
+});
 
 const router = Router();
 
@@ -21,7 +177,7 @@ const apiKey = process.env.GEMINI_API_KEY;
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 // Helper: Get Business Context
-const getContext = async (userId: string) => {
+const getContext = async (userId: string): Promise<string> => {
     const brandSettings = await db.select().from(userBrandSettings).where(eq(userBrandSettings.user_id, userId)).limit(1);
     const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
 
@@ -32,14 +188,9 @@ const getContext = async (userId: string) => {
     
     let dnaContext = "";
     // Access brand_personality from userBrandSettings which corresponds to brand DNA
-    const brandPersonality = bs.brand_personality as any; // Assuming it holds tone/style info
-    
-    // Adapt to the expected structure or just log what we have
-    // The previous code expected metadata.brandDna.tone, etc.
-    // We'll construct a simplified version based on available data or just safely check.
+    const brandPersonality = bs.brand_personality;
     
     if (brandPersonality) {
-         // Assuming brand_personality might be an array or object. If specific structure isn't known, generic dump:
          dnaContext = `
         === BRAND DNA ===
         Personality: ${JSON.stringify(brandPersonality)}
@@ -50,7 +201,7 @@ const getContext = async (userId: string) => {
 
     return `
     CONTEXT_AWARENESS_LAYER:
-    You are working for: "${bs.company_name || 'Solo Company'}"
+    You are working for: "${bs.company_name || 'Solo Success Company'}"
     Founder: "${u.name || 'Founder'}"
     Industry: "${bs.industry || 'General'}"
     Description: "${bs.description || ''}"
@@ -113,8 +264,8 @@ const getDeepMindContext = async (userId: string) => {
     let marketContext = "";
     if (pivot.length > 0) {
         const p = pivot[0];
-        const gaps = p.gaps as any[];
-        if (gaps && gaps.length > 0) {
+        const gaps = p.gaps as { name: string }[] | null;
+        if (gaps && Array.isArray(gaps) && gaps.length > 0) {
             marketContext = `MARKET OPPORTUNITIES: ${gaps.map(g => g.name).join(', ')}.`;
         }
     }
@@ -137,8 +288,8 @@ const getDeepMindContext = async (userId: string) => {
 };
 
 // Middleware to check API Key
-const requireAi = (req: any, res: any, next: any) => {
-    if (!ai) return res.status(500).json({ error: 'Server AI configuration missing' });
+const requireAi = (req: Request, res: Response, next: NextFunction) => {
+    if (!ai) return res.status(500).json({ success: false, error: 'Server AI configuration missing' });
     next();
 };
 
@@ -147,11 +298,15 @@ const requireAi = (req: any, res: any, next: any) => {
 // Generic Chat / Agent Response
 router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), async (req: Request, res: Response) => {
     try {
-        const { agentId, history, message } = req.body;
+        const validation = ChatRequestSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { agentId, history, message } = validation.data;
         const userId = req.userId!;
 
         // --- TIER ENFORCEMENT ---
-        // Cast to unknown then keyof typeof TIER_LEVELS to safely index
         const userTier = await UsageTracker.getUserTier(userId);
         const tierLevel = TIER_LEVELS[userTier as keyof typeof TIER_LEVELS] || 0;
 
@@ -166,12 +321,12 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
         } else if (ACCELERATOR_AGENTS.includes(agentId)) {
             requiredTierLevel = TIER_LEVELS['accelerator'];
         } else if (!FREE_AGENTS.includes(agentId)) {
-            // Default to highest security if unknown agent
             requiredTierLevel = TIER_LEVELS['dominator'];
         }
 
         if (tierLevel < requiredTierLevel) {
              return res.status(403).json({ 
+                success: false,
                 error: 'Upgrade required to access this agent.',
                 requiredLevel: requiredTierLevel,
                 currentLevel: tierLevel
@@ -196,13 +351,13 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
         `;
 
         const chat = ai!.chats.create({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp', // Standardizing on stable model or intended version
             config: {
                 systemInstruction: fullSystemInstruction,
                 temperature: 0.8,
             },
-            history: history.map((h: any) => ({
-                role: h.role,
+            history: history.map((h) => ({
+                role: h.role === 'user' ? 'user' : 'model',
                 parts: [{ text: h.text }]
             }))
         });
@@ -221,22 +376,27 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
 
         const validatedOutput = DominatorAgentOutputSchema.parse(output);
         
-        // Maintain backward compatibility for frontend that expects { text: string }
         return res.json({ 
+            success: true,
             ...validatedOutput,
             text: validatedOutput.content 
         });
 
     } catch (error) {
         logError("AI Chat Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Competitor Report
-router.post('/competitor-report', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
+router.post('/competitor-report', requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
-        const { competitorName, agentId } = req.body;
+        const validation = CompetitorReportSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { competitorName, agentId } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const agent = AGENTS[agentId as keyof typeof AGENTS];
@@ -256,7 +416,7 @@ router.post('/competitor-report', (authMiddleware as any), requireAi, requireSub
         `;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -287,25 +447,22 @@ router.post('/competitor-report', (authMiddleware as any), requireAi, requireSub
         });
 
         const reportData = JSON.parse(response.text || '{}');
-
-        // Save to DB (this was missing in original route, it just returned JSON)
-        // But wait, the original code didn't save to DB here?
-        // Ah, the client calls POST /api/reports to save it.
-        // Let's check the client code or just index it here if we save it.
-        // The original code just returns JSON. The client probably saves it.
-        // Let's check server/index.ts POST /api/reports again.
-
-        res.json(reportData);
+        res.json({ success: true, ...reportData });
     } catch (error) {
         logError("Competitor Report Error", error);
-        res.status(500).json({ error: 'Generation failed' });
+        res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // War Room
-router.post('/war-room', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
+router.post('/war-room', requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
-        const { topic, previousSessionId } = req.body;
+        const validation = WarRoomSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { topic, previousSessionId } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const deepMind = await getDeepMindContext(userId);
@@ -346,7 +503,7 @@ router.post('/war-room', (authMiddleware as any), requireAi, requireSubscription
         `;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -372,15 +529,15 @@ router.post('/war-room', (authMiddleware as any), requireAi, requireSubscription
             dialogue: data.dialogue
         });
 
-        return res.json(data);
+        return res.json({ success: true, ...data });
     } catch (error) {
         logError("War Room Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Daily Briefing
-router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/briefing', requireAi, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
         // Use a date object for comparison
@@ -397,8 +554,9 @@ router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request
 
         if (existing.length > 0) {
             return res.json({
+                success: true,
                 ...existing[0],
-                focusPoints: existing[0].priorityActions, // Map back to frontend expected format if needed
+                focusPoints: existing[0].priorityActions,
                 threatAlerts: existing[0].alerts,
             });
         }
@@ -408,7 +566,7 @@ router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request
         const prompt = `${context}\n${deepMind}\nGenerate Daily Briefing. Return JSON with summary, focusPoints, threatAlerts, motivationalQuote.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -431,7 +589,7 @@ router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request
         await db.insert(dailyIntelligence).values({
             userId: userId,
             date: new Date(),
-            summary: data.summary || "Daily Briefing", // Ensure required field
+            summary: data.summary || "Daily Briefing",
             priorityActions: data.focusPoints || [],
             alerts: data.threatAlerts || [],
             highlights: [], 
@@ -439,17 +597,22 @@ router.post('/briefing', (authMiddleware as any), requireAi, async (req: Request
             riskLevel: 'low'
         });
 
-        return res.json({ ...data, date: new Date().toLocaleDateString() });
+        return res.json({ success: true, ...data, date: new Date().toLocaleDateString() });
     } catch (error) {
         logError("Briefing error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Tactical Plan
-router.post('/tactical-plan', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/tactical-plan', requireAi, async (req: Request, res: Response) => {
     try {
-        const { goal } = req.body;
+        const validation = TacticalPlanSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { goal } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `
@@ -475,7 +638,7 @@ router.post('/tactical-plan', (authMiddleware as any), requireAi, async (req: Re
         `;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -494,19 +657,24 @@ router.post('/tactical-plan', (authMiddleware as any), requireAi, async (req: Re
                 }
             }
         });
-        return res.json(JSON.parse(response.text || '[]'));
+        return res.json({ success: true, tasks: JSON.parse(response.text || '[]') });
     } catch (error) {
         logError("Tactical Plan Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // --- MARKETING & STRATEGY ---
 
-// Incinerator
-router.post('/incinerator', (authMiddleware as any), requireAi, requireSubscription('accelerator'), async (req: Request, res: Response) => {
+// The Incinerator (Reality Check)
+router.post('/incinerator', requireAi, requireSubscription('accelerator'), async (req: Request, res: Response) => {
     try {
-        const { content, mode, brutality } = req.body;
+        const validation = IncineratorSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { content, mode, brutality } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const deepMind = await getDeepMindContext(userId);
@@ -516,477 +684,796 @@ router.post('/incinerator', (authMiddleware as any), requireAi, requireSubscript
         Return JSON with roastSummary, survivalScore, feedback, rewrittenContent.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { roastSummary: { type: Type.STRING }, survivalScore: { type: Type.NUMBER }, feedback: { type: Type.ARRAY, items: { type: Type.STRING } }, rewrittenContent: { type: Type.STRING } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        roastSummary: { type: Type.STRING }, 
+                        survivalScore: { type: Type.NUMBER }, 
+                        feedback: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        rewrittenContent: { type: Type.STRING } 
+                    } 
+                } 
+            }
         });
-        return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { 
+        return res.json({ success: true, ...JSON.parse(response.text || '{}') });
+    } catch (error) {
         logError("Incinerator Error", error);
-        return res.status(500).json({ error: 'Generation failed' }); 
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
-// Pitch Deck
-router.post('/pitch-deck', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+// Pitch Deck Intelligence
+router.post('/pitch-deck', requireAi, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nGenerate 10-slide pitch deck. Return JSON with title, slides (title, keyPoint, content, visualIdea).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, slides: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, keyPoint: { type: Type.STRING }, content: { type: Type.ARRAY, items: { type: Type.STRING } }, visualIdea: { type: Type.STRING } } } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        title: { type: Type.STRING }, 
+                        slides: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, keyPoint: { type: Type.STRING }, content: { type: Type.ARRAY, items: { type: Type.STRING } }, visualIdea: { type: Type.STRING } } } } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
-    } catch (error) { 
-        logError("Pitch Deck Ai Error", error);
-        return res.status(500).json({ error: 'Generation failed' }); 
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
+    } catch (error) {
+        logError("Pitch Deck Error", error);
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
-// Blue Oceans
-router.post('/blue-oceans', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+// Blue Ocean Discovery
+router.post('/blue-oceans', requireAi, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
         const context = await getContext(userId);
-        const prompt = `${context}\nFind 3 Blue Ocean market gaps. Return JSON.`;
+        const prompt = `${context}\nFind 3 Blue Ocean market gaps. Return JSON with currentIndustry, gaps(name, description, competitionScore, profitabilityScore, soloFitScore, whyItWorks, firstStep).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { currentIndustry: { type: Type.STRING }, gaps: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, description: { type: Type.STRING }, competitionScore: { type: Type.NUMBER }, profitabilityScore: { type: Type.NUMBER }, soloFitScore: { type: Type.NUMBER }, whyItWorks: { type: Type.STRING }, firstStep: { type: Type.STRING } } } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        currentIndustry: { type: Type.STRING }, 
+                        gaps: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, description: { type: Type.STRING }, competitionScore: { type: Type.NUMBER }, profitabilityScore: { type: Type.NUMBER }, soloFitScore: { type: Type.NUMBER }, whyItWorks: { type: Type.STRING }, firstStep: { type: Type.STRING } } } } 
+                    } 
+                } 
+            }
         });
-        return res.json(JSON.parse(response.text || '{}'));
-    } catch (error) { 
-        logError("Blue Oceans Error", error);
-        return res.status(500).json({ error: 'Generation failed' }); 
+        return res.json({ success: true, ...JSON.parse(response.text || '{}') });
+    } catch (error) {
+        logError("Blue Ocean Error", error);
+        return res.status(500).json({ success: false, error: 'Discovery failed' });
     }
 });
 
 // Tribe Blueprint
-router.post('/tribe-blueprint', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/tribe-blueprint', requireAi, async (req: Request, res: Response) => {
     try {
-        const { audience, enemy } = req.body;
+        const validation = TribeBlueprintSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { audience, enemy } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
-        const prompt = `${context}\nGenerate Tribe Blueprint. Audience: ${audience}. Enemy: ${enemy}. Return JSON.`;
+        const prompt = `${context}\nGenerate Tribe Blueprint. Audience: ${audience}. Enemy: ${enemy}. Return JSON with manifesto(title, enemy, belief, tagline), rituals(name, frequency, description, action), engagementLoops(array of strings).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { manifesto: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, enemy: { type: Type.STRING }, belief: { type: Type.STRING }, tagline: { type: Type.STRING } } }, rituals: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, frequency: { type: Type.STRING }, description: { type: Type.STRING }, action: { type: Type.STRING } } } }, engagementLoops: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        manifesto: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, enemy: { type: Type.STRING }, belief: { type: Type.STRING }, tagline: { type: Type.STRING } } }, 
+                        rituals: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, frequency: { type: Type.STRING }, description: { type: Type.STRING }, action: { type: Type.STRING } } } }, 
+                        engagementLoops: { type: Type.ARRAY, items: { type: Type.STRING } } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
     } catch (error) {
-        logError("Tribe Blueprint Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        logError("Tribe Error", error);
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Amplified Content
-router.post('/amplified-content', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/amplified-content', requireAi, async (req: Request, res: Response) => {
     try {
-        const { source } = req.body;
+        const validation = AmplifiedContentSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { source } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
-        const prompt = `${context}\nAmplify content: "${source}". Return JSON with sourceTitle, twitterThread, linkedinPost, tiktokScript, newsletterSection.`;
+        const prompt = `${context}\nAmplify content: "${source}". Return JSON with sourceTitle, twitterThread (array of strings), linkedinPost, tiktokScript, newsletterSection.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { sourceTitle: { type: Type.STRING }, twitterThread: { type: Type.ARRAY, items: { type: Type.STRING } }, linkedinPost: { type: Type.STRING }, tiktokScript: { type: Type.STRING }, newsletterSection: { type: Type.STRING } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        sourceTitle: { type: Type.STRING }, 
+                        twitterThread: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        linkedinPost: { type: Type.STRING }, 
+                        tiktokScript: { type: Type.STRING }, 
+                        newsletterSection: { type: Type.STRING } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
     } catch (error) {
         logError("Amplified Content Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Social Strategy
-router.post('/social-strategy', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/social-strategy', requireAi, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
         const context = await getContext(userId);
-        const prompt = `${context}\nMISSION: SOCIAL STRATEGY (The Amplifier). Act as Echo (CMO). Analyze Brand DNA. Generate strategy. Return JSON.`;
+        const prompt = `${context}\nMISSION: SOCIAL STRATEGY (The Amplifier). Act as Echo (CMO). Analyze Brand DNA. Generate strategy. Return JSON with pillars(title, description), cadence, personaTactics(persona, tactic), sampleHooks(array of strings).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { pillars: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, description: { type: Type.STRING } } } }, cadence: { type: Type.STRING }, personaTactics: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { persona: { type: Type.STRING }, tactic: { type: Type.STRING } } } }, sampleHooks: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        pillars: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, description: { type: Type.STRING } } } }, 
+                        cadence: { type: Type.STRING }, 
+                        personaTactics: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { persona: { type: Type.STRING }, tactic: { type: Type.STRING } } } }, 
+                        sampleHooks: { type: Type.ARRAY, items: { type: Type.STRING } } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
     } catch (error) {
         logError("Social Strategy Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Launch Strategy
-router.post('/launch-strategy', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/launch-strategy', requireAi, async (req: Request, res: Response) => {
     try {
-        const { product, date } = req.body;
+        const validation = LaunchStrategySchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { product, date } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
-        const prompt = `${context}\nLaunch Strategy for "${product}" on ${date}. Return JSON with phases (name, events(day, title, description, owner, channel)).`;
+        const prompt = `${context}\nLaunch Strategy for "${product}" on ${date}. Return JSON with phases(name, events(day, title, description, owner, channel)).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { productName: { type: Type.STRING }, launchDate: { type: Type.STRING }, phases: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, events: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { day: { type: Type.STRING }, title: { type: Type.STRING }, description: { type: Type.STRING }, owner: { type: Type.STRING }, channel: { type: Type.STRING } } } } } } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        productName: { type: Type.STRING }, 
+                        launchDate: { type: Type.STRING }, 
+                        phases: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { name: { type: Type.STRING }, events: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { day: { type: Type.STRING }, title: { type: Type.STRING }, description: { type: Type.STRING }, owner: { type: Type.STRING }, channel: { type: Type.STRING } } } } } } } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
     } catch (error) {
         logError("Launch Strategy Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // --- OPS & HR ---
 
 // Job Description
-router.post('/job-description', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/job-description', requireAi, async (req: Request, res: Response) => {
     try {
-        const { roleTitle, employmentType } = req.body;
+        const validation = JobDescriptionSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { roleTitle, employmentType } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nMISSION: HIRE TALENT (The Scout). ROLE: "${roleTitle}". TYPE: "${employmentType}". Act as Roxy. Create Job Description. Return JSON with roleTitle, hook, responsibilities, requirements, perks.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { roleTitle: { type: Type.STRING }, hook: { type: Type.STRING }, responsibilities: { type: Type.ARRAY, items: { type: Type.STRING } }, requirements: { type: Type.ARRAY, items: { type: Type.STRING } }, perks: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        roleTitle: { type: Type.STRING }, 
+                        hook: { type: Type.STRING }, 
+                        responsibilities: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        requirements: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        perks: { type: Type.ARRAY, items: { type: Type.STRING } } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
     } catch (error) {
         logError("Job Description AI Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Interview Guide
-router.post('/interview-guide', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/interview-guide', requireAi, async (req: Request, res: Response) => {
     try {
-        const { roleTitle, keyFocus } = req.body;
+        const validation = InterviewGuideSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { roleTitle, keyFocus } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nMISSION: VET TALENT. ROLE: "${roleTitle}". FOCUS: "${keyFocus}". Act as Roxy & Glitch. Create Interview Guide. Return JSON with roleTitle, questions(question, whatToLookFor, redFlag).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { roleTitle: { type: Type.STRING }, questions: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { question: { type: Type.STRING }, whatToLookFor: { type: Type.STRING }, redFlag: { type: Type.STRING } } } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        roleTitle: { type: Type.STRING }, 
+                        questions: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { question: { type: Type.STRING }, whatToLookFor: { type: Type.STRING }, redFlag: { type: Type.STRING } } } } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
     } catch (error) {
         logError("Interview Guide AI Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // SOP
-router.post('/sop', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/sop', requireAi, async (req: Request, res: Response) => {
     try {
-        const { taskName } = req.body;
+        const validation = SopSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { taskName } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nMISSION: DELEGATION SYSTEM (SOP). TASK: "${taskName}". Act as Roxy. Create SOP. Return JSON with taskName, goal, steps(step, action, details), definitionOfDone.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { taskName: { type: Type.STRING }, goal: { type: Type.STRING }, steps: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { step: { type: Type.NUMBER }, action: { type: Type.STRING }, details: { type: Type.STRING } } } }, definitionOfDone: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        taskName: { type: Type.STRING }, 
+                        goal: { type: Type.STRING }, 
+                        steps: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { step: { type: Type.NUMBER }, action: { type: Type.STRING }, details: { type: Type.STRING } } } }, 
+                        definitionOfDone: { type: Type.ARRAY, items: { type: Type.STRING } } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
     } catch (error) {
         logError("SOP AI Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Board Report
-router.post('/board-report', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/board-report', requireAi, async (req: Request, res: Response) => {
     try {
-        const { financials, tasks, reports, contacts } = req.body;
+        const validation = BoardReportSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { financials, tasks, reports, contacts } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const dataSummary = `FINANCIALS: Cash ${financials.currentCash}, Burn ${financials.monthlyBurn}, Revenue ${financials.monthlyRevenue}. OPS: ${tasks.length} total tasks. INTEL: ${reports.length} competitors. NETWORK: ${contacts.length} contacts.`;
         const prompt = `${context}\nGenerate Board Meeting Report based on data: ${dataSummary}. Return JSON with ceoScore, executiveSummary, consensus, grades(agentId, department, grade, score, summary, keyIssue).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { ceoScore: { type: Type.NUMBER }, executiveSummary: { type: Type.STRING }, consensus: { type: Type.STRING }, grades: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { agentId: { type: Type.STRING }, department: { type: Type.STRING }, grade: { type: Type.STRING }, score: { type: Type.NUMBER }, summary: { type: Type.STRING }, keyIssue: { type: Type.STRING } } } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        ceoScore: { type: Type.NUMBER }, 
+                        executiveSummary: { type: Type.STRING }, 
+                        consensus: { type: Type.STRING }, 
+                        grades: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { agentId: { type: Type.STRING }, department: { type: Type.STRING }, grade: { type: Type.STRING }, score: { type: Type.NUMBER }, summary: { type: Type.STRING }, keyIssue: { type: Type.STRING } } } } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), date: new Date().toISOString() });
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), date: new Date().toISOString() });
     } catch (error) {
         logError("Board Report AI Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Financial Audit
-router.post('/financial-audit', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/financial-audit', requireAi, async (req: Request, res: Response) => {
     try {
-        const { financials } = req.body;
+        const validation = FinancialAuditSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { financials } = validation.data;
         const prompt = `Audit these financials: ${JSON.stringify(financials)}. Return JSON with runwayScore, verdict, strategicMoves, riskFactors.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { runwayScore: { type: Type.NUMBER }, verdict: { type: Type.STRING }, strategicMoves: { type: Type.ARRAY, items: { type: Type.STRING } }, riskFactors: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        runwayScore: { type: Type.NUMBER }, 
+                        verdict: { type: Type.STRING }, 
+                        strategicMoves: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        riskFactors: { type: Type.ARRAY, items: { type: Type.STRING } } 
+                    } 
+                } 
+            }
         });
-        return res.json(JSON.parse(response.text || '{}'));
+        return res.json({ success: true, ...JSON.parse(response.text || '{}') });
     } catch (error) {
         logError("Financial Audit Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Tech Audit
-router.post('/tech-audit', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/tech-audit', requireAi, async (req: Request, res: Response) => {
     try {
-        const { stack } = req.body;
+        const validation = TechAuditSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { stack } = validation.data;
         const prompt = `Audit tech stack: ${stack}. Return JSON with score, verdict, pros, cons, recommendations.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { score: { type: Type.NUMBER }, verdict: { type: Type.STRING }, pros: { type: Type.ARRAY, items: { type: Type.STRING } }, cons: { type: Type.ARRAY, items: { type: Type.STRING } }, recommendations: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        score: { type: Type.NUMBER }, 
+                        verdict: { type: Type.STRING }, 
+                        pros: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        cons: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        recommendations: { type: Type.ARRAY, items: { type: Type.STRING } } 
+                    } 
+                } 
+            }
         });
-        return res.json(JSON.parse(response.text || '{}'));
+        return res.json({ success: true, ...JSON.parse(response.text || '{}') });
     } catch (error) {
         logError("Tech Audit Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // --- LEGAL & SALES ---
 
 // Cold Email
-router.post('/cold-email', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/cold-email', requireAi, async (req: Request, res: Response) => {
     try {
-        const { contact } = req.body;
+        const validation = ColdEmailSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { contact } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const prompt = `${context}\nDraft cold email for ${contact.name}, ${contact.role} at ${contact.company}. Notes: ${contact.notes}.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
             config: { responseMimeType: "text/plain" }
         });
-        return res.json({ text: response.text || "" });
+        return res.json({ success: true, text: response.text || "" });
     } catch (error) {
         logError("Cold Email Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Negotiation Prep
-router.post('/negotiation-prep', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/negotiation-prep', requireAi, async (req: Request, res: Response) => {
     try {
-        const { contact } = req.body;
+        const validation = NegotiationPrepSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { dealContext, otherParty, goals } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
-        const prompt = `${context}\nNegotiation prep for ${contact.name}. Return JSON with strategy, leveragePoints, psychologicalProfile, openingLine.`;
+        const prompt = `${context}\nAct as Shadow (COO). Negotiate deal: "${dealContext}" with "${otherParty}". My goals: ${goals}. Return JSON with leveragePoints, concessions, scripts(line, reasoning), counterMoves.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { strategy: { type: Type.STRING }, leveragePoints: { type: Type.ARRAY, items: { type: Type.STRING } }, psychologicalProfile: { type: Type.STRING }, openingLine: { type: Type.STRING } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        leveragePoints: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        concessions: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        scripts: { type: Type.ARRAY, items: { type: Type.OBJECT, properties: { line: { type: Type.STRING }, reasoning: { type: Type.STRING } } } }, 
+                        counterMoves: { type: Type.ARRAY, items: { type: Type.STRING } } 
+                    } 
+                } 
+            }
         });
-        return res.json(JSON.parse(response.text || '{}'));
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), generatedAt: new Date().toISOString() });
     } catch (error) {
         logError("Negotiation Prep Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Draft Legal Doc
-router.post('/legal-doc', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
+router.post('/legal-doc', requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
-        const { type, details } = req.body;
+        const validation = LegalDocSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { type, details } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const persona = SYSTEM_INSTRUCTIONS[AgentId.LUMI];
         const prompt = `${context}\n${persona}\nDraft ${type}. Details: ${details}. Include strict standard legal disclaimer that this is AI generated.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
             config: { responseMimeType: "text/plain" }
         });
-        return res.json({ text: response.text || "" });
+        return res.json({ success: true, text: response.text || "" });
     } catch (error) {
         logError("Legal Doc Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Analyze Contract
-router.post('/contract-analysis', (authMiddleware as any), requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
+router.post('/contract-analysis', requireAi, requireSubscription('dominator'), async (req: Request, res: Response) => {
     try {
-        const { text } = req.body;
+        const validation = ContractAnalysisSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { text } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         const persona = SYSTEM_INSTRUCTIONS[AgentId.LUMI];
         const prompt = `${context}\n${persona}\nAnalyze contract: ${text.substring(0, 20000)}. Return JSON with safetyScore, verdict, criticalRisks, suggestions.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { safetyScore: { type: Type.NUMBER }, verdict: { type: Type.STRING }, criticalRisks: { type: Type.ARRAY, items: { type: Type.STRING } }, suggestions: { type: Type.ARRAY, items: { type: Type.STRING } } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        safetyScore: { type: Type.NUMBER }, 
+                        verdict: { type: Type.STRING }, 
+                        criticalRisks: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        suggestions: { type: Type.ARRAY, items: { type: Type.STRING } } 
+                    } 
+                } 
+            }
         });
-        return res.json(JSON.parse(response.text || '{}'));
+        return res.json({ success: true, ...JSON.parse(response.text || '{}') });
     } catch (error) {
         logError("Contract Analysis Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // --- MENTAL & ROLEPLAY ---
 
 // Stoic Coaching
-router.post('/stoic-coaching', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/stoic-coaching', requireAi, async (req: Request, res: Response) => {
     try {
-        const { mood, stressLevel, primaryBlocker } = req.body;
-        const prompt = `Stoic coaching for: Mood ${mood}, Stress ${stressLevel}, Blocker ${primaryBlocker}. Return JSON with reframing, stoicQuote, actionableStep, breathingExercise.`;
+        const validation = StoicCoachingSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const userId = req.userId!;
+        const context = await getContext(userId);
+        const { mood, stressLevel, primaryBlocker, message } = validation.data;
+        
+        const inputData = message ? `Issue: ${message}` : `Mood: ${mood}, Stress: ${stressLevel}, Blocker: ${primaryBlocker}`;
+        const persona = SYSTEM_INSTRUCTIONS[AgentId.SENECA];
+        const prompt = `${context}\n${persona}\nCoaching for: ${inputData}. Offer Stoic wisdom and a practical exercise. Return JSON with wisdom, exercise, reflectionQuestion.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { reframing: { type: Type.STRING }, stoicQuote: { type: Type.STRING }, actionableStep: { type: Type.STRING }, breathingExercise: { type: Type.BOOLEAN } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        reframing: { type: Type.STRING }, // Legacy support
+                        stoicQuote: { type: Type.STRING }, // Legacy support
+                        actionableStep: { type: Type.STRING }, // Legacy support
+                        breathingExercise: { type: Type.BOOLEAN }, // Legacy support
+                        wisdom: { type: Type.STRING }, 
+                        exercise: { type: Type.STRING }, 
+                        reflectionQuestion: { type: Type.STRING } 
+                    } 
+                } 
+            }
         });
-        return res.json(JSON.parse(response.text || '{}'));
+        return res.json({ success: true, ...JSON.parse(response.text || '{}') });
     } catch (error) {
         logError("Stoic Coaching Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Roleplay Reply
-router.post('/roleplay-reply', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/roleplay-reply', requireAi, async (req: Request, res: Response) => {
     try {
-        const { scenario, history, userInput } = req.body;
+        const validation = RoleplayReplySchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { scenario, history, userInput } = validation.data;
         const prompt = `Roleplay: ${scenario.title}. Role: ${scenario.opponentRole}. History: ${JSON.stringify(history)}. User: ${userInput}. Respond in character.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
             config: { responseMimeType: "text/plain" }
         });
-        return res.json({ text: response.text || "..." });
+        return res.json({ success: true, text: response.text || "..." });
     } catch (error) {
         logError("Roleplay Reply Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Roleplay Feedback
-router.post('/roleplay-feedback', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/roleplay-feedback', requireAi, async (req: Request, res: Response) => {
     try {
-        const { scenario, history } = req.body;
-        const prompt = `Evaluate roleplay session. Scenario: ${scenario.title}. History: ${JSON.stringify(history)}. Return JSON with score, strengths, weaknesses, proTip.`;
+        const validation = RoleplayFeedbackSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+        const { scenario, history } = validation.data;
+        const prompt = `Roleplay Analysis: ${scenario.moduleTitle}. History: ${JSON.stringify(history)}. Provide feedback on user performance. Return JSON with score, strengths, improvements, coaching.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { score: { type: Type.NUMBER }, strengths: { type: Type.ARRAY, items: { type: Type.STRING } }, weaknesses: { type: Type.ARRAY, items: { type: Type.STRING } }, proTip: { type: Type.STRING } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        score: { type: Type.NUMBER }, 
+                        strengths: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        improvements: { type: Type.ARRAY, items: { type: Type.STRING } }, 
+                        coaching: { type: Type.STRING } 
+                    } 
+                } 
+            }
         });
-        return res.json(JSON.parse(response.text || '{}'));
+        return res.json({ success: true, ...JSON.parse(response.text || '{}') });
     } catch (error) {
-        logError("Roleplay Feedback error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        logError("Roleplay Feedback Error", error);
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // --- MISC ---
 
 // Brand Image
-router.post('/brand-image', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/brand-image', requireAi, async (req: Request, res: Response) => {
     try {
-        const { promptUser, styleDesc } = req.body;
+        const validation = BrandImageSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { promptUser, styleDesc } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
-        const prompt = `${context}\nImage Gen: ${promptUser}. Style: ${styleDesc}.`;
+        const prompt = `${context}\nImage Gen: ${promptUser}. Style: ${styleDesc || 'Professional'}.`;
 
         const response = await ai!.models.generateImages({
-            model: 'imagen-4.0-generate-001',
+            model: 'imagen-3.0-generate-001',
             prompt,
             config: { numberOfImages: 1, aspectRatio: '16:9', outputMimeType: 'image/jpeg' }
         });
         const b64 = response.generatedImages?.[0]?.image?.imageBytes;
-        return res.json({ image: b64 ? `data:image/jpeg;base64,${b64}` : null });
+        return res.json({ success: true, image: b64 ? `data:image/jpeg;base64,${b64}` : null });
     } catch (error) {
         logError("Brand Image Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Code Solution
-router.post('/code-solution', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/code-solution', requireAi, async (req: Request, res: Response) => {
     try {
-        const { problem } = req.body;
+        const validation = CodeSolutionSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { problem } = validation.data;
         const prompt = `Solve coding problem: ${problem}. Return JSON with language, code, explanation.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
-            contents: problem,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { language: { type: Type.STRING }, code: { type: Type.STRING }, explanation: { type: Type.STRING } } } }
+            model: 'gemini-2.0-flash-exp',
+            contents: prompt,
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        language: { type: Type.STRING }, 
+                        code: { type: Type.STRING }, 
+                        explanation: { type: Type.STRING } 
+                    } 
+                } 
+            }
         });
-        return res.json(JSON.parse(response.text || '{}'));
+        return res.json({ success: true, ...JSON.parse(response.text || '{}') });
     } catch (error) {
         logError("Code Solution Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Simulation
-router.post('/simulation', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/simulation', requireAi, async (req: Request, res: Response) => {
     try {
-        const { scenario } = req.body;
+        const validation = SimulationSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { scenario } = validation.data;
         const prompt = `Simulate scenario: ${scenario}. Return JSON with likelyCase, bestCase, worstCase, strategicAdvice.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { responseMimeType: "application/json", responseSchema: { type: Type.OBJECT, properties: { likelyCase: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, probability: { type: Type.NUMBER }, timeline: { type: Type.STRING }, description: { type: Type.STRING }, keyEvents: { type: Type.ARRAY, items: { type: Type.STRING } } } }, bestCase: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, probability: { type: Type.NUMBER }, timeline: { type: Type.STRING }, description: { type: Type.STRING }, keyEvents: { type: Type.ARRAY, items: { type: Type.STRING } } } }, worstCase: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, probability: { type: Type.NUMBER }, timeline: { type: Type.STRING }, description: { type: Type.STRING }, keyEvents: { type: Type.ARRAY, items: { type: Type.STRING } } } }, strategicAdvice: { type: Type.STRING } } } }
+            config: { 
+                responseMimeType: "application/json", 
+                responseSchema: { 
+                    type: Type.OBJECT, 
+                    properties: { 
+                        likelyCase: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, probability: { type: Type.NUMBER }, timeline: { type: Type.STRING }, description: { type: Type.STRING }, keyEvents: { type: Type.ARRAY, items: { type: Type.STRING } } } }, 
+                        bestCase: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, probability: { type: Type.NUMBER }, timeline: { type: Type.STRING }, description: { type: Type.STRING }, keyEvents: { type: Type.ARRAY, items: { type: Type.STRING } } } }, 
+                        worstCase: { type: Type.OBJECT, properties: { title: { type: Type.STRING }, probability: { type: Type.NUMBER }, timeline: { type: Type.STRING }, description: { type: Type.STRING }, keyEvents: { type: Type.ARRAY, items: { type: Type.STRING } } } }, 
+                        strategicAdvice: { type: Type.STRING } 
+                    } 
+                } 
+            }
         });
-        return res.json({ ...JSON.parse(response.text || '{}'), id: `sim-${Date.now()}`, timestamp: new Date().toISOString() });
+        return res.json({ success: true, ...JSON.parse(response.text || '{}'), id: `sim-${Date.now()}`, timestamp: new Date().toISOString() });
     } catch (error) {
         logError("Simulation Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Market Pulse
-router.post('/market-pulse', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/market-pulse', requireAi, async (req: Request, res: Response) => {
     try {
+        const validation = MarketPulseSchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
         const userId = req.userId!;
         const context = await getContext(userId);
-        const prompt = `${context}\nSearch for market trends/news for this industry. Summary bullet points.`;
+        const { industry } = validation.data;
+        const prompt = `${context}\nMISSION: MARKET PULSE. INDUSTRY: "${industry || 'general tech'}". Act as Glitch. Find market trends. Summary bullet points.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
-            config: { tools: [{ googleSearch: {} }] }
+            config: { 
+                tools: [{ googleSearch: {} }] 
+            } as Parameters<NonNullable<typeof ai>['models']['generateContent']>[0]['config']
         });
-        const grounding = response.candidates?.[0]?.groundingMetadata;
-        const sources = grounding?.groundingChunks?.map((c: any) => c.web).filter((w: any) => w) || [];
-        return res.json({ content: response.text || "", sources });
+        const grounding = response.candidates?.[0]?.groundingMetadata as { groundingChunks?: { web?: { title: string, uri: string } }[] } | undefined;
+        const sources = grounding?.groundingChunks?.map(c => c.web).filter(w => !!w) || [];
+        
+        return res.json({ success: true, text: response.text || "", sources });
     } catch (error) {
         logError("Market Pulse Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 
 // Analyze Opportunity
-router.post('/analyze-opportunity', (authMiddleware as any), requireAi, async (req: Request, res: Response) => {
+router.post('/analyze-opportunity', requireAi, async (req: Request, res: Response) => {
     try {
-        const { opportunity } = req.body;
+        const validation = AnalyzeOpportunitySchema.safeParse(req.body);
+        if (!validation.success) {
+            return res.status(400).json({ success: false, error: validation.error.message });
+        }
+
+        const { opportunity } = validation.data;
         const userId = req.userId!;
         const context = await getContext(userId);
         
@@ -1013,7 +1500,7 @@ router.post('/analyze-opportunity', (authMiddleware as any), requireAi, async (r
         `;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.5-flash',
+            model: 'gemini-2.0-flash-exp',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -1036,10 +1523,10 @@ router.post('/analyze-opportunity', (authMiddleware as any), requireAi, async (r
             }
         });
 
-        return res.json(JSON.parse(response.text || '{}'));
+        return res.json({ success: true, ...JSON.parse(response.text || '{}') });
     } catch (error) {
         logError("Analyze Opportunity Error", error);
-        return res.status(500).json({ error: 'Generation failed' });
+        return res.status(500).json({ success: false, error: 'Generation failed' });
     }
 });
 

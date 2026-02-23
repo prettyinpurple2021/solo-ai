@@ -48,7 +48,7 @@ router.get('/', async (req, res) => {
                 email: `${userId}@stack.auth`,
                 stackUserId: userId,
                 role: 'user',
-                createdAt: new Date(),
+                created_at: new Date(),
             }).returning();
             await setCache(cacheKey, newUser[0]);
             return res.json(newUser[0]);
@@ -81,8 +81,8 @@ router.post('/progress', async (req, res) => {
             .set({ 
                 xp, 
                 level, 
-                totalActions, 
-                updatedAt: new Date(), 
+                total_actions: totalActions, 
+                updated_at: new Date(), 
             })
             .where(eq(users.id, userResults[0].id))
             .returning();

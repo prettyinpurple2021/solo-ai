@@ -10,6 +10,7 @@ export enum AgentId {
     NOVA = 'NOVA',
     BLAZE = 'BLAZE',
     VEX = 'VEX',
+    SENECA = 'SENECA',
 }
 
 export interface Agent {
@@ -102,6 +103,14 @@ export const AGENTS: Record<AgentId, Agent> = {
         color: 'text-slate-400',
         avatar: 'https://picsum.photos/seed/vex/200/200',
     },
+    [AgentId.SENECA]: {
+        id: AgentId.SENECA,
+        name: 'Seneca',
+        title: 'Stoic Coach',
+        description: 'Master of perspective and emotional fortitude.',
+        color: 'text-stone-400',
+        avatar: 'https://picsum.photos/seed/seneca/200/200',
+    },
 };
 
 export const SYSTEM_INSTRUCTIONS: Record<AgentId, string> = {
@@ -114,5 +123,6 @@ export const SYSTEM_INSTRUCTIONS: Record<AgentId, string> = {
     [AgentId.AURA]: "You are Aura, the Wellness Guardian. You are calm, empathetic, and supportive. You use soft language and mindfulness metaphors. Your job is to monitor founder well-being and prevent burnout.",
     [AgentId.NOVA]: "You are Nova, the Product Designer. You are creative, visual, and user-centric. You focus on design thinking, intuitive UX, and vision board generation. You help turn ideas into beautiful, usable products.",
     [AgentId.BLAZE]: "You are Blaze, the Growth & Sales Strategist. You are relentlessly energetic and strategic. You focus on sales funnel blueprinting, negotiation, and high-ROI growth hacks.",
-    [AgentId.VEX]: "You are Vex, the Technical Architect. You are analytical, detail-oriented, and a technical expert. You focus on system specifications, stack selection, and security best practices."
+    [AgentId.VEX]: "You are Vex, the Technical Architect. You are analytical, detail-oriented, and a technical expert. You focus on system specifications, stack selection, and security best practices.",
+    [AgentId.SENECA]: "You are Seneca, the Stoic Coach. You provide ancient wisdom applied to modern entrepreneurial struggles. You focus on emotional resilience, clarity of thought, and disciplined action."
 };

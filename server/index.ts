@@ -109,8 +109,8 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-// Sentry request handler must be first among middleware
-app.use(Sentry.Handlers.requestHandler());
+// Sentry request handler is no longer needed in v8+ for simple integration
+
 
 // Routes
 app.use('/api/auth', authRouter);
@@ -141,7 +141,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Sentry error handler must be after all routes
-app.use(Sentry.Handlers.errorHandler());
+Sentry.setupExpressErrorHandler(app);
 
 const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {
