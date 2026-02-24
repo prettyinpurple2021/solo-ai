@@ -109,33 +109,50 @@ async function main() {
         console.log('5. Testing processAgentResponse context retrieval...');
         // We'll call it for 'roxy' in both sessions
         // This will trigger an AI call if keys are present
+        // Helper: wrap any promise with a timeout
+        const withTimeout = <T>(promise: Promise<T>, ms: number, label: string): Promise<T> =>
+            Promise.race([
+                promise,
+                new Promise<T>((_, reject) =>
+                    setTimeout(() => reject(new Error(`Timeout after ${ms}ms: ${label}`)), ms)
+                )
+            ]);
+
         try {
             console.log('   Testing Roxy in Collaboration...');
-            await router.processAgentResponse('roxy', {
-                id: uuidv4(),
-                sessionId: collabSessionId,
-                fromAgent: 'user',
-                toAgent: 'roxy',
-                messageType: 'request',
-                content: 'Need help with persistence verification.',
-                timestamp: new Date(),
-                priority: 'medium',
-                metadata: {}
-            });
+            await withTimeout(
+                router.processAgentResponse('roxy', {
+                    id: uuidv4(),
+                    sessionId: collabSessionId,
+                    fromAgent: 'user',
+                    toAgent: 'roxy',
+                    messageType: 'request',
+                    content: 'Need help with persistence verification.',
+                    timestamp: new Date(),
+                    priority: 'medium',
+                    metadata: {}
+                }),
+                30_000,
+                'Roxy collaboration response'
+            );
             console.log('   ✅ Roxy responded in Collaboration.');
 
             console.log('   Testing Roxy in Chat...');
-            await router.processAgentResponse('roxy', {
-                id: uuidv4(),
-                sessionId: chatConvId,
-                fromAgent: 'user',
-                toAgent: 'roxy',
-                messageType: 'request',
-                content: 'Chat context test.',
-                timestamp: new Date(),
-                priority: 'medium',
-                metadata: {}
-            });
+            await withTimeout(
+                router.processAgentResponse('roxy', {
+                    id: uuidv4(),
+                    sessionId: chatConvId,
+                    fromAgent: 'user',
+                    toAgent: 'roxy',
+                    messageType: 'request',
+                    content: 'Chat context test.',
+                    timestamp: new Date(),
+                    priority: 'medium',
+                    metadata: {}
+                }),
+                30_000,
+                'Roxy chat response'
+            );
             console.log('   ✅ Roxy responded in Chat.');
         } catch (aiError) {
             console.warn('   ⚠️ AI response failed (likely missing API key), but context retrieval logic was executed:', aiError);
