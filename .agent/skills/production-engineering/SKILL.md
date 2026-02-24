@@ -1,6 +1,8 @@
+---
 name: production-engineering
 
 description: Extreme-integrity engineering standard for SoloSuccess AI. Mandates Next.js 16.1 async patterns, stable "use cache" directives, Drizzle transactional atomicity, RBAC, React 19 data tainting, and Sentry-backed error masking. Governed by a recursive Chain of Verification (CoVe) to ensure zero-TODO, deployment-ready artifacts.
+---
 
 # **Production Engineering Skill**
 

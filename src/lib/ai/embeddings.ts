@@ -1,5 +1,6 @@
 import { openai } from '@ai-sdk/openai';
 import { embed as aiEmbed } from 'ai';
+import { logError } from '@/lib/logger';
 
 /**
  * Generate a text embedding using OpenAI's text-embedding-3-small
@@ -13,7 +14,7 @@ export async function generateEmbedding(text: string): Promise<number[]> {
     });
     return embedding;
   } catch (error) {
-    console.error('Error generating embedding:', error);
+    logError('Error generating embedding:', error);
     throw error;
   }
 }

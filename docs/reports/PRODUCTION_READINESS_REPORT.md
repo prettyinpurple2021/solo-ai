@@ -987,6 +987,7 @@ Before deploying to production, verify:
 **Severity:** Critical (Runtime rendering error)
 
 ### Root Cause
+
 The main `/dashboard` route was displaying a "System Malfunction" error due to two compounding issues:
 
 1. **Next.js Serialization Violation**: The `getDashboardData` server function in `dashboard-service.ts` was passing `undefined` values across the Server→Client boundary. Specifically, the `todaysTasksRaw` Drizzle query was fetching `goal_id` from the joined `goals` table but not `goals.category`, meaning `t.goal_category` was always `undefined`. Next.js cannot serialize `undefined` as a prop, causing a runtime hydration error.
@@ -996,12 +997,13 @@ The main `/dashboard` route was displaying a "System Malfunction" error due to t
 ### Fixes Applied
 
 | File | Change |
-|---|---|
+| --- | --- |
 | `src/lib/services/dashboard-service.ts` | Added `goal_category: goals.category` to `todaysTasksRaw` query select |
 | `src/lib/services/dashboard-service.ts` | Enforced `\|\| null` for all optional mapped fields to prevent `undefined` serialization |
 | `src/app/dashboard/layout.tsx` | Removed `export const dynamic = 'force-dynamic'` from client component |
 
 ### Verification
+
 - `npm run type-check` (web + server): ✅ **0 errors**
 - Context7 docs confirmed both fixes align with official Next.js App Router behavior
 
@@ -1022,6 +1024,7 @@ The SoloSuccess AI platform is fully production-ready. All critical, high, mediu
 - Dashboard runtime stability: zero serialization errors
 
 **Remaining Known Deferred Items (V2.1 Roadmap):**
+
 - **Outlook Calendar OAuth** — shown in UI as "planned for future release"; Google Calendar is fully wired
 - **Data migration tooling** — no legacy migration scripts exist; acceptable for V1 greenfield launch
 
@@ -1044,4 +1047,3 @@ After deployment completes, please manually verify these critical flows:
 3. **Agents**: Go to Collaboration -> Agent Team. Verify 8 agents load.
 4. **Briefcase**: Upload a file. Create a share link.
 5. **Settings**: Saves changes? (Env validation ensures DB connection).
-

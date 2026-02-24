@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/database-client';
 import { communityPosts, communityTopics, users } from '@/shared/db/schema';
 import { desc, eq } from 'drizzle-orm';
+import { logInfo, logError } from '@/lib/logger';
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,7 +20,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: 'Missing content' }, { status: 400 });
     }
 
-    console.log(`[Internal Agent] Received status update: ${content.substring(0, 50)}...`);
+    logInfo(`[Internal Agent] Received status update: ${content.substring(0, 50)}...`);
 
     const db = getDb();
     
@@ -52,12 +53,12 @@ export async function POST(req: NextRequest) {
         
         return NextResponse.json({ success: true, message: 'Status update posted successfully' });
     } catch (dbError: any) {
-        console.error("Database error saving status update:", dbError);
+        logError("Database error saving status update:", dbError);
         return NextResponse.json({ success: false, error: 'Database error', details: dbError.message }, { status: 500 });
     }
 
   } catch (error: any) {
-    console.error("Error in status update API:", error);
+    logError("Error in status update API:", error);
     return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
   }
 }
