@@ -29,6 +29,13 @@
       "when": 1771682567780,
       "tag": "0003_lazy_beyonder",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1771983693043,
+      "tag": "0004_fantastic_paladin",
+      "breakpoints": true
     }
   ]
 }

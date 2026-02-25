@@ -12,6 +12,12 @@ import {
   userApiKeys 
 } from "./users";
 
+import {
+  userSkills,
+  assessments,
+  assessmentSubmissions
+} from "./learning";
+
 import { 
   feedback, 
   documents, 
@@ -189,6 +195,8 @@ export const usersRelations = relations(users, ({many}) => ({
 	learningPaths: many(learningPaths),
 	collaborationSessions: many(collaborationSessions),
 	userLearningProgresses: many(userLearningProgress),
+	userSkills: many(userSkills),
+	assessmentSubmissions: many(assessmentSubmissions),
 	documentActivities: many(documentActivity),
 	moodEntries: many(moodEntries),
 	communityComments: many(communityComments),
@@ -452,6 +460,7 @@ export const learningModulesRelations = relations(learningModules, ({one, many})
 		references: [learningPaths.id]
 	}),
 	userLearningProgresses: many(userLearningProgress),
+	assessments: many(assessments),
 }));
 
 export const learningPathsRelations = relations(learningPaths, ({one, many}) => ({
@@ -815,6 +824,32 @@ export const postLikesRelations = relations(postLikes, ({one}) => ({
 	user: one(users, {
 		fields: [postLikes.user_id],
 		references: [users.id]
+	}),
+}));
+
+export const userSkillsRelations = relations(userSkills, ({one}) => ({
+	user: one(users, {
+		fields: [userSkills.user_id],
+		references: [users.id]
+	}),
+}));
+
+export const assessmentsRelations = relations(assessments, ({one, many}) => ({
+	module: one(learningModules, {
+		fields: [assessments.module_id],
+		references: [learningModules.id]
+	}),
+	submissions: many(assessmentSubmissions),
+}));
+
+export const assessmentSubmissionsRelations = relations(assessmentSubmissions, ({one}) => ({
+	user: one(users, {
+		fields: [assessmentSubmissions.user_id],
+		references: [users.id]
+	}),
+	assessment: one(assessments, {
+		fields: [assessmentSubmissions.assessment_id],
+		references: [assessments.id]
 	}),
 }));
 
