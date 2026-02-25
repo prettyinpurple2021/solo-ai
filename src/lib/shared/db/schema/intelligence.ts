@@ -93,7 +93,7 @@ export const marketIntelligenceCache = pgTable("market_intelligence_cache", {
 // Competitor News Articles
 export const competitorNewsArticles = pgTable("competitor_news_articles", {
   id: text("id").primaryKey().$defaultFn(() => uuidv4()),
-  competitorId: text("competitor_id").notNull(),
+  competitorId: text("competitor_id").notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   title: text("title").notNull(),
   url: text("url").notNull(),
   content: text("content"),
@@ -107,7 +107,7 @@ export const competitorNewsArticles = pgTable("competitor_news_articles", {
 // Competitor Social Mentions
 export const competitorSocialMentions = pgTable("competitor_social_mentions", {
   id: text("id").primaryKey().$defaultFn(() => uuidv4()),
-  competitorId: text("competitor_id").notNull(),
+  competitorId: text("competitor_id").notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   platform: varchar("platform", { length: 50 }).notNull(),
   content: text("content").notNull(),
   author: varchar("author", { length: 100 }),

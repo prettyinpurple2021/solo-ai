@@ -8,7 +8,7 @@ import { LearningEngineService } from '@/lib/services/learning-engine-service';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { moduleId: string } }
+  { params }: { params: Promise<{ moduleId: string }> }
 ) {
   try {
     const session = await auth();
@@ -16,28 +16,25 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { moduleId } = params;
+    const { moduleId } = await params;
 
-    // Fetch learning module
-    const moduleInfo = await db.query.learningModules.findFirst({
-      where: eq(learningModules.id, moduleId),
-    });
+    // Fetch learning module and assessment in parallel
+    const [moduleInfo, assessment] = await Promise.all([
+      db.query.learningModules.findFirst({
+        where: eq(learningModules.id, moduleId),
+      }),
+      db.query.assessments.findFirst({
+        where: eq(assessments.module_id, moduleId),
+      }),
+    ]);
 
     if (!moduleInfo) {
       return NextResponse.json({ error: 'Module not found' }, { status: 404 });
     }
 
-    // Fetch assessment if exists
-    const assessment = await db.query.assessments.findFirst({
-      where: eq(assessments.module_id, moduleId),
-    });
-
-    // Automatically mark the module as in_progress when accessed
-    await LearningEngineService.updateModuleProgress(session.user.id, moduleId, 'in_progress');
-
-    return NextResponse.json({ module: moduleInfo, assessment });
+    return NextResponse.json({ module: moduleInfo, assessment: assessment ?? null });
   } catch (error) {
-    console.error(`Error in GET /api/learning/${params.moduleId}:`, error);
+    console.error(`Error in GET /api/learning/[moduleId]:`, error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

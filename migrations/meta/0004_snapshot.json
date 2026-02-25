@@ -7765,7 +7765,21 @@
           "with": {}
         }
       },
-      "foreignKeys": {},
+      "foreignKeys": {
+        "competitor_news_articles_competitor_id_competitor_profiles_id_fk": {
+          "name": "competitor_news_articles_competitor_id_competitor_profiles_id_fk",
+          "tableFrom": "competitor_news_articles",
+          "tableTo": "competitor_profiles",
+          "columnsFrom": [
+            "competitor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {},

@@ -61,9 +61,10 @@ export class LearningEngineService {
         assessment_id: assessmentId,
         score: scorePercentage,
         passed,
-        answers_data: answers,
+        answers_data: Object.entries(answers).map(([qId, val]) => ({ questionId: qId, answer: val })),
         xp_earned: isFirstTimePass ? xpEarned : 0
       }).returning();
+
 
       if (isFirstTimePass) {
          // Award general XP
