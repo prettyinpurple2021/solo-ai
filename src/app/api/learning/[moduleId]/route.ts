@@ -10,6 +10,7 @@ export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ moduleId: string }> }
 ) {
+  let resolvedModuleId = '[moduleId]';
   try {
     const session = await auth();
     if (!session?.user?.id) {
@@ -17,6 +18,7 @@ export async function GET(
     }
 
     const { moduleId } = await params;
+    resolvedModuleId = moduleId;
 
     // Fetch learning module and assessment in parallel
     const [moduleInfo, assessment] = await Promise.all([
@@ -34,7 +36,7 @@ export async function GET(
 
     return NextResponse.json({ module: moduleInfo, assessment: assessment ?? null });
   } catch (error) {
-    console.error(`Error in GET /api/learning/[moduleId]:`, error);
+    console.error(`Error in GET /api/learning/${resolvedModuleId}:`, error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

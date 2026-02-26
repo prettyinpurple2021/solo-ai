@@ -22,8 +22,8 @@ CREATE TABLE "assessments" (
 );
 --> statement-breakpoint
 CREATE TABLE "user_skills" (
-	"id" text PRIMARY KEY NOT NULL,
-	"user_id" text NOT NULL,
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
 	"skill_name" varchar(255) NOT NULL,
 	"current_level" integer DEFAULT 1 NOT NULL CHECK (current_level >= 1),
 	"current_xp" integer DEFAULT 0 NOT NULL CHECK (current_xp >= 0),
@@ -32,11 +32,12 @@ CREATE TABLE "user_skills" (
 );
 --> statement-breakpoint
 ALTER TABLE "assessment_submissions" ADD CONSTRAINT "assessment_submissions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "assessment_submissions" ADD CONSTRAINT "assessment_submissions_assessment_id_assessments_id_fk" FOREIGN KEY ("assessment_id") REFERENCES "public"."assessments"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "assessment_submissions" ADD CONSTRAINT "assessment_submissions_assessment_id_assessments_id_fk" FOREIGN KEY ("assessment_id") REFERENCES "public"."assessments"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "assessments" ADD CONSTRAINT "assessments_module_id_learning_modules_id_fk" FOREIGN KEY ("module_id") REFERENCES "public"."learning_modules"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "user_skills" ADD CONSTRAINT "user_skills_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE INDEX "assessment_submissions_user_id_idx" ON "assessment_submissions" USING btree ("user_id");--> statement-breakpoint
+CREATE INDEX "assessment_submissions_user_assessment_idx" ON "assessment_submissions" USING btree ("user_id","assessment_id");--> statement-breakpoint
 CREATE INDEX "assessment_submissions_assessment_id_idx" ON "assessment_submissions" USING btree ("assessment_id");--> statement-breakpoint
 CREATE INDEX "assessments_module_id_idx" ON "assessments" USING btree ("module_id");--> statement-breakpoint
 CREATE INDEX "user_skills_user_id_idx" ON "user_skills" USING btree ("user_id");--> statement-breakpoint
-CREATE UNIQUE INDEX "user_skills_user_skill_idx" ON "user_skills" USING btree ("user_id","skill_name");
+CREATE UNIQUE INDEX "user_skills_user_skill_idx" ON "user_skills" USING btree ("user_id","skill_name");--> statement-breakpoint
+UPDATE "assessment_submissions" SET "answers_data" = '[]'::jsonb WHERE jsonb_typeof("answers_data") = 'object' AND ("answers_data"::text = '{}'::text OR "answers_data"::text = '"{}"'::text);

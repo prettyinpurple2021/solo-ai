@@ -93,7 +93,7 @@ export const marketIntelligenceCache = pgTable("market_intelligence_cache", {
 // Competitor News Articles
 export const competitorNewsArticles = pgTable("competitor_news_articles", {
   id: text("id").primaryKey().$defaultFn(() => uuidv4()),
-  competitorId: text("competitor_id").notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
+  competitor_id: text("competitor_id").notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   title: text("title").notNull(),
   url: text("url").notNull(),
   content: text("content"),
@@ -101,13 +101,13 @@ export const competitorNewsArticles = pgTable("competitor_news_articles", {
   publishedAt: timestamp("published_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
-  competitorIdIdx: index("competitor_news_comp_id_idx").on(table.competitorId),
+  competitorIdIdx: index("competitor_news_comp_id_idx").on(table.competitor_id),
 }));
 
 // Competitor Social Mentions
 export const competitorSocialMentions = pgTable("competitor_social_mentions", {
   id: text("id").primaryKey().$defaultFn(() => uuidv4()),
-  competitorId: text("competitor_id").notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
+  competitor_id: text("competitor_id").notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   platform: varchar("platform", { length: 50 }).notNull(),
   content: text("content").notNull(),
   author: varchar("author", { length: 100 }),
@@ -115,7 +115,7 @@ export const competitorSocialMentions = pgTable("competitor_social_mentions", {
   mentionDate: timestamp("mention_date").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 }, (table) => ({
-  competitorIdIdx: index("competitor_social_comp_id_idx").on(table.competitorId),
+  competitorIdIdx: index("competitor_social_comp_id_idx").on(table.competitor_id),
 }));
 
 // Search Index table for RAG and global search
