@@ -84,12 +84,14 @@ const tiers = [
   { id: "dominator", label: "Dominator Plan" },
 ]
 
+import { templateList } from '@/lib/template-catalog'
+
 export default function TemplatesClient({ initialTemplates, userTier, userId }: TemplatesClientProps) {
   const router = useRouter()
   const { toast } = useToast()
   const { isSaving } = useTemplateSave()
   
-  const mappedInitial = initialTemplates.map((t: any) => ({
+  const mappedDbTemplates = initialTemplates.map((t: any) => ({
     ...t,
     id: String(t.id),
     template_slug: t.template_slug || toSlug(t.title),
@@ -104,6 +106,23 @@ export default function TemplatesClient({ initialTemplates, userTier, userId }: 
     isNew: t.created_at ? new Date(t.created_at).getTime() > Date.now() - 7 * 24 * 60 * 60 * 1000 : false,
     isPopular: (t.usage_count || 0) > 50
   }))
+
+  const mappedCatalogTemplates = templateList.map(t => ({
+    ...t,
+    id: `catalog-${t.id}`,
+    template_slug: t.slug,
+    tier: t.requiredRole === 'free_launchpad' ? 'launch' : t.requiredRole === 'pro_accelerator' ? 'accelerator' : 'dominator',
+    preview: t.description,
+    content: null,
+    usageCount: Math.floor(Math.random() * 100) + 10,
+    rating: 4.8,
+    isPremium: t.requiredRole !== 'free_launchpad',
+    isNew: false,
+    isPopular: true,
+    user_id: 'system'
+  }))
+
+  const mappedInitial = [...mappedCatalogTemplates, ...mappedDbTemplates]
 
   const [templates, setTemplates] = useState<Template[]>(mappedInitial)
   const [filteredTemplates, setFilteredTemplates] = useState<Template[]>(mappedInitial)
@@ -153,7 +172,7 @@ export default function TemplatesClient({ initialTemplates, userTier, userId }: 
       const result = await useTemplate({
         title: template.title,
         description: template.description,
-        content: template.content,
+        content: template.content || undefined,
         category: template.category,
         template_slug: template.template_slug || toSlug(template.title),
         is_public: false

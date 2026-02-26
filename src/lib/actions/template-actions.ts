@@ -11,7 +11,7 @@ import { z } from 'zod';
 const templateSchema = z.object({
   title: z.string().min(1),
   description: z.string().optional(),
-  content: z.string().min(1),
+  content: z.string().optional().default('{}'),
   category: z.string().optional(),
   template_slug: z.string().optional(),
   is_public: z.boolean().optional(),

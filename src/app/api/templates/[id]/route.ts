@@ -7,6 +7,36 @@ import { verifyAuth } from '@/lib/auth-server'
 
 export const dynamic = 'force-dynamic'
 
+export async function GET(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const authResult = await verifyAuth()
+    if (!authResult.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const userId = authResult.user.id
+    const { id: templateId } = await params
+
+    const existingTemplate = await db
+      .select()
+      .from(templates)
+      .where(and(eq(templates.id, templateId), eq(templates.user_id, userId)))
+      .limit(1)
+
+    if (existingTemplate.length === 0) {
+      return NextResponse.json({ error: 'Template not found or unauthorized' }, { status: 404 })
+    }
+
+    return NextResponse.json(existingTemplate[0])
+  } catch (error) {
+    logError('Error fetching template:', error)
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+  }
+}
+
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
