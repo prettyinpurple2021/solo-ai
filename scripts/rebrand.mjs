@@ -6,9 +6,15 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const srcDir = path.join(__dirname, '..', 'src')
 
 function renameFileIfExists(oldPath, newPath) {
-  if (fs.existsSync(oldPath)) {
-    fs.renameSync(oldPath, newPath)
-    console.log(`Renamed ${path.basename(oldPath)} to ${path.basename(newPath)}`)
+  try {
+    if (fs.existsSync(oldPath)) {
+      fs.renameSync(oldPath, newPath)
+      console.log(`Renamed ${path.basename(oldPath)} to ${path.basename(newPath)}`)
+    }
+    return true
+  } catch (err) {
+    console.error(`Failed to rename ${oldPath} to ${newPath}: ${err.message}`)
+    return false
   }
 }
 
@@ -24,8 +30,9 @@ renameFileIfExists(
 function walkDir(dir, callback) {
   fs.readdirSync(dir).forEach(f => {
     let dirPath = path.join(dir, f)
-    let isDirectory = fs.statSync(dirPath).isDirectory()
-    if (isDirectory) {
+    let stat = fs.lstatSync(dirPath)
+    if (stat.isSymbolicLink()) return
+    if (stat.isDirectory()) {
       walkDir(dirPath, callback)
     } else {
       if (f.match(/\.(ts|tsx|js|jsx|css|md)$/)) {
@@ -53,19 +60,29 @@ const replacements = [
 ]
 
 let updatedCount = 0
+const dryRun = process.argv.includes('--dry-run')
 
 walkDir(srcDir, function(filePath) {
-  let initial = fs.readFileSync(filePath, 'utf8')
-  let content = initial
+  try {
+    let initial = fs.readFileSync(filePath, 'utf8')
+    let content = initial
 
-  replacements.forEach(r => {
-    content = content.replace(r.regex, r.replace)
-  })
+    replacements.forEach(r => {
+      content = content.replace(r.regex, r.replace)
+    })
 
-  if (content !== initial) {
-    fs.writeFileSync(filePath, content, 'utf8')
-    console.log(`Updated ${filePath.replace(srcDir, '')}`)
-    updatedCount++
+    if (content !== initial) {
+      if (dryRun) {
+        console.log(`Would update ${filePath.replace(srcDir, '')}`)
+        updatedCount++
+      } else {
+        fs.writeFileSync(filePath, content, 'utf8')
+        console.log(`Updated ${filePath.replace(srcDir, '')}`)
+        updatedCount++
+      }
+    }
+  } catch (err) {
+    console.error(`Error processing file ${filePath}: ${err.message}`)
   }
 })
 

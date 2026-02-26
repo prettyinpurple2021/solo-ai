@@ -4,6 +4,7 @@ import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import Script from 'next/script'
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://solosuccess.ai'
 
 export default function PricingLayout({ children }: { children: ReactNode }) {
   const products = {
@@ -19,7 +20,7 @@ export default function PricingLayout({ children }: { children: ReactNode }) {
           '@type': 'Offer',
           price: '0',
           priceCurrency: 'USD',
-          url: 'https://solosuccess.ai/signup',
+          url: `${BASE_URL}/signup`,
           availability: 'https://schema.org/InStock',
         },
       },
@@ -32,7 +33,7 @@ export default function PricingLayout({ children }: { children: ReactNode }) {
           '@type': 'Offer',
           price: '19',
           priceCurrency: 'USD',
-          url: 'https://solosuccess.ai/signup',
+          url: `${BASE_URL}/signup`,
           availability: 'https://schema.org/InStock',
         },
       },
@@ -45,7 +46,7 @@ export default function PricingLayout({ children }: { children: ReactNode }) {
           '@type': 'Offer',
           price: '29',
           priceCurrency: 'USD',
-          url: 'https://solosuccess.ai/contact',
+          url: `${BASE_URL}/contact`,
           availability: 'https://schema.org/InStock',
         },
       },
@@ -66,13 +67,13 @@ export default function PricingLayout({ children }: { children: ReactNode }) {
               '@type': 'ListItem',
               position: 1,
               name: 'Home',
-              item: 'https://solosuccess.ai/'
+              item: `${BASE_URL}/`
             },
             {
               '@type': 'ListItem',
               position: 2,
               name: 'Pricing',
-              item: 'https://solosuccess.ai/pricing'
+              item: `${BASE_URL}/pricing`
             }
           ]
         })}
@@ -95,11 +96,11 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: localizedTitle,
     description: localizedDescription,
-    alternates: { canonical: 'https://solosuccess.ai/pricing' },
+    alternates: { canonical: `${BASE_URL}/pricing` },
     openGraph: {
       title: localizedTitle,
       description: localizedDescription,
-      url: 'https://solosuccess.ai/pricing',
+      url: `${BASE_URL}/pricing`,
       type: 'website',
       siteName: 'SoloSuccess AI',
     },

@@ -4,19 +4,20 @@ import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import Script from 'next/script'
 
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://solosuccess.ai'
 
 export default function BlogLayout({ children }: { children: ReactNode }) {
   const blogSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
     name: 'Founder Blog — SoloSuccess AI',
-    url: 'https://solosuccess.ai/blog',
+    url: `${BASE_URL}/blog`,
     description:
       'Actionable playbooks for Business Automation, AI-powered Productivity, and growth systems for solo founders.',
     publisher: {
       '@type': 'Organization',
       name: 'SoloSuccess AI',
-      url: 'https://solosuccess.ai/',
+      url: `${BASE_URL}/`,
     },
   }
 
@@ -34,13 +35,13 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
               '@type': 'ListItem',
               position: 1,
               name: 'Home',
-              item: 'https://solosuccess.ai/'
+              item: `${BASE_URL}/`
             },
             {
               '@type': 'ListItem',
               position: 2,
               name: 'Blog',
-              item: 'https://solosuccess.ai/blog'
+              item: `${BASE_URL}/blog`
             }
           ]
         })}
@@ -63,11 +64,11 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: localizedTitle,
     description: localizedDescription,
-    alternates: { canonical: 'https://solosuccess.ai/blog' },
+    alternates: { canonical: `${BASE_URL}/blog` },
     openGraph: {
       title: localizedTitle,
       description: localizedDescription,
-      url: 'https://solosuccess.ai/blog',
+      url: `${BASE_URL}/blog`,
       type: 'website',
       siteName: 'SoloSuccess AI',
     },
