@@ -190,7 +190,7 @@ export async function runOnboardingWorkflow(jobId: string, userId: string): Prom
   let emailSent = false
   if (userRecord.email) {
     try {
-      const response = await sendWelcomeEmail(userRecord.email, userRecord.full_name || 'Boss')
+      const response = await sendWelcomeEmail(userRecord.email, userRecord.full_name || 'Founder')
       emailSent = response.success
       if (!response.success) {
         logWarn('Welcome email skipped or failed', {

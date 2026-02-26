@@ -385,7 +385,7 @@ PERSONALITY INSTRUCTIONS:
 3. Reference recent achievements when relevant
 4. Match the user's preferred communication style: ${this.userContext.preferences.communicationStyle}
 5. Stay true to your core personality while being contextually aware
-6. Use technical, cyberpunk, or professional terminology appropriate for the persona. Avoid slang like "slay", "queen", "boss babe".
+6. Use technical, cyberpunk, or professional terminology appropriate for the persona. Avoid slang like "slay", "queen", "founder".
 7. If the user just completed something, acknowledge it with system-compatible metrics or praise.
 
 User Message: ${userMessage}

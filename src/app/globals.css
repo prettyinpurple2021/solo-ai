@@ -148,8 +148,8 @@
     animation: gradient-shift 12s ease infinite;
   }
 
-  .gradient-boss {
-    background: var(--gradient-boss);
+  .gradient-founder {
+    background: var(--gradient-founder);
     background-size: 200% 200%;
     animation: gradient-shift 15s ease infinite;
   }
@@ -307,8 +307,8 @@
     z-index: 1;
   }
 
-  /* Boss Typography */
-  .font-boss {
+  /* Founder Typography */
+  .font-founder {
     font-family: "Orbitron", monospace;
     font-weight: 700;
   }
@@ -417,8 +417,8 @@
     margin-right: 4px;
   }
 
-  /* Boss Button Styles */
-  .btn-boss {
+  /* Founder Button Styles */
+  .btn-founder {
     background: linear-gradient(
       135deg,
       #8b5cf6 0%,
@@ -440,12 +440,12 @@
     animation: gradient-shift 8s ease infinite;
   }
 
-  .btn-boss:hover {
+  .btn-founder:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
   }
 
-  .btn-boss::before {
+  .btn-founder::before {
     content: "";
     position: absolute;
     top: 0;
@@ -456,8 +456,8 @@
     animation: shimmer 2s infinite;
   }
 
-  /* Card Boss Styles */
-  .card-boss {
+  /* Card Founder Styles */
+  .card-founder {
     background: rgba(255, 255, 255, 0.1);
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
@@ -469,13 +469,13 @@
     overflow: hidden;
   }
 
-  .card-boss:hover {
+  .card-founder:hover {
     transform: translateY(-5px);
     border-color: rgba(236, 72, 153, 0.4);
     box-shadow: 0 20px 40px rgba(139, 92, 246, 0.2);
   }
 
-  .card-boss::before {
+  .card-founder::before {
     content: "";
     position: absolute;
     top: 0;
@@ -488,12 +488,12 @@
   }
 
   /* Dark mode card adjustments */
-  .dark .card-boss {
+  .dark .card-founder {
     background: rgba(0, 0, 0, 0.2);
     border-color: rgba(139, 92, 246, 0.3);
   }
 
-  .dark .card-boss:hover {
+  .dark .card-founder:hover {
     border-color: rgba(236, 72, 153, 0.5);
   }
 
@@ -579,7 +579,7 @@
   }
 }
 
-@keyframes boss-pulse {
+@keyframes founder-pulse {
   0%,
   100% {
     transform: scale(1);
@@ -945,12 +945,12 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
-  .card-boss {
+  .card-founder {
     padding: 16px;
     border-radius: 12px;
   }
 
-  .btn-boss {
+  .btn-founder {
     padding: 10px 20px;
     font-size: 14px;
   }
@@ -1313,7 +1313,7 @@
   .gradient-secondary,
   .gradient-accent,
   .gradient-empowerment,
-  .gradient-boss {
+  .gradient-founder {
     background: #8b5cf6 !important;
     animation: none !important;
   }

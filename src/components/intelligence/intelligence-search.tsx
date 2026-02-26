@@ -7,8 +7,8 @@ import {
   Search, Filter, X, Save, Star, Download, Tag, Users, Globe, Activity, Briefcase, Smartphone, FileText, Brain, Clock, ChevronDown, ChevronUp, Bookmark, History, Trash2, Loader2} from "lucide-react"
 import { useDebounce} from "@/hooks/use-debounce"
 
-import { EmpowermentCard} from "@/components/ui/boss-card"
-import { BossButton,} from "@/components/ui/boss-button"
+import { EmpowermentCard} from "@/components/ui/cyber-card"
+import { CyberButton,} from "@/components/ui/cyber-button"
 import { Input} from "@/components/ui/input"
 import { Badge} from "@/components/ui/badge"
 import { Button} from "@/components/ui/button"
@@ -468,9 +468,9 @@ export function IntelligenceSearch({
                       <Button variant="outline" onClick={() => setShowSaveDialog(false)}>
                         Cancel
                       </Button>
-                      <BossButton onClick={saveSearch} disabled={!saveSearchName.trim()}>
+                      <CyberButton onClick={saveSearch} disabled={!saveSearchName.trim()}>
                         Save Search
-                      </BossButton>
+                      </CyberButton>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
@@ -520,7 +520,7 @@ export function IntelligenceSearch({
 
             <div className="flex-1" />
 
-            <BossButton
+            <CyberButton
               onClick={handleSearch}
               disabled={loading}
               className="flex items-center gap-2"
@@ -531,7 +531,7 @@ export function IntelligenceSearch({
                 <Search className="w-4 h-4" />
               )}
               Search
-            </BossButton>
+            </CyberButton>
           </div>
         </div>
       </EmpowermentCard>

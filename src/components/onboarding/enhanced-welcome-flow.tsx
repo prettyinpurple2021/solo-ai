@@ -106,7 +106,7 @@ export function EnhancedWelcomeFlow({ open, onComplete, onSkip,}: WelcomeFlowPro
     },
     {
       id: "personality",
-      title: "What's Your Boss Energy? ⚡",
+      title: "What's Your Founder Energy? ⚡",
       subtitle: "Let's match your vibe",
       icon: Brain,
       color: "from-neon-magenta to-neon-purple",
@@ -144,7 +144,7 @@ export function EnhancedWelcomeFlow({ open, onComplete, onSkip,}: WelcomeFlowPro
               },
               {
                 id: "balanced",
-                name: "Balanced Boss",
+                name: "Balanced Founder",
                 emoji: "⚖️",
                 description: "Well-rounded, adaptable, team-focused",
                 color: "from-neon-lime to-neon-green"

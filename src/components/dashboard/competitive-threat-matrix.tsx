@@ -6,7 +6,7 @@ import { motion} from "framer-motion"
 import { 
   AlertTriangle, TrendingUp, ArrowUp, ArrowDown, Minus, Info} from "lucide-react"
 
-import { BossCard} from "@/components/ui/boss-card"
+import { CyberCard} from "@/components/ui/cyber-card"
 import { Badge} from "@/components/ui/badge"
 import { Progress} from "@/components/ui/progress"
 
@@ -115,17 +115,17 @@ export function CompetitiveThreatMatrix({
 
   if (loading) {
     return (
-      <BossCard className={className}>
+      <CyberCard className={className}>
         <div className="flex items-center justify-center h-96">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
         </div>
-      </BossCard>
+      </CyberCard>
     )
   }
 
   return (
     <TooltipProvider>
-      <BossCard className={className}>
+      <CyberCard className={className}>
         <div className="space-y-6">
           {/* Header */}
           <div className="flex items-center justify-between">
@@ -365,7 +365,7 @@ export function CompetitiveThreatMatrix({
             </motion.div>
           )}
         </div>
-      </BossCard>
+      </CyberCard>
     </TooltipProvider>
   )
 }

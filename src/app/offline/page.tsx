@@ -23,7 +23,7 @@ export default function OfflinePage() {
             You&apos;re Offline! 😱
           </CardTitle>
           <CardDescription className="text-gray-300 font-mono">
-            Don&apos;t worry, boss! We can&apos;t connect to the internet right now, but your SoloSuccess AI platform is still here for you.
+            Don&apos;t worry, founder! We can&apos;t connect to the internet right now, but your SoloSuccess AI platform is still here for you.
           </CardDescription>
         </CardHeader>
         

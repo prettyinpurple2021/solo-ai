@@ -101,7 +101,7 @@ The foundation component that provides:
 - Consistent UI/UX across all templates
 - Progress tracking and navigation
 - Save/Export/Reset functionality
-- Boss-themed styling and components
+- Founder-themed styling and components
 - Responsive design framework
 
 ### Template Registry (`template-registry.tsx`)
@@ -114,10 +114,10 @@ Central registry system that provides:
 
 ## 🎨 UI/UX Features
 
-### Boss Theme Components
-- **BossButton** - Premium button styling with crown indicators
-- **BossCard** - Enhanced card components with gradients
-- **Boss Color Palette** - Purple-to-pink gradient branding
+### Founder Theme Components
+- **CyberButton** - Premium button styling with crown indicators
+- **CyberCard** - Enhanced card components with gradients
+- **Founder Color Palette** - Purple-to-pink gradient branding
 - **Crown Icons** - Premium action indicators
 - **Animated Interactions** - Framer Motion transitions
 
@@ -153,8 +153,8 @@ components/
 │   ├── project-timeline.tsx
 │   └── [SoloSuccess-templates].tsx   # Focus templates
 └── ui/
-    ├── boss-button.tsx           # Boss theme components
-    ├── boss-card.tsx
+    ├── cyber-button.tsx           # Founder theme components
+    ├── cyber-card.tsx
     └── [ui-components].tsx       # Standard UI components
 ```
 
@@ -247,7 +247,7 @@ if (templateExists('decision-dashboard')) {
 ### Development Guidelines
 1. Follow TypeScript best practices
 2. Implement responsive design
-3. Use Boss theme components
+3. Use Founder theme components
 4. Include comprehensive documentation
 5. Test across devices and browsers
 6. Maintain performance standards

@@ -671,7 +671,7 @@ export function VisualWorkflowBuilder({
       <div className="flex items-center justify-between p-4 border-b border-purple-800/30 bg-black/20 backdrop-blur-sm">
         <div className="flex items-center gap-4">
           <div>
-            <h2 className="text-xl font-bold boss-heading">Workflow Builder</h2>
+            <h2 className="text-xl font-bold cyber-heading">Workflow Builder</h2>
             <p className="text-sm text-gray-300">Create and manage automated workflows</p>
           </div>
 

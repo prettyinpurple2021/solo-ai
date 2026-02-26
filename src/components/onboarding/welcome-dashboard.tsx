@@ -184,7 +184,7 @@ export function WelcomeDashboard({ onStartOnboarding, onSkipOnboarding }: Welcom
           <div className="flex items-center justify-center gap-4">
             <Badge variant="purple" className="text-lg px-3 py-1">
               <Sparkles className="h-4 w-4 mr-2" />
-              Level 1 Boss
+              Level 1 Founder
             </Badge>
             <Badge variant="lime" className="text-lg px-3 py-1">
               <Star className="h-4 w-4 mr-2" />

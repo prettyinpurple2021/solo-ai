@@ -217,7 +217,7 @@ export function MobileGestureDemo() {
 
   return (
     <div className="space-y-6">
-      <Card className="boss-card border border-neon-purple bg-dark-card">
+      <Card className="cyber-card border border-neon-purple bg-dark-card">
         <CardContent className="p-6">
           <div className="text-center space-y-4">
             <div className="flex items-center justify-center gap-2">
@@ -225,7 +225,7 @@ export function MobileGestureDemo() {
               <h3 className="text-xl font-bold font-orbitron uppercase tracking-wider text-white">Mobile Gesture Controls</h3>
               <Sparkles className="h-6 w-6 text-neon-purple" />
             </div>
-            <p className="text-gray-300 font-mono">Experience boss-level mobile interactions! 📱✨</p>
+            <p className="text-gray-300 font-mono">Experience founder-level mobile interactions! 📱✨</p>
           </div>
         </CardContent>
       </Card>
@@ -236,7 +236,7 @@ export function MobileGestureDemo() {
         onLongPress={handleLongPress}
         className="min-h-[300px]"
       >
-        <Card className="boss-card h-full bg-dark-bg border border-dashed border-neon-purple relative overflow-hidden">
+        <Card className="cyber-card h-full bg-dark-bg border border-dashed border-neon-purple relative overflow-hidden">
           <CardContent className="p-8 h-full flex flex-col items-center justify-center text-center space-y-6">
             {showCelebration && (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-r from-purple-500/20 to-pink-500/20 animate-pulse">
@@ -246,7 +246,7 @@ export function MobileGestureDemo() {
 
             <div className="space-y-4">
               <div className="text-6xl animate-bounce">👆</div>
-              <h4 className="text-2xl font-bold boss-heading">Try These Gestures!</h4>
+              <h4 className="text-2xl font-bold cyber-heading">Try These Gestures!</h4>
 
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="flex items-center gap-2 p-2 bg-dark-card border border-gray-700 rounded-sm">
@@ -270,7 +270,7 @@ export function MobileGestureDemo() {
 
             {lastGesture && (
               <div className="space-y-2">
-                <Badge className="girlboss-badge text-lg px-4 py-2 font-mono">Last Gesture: {lastGesture}</Badge>
+                <Badge className="elite-badge text-lg px-4 py-2 font-mono">Last Gesture: {lastGesture}</Badge>
                 <p className="text-sm text-gray-300 font-mono">Total gestures: {gestureCount} 🔥</p>
               </div>
             )}
@@ -285,11 +285,11 @@ export function MobileGestureDemo() {
       </TouchGestureWrapper>
 
       {/* Gesture Guide */}
-      <Card className="boss-card bg-dark-card border border-gray-700">
+      <Card className="cyber-card bg-dark-card border border-gray-700">
         <CardContent className="p-6">
           <h4 className="font-bold font-orbitron uppercase tracking-wider text-white mb-4 flex items-center gap-2">
             <Zap className="h-5 w-5 text-neon-purple" />
-            Boss Gesture Commands
+            Founder Gesture Commands
           </h4>
           <div className="grid gap-3 md:grid-cols-2">
             <div className="flex items-center gap-3 p-3 bg-dark-bg border border-neon-purple rounded-sm">

@@ -9,8 +9,8 @@ import { Textarea} from "@/components/ui/textarea"
 import { Label} from "@/components/ui/label"
 import { Slider} from "@/components/ui/slider"
 import { Button} from "@/components/ui/button"
-import { BossButton} from "@/components/ui/boss-button"
-import { BossCard} from "@/components/ui/boss-card"
+import { CyberButton} from "@/components/ui/cyber-button"
+import { CyberCard} from "@/components/ui/cyber-card"
 import { Badge} from "@/components/ui/badge"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
@@ -382,7 +382,7 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
 
         {/* Step 1: Executive Summary */}
         <TabsContent value="step-1" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Building2 className="w-5 h-5 text-neon-purple" />
@@ -489,22 +489,22 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                 </div>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-end">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               disabled={!data.companyName || !data.missionStatement}
               crown
             >
               Next: Market Analysis
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 2: Market Analysis */}
         <TabsContent value="step-2" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <BarChart3 className="w-5 h-5 text-purple-600" />
@@ -549,10 +549,10 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                     <h4 className="font-semibold">Market Segments</h4>
                     <p className="text-sm text-gray-400 font-mono">Break down your market into segments</p>
                   </div>
-                  <BossButton onClick={addMarketSegment} variant="outline" size="sm">
+                  <CyberButton onClick={addMarketSegment} variant="outline" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Segment
-                  </BossButton>
+                  </CyberButton>
                 </div>
 
                 <div className="grid gap-4">
@@ -656,27 +656,27 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                 </div>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(1)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               crown
             >
               Next: Products & Services
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 3: Products & Services */}
         <TabsContent value="step-3" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="w-5 h-5 text-neon-purple" />
@@ -743,27 +743,27 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                 </div>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
               crown
             >
               Next: Marketing Strategy
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 4: Marketing Strategy */}
         <TabsContent value="step-4" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5 text-purple-600" />
@@ -826,27 +826,27 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                 />
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(5)}
               crown
             >
               Next: Financial Projections
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 5: Financial Projections */}
         <TabsContent value="step-5" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5 text-neon-purple" />
@@ -943,37 +943,37 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
               )}
 
               <div className="flex justify-center">
-                <BossButton
+                <CyberButton
                   onClick={generateFinancialProjections}
                   variant="outline"
                   crown
                 >
                   Generate Projections
-                </BossButton>
+                </CyberButton>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(6)}
               crown
             >
               Next: Implementation Plan
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 6: Implementation Plan */}
         <TabsContent value="step-6" className="space-y-6">
           <div className="grid gap-6">
-            <BossCard>
+            <CyberCard>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <CheckCircle className="w-5 h-5 text-purple-600" />
@@ -990,10 +990,10 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                       <h4 className="font-semibold">Key Milestones</h4>
                       <p className="text-sm text-gray-400 font-mono">Define major milestones and deadlines</p>
                     </div>
-                    <BossButton onClick={addMilestone} variant="outline" size="sm">
+                    <CyberButton onClick={addMilestone} variant="outline" size="sm">
                       <Plus className="w-4 h-4 mr-2" />
                       Add Milestone
-                    </BossButton>
+                    </CyberButton>
                   </div>
 
                   <div className="space-y-4">
@@ -1132,10 +1132,10 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                   />
                 </div>
               </CardContent>
-            </BossCard>
+            </CyberCard>
 
             {/* AI Insights Section */}
-            <BossCard>
+            <CyberCard>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Brain className="w-5 h-5 text-neon-purple" />
@@ -1147,14 +1147,14 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-center">
-                  <BossButton
+                  <CyberButton
                     onClick={getAIInsights}
                     loading={isAnalyzing}
                     crown
                     className="px-8"
                   >
                     {isAnalyzing ? "Analyzing..." : "Get AI Insights"}
-                  </BossButton>
+                  </CyberButton>
                 </div>
 
                 {aiInsights.length > 0 && (
@@ -1176,30 +1176,30 @@ export default function StrategicBusinessPlan({ template, onSave, onExport }: St
                   </motion.div>
                 )}
               </CardContent>
-            </BossCard>
+            </CyberCard>
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(5)}
               variant="outline"
             >
               Previous
-            </BossButton>
+            </CyberButton>
             <div className="flex gap-2">
-              <BossButton 
+              <CyberButton 
                 onClick={handleSave}
                 variant="empowerment"
                 crown
               >
                 Save Business Plan
-              </BossButton>
-              <BossButton 
+              </CyberButton>
+              <CyberButton 
                 onClick={() => handleExport('pdf')}
                 variant="accent"
               >
                 Export PDF
-              </BossButton>
+              </CyberButton>
             </div>
           </div>
         </TabsContent>

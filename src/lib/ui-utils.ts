@@ -51,7 +51,7 @@ export const cardVariants = cva("", {
     variant: {
       default: "border border-gray-200",
       purple: "border-2 border-neon-purple/30 hover:border-neon-purple/60",
-      boss: "boss-card",
+      founder: "cyber-card",
     },
     animation: {
       none: "",

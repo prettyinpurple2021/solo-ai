@@ -630,7 +630,7 @@ export function WorkflowExecutionMonitor({
       <div className="p-6 border-b border-purple-800/30 bg-black/20 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold boss-heading">Execution Monitor</h2>
+            <h2 className="text-2xl font-bold cyber-heading">Execution Monitor</h2>
             <p className="text-gray-300 mt-1">Monitor and manage workflow executions</p>
           </div>
 

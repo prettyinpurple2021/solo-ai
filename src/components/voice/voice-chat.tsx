@@ -182,7 +182,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
 
   const getAgentGreeting = () => {
     const greetings = {
-      roxy: "Hey boss! Ready to organize your empire? Let's chat! 💪",
+      roxy: "Hey founder! Ready to organize your empire? Let's chat! 💪",
       blaze: "What's up, money-maker! Ready to scale some serious business? 🔥",
       echo: "Hey creative queen! Let's brainstorm some viral content together! ✨",
       lumi: "Hello there! Need some legal guidance for your empire? I'm here! 🛡️",
@@ -191,7 +191,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
       nova: "Design magic awaits! What beautiful things shall we create? 🎨",
       glitch: "Quality check time! Let's perfect your empire together! 🔍",
     }
-    return greetings[agentId as keyof typeof greetings] || "Hey boss! How can I help you today? 💪"
+    return greetings[agentId as keyof typeof greetings] || "Hey founder! How can I help you today? 💪"
   }
 
   return (
@@ -202,16 +202,16 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
           Voice Chat
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px] boss-card border-2 border-purple-200">
+      <DialogContent className="sm:max-w-[500px] cyber-card border-2 border-purple-200">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3 boss-heading">
+          <DialogTitle className="flex items-center gap-3 cyber-heading">
             <img
               src={agentAvatar || "/default-user.svg"}
               alt={agentName}
               className="w-8 h-8 rounded-full object-cover punk-shadow"
             />
             Voice Chat with {agentName}
-            <Badge className="girlboss-badge ml-auto">
+            <Badge className="elite-badge ml-auto">
               <Radio className="w-3 h-3 mr-1" />
               LIVE
             </Badge>
@@ -223,7 +223,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
 
         <div className="space-y-6">
           {/* Connection Status */}
-          <Card className={`boss-card ${isConnected ? "bg-green-50 border-green-200" : "bg-gray-50"}`}>
+          <Card className={`cyber-card ${isConnected ? "bg-green-50 border-green-200" : "bg-gray-50"}`}>
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -244,7 +244,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
 
           {/* Audio Visualization */}
           {isListening && (
-            <Card className="boss-card">
+            <Card className="cyber-card">
               <CardContent className="p-4">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
@@ -271,7 +271,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
 
           {/* Transcript Display */}
           {transcript && (
-            <Card className="boss-card">
+            <Card className="cyber-card">
               <CardHeader>
                 <CardTitle className="text-sm">You said:</CardTitle>
               </CardHeader>
@@ -367,7 +367,7 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
           </div>
 
           {error && (
-            <Card className="boss-card border-red-200 bg-red-50">
+            <Card className="cyber-card border-red-200 bg-red-50">
               <CardContent className="p-3">
                 <p className="text-sm text-red-800 font-medium">{error}</p>
               </CardContent>

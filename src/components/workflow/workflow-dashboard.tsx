@@ -214,7 +214,7 @@ export function WorkflowDashboard({ className = "" }: WorkflowDashboardProps) {
       <div className="p-6 border-b border-purple-800/30 bg-black/20 backdrop-blur-sm">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold boss-heading">Workflow Automation</h1>
+            <h1 className="text-3xl font-bold cyber-heading">Workflow Automation</h1>
             <p className="text-gray-300 mt-1">Automate your business processes with intelligent workflows</p>
           </div>
           

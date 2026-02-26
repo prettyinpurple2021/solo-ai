@@ -4,8 +4,8 @@ import { logError,} from '@/lib/logger'
 import { useState} from "react"
 
 import { Badge} from "@/components/ui/badge"
-import { BossButton} from "@/components/ui/boss-button"
-import { BossCard} from "@/components/ui/boss-card"
+import { CyberButton} from "@/components/ui/cyber-button"
+import { CyberCard} from "@/components/ui/cyber-card"
 import { Progress} from "@/components/ui/progress"
 
 import { motion, AnimatePresence} from "framer-motion"
@@ -81,9 +81,9 @@ export default function BaseTemplate({
             {/* Back & Title */}
             <div className="flex items-center gap-4">
               <Link href="/templates">
-                <BossButton variant="secondary" size="sm" icon={<ArrowLeft className="w-4 h-4" />}>
+                <CyberButton variant="secondary" size="sm" icon={<ArrowLeft className="w-4 h-4" />}>
                   Templates
-                </BossButton>
+                </CyberButton>
               </Link>
               <div>
                 <h1 className="text-2xl font-orbitron font-bold uppercase tracking-wider text-white">
@@ -99,17 +99,17 @@ export default function BaseTemplate({
                 {template.requiredRole.replace('_', ' ')}
               </Badge>
               
-              <BossButton
+              <CyberButton
                 variant="secondary"
                 size="sm"
                 onClick={() => setIsBookmarked(!isBookmarked)}
                 className={isBookmarked ? "text-yellow-500" : ""}
               >
                 <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
-              </BossButton>
+              </CyberButton>
 
               {onSave && (
-                <BossButton
+                <CyberButton
                   variant="secondary"
                   size="sm"
                   onClick={() => handleSave({})}
@@ -117,10 +117,10 @@ export default function BaseTemplate({
                   icon={<Save className="w-4 h-4" />}
                 >
                   <span className="hidden sm:inline">Save</span>
-                </BossButton>
+                </CyberButton>
               )}
 
-              <BossButton
+              <CyberButton
                 variant="empowerment"
                 size="sm"
                 crown
@@ -128,7 +128,7 @@ export default function BaseTemplate({
                 icon={<Download className="w-4 h-4" />}
               >
                 <span className="hidden sm:inline">Export</span>
-              </BossButton>
+              </CyberButton>
             </div>
           </div>
 
@@ -172,7 +172,7 @@ export default function BaseTemplate({
           transition={{ duration: 0.6 }}
         >
           {/* Template Description Card */}
-          <BossCard className="mb-8 bg-dark-card border-gray-700" variant="empowerment">
+          <CyberCard className="mb-8 bg-dark-card border-gray-700" variant="empowerment">
             <div className="p-6">
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -203,7 +203,7 @@ export default function BaseTemplate({
                 </motion.div>
               </div>
             </div>
-          </BossCard>
+          </CyberCard>
 
           {/* Template Content */}
           <AnimatePresence mode="wait">
@@ -227,31 +227,31 @@ export default function BaseTemplate({
               transition={{ delay: 0.3 }}
             >
               {_onReset && (
-                <BossButton
+                <CyberButton
                   variant="secondary"
                   onClick={_onReset}
                   icon={<RefreshCw className="w-4 h-4" />}
                 >
                   Reset Template
-                </BossButton>
+                </CyberButton>
               )}
               
               {onExport && (
                 <div className="flex gap-2">
-                  <BossButton
+                  <CyberButton
                     variant="accent"
                     size="sm"
                     onClick={() => handleExport('json')}
                   >
                     Export JSON
-                  </BossButton>
-                  <BossButton
+                  </CyberButton>
+                  <CyberButton
                     variant="accent"
                     size="sm"
                     onClick={() => handleExport('pdf')}
                   >
                     Export PDF
-                  </BossButton>
+                  </CyberButton>
                 </div>
               )}
             </motion.div>

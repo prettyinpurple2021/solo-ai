@@ -196,7 +196,7 @@ export function OfferNamingGenerator() {
             <Label htmlFor="keywords">Keywords to Include (Optional)</Label>
             <Input
               id="keywords"
-              placeholder="e.g., boss, accelerator, system, blueprint, mastery"
+              placeholder="e.g., founder, accelerator, system, blueprint, mastery"
               value={keywords}
               onChange={(e) => setKeywords(e.target.value)}
             />

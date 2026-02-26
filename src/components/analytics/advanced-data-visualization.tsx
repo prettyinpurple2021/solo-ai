@@ -377,7 +377,7 @@ export function AdvancedDataVisualization({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold boss-heading">Advanced Data Visualization</h2>
+          <h2 className="text-2xl font-bold cyber-heading">Advanced Data Visualization</h2>
           <p className="text-gray-600">Create interactive charts and dashboards with real-time data</p>
         </div>
         <div className="flex items-center gap-2">

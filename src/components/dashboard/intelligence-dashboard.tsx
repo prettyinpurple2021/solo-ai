@@ -6,8 +6,8 @@ import { motion, easeOut} from "framer-motion"
 import { 
   Activity, AlertTriangle, TrendingUp, Eye, Globe, Shield, Target, Zap, RefreshCw, BarChart3,} from "lucide-react"
 
-import { BossCard, StatsCard} from "@/components/ui/boss-card"
-import { BossButton, ZapButton} from "@/components/ui/boss-button"
+import { CyberCard, StatsCard} from "@/components/ui/cyber-card"
+import { CyberButton, ZapButton} from "@/components/ui/cyber-button"
 
 import { Badge} from "@/components/ui/badge"
 import { 
@@ -256,7 +256,7 @@ export function IntelligenceDashboard({ className }: IntelligenceDashboardProps)
                 <SelectItem value="30d">Last 30 days</SelectItem>
               </SelectContent>
             </Select>
-            <BossButton
+            <CyberButton
               variant="outline"
               size="sm"
               icon={<RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />}
@@ -264,7 +264,7 @@ export function IntelligenceDashboard({ className }: IntelligenceDashboardProps)
               disabled={refreshing}
             >
               Refresh
-            </BossButton>
+            </CyberButton>
           </div>
         </motion.div>
 
@@ -319,7 +319,7 @@ export function IntelligenceDashboard({ className }: IntelligenceDashboardProps)
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Real-time Activity Feed */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <BossCard variant="purple" crown>
+            <CyberCard variant="purple" crown>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gradient flex items-center space-x-2">
                   <Activity className="w-6 h-6" />
@@ -435,7 +435,7 @@ export function IntelligenceDashboard({ className }: IntelligenceDashboardProps)
                       }
                     </p>
                     {(activityFilter !== "all" || threatFilter !== "all") && (
-                      <BossButton 
+                      <CyberButton 
                         variant="outline"
                         size="sm"
                         className="mt-4"
@@ -445,17 +445,17 @@ export function IntelligenceDashboard({ className }: IntelligenceDashboardProps)
                         }}
                       >
                         Clear Filters
-                      </BossButton>
+                      </CyberButton>
                     )}
                   </div>
                 )}
               </div>
-            </BossCard>
+            </CyberCard>
           </motion.div>
 
           {/* Competitive Threat Matrix */}
           <motion.div variants={itemVariants}>
-            <BossCard variant="magenta">
+            <CyberCard variant="magenta">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-bold text-gradient flex items-center space-x-2">
                   <AlertTriangle className="w-6 h-6" />
@@ -532,7 +532,7 @@ export function IntelligenceDashboard({ className }: IntelligenceDashboardProps)
                   </div>
                 )}
               </div>
-            </BossCard>
+            </CyberCard>
           </motion.div>
         </div>
       </motion.div>

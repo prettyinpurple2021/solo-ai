@@ -1,0 +1,45 @@
+# Workspace & Brand Cleanup Implementation Plan
+
+This document outlines the planned improvements to the `/dashboard/workspace` page and the enforcement of the new gender-neutral, premium cyberpunk design aesthetic across the codebase. All legacy "boss babe" or "boss" terminology will be strictly avoided and systematically removed.
+
+## 1. Workspace UI/UX Enhancements
+The workspace page will be upgraded to feel more premium and engaging without resorting to legacy branding.
+
+- **Component Upgrade:** We will use the standard `Card` and `Button` components but enhance them with our modern cyberpunk design tokens (neon borders, subtle glows, glassmorphism) rather than legacy "boss" components.
+- **Advanced Filtering and Sorting:** 
+  - Add a dropdown to filter saved templates by category.
+  - Add a dropdown to sort templates by "Newest", "Oldest", or "Alphabetical".
+- **Workspace Metrics (Engagement):** 
+  - Add a stats header at the top displaying: Total templates, Estimated time saved, and Most active category.
+- **Enhanced Empty State:** 
+  - Make the empty state actionable by suggesting top templates to start with.
+- **Template Card Details:** 
+  - Show tier and category badges directly on the workspace cards.
+
+## 2. Legacy 'Boss' Branding Removal (Codebase Sweep)
+To enforce the gender-neutral design, we will systematically find and replace legacy branding.
+
+- **Component Replacement:** 
+  - Identify usages of `BossCard`, `BossButton`, and related CSS classes (e.g., `.boss-card`, `.boss-heading`, `.girlboss-badge`).
+  - Replace them with standard `Card`, `Button`, and our updated gender-neutral cyberpunk typography and glow classes.
+- **Terminology Purge:**
+  - Remove "boss" and "boss babe" language from AI agent system prompts (e.g., `roxy-agent.ts`), gamification titles, and email templates.
+  - Replace with professional, empowering, and gender-neutral equivalents (e.g., "Founder", "Leader", "Elite").
+
+## Affected Files
+#### [MODIFY] `src/app/dashboard/workspace/page.tsx`
+- Implement the UI upgrades, metrics calculation, and filtering/sorting logic using the updated design system.
+
+#### [MODIFY] Various Legacy Files (Sweep)
+- `src/lib/gamification-system.ts`, `src/lib/email.ts`, `src/lib/custom-ai-agents/roxy-agent.ts`, etc.
+- `src/components/ui/boss-card.tsx`, `src/components/ui/boss-button.tsx` (to be deprecated/removed).
+
+## Verification Plan
+### Automated Tests
+- Run `npm run type-check:web` to ensure no type errors after component swaps.
+- Run `npm run lint` to ensure code quality.
+
+### Manual Verification
+- Navigate to `/dashboard/workspace` to verify new metrics and filtering.
+- Ensure the UI matches the premium Cyberpunk aesthetic with zero "boss" references.
+- Search the codebase to confirm standard "boss" terminology has been eliminated or significantly reduced.

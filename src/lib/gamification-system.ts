@@ -41,7 +41,7 @@ export const achievements: Achievement[] = [
   // Productivity Achievements
   {
     id: "first_task",
-    title: "First Boss Move",
+    title: "First Founder Move",
     description: "Complete your first task like the queen you are!",
     icon: "CheckSquare",
     emoji: "👑",
@@ -111,7 +111,7 @@ export const achievements: Achievement[] = [
   // Streak Achievements
   {
     id: "consistency_boss",
-    title: "Consistency Boss",
+    title: "Consistency Founder",
     description: "Maintain a 7-day productivity streak!",
     icon: "Flame",
     emoji: "🔥",
@@ -160,7 +160,7 @@ export const achievements: Achievement[] = [
 export const levels: LevelInfo[] = [
   {
     level: 1,
-    title: "Boss Rookie",
+    title: "Founder Rookie",
     emoji: "🌱",
     pointsRequired: 0,
     perks: ["Access to AI Squad", "Basic task management"],
@@ -168,7 +168,7 @@ export const levels: LevelInfo[] = [
   },
   {
     level: 5,
-    title: "Rising Boss",
+    title: "Rising Founder",
     emoji: "🚀",
     pointsRequired: 500,
     perks: ["Advanced analytics", "Custom themes", "Priority AI responses"],
@@ -176,7 +176,7 @@ export const levels: LevelInfo[] = [
   },
   {
     level: 10,
-    title: "Boss Babe",
+    title: "Founder",
     emoji: "💪",
     pointsRequired: 1500,
     perks: ["Collaboration features", "Advanced wellness tracking", "Custom celebrations"],
@@ -192,10 +192,10 @@ export const levels: LevelInfo[] = [
   },
   {
     level: 20,
-    title: "Legendary Boss",
+    title: "Legendary Founder",
     emoji: "✨",
     pointsRequired: 5000,
-    perks: ["Exclusive features", "Beta access", "Boss Hall of Fame"],
+    perks: ["Exclusive features", "Beta access", "Founder Hall of Fame"],
     color: "bg-gradient-to-r from-yellow-400 to-yellow-500",
   },
 ]
@@ -297,7 +297,7 @@ export class GamificationEngine {
 
   generateCelebration(achievement: Achievement): string {
     const celebrations = {
-      common: ["Nice work, boss! 🎉", "You're on fire! 🔥", "Boss move unlocked! 💪"],
+      common: ["Nice work, founder! 🎉", "You're on fire! 🔥", "Founder move unlocked! 💪"],
       rare: [
         "YASSS QUEEN! That's rare achievement energy! ✨",
         "Look at you being all legendary! 👑",
@@ -305,12 +305,12 @@ export class GamificationEngine {
       ],
       epic: [
         "EPIC ACHIEVEMENT UNLOCKED! You're absolutely slaying! 💥",
-        "This is the kind of boss energy we LIVE for! 🔥👑",
+        "This is the kind of founder energy we LIVE for! 🔥👑",
         "LEGENDARY status incoming! You're unstoppable! ⚡",
       ],
       legendary: [
         "🚨 LEGENDARY BOSS ALERT! 🚨 You've reached mythical status! 🏆✨",
-        "EMPIRE LEVEL UNLOCKED! You're not just a boss, you're THE BOSS! 👑💎",
+        "EMPIRE LEVEL UNLOCKED! You're not just a founder, you're THE BOSS! 👑💎",
         "HISTORY MADE! This achievement is absolutely LEGENDARY! 🌟💪",
       ],
     }

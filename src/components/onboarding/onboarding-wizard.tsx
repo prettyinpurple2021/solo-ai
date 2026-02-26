@@ -181,14 +181,14 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
               </div>
               <h2 className="text-3xl font-bold font-orbitron text-white uppercase tracking-wider">Welcome to Your Empire! 👑</h2>
               <p className="text-lg text-gray-400 font-mono">
-                Let&apos;s set up your SoloSuccess AI platform to match your unique boss energy!
+                Let&apos;s set up your SoloSuccess AI platform to match your unique founder energy!
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name" className="font-semibold font-mono text-neon-cyan uppercase tracking-wider">
-                  What should we call you, boss?
+                  What should we call you, founder?
                 </Label>
                 <Input
                   id="name"
@@ -200,7 +200,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
               </div>
 
               <div className="space-y-2">
-                <Label className="font-semibold font-mono text-neon-cyan uppercase tracking-wider">What type of boss are you?</Label>
+                <Label className="font-semibold font-mono text-neon-cyan uppercase tracking-wider">What type of founder are you?</Label>
                 <Select
                   value={data.personalInfo.businessType}
                   onValueChange={(value) => updateData("personalInfo", { businessType: value })}
@@ -247,7 +247,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
               <div className="w-16 h-16 mx-auto bg-gradient-to-r from-neon-magenta to-neon-purple rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(255,0,110,0.3)]">
                 <Target className="h-8 w-8 text-white" />
               </div>
-              <h2 className="text-2xl font-bold boss-heading">What are your empire goals? 🎯</h2>
+              <h2 className="text-2xl font-bold cyber-heading">What are your empire goals? 🎯</h2>
                               <p className="text-muted-foreground">Select all that apply - we&apos;ll customize your experience!</p>
             </div>
 
@@ -284,7 +284,7 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
               <div className="space-y-2">
                 <Label className="font-semibold">What&apos;s your biggest challenge right now?</Label>
                 <Textarea
-                                      placeholder="Tell us what&apos;s keeping you from reaching your full boss potential..."
+                                      placeholder="Tell us what&apos;s keeping you from reaching your full founder potential..."
                   value={data.goals.biggestChallenge}
                   onChange={(e) => updateData("goals", { biggestChallenge: e.target.value })}
                   className="border-2 border-purple-200 focus:border-purple-400"
@@ -459,12 +459,12 @@ export function OnboardingWizard({ open, onComplete, onSkip }: OnboardingWizardP
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 font-orbitron text-white uppercase tracking-wider">
                     <Crown className="h-5 w-5 text-neon-purple" />
-                    Your Boss Profile
+                    Your Founder Profile
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 font-mono">
                   <p className="text-gray-300">
-                    <strong className="text-neon-cyan">Name:</strong> {data.personalInfo.name || "Boss Babe"}
+                    <strong className="text-neon-cyan">Name:</strong> {data.personalInfo.name || "Founder"}
                   </p>
                   <p className="text-gray-300">
                     <strong className="text-neon-cyan">Business Type:</strong> {data.personalInfo.businessType}

@@ -8,8 +8,8 @@ import { Textarea} from "@/components/ui/textarea"
 import { Label} from "@/components/ui/label"
 import { Slider} from "@/components/ui/slider"
 import { Button} from "@/components/ui/button"
-import { BossButton} from "@/components/ui/boss-button"
-import { BossCard} from "@/components/ui/boss-card"
+import { CyberButton} from "@/components/ui/cyber-button"
+import { CyberCard} from "@/components/ui/cyber-card"
 import { Badge} from "@/components/ui/badge"
 import { CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 
@@ -439,7 +439,7 @@ export default function CustomerJourneyMapper({ template, initialData, onSave: _
 
         {/* Step 1: Journey Setup */}
         <TabsContent value="step-1" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="w-5 h-5 text-purple-600" />
@@ -523,22 +523,22 @@ export default function CustomerJourneyMapper({ template, initialData, onSave: _
                 </ul>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-end">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               disabled={!data.journeyName}
               crown
             >
               Next: Customer Persona
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 2: Customer Persona */}
         <TabsContent value="step-2" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <User className="w-5 h-5 text-purple-600" />
@@ -845,27 +845,27 @@ export default function CustomerJourneyMapper({ template, initialData, onSave: _
                 </div>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(1)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               crown
             >
               Next: Journey Stages
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 3: Journey Stages */}
         <TabsContent value="step-3" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Route className="w-5 h-5 text-purple-600" />
@@ -881,10 +881,10 @@ export default function CustomerJourneyMapper({ template, initialData, onSave: _
                   <h4 className="font-semibold">Customer Journey Stages</h4>
                   <p className="text-sm text-gray-600">Break down the journey into distinct phases</p>
                 </div>
-                <BossButton onClick={addStage} variant="outline" size="sm">
+                <CyberButton onClick={addStage} variant="outline" size="sm">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Stage
-                </BossButton>
+                </CyberButton>
               </div>
 
               <div className="space-y-6">
@@ -1081,27 +1081,27 @@ export default function CustomerJourneyMapper({ template, initialData, onSave: _
                 </div>
               )}
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
               crown
             >
               Next: Touchpoints
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 4: Touchpoints */}
         <TabsContent value="step-4" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-purple-600" />
@@ -1117,10 +1117,10 @@ export default function CustomerJourneyMapper({ template, initialData, onSave: _
                   <h4 className="font-semibold">Touchpoints</h4>
                   <p className="text-sm text-gray-600">Define every interaction point in the journey</p>
                 </div>
-                <BossButton onClick={addTouchpoint} variant="outline" size="sm">
+                <CyberButton onClick={addTouchpoint} variant="outline" size="sm">
                   <Plus className="w-4 h-4 mr-2" />
                   Add Touchpoint
-                </BossButton>
+                </CyberButton>
               </div>
 
               <div className="space-y-6">
@@ -1376,21 +1376,21 @@ export default function CustomerJourneyMapper({ template, initialData, onSave: _
                 </div>
               )}
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               variant="outline"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(5)}
               crown
             >
               Next: Analysis & Recommendations
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
@@ -1398,7 +1398,7 @@ export default function CustomerJourneyMapper({ template, initialData, onSave: _
         <TabsContent value="step-5" className="space-y-6">
           <div className="grid gap-6">
             {/* Journey Overview */}
-            <BossCard>
+            <CyberCard>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BarChart3 className="w-5 h-5 text-purple-600" />
@@ -1594,30 +1594,30 @@ export default function CustomerJourneyMapper({ template, initialData, onSave: _
                   </div>
                 </div>
               </CardContent>
-            </BossCard>
+            </CyberCard>
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
               variant="outline"
             >
               Previous
-            </BossButton>
+            </CyberButton>
             <div className="flex gap-2">
-              <BossButton 
+              <CyberButton 
                 onClick={handleSave}
                 variant="purple"
                 crown
               >
                 Save Journey Map
-              </BossButton>
-              <BossButton 
+              </CyberButton>
+              <CyberButton 
                 onClick={() => handleExport('pdf')}
                 variant="cyan"
               >
                 Export Journey
-              </BossButton>
+              </CyberButton>
             </div>
           </div>
         </TabsContent>

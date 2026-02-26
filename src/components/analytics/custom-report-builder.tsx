@@ -375,7 +375,7 @@ export function CustomReportBuilder({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold boss-heading">Custom Report Builder</h2>
+          <h2 className="text-2xl font-bold cyber-heading">Custom Report Builder</h2>
           <p className="text-gray-600">Create powerful analytics reports with drag-and-drop visualization</p>
         </div>
         <div className="flex items-center gap-2">

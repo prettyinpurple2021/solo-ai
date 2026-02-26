@@ -251,7 +251,7 @@ export default function MobileDashboard({
     <div className={cn("min-h-screen bg-dark-bg", className)}>
       {/* Mobile Navigation */}
       <MobileNavigation
-        user={user || (resolvedData?.user ? { name: resolvedData.user.full_name || 'Boss', email: resolvedData.user.email } : undefined)}
+        user={user || (resolvedData?.user ? { name: resolvedData.user.full_name || 'Founder', email: resolvedData.user.email } : undefined)}
         notifications={notifications}
         onNotificationClick={() => setNotifications(0)}
       />
@@ -293,7 +293,7 @@ export default function MobileDashboard({
                     <h2 className="text-lg font-bold font-orbitron uppercase tracking-wider">
                       {dashboardLoading
                         ? 'Loading your dashboard…'
-                        : `Welcome back, ${user?.name || resolvedData?.user?.full_name || 'Boss'}!`}
+                        : `Welcome back, ${user?.name || resolvedData?.user?.full_name || 'Founder'}!`}
                     </h2>
                     <p className="text-sm text-gray-300 font-mono">
                       {dashboardLoading

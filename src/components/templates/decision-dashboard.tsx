@@ -9,8 +9,8 @@ import { Textarea} from "@/components/ui/textarea"
 import { Label} from "@/components/ui/label"
 import { Slider} from "@/components/ui/slider"
 import { Button} from "@/components/ui/button"
-import { BossButton} from "@/components/ui/boss-button"
-import { BossCard} from "@/components/ui/boss-card"
+import { CyberButton} from "@/components/ui/cyber-button"
+import { CyberCard} from "@/components/ui/cyber-card"
 import { Badge} from "@/components/ui/badge"
 import { Progress} from "@/components/ui/progress"
 import { Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
@@ -249,7 +249,7 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
 
         {/* Step 1: Decision Setup */}
         <TabsContent value="step-1" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Target className="w-5 h-5 text-neon-purple" />
@@ -310,16 +310,16 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
                 </div>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-end">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               disabled={!_data.decisionTitle}
               crown
             >
               Next: Add Options
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
@@ -330,9 +330,9 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
               <h3 className="text-lg font-semibold">Decision Options</h3>
               <p className="text-sm text-gray-400 font-mono">Add and configure your available options</p>
             </div>
-            <BossButton onClick={addOption} variant="secondary" icon={<Plus className="w-4 h-4" />}> 
+            <CyberButton onClick={addOption} variant="secondary" icon={<Plus className="w-4 h-4" />}> 
               Add Option
-            </BossButton>
+            </CyberButton>
           </div>
 
           <div className="grid gap-6">
@@ -344,7 +344,7 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
                 >
-                  <BossCard className="relative">
+                  <CyberCard className="relative">
                     <CardHeader className="flex-row items-center justify-between space-y-0 pb-4">
                       <div>
                         <CardTitle className="text-lg">Option {index + 1}</CardTitle>
@@ -507,32 +507,32 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
                         </div>
                       </div>
                     </CardContent>
-                  </BossCard>
+                  </CyberCard>
                 </motion.div>
               ))}
             </AnimatePresence>
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(1)}
               variant="secondary"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               disabled={_data.options.some(opt => !opt.title)}
               crown
             >
               Next: Analysis
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 3: AI Analysis */}
         <TabsContent value="step-3" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Brain className="w-5 h-5 text-neon-purple" />
@@ -544,14 +544,14 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
             </CardHeader>
             <CardContent className="space-y-6">
               <div className="flex justify-center">
-                <BossButton
+                <CyberButton
                   onClick={getAIInsights}
                   loading={isAnalyzing}
                   crown
                   className="px-8"
                 >
                   {isAnalyzing ? "Analyzing..." : "Get AI Insights"}
-                </BossButton>
+                </CyberButton>
               </div>
 
               {_aiInsights.length > 0 && (
@@ -627,27 +627,27 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
                 </motion.div>
               )}
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               variant="secondary"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
               crown
             >
               Make Decision
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 4: Final Decision */}
         <TabsContent value="step-4" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-green-600" />
@@ -726,29 +726,29 @@ export default function DecisionDashboard({ template, onSave: _onSave, onExport:
                 </div>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               variant="secondary"
             >
               Previous
-            </BossButton>
+            </CyberButton>
             <div className="flex gap-2">
-              <BossButton 
+              <CyberButton 
                 onClick={handleSave}
                 variant="empowerment"
                 crown
               >
                 Save Decision
-              </BossButton>
-              <BossButton 
+              </CyberButton>
+              <CyberButton 
                 onClick={() => handleExport('pdf')}
                 variant="accent"
               >
                 Export PDF
-              </BossButton>
+              </CyberButton>
             </div>
           </div>
         </TabsContent>

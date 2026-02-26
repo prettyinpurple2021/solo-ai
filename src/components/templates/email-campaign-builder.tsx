@@ -7,8 +7,8 @@ import { Input} from "@/components/ui/input"
 import { Label} from "@/components/ui/label"
 import { Slider} from "@/components/ui/slider"
 import { Button} from "@/components/ui/button"
-import { BossButton} from "@/components/ui/boss-button"
-import { BossCard} from "@/components/ui/boss-card"
+import { CyberButton} from "@/components/ui/cyber-button"
+import { CyberCard} from "@/components/ui/cyber-card"
 import { Badge} from "@/components/ui/badge"
 import { CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 
@@ -496,7 +496,7 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
 
         {/* Step 1: Campaign Setup */}
         <TabsContent value="step-1" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Settings className="w-5 h-5 text-neon-purple" />
@@ -655,16 +655,16 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                 </div>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-end">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               disabled={!_data.campaignName || !_data.fromName || !_data.fromEmail || !_data.subject}
               crown
             >
               Next: Design Email
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
@@ -673,7 +673,7 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Design Controls */}
             <div className="lg:col-span-1 space-y-4">
-              <BossCard>
+              <CyberCard>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Edit3 className="w-5 h-5 text-neon-purple" />
@@ -783,12 +783,12 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                     </div>
                   )}
                 </CardContent>
-              </BossCard>
+              </CyberCard>
             </div>
 
             {/* Email Preview */}
             <div className="lg:col-span-2">
-              <BossCard>
+              <CyberCard>
                 <CardHeader className="flex-row items-center justify-between space-y-0">
                   <CardTitle className="flex items-center gap-2">
                     <Eye className="w-5 h-5 text-neon-purple" />
@@ -838,29 +838,29 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                     </div>
                   </div>
                 </CardContent>
-              </BossCard>
+              </CyberCard>
             </div>
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(1)}
               variant="secondary"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               crown
             >
               Next: Personalization
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 3: Personalization & Content */}
         <TabsContent value="step-3" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Type className="w-5 h-5 text-purple-600" />
@@ -889,10 +889,10 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                     <h4 className="font-semibold">Personalization Tokens</h4>
                     <p className="text-sm text-gray-400 font-mono">Define merge tags for dynamic content</p>
                   </div>
-                  <BossButton onClick={addPersonalization} variant="secondary" size="sm">
+                  <CyberButton onClick={addPersonalization} variant="secondary" size="sm">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Token
-                  </BossButton>
+                  </CyberButton>
                 </div>
 
                 <div className="space-y-4">
@@ -976,27 +976,27 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                 </div>
               </div>
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(2)}
               variant="secondary"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
               crown
             >
               Next: A/B Testing
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 4: A/B Testing */}
         <TabsContent value="step-4" className="space-y-6">
-          <BossCard>
+          <CyberCard>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Split className="w-5 h-5 text-neon-purple" />
@@ -1073,10 +1073,10 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                         <h4 className="font-semibold">Test Variants</h4>
                         <p className="text-sm text-gray-600">Create different versions to test</p>
                       </div>
-                      <BossButton onClick={createABTestVariant} variant="secondary" size="sm">
+                      <CyberButton onClick={createABTestVariant} variant="secondary" size="sm">
                         <Plus className="w-4 h-4 mr-2" />
                         Add Variant
-                      </BossButton>
+                      </CyberButton>
                     </div>
 
                     <div className="space-y-4">
@@ -1152,28 +1152,28 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                 </div>
               )}
             </CardContent>
-          </BossCard>
+          </CyberCard>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(3)}
               variant="secondary"
             >
               Previous
-            </BossButton>
-            <BossButton 
+            </CyberButton>
+            <CyberButton 
               onClick={() => setCurrentStep(5)}
               crown
             >
               Next: Send Settings
-            </BossButton>
+            </CyberButton>
           </div>
         </TabsContent>
 
         {/* Step 5: Send & Analytics */}
         <TabsContent value="step-5" className="space-y-6">
           <div className="grid gap-6">
-            <BossCard>
+            <CyberCard>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Send className="w-5 h-5 text-neon-purple" />
@@ -1252,9 +1252,9 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                   </div>
                 </div>
               </CardContent>
-            </BossCard>
+            </CyberCard>
 
-            <BossCard>
+            <CyberCard>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <BarChart3 className="w-5 h-5 text-purple-600" />
@@ -1363,36 +1363,36 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                   </div>
                 </div>
               </CardContent>
-            </BossCard>
+            </CyberCard>
           </div>
 
           <div className="flex justify-between">
-            <BossButton 
+            <CyberButton 
               onClick={() => setCurrentStep(4)}
               variant="secondary"
             >
               Previous
-            </BossButton>
+            </CyberButton>
             <div className="flex gap-2">
-              <BossButton 
+              <CyberButton 
                 onClick={handleSave}
                 variant="empowerment"
                 crown
               >
                 Save Campaign
-              </BossButton>
-              <BossButton 
+              </CyberButton>
+              <CyberButton 
                 onClick={() => handleExport('pdf')}
                 variant="accent"
               >
                 Export
-              </BossButton>
-              <BossButton 
+              </CyberButton>
+              <CyberButton 
                 variant="secondary"
               >
                 <Send className="w-4 h-4 mr-2" />
                 Send Campaign
-              </BossButton>
+              </CyberButton>
             </div>
           </div>
         </TabsContent>

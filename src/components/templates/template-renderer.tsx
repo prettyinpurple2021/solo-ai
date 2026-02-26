@@ -23,7 +23,7 @@ export function TemplateRenderer({ slug }: { slug: string }) {
 
   if (!Component) {
     return (
-      <Card className="boss-card">
+      <Card className="cyber-card">
         <CardContent className="p-6">
           <p className="text-muted-foreground">
             This template does not have an interactive component yet.

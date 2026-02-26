@@ -1,4 +1,4 @@
-import { EmpowermentCard} from "@/components/ui/boss-card"
+import { EmpowermentCard} from "@/components/ui/cyber-card"
 export default function StackHandlerPage() {
   return (
     <div className="min-h-screen gradient-background p-6">

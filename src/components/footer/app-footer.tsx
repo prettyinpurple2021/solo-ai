@@ -20,12 +20,12 @@ const footerLinks = {
   ],
   company: [
     { name: "About SoloSuccess", href: "/about" },
-    { name: "Boss Blog", href: "/blog" },
+    { name: "Founder Blog", href: "/blog" },
     { name: "Contact Us", href: "/contact" },
   ],
   resources: [
     { name: "Help Center", href: "/help" },
-    { name: "Boss Community", href: "/community" },
+    { name: "Founder Community", href: "/community" },
     { name: "Templates", href: "/templates" },
   ],
   legal: [

@@ -15,7 +15,7 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
     }
     
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_EMAIL || "SoloSuccess AI <noreply@solobossai.fun>",
+      from: process.env.FROM_EMAIL || "SoloSuccess AI <noreply@solosuccess.ai>",
       to: [email],
       subject: "Welcome to SoloSuccess AI - Your Empire Awaits! 👑",
       html: `
@@ -27,7 +27,7 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
           
           <div style="background: linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%); padding: 30px; border-radius: 12px; color: white; text-align: center; margin-bottom: 30px;">
             <h2 style="margin: 0 0 15px 0; font-size: 24px;">Hey ${name}! 🚀</h2>
-            <p style="margin: 0; font-size: 18px; opacity: 0.9;">You're now part of an exclusive community of boss entrepreneurs building their empires with AI!</p>
+            <p style="margin: 0; font-size: 18px; opacity: 0.9;">You're now part of an exclusive community of founder entrepreneurs building their empires with AI!</p>
           </div>
           
           <div style="margin-bottom: 30px;">
@@ -76,10 +76,10 @@ export const sendPasswordResetEmail = async (email: string, name: string, resetT
       return { success: false, error: 'Email service not configured' }
     }
     
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://solobossai.fun'}/reset-password?token=${resetToken}`
+    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccess.ai'}/reset-password?token=${resetToken}`
     
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_EMAIL || "SoloSuccess AI <noreply@solobossai.fun>",
+      from: process.env.FROM_EMAIL || "SoloSuccess AI <noreply@solosuccess.ai>",
       to: [email],
       subject: "Reset Your Password - SoloSuccess AI 🔐",
       html: `
@@ -139,7 +139,7 @@ export const sendSubscriptionConfirmation = async (email: string, name: string, 
     }
     
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_EMAIL || "SoloSuccess AI <noreply@solobossai.fun>",
+      from: process.env.FROM_EMAIL || "SoloSuccess AI <noreply@solosuccess.ai>",
       to: [email],
       subject: `Welcome to ${planName} - Your Empire Just Leveled Up! 🚀`,
       html: `

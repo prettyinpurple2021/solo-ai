@@ -9,14 +9,14 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
   const blogSchema = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: 'Boss Blog — SoloSuccess AI',
-    url: 'https://solobossai.fun/blog',
+    name: 'Founder Blog — SoloSuccess AI',
+    url: 'https://solosuccess.ai/blog',
     description:
       'Actionable playbooks for Business Automation, AI-powered Productivity, and growth systems for solo founders.',
     publisher: {
       '@type': 'Organization',
       name: 'SoloSuccess AI',
-      url: 'https://solobossai.fun/',
+      url: 'https://solosuccess.ai/',
     },
   }
 
@@ -34,13 +34,13 @@ export default function BlogLayout({ children }: { children: ReactNode }) {
               '@type': 'ListItem',
               position: 1,
               name: 'Home',
-              item: 'https://solobossai.fun/'
+              item: 'https://solosuccess.ai/'
             },
             {
               '@type': 'ListItem',
               position: 2,
               name: 'Blog',
-              item: 'https://solobossai.fun/blog'
+              item: 'https://solosuccess.ai/blog'
             }
           ]
         })}
@@ -55,19 +55,19 @@ export async function generateMetadata(): Promise<Metadata> {
   const acceptLang = h.get('accept-language') || 'en'
   const locale = acceptLang.split(',')[0]?.toLowerCase() || 'en'
   const localizedTitle = locale.startsWith('en')
-    ? 'Boss Blog — SoloSuccess AI: Solo Founder Playbooks'
-    : 'Boss Blog — SoloSuccess AI'
+    ? 'Founder Blog — SoloSuccess AI: Solo Founder Playbooks'
+    : 'Founder Blog — SoloSuccess AI'
   const localizedDescription = locale.startsWith('en')
     ? 'Guides on AI-powered Productivity, Business Automation, Workflow Automation AI, and Strategic Planning Tools for solo founders.'
     : 'Guides for solo founders and small businesses.'
   return {
     title: localizedTitle,
     description: localizedDescription,
-    alternates: { canonical: 'https://solobossai.fun/blog' },
+    alternates: { canonical: 'https://solosuccess.ai/blog' },
     openGraph: {
       title: localizedTitle,
       description: localizedDescription,
-      url: 'https://solobossai.fun/blog',
+      url: 'https://solosuccess.ai/blog',
       type: 'website',
       siteName: 'SoloSuccess AI',
     },

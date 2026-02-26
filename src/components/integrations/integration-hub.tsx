@@ -145,7 +145,7 @@ export function IntegrationHub() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="boss-card SoloSuccess-gradient text-white">
+      <Card className="cyber-card SoloSuccess-gradient text-white">
         <CardContent className="p-6 text-center space-y-3">
           <h1 className="text-3xl font-bold flex items-center justify-center gap-3"><Link className="h-8 w-8" />Integration Hub<Zap className="h-8 w-8" /></h1>
           <p className="text-lg opacity-90">Connect your favorite tools and supercharge your empire! 🔗✨</p>
@@ -157,7 +157,7 @@ export function IntegrationHub() {
       </Card>
 
       {/* Search and Filters */}
-      <Card className="boss-card">
+      <Card className="cyber-card">
         <CardContent className="p-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <Input placeholder="Search integrations... 🔍" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="flex-1" />
@@ -177,7 +177,7 @@ export function IntegrationHub() {
         {filteredIntegrations.map((integration) => {
           const IconComponent = integration.icon;
           return (
-            <Card key={integration.id} className="boss-card flex flex-col">
+            <Card key={integration.id} className="cyber-card flex flex-col">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-3">
@@ -185,7 +185,7 @@ export function IntegrationHub() {
                       <IconComponent className="h-6 w-6 text-purple-600" />
                     </div>
                     <div>
-                      <CardTitle className="boss-heading flex items-center gap-2">{integration.name}</CardTitle>
+                      <CardTitle className="cyber-heading flex items-center gap-2">{integration.name}</CardTitle>
                       <div className="flex items-center gap-2 mt-1">
                         <Badge variant="outline" className="text-xs capitalize">{integration.category}</Badge>
                         {integration.isConnected ? (
@@ -214,7 +214,7 @@ export function IntegrationHub() {
                     <DialogTrigger asChild>
                       <Button variant="outline" size="sm" className="flex-1 bg-transparent"><Settings className="mr-2 h-4 w-4" />Details</Button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[500px] boss-card">
+                    <DialogContent className="sm:max-w-[500px] cyber-card">
                       {/* Dialog content remains the same as static version */}
                     </DialogContent>
                   </Dialog>

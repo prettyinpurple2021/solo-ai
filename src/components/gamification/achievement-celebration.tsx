@@ -74,7 +74,7 @@ export function AchievementCelebration({ achievement, onClose, onShare }: Achiev
 
   return (
     <Dialog open={!!achievement} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] boss-card border-2 border-purple-200 overflow-hidden">
+      <DialogContent className="sm:max-w-[500px] cyber-card border-2 border-purple-200 overflow-hidden">
         {/* Confetti Animation */}
         {showConfetti && (
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -109,22 +109,22 @@ export function AchievementCelebration({ achievement, onClose, onShare }: Achiev
 
           <div className="space-y-2">
             <div className="flex items-center justify-center gap-2">
-              <DialogTitle className="text-2xl font-bold boss-heading">Achievement Unlocked!</DialogTitle>
+              <DialogTitle className="text-2xl font-bold cyber-heading">Achievement Unlocked!</DialogTitle>
               <PartyPopper className="h-6 w-6 text-purple-600" />
             </div>
-            <Badge className={`girlboss-badge text-lg px-4 py-1 ${achievement.rarity}`}>
+            <Badge className={`elite-badge text-lg px-4 py-1 ${achievement.rarity}`}>
               {achievement.rarity.toUpperCase()} {achievement.emoji}
             </Badge>
           </div>
         </DialogHeader>
 
         <div className="space-y-6 relative z-10">
-          <Card className="boss-card bg-gradient-to-r from-purple-50 to-pink-50">
+          <Card className="cyber-card bg-gradient-to-r from-purple-50 to-pink-50">
             <CardContent className="p-6 text-center space-y-3">
               <h3 className="text-xl font-bold empowering-text">{achievement.title}</h3>
               <p className="text-muted-foreground font-medium">{achievement.description}</p>
               <div className="flex items-center justify-center gap-2 text-lg font-bold SoloSuccess-text-gradient">
-                <Sparkles className="h-5 w-5" />+{achievement.points} Boss Points
+                <Sparkles className="h-5 w-5" />+{achievement.points} Founder Points
                 <Sparkles className="h-5 w-5" />
               </div>
             </CardContent>
@@ -136,17 +136,17 @@ export function AchievementCelebration({ achievement, onClose, onShare }: Achiev
               {achievement.rarity === "legendary" && "🚨 LEGENDARY BOSS ALERT! 🚨"}
               {achievement.rarity === "epic" && "EPIC ACHIEVEMENT UNLOCKED! 💥"}
               {achievement.rarity === "rare" && "RARE BOSS ENERGY! ✨"}
-              {achievement.rarity === "common" && "Boss move completed! 🎉"}
+              {achievement.rarity === "common" && "Founder move completed! 🎉"}
             </div>
             <p className="text-muted-foreground font-medium">
               {achievement.rarity === "legendary" &&
-                "You've reached mythical status! This is the kind of boss energy legends are made of! 👑💎"}
+                "You've reached mythical status! This is the kind of founder energy legends are made of! 👑💎"}
               {achievement.rarity === "epic" &&
-                "You're absolutely slaying! This achievement puts you in the top tier of boss babes! 🔥👑"}
+                "You're absolutely slaying! This achievement puts you in the top tier of founder babes! 🔥👑"}
               {achievement.rarity === "rare" &&
                 "Look at you being all legendary! This is rare achievement energy! ✨💪"}
               {achievement.rarity === "common" &&
-                "Every boss journey starts with moves like this! Keep crushing it! 💪"}
+                "Every founder journey starts with moves like this! Keep crushing it! 💪"}
             </p>
           </div>
 
@@ -177,7 +177,7 @@ export function LevelUpCelebration({ newLevel, oldLevel, onClose }: LevelUpCeleb
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] boss-card border-2 border-yellow-300 overflow-hidden">
+      <DialogContent className="sm:max-w-[500px] cyber-card border-2 border-yellow-300 overflow-hidden">
         {/* Level Up Animation */}
         <div className="absolute inset-0 bg-gradient-to-r from-yellow-400/20 to-pink-400/20 animate-pulse" />
 
@@ -189,17 +189,17 @@ export function LevelUpCelebration({ newLevel, oldLevel, onClose }: LevelUpCeleb
           </div>
 
           <div className="space-y-2">
-            <DialogTitle className="text-3xl font-bold boss-heading text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-pink-600">
+            <DialogTitle className="text-3xl font-bold cyber-heading text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-pink-600">
               LEVEL UP! 🎉
             </DialogTitle>
             <DialogDescription className="text-lg font-semibold">
-              You&apos;ve ascended to boss level {newLevel.level}!
+              You&apos;ve ascended to founder level {newLevel.level}!
             </DialogDescription>
           </div>
         </DialogHeader>
 
         <div className="space-y-6 relative z-10">
-          <Card className="boss-card bg-gradient-to-r from-yellow-50 to-pink-50">
+          <Card className="cyber-card bg-gradient-to-r from-yellow-50 to-pink-50">
             <CardContent className="p-6 text-center space-y-4">
               <div className="flex items-center justify-center gap-3">
                 <div className="text-4xl">{oldLevel.emoji}</div>
@@ -212,11 +212,11 @@ export function LevelUpCelebration({ newLevel, oldLevel, onClose }: LevelUpCeleb
 
               <div>
                 <h3 className="text-2xl font-bold empowering-text">{newLevel.title}</h3>
-                <p className="text-muted-foreground font-medium">Level {newLevel.level} Boss Status</p>
+                <p className="text-muted-foreground font-medium">Level {newLevel.level} Founder Status</p>
               </div>
 
               <div className="space-y-2">
-                <h4 className="font-semibold empowering-text">New Boss Perks Unlocked:</h4>
+                <h4 className="font-semibold empowering-text">New Founder Perks Unlocked:</h4>
                 <div className="space-y-1">
                   {newLevel.perks.map((perk, index) => (
                     <div key={index} className="flex items-center gap-2 text-sm">
@@ -272,7 +272,7 @@ export function StreakCelebration({ streakCount, onClose }: StreakCelebrationPro
 
   return (
     <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[400px] boss-card border-2 border-orange-300">
+      <DialogContent className="sm:max-w-[400px] cyber-card border-2 border-orange-300">
         <DialogHeader className="text-center space-y-4">
           <div className="mx-auto">
             <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-r from-orange-400 to-red-500 flex items-center justify-center text-white animate-pulse">
@@ -281,7 +281,7 @@ export function StreakCelebration({ streakCount, onClose }: StreakCelebrationPro
           </div>
 
           <div className="space-y-2">
-            <DialogTitle className="text-2xl font-bold boss-heading">{getStreakMessage(streakCount)}</DialogTitle>
+            <DialogTitle className="text-2xl font-bold cyber-heading">{getStreakMessage(streakCount)}</DialogTitle>
             <div className="text-4xl font-bold SoloSuccess-text-gradient">
               {streakCount} Day Streak! {getStreakEmoji(streakCount)}
             </div>
@@ -290,7 +290,7 @@ export function StreakCelebration({ streakCount, onClose }: StreakCelebrationPro
 
         <div className="space-y-4 text-center">
           <p className="text-muted-foreground font-medium">
-            {streakCount >= 30 && "30 days of pure boss energy! You're absolutely legendary! 🌟"}
+            {streakCount >= 30 && "30 days of pure founder energy! You're absolutely legendary! 🌟"}
             {streakCount >= 14 && streakCount < 30 && "Two weeks of consistency! You're building an empire! 👑"}
             {streakCount >= 7 && streakCount < 14 && "One week strong! This is how habits are built! 🔥"}
             {streakCount >= 3 && streakCount < 7 && "Building momentum! Keep this energy going! ⚡"}

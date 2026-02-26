@@ -115,7 +115,7 @@ const PERSONALITY_TRAITS = [
 
 const COLOR_PALETTES = [
   {
-    name: "Boss Babe Purple",
+    name: "Founder Purple",
     primary: "#8E24AA",
     secondary: "#E1BEE7",
     accent: "#FF4081",

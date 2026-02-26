@@ -20,7 +20,7 @@ const SEARCH_PLACEHOLDERS = [
   "Search your empire, queen... ✨",
   "Find your content, babe... 👑",
   "What are you looking for? 💎",
-  "Search like the boss you are... 💅"
+  "Search like the founder you are... 💅"
 ]
 
 const TYPE_ICONS = {

@@ -4,6 +4,7 @@ export type SavedTemplate = {
   template_data: Record<string, unknown>
   title: string
   description?: string
+  category?: string
   created_at: string
   updated_at: string
 }

@@ -6,8 +6,8 @@ import { motion} from "framer-motion"
 import { 
   Clock, Activity, Globe, Users, TrendingUp, Zap, Eye, Calendar, Search, ChevronDown, ChevronUp, ExternalLink} from "lucide-react"
 
-import { BossCard} from "@/components/ui/boss-card"
-import { BossButton} from "@/components/ui/boss-button"
+import { CyberCard} from "@/components/ui/cyber-card"
+import { CyberButton} from "@/components/ui/cyber-button"
 import { Input} from "@/components/ui/input"
 import { Badge} from "@/components/ui/badge"
 import { 
@@ -193,11 +193,11 @@ export function IntelligenceTimeline({
 
   if (loading) {
     return (
-      <BossCard className={className}>
+      <CyberCard className={className}>
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
         </div>
-      </BossCard>
+      </CyberCard>
     )
   }
 
@@ -205,7 +205,7 @@ export function IntelligenceTimeline({
     <div className={className}>
       <div className="space-y-6">
         {/* Header and Filters */}
-        <BossCard variant="purple" crown>
+        <CyberCard variant="purple" crown>
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4">
             <div>
               <h3 className="text-xl font-bold text-gradient flex items-center space-x-2">
@@ -259,10 +259,10 @@ export function IntelligenceTimeline({
               </Select>
             </div>
           </div>
-        </BossCard>
+        </CyberCard>
 
         {/* Timeline */}
-        <BossCard>
+        <CyberCard>
           <div className="space-y-6">
             {groupedEvents.length > 0 ? (
               groupedEvents.map(([date, dayEvents], dayIndex) => (
@@ -365,19 +365,19 @@ export function IntelligenceTimeline({
                                 
                                 <div className="flex items-center space-x-2">
                                   {event.sourceUrl && (
-                                    <BossButton
+                                    <CyberButton
                                       variant="outline"
                                       size="sm"
                                       icon={<ExternalLink className="w-3 h-3" />}
                                       onClick={() => window.open(event.sourceUrl, '_blank')}
                                     >
                                       Source
-                                    </BossButton>
+                                    </CyberButton>
                                   )}
                                   
                                   {event.analysisResults && event.analysisResults.length > 0 && (
                                     <CollapsibleTrigger asChild>
-                                      <BossButton
+                                      <CyberButton
                                         variant="outline"
                                         size="sm"
                                         icon={expandedEvents.has(event.id) ? 
@@ -387,7 +387,7 @@ export function IntelligenceTimeline({
                                         onClick={() => toggleEventExpansion(event.id)}
                                       >
                                         Analysis
-                                      </BossButton>
+                                      </CyberButton>
                                     </CollapsibleTrigger>
                                   )}
                                 </div>
@@ -475,7 +475,7 @@ export function IntelligenceTimeline({
                   }
                 </p>
                 {(searchQuery || eventTypeFilter !== "all" || importanceFilter !== "all") && (
-                  <BossButton 
+                  <CyberButton 
                     variant="outline"
                     onClick={() => {
                       setSearchQuery("")
@@ -484,12 +484,12 @@ export function IntelligenceTimeline({
                     }}
                   >
                     Clear Filters
-                  </BossButton>
+                  </CyberButton>
                 )}
               </div>
             )}
           </div>
-        </BossCard>
+        </CyberCard>
       </div>
     </div>
   )

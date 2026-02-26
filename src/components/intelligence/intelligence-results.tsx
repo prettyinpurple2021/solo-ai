@@ -5,8 +5,8 @@ import { motion} from "framer-motion"
 import {
   Globe, Users, Activity, Briefcase, Smartphone, FileText, Tag, Brain, TrendingUp, AlertTriangle, Target, Lightbulb, ExternalLink, Eye, MoreVertical, Bookmark, Share, Edit, Trash2, Clock, BarChart3, Filter, Search} from "lucide-react"
 
-import { BossCard, EmpowermentCard} from "@/components/ui/boss-card"
-import { BossButton} from "@/components/ui/boss-button"
+import { CyberCard, EmpowermentCard} from "@/components/ui/cyber-card"
+import { CyberButton} from "@/components/ui/cyber-button"
 import { Badge} from "@/components/ui/badge"
 import { Button} from "@/components/ui/button"
 import {
@@ -219,7 +219,7 @@ export function IntelligenceResults({
     return (
       <div className="space-y-4">
         {[...Array(5)].map((_, i) => (
-          <BossCard key={i} className="animate-pulse">
+          <CyberCard key={i} className="animate-pulse">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div className="h-4 bg-gray-800 rounded-sm w-1/3"></div>
@@ -232,7 +232,7 @@ export function IntelligenceResults({
                 <div className="h-5 bg-gray-800 rounded-sm w-16"></div>
               </div>
             </div>
-          </BossCard>
+          </CyberCard>
         ))}
       </div>
     )
@@ -329,9 +329,9 @@ export function IntelligenceResults({
             <p className="text-gray-500 font-mono mb-6">
               Try adjusting your search criteria or filters to find relevant intelligence data.
             </p>
-            <BossButton onClick={() => window.location.reload()}>
+            <CyberButton onClick={() => window.location.reload()}>
               Refresh Search
-            </BossButton>
+            </CyberButton>
           </div>
         </EmpowermentCard>
       ) : (
@@ -347,7 +347,7 @@ export function IntelligenceResults({
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
               >
-                <BossCard
+                <CyberCard
                   variant="default"
                   interactive
                   className={`${isSelected ? 'ring-2 ring-neon-purple bg-dark-card' : ''}`}
@@ -560,7 +560,7 @@ export function IntelligenceResults({
                       )}
                     </div>
                   </div>
-                </BossCard>
+                </CyberCard>
               </motion.div>
             )
           })}
@@ -671,9 +671,9 @@ export function IntelligenceResults({
             <Button variant="outline" onClick={() => setShowTagDialog(false)}>
               Cancel
             </Button>
-            <BossButton onClick={handleBulkTag} disabled={!newTags.trim()}>
+            <CyberButton onClick={handleBulkTag} disabled={!newTags.trim()}>
               Apply Tags
-            </BossButton>
+            </CyberButton>
           </DialogFooter>
         </DialogContent>
       </Dialog>
