@@ -28,9 +28,11 @@ jobs:
           VERCEL_PROJECT_ID: "prj_dcQO7rZFCxxwHnxaorYGiyItkj8B"
 
       - name: Deploy to Production
-        # Added --force to ensure a clean build and --yes to skip confirmation prompts
-        # This helps clear out any stale cache that might be causing the TypeError
-        run: vercel deploy --prod --force --yes --token=${{ secrets.VERCEL_TOKEN }}
+        # We remove .git to prevent Vercel CLI from associating the deploy with the git commit author
+        # who may not be a verified member of the Vercel Team on the project settings.
+        run: |
+          rm -rf .git
+          vercel deploy --prod --force --yes --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: "team_6ryfUri1WCv0dL5LAbYfnnrP"
           VERCEL_PROJECT_ID: "prj_dcQO7rZFCxxwHnxaorYGiyItkj8B"
