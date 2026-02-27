@@ -24,7 +24,7 @@ jobs:
         # This step connects your local runner to the Vercel cloud project
         run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
         env:
-          VERCEL_ORG_ID: "team_6ryfUri1WCv0dL5LAbYfnnrP"
+          VERCEL_ORG_ID: "team_08fevWvXfZL6nNdSQmcxlIaK"
           VERCEL_PROJECT_ID: "prj_dcQO7rZFCxxwHnxaorYGiyItkj8B"
 
       - name: Deploy to Production
@@ -34,5 +34,5 @@ jobs:
           rm -rf .git
           vercel deploy --prod --force --yes --token=${{ secrets.VERCEL_TOKEN }}
         env:
-          VERCEL_ORG_ID: "team_6ryfUri1WCv0dL5LAbYfnnrP"
+          VERCEL_ORG_ID: "team_08fevWvXfZL6nNdSQmcxlIaK"
           VERCEL_PROJECT_ID: "prj_dcQO7rZFCxxwHnxaorYGiyItkj8B"
