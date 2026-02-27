@@ -50,3 +50,8 @@ next-env.d.ts
 console_logs.txt
 server_console_audit.csv
 *.tsbuildinfo
+
+# Railway Deploy Artifacts
+railway-deploy/build-dist/
+railway-deploy/node_modules/
+railway-deploy/*.txt

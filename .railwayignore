@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+build
+.git
+.vscode
+.idea
+docs
+public
+scripts
+src/app
+src/components
+src/hooks
+src/styles
+*/*.test.ts
+*/*.spec.ts

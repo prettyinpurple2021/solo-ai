@@ -1,0 +1,30 @@
+{
+  "name": "solosuccess-api-deploy",
+  "version": "1.0.0",
+  "description": "Backend API for SoloSuccess AI",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^3.0.33",
+    "@google/genai": "^1.30.0",
+    "@sentry/node": "^10.39.0",
+    "@upstash/redis": "^1.35.6",
+    "ai": "^6.0.104",
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.44.7",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "openai": "^6.25.0",
+    "pg": "^8.11.5",
+    "postgres": "^3.4.4",
+    "socket.io": "^4.8.1",
+    "stripe": "^20.0.0",
+    "zod": "^3.23.8"
+  }
+}
