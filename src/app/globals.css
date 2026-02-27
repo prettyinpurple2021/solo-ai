@@ -94,12 +94,12 @@
     /* Smooth scrolling */
     scroll-behavior: smooth;
     color: #fff;
-    background-color: #020204;
+    background-color: #0a0c10;
     font-family: "Rajdhani", system-ui, sans-serif;
   }
 
   .dark body {
-    background-color: #020204;
+    background-color: #0a0c10;
   }
 
   /* Custom scrollbar */

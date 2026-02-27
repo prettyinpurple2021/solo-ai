@@ -59,43 +59,60 @@ class WebSocketNotificationService {
     this.emitStatus();
 
     this.socket?.disconnect();
-    this.socket = io(baseUrl, {
-      transports: ['websocket'],
-      reconnection: true,
-      reconnectionDelay: 1000,
-      reconnectionAttempts: 5,
-    });
 
-    this.socket.on('connect', () => {
-      logInfo('WebSocket connected (notifications)', { baseUrl });
-      this.status = 'connected';
-      this.emitStatus();
-      this.socket?.emit('join', userId);
-    });
+    // Fetch a short-lived JWT from the Next.js API, then connect
+    fetch('/api/ws-token')
+      .then((res) => res.json())
+      .then(({ token }) => {
+        if (!token) {
+          this.status = 'error';
+          this.emitStatus();
+          return;
+        }
 
-    this.socket.on('connect_error', (error) => {
-      logError('WebSocket connect_error (notifications)', error);
-      this.status = 'error';
-      this.emitStatus();
-    });
+        this.socket = io(baseUrl, {
+          transports: ['websocket'],
+          reconnection: true,
+          reconnectionDelay: 1000,
+          reconnectionAttempts: 5,
+          auth: { token },
+        });
 
-    this.socket.on('disconnect', (reason) => {
-      logWarn('WebSocket disconnected (notifications)', { reason });
-      this.status = 'disconnected';
-      this.emitStatus();
-    });
+        this.socket.on('connect', () => {
+          this.status = 'connected';
+          this.emitStatus();
+          this.socket?.emit('join');
+        });
 
-    this.socket.on('notification:new', (payload: NotificationPayload) => {
-      this.notify('notification:new', payload);
-    });
+        this.socket.on('connect_error', (error) => {
+          logError('WebSocket connect_error (notifications)', error);
+          this.status = 'error';
+          this.emitStatus();
+        });
 
-    this.socket.on('notification:updated', (payload: NotificationUpdatePayload) => {
-      this.notify('notification:updated', payload);
-    });
+        this.socket.on('disconnect', (reason) => {
+          logWarn('WebSocket disconnected (notifications)', { reason });
+          this.status = 'disconnected';
+          this.emitStatus();
+        });
 
-    this.socket.on('notification:deleted', (payload: NotificationDeletedPayload) => {
-      this.notify('notification:deleted', payload);
-    });
+        this.socket.on('notification:new', (payload: NotificationPayload) => {
+          this.notify('notification:new', payload);
+        });
+
+        this.socket.on('notification:updated', (payload: NotificationUpdatePayload) => {
+          this.notify('notification:updated', payload);
+        });
+
+        this.socket.on('notification:deleted', (payload: NotificationDeletedPayload) => {
+          this.notify('notification:deleted', payload);
+        });
+      })
+      .catch((err) => {
+        logError('Failed to fetch WebSocket token', err);
+        this.status = 'error';
+        this.emitStatus();
+      });
   }
 
   disconnect() {

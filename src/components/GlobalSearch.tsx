@@ -17,10 +17,10 @@ interface SearchResult {
 }
 
 const SEARCH_PLACEHOLDERS = [
-  "Search your empire, queen... ✨",
-  "Find your content, babe... 👑",
+  "Search your empire, Founder... ✨",
+  "Find your content... 👑",
   "What are you looking for? 💎",
-  "Search like the founder you are... 💅"
+  "Search like the visionary you are... 💅"
 ]
 
 const TYPE_ICONS = {

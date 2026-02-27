@@ -266,6 +266,120 @@ export default function SlaylistClient({ initialGoals, initialTasks }: SlaylistC
           </div>
         </div>
       </motion.div>
+
+      {/* Goal Dialog */}
+      <Dialog open={showGoalDialog} onOpenChange={setShowGoalDialog}>
+        <DialogContent className="bg-dark-card border-neon-cyan/30 rounded-none sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-white font-orbitron">Create New Objective</DialogTitle>
+            <DialogDescription className="text-gray-400 font-mono">
+              Define a high-level goal for your system.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label className="text-neon-cyan font-mono uppercase">Title</Label>
+              <Input
+                value={goalForm.title}
+                onChange={(e) => setGoalForm({ ...goalForm, title: e.target.value })}
+                className="bg-dark-bg border-neon-cyan/30 text-white font-mono rounded-none"
+                placeholder="Enter objective title"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-neon-cyan font-mono uppercase">Description</Label>
+              <Textarea
+                value={goalForm.description}
+                onChange={(e) => setGoalForm({ ...goalForm, description: e.target.value })}
+                className="bg-dark-bg border-neon-cyan/30 text-white font-mono rounded-none"
+                placeholder="Detailed description"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-neon-cyan font-mono uppercase">Priority</Label>
+              <Select value={goalForm.priority} onValueChange={(v) => setGoalForm({ ...goalForm, priority: v })}>
+                <SelectTrigger className="bg-dark-bg border-neon-cyan/30 text-white font-mono rounded-none">
+                  <SelectValue placeholder="Select priority" />
+                </SelectTrigger>
+                <SelectContent className="bg-dark-card border-neon-cyan/30">
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="urgent">Urgent</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <CyberButton onClick={createGoal} className="w-full mt-4" variant="cyan">
+              Deploy Objective
+            </CyberButton>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Task Dialog */}
+      <Dialog open={showTaskDialog} onOpenChange={setShowTaskDialog}>
+        <DialogContent className="bg-dark-card border-neon-cyan/30 rounded-none sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle className="text-white font-orbitron">Create Tactical Item</DialogTitle>
+            <DialogDescription className="text-gray-400 font-mono">
+              Add a new actionable task.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <Label className="text-neon-cyan font-mono uppercase">Title</Label>
+              <Input
+                value={taskForm.title}
+                onChange={(e) => setTaskForm({ ...taskForm, title: e.target.value })}
+                className="bg-dark-bg border-neon-cyan/30 text-white font-mono rounded-none"
+                placeholder="Enter tactical task"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-neon-cyan font-mono uppercase">Description</Label>
+              <Textarea
+                value={taskForm.description}
+                onChange={(e) => setTaskForm({ ...taskForm, description: e.target.value })}
+                className="bg-dark-bg border-neon-cyan/30 text-white font-mono rounded-none"
+                placeholder="Optional description"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-neon-cyan font-mono uppercase">Priority</Label>
+              <Select value={taskForm.priority} onValueChange={(v) => setTaskForm({ ...taskForm, priority: v })}>
+                <SelectTrigger className="bg-dark-bg border-neon-cyan/30 text-white font-mono rounded-none">
+                  <SelectValue placeholder="Select priority" />
+                </SelectTrigger>
+                <SelectContent className="bg-dark-card border-neon-cyan/30">
+                  <SelectItem value="low">Low</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="high">High</SelectItem>
+                  <SelectItem value="urgent">Urgent</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <CyberButton onClick={createTask} className="w-full mt-4" variant="magenta">
+              Deploy Tactical
+            </CyberButton>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      <VoiceTaskCreator
+        isOpen={showVoiceTaskDialog}
+        onClose={() => setShowVoiceTaskDialog(false)}
+        onTaskCreate={async (taskData: { title: string; description?: string; priority: 'low' | 'medium' | 'high' | 'urgent'; estimatedMinutes?: number }) => {
+          setTaskForm({
+            ...taskForm,
+            title: taskData.title,
+            description: taskData.description ?? '',
+            priority: taskData.priority,
+            estimated_minutes: taskData.estimatedMinutes ?? 30,
+          })
+          setShowVoiceTaskDialog(false)
+          setShowTaskDialog(true)
+        }}
+      />
     </div>
   )
 }

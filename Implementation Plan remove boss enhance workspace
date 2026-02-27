@@ -40,11 +40,14 @@ To enforce the gender-neutral design, we will systematically find and replace le
 - `src/components/ui/boss-card.tsx`, `src/components/ui/boss-button.tsx` (to be deprecated/removed).
 
 ## Verification Plan
+
 ### Automated Tests
+
 - Run `npm run type-check:web` to ensure no type errors after component swaps.
 - Run `npm run lint` to ensure code quality.
 
 ### Manual Verification
+
 - Navigate to `/dashboard/workspace` to verify new metrics and filtering.
 - Ensure the UI matches the premium Cyberpunk aesthetic with zero "boss" references.
 - Search the codebase to confirm standard "boss" terminology has been eliminated or significantly reduced.

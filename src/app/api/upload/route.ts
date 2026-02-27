@@ -88,6 +88,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ 
       file: rows[0],
+      url: `data:${file.type};base64,${base64Data}`,
       message: 'File uploaded successfully' 
     }, { status: 201 })
   } catch (error) {

@@ -50,6 +50,12 @@ export default function PWAInstallPrompt({
     // Listen for the beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault()
+      
+      const hasDismissed = localStorage.getItem('pwa_prompt_dismissed')
+      if (hasDismissed === 'true') {
+        return
+      }
+
       setDeferredPrompt(e as BeforeInstallPromptEvent)
       // Show prompt after a delay for better UX
       setTimeout(() => {
@@ -61,6 +67,7 @@ export default function PWAInstallPrompt({
       setIsInstalled(true)
       setShowPrompt(false)
       setDeferredPrompt(null)
+      localStorage.setItem('pwa_prompt_dismissed', 'true')
       onInstall?.()
     }
     checkInstalled()
@@ -82,9 +89,11 @@ export default function PWAInstallPrompt({
       if (outcome === 'accepted') {
         setIsInstalled(true)
         setShowPrompt(false)
+        localStorage.setItem('pwa_prompt_dismissed', 'true')
         onInstall?.()
       } else {
         setShowPrompt(false)
+        localStorage.setItem('pwa_prompt_dismissed', 'true')
         onDismiss?.()
       }
       // Clear the deferredPrompt
@@ -97,6 +106,7 @@ export default function PWAInstallPrompt({
   }
   const handleDismiss = () => {
     setShowPrompt(false)
+    localStorage.setItem('pwa_prompt_dismissed', 'true')
     onDismiss?.()
   }
   // Don't show if already installed or no prompt available
@@ -110,7 +120,7 @@ export default function PWAInstallPrompt({
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -20, scale: 0.95 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
-        className={cn("fixed bottom-4 left-4 right-4 z-50", className)}
+        className={cn("fixed bottom-4 left-4 right-4 z-50 max-w-sm mx-auto md:right-4 md:left-auto", className)}
       >
         <Card className="relative overflow-hidden border border-neon-purple bg-dark-card shadow-[0_0_20px_rgba(11,228,236,0.3)]">
           {/* Holographic overlay */}

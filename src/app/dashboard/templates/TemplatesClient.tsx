@@ -184,6 +184,7 @@ export default function TemplatesClient({ initialTemplates, userTier, userId }: 
           title: "Template Added",
           description: "Template has been added to your workspace.",
         })
+        router.push('/dashboard/workspace')
       }
     } catch (error) {
       logError('Error using template:', error)

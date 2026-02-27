@@ -1,15 +1,15 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { useSession } from 'next-auth/react';
+import { Info, AlertTriangle, AlertCircle, Bell } from 'lucide-react';
+import { useAuth } from '@/hooks/use-auth';
 import { useWebSocketNotifications, NotificationPayload } from '@/lib/websocket-notification-service';
 import { useToast } from '@/hooks/use-toast';
-import { Bell, Info, AlertTriangle, CheckCircle, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export function GlobalNotificationCenter() {
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
+  const { user } = useAuth();
+  const userId = user?.id;
   const { lastNotification } = useWebSocketNotifications(userId ? String(userId) : null);
   const { toast } = useToast();
   const router = useRouter();

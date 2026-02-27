@@ -1,0 +1,53 @@
+# Deploying Your Backend to Railway
+
+Your code changes are done. Now follow these steps in your browser.
+
+## Step 1 — Push your code to GitHub first
+Your Railway app needs to pull the code from GitHub. Make sure your latest code is pushed.
+
+## Step 2 — Log into Railway
+Go to [railway.app](https://railway.app) and log in to your account.
+
+## Step 3 — Create a New Service
+1. Click **"New Project"**
+2. Select **"Deploy from GitHub repo"**
+3. Select your `SoloSuccess-AI` repository
+4. When it asks for the **Root Directory**, type: `server`
+5. Click **Deploy**
+
+Railway will detect the `Dockerfile` and build your server automatically.
+
+## Step 4 — Add Environment Variables in Railway
+Once deployed, click on your service → **"Variables"** tab → add each one:
+
+| Variable | Value |
+|---|---|
+| `NODE_ENV` | `production` |
+| `DATABASE_URL` | *(copy from `server/.env`)* |
+| `JWT_SECRET` | *(make a strong random string — use [randomkeygen.com](https://randomkeygen.com))* |
+| `CLIENT_URL` | `https://solosuccessai.fun` |
+| `GEMINI_API_KEY` | *(copy from `server/.env`)* |
+| `UPSTASH_REDIS_REST_URL` | *(copy from `server/.env`)* |
+| `UPSTASH_REDIS_REST_TOKEN` | *(copy from `server/.env`)* |
+| `SENTRY_DSN` | *(copy from `server/index.ts` line 38)* |
+
+> [!IMPORTANT]
+> The `JWT_SECRET` you set in Railway **must also be set in Vercel** with the same value. Both sides need to match.
+
+## Step 5 — Get Your Railway URL
+After deploy completes, go to **"Settings"** → **"Domains"** → copy the URL (looks like `https://solosuccess-api.up.railway.app`).
+
+Test it: open `https://your-railway-url/api/health` in your browser — you should see `{"status":"ok","websocket":"active",...}`.
+
+## Step 6 — Add Variables in Vercel
+Go to your Vercel project → **Settings** → **Environment Variables** → add:
+
+| Variable | Value |
+|---|---|
+| `NEXT_PUBLIC_SOCKET_URL` | Your Railway URL from Step 5 |
+| `JWT_SECRET` | Same value you set in Railway |
+
+Then click **Redeploy** in Vercel.
+
+## That's It! ✅
+Real-time notifications will now work. When a user gets a new notification, a toast will appear instantly without needing to refresh.
