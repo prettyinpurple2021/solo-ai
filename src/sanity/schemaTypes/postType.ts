@@ -26,10 +26,10 @@ export const postType = defineType({
       name: 'image',
       type: 'image',
     }),
-    defineField({
+    {
       name: 'body',
       type: 'array',
       of: [{type: 'block'}],
-    }),
+    },
   ],
 })
