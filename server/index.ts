@@ -1,5 +1,17 @@
 import 'dotenv/config';
 import * as Sentry from '@sentry/node';
+
+// Initialize Sentry before importing express for automatic instrumentation
+Sentry.init({
+    dsn: process.env.SENTRY_DSN || "https://c658e25682ffbbce0cd373c74bf48f1d@o4510500686331904.ingest.us.sentry.io/4510500686659584",
+    environment: process.env.NODE_ENV || 'development',
+    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+    integrations: [
+        Sentry.httpIntegration(),
+        Sentry.expressIntegration(),
+    ],
+});
+
 import express, { Request, Response } from 'express';
 import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
@@ -37,8 +49,6 @@ process.on('uncaughtException', (err) => {
         logWarn('Ignoring fatal database connection termination (likely Neon scale-to-zero). The pool will reconnect.');
         return;
     }
-    // Let Sentry handle and eventually exit if we decide to, but for now we'll just log
-    // process.exit(1); 
 });
 
 process.on('unhandledRejection', (reason, promise) => {
@@ -47,17 +57,6 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const app = express();
 app.set('trust proxy', 1);
-
-// Initialize Sentry
-Sentry.init({
-    dsn: process.env.SENTRY_DSN || "https://c658e25682ffbbce0cd373c74bf48f1d@o4510500686331904.ingest.us.sentry.io/4510500686659584",
-    environment: process.env.NODE_ENV || 'development',
-    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-    integrations: [
-        Sentry.httpIntegration(),
-        Sentry.expressIntegration(),
-    ],
-});
 
 const httpServer = createServer(app);
 const isDevelopment = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
@@ -123,9 +122,6 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
-
-// Sentry request handler is no longer needed in v8+ for simple integration
-
 
 // Routes
 app.use('/api/auth', authRouter);
