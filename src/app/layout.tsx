@@ -173,63 +173,66 @@ export default function RootLayout({
         <Script
           id="strip-css-scripts"
           strategy="beforeInteractive"
-        >{`
-          (function() {
-            try {
-              // Suppress React DevTools errors in production
-              if (typeof window !== 'undefined' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
-                const originalOn = window.__REACT_DEVTOOLS_GLOBAL_HOOK__.on;
-                if (typeof originalOn !== 'function') {
-                  window.__REACT_DEVTOOLS_GLOBAL_HOOK__.on = function() {
-                    // Suppress error silently
-                    return function() {};
-                  };
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  /* Suppress React DevTools errors in production */
+                  if (typeof window !== 'undefined' && window.__REACT_DEVTOOLS_GLOBAL_HOOK__) {
+                    const originalOn = window.__REACT_DEVTOOLS_GLOBAL_HOOK__.on;
+                    if (typeof originalOn !== 'function') {
+                      window.__REACT_DEVTOOLS_GLOBAL_HOOK__.on = function() {
+                        /* Suppress error silently */
+                        return function() {};
+                      };
+                    }
+                  }
+
+                  /* Suppress specific extension errors without blocking others */
+                  if (typeof window !== 'undefined' && window.addEventListener) {
+                    const originalErrorHandler = window.onerror;
+                    window.onerror = function(message, source, lineno, colno, error) {
+                      const msg = String(message);
+                      const src = String(source || '');
+                      
+                      /* Known browser extension and third-party noise */
+                      const isIgnorable = 
+                        (msg.includes('backendManager') || src.includes('backendManager')) ||
+                        (msg.includes('appendChild') && src.includes('framework')) || 
+                        (msg.includes('__REACT_DEVTOOLS_GLOBAL_HOOK__')) ||
+                        (src.includes('chrome-extension://')) ||
+                        (src.includes('moz-extension://')) ||
+                        (msg.includes('ResizeObserver loop'));
+
+                      if (isIgnorable) {
+                        return true;
+                      }
+
+                      if (originalErrorHandler) {
+                        return originalErrorHandler.call(this, message, source, lineno, colno, error);
+                      }
+                      return false;
+                    };
+
+                    /* Suppress unhandled promise rejections from extensions */
+                    window.addEventListener('unhandledrejection', function(event) {
+                      const reason = event.reason?.message || String(event.reason || '');
+                      if (
+                        reason.includes('backendManager') || 
+                        reason.includes('Extension context invalidated') ||
+                        reason.includes('disconnected port')
+                      ) {
+                        event.preventDefault();
+                      }
+                    });
+                  }
+                } catch (err) {
+                  /* no-op */
                 }
-              }
-
-              // Suppress specific extension errors without blocking others
-              if (typeof window !== 'undefined' && window.addEventListener) {
-                const originalErrorHandler = window.onerror;
-                window.onerror = function(message, source, lineno, colno, error) {
-                  const msg = String(message);
-                  const src = String(source || '');
-                  
-                  // Known browser extension and third-party noise
-                  const isIgnorable = 
-                    (msg.includes('backendManager') || src.includes('backendManager')) ||
-                    (msg.includes('appendChild') && src.includes('framework')) || 
-                    (msg.includes('__REACT_DEVTOOLS_GLOBAL_HOOK__')) ||
-                    (src.includes('chrome-extension://')) ||
-                    (src.includes('moz-extension://')) ||
-                    (msg.includes('ResizeObserver loop'));
-
-                  if (isIgnorable) {
-                    return true;
-                  }
-
-                  if (originalErrorHandler) {
-                    return originalErrorHandler.call(this, message, source, lineno, colno, error);
-                  }
-                  return false;
-                };
-
-                // Suppress unhandled promise rejections from extensions
-                window.addEventListener('unhandledrejection', function(event) {
-                  const reason = event.reason?.message || String(event.reason || '');
-                  if (
-                    reason.includes('backendManager') || 
-                    reason.includes('Extension context invalidated') ||
-                    reason.includes('disconnected port')
-                  ) {
-                    event.preventDefault();
-                  }
-                });
-              }
-            } catch (err) {
-              // no-op
-            }
-          })();
-        `}</Script>
+              })();
+            `
+          }}
+        />
         {/* Optimize font loading */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
@@ -267,19 +270,20 @@ export default function RootLayout({
           id="ld-org"
           type="application/ld+json"
           strategy="afterInteractive"
-        >
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Organization',
-            name: 'SoloSuccess AI',
-            url: 'https://www.solosuccessai.fun/',
-            logo: 'https://www.solosuccessai.fun/images/logo.png',
-            sameAs: [
-              'https://twitter.com/solosuccessai',
-              'https://www.linkedin.com/company/solosuccessai'
-            ]
-          })}
-        </Script>
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Organization',
+              name: 'SoloSuccess AI',
+              url: 'https://www.solosuccessai.fun/',
+              logo: 'https://www.solosuccessai.fun/images/logo.png',
+              sameAs: [
+                'https://twitter.com/solosuccessai',
+                'https://www.linkedin.com/company/solosuccessai'
+              ]
+            })
+          }}
+        />
 
         {/* Analytics Scripts - Load after page is interactive */}
         <Script
@@ -290,51 +294,53 @@ export default function RootLayout({
         <Script
           id="ga4-gtag-init"
           strategy="afterInteractive"
-        >
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);} 
-            gtag('js', new Date());
-            gtag('config', 'G-W174T4ZFNF');
-          `}
-        </Script>
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);} 
+              gtag('js', new Date());
+              gtag('config', 'G-W174T4ZFNF');
+            `
+          }}
+        />
         <Script
           id="chatbase-widget-loader"
           strategy="afterInteractive"
-        >
-          {`
-            (function () {
-              if (!window.chatbase || window.chatbase("getState") !== "initialized") {
-                window.chatbase = (...args) => {
-                  if (!window.chatbase.q) {
-                    window.chatbase.q = [];
-                  }
-                  window.chatbase.q.push(args);
-                };
-                window.chatbase = new Proxy(window.chatbase, {
-                  get(target, prop) {
-                    if (prop === "q") {
-                      return target.q;
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function () {
+                if (!window.chatbase || window.chatbase("getState") !== "initialized") {
+                  window.chatbase = (...args) => {
+                    if (!window.chatbase.q) {
+                      window.chatbase.q = [];
                     }
-                    return (...proxyArgs) => target(prop, ...proxyArgs);
-                  },
-                });
-              }
-              const onLoad = function () {
-                const script = document.createElement("script");
-                script.src = "https://www.chatbase.co/embed.min.js";
-                script.id = "8-mWFi8v0Y7sa4YG0EdmV";
-                script.domain = "www.chatbase.co";
-                document.body.appendChild(script);
-              };
-              if (document.readyState === "complete") {
-                onLoad();
-              } else {
-                window.addEventListener("load", onLoad);
-              }
-            })();
-          `}
-        </Script>
+                    window.chatbase.q.push(args);
+                  };
+                  window.chatbase = new Proxy(window.chatbase, {
+                    get(target, prop) {
+                      if (prop === "q") {
+                        return target.q;
+                      }
+                      return (...proxyArgs) => target(prop, ...proxyArgs);
+                    },
+                  });
+                }
+                const onLoad = function () {
+                  const script = document.createElement("script");
+                  script.src = "https://www.chatbase.co/embed.min.js";
+                  script.id = "8-mWFi8v0Y7sa4YG0EdmV";
+                  script.domain = "www.chatbase.co";
+                  document.body.appendChild(script);
+                };
+                if (document.readyState === "complete") {
+                  onLoad();
+                } else {
+                  window.addEventListener("load", onLoad);
+                }
+              })();
+            `
+          }}
+        />
         {appShell}
         <Analytics />
         <SpeedInsights />
