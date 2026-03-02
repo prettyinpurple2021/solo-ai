@@ -27,12 +27,21 @@ jobs:
           VERCEL_ORG_ID: "team_08fevWvXfZL6nNdSQmcxlIaK"
           VERCEL_PROJECT_ID: "prj_dcQO7rZFCxxwHnxaorYGiyItkj8B"
 
-      - name: Deploy to Production
+      - name: Install Project Dependencies
+        run: npm ci
+
+      - name: Build Local Project for Vercel
+        run: vercel build --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          VERCEL_ORG_ID: "team_08fevWvXfZL6nNdSQmcxlIaK"
+          VERCEL_PROJECT_ID: "prj_dcQO7rZFCxxwHnxaorYGiyItkj8B"
+
+      - name: Deploy to Vercel Production
         # We remove .git to prevent Vercel CLI from associating the deploy with the git commit author
         # who may not be a verified member of the Vercel Team on the project settings.
         run: |
           rm -rf .git
-          vercel deploy --prod --force --yes --token=${{ secrets.VERCEL_TOKEN }}
+          vercel deploy --prebuilt --prod --force --yes --token=${{ secrets.VERCEL_TOKEN }}
         env:
           VERCEL_ORG_ID: "team_08fevWvXfZL6nNdSQmcxlIaK"
           VERCEL_PROJECT_ID: "prj_dcQO7rZFCxxwHnxaorYGiyItkj8B"
