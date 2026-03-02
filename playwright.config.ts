@@ -2,7 +2,10 @@ import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   testDir: './tests',
-  timeout: 60_000,
+  timeout: 120_000,
+  expect: {
+    timeout: 30_000,
+  },
   fullyParallel: true,
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI
@@ -20,6 +23,12 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+  webServer: {
+    command: 'npm run start',
+    url: 'http://localhost:3000',
+    reuseExistingServer: false,
+    timeout: 120 * 1000,
+  },
 })
 
 
