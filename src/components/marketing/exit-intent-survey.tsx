@@ -9,13 +9,6 @@ import { useAuth } from '@/hooks/use-auth'
 
 export default function ExitIntentSurvey() {
   const pathname = usePathname()
-  // Never show on Studio or internal tool routes
-  if (pathname?.startsWith('/studio')) return null
-
-  // Allow disabling via env toggle
-  const exitIntentDisabled = process.env.NEXT_PUBLIC_DISABLE_EXIT_INTENT === 'true'
-  if (exitIntentDisabled) return null
-
   const [open, setOpen] = useState(false)
   const [role, setRole] = useState('')
   const [goal, setGoal] = useState('')
@@ -27,8 +20,14 @@ export default function ExitIntentSurvey() {
   const [canShow, setCanShow] = useState(false)
   const [statusChecked, setStatusChecked] = useState(false)
   const { getToken } = useAuth()
-  const timerRef = useState<{ current: NodeJS.Timeout | null }>({ current: null })[0] // Using state as stable ref since useRef import missing or just use useRef if I add import.
-  // Wait, I should add useRef to imports.
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Never show on Studio or internal tool routes
+  if (pathname?.startsWith('/studio')) return null
+
+  // Allow disabling via env toggle
+  const exitIntentDisabled = process.env.NEXT_PUBLIC_DISABLE_EXIT_INTENT === 'true'
+  if (exitIntentDisabled) return null
 
   // Check survey status from database on mount
   useEffect(() => {
