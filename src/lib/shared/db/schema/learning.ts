@@ -1,5 +1,6 @@
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, index, uniqueIndex, uuid, check } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
+import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 import { learningModules } from './content';
 
@@ -21,8 +22,8 @@ export interface AnswerData {
 
 // User Skills table - Tracking individual skill progressions
 export const userSkills = pgTable('user_skills', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    user_id: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     skill_name: varchar('skill_name', { length: 255 }).notNull(), // e.g., 'Decision Making', 'Priority Setting'
     current_level: integer('current_level').notNull().default(1),
     current_xp: integer('current_xp').notNull().default(0),
@@ -37,8 +38,8 @@ export const userSkills = pgTable('user_skills', {
 
 // Assessments table - Holds knowledge check configuration
 export const assessments = pgTable('assessments', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    module_id: uuid('module_id').notNull().references(() => learningModules.id, { onDelete: 'cascade' }),
+    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    module_id: text('module_id').notNull().references(() => learningModules.id, { onDelete: 'cascade' }),
     title: varchar('title', { length: 255 }).notNull(),
     description: text('description'),
     questions_data: jsonb('questions_data').$type<QuestionData[]>().notNull().default([]), // Array of { id, text, type, options, correct_answer, xp_reward }
@@ -53,9 +54,9 @@ export const assessments = pgTable('assessments', {
 
 // Assessment Submissions table - User's attempt history
 export const assessmentSubmissions = pgTable('assessment_submissions', {
-    id: uuid('id').primaryKey().defaultRandom(),
-    user_id: uuid('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-    assessment_id: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
+    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+    assessment_id: text('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
     score: integer('score').notNull(),
     passed: boolean('passed').notNull(),
     answers_data: jsonb('answers_data').$type<AnswerData[]>().notNull().default([]), // Array of user answers

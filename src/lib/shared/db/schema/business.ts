@@ -141,7 +141,7 @@ export const briefcases = pgTable('briefcases', {
   description: text('description'),
   status: varchar('status', { length: 50 }).default('active').notNull(),
   is_default: boolean('is_default').default(false).notNull(),
-  metadata: jsonb('metadata').default('{}').notNull(),
+  metadata: jsonb('metadata').default('{}'),
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
@@ -156,7 +156,7 @@ export const briefcaseItems = pgTable('briefcase_items', {
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   content: jsonb('content').default('{}').notNull(),
-  metadata: jsonb('metadata').default('{}').notNull(),
+  metadata: jsonb('metadata').default('{}'),
   tags: jsonb('tags').default('[]').notNull(),
   isPrivate: boolean('is_private').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

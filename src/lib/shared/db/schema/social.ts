@@ -13,7 +13,7 @@ export const posts = pgTable('posts', {
     comments_count: integer('comments_count').default(0).notNull(),
     shares_count: integer('shares_count').default(0).notNull(),
     tags: jsonb('tags').default('[]').notNull(),
-    achievement_context: jsonb('achievement_context').default('{}').notNull(),
+    achievement_context: jsonb('achievement_context').default('{}'),
     created_at: timestamp('created_at').defaultNow().notNull(),
     updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
