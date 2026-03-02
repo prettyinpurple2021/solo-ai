@@ -113,7 +113,8 @@ export const config = {
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
      * - auth (auth routes need to be public)
+     * - studio (Sanity Studio handles its own auth/routing)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|auth).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|auth|studio).*)',
   ],
 }
