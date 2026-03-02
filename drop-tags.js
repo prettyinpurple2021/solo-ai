@@ -20,7 +20,7 @@ async function dropTagsColumns() {
     
     for (const row of tablesQuery.rows) {
       const tableName = row.table_name;
-      console.log(`Fixing tags column in table: ${tableName}`);
+      console.log(`Dropping tags columns in table: ${tableName}`);
       try {
         const safeTableName = tableName.replace(/"/g, '""');
         await pool.query(`ALTER TABLE "${safeTableName}" DROP COLUMN tags;`);
@@ -38,4 +38,4 @@ async function dropTagsColumns() {
   }
 }
 
-dropTagsColumns();
+dropTagsColumns().catch(console.error);

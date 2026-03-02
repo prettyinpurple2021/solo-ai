@@ -66,4 +66,5 @@ export const assessmentSubmissions = pgTable('assessment_submissions', {
     userAssessmentIdx: index('assessment_submissions_user_assessment_idx').on(table.user_id, table.assessment_id),
     assessmentIdIdx: index('assessment_submissions_assessment_id_idx').on(table.assessment_id),
     chkScoreRange: check('chk_learning_score_range', sql`${table.score} BETWEEN 0 AND 100`),
+    chkXpEarned: check('chk_learning_xp_earned', sql`${table.xp_earned} >= 0`),
 }));

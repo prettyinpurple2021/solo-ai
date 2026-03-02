@@ -23,4 +23,7 @@ async function checkColumns() {
   }
 }
 
-checkColumns().catch(console.error);
+checkColumns().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

@@ -33,7 +33,6 @@ async function checkColumns() {
     console.log("SUSPECT TABLES IN DB (NOT INTEGER):");
     console.log(suspectRows);
   } catch (err) {
-    console.error("Error executing query:", err);
     throw err;
   } finally {
     await pool.end();

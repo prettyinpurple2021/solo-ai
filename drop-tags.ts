@@ -40,12 +40,4 @@ async function dropTagsColumns() {
   }
 }
 
-dropTagsColumns().catch(err => {
-  console.error("Fatal error:", err);
-  process.exit(1);
-}).finally(() => {
-  pool.end().catch(err => {
-    console.error("Error closing connection pool:", err);
-    process.exitCode = 1;
-  });
-});
+dropTagsColumns();

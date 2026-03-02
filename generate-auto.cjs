@@ -16,6 +16,7 @@ const interval = setInterval(() => {
       clearInterval(interval);
     }
   } catch (err) {
+    console.error("Interval error:", err);
     clearInterval(interval);
   }
 }, 500);
