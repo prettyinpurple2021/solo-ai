@@ -255,6 +255,14 @@ const nextConfig = {
             priority: 25,
             reuseExistingChunk: true,
           },
+          sanity: {
+            test: /[\\/]node_modules[\\/](sanity|@sanity)[\\/]/,
+            name: "sanity",
+            chunks: "all",
+            priority: 35,
+            enforce: true,
+            reuseExistingChunk: true,
+          },
         },
       };
 
