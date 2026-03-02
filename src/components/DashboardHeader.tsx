@@ -3,7 +3,7 @@
 
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import React, { useState, useEffect } from 'react'
-import { Crown, Sparkles, Bell, CheckCheck } from 'lucide-react'
+import { Crown, Sparkles, Bell, CheckCheck, Search } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import GlobalSearch from './GlobalSearch'
