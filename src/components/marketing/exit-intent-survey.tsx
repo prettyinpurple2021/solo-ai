@@ -2,11 +2,16 @@
 
 import { logError } from '@/lib/logger'
 import { useEffect, useState, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { useAuth } from '@/hooks/use-auth'
 
 export default function ExitIntentSurvey() {
+  const pathname = usePathname()
+  // Never show on Studio or internal tool routes
+  if (pathname?.startsWith('/studio')) return null
+
   // Allow disabling via env toggle
   const exitIntentDisabled = process.env.NEXT_PUBLIC_DISABLE_EXIT_INTENT === 'true'
   if (exitIntentDisabled) return null
