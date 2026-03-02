@@ -30,6 +30,21 @@ import competitorsRouter from './routes/competitors';
 import notificationsRouter from './routes/notifications';
 import briefcaseRouter from './routes/briefcase';
 
+process.on('uncaughtException', (err) => {
+    logError('Uncaught Exception:', err);
+    // Suppress pg/neon connection termination crashes
+    if (err.message && (err.message.includes('Connection terminated unexpectedly') || err.message.includes('terminating connection due to administrator command'))) {
+        logWarn('Ignoring fatal database connection termination (likely Neon scale-to-zero). The pool will reconnect.');
+        return;
+    }
+    // Let Sentry handle and eventually exit if we decide to, but for now we'll just log
+    // process.exit(1); 
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    logError(`Unhandled Rejection at: ${promise}, reason:`, reason);
+});
+
 const app = express();
 app.set('trust proxy', 1);
 

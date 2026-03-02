@@ -27,6 +27,12 @@ pool.on('error', (err) => {
     // Don't exit process, pool handles this
 });
 
+pool.on('connect', (client) => {
+    client.on('error', (err) => {
+        logError('Error on active client:', err);
+    });
+});
+
 // Test connection
 pool.connect()
     .then(client => {
