@@ -121,38 +121,51 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   }
 
   return (
-    <div className={`bg-dark-bg/80 backdrop-blur-xl border-b border-neon-cyan/20 px-6 py-4 ${className}`}>
-      <div className="flex items-center justify-between">
+    <div className={`bg-dark-bg/80 backdrop-blur-xl border-b border-neon-cyan/20 px-4 md:px-6 py-3 md:py-4 ${className}`}>
+      <div className="flex items-center justify-between gap-2 md:gap-4">
         {/* Left side - Title or Search */}
-        <div className="flex items-center gap-6 flex-1">
+        <div className="flex items-center gap-2 md:gap-6 flex-1 min-w-0">
           {/* Sidebar Toggle */}
-          <SidebarTrigger className="text-white hover:text-neon-cyan" />
+          <SidebarTrigger className="text-white hover:text-neon-cyan shrink-0" />
           
           {title ? (
-            <div>
-              <div className="flex items-center gap-3">
-                <Crown className="text-neon-magenta" size={24} />
-                <h1 className="text-2xl font-orbitron font-bold bg-gradient-to-r from-neon-cyan via-white to-neon-purple bg-clip-text text-transparent">
+            <div className="hidden sm:block min-w-0">
+              <div className="flex items-center gap-2 md:gap-3">
+                <Crown className="text-neon-magenta shrink-0" size={20} />
+                <h1 className="text-lg md:text-2xl font-orbitron font-bold bg-gradient-to-r from-neon-cyan via-white to-neon-purple bg-clip-text text-transparent truncate">
                   {title}
                 </h1>
-                <Sparkles className="text-neon-purple animate-pulse" size={20} />
+                <Sparkles className="text-neon-purple animate-pulse hidden md:block shrink-0" size={18} />
               </div>
               {subtitle && (
-                <p className="text-gray-400 font-mono mt-1">{subtitle}</p>
+                <p className="text-gray-500 font-mono text-xs mt-0.5 truncate">{subtitle}</p>
               )}
             </div>
           ) : null}
           
-          {/* Search Bar */}
+          {/* Search Bar - Hidden on very small screens, visible on md+ */}
           {showSearch && (
-            <div className="flex-1 max-w-md mx-auto">
+            <div className="flex-1 max-w-md mx-auto hidden md:block">
               <GlobalSearch />
             </div>
           )}
         </div>
 
         {/* Right side - User actions */}
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4 shrink-0">
+          {/* Mobile Search Trigger - only visible on mobile */}
+          {showSearch && (
+            <div className="md:hidden">
+               <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => { /* Logic to open search if needed */ }}
+                className="hover:bg-dark-elem text-white hover:text-neon-cyan transition-colors rounded-full"
+              >
+                <Search size={20} />
+              </Button>
+            </div>
+          )}
           {/* Notifications */}
           <Popover open={showNotifications} onOpenChange={setShowNotifications}>
             <PopoverTrigger asChild>

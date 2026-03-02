@@ -453,50 +453,7 @@ export default function MobileDashboardWidgets({
           .map(renderWidget)}
       </div>
 
-      {/* Quick Actions Footer */}
-      <motion.div
-        className="sticky bottom-0 bg-dark-bg/90 backdrop-blur-sm border-t border-gray-800 p-4 -mx-4"
-        initial={false}
-      >
-        <div className="grid grid-cols-4 gap-3">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex-col h-12 touch-target"
-            onClick={() => onWidgetAction('quick', 'add_task')}
-          >
-            <Plus className="h-4 w-4 mb-1" />
-            <span className="text-xs font-mono">Task</span>
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex-col h-12 touch-target"
-            onClick={() => onWidgetAction('quick', 'chat_ai')}
-          >
-            <Users className="h-4 w-4 mb-1" />
-            <span className="text-xs font-mono">AI Chat</span>
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex-col h-12 touch-target"
-            onClick={() => onWidgetAction('quick', 'start_focus')}
-          >
-            <Clock className="h-4 w-4 mb-1" />
-            <span className="text-xs font-mono">Focus</span>
-          </Button>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="flex-col h-12 touch-target"
-            onClick={() => onWidgetAction('quick', 'view_analytics')}
-          >
-            <BarChart3 className="h-4 w-4 mb-1" />
-            <span className="text-xs font-mono">Stats</span>
-          </Button>
-        </div>
-      </motion.div>
+      {/* Quick Actions Footer - Removed to avoid duplication with MobileNavigation */}
     </div>
   )
 }

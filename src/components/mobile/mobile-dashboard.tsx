@@ -249,12 +249,7 @@ export default function MobileDashboard({
 
   return (
     <div className={cn("min-h-screen bg-dark-bg", className)}>
-      {/* Mobile Navigation */}
-      <MobileNavigation
-        user={user || (resolvedData?.user ? { name: resolvedData.user.full_name || 'Founder', email: resolvedData.user.email } : undefined)}
-        notifications={notifications}
-        onNotificationClick={() => setNotifications(0)}
-      />
+      {/* Mobile Navigation - Removed to avoid duplication with DashboardLayout */}
 
       {/* Main Content */}
       <TouchGestureWrapper

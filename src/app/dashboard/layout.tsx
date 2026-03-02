@@ -35,9 +35,11 @@ export default function DashboardLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="min-h-screen bg-cyber-black border-0">
-        <DashboardHeader onOpenProfile={() => setIsProfileOpen(true)} />
-        <main className="flex-1 p-0 pb-20 lg:pb-0">
+      <SidebarInset className="min-h-screen bg-cyber-black border-0 w-full overflow-x-hidden">
+        <div className="hidden lg:block">
+          <DashboardHeader onOpenProfile={() => setIsProfileOpen(true)} />
+        </div>
+        <main className="flex-1 p-0 pb-20 lg:pb-0 w-full overflow-x-hidden">
           {children}
         </main>
         <MobileNavigation user={mobileNavUser} />

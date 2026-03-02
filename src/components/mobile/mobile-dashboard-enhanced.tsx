@@ -118,37 +118,37 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
     }
   ]
   return (
-    <div className={cn("min-h-screen bg-dark-bg", className)}>
+    <div className={cn("min-h-screen bg-dark-bg w-full overflow-x-hidden", className)}>
       {/* Enhanced Status Bar */}
-      <div className="bg-dark-bg/90 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-30">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-dark-card border border-neon-purple rounded-sm flex items-center justify-center">
+      <div className="bg-dark-bg/90 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-30 w-full">
+        <div className="flex items-center justify-between px-3 md:px-4 py-2.5 md:py-3 gap-2">
+          <div className="flex items-center gap-2 md:gap-3 min-w-0">
+            <div className="w-8 h-8 bg-dark-card border border-neon-purple rounded-sm flex items-center justify-center shrink-0">
               <Crown className="w-4 h-4 text-white" />
             </div>
-            <div>
-              <h1 className="text-lg font-bold font-orbitron uppercase tracking-wider text-white">Dashboard</h1>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <h1 className="text-sm md:text-lg font-bold font-orbitron uppercase tracking-wide text-white truncate">Dashboard</h1>
+              <div className="flex items-center gap-1.5">
                 {isOnline ? (
-                  <div className="flex items-center gap-1 text-xs text-neon-lime font-mono">
-                    <Wifi className="w-3 h-3" />
+                  <div className="flex items-center gap-1 text-[10px] md:text-xs text-neon-lime font-mono shrink-0">
+                    <Wifi className="w-2.5 h-2.5" />
                     <span>Online</span>
                   </div>
                 ) : (
-                  <div className="flex items-center gap-1 text-xs text-neon-magenta font-mono">
-                    <WifiOff className="w-3 h-3" />
+                  <div className="flex items-center gap-1 text-[10px] md:text-xs text-neon-magenta font-mono shrink-0">
+                    <WifiOff className="w-2.5 h-2.5" />
                     <span>Offline</span>
                   </div>
                 )}
                 {isInstalled && (
-                  <Badge variant="outline" className="text-xs bg-dark-card text-neon-lime border border-neon-lime font-mono">
+                  <Badge variant="outline" className="text-[10px] md:text-xs px-1 h-4 bg-dark-card text-neon-lime border border-neon-lime font-mono shrink-0">
                     PWA
                   </Badge>
                 )}
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
             <Button
               variant="ghost"
               size="sm"
@@ -162,9 +162,9 @@ function MobileDashboardContent({ user, dashboardData, className = "" }: MobileD
               <Button
                 size="sm"
                 onClick={handleInstall}
-                className="h-8 px-3 text-xs bg-neon-purple hover:bg-neon-purple/80 font-mono font-bold uppercase tracking-wider"
+                className="h-7 md:h-8 px-2 md:px-3 text-[10px] md:text-xs bg-neon-purple hover:bg-neon-purple/80 font-mono font-bold uppercase tracking-wider"
               >
-                <Download className="w-3 h-3 mr-1" />
+                <Download className="w-3 h-3 mr-1 hidden xs:inline" />
                 Install
               </Button>
             )}

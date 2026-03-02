@@ -1,0 +1,248 @@
+# Page snapshot
+
+```yaml
+- generic [active] [ref=e1]:
+  - alert [ref=e2]
+  - generic [ref=e5] [cursor=pointer]: Hi! What can I help you with?
+  - button "chat-button" [ref=e6] [cursor=pointer]:
+    - img [ref=e8]
+  - main [ref=e12]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - button "Toggle Sidebar" [ref=e16] [cursor=pointer]:
+          - img [ref=e17]
+          - generic [ref=e19]: Toggle Sidebar
+        - button "Search your empire, Founder... ✨ ⌘ K" [ref=e21] [cursor=pointer]:
+          - img [ref=e22]
+          - generic [ref=e25]: Search your empire, Founder... ✨
+          - generic [ref=e26]:
+            - generic [ref=e27]: ⌘
+            - generic [ref=e28]: K
+      - generic [ref=e29]:
+        - button [ref=e30] [cursor=pointer]:
+          - img [ref=e31]
+        - button "U" [ref=e34] [cursor=pointer]:
+          - generic [ref=e35]: U
+    - main [ref=e36]:
+      - generic [ref=e37]:
+        - img [ref=e40]
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - img [ref=e46]
+            - generic [ref=e49]:
+              - heading "Welcome to Your Empire! 👑" [level=1] [ref=e50]
+              - paragraph [ref=e51]: You're ready to dominate your industry with AI-powered productivity tools
+            - generic [ref=e52]:
+              - generic [ref=e53]:
+                - img [ref=e54]
+                - text: Level 1 Founder
+              - generic [ref=e57]:
+                - img [ref=e58]
+                - text: 100 Points
+          - generic [ref=e60]:
+            - link "Create Your First Goal Set a goal and start your journey Get Started" [ref=e62]:
+              - /url: /dashboard/slaylist
+              - generic [ref=e64] [cursor=pointer]:
+                - img [ref=e66]
+                - generic [ref=e70]:
+                  - heading "Create Your First Goal" [level=3] [ref=e71]
+                  - paragraph [ref=e72]: Set a goal and start your journey
+                - button "Get Started" [ref=e73]:
+                  - text: Get Started
+                  - img [ref=e74]
+            - link "Chat with AI Meet your AI squad Get Started" [ref=e77]:
+              - /url: /dashboard/agents
+              - generic [ref=e79] [cursor=pointer]:
+                - img [ref=e81]
+                - generic [ref=e83]:
+                  - heading "Chat with AI" [level=3] [ref=e84]
+                  - paragraph [ref=e85]: Meet your AI squad
+                - button "Get Started" [ref=e86]:
+                  - text: Get Started
+                  - img [ref=e87]
+            - link "Upload a File Add documents to your briefcase Get Started" [ref=e90]:
+              - /url: /dashboard/briefcase
+              - generic [ref=e92] [cursor=pointer]:
+                - img [ref=e94]
+                - generic [ref=e97]:
+                  - heading "Upload a File" [level=3] [ref=e98]
+                  - paragraph [ref=e99]: Add documents to your briefcase
+                - button "Get Started" [ref=e100]:
+                  - text: Get Started
+                  - img [ref=e101]
+            - link "Explore Features Discover what's possible Get Started" [ref=e104]:
+              - /url: /features
+              - generic [ref=e106] [cursor=pointer]:
+                - img [ref=e108]
+                - generic [ref=e110]:
+                  - heading "Explore Features" [level=3] [ref=e111]
+                  - paragraph [ref=e112]: Discover what's possible
+                - button "Get Started" [ref=e113]:
+                  - text: Get Started
+                  - img [ref=e114]
+          - generic [ref=e116]:
+            - generic [ref=e119]:
+              - generic [ref=e120]:
+                - img [ref=e121]
+                - heading "Getting Started Guide" [level=2] [ref=e126]
+              - generic [ref=e127]:
+                - generic [ref=e128]:
+                  - generic [ref=e129]:
+                    - generic [ref=e131]: "1"
+                    - generic [ref=e132]:
+                      - heading "Set Your First Goal" [level=4] [ref=e133]
+                      - paragraph [ref=e134]: Define what you want to achieve
+                  - generic [ref=e135]:
+                    - generic [ref=e137]: "2"
+                    - generic [ref=e138]:
+                      - heading "Create Tasks" [level=4] [ref=e139]
+                      - paragraph [ref=e140]: Break down your goal into actionable steps
+                  - generic [ref=e141]:
+                    - generic [ref=e143]: "3"
+                    - generic [ref=e144]:
+                      - heading "Chat with AI" [level=4] [ref=e145]
+                      - paragraph [ref=e146]: Get help from your AI squad
+                  - generic [ref=e147]:
+                    - generic [ref=e149]: "4"
+                    - generic [ref=e150]:
+                      - heading "Track Progress" [level=4] [ref=e151]
+                      - paragraph [ref=e152]: Monitor your success with analytics
+                - generic [ref=e154]:
+                  - generic [ref=e155]:
+                    - paragraph [ref=e156]: "Progress: 0 of 4 steps completed"
+                    - progressbar [ref=e157]
+                  - button "Start Guide" [ref=e159] [cursor=pointer]:
+                    - img [ref=e160]
+                    - text: Start Guide
+            - generic [ref=e162]:
+              - generic [ref=e165]:
+                - generic [ref=e166]:
+                  - img [ref=e167]
+                  - heading "Daily Tip" [level=3] [ref=e169]
+                - paragraph [ref=e170]: Check your dashboard daily for motivation and progress updates
+              - generic [ref=e173]:
+                - generic [ref=e174]:
+                  - img [ref=e175]
+                  - heading "Achievements" [level=3] [ref=e178]
+                - generic [ref=e179]:
+                  - generic [ref=e180]:
+                    - img [ref=e182]
+                    - generic [ref=e184]:
+                      - heading "Welcome to the Empire!" [level=4] [ref=e185]
+                      - paragraph [ref=e186]: You've successfully joined SoloSuccess AI
+                    - generic [ref=e187]: 100 pts
+                  - generic [ref=e188]:
+                    - img [ref=e190]
+                    - generic [ref=e194]:
+                      - heading "Goal Setter" [level=4] [ref=e195]
+                      - paragraph [ref=e196]: Create your first goal
+                    - generic [ref=e197]: 250 pts
+                  - generic [ref=e198]:
+                    - img [ref=e200]
+                    - generic [ref=e203]:
+                      - heading "Task Master" [level=4] [ref=e204]
+                      - paragraph [ref=e205]: Add your first task
+                    - generic [ref=e206]: 150 pts
+                  - generic [ref=e207]:
+                    - img [ref=e209]
+                    - generic [ref=e211]:
+                      - heading "AI Collaborator" [level=4] [ref=e212]
+                      - paragraph [ref=e213]: Start your first AI conversation
+                    - generic [ref=e214]: 200 pts
+              - generic [ref=e217]:
+                - generic [ref=e218]:
+                  - img [ref=e219]
+                  - heading "Welcome Bonus" [level=3] [ref=e223]
+                - generic [ref=e224]:
+                  - generic [ref=e225]:
+                    - paragraph [ref=e226]: 🎉 7-Day Premium Trial
+                    - paragraph [ref=e227]: Access to all features
+                  - generic [ref=e228]:
+                    - paragraph [ref=e229]: 🚀 100 AI Credits
+                    - paragraph [ref=e230]: Bonus conversations
+                  - generic [ref=e231]:
+                    - paragraph [ref=e232]: 📚 Premium Templates
+                    - paragraph [ref=e233]: 50+ business templates
+          - generic [ref=e234]:
+            - generic [ref=e235]:
+              - img [ref=e236]
+              - text: Ready to start building your empire!
+              - img [ref=e239]
+            - generic [ref=e242]:
+              - button "Start Your Journey" [ref=e243] [cursor=pointer]:
+                - img [ref=e244]
+                - text: Start Your Journey
+              - button "Do it Later" [ref=e249] [cursor=pointer]
+    - generic [ref=e251]:
+      - generic [ref=e252]:
+        - button [ref=e253] [cursor=pointer]:
+          - img [ref=e254]
+        - generic [ref=e255]:
+          - generic "SoloSuccess AI logo" [ref=e256]:
+            - img "SoloSuccess AI logo" [ref=e259]
+          - generic [ref=e260]:
+            - heading "SOLOSUCCESS" [level=1] [ref=e261]
+            - generic [ref=e262]: Dashboard
+      - generic [ref=e263]:
+        - button [ref=e264] [cursor=pointer]:
+          - img [ref=e265]
+        - button [ref=e268] [cursor=pointer]:
+          - img [ref=e269]
+        - button [ref=e272] [cursor=pointer]:
+          - img [ref=e275]
+    - generic [ref=e280]:
+      - button "Dashboard" [ref=e281] [cursor=pointer]:
+        - img [ref=e283]
+        - generic [ref=e286]: Dashboard
+      - button "SlayList" [ref=e287] [cursor=pointer]:
+        - img [ref=e289]
+        - generic [ref=e292]: SlayList
+      - button "Goals" [ref=e293] [cursor=pointer]:
+        - img [ref=e295]
+        - generic [ref=e299]: Goals
+      - button "AI" [ref=e300] [cursor=pointer]:
+        - img [ref=e302]
+        - generic [ref=e308]: AI
+      - button "The" [ref=e309] [cursor=pointer]:
+        - img [ref=e311]
+        - generic [ref=e316]: The
+  - button [ref=e319] [cursor=pointer]:
+    - img [ref=e320]
+  - generic [ref=e326]: Online
+  - button "Report a bug" [ref=e328] [cursor=pointer]:
+    - img [ref=e329]
+    - text: Report a bug
+  - generic [ref=e340]:
+    - generic [ref=e342]:
+      - generic [ref=e343]:
+        - img [ref=e345]
+        - generic [ref=e349]:
+          - generic [ref=e350]: Online
+          - generic [ref=e351]: All data synced
+      - generic [ref=e352]:
+        - button "Toggle sync details" [ref=e353] [cursor=pointer]:
+          - img [ref=e354]
+        - button "Minimize offline manager" [ref=e358] [cursor=pointer]:
+          - img [ref=e359]
+        - button "Close offline manager" [ref=e361] [cursor=pointer]:
+          - img [ref=e362]
+    - generic [ref=e366]:
+      - button "Sync pending actions now" [disabled] [ref=e367]:
+        - img [ref=e368]
+        - text: Sync Now
+      - button "Reload pending actions" [ref=e373] [cursor=pointer]:
+        - img [ref=e374]
+  - iframe [ref=e381]:
+    - generic [ref=f2e2]:
+      - generic [ref=f2e5]:
+        - link "Privacy" [ref=f2e6]:
+          - /url: https://www.google.com/intl/en/policies/privacy/
+        - text: "-"
+        - link "Terms" [ref=f2e7]:
+          - /url: https://www.google.com/intl/en/policies/terms/
+      - generic [ref=f2e8]:
+        - generic [ref=f2e9]:
+          - text: protected by
+          - strong [ref=f2e10]: reCAPTCHA
+        - generic [ref=f2e11]: "-"
+```
