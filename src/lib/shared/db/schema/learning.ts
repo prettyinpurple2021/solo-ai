@@ -1,6 +1,5 @@
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, index, uniqueIndex, uuid, check } from 'drizzle-orm/pg-core';
 import { sql } from 'drizzle-orm';
-import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 import { learningModules } from './content';
 
@@ -22,7 +21,7 @@ export interface AnswerData {
 
 // User Skills table - Tracking individual skill progressions
 export const userSkills = pgTable('user_skills', {
-    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    id: uuid('id').primaryKey().defaultRandom(),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     skill_name: varchar('skill_name', { length: 255 }).notNull(), // e.g., 'Decision Making', 'Priority Setting'
     current_level: integer('current_level').notNull().default(1),
@@ -38,7 +37,7 @@ export const userSkills = pgTable('user_skills', {
 
 // Assessments table - Holds knowledge check configuration
 export const assessments = pgTable('assessments', {
-    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    id: uuid('id').primaryKey().defaultRandom(),
     module_id: text('module_id').notNull().references(() => learningModules.id, { onDelete: 'cascade' }),
     title: varchar('title', { length: 255 }).notNull(),
     description: text('description'),
@@ -54,15 +53,16 @@ export const assessments = pgTable('assessments', {
 
 // Assessment Submissions table - User's attempt history
 export const assessmentSubmissions = pgTable('assessment_submissions', {
-    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    id: uuid('id').primaryKey().defaultRandom(),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-    assessment_id: text('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
+    assessment_id: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
     score: integer('score').notNull(),
     passed: boolean('passed').notNull(),
     answers_data: jsonb('answers_data').$type<AnswerData[]>().notNull().default([]), // Array of user answers
     xp_earned: integer('xp_earned').notNull().default(0),
     created_at: timestamp('created_at').defaultNow().notNull(),
 }, (table) => ({
+    userIdIdx: index('assessment_submissions_user_id_idx').on(table.user_id),
     userAssessmentIdx: index('assessment_submissions_user_assessment_idx').on(table.user_id, table.assessment_id),
     assessmentIdIdx: index('assessment_submissions_assessment_id_idx').on(table.assessment_id),
     chkScoreRange: check('chk_learning_score_range', sql`${table.score} BETWEEN 0 AND 100`),

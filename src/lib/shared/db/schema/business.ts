@@ -156,7 +156,7 @@ export const briefcaseItems = pgTable('briefcase_items', {
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
   content: jsonb('content').default('{}').notNull(),
-  metadata: jsonb('metadata').default('{}'),
+  metadata: jsonb('metadata').default('{}').notNull(),
   tags: jsonb('tags').default('[]').notNull(),
   isPrivate: boolean('is_private').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

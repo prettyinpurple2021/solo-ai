@@ -1,14 +1,26 @@
 const { spawn } = require('child_process');
-const child = spawn('npx.cmd', ['drizzle-kit', 'generate'], { stdio: ['pipe', 'inherit', 'inherit'] });
+
+const cmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+const child = spawn(cmd, ['drizzle-kit', 'generate'], { stdio: ['pipe', 'inherit', 'inherit'] });
+
+child.on('error', (err) => {
+  console.error('Spawn failed:', err);
+  process.exit(1);
+});
+
 const interval = setInterval(() => {
-  if (!child.killed) {
-    child.stdin.write('\n');
-  } else {
+  try {
+    if (child.stdin && child.stdin.writable) {
+      child.stdin.write('\n');
+    } else {
+      clearInterval(interval);
+    }
+  } catch (err) {
     clearInterval(interval);
   }
 }, 500);
 
-child.on('exit', () => {
-    clearInterval(interval);
-    process.exit(0);
+child.on('exit', (code) => {
+  clearInterval(interval);
+  process.exit(code === null ? 1 : code);
 });

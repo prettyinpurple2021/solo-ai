@@ -13,16 +13,19 @@ async function checkColumns() {
     'achievements', 'user_achievements', 'business_context', 'business_metrics'
   ];
 
-  const result = await pool.query(`
-    select table_name, column_name, data_type, is_identity 
-    from information_schema.columns 
-    where column_name = 'id' and table_name = ANY($1) and table_schema = 'public';
-  `, [tsIntegerTables]);
-  
-  const mismatch = result.rows.filter(r => r.data_type !== 'integer');
-  console.log("TS IS INTEGER, BUT POSTGRES IS NOT:");
-  console.log(mismatch);
-  pool.end();
+  try {
+    const result = await pool.query(`
+      select table_name, column_name, data_type, is_identity 
+      from information_schema.columns 
+      where column_name = 'id' and table_name = ANY($1) and table_schema = 'public';
+    `, [tsIntegerTables]);
+    
+    const mismatch = result.rows.filter(r => r.data_type !== 'integer');
+    console.log("TS IS INTEGER, BUT POSTGRES IS NOT:");
+    console.log(mismatch);
+  } finally {
+    await pool.end();
+  }
 }
 
 checkColumns().catch(console.error);

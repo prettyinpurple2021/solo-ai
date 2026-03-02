@@ -1,11 +1,16 @@
 const { Pool } = require('pg');
 require('dotenv').config({ path: '.env.local' });
 
+const databaseUrl = process.env.DATABASE_URL;
+if (!databaseUrl) {
+  console.error("Missing process.env.DATABASE_URL");
+  process.exit(1);
+}
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: databaseUrl,
 });
 
-async function fixTags() {
+async function dropTagsColumns() {
   try {
     const tablesQuery = await pool.query(`
       SELECT table_name 
@@ -17,17 +22,20 @@ async function fixTags() {
       const tableName = row.table_name;
       console.log(`Fixing tags column in table: ${tableName}`);
       try {
-        await pool.query(`ALTER TABLE "${tableName}" DROP COLUMN tags;`);
+        const safeTableName = tableName.replace(/"/g, '""');
+        await pool.query(`ALTER TABLE "${safeTableName}" DROP COLUMN tags;`);
         console.log(`Successfully dropped tags column in ${tableName}`);
       } catch (err) {
         console.error(`Failed to drop tags in ${tableName}:`, err.message);
+        process.exitCode = 1;
       }
     }
   } catch (err) {
     console.error('Error:', err);
+    process.exitCode = 1;
   } finally {
     await pool.end();
   }
 }
 
-fixTags();
+dropTagsColumns();
