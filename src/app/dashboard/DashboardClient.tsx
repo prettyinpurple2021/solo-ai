@@ -33,6 +33,9 @@ import { CyberButton } from "@/components/cyber/CyberButton"
 import { NeuralNetworkCanvas } from "@/components/cyber/NeuralNetworkCanvas"
 import { UIOverlayLines } from "@/components/cyber/UIOverlayLines"
 import { AgentActionLog } from "@/components/dashboard/AgentActionLog"
+import { HudCommandHeader } from "@/components/cyber/HudCommandHeader"
+import { PredictiveChart } from "@/components/analytics/PredictiveChart"
+import { IntelligenceRadar } from "@/components/cyber/IntelligenceRadar"
 
 import { updateProfile } from '@/lib/actions/profile-actions'
 
@@ -266,6 +269,15 @@ export default function DashboardClient({ initialData }: DashboardClientProps) {
             <Badge variant="cyan" className="rounded-none">Level {user.level}</Badge>
             <Badge variant="purple" className="rounded-none">{user.total_points} pts</Badge>
           </div>
+        </motion.div>
+
+        {/* Real-time HUD */}
+        <motion.div variants={itemVariants}>
+          <HudCommandHeader 
+            userId={user.id} 
+            initialMrr={todaysStats.productivity_score * 250} // Use score as proxy for initial demo
+            initialGrowth={12.5}
+          />
         </motion.div>
 
         {/* Today's Stats */}
@@ -526,38 +538,46 @@ export default function DashboardClient({ initialData }: DashboardClientProps) {
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-2xl font-orbitron font-bold flex items-center space-x-2">
                     <Sparkles className="w-6 h-6 text-neon-cyan" />
-                    <span>AI Intelligence</span>
+                    <span>AI Intelligence Radar</span>
                   </h2>
                   <CyberButton size="sm" variant="primary">
-                    View All
+                    Scan Area
                   </CyberButton>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-6">
+                  <IntelligenceRadar 
+                    threats={[
+                      { id: '1', name: 'Competitor A', distance: 40, angle: 45, severity: 'critical' },
+                      { id: '2', name: 'Competitor B', distance: 70, angle: 120, severity: 'medium' },
+                      { id: '3', name: 'Competitor C', distance: 20, angle: 280, severity: 'high' },
+                    ]}
+                  />
+
                   {insights.length > 0 ? (
-                    insights.map((insight, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        className="p-4 bg-dark-card border border-neon-cyan/20 rounded-none"
-                      >
-                        <h3 className="font-semibold text-white mb-2 font-orbitron">{insight.title}</h3>
-                        <p className="text-sm text-gray-400 mb-3 font-mono">
-                          {insight.description}
-                        </p>
-                        <CyberButton size="sm" variant="outline">
-                          {insight.action}
-                        </CyberButton>
-                      </motion.div>
-                    ))
+                    <div className="space-y-4">
+                      {insights.slice(0, 2).map((insight, index) => (
+                        <motion.div
+                          key={index}
+                          initial={{ opacity: 0, y: 20 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          className="p-4 bg-dark-card border border-neon-cyan/20 rounded-none"
+                        >
+                          <h3 className="font-semibold text-white mb-2 font-orbitron text-sm">{insight.title}</h3>
+                          <p className="text-xs text-gray-400 mb-3 font-mono">
+                            {insight.description}
+                          </p>
+                          <CyberButton size="xs" variant="outline" className="text-[10px] h-7">
+                            {insight.action}
+                          </CyberButton>
+                        </motion.div>
+                      ))}
+                    </div>
                   ) : (
-                    <div className="text-center py-8">
-                      <Sparkles className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-                      <p className="text-gray-400 mb-2">No intelligence yet</p>
-                      <p className="text-sm text-gray-400">
-                        Complete more missions to get AI insights
+                    <div className="text-center py-4">
+                      <p className="text-sm text-gray-400 font-mono">
+                        Awaiting new intelligence...
                       </p>
                     </div>
                   )}

@@ -18,6 +18,7 @@ import { Server as SocketServer } from 'socket.io';
 import cors from 'cors';
 import { setIo, broadcastToUser } from './realtime';
 import { setupBoardroomSocket } from './src/realtime/boardroom';
+import { setupCommandCenterSocket, broadcastRevenueUpdate, broadcastAgentActivity } from './src/realtime/command-center';
 import { logInfo, logWarn, logError } from './utils/logger';
 import path from 'path';
 import { verifyToken } from './utils/jwt';
@@ -115,6 +116,28 @@ io.on('connection', (socket) => {
 
 setIo(io);
 setupBoardroomSocket(io);
+setupCommandCenterSocket(io);
+
+// Simulated HUD Heartbeat (For demonstration of real-time command center)
+if (isDevelopment) {
+    setInterval(() => {
+        io.of("/command-center").emit("revenue-update", {
+            mrr: 25000 + Math.random() * 1000,
+            growth: 12.5 + Math.random() * 2,
+            timestamp: new Date().toISOString()
+        });
+    }, 30000);
+
+    const AGENTS = ["Roxy", "Blaze", "Echo", "Vex", "Aura"];
+    setInterval(() => {
+        const agent = AGENTS[Math.floor(Math.random() * AGENTS.length)];
+        io.of("/command-center").emit("global-activity", {
+            agent,
+            action: "Analyzing market trends...",
+            timestamp: new Date().toISOString()
+        });
+    }, 45000);
+}
 
 app.use(cors({
     origin: allowedOrigins,

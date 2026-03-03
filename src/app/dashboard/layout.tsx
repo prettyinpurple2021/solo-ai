@@ -9,6 +9,7 @@ import MobileNavigation from "@/components/mobile/mobile-navigation"
 import { useAuth } from "@/hooks/use-auth"
 import { ProfileModal } from "@/components/profile/profile-modal"
 import { EnhancedProfileModal } from "@/components/profile/enhanced-profile-modal"
+import { PageTransition } from "@/components/layout/PageTransition"
 
 
 
@@ -40,7 +41,9 @@ export default function DashboardLayout({
           <DashboardHeader onOpenProfile={() => setIsProfileOpen(true)} />
         </div>
         <main className="flex-1 p-0 pb-20 lg:pb-0 w-full overflow-x-hidden">
-          {children}
+          <PageTransition>
+            {children}
+          </PageTransition>
         </main>
         <MobileNavigation user={mobileNavUser} />
         {user && (

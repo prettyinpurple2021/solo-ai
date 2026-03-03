@@ -9,6 +9,7 @@ import {
 import { HudBorder } from '@/components/cyber/HudBorder'
 import { CyberButton } from '@/components/cyber/CyberButton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { PredictiveChart } from '@/components/analytics/PredictiveChart'
 
 
 import Link from 'next/link'
@@ -228,11 +229,19 @@ export default function AnalyticsPage() {
                         </CyberButton>
                       </div>
 
-                      <div className="h-64 flex items-center justify-center bg-dark-bg/50 rounded-none border border-neon-purple/20">
-                        <div className="text-center">
-                          <BarChart3 className="w-16 h-16 text-neon-purple mx-auto mb-4" />
-                          <p className="text-gray-400 font-mono">Revenue chart visualization</p>
-                        </div>
+                      <div className="bg-dark-bg/50 p-6 border border-neon-purple/20">
+                        <PredictiveChart 
+                          label="Daily Revenue (Actual + AI Projected)"
+                          data={[
+                            { label: 'Mar 01', value: 1250 },
+                            { label: 'Mar 02', value: 1420 },
+                            { label: 'Mar 03', value: 1380 },
+                            { label: 'Mar 04', value: 1650 },
+                            { label: 'Mar 05', value: 1890, isPrediction: true },
+                            { label: 'Mar 06', value: 2100, isPrediction: true },
+                            { label: 'Mar 07', value: 2450, isPrediction: true },
+                          ]}
+                        />
                       </div>
                     </HudBorder>
 

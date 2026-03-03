@@ -2,11 +2,12 @@
 
 import { cn } from '@/lib/utils'
 import { ButtonHTMLAttributes, ReactNode } from 'react'
+import { motion } from 'framer-motion'
 
 interface CyberButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode
   variant?: 'primary' | 'secondary' | 'ghost' | 'cyan' | 'neon' | 'purple' | 'magenta' | 'orange' | 'destructive' | 'outline'
-  size?: 'sm' | 'md' | 'lg'
+  size?: 'sm' | 'md' | 'lg' | 'xs'
 }
 
 export function CyberButton({
@@ -16,7 +17,7 @@ export function CyberButton({
   size = 'md',
   ...props
 }: CyberButtonProps) {
-  const baseStyles = 'relative overflow-hidden font-sci font-bold tracking-[0.2em] uppercase transition-all duration-300 transform'
+  const baseStyles = 'relative overflow-hidden font-sci font-bold tracking-[0.2em] uppercase transition-all duration-300'
  
   const variants = {
     primary: 'bg-neon-magenta text-black shadow-[0_0_15px_rgba(255,0,110,0.4)] hover:shadow-[0_0_30px_rgba(255,0,110,0.6)] hover:-skew-x-6',
@@ -32,13 +33,16 @@ export function CyberButton({
   }
   
   const sizes = {
+    xs: 'px-2 py-1 text-[9px]',
     sm: 'px-4 py-2 text-[10px]',
     md: 'px-6 py-3 text-xs',
     lg: 'px-8 py-4 text-sm',
   }
 
   return (
-    <button
+    <motion.button
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
       className={cn(
         baseStyles,
         variants[variant],
@@ -46,13 +50,13 @@ export function CyberButton({
         'before:content-[""] before:absolute before:inset-0 before:bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.1)_50%)] before:bg-[length:100%_4px] before:pointer-events-none before:opacity-20 hover:before:opacity-40',
         className
       )}
-      {...props}
+      {...props as any}
     >
       <span className="relative z-10 flex items-center justify-center gap-2">
         {children}
       </span>
       <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity bg-[linear-gradient(45deg,transparent_25%,rgba(255,255,255,0.1)_50%,transparent_75%)] bg-[length:250%_100%] animate-shimmer pointer-events-none" />
-    </button>
+    </motion.button>
   )
 }
 
