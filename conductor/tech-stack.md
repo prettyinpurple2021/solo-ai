@@ -22,6 +22,12 @@
 - **Security Logic:** `jose` for secure JWT handling and strict CSRF/Input sanitization.
 - **Compliance:** Automated auditing via "Guardian AI" integration layer.
 
+## External Integrations
+- **Payments:** Stripe (Managed via Webhooks & Connect).
+- **Email:** Resend for transactional and agent-initiated communications.
+- **Calendar:** Google Calendar API for automated scheduling.
+- **AI Models:** OpenAI (GPT-4o), Google (Gemini 1.5 Pro), Anthropic (Claude 3.5 Sonnet).
+
 ## UI/UX Engineering
 - **Styling:** Tailwind CSS with a "Command Center" utility-first approach.
 - **Component Library:** `shadcn/ui` for high-fidelity, accessible UI elements.
