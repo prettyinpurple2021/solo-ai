@@ -32,6 +32,7 @@ import { HudBorder } from "@/components/cyber/HudBorder"
 import { CyberButton } from "@/components/cyber/CyberButton"
 import { NeuralNetworkCanvas } from "@/components/cyber/NeuralNetworkCanvas"
 import { UIOverlayLines } from "@/components/cyber/UIOverlayLines"
+import { AgentActionLog } from "@/components/dashboard/AgentActionLog"
 
 import { updateProfile } from '@/lib/actions/profile-actions'
 
@@ -174,7 +175,7 @@ export default function DashboardClient({ initialData }: DashboardClientProps) {
     )
   }
 
-  const { user, todaysStats, todaysTasks, activeGoals, recentConversations, recentBriefcases, insights } = data
+  const { user, todaysStats, todaysTasks, activeGoals, recentConversations, recentBriefcases, insights, agentActions } = data
 
   if (isMobile) {
     return (
@@ -566,78 +567,91 @@ export default function DashboardClient({ initialData }: DashboardClientProps) {
           </div>
         </section>
 
-        {/* Briefcase Section */}
-        <section aria-labelledby="briefcase-heading">
-          <h2 id="briefcase-heading" className="sr-only">Recent Briefcases</h2>
-          <motion.div variants={itemVariants}>
-            <HudBorder variant="hover" className="p-6 h-full">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-orbitron font-bold flex items-center space-x-2">
-                  <Briefcase className="w-6 h-6 text-neon-cyan" />
-                  <span>Mission Briefcases</span>
-                </h2>
-                <Link href="/dashboard/briefcase">
-                  <CyberButton size="sm" variant="primary">
-                    View All
-                  </CyberButton>
-                </Link>
-              </div>
+        {/* Briefcase & Action Log Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Briefcases */}
+          <section aria-labelledby="briefcase-heading">
+            <h2 id="briefcase-heading" className="sr-only">Recent Briefcases</h2>
+            <motion.div variants={itemVariants}>
+              <HudBorder variant="hover" className="p-6 h-full">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-2xl font-orbitron font-bold flex items-center space-x-2">
+                    <Briefcase className="w-6 h-6 text-neon-cyan" />
+                    <span>Mission Briefcases</span>
+                  </h2>
+                  <Link href="/dashboard/briefcase">
+                    <CyberButton size="sm" variant="primary">
+                      View All
+                    </CyberButton>
+                  </Link>
+                </div>
 
-              <div className="space-y-3">
-                {recentBriefcases && recentBriefcases.length > 0 ? (
-                  recentBriefcases.map((briefcase: any, index: number) => (
-                    <motion.div
-                      key={briefcase.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: index * 0.1 }}
-                      className="flex items-center space-x-3 p-3 bg-dark-card border border-neon-cyan/20 rounded-none hover:border-neon-cyan/50 transition-all cursor-pointer"
-                    >
-                      <div className="w-10 h-10 bg-gradient-to-r from-neon-cyan to-neon-purple rounded-none flex items-center justify-center shadow-[0_0_20px_rgba(11,228,236,0.4)]">
-                        <Briefcase className="w-5 h-5 text-black" />
-                      </div>
-                      <div className="flex-1">
-                        <p className="font-medium text-white font-orbitron">{briefcase.title}</p>
-                        <p className="text-sm text-gray-400 font-mono">
-                          {briefcase.goal_count} objectives • {briefcase.task_count} missions
-                        </p>
-                        <p className="text-xs text-gray-500 font-mono">
-                          Updated {new Date(briefcase.updated_at).toLocaleDateString()}
-                        </p>
-                      </div>
-                        <div className="flex items-center space-x-2">
-                        <Badge
-                          variant={briefcase.status === 'active' ? 'lime' : briefcase.status === 'completed' ? 'cyan' : 'purple'}
-                          className="rounded-none font-mono"
-                        >
-                          {briefcase.status}
-                        </Badge>
-                        <ArrowRight className="w-4 h-4 text-gray-400" />
-                      </div>
-                    </motion.div>
-                  ))
-                ) : (
-                  <div className="text-center py-8">
-                    <Briefcase className="w-12 h-12 text-gray-500 mx-auto mb-4" />
-                    <p className="text-gray-400 mb-2">No briefcases yet</p>
-                    <p className="text-sm text-gray-400 mb-4">
-                      Create your first briefcase to organize your missions and objectives
-                    </p>
-                    <Link href="/dashboard/briefcase">
-                      <CyberButton
-                        variant="primary"
-                        size="sm"
+                <div className="space-y-3">
+                  {recentBriefcases && recentBriefcases.length > 0 ? (
+                    recentBriefcases.map((briefcase: any, index: number) => (
+                      <motion.div
+                        key={briefcase.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        className="flex items-center space-x-3 p-3 bg-dark-card border border-neon-cyan/20 rounded-none hover:border-neon-cyan/50 transition-all cursor-pointer"
                       >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Create Briefcase
-                      </CyberButton>
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </HudBorder>
-          </motion.div>
-        </section>
+                        <div className="w-10 h-10 bg-gradient-to-r from-neon-cyan to-neon-purple rounded-none flex items-center justify-center shadow-[0_0_20px_rgba(11,228,236,0.4)]">
+                          <Briefcase className="w-5 h-5 text-black" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-white font-orbitron">{briefcase.title}</p>
+                          <p className="text-sm text-gray-400 font-mono">
+                            {briefcase.goal_count} objectives • {briefcase.task_count} missions
+                          </p>
+                          <p className="text-xs text-gray-500 font-mono">
+                            Updated {new Date(briefcase.updated_at).toLocaleDateString()}
+                          </p>
+                        </div>
+                          <div className="flex items-center space-x-2">
+                          <Badge
+                            variant={briefcase.status === 'active' ? 'lime' : briefcase.status === 'completed' ? 'cyan' : 'purple'}
+                            className="rounded-none font-mono"
+                          >
+                            {briefcase.status}
+                          </Badge>
+                          <ArrowRight className="w-4 h-4 text-gray-400" />
+                        </div>
+                      </motion.div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <Briefcase className="w-12 h-12 text-gray-500 mx-auto mb-4" />
+                      <p className="text-gray-400 mb-2">No briefcases yet</p>
+                      <p className="text-sm text-gray-400 mb-4">
+                        Create your first briefcase to organize your missions and objectives
+                      </p>
+                      <Link href="/dashboard/briefcase">
+                        <CyberButton
+                          variant="primary"
+                          size="sm"
+                        >
+                          <Plus className="w-4 h-4 mr-2" />
+                          Create Briefcase
+                        </CyberButton>
+                      </Link>
+                    </div>
+                  )}
+                </div>
+              </HudBorder>
+            </motion.div>
+          </section>
+
+          {/* Agent Action Log */}
+          <section aria-labelledby="action-log-heading">
+            <h2 id="action-log-heading" className="sr-only">Agent Action Log</h2>
+            <motion.div variants={itemVariants}>
+              <HudBorder variant="hover" className="p-6 h-full">
+                <AgentActionLog actions={agentActions} />
+              </HudBorder>
+            </motion.div>
+          </section>
+        </div>
       </motion.div>
     </main>
   )

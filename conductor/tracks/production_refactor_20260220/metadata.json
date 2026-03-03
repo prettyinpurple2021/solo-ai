@@ -1,8 +1,0 @@
-{
-  "track_id": "production_refactor_20260220",
-  "type": "refactor",
-  "status": "new",
-  "created_at": "2026-02-21T01:11:00Z",
-  "updated_at": "2026-02-21T01:11:00Z",
-  "description": "refactor entire project to a production ready application with all implementations fully complete, no mock and no "for now.""
-}

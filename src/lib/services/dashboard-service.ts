@@ -12,6 +12,7 @@ import {
 } from '@/shared/db/schema';
 import { eq, and, gte, desc } from 'drizzle-orm';
 import { DashboardData } from '@/hooks/use-dashboard-data';
+import { AgentActionService } from './agent-action-service';
 
 export async function getDashboardData(userEmail: string): Promise<DashboardData | null> {
   const db = getDb();
@@ -38,7 +39,8 @@ export async function getDashboardData(userEmail: string): Promise<DashboardData
     todaysFocusSessions,
     goalsTotal,
     taskStats,
-    weeklyFocusSessions
+    weeklyFocusSessions,
+    agentActionsRaw
   ] = await Promise.all([
     // Today's Tasks
     db.select({
@@ -119,7 +121,10 @@ export async function getDashboardData(userEmail: string): Promise<DashboardData
     // Weekly Focus Stats
     db.select({ duration: focusSessions.duration_minutes })
     .from(focusSessions)
-    .where(and(eq(focusSessions.user_id, userId), gte(focusSessions.started_at, sevenDaysAgo)))
+    .where(and(eq(focusSessions.user_id, userId), gte(focusSessions.started_at, sevenDaysAgo))),
+
+    // Agent Actions
+    AgentActionService.getActions(userId, 10)
   ]);
 
   // 3. Processing Data
@@ -226,6 +231,14 @@ export async function getDashboardData(userEmail: string): Promise<DashboardData
       }
     })),
     recentBriefcases: formattedBriefcases,
+    agentActions: agentActionsRaw.map(a => ({
+      id: String(a.id),
+      actionType: a.actionType,
+      status: a.status,
+      agentId: a.agentId,
+      createdAt: a.createdAt.toISOString(),
+      error: a.error
+    })),
     weeklyFocus: {
       total_minutes: weeklyFocusSessions.reduce((acc, curr) => acc + (curr.duration || 0), 0),
       sessions_count: weeklyFocusSessions.length,

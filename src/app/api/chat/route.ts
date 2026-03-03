@@ -14,6 +14,7 @@ import { incrementConversationCount, trackAgentAccess } from '@/lib/usage-tracki
 import { openai } from '@ai-sdk/openai'
 import { streamText } from 'ai'
 import { RagService } from '@/lib/services/rag-service'
+import { toolRegistry } from '@/lib/agents/tools/registry'
 
 // Using Node.js runtime for database and complex operations
 export const runtime = 'nodejs'
@@ -157,8 +158,23 @@ export async function POST(request: NextRequest) {
       });
     });
 
+    // 4. Get tool manifest for agent execution
+    const toolManifest = toolRegistry.getToolManifest()
+
     // Call OpenAI Worker via service binding
-    const systemPrompt = `${agentPersonality} You are helping a SoloSuccess AI user. Be helpful, professional, and use frameworks when appropriate.${ragContext}${competitiveContextString}`
+    const systemPrompt = `${agentPersonality} 
+You are helping a SoloSuccess AI user. Be helpful, professional, and use frameworks when appropriate.
+
+${toolManifest}
+
+When you want to execute an action (like sending an email or scheduling a meeting), use the following format at the end of your response:
+[TOOL_CALL: name, {"param1": "value1", ...}]
+
+Example: To send an email, you might say "I've drafted that email for you. [TOOL_CALL: sendEmail, {"to": "user@example.com", "subject": "Hello", "body": "..."}]"
+
+Only use tools listed in the manifest above. The user will need to approve these actions before they are executed.
+
+${ragContext}${competitiveContextString}`
     
     // Get the service binding from the environment
     const env = process.env as unknown as Env

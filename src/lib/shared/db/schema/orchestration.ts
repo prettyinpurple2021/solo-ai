@@ -102,3 +102,23 @@ export const agentMemory = pgTable("agent_memory", {
 }, (table) => ({
   userIdAgentIdIdx: uniqueIndex("agent_memory_user_agent_idx").on(table.userId, table.agentId),
 }));
+
+// Agent Actions (For tracking tool use and human-in-the-loop approvals)
+export const agentActions = pgTable("agent_actions", {
+  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  agentId: varchar("agent_id", { length: 50 }).notNull(),
+  actionType: varchar("action_type", { length: 100 }).notNull(), // sendEmail, scheduleMeeting, etc.
+  status: varchar("status", { length: 50 }).default('pending_approval').notNull(), // pending_approval, approved, rejected, executing, completed, failed
+  payload: jsonb("payload").default({}).notNull(), // The parameters for the tool
+  result: jsonb("result").default({}), // The result of execution
+  error: text("error"),
+  requiresApproval: boolean("requires_approval").default(true).notNull(),
+  approvedAt: timestamp("approved_at"),
+  executedAt: timestamp("executed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index("agent_actions_user_id_idx").on(table.userId),
+  statusIdx: index("agent_actions_status_idx").on(table.status),
+}));

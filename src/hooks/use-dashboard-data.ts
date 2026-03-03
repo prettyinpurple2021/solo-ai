@@ -79,6 +79,14 @@ export interface DashboardData {
     created_at: string
     updated_at: string
   }>
+  agentActions: Array<{
+    id: string
+    actionType: string
+    status: string
+    agentId: string
+    createdAt: string
+    error: string | null
+  }>
   weeklyFocus: {
     total_minutes: number
     sessions_count: number

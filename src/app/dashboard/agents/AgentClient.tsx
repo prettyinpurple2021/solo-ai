@@ -18,6 +18,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
+import { AgentActionApproval } from "@/components/agents/AgentActionApproval"
 
 interface Message {
   id: string
@@ -151,6 +152,8 @@ export default function AgentClient({ initialConversations, userId }: AgentClien
     format: "txt"
   })
   const [isSaving, setIsSaving] = useState(false)
+  const [pendingAction, setPendingAction] = useState<any | null>(null)
+  
   const { toast } = useToast()
   const { track } = useAnalytics()
 
@@ -225,6 +228,9 @@ export default function AgentClient({ initialConversations, userId }: AgentClien
               return newMessages
             })
           }
+
+          // Check for tool calls in the final message
+          checkForToolCall(assistantMessage)
         }
       }
     } catch (error) {
@@ -238,6 +244,37 @@ export default function AgentClient({ initialConversations, userId }: AgentClien
       }])
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  /**
+   * Simple parser for [TOOL_CALL: name, params] pattern
+   */
+  const checkForToolCall = (content: string) => {
+    const toolCallRegex = /\[TOOL_CALL:\s*(\w+),\s*({.*})\]/;
+    const match = content.match(toolCallRegex);
+    
+    if (match) {
+      const toolName = match[1];
+      try {
+        const params = JSON.parse(match[2]);
+        
+        // In a real implementation, we would call a Server Action here
+        // to create the action in the database and get an ID.
+        // For now, we'll simulate the creation.
+        const mockAction = {
+          id: `pending-${Date.now()}`,
+          actionType: toolName,
+          status: 'pending_approval',
+          payload: params,
+          agentId: selectedAgent?.id || 'unknown',
+          createdAt: new Date().toISOString()
+        };
+        
+        setPendingAction(mockAction);
+      } catch (e) {
+        logError('Failed to parse tool call params:', e);
+      }
     }
   }
 
@@ -624,6 +661,15 @@ ${selectedMessageToSave.content}`
                                   <span className="text-sm text-gray-400 font-mono">Thinking...</span>
                                 </div>
                               </div>
+                            </div>
+                          )}
+
+                          {pendingAction && (
+                            <div className="flex justify-start max-w-[400px]">
+                              <AgentActionApproval 
+                                action={pendingAction} 
+                                onComplete={() => setPendingAction(null)}
+                              />
                             </div>
                           )}
                         </div>
