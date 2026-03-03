@@ -5,6 +5,21 @@ import { authenticateAction } from '@/lib/auth-server';
 import { AgentActionService } from '@/lib/services/agent-action-service';
 import { revalidatePath } from 'next/cache';
 
+export async function createAgentAction(data: {
+  agentId: string;
+  actionType: string;
+  payload: any;
+  requiresApproval?: boolean;
+}) {
+  const { user } = await authenticateAction();
+  if (!user) throw new Error("Unauthorized");
+
+  return await AgentActionService.createAction({
+    userId: user.id,
+    ...data
+  });
+}
+
 export async function approveAgentAction(actionId: string) {
   const { user } = await authenticateAction();
   if (!user) throw new Error("Unauthorized");

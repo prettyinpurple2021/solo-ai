@@ -19,6 +19,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { motion } from "framer-motion"
 import { AgentActionApproval } from "@/components/agents/AgentActionApproval"
+import { createAgentAction } from "@/lib/actions/agent-actions"
 
 interface Message {
   id: string
@@ -250,7 +251,7 @@ export default function AgentClient({ initialConversations, userId }: AgentClien
   /**
    * Simple parser for [TOOL_CALL: name, params] pattern
    */
-  const checkForToolCall = (content: string) => {
+  const checkForToolCall = async (content: string) => {
     const toolCallRegex = /\[TOOL_CALL:\s*(\w+),\s*({.*})\]/;
     const match = content.match(toolCallRegex);
     
@@ -259,19 +260,22 @@ export default function AgentClient({ initialConversations, userId }: AgentClien
       try {
         const params = JSON.parse(match[2]);
         
-        // In a real implementation, we would call a Server Action here
-        // to create the action in the database and get an ID.
-        // For now, we'll simulate the creation.
-        const mockAction = {
-          id: `pending-${Date.now()}`,
-          actionType: toolName,
-          status: 'pending_approval',
-          payload: params,
+        // Create the real action in the database
+        const result = await createAgentAction({
           agentId: selectedAgent?.id || 'unknown',
-          createdAt: new Date().toISOString()
-        };
-        
-        setPendingAction(mockAction);
+          actionType: toolName,
+          payload: params
+        });
+
+        if (result.success) {
+          setPendingAction(result.action);
+        } else {
+          toast({
+            title: "Tool Call Failed",
+            description: result.error || "Failed to initialize agent action.",
+            variant: "destructive"
+          });
+        }
       } catch (e) {
         logError('Failed to parse tool call params:', e);
       }
