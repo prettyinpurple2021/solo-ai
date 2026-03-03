@@ -18,7 +18,7 @@ SoloSuccess AI justifies its subscription value by offering a comprehensive "AI 
 ### 3. The Compliance Grid (Legal & Compliance Engine)
 - **Architecture:** RAG (Retrieval-Augmented Generation) pipeline.
 - **Vector Store:** Uses pgvector with OpenAI/Cohere embeddings for legal pattern matching.
-- **Logic:** Context-aware document generation based on a verified library of legal templates and user-specific business metadata.
+- **Logic:** Context-aware document generation with verified source citations based on a verified library of legal templates and user-specific business metadata.
 
 ### 4. The Neural Syndicate (Collaboration Engine)
 - **Pattern:** Blackboard architecture for multi-agent collaboration.
@@ -39,4 +39,4 @@ SoloSuccess AI justifies its subscription value by offering a comprehensive "AI 
 ### 3. Infrastructure & Scaling
 - **Database:** Drizzle ORM + PostgreSQL with transactional integrity for all multi-step agent operations.
 - **Payments:** Strict gatekeeping of features via Stripe subscription status checks in middleware and Server Actions.
-- **Security:** CSRF protection, input sanitization, and session-based authentication via @stackframe/stack.
+- **Security:** CSRF protection, input sanitization, and session-based authentication via NextAuth.js with JWT strategy.
