@@ -234,14 +234,20 @@ export async function POST(request: NextRequest) {
               controller.enqueue(encoder.encode(chunk))
             }
             
-            // Save the complete assistant message
+            // Extract and verify citations from the complete response
+            const verifiedCitations = RagService.extractCitations(assistantContent, ragResults);
+            
+            // Save the complete assistant message with verified citations in metadata
             await db.insert(chatMessages).values({
               id: assistantMessageId,
               conversation_id: conversationId,
               user_id: user.id,
               role: 'assistant',
               content: assistantContent,
-              metadata: { agentId: agentId || 'general' },
+              metadata: { 
+                agentId: agentId || 'general',
+                citations: verifiedCitations
+              },
               created_at: new Date()
             })
             

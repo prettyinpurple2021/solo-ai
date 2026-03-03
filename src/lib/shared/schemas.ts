@@ -53,6 +53,31 @@ export const BoardroomEventSchema = z.discriminatedUnion("type", [
 export type BoardroomEvent = z.infer<typeof BoardroomEventSchema>;
 
 /**
+ * Validates the collaborative blackboard state update.
+ */
+export const BlackboardUpdateSchema = z.object({
+  sessionId: z.string().uuid(),
+  agentId: z.string().min(1),
+  updates: z.record(z.string(), z.any()),
+  version: z.number().optional(),
+});
+
+export type BlackboardUpdate = z.infer<typeof BlackboardUpdateSchema>;
+
+/**
+ * Validates the full blackboard state structure.
+ */
+export const BlackboardStateSchema = z.object({
+  sessionId: z.string().uuid(),
+  content: z.record(z.string(), z.any()),
+  version: z.number(),
+  lastUpdatedBy: z.string().optional(),
+  updatedAt: z.string().datetime().optional(),
+});
+
+export type BlackboardState = z.infer<typeof BlackboardStateSchema>;
+
+/**
  * Chat related schemas
  */
 export const ChatMessageSchema = z.object({

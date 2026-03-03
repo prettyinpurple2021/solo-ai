@@ -68,3 +68,6 @@
     - [x] Implement E2E tests for Subscription Gating
     - [x] Implement E2E tests for the Collaborative Blackboard
 - [x] Task: Conductor - User Manual Verification 'Final Audit & Verification' (Protocol in workflow.md) (complete)
+
+## Phase: Review Fixes
+- [~] Task: Apply review suggestions

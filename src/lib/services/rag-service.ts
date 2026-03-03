@@ -66,4 +66,23 @@ export class RagService {
     
     return context;
   }
+
+  /**
+   * Extract and verify citations from agent response
+   */
+  static extractCitations(text: string, results: RagSearchResult[]): any[] {
+    const citationRegex = /\[Source (\d+)\]/g;
+    const matches = [...text.matchAll(citationRegex)];
+    const sourceIndices = [...new Set(matches.map(m => parseInt(m[1]) - 1))];
+    
+    return sourceIndices
+      .filter(idx => idx >= 0 && idx < results.length)
+      .map(idx => ({
+        sourceId: idx + 1,
+        title: results[idx].title,
+        entityType: results[idx].entityType,
+        entityId: results[idx].entityId,
+        link: results[idx].metadata?.url || results[idx].metadata?.path || null
+      }));
+  }
 }

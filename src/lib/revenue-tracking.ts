@@ -442,7 +442,7 @@ export class RevenueTrackingService {
         mrr,
         totalRevenue: currentRevenue,
         revenueGrowth: Math.round(revenueGrowth * 100) / 100,
-        revenueByPeriod: [], // TODO: implement multi-provider period aggregation
+        revenueByPeriod: await this.calculateRevenueByPeriod(userId, startDate, now),
         subscriptions: {
           active: activeCount,
           canceled: 0,
@@ -463,6 +463,91 @@ export class RevenueTrackingService {
         lastUpdated: new Date()
       }
     }
+  }
+
+  /**
+   * Calculate revenue grouped by period (e.g., daily) across all providers
+   */
+  private static async calculateRevenueByPeriod(
+    userId: string,
+    startDate: Date,
+    endDate: Date
+  ): Promise<Array<{ period: string; revenue: number; transactions: number }>> {
+    const connections = await this.getActiveConnections(userId)
+    const periodData: Record<string, { revenue: number; transactions: number }> = {}
+
+    // Initialize periods
+    const current = new Date(startDate)
+    while (current <= endDate) {
+      const day = current.toISOString().split('T')[0]
+      periodData[day] = { revenue: 0, transactions: 0 }
+      current.setDate(current.getDate() + 1)
+    }
+
+    for (const conn of connections) {
+      if (conn.provider === 'stripe' && conn.access_token) {
+        try {
+          const stripe = new Stripe(conn.access_token, { apiVersion: '2025-02-24.acacia' })
+          const charges = await stripe.charges.list({
+            created: {
+              gte: Math.floor(startDate.getTime() / 1000),
+              lte: Math.floor(endDate.getTime() / 1000)
+            },
+            limit: 100
+          })
+
+          for (const charge of charges.data) {
+            if (charge.status === 'succeeded' && charge.paid) {
+              const day = new Date(charge.created * 1000).toISOString().split('T')[0]
+              if (periodData[day]) {
+                periodData[day].revenue += charge.amount / 100
+                periodData[day].transactions += 1
+              }
+            }
+          }
+        } catch (err) {
+          logError('Stripe period aggregation failed:', err)
+        }
+      } else if (conn.provider === 'paypal') {
+        try {
+          let currentPage = 1
+          let hasMore = true
+          
+          while (hasMore) {
+            const response = await this.paypalRequest(conn, 'GET', '/v1/reporting/transactions', {
+              start_date: startDate.toISOString(),
+              end_date: endDate.toISOString(),
+              fields: 'transaction_info',
+              page_size: 500,
+              page: currentPage
+            })
+
+            const transactions = response.data.transaction_details || []
+            for (const t of transactions) {
+              const info = t.transaction_info
+              if (info && info.transaction_status === 'S') {
+                const day = new Date(info.transaction_initiation_date).toISOString().split('T')[0]
+                if (periodData[day]) {
+                  periodData[day].revenue += parseFloat(info.transaction_amount?.value || '0')
+                  periodData[day].transactions += 1
+                }
+              }
+            }
+            const totalPages = response.data.total_pages || 1
+            hasMore = currentPage < totalPages && transactions.length > 0
+            currentPage++
+          }
+        } catch (err) {
+          logError('PayPal period aggregation failed:', err)
+        }
+      }
+    }
+
+    return Object.entries(periodData).map(([period, data]) => ({
+      period,
+      revenue: Math.round(data.revenue * 100) / 100,
+      transactions: data.transactions
+    })).sort((a, b) => a.period.localeCompare(b.period))
   }
 
   /**

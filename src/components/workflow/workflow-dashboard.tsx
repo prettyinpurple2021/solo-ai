@@ -54,19 +54,23 @@ const INITIAL_STATS: WorkflowStats = {
 
 interface WorkflowDashboardProps {
     className?: string
+    initialStats?: WorkflowStats
+    initialWorkflows?: any[]
 }
 
 // Map PrimaryButton to CyberButton for compatibility
 const PrimaryButton = CyberButton
-export function WorkflowDashboard({ className = "" }: WorkflowDashboardProps) {
+export function WorkflowDashboard({ className = "", initialStats, initialWorkflows }: WorkflowDashboardProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'builder' | 'templates' | 'executions'>('overview')
-  const [stats, setStats] = useState<WorkflowStats>(INITIAL_STATS)
+  const [stats, setStats] = useState<WorkflowStats>(initialStats || INITIAL_STATS)
   const [selectedWorkflow, setSelectedWorkflow] = useState<Workflow | null>(null)
   
   const { toast } = useToast()
 
-  // Fetch stats on mount
+  // Fetch stats on mount if not provided
   useEffect(() => {
+    if (initialStats) return;
+    
     async function fetchStats() {
       try {
         const response = await fetch('/api/workflows/stats')
@@ -79,7 +83,7 @@ export function WorkflowDashboard({ className = "" }: WorkflowDashboardProps) {
       }
     }
     fetchStats()
-  }, [])
+  }, [initialStats])
 
 
 

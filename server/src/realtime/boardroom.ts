@@ -1,6 +1,6 @@
 import { Server as SocketServer } from "socket.io";
 import { logInfo, logError } from "../../utils/logger";
-import { BoardroomEventSchema } from "@/shared/schemas";
+import { BoardroomEventSchema, BlackboardUpdateSchema } from "@/shared/schemas";
 import { BlackboardManager } from "../services/boardroom/blackboard";
 import { z } from "zod";
 
@@ -30,16 +30,15 @@ export function setupBoardroomSocket(io: SocketServer) {
     });
 
     // Validated state update from agent or user
-    socket.on("update-state", async (data: { sessionId: string, updates: any, agentId: string }) => {
+    socket.on("update-state", async (data: any) => {
       try {
-        const { sessionId, updates, agentId } = data;
-        const validatedSessionId = z.string().uuid().parse(sessionId);
-        const validatedAgentId = z.string().min(1).parse(agentId);
+        const validated = BlackboardUpdateSchema.parse(data);
+        const { sessionId, updates, agentId } = validated;
 
-        const newState = await blackboard.updateState(validatedSessionId, updates, validatedAgentId);
+        const newState = await blackboard.updateState(sessionId, updates, agentId);
         
         // Broadcast new state to all participants in the session
-        boardroomNamespace.to(`session:${validatedSessionId}`).emit("state-updated", newState);
+        boardroomNamespace.to(`session:${sessionId}`).emit("state-updated", newState);
       } catch (error) {
         logError("Blackboard state update failed", { error, data });
         socket.emit("error", { message: "Failed to update collaborative state" });
