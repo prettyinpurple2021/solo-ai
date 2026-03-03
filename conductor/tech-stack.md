@@ -8,7 +8,7 @@
 
 ## Database & Persistence
 - **ORM:** Drizzle ORM for type-safe, performant SQL interactions.
-- **Primary Database:** PostgreSQL (Managed, with strict transactional integrity).
+- **Primary Database:** PostgreSQL (Managed, with strict transactional integrity, Row Level Security (RLS), and Postgres-level CHECK constraints).
 - **Vector Intelligence:** `pgvector` for RAG-based document retrieval and pattern matching.
 - **Caching/Queue (Optional/Planned):** Upstash Redis for high-speed state persistence and queueing.
 
