@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useSubscription } from '@/hooks/use-subscription';
 import { UpgradePrompt } from './UpgradePrompt';
