@@ -1,6 +1,7 @@
 import { headers } from 'next/headers'
 import { NextResponse } from 'next/server'
-import { getStripe, STRIPE_WEBHOOK_EVENTS, SUBSCRIPTION_TIERS } from '@/lib/stripe'
+import { getStripe, STRIPE_WEBHOOK_EVENTS } from '@/lib/stripe'
+import { SUBSCRIPTION_TIERS } from '@/lib/pricing'
 import { db } from '@/db'
 import { users, webhookEvents } from '@/shared/db/schema'
 import { eq } from 'drizzle-orm'

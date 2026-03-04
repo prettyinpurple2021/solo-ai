@@ -23,7 +23,7 @@ export default auth((req) => {
 
   // 1. Redirect unauthenticated users to sign-in page
   if (isProtectedPath && !isLoggedIn) {
-     const signInUrl = new URL('/auth/signin', req.url)
+     const signInUrl = new URL('/login', req.url)
      // Add callbackUrl to redirect back after login
      signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search)
      return NextResponse.redirect(signInUrl)

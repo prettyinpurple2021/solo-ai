@@ -1,6 +1,6 @@
 import { logError,} from '@/lib/logger'
 import { neon } from '@neondatabase/serverless'
-import { SUBSCRIPTION_TIERS } from '@/lib/stripe'
+import { SUBSCRIPTION_TIERS } from '@/lib/pricing'
 
 function getSql() {
   const url = process.env.DATABASE_URL

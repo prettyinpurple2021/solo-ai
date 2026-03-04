@@ -22,7 +22,6 @@ import { CyberButton } from "@/components/cyber/CyberButton"
 
 import { SubscriptionInfo } from "@/lib/subscription-utils"
 import Link from 'next/link'
-import { PRICE_IDS } from "@/lib/stripe"
 
 export default function BillingPage() {
   const { user, loading } = useAuth()
@@ -84,15 +83,10 @@ export default function BillingPage() {
     })
     
     try {
-      const priceId = tier === 'accelerator' ? PRICE_IDS.accelerator.monthly : 
-                      tier === 'dominator' ? PRICE_IDS.dominator.monthly : '';
-      
-      if (!priceId) throw new Error('Invalid tier selection');
-
       const response = await fetch('/api/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ priceId })
+        body: JSON.stringify({ tier })
       });
 
       const data = await response.json();

@@ -31,6 +31,10 @@ export async function POST(_req: NextRequest): Promise<NextResponse> {
 
         logInfo(`Creating billing portal session for user ${session.user.id}, customer: ${customerId}`)
 
+        if (!stripe) {
+            return NextResponse.json({ error: 'Stripe is not configured in this environment' }, { status: 500 })
+        }
+
         const portalSession = await stripe.billingPortal.sessions.create({
             customer: customerId,
             return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard/billing`,

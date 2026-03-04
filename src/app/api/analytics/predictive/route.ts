@@ -7,7 +7,7 @@ import { getDb } from '@/lib/database-client'
 import { users, tasks, goals, chatConversations, chatMessages, focusSessions, userSessions } from '@/shared/db/schema'
 import { eq, gte, lte, desc, count, and, not, isNull } from 'drizzle-orm'
 import { z } from 'zod'
-import { SUBSCRIPTION_TIERS } from '@/lib/stripe'
+import { SUBSCRIPTION_TIERS } from '@/lib/pricing'
 
 // Stripe types and some libs require Node.js built-ins; run on Node runtime
 export const runtime = 'nodejs'

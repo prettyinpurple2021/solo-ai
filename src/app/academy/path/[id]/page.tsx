@@ -16,7 +16,7 @@ export default async function PathPage({ params }: Props) {
   const { user } = await authenticateRequest();
   
   if (!user) {
-    redirect('/auth/signin');
+    redirect('/login');
   }
 
   // Await params for Next.js 16+ compatibility

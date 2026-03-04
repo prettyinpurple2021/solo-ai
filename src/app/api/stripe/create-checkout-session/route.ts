@@ -3,7 +3,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import {
-  stripe, createCheckoutSession, SUBSCRIPTION_TIERS,} from '@/lib/stripe'
+  stripe, createCheckoutSession} from '@/lib/stripe'
+import { SUBSCRIPTION_TIERS } from '@/lib/pricing'
 import { updateUserStripeCustomerId } from '@/lib/stripe-db-utils'
 import { z } from 'zod'
 

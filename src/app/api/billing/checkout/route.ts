@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { stripe } from '@/lib/stripe'
+import { PRICE_IDS } from '@/lib/pricing'
 import { logError, logInfo } from '@/lib/logger'
 
 export async function POST(req: NextRequest) {
@@ -10,13 +11,20 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        const { priceId } = await req.json()
+        const { tier } = await req.json()
+
+        const priceId = tier === 'accelerator' ? PRICE_IDS.accelerator.monthly : 
+                        tier === 'dominator' ? PRICE_IDS.dominator.monthly : '';
 
         if (!priceId) {
-            return NextResponse.json({ error: 'Price ID is required' }, { status: 400 })
+            return NextResponse.json({ error: 'Invalid plan selected or missing price ID' }, { status: 400 })
         }
 
-        logInfo(`Creating checkout session for user ${session.user.id}, price: ${priceId}`)
+        if (!stripe) {
+            return NextResponse.json({ error: 'Stripe is not configured in this environment' }, { status: 500 })
+        }
+
+        logInfo(`Creating checkout session for user ${session.user.id}, tier: ${tier}, price: ${priceId}`)
 
         const checkoutSession = await stripe.checkout.sessions.create({
             mode: 'subscription',
