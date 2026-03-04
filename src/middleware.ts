@@ -1,8 +1,11 @@
-import { auth } from "@/lib/auth"
+import NextAuth from "next-auth"
+import { authConfig } from "@/auth.config"
 import { NextResponse } from "next/server"
 import { TrafficService } from "@/lib/traffic-service"
 import { logError, logInfo } from "@/lib/logger"
 import { canAccess } from "@/lib/subscription-gating"
+
+const { auth } = NextAuth(authConfig)
 
 
 // Context7 Verified Implementation
