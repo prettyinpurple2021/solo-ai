@@ -55,3 +55,6 @@ server_console_audit.csv
 railway-deploy/build-dist/
 railway-deploy/node_modules/
 railway-deploy/*.txt
+
+# Playwright test artifacts
+test-results/
