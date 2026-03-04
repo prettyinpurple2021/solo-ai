@@ -739,5 +739,6 @@ export default function IntelligenceClient({ initialData, userId }: Intelligence
         </motion.div>
       </motion.div>
     </div>
+    </FeatureGate>
   )
 }

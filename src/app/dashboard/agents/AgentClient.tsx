@@ -336,11 +336,8 @@ export default function AgentClient({ initialConversations, userId }: AgentClien
     
     // Create conversation content
     const conversationContent = messages.map(msg => 
-      `[${msg.role.toUpperCase()}] ${formatTime(msg.timestamp)}:
-${msg.content}
-`
-    ).join('
-')
+      `[${msg.role.toUpperCase()}] ${formatTime(msg.timestamp)}:\n${msg.content}\n`
+    ).join('\n')
     
     const mockConversationMessage: Message = {
       id: 'conversation-export',

@@ -51,11 +51,9 @@ export class AgentToolRegistry {
    * Generates a tool description for the LLM system prompt
    */
   public getToolManifest(): string {
-    let manifest = "AVAILABLE TOOLS:
-";
+    let manifest = "AVAILABLE TOOLS:\n";
     this.getAllTools().forEach(tool => {
-      manifest += `- ${tool.name}: ${tool.description}. JSON Schema for parameters: ${JSON.stringify(this.zodToSchema(tool.schema))}
-`;
+      manifest += `- ${tool.name}: ${tool.description}. JSON Schema for parameters: ${JSON.stringify(this.zodToSchema(tool.schema))}\n`;
     });
     return manifest;
   }
