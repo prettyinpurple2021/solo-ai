@@ -1,6 +1,5 @@
 
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
-import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
 // Workflows table
@@ -78,7 +77,7 @@ export const templateDownloads = pgTable('template_downloads', {
 
 // Collaboration Sessions table
 export const collaborationSessions = pgTable('collaboration_sessions', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 255 }).notNull(),
   goal: text('goal').notNull(),
@@ -93,7 +92,7 @@ export const collaborationSessions = pgTable('collaboration_sessions', {
 
 // Collaboration Participants table
 export const collaborationParticipants = pgTable('collaboration_participants', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   session_id: text('session_id').notNull().references(() => collaborationSessions.id, { onDelete: 'cascade' }),
   agent_id: varchar('agent_id', { length: 50 }).notNull(), // e.g., 'roxy', 'echo'
   role: varchar('role', { length: 50 }).default('member').notNull(),
@@ -105,7 +104,7 @@ export const collaborationParticipants = pgTable('collaboration_participants', {
 
 // Collaboration Messages table
 export const collaborationMessages = pgTable('collaboration_messages', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   session_id: text('session_id').notNull().references(() => collaborationSessions.id, { onDelete: 'cascade' }),
   from_agent_id: varchar('from_agent_id', { length: 50 }).notNull(), // 'user' or agent_id
   content: text('content').notNull(),
@@ -119,7 +118,7 @@ export const collaborationMessages = pgTable('collaboration_messages', {
 
 // Collaboration Checkpoints table
 export const collaborationCheckpoints = pgTable('collaboration_checkpoints', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   session_id: text('session_id').notNull().references(() => collaborationSessions.id, { onDelete: 'cascade' }),
   timestamp: timestamp('timestamp').defaultNow().notNull(),
   state: jsonb('state').notNull(),
@@ -192,7 +191,7 @@ export const notificationJobs = pgTable('notification_jobs', {
 
 // Chat History (for long-term storage and retrieval)
 export const chatHistory = pgTable("chat_history", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   conversationId: varchar("conversation_id", { length: 255 }).notNull(),
   agentId: varchar("agent_id", { length: 50 }).notNull(),

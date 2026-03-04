@@ -1,11 +1,10 @@
 
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
-import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
 // Posts table
 export const posts = pgTable('posts', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   author_id: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   content: text('content').notNull(),
   image: varchar('image', { length: 1000 }),
@@ -22,7 +21,7 @@ export const posts = pgTable('posts', {
 }));
 
 export const postComments = pgTable('post_comments', {
-    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     post_id: text('post_id').notNull().references(() => posts.id, { onDelete: 'cascade' }),
     author_id: text('author_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     content: text('content').notNull(),

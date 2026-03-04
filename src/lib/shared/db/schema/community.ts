@@ -1,9 +1,8 @@
 import { integer, pgTable, varchar, text, timestamp, boolean, index, primaryKey, foreignKey, jsonb } from 'drizzle-orm/pg-core';
-import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
 export const communityTopics = pgTable('community_topics', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar('name', { length: 50 }).notNull().unique(), // e.g. "General", "Wins", "Marketing"
   slug: varchar('slug', { length: 50 }).notNull().unique(), // e.g. "general", "wins"
   description: text('description'),
@@ -14,7 +13,7 @@ export const communityTopics = pgTable('community_topics', {
 });
 
 export const communityPosts = pgTable('community_posts', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   topic_id: text('topic_id').notNull().references(() => communityTopics.id, { onDelete: 'cascade' }),
   title: varchar('title', { length: 255 }).notNull(),
@@ -36,7 +35,7 @@ export const communityPosts = pgTable('community_posts', {
 }));
 
 export const communityComments = pgTable('community_comments', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   post_id: text('post_id').notNull().references(() => communityPosts.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   parent_id: text('parent_id'), 

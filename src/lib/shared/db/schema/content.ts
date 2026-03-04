@@ -1,11 +1,10 @@
 
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum, vector } from 'drizzle-orm/pg-core';
-import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
 // Pitch Decks table
 export const pitchDecks = pgTable("pitch_decks", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   title: varchar("title", { length: 255 }).notNull(),
   description: text("description"),
@@ -25,7 +24,7 @@ export const pitchDecks = pgTable("pitch_decks", {
 
 // Slides table
 export const slides = pgTable("slides", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   deckId: text("deck_id").notNull().references(() => pitchDecks.id, { onDelete: 'cascade' }),
   order: integer("order").notNull(),
   layout: varchar("layout", { length: 50 }).notNull().default('blank'),
@@ -42,7 +41,7 @@ export const slides = pgTable("slides", {
 
 // Slide Components table
 export const slideComponents = pgTable("slide_components", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   slideId: text("slide_id").notNull().references(() => slides.id, { onDelete: 'cascade' }),
   type: varchar("type", { length: 50 }).notNull(),
   content: jsonb("content").notNull(),
@@ -58,7 +57,7 @@ export const slideComponents = pgTable("slide_components", {
 
 // Training History
 export const trainingHistory = pgTable("training_history", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   moduleId: text("module_id").notNull(),
   score: integer("score"),
@@ -71,7 +70,7 @@ export const trainingHistory = pgTable("training_history", {
 
 // Code Snippets
 export const codeSnippets = pgTable("code_snippets", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   title: varchar("title", { length: 255 }).notNull(),
   language: varchar("language", { length: 50 }).notNull(),
@@ -86,7 +85,7 @@ export const codeSnippets = pgTable("code_snippets", {
 
 // Document Folders table
 export const documentFolders = pgTable('document_folders', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   parent_id: text('parent_id'),
   name: varchar('name', { length: 255 }).notNull(),
@@ -110,7 +109,7 @@ export const documentFolders = pgTable('document_folders', {
 
 // Documents table
 export const documents = pgTable('documents', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   folder_id: text('folder_id').references(() => documentFolders.id, { onDelete: 'set null' }),
   name: varchar('name', { length: 255 }).notNull(),
@@ -144,7 +143,7 @@ export const documents = pgTable('documents', {
 
 // Document Versions table
 export const documentVersions = pgTable('document_versions', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   document_id: text('document_id').notNull().references(() => documents.id, { onDelete: 'cascade' }),
   version_number: integer('version_number').notNull(),
   name: varchar('name', { length: 255 }).notNull(),
@@ -164,7 +163,7 @@ export const documentVersions = pgTable('document_versions', {
 
 // Document Permissions table
 export const documentPermissions = pgTable('document_permissions', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   document_id: text('document_id').notNull().references(() => documents.id, { onDelete: 'cascade' }),
   user_id: text('user_id').references(() => users.id, { onDelete: 'cascade' }),
   email: varchar('email', { length: 255 }),
@@ -182,7 +181,7 @@ export const documentPermissions = pgTable('document_permissions', {
 
 // Document Share Links table
 export const documentShareLinks = pgTable('document_share_links', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   document_id: text('document_id').notNull().references(() => documents.id, { onDelete: 'cascade' }),
   created_by: text('created_by').notNull().references(() => users.id),
   url: varchar('url', { length: 1000 }).notNull(),
@@ -204,7 +203,7 @@ export const documentShareLinks = pgTable('document_share_links', {
 
 // Document Activity table
 export const documentActivity = pgTable('document_activity', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   document_id: text('document_id').notNull().references(() => documents.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   action: varchar('action', { length: 50 }).notNull(),
@@ -217,7 +216,7 @@ export const documentActivity = pgTable('document_activity', {
 
 // Learning Paths table
 export const learningPaths = pgTable('learning_paths', {
-    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     title: varchar('title', { length: 255 }).notNull(),
     description: text('description').notNull(),
     category: varchar('category', { length: 100 }).notNull(), // marketing, finance, etc.
@@ -232,7 +231,7 @@ export const learningPaths = pgTable('learning_paths', {
 }));
   
 export const learningModules = pgTable('learning_modules', {
-    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     path_id: text('path_id').notNull().references(() => learningPaths.id, { onDelete: 'cascade' }),
     title: varchar('title', { length: 255 }).notNull(),
     description: text('description'),
@@ -250,7 +249,7 @@ export const learningModules = pgTable('learning_modules', {
 }));
   
 export const userLearningProgress = pgTable('user_learning_progress', {
-    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     module_id: text('module_id').notNull().references(() => learningModules.id, { onDelete: 'cascade' }),
     status: varchar('status', { length: 50 }).default('not_started').notNull(), // in_progress, completed
@@ -268,7 +267,7 @@ export const userLearningProgress = pgTable('user_learning_progress', {
 export const feedbackTypeEnum = pgEnum('feedback_type', ['bug', 'feature_request', 'comment', 'error', 'other', 'post_report']);
 export const feedbackStatusEnum = pgEnum('feedback_status', ['pending', 'in_progress', 'resolved', 'closed', 'dismissed']);
 export const feedback = pgTable('feedback', {
-    id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     user_id: text('user_id').references(() => users.id, { onDelete: 'set null' }),
     type: feedbackTypeEnum('type').notNull(),
     title: text('title'),

@@ -1,6 +1,5 @@
 
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum, vector, serial } from 'drizzle-orm/pg-core';
-import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
 // Contacts
@@ -50,7 +49,7 @@ export const pivotAnalyses = pgTable("pivot_analyses", {
 
 // Business Context (Unified Context for Agents)
 export const businessContext = pgTable("business_context", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   contextType: varchar("context_type", { length: 50 }).notNull(), // goals, values, mission, operations
   content: text("content").notNull(),
@@ -63,7 +62,7 @@ export const businessContext = pgTable("business_context", {
 
 // Daily Intelligence
 export const dailyIntelligence = pgTable("daily_intelligence", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   date: timestamp("date").defaultNow().notNull(),
   summary: text("summary").notNull(),
@@ -80,7 +79,7 @@ export const dailyIntelligence = pgTable("daily_intelligence", {
 
 // Market Intelligence Cache
 export const marketIntelligenceCache = pgTable("market_intelligence_cache", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   query: text("query").notNull(),
   results: jsonb("results").notNull(),
   source: varchar("source", { length: 50 }).notNull(),
@@ -92,7 +91,7 @@ export const marketIntelligenceCache = pgTable("market_intelligence_cache", {
 
 // Competitor News Articles
 export const competitorNewsArticles = pgTable("competitor_news_articles", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   competitor_id: text("competitor_id").notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   title: text("title").notNull(),
   url: text("url").notNull(),
@@ -106,7 +105,7 @@ export const competitorNewsArticles = pgTable("competitor_news_articles", {
 
 // Competitor Social Mentions
 export const competitorSocialMentions = pgTable("competitor_social_mentions", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   competitor_id: text("competitor_id").notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   platform: varchar("platform", { length: 50 }).notNull(),
   content: text("content").notNull(),
@@ -139,7 +138,7 @@ export const searchIndex = pgTable("search_index", {
 
 // Competitors table (Simple)
 export const competitors = pgTable('competitors', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 255 }).notNull(),
   website: varchar('website', { length: 500 }),
@@ -157,7 +156,7 @@ export const competitors = pgTable('competitors', {
 
 // Competitor Profiles table (Detailed)
 export const competitorProfiles = pgTable('competitor_profiles', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 255 }).notNull(),
   domain: varchar('domain', { length: 255 }),
@@ -190,7 +189,7 @@ export const competitorProfiles = pgTable('competitor_profiles', {
 
 // Intelligence Data table
 export const intelligenceData = pgTable('intelligence_data', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   competitor_id: text('competitor_id').notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   source_type: varchar('source_type', { length: 50 }).notNull(),
@@ -219,7 +218,7 @@ export const intelligenceData = pgTable('intelligence_data', {
 
 // Competitor Alerts table
 export const competitorAlerts = pgTable('competitor_alerts', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   competitor_id: text('competitor_id').notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   intelligence_id: text('intelligence_id').references(() => intelligenceData.id, { onDelete: 'set null' }),
@@ -247,7 +246,7 @@ export const competitorAlerts = pgTable('competitor_alerts', {
 
 // Scraping Jobs table
 export const scrapingJobs = pgTable('scraping_jobs', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   competitor_id: text('competitor_id').notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   job_type: varchar('job_type', { length: 50 }).notNull(),
@@ -275,7 +274,7 @@ export const scrapingJobs = pgTable('scraping_jobs', {
 
 // Scraping Job Results table
 export const scrapingJobResults = pgTable('scraping_job_results', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   job_id: text('job_id').notNull().references(() => scrapingJobs.id, { onDelete: 'cascade' }),
   success: boolean('success').notNull(),
   data: jsonb('data'),
@@ -293,7 +292,7 @@ export const scrapingJobResults = pgTable('scraping_job_results', {
 
 // Competitive Opportunities table
 export const competitiveOpportunities = pgTable('competitive_opportunities', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   competitor_id: text('competitor_id').notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
   intelligence_id: text('intelligence_id').references(() => intelligenceData.id, { onDelete: 'set null' }),
@@ -333,7 +332,7 @@ export const competitiveOpportunities = pgTable('competitive_opportunities', {
 
 // Opportunity Actions table
 export const opportunityActions = pgTable('opportunity_actions', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   opportunity_id: text('opportunity_id').notNull().references(() => competitiveOpportunities.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   action_type: varchar('action_type', { length: 50 }).notNull(),
@@ -361,7 +360,7 @@ export const opportunityActions = pgTable('opportunity_actions', {
 
 // Opportunity Metrics table
 export const opportunityMetrics = pgTable('opportunity_metrics', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   opportunity_id: text('opportunity_id').notNull().references(() => competitiveOpportunities.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   metric_name: varchar('metric_name', { length: 100 }).notNull(),

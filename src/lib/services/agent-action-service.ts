@@ -1,5 +1,5 @@
-
 import { db } from '@/db';
+import { getDb } from '@/lib/database-client';
 import { agentActions } from '@/shared/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { EmailService } from '../email-service';
@@ -101,7 +101,8 @@ export class AgentActionService {
    * Internal method to execute an approved action
    */
   private static async executeAction(actionId: string) {
-    const action = await db.query.agentActions.findFirst({
+    const database = getDb();
+    const action = await database.query.agentActions.findFirst({
       where: eq(agentActions.id, actionId)
     });
 
@@ -168,7 +169,8 @@ export class AgentActionService {
    * Get actions for a user
    */
   static async getActions(userId: string, limit = 20) {
-    return await db.query.agentActions.findMany({
+    const database = getDb();
+    return await database.query.agentActions.findMany({
       where: eq(agentActions.userId, userId),
       orderBy: [desc(agentActions.createdAt)],
       limit

@@ -1,10 +1,9 @@
 import { pgTable, text, varchar, timestamp, jsonb, integer, index } from "drizzle-orm/pg-core";
-import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
 // Marketing Campaigns
 export const campaigns = pgTable("campaigns", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: varchar("name", { length: 255 }).notNull(),
   status: varchar("status", { length: 50 }).default('planned').notNull(), // planned, active, completed, paused
@@ -20,7 +19,7 @@ export const campaigns = pgTable("campaigns", {
 
 // Creative Assets
 export const creativeAssets = pgTable("creative_assets", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   campaignId: text("campaign_id").references(() => campaigns.id, { onDelete: 'set null' }),
   title: varchar("title", { length: 255 }).notNull(),

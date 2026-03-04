@@ -1,11 +1,10 @@
 
 import { pgTable, text, varchar, timestamp, jsonb, index, foreignKey, serial, integer, boolean, uniqueIndex } from "drizzle-orm/pg-core";
-import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
 // Boardroom Sessions
 export const boardroomSessions = pgTable("boardroom_sessions", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: varchar("name", { length: 255 }).notNull(),
   goal: text("goal").notNull(),
@@ -19,7 +18,7 @@ export const boardroomSessions = pgTable("boardroom_sessions", {
 
 // Boardroom Messages
 export const boardroomMessages = pgTable("boardroom_messages", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   sessionId: text("session_id").notNull().references(() => boardroomSessions.id, { onDelete: 'cascade' }),
   agentId: varchar("agent_id", { length: 50 }).notNull(),
   role: varchar("role", { length: 20 }).notNull(),
@@ -33,7 +32,7 @@ export const boardroomMessages = pgTable("boardroom_messages", {
 
 // War Room Sessions
 export const warRoomSessions = pgTable("war_room_sessions", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   topic: text("topic").notNull(),
   status: varchar("status", { length: 50 }).default('active').notNull(),
@@ -49,7 +48,7 @@ export const warRoomSessions = pgTable("war_room_sessions", {
 
 // Agent Instructions
 export const agentInstructions = pgTable("agent_instructions", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   agentId: varchar("agent_id", { length: 50 }).notNull(),
   agentRole: varchar("agent_role", { length: 50 }),
@@ -65,7 +64,7 @@ export const agentInstructions = pgTable("agent_instructions", {
 
 // Tribe Blueprints
 export const tribeBlueprints = pgTable("tribe_blueprints", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: varchar("name", { length: 255 }).notNull(),
   description: text("description"),
@@ -79,7 +78,7 @@ export const tribeBlueprints = pgTable("tribe_blueprints", {
 
 // Board Reports
 export const boardReports = pgTable("board_reports", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   ceoScore: integer("ceo_score"),
   consensus: text("consensus"),
@@ -92,7 +91,7 @@ export const boardReports = pgTable("board_reports", {
 
 // Agent Memory (Long-term persistent state for agents)
 export const agentMemory = pgTable("agent_memory", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   agentId: varchar("agent_id", { length: 50 }).notNull(),
   memory: jsonb("memory").default({}).notNull(), // Stores context, history, preferences, relationships
@@ -105,7 +104,7 @@ export const agentMemory = pgTable("agent_memory", {
 
 // Agent Actions (For tracking tool use and human-in-the-loop approvals)
 export const agentActions = pgTable("agent_actions", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   agentId: varchar("agent_id", { length: 50 }).notNull(),
   actionType: varchar("action_type", { length: 100 }).notNull(), // sendEmail, scheduleMeeting, etc.

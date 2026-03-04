@@ -1,12 +1,10 @@
-
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
-import { v4 as uuidv4 } from 'uuid';
 import { relations } from 'drizzle-orm';
 import { type AdapterAccount } from "next-auth/adapters" // Assuming this is needed if strictly typing, but Drizzle usually infers.
 
 // Users table - NextAuth compatible
 export const users = pgTable('users', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: text('name'),
   email: text('email').notNull().unique(),
   stackUserId: text('stack_user_id').unique(),
@@ -204,7 +202,7 @@ export const userApiKeys = pgTable('user_api_keys', {
 
 // Notifications
 export const notifications = pgTable("notifications", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   type: varchar("type", { length: 50 }).notNull(), // alert, reminder, achievement, system
   title: varchar("title", { length: 255 }).notNull(),
@@ -221,7 +219,7 @@ export const notifications = pgTable("notifications", {
 
 // Notification Preferences
 export const notificationPreferences = pgTable("notification_preferences", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   email: boolean("email").default(true),
   push: boolean("push").default(true),
@@ -240,7 +238,7 @@ export const notificationPreferences = pgTable("notification_preferences", {
 
 // Admin Actions
 export const adminActions = pgTable("admin_actions", {
-  id: text("id").primaryKey().$defaultFn(() => uuidv4()),
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
   adminId: text("admin_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   action: varchar("action", { length: 100 }).notNull(),
   targetUserId: text("target_user_id").references(() => users.id, { onDelete: 'set null' }),

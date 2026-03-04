@@ -221,7 +221,7 @@ export async function getDashboardData(userEmail: string): Promise<DashboardData
     recentConversations: formattedConversations,
     recentAchievements: recentAchievementsRaw.map(r => ({
       id: String(r.id),
-      earned_at: r.earned_at?.toISOString() || new Date().toISOString(),
+      earned_at: r.earned_at ? new Date(r.earned_at).toISOString() : new Date().toISOString(),
       achievement: {
         name: r.name!,
         title: r.title!,
@@ -236,7 +236,7 @@ export async function getDashboardData(userEmail: string): Promise<DashboardData
       actionType: a.actionType,
       status: a.status,
       agentId: a.agentId,
-      createdAt: a.createdAt.toISOString(),
+      createdAt: a.createdAt ? new Date(a.createdAt).toISOString() : new Date().toISOString(),
       error: a.error
     })),
     weeklyFocus: {

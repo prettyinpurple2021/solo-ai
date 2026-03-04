@@ -1,11 +1,10 @@
 
 import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
-import { v4 as uuidv4 } from 'uuid';
 import { users } from './users';
 
 // User Competitive Stats table for gamification
 export const userCompetitiveStats = pgTable('user_competitive_stats', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   competitors_monitored: integer('competitors_monitored').default(0).notNull(),
   intelligence_gathered: integer('intelligence_gathered').default(0).notNull(),
@@ -24,7 +23,7 @@ export const userCompetitiveStats = pgTable('user_competitive_stats', {
 
 // Challenges table
 export const challenges = pgTable('challenges', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description').notNull(),
   emoji: varchar('emoji', { length: 10 }).default('🏆').notNull(),
@@ -46,7 +45,7 @@ export const challenges = pgTable('challenges', {
 
 // Challenge Participants table
 export const challengeParticipants = pgTable('challenge_participants', {
-  id: text('id').primaryKey().$defaultFn(() => uuidv4()),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   challenge_id: text('challenge_id').notNull().references(() => challenges.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   status: varchar('status', { length: 20 }).default('joined').notNull(), // joined, completed, failed
