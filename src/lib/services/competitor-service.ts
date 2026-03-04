@@ -4,7 +4,8 @@ import {
   competitorProfiles, 
   intelligenceData, 
   competitiveOpportunities, 
-  competitorAlerts 
+  competitorAlerts,
+  competitorActivities
 } from '@/shared/db/schema';
 import { eq, desc, and, count, gte, sql } from 'drizzle-orm';
 

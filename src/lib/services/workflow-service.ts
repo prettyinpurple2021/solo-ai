@@ -1,6 +1,6 @@
 
 import { db } from '@/db';
-import { workflows, workflowExecutions, templates } from '@/shared/db/schema';
+import { workflows, workflowExecutions, workflowTemplates } from '@/shared/db/schema';
 import { sql, desc, eq, and } from 'drizzle-orm';
 
 export interface WorkflowStats {
@@ -28,7 +28,7 @@ export async function getWorkflowDashboardData(userId: string): Promise<Workflow
     db.select({
       totalWorkflows: sql<number>`count(${workflows.id})`,
       activeWorkflows: sql<number>`sum(case when ${workflows.status} = 'active' then 1 else 0 end)`
-    }).from(workflows).where(eq(workflows.userId, userId)),
+    }).from(workflows).where(eq(workflows.user_id, userId)),
 
     // 2. Execution stats
     db.select({
@@ -37,26 +37,26 @@ export async function getWorkflowDashboardData(userId: string): Promise<Workflow
       failed: sql<number>`sum(case when ${workflowExecutions.status} = 'failed' then 1 else 0 end)`,
       running: sql<number>`sum(case when ${workflowExecutions.status} = 'running' then 1 else 0 end)`,
       avgDuration: sql<number>`avg(${workflowExecutions.duration})`
-    }).from(workflowExecutions).where(eq(workflowExecutions.userId, userId)),
+    }).from(workflowExecutions).where(eq(workflowExecutions.user_id, userId)),
 
     // 3. Popular templates
     db.select()
-      .from(templates)
-      .orderBy(desc(templates.usage_count))
+      .from(workflowTemplates)
+      .orderBy(desc(workflowTemplates.usage_count))
       .limit(5),
       
     // 4. Recent activity
     db.select()
       .from(workflowExecutions)
-      .where(eq(workflowExecutions.userId, userId))
+      .where(eq(workflowExecutions.user_id, userId))
       .orderBy(desc(workflowExecutions.started_at))
       .limit(10),
 
     // 5. User workflows
     db.select()
       .from(workflows)
-      .where(eq(workflows.userId, userId))
-      .orderBy(desc(workflows.updatedAt))
+      .where(eq(workflows.user_id, userId))
+      .orderBy(desc(workflows.updated_at))
   ]);
 
   const stats: WorkflowStats = {
@@ -72,9 +72,9 @@ export async function getWorkflowDashboardData(userId: string): Promise<Workflow
       : 0,
     popularTemplates: popularTemplates.map(t => ({
       id: t.id,
-      name: t.title,
+      name: t.name,
       downloads: t.usage_count || 0,
-      rating: Number(t.rating || 0)
+      rating: 5
     })),
     recentActivity: recentActivity.map(a => ({
       id: a.id,

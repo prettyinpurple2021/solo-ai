@@ -26,6 +26,7 @@ export function HudTicker({ label, value, subValue, trend, prefix = "", suffix =
       }, 1000)
       return () => clearTimeout(timer)
     }
+    return undefined
   }, [value, prevValue])
 
   return (

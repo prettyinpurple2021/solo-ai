@@ -15,7 +15,7 @@ jest.mock('@/db', () => ({
     limit: jest.fn().mockReturnThis(),
     query: {
       intelligenceData: {
-        findMany: jest.fn().mockResolvedValue([])
+        findMany: jest.fn<any>().mockResolvedValue([])
       }
     }
   }

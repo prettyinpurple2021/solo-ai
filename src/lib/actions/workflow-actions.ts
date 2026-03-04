@@ -20,7 +20,7 @@ const workflowSchema = z.object({
   settings: z.record(z.any()).optional(),
   category: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  templateId: z.string().uuid().nullable().optional()
+  templateId: z.coerce.number().nullable().optional()
 });
 
 export async function createWorkflow(data: any) {
@@ -31,13 +31,13 @@ export async function createWorkflow(data: any) {
     const validatedData = workflowSchema.parse(data);
 
     const [newWorkflow] = await db.insert(workflows).values({
-      userId: user.id,
+      user_id: user.id,
       name: validatedData.name,
       description: validatedData.description || '',
       version: '1.0.0',
       status: 'draft',
-      triggerType: validatedData.triggerType,
-      triggerConfig: validatedData.triggerConfig || {},
+      trigger_type: validatedData.triggerType,
+      trigger_config: validatedData.triggerConfig || {},
       nodes: validatedData.nodes || [],
       edges: validatedData.edges || [],
       variables: validatedData.variables || {},
@@ -51,7 +51,7 @@ export async function createWorkflow(data: any) {
       },
       category: validatedData.category || 'general',
       tags: validatedData.tags || [],
-      templateId: validatedData.templateId
+      template_id: validatedData.templateId
     }).returning();
 
     if (validatedData.templateId) {
@@ -69,20 +69,31 @@ export async function createWorkflow(data: any) {
   }
 }
 
-export async function updateWorkflow(id: string, data: any) {
+export async function updateWorkflow(id: string | number, data: any) {
   const { user } = await authenticateAction();
   if (!user) throw new Error("Unauthorized");
+
+  const workflowId = typeof id === 'string' ? parseInt(id, 10) : id;
 
   try {
     const updates = workflowSchema.partial().parse(data);
     
-    // Map fields from camelCase to database schema if needed (Drizzle handles this if configured correctly)
+    const dbUpdates: any = { updated_at: new Date() };
+    if (updates.name !== undefined) dbUpdates.name = updates.name;
+    if (updates.description !== undefined) dbUpdates.description = updates.description;
+    if (updates.triggerType !== undefined) dbUpdates.trigger_type = updates.triggerType;
+    if (updates.triggerConfig !== undefined) dbUpdates.trigger_config = updates.triggerConfig;
+    if (updates.nodes !== undefined) dbUpdates.nodes = updates.nodes;
+    if (updates.edges !== undefined) dbUpdates.edges = updates.edges;
+    if (updates.variables !== undefined) dbUpdates.variables = updates.variables;
+    if (updates.settings !== undefined) dbUpdates.settings = updates.settings;
+    if (updates.category !== undefined) dbUpdates.category = updates.category;
+    if (updates.tags !== undefined) dbUpdates.tags = updates.tags;
+    if (updates.templateId !== undefined) dbUpdates.template_id = updates.templateId;
+
     const [updated] = await db.update(workflows)
-      .set({
-        ...updates,
-        updatedAt: new Date()
-      } as any)
-      .where(and(eq(workflows.id, id), eq(workflows.userId, user.id)))
+      .set(dbUpdates)
+      .where(and(eq(workflows.id, workflowId), eq(workflows.user_id, user.id)))
       .returning();
 
     if (!updated) return { success: false, error: "Workflow not found" };
@@ -95,13 +106,15 @@ export async function updateWorkflow(id: string, data: any) {
   }
 }
 
-export async function deleteWorkflow(id: string) {
+export async function deleteWorkflow(id: string | number) {
   const { user } = await authenticateAction();
   if (!user) throw new Error("Unauthorized");
 
+  const workflowId = typeof id === 'string' ? parseInt(id, 10) : id;
+
   try {
     const [deleted] = await db.delete(workflows)
-      .where(and(eq(workflows.id, id), eq(workflows.userId, user.id)))
+      .where(and(eq(workflows.id, workflowId), eq(workflows.user_id, user.id)))
       .returning();
 
     if (!deleted) return { success: false, error: "Workflow not found" };

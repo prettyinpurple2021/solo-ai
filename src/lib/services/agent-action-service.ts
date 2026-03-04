@@ -2,7 +2,7 @@
 import { db } from '@/db';
 import { agentActions } from '@/shared/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
-import { EmailService } from './email-service';
+import { EmailService } from '../email-service';
 import { GoogleCalendarService } from './google-calendar-service';
 import { logError, logInfo } from '@/lib/logger';
 import { toolRegistry } from '../agents/tools/registry';

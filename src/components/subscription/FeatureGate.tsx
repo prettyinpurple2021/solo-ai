@@ -13,7 +13,8 @@ export type FeatureKey =
     | 'strategy-nexus'
     | 'unlimited-agents'
     | 'pro-agents'
-    | 'elite-agents';
+    | 'elite-agents'
+    | 'custom-agent-builder';
 
 const FEATURE_REQUIREMENTS: Record<FeatureKey, Tier> = {
     'war-room': 'dominator',
@@ -24,7 +25,8 @@ const FEATURE_REQUIREMENTS: Record<FeatureKey, Tier> = {
     'strategy-nexus': 'dominator',
     'unlimited-agents': 'accelerator',
     'pro-agents': 'accelerator',
-    'elite-agents': 'dominator'
+    'elite-agents': 'dominator',
+    'custom-agent-builder': 'accelerator'
 };
 
 const TIER_LEVELS: Record<Tier, number> = {
