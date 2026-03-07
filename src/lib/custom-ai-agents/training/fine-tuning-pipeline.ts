@@ -175,7 +175,7 @@ export class FineTuningPipeline {
     return shuffled
   }
 
-  private async getOrCreateWorkflowId(userId: string, agentId: string): Promise<number> {
+  private async getOrCreateWorkflowId(userId: string, agentId: string): Promise<string> {
     const workflowName = `Fine-Tune Agent: ${agentId}`
     
     // Check if workflow exists
@@ -228,8 +228,7 @@ export class FineTuningPipeline {
 
   private async updateJobStatus(job: FineTuningJob): Promise<void> {
     try {
-      const id = parseInt(job.id)
-      if (isNaN(id)) return // Should not happen if stored correctly
+      const id = job.id;
 
       await db.update(workflowExecutions).set({
         status: job.status,
@@ -433,8 +432,7 @@ export class FineTuningPipeline {
 
   async getFineTuningJob(jobId: string): Promise<FineTuningJob | null> {
     try {
-      const id = parseInt(jobId)
-      if (isNaN(id)) return null
+      const id = jobId;
 
       // Use db.select to avoid type issues if query relation is missing
       const result = await db.select().from(workflowExecutions)

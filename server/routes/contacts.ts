@@ -34,7 +34,7 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
-        const contactId = Number(req.params.id);
+        const contactId = req.params.id;
 
         const contact = await db.select()
             .from(contacts)
@@ -94,7 +94,7 @@ router.post('/', async (req: Request, res: Response) => {
 router.put('/:id', async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
-        const contactId = Number(req.params.id);
+        const contactId = req.params.id;
         const { name, email, company, role, notes, linkedinUrl, tags, lastContact, relationship } = req.body;
 
         // Verify ownership
@@ -140,7 +140,7 @@ router.put('/:id', async (req: Request, res: Response) => {
 router.delete('/:id', async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
-        const contactId = Number(req.params.id);
+        const contactId = req.params.id;
 
         // Verify ownership before deleting
         const existing = await db.select()

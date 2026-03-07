@@ -5,43 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1765504787695,
-      "tag": "0000_heavy_sharon_carter",
+      "when": 1772857986036,
+      "tag": "0000_faithful_unicorn",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1766585531934,
-      "tag": "0001_light_morlocks",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1770338114201,
-      "tag": "0002_large_wallop",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1771682567780,
-      "tag": "0003_lazy_beyonder",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1771983693043,
-      "tag": "0004_fantastic_paladin",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1772420221277,
-      "tag": "0005_absurd_lizard",
+      "when": 1772858217305,
+      "tag": "0001_careful_lila_cheney",
       "breakpoints": true
     }
   ]

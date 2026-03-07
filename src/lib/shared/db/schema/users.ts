@@ -1,4 +1,4 @@
-import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
+import { uuid, integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import { type AdapterAccount } from "next-auth/adapters" // Assuming this is needed if strictly typing, but Drizzle usually infers.
 
@@ -106,7 +106,7 @@ export const authenticators = pgTable(
 
 // Password reset tokens table
 export const passwordResetTokens = pgTable('password_reset_tokens', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  id: uuid('id').defaultRandom().primaryKey(),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   token: varchar('token', { length: 255 }).notNull().unique(),
   expires_at: timestamp('expires_at').notNull(),
@@ -123,7 +123,7 @@ export const passwordResetTokens = pgTable('password_reset_tokens', {
 
 // User 2FA/MFA settings table
 export const userMfaSettings = pgTable('user_mfa_settings', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  id: uuid('id').defaultRandom().primaryKey(),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }).unique(),
   totp_secret: varchar('totp_secret', { length: 255 }),
   totp_enabled: boolean('totp_enabled').default(false),
@@ -142,7 +142,7 @@ export const userMfaSettings = pgTable('user_mfa_settings', {
 
 // Device approvals table
 export const deviceApprovals = pgTable('device_approvals', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  id: uuid('id').defaultRandom().primaryKey(),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   device_fingerprint: varchar('device_fingerprint', { length: 255 }).notNull(),
   device_name: varchar('device_name', { length: 255 }),
@@ -188,7 +188,7 @@ export const userSessions = pgTable('user_sessions', {
 
 // User API Keys table
 export const userApiKeys = pgTable('user_api_keys', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  id: uuid('id').defaultRandom().primaryKey(),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   service: varchar('service', { length: 100 }).notNull(), 
   key_value: text('key_value').notNull(), 
@@ -247,3 +247,4 @@ export const adminActions = pgTable("admin_actions", {
 }, (table) => ({
   adminIdIdx: index("admin_actions_admin_id_idx").on(table.adminId),
 }));
+

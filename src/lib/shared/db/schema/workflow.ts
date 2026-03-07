@@ -1,10 +1,10 @@
 
-import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
+import { uuid, integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 // Workflows table
 export const workflows = pgTable('workflows', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  id: uuid('id').defaultRandom().primaryKey(),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
@@ -18,7 +18,7 @@ export const workflows = pgTable('workflows', {
   settings: jsonb('settings').default('{}').notNull(),
   category: varchar('category', { length: 100 }).default('general').notNull(),
   tags: jsonb('tags').default('[]').notNull(),
-  template_id: integer('template_id'),
+  template_id: uuid('template_id'),
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
@@ -27,8 +27,8 @@ export const workflows = pgTable('workflows', {
 
 // Workflow executions table
 export const workflowExecutions = pgTable('workflow_executions', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-  workflow_id: integer('workflow_id').notNull().references(() => workflows.id, { onDelete: 'cascade' }),
+  id: uuid('id').defaultRandom().primaryKey(),
+  workflow_id: uuid('workflow_id').notNull().references(() => workflows.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   status: varchar('status', { length: 50 }).default('running').notNull(),
   started_at: timestamp('started_at').defaultNow().notNull(),
@@ -48,7 +48,7 @@ export const workflowExecutions = pgTable('workflow_executions', {
 
 // Workflow templates table
 export const workflowTemplates = pgTable('workflow_templates', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
   category: varchar('category', { length: 100 }).default('general').notNull(),
@@ -66,8 +66,8 @@ export const workflowTemplates = pgTable('workflow_templates', {
 
 // Template downloads table
 export const templateDownloads = pgTable('template_downloads', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-  template_id: integer('template_id').notNull().references(() => workflowTemplates.id, { onDelete: 'cascade' }),
+  id: uuid('id').defaultRandom().primaryKey(),
+  template_id: uuid('template_id').notNull().references(() => workflowTemplates.id, { onDelete: 'cascade' }),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   downloaded_at: timestamp('downloaded_at').defaultNow().notNull(),
 }, (table) => ({
@@ -167,7 +167,7 @@ export const chatMessages = pgTable('chat_messages', {
 
 // Notification jobs table
 export const notificationJobs = pgTable('notification_jobs', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  id: uuid('id').defaultRandom().primaryKey(),
   title: varchar('title', { length: 255 }).notNull(),
   body: text('body').notNull(),
   icon: varchar('icon', { length: 500 }),
@@ -205,3 +205,4 @@ export const chatHistory = pgTable("chat_history", {
   userIdIdx: index("chat_history_user_id_idx").on(table.userId),
   convIdIdx: index("chat_history_conv_id_idx").on(table.conversationId),
 }));
+

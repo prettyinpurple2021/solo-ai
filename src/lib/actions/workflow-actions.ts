@@ -20,7 +20,7 @@ const workflowSchema = z.object({
   settings: z.record(z.any()).optional(),
   category: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  templateId: z.coerce.number().nullable().optional()
+  templateId: z.coerce.string().nullable().optional()
 });
 
 export async function createWorkflow(data: any) {
@@ -69,11 +69,11 @@ export async function createWorkflow(data: any) {
   }
 }
 
-export async function updateWorkflow(id: string | number, data: any) {
+export async function updateWorkflow(id: string, data: any) {
   const { user } = await authenticateAction();
   if (!user) throw new Error("Unauthorized");
 
-  const workflowId = typeof id === 'string' ? parseInt(id, 10) : id;
+  const workflowId = id;
 
   try {
     const updates = workflowSchema.partial().parse(data);
@@ -106,11 +106,11 @@ export async function updateWorkflow(id: string | number, data: any) {
   }
 }
 
-export async function deleteWorkflow(id: string | number) {
+export async function deleteWorkflow(id: string) {
   const { user } = await authenticateAction();
   if (!user) throw new Error("Unauthorized");
 
-  const workflowId = typeof id === 'string' ? parseInt(id, 10) : id;
+  const workflowId = id;
 
   try {
     const [deleted] = await db.delete(workflows)

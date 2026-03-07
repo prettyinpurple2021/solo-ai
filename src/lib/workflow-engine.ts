@@ -48,7 +48,7 @@ export const WorkflowEdgeSchema = z.object({
 })
 
 export const WorkflowSchema = z.object({
-  id: z.union([z.string(), z.number()]),
+  id: z.string().uuid().or(z.string()),
   name: z.string(),
   description: z.string().optional(),
   version: z.string().default('1.0.0'),
@@ -110,8 +110,8 @@ export interface WorkflowExecutionError {
 }
 
 export interface WorkflowExecution {
-  id: string | number
-  workflowId: string | number
+  id: string
+  workflowId: string
   workflowName?: string
   status: 'running' | 'completed' | 'failed' | 'cancelled'
   startedAt: Date
@@ -162,8 +162,8 @@ interface NodePort {
 }
 
 interface ExecutionContext {
-  workflowId: string | number
-  executionId: string | number
+  workflowId: string
+  executionId: string
   userId?: string
   variables: Record<string, unknown>
   nodeResults: Map<string, unknown>
@@ -546,7 +546,7 @@ export class WorkflowEngine {
   /**
    * Update an existing workflow
    */
-  async updateWorkflow(workflowId: string | number, updates: Partial<Workflow>): Promise<Workflow> {
+  async updateWorkflow(workflowId: string, updates: Partial<Workflow>): Promise<Workflow> {
     const [updated] = await db.update(workflows)
       .set({
         name: updates.name,
@@ -561,7 +561,7 @@ export class WorkflowEngine {
         settings: updates.settings,
         updated_at: new Date()
       })
-      .where(eq(workflows.id, Number(workflowId)))
+      .where(eq(workflows.id, workflowId))
       .returning()
 
     if (!updated) {
@@ -599,7 +599,7 @@ export class WorkflowEngine {
   /**
    * Create a new execution record
    */
-  async createExecution(workflowId: string | number, inputData: Record<string, unknown> = {}, userId?: string): Promise<WorkflowExecution> {
+  async createExecution(workflowId: string, inputData: Record<string, unknown> = {}, userId?: string): Promise<WorkflowExecution> {
     const workflow = await this.getWorkflow(workflowId)
     if (!workflow) {
       throw new Error(`Workflow ${workflowId} not found`)
@@ -611,7 +611,7 @@ export class WorkflowEngine {
 
     // Create execution record
     const [executionRecord] = await db.insert(workflowExecutions).values({
-      workflow_id: Number(workflowId),
+      workflow_id: workflowId,
       user_id: userId,
       status: 'running',
       started_at: new Date(),
@@ -636,7 +636,7 @@ export class WorkflowEngine {
   /**
    * Run an existing execution
    */
-  async runExecution(executionId: string | number): Promise<WorkflowExecution> {
+  async runExecution(executionId: string): Promise<WorkflowExecution> {
     const execution = await this.getExecution(executionId)
     if (!execution) {
       throw new Error(`Execution ${executionId} not found`)
@@ -675,7 +675,7 @@ export class WorkflowEngine {
           output: Object.fromEntries(execution.nodeResults), // Store node results as output
           logs: execution.logs as any
         })
-        .where(eq(workflowExecutions.id, Number(execution.id)))
+        .where(eq(workflowExecutions.id, execution.id as string))
 
       this.emitEvent('workflow_completed', { workflowId: workflow.id, executionId: execution.id })
       logInfo('Workflow execution completed', { workflowId: workflow.id, executionId: execution.id, executionTime: execution.executionTime })
@@ -695,7 +695,7 @@ export class WorkflowEngine {
           error: { message: execution.error } as any,
           logs: execution.logs as any
         })
-        .where(eq(workflowExecutions.id, Number(execution.id)))
+        .where(eq(workflowExecutions.id, execution.id as string))
 
       this.emitEvent('workflow_failed', { workflowId: workflow.id, executionId: execution.id, error: execution.error })
       logError('Workflow execution failed:', error instanceof Error ? error : new Error(String(error)))
@@ -707,7 +707,7 @@ export class WorkflowEngine {
   /**
    * Execute a workflow (create and run)
    */
-  async executeWorkflow(workflowId: string | number, inputData: Record<string, unknown> = {}, userId?: string): Promise<WorkflowExecution> {
+  async executeWorkflow(workflowId: string, inputData: Record<string, unknown> = {}, userId?: string): Promise<WorkflowExecution> {
     const execution = await this.createExecution(workflowId, inputData, userId)
     return this.runExecution(execution.id)
   }
@@ -788,7 +788,7 @@ export class WorkflowEngine {
           logs: execution.logs as any,
           variables: execution.variables as any
         })
-        .where(eq(workflowExecutions.id, Number(execution.id)))
+        .where(eq(workflowExecutions.id, execution.id))
 
       // Prepare execution context
       const context: ExecutionContext = {
@@ -832,7 +832,7 @@ export class WorkflowEngine {
             output: Object.fromEntries(execution.nodeResults) as any, // Persist intermediate results
             variables: execution.variables as any
         })
-        .where(eq(workflowExecutions.id, Number(execution.id)))
+        .where(eq(workflowExecutions.id, execution.id as string))
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error)
@@ -848,7 +848,7 @@ export class WorkflowEngine {
         .set({
             logs: execution.logs as any
         })
-        .where(eq(workflowExecutions.id, Number(execution.id)))
+        .where(eq(workflowExecutions.id, execution.id as string))
 
       logError('Node execution failed:', error instanceof Error ? error : new Error(errorMessage))
       throw new Error(`Node ${node.name} execution failed: ${error}`)
@@ -859,7 +859,7 @@ export class WorkflowEngine {
    * Get workflow by ID
    */
   async getWorkflow(workflowId: string | number): Promise<Workflow | undefined> {
-    const [workflow] = await db.select().from(workflows).where(eq(workflows.id, Number(workflowId)))
+    const [workflow] = await db.select().from(workflows).where(eq(workflows.id, String(workflowId)))
 
     if (!workflow) return undefined
 
@@ -952,7 +952,7 @@ export class WorkflowEngine {
     })
     .from(workflowExecutions)
     .leftJoin(workflows, eq(workflowExecutions.workflow_id, workflows.id))
-    .where(eq(workflowExecutions.id, Number(executionId)))
+    .where(eq(workflowExecutions.id, String(executionId)))
     
     if (!result) return undefined
 
@@ -983,7 +983,7 @@ export class WorkflowEngine {
     })
     .from(workflowExecutions)
     .leftJoin(workflows, eq(workflowExecutions.workflow_id, workflows.id))
-    .where(eq(workflowExecutions.workflow_id, Number(workflowId)))
+    .where(eq(workflowExecutions.workflow_id, String(workflowId)))
     .orderBy(desc(workflowExecutions.started_at))
 
     return results.map(({ execution, workflow }) => ({
@@ -1049,7 +1049,7 @@ export class WorkflowEngine {
    * Delete workflow
    */
   async deleteWorkflow(workflowId: string | number): Promise<boolean> {
-    const result = await db.delete(workflows).where(eq(workflows.id, Number(workflowId))).returning()
+    const result = await db.delete(workflows).where(eq(workflows.id, String(workflowId))).returning()
 
     if (result.length > 0) {
       this.emitEvent('workflow_deleted', { workflowId })

@@ -1,5 +1,5 @@
 
-import { integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
+import { uuid, integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
 import { users } from './users';
 
 // User Competitive Stats table for gamification
@@ -60,7 +60,7 @@ export const challengeParticipants = pgTable('challenge_participants', {
 
 // Achievements table
 export const achievements = pgTable('achievements', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  id: uuid('id').defaultRandom().primaryKey(),
   name: varchar('name', { length: 255 }).notNull().unique(),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
@@ -74,11 +74,12 @@ export const achievements = pgTable('achievements', {
 
 // User achievements table
 export const userAchievements = pgTable('user_achievements', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
+  id: uuid('id').defaultRandom().primaryKey(),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  achievement_id: integer('achievement_id').notNull().references(() => achievements.id, { onDelete: 'cascade' }),
+  achievement_id: uuid('achievement_id').notNull().references(() => achievements.id, { onDelete: 'cascade' }),
   earned_at: timestamp('earned_at').defaultNow().notNull(),
   metadata: jsonb('metadata').default('{}').notNull(),
 }, (table) => ({
     uniqueUserAchievement: uniqueIndex('user_achievements_unique_idx').on(table.user_id, table.achievement_id),
 }));
+
