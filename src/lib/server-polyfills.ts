@@ -47,9 +47,14 @@ if (typeof process !== 'undefined' && process.versions && process.versions.node)
         return Promise.resolve(this._buffer.toString('utf-8'))
       }
 
-      stream(): any {
-        // Simple implementation for compatibility
-        throw new Error('stream() not implemented in polyfill')
+      stream(): ReadableStream<Uint8Array> {
+        const buffer = this._buffer as Buffer;
+        return new ReadableStream<Uint8Array>({
+          start(controller) {
+            controller.enqueue(new Uint8Array(buffer));
+            controller.close();
+          }
+        });
       }
     }
     ;(globalThis as any).File = PolyfillFile

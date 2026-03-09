@@ -79,9 +79,9 @@ export function useSubscription() {
         setSubscription({
           plan: subData.tier || 'free',
           status: subData.status || 'free',
-          billingCycle: 'monthly', // TODO: Infer from price interval if needed
+          billingCycle: subData.interval || 'monthly',
           nextBilling: subData.currentPeriodEnd ? new Date(subData.currentPeriodEnd).toISOString() : null,
-          cancelAtPeriodEnd: false // TODO: Backend should return this flag
+          cancelAtPeriodEnd: !!subData.cancelAtPeriodEnd
         })
       }
 

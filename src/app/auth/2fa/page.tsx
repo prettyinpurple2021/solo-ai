@@ -27,7 +27,6 @@ export default function TwoFactorPage() {
     try {
       const { data, error: verifyError } = await authClient.twoFactor.verifyTOTP({
         code,
-        trustDevice: true, // Trust this device for future logins
       })
 
       if (verifyError) {

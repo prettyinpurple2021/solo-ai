@@ -246,8 +246,6 @@ export interface CompetitivePositioning {
 /**
  * Blaze Growth Intelligence Service
  * Analyzes competitor pricing strategies and growth patterns
- * 
- * TEMPORARILY DISABLED - Using fallback responses during worker migration
  */
 export class BlazeGrowthIntelligence {
   private blazeConfig = getTeamMemberConfig('blaze')

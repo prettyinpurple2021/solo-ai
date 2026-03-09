@@ -83,8 +83,31 @@ export function useUser() {
 }
 
 // Deprecated / Stubbed methods
-export async function verifyTOTP(args?: any) { return { data: null, error: { message: "Not implemented in new auth system" } } }
-export async function resend2FACode(args?: any) { return { data: null, error: { message: "Not implemented in new auth system" } } }
+export async function verifyTOTP(args: { code: string }) { 
+  const res = await fetch("/api/auth/totp/verify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code: args.code }),
+  })
+  const data = await res.json()
+  if (!res.ok) {
+    return { data: null, error: { message: data.error || "TOTP verification failed" } }
+  }
+  return { data: data.success, error: null as any }
+}
+
+export async function resend2FACode(args?: { method?: 'email' | 'sms' }) { 
+  const res = await fetch("/api/auth/totp/resend", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ method: args?.method || 'email' }),
+  })
+  const data = await res.json()
+  if (!res.ok) {
+    return { data: null, error: { message: data.error || "Failed to resend 2FA code" } }
+  }
+  return { data: data.success, error: null as any }
+}
 interface ApproveDeviceParams {
   deviceFingerprint: string;
   deviceName: string;

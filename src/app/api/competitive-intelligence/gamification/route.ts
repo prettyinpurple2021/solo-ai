@@ -4,10 +4,9 @@ import { authenticateRequest} from '@/lib/auth-server'
 import { rateLimitByIp} from '@/lib/rate-limit'
 
 import { db} from '@/db'
-import { users, userCompetitiveStats} from '@/shared/db/schema'
+import { users, userCompetitiveStats, achievements, userAchievements} from '@/shared/db/schema'
 import { eq} from 'drizzle-orm'
 import { z} from 'zod'
-
 
 
 
@@ -54,8 +53,19 @@ export async function GET(_request: NextRequest) {
     }
     
     const competitiveStats = competitiveStatsRows[0]
+
+    // Fetch user achievements with full details
+    const earnedAchievements = await db
+      .select({ 
+        id: userAchievements.id, 
+        earned_at: userAchievements.earned_at, 
+        metadata: userAchievements.metadata,
+        achievement: achievements
+      })
+      .from(userAchievements)
+      .innerJoin(achievements, eq(userAchievements.achievement_id, achievements.id))
+      .where(eq(userAchievements.user_id, user.id))
     
-    // Return gamification data (Stats active, Achievements/Badges V2)
     return NextResponse.json({
       user: {
         id: userData.id,
@@ -73,9 +83,9 @@ export async function GET(_request: NextRequest) {
         intelligence_streaks: competitiveStats.intelligence_streaks,
         competitive_advantage_points: competitiveStats.competitive_advantage_points
       },
-      achievements: [],
-      badges: [],
-      competitive_victories: [],
+      achievements: earnedAchievements,
+      badges: earnedAchievements.map(a => a.achievement.icon).filter(Boolean),
+      competitive_victories: [], // Expanded via dedicated endpoint /api/competitive-intelligence/victories
       leaderboard_position: null,
       level: Math.floor((competitiveStats.competitive_advantage_points || 0) / 100) + 1,
       points_to_next_level: 100 - ((competitiveStats.competitive_advantage_points || 0) % 100)
@@ -109,7 +119,7 @@ export async function POST(request: NextRequest) {
       action: z.enum(['update_stats', 'unlock_achievement', 'record_victory']),
       stat_type: z.string().optional(),
       stat_value: z.number().optional(),
-      achievement_id: z.string().optional(),
+      achievement_id: z.string().uuid().optional(),
       victory_data: z.object({
         type: z.string(),
         competitor: z.string(),
@@ -119,7 +129,7 @@ export async function POST(request: NextRequest) {
       }).optional()
     })
 
-    const { action, stat_type, stat_value,} = BodySchema.parse(body)
+    const { action, stat_type, stat_value, achievement_id, victory_data } = BodySchema.parse(body)
 
     // Get or create competitive stats
     let competitiveStatsRows = await db.select().from(userCompetitiveStats).where(eq(userCompetitiveStats.user_id, user.id))
@@ -144,19 +154,90 @@ export async function POST(request: NextRequest) {
     const competitiveStats = competitiveStatsRows[0]
 
     if (action === 'update_stats' && stat_type && stat_value !== undefined) {
-      // Update specific stat
-      const updateData: any = {}
-      if (stat_type in competitiveStats) {
-        updateData[stat_type as keyof typeof competitiveStats] = stat_value
-        await db.update(userCompetitiveStats)
-          .set(updateData)
-          .where(eq(userCompetitiveStats.user_id, user.id))
+      // Update specific stat - safely whitelist columns to prevent injection
+      const allowedStatColumns = [
+        'competitors_monitored', 'intelligence_gathered', 'alerts_processed',
+        'opportunities_identified', 'competitive_tasks_completed', 'market_victories',
+        'threat_responses', 'intelligence_streaks', 'competitive_advantage_points'
+      ] as const
+      type AllowedStat = typeof allowedStatColumns[number]
+
+      if (!allowedStatColumns.includes(stat_type as AllowedStat)) {
+        return NextResponse.json({ error: 'Invalid stat_type' }, { status: 400 })
       }
+
+      await db.update(userCompetitiveStats)
+        .set({ [stat_type]: stat_value, updated_at: new Date() } as any)
+        .where(eq(userCompetitiveStats.user_id, user.id))
     }
 
-    // V1 Implementation: Achievements and Victories are currently placeholders.
-    // Future: Implement 'achievements' and 'market_victories' tables to track these events.
-    // Current logic only updates stats.
+    if (action === 'unlock_achievement' && achievement_id) {
+      // Verify achievement exists and is active
+      const [targetAchievement] = await db
+        .select()
+        .from(achievements)
+        .where(eq(achievements.id, achievement_id))
+
+      if (!targetAchievement || !targetAchievement.is_active) {
+        return NextResponse.json({ error: 'Achievement not found or inactive' }, { status: 404 })
+      }
+
+      // Check if already earned (prevent duplicates due to unique index)
+      const [already] = await db
+        .select()
+        .from(userAchievements)
+        .where(eq(userAchievements.user_id, user.id))
+
+      const alreadyEarned = (already as any)?.achievement_id === achievement_id
+      if (alreadyEarned) {
+        return NextResponse.json({ success: true, message: 'Achievement already earned' })
+      }
+
+      // Insert the achievement record + award points atomically
+      await db.transaction(async (tx) => {
+        await tx.insert(userAchievements).values({
+          user_id: user.id,
+          achievement_id: achievement_id,
+          metadata: { awardedBy: 'system' }
+        })
+
+        // Award achievement points
+        if (targetAchievement.points > 0) {
+          const newPoints = (competitiveStats.competitive_advantage_points || 0) + targetAchievement.points
+          await tx.update(userCompetitiveStats)
+            .set({ competitive_advantage_points: newPoints, updated_at: new Date() })
+            .where(eq(userCompetitiveStats.user_id, user.id))
+        }
+      })
+
+      return NextResponse.json({
+        success: true,
+        message: `Achievement '${targetAchievement.title}' unlocked! +${targetAchievement.points} points.`
+      })
+    }
+
+    if (action === 'record_victory' && victory_data) {
+      // Record this market victory – increment the market_victories counter
+      // and store the details as additional advantage points
+      const pointsAward = Math.min(Math.round(victory_data.improvement), 50) // Cap single award at 50
+      const newVictories = (competitiveStats.market_victories || 0) + 1
+      const newPoints = (competitiveStats.competitive_advantage_points || 0) + pointsAward
+
+      await db.update(userCompetitiveStats)
+        .set({ 
+          market_victories: newVictories, 
+          competitive_advantage_points: newPoints,
+          updated_at: new Date()
+        })
+        .where(eq(userCompetitiveStats.user_id, user.id))
+
+      return NextResponse.json({
+        success: true,
+        message: `Market victory recorded! +${pointsAward} CAP.`,
+        market_victories: newVictories,
+        competitive_advantage_points: newPoints
+      })
+    }
 
     return NextResponse.json({
       success: true,
@@ -171,3 +252,8 @@ export async function POST(request: NextRequest) {
     )
   }
 }
+
+
+
+
+
