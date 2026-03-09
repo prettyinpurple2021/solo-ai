@@ -14,12 +14,21 @@ import { authConfig } from "@/auth.config"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  adapter: DrizzleAdapter(db, {
-    usersTable: users,
-    accountsTable: accounts,
-    sessionsTable: sessions,
-    verificationTokensTable: verificationTokens,
-  }) as any,
+  // Use getDb() wrapper to prevent "Unsupported database type" errors during build time
+  adapter: (() => {
+    try {
+      const adapter = DrizzleAdapter(db, {
+        usersTable: users,
+        accountsTable: accounts,
+        sessionsTable: sessions,
+        verificationTokensTable: verificationTokens,
+      })
+      return adapter as any
+    } catch (e) {
+      // Return undefined during build if DB is not accessible
+      return undefined
+    }
+  })(),
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,

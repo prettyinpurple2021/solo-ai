@@ -1,10 +1,11 @@
 
-export type SubscriptionTier = 'launch' | 'accelerator' | 'dominator';
+export type SubscriptionTier = 'free' | 'launch' | 'accelerator' | 'dominator';
 
 export const TIER_HIERARCHY: Record<SubscriptionTier, number> = {
-  'launch': 0,
-  'accelerator': 1,
-  'dominator': 2,
+  'free': 0,
+  'launch': 1,
+  'accelerator': 2,
+  'dominator': 3,
 };
 
 export const FEATURE_GATES = {
@@ -22,7 +23,7 @@ export const FEATURE_GATES = {
 } as const;
 
 export function canAccess(userTier: string | undefined, featureOrPath: string): boolean {
-  const tier = (userTier || 'launch') as SubscriptionTier;
+  const tier = (userTier || 'free') as SubscriptionTier;
   const requiredTier = (FEATURE_GATES as any)[featureOrPath] as SubscriptionTier | undefined;
   
   if (!requiredTier) return true; // No gate defined

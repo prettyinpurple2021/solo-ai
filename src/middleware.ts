@@ -34,7 +34,7 @@ export default auth((req) => {
 
   // 2. Feature Gating based on Subscription Tier
   if (isLoggedIn) {
-    const userTier = user?.subscription_tier || 'launch'
+    const userTier = user?.subscription_tier || 'free'
     
     // Check if the current path is gated
     const gatedPaths = ['/dashboard/competitors', '/dashboard/collaboration', '/dashboard/strategy-nexus', '/dashboard/compliance-grid']

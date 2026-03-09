@@ -53,11 +53,7 @@ export async function GET(
     }
 
     const params = await context.params
-    const { id } = params
-    const searchId = parseInt(id)
-    if (isNaN(searchId)) {
-      return NextResponse.json({ error: 'Invalid search ID' }, { status: 400 })
-    }
+    const { id: searchId } = params
 
     // Get saved search
     const savedSearch = await db
@@ -132,11 +128,7 @@ export async function PUT(
     }
 
     const params = await context.params
-    const { id } = params
-    const searchId = parseInt(id)
-    if (isNaN(searchId)) {
-      return NextResponse.json({ error: 'Invalid search ID' }, { status: 400 })
-    }
+    const { id: searchId } = params
 
     const body = await request.json()
     const parsed = SavedSearchUpdateSchema.safeParse(body)
@@ -249,11 +241,7 @@ export async function DELETE(
     }
 
     const params = await context.params
-    const { id } = params
-    const searchId = parseInt(id)
-    if (isNaN(searchId)) {
-      return NextResponse.json({ error: 'Invalid search ID' }, { status: 400 })
-    }
+    const { id: searchId } = params
 
     // Check if saved search exists and belongs to user
     const existingSearch = await db

@@ -8,7 +8,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'The Operator (COO)',
     description: 'Efficient, schedule-focused. Keeps the trains running on time.',
     color: 'text-emerald-400',
-    avatar: 'https://picsum.photos/seed/roxy/200/200',
+    avatar: '/images/agents/roxy.png',
   },
   [AgentId.ECHO]: {
     id: AgentId.ECHO,
@@ -16,7 +16,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'Growth Catalyst (CMO)',
     description: 'Warm, marketing-savvy. Creates viral hooks and hype.',
     color: 'text-pink-500',
-    avatar: 'https://picsum.photos/seed/echo/200/200',
+    avatar: '/images/agents/echo.png',
   },
   [AgentId.LEXI]: {
     id: AgentId.LEXI,
@@ -24,7 +24,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'Insight Engine (CFO/Data)',
     description: 'Analytical, data-driven. Delivers brutal honesty.',
     color: 'text-blue-400',
-    avatar: 'https://picsum.photos/seed/lexi/200/200',
+    avatar: '/images/agents/lexi.png',
   },
   [AgentId.GLITCH]: {
     id: AgentId.GLITCH,
@@ -32,7 +32,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'Friction Remover (QA/Tech)',
     description: 'Detail-oriented bug hunter. Cynical but useful.',
     color: 'text-yellow-400',
-    avatar: 'https://picsum.photos/seed/glitch/200/200',
+    avatar: '/images/agents/glitch.png',
   },
   [AgentId.LUMI]: {
     id: AgentId.LUMI,
@@ -40,7 +40,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'The Sentinel (Legal)',
     description: 'Ironclad protector. Precision contracts and risk mitigation.',
     color: 'text-violet-400',
-    avatar: 'https://picsum.photos/seed/lumi/200/200',
+    avatar: '/images/agents/lumi.png',
   },
   [AgentId.FINN]: {
     id: AgentId.FINN,
@@ -48,7 +48,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'Profit & Cashflow Specialist',
     description: 'Sharp, data-driven wealth builder. Turns overhead into opportunity.',
     color: 'text-emerald-500',
-    avatar: 'https://picsum.photos/seed/finn/200/200',
+    avatar: '/images/agents/finn.png',
   },
   [AgentId.AURA]: {
     id: AgentId.AURA,
@@ -56,7 +56,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'Wellness Guardian',
     description: 'Calm, empathetic support. Monitors burnout and celebrates wins.',
     color: 'text-sky-400',
-    avatar: 'https://picsum.photos/seed/aura/200/200',
+    avatar: '/images/agents/aura.png',
   },
   [AgentId.NOVA]: {
     id: AgentId.NOVA,
@@ -64,7 +64,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'Product Designer (UX)',
     description: 'Creative, user-centric vision-maker for intuitive experiences.',
     color: 'text-purple-400',
-    avatar: 'https://picsum.photos/seed/nova/200/200',
+    avatar: '/images/agents/nova.png',
   },
   [AgentId.BLAZE]: {
     id: AgentId.BLAZE,
@@ -72,7 +72,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'Growth & Sales Strategist',
     description: 'Relentlessly energetic. Focuses on ROI and marketing growth hacks.',
     color: 'text-orange-500',
-    avatar: 'https://picsum.photos/seed/blaze/200/200',
+    avatar: '/images/agents/blaze.png',
   },
   [AgentId.VEX]: {
     id: AgentId.VEX,
@@ -80,7 +80,7 @@ export const AGENTS: Record<AgentId, Agent> = {
     title: 'Technical Architect',
     description: 'Thoroughly technical and analytical expert for systems and stack.',
     color: 'text-slate-400',
-    avatar: 'https://picsum.photos/seed/vex/200/200',
+    avatar: '/images/agents/vex.png',
   },
 };
 

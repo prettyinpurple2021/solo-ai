@@ -1,16 +1,15 @@
-import { DefaultSession } from "next-auth"
+import { type DefaultSession } from "next-auth"
+import { type AdapterUser as BaseAdapterUser } from "next-auth/adapters"
 
 declare module "next-auth" {
   /**
-   * Returned by `auth`, `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
+   * Returned by `useSession`, `getSession` and received as a prop on the `SessionProvider` React Context
    */
   interface Session {
     user: {
       id: string
-      role: string | null
-      subscription_tier: string | null
-      /** The user's postal address. */
-      address?: string
+      role: string
+      subscription_tier: string
       full_name?: string | null
       avatar_url?: string | null
       stripe_customer_id?: string | null
@@ -18,8 +17,7 @@ declare module "next-auth" {
   }
 
   interface User {
-    id: string
-    role: string | null
+    role?: string | null
     subscription_tier?: string | null
     full_name?: string | null
     avatar_url?: string | null
@@ -27,11 +25,12 @@ declare module "next-auth" {
   }
 }
 
-declare module "next-auth/jwt" {
-  interface JWT {
-    id: string
-    role: string | null
+declare module "next-auth/adapters" {
+  interface AdapterUser extends BaseAdapterUser {
+    role?: string | null
     subscription_tier?: string | null
     full_name?: string | null
+    avatar_url?: string | null
+    stripe_customer_id?: string | null
   }
 }

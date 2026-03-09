@@ -2,8 +2,8 @@ import { pgTable, varchar, text, jsonb, timestamp, integer, boolean } from 'driz
 
 // Saved searches table schema
 export const savedIntelligenceSearches = pgTable('saved_intelligence_searches', {
-  id: integer('id').primaryKey().generatedAlwaysAsIdentity(),
-  user_id: varchar('user_id', { length: 255 }).notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  user_id: text('user_id').notNull(),
   name: varchar('name', { length: 255 }).notNull(),
   description: text('description'),
   search_params: jsonb('search_params').notNull(),

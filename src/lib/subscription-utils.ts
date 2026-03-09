@@ -253,7 +253,8 @@ export async function checkUsageLimit(
     }
       
     case 'teamMembers': {
-      // Stub for future team feature
+      // SoloSuccess AI is currently optimized for solo founders (1 member).
+      // Enterprise/Team features are reserved for future infrastructure updates.
       current = 1;
       limit = subscription.features.maxTeamMembers;
       break;

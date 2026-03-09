@@ -128,21 +128,66 @@ export class CommunityService {
       level: users.level,
       title: users.role,
       points: users.xp,
-      streak: sql<number>`0` // Placeholder for now
     })
     .from(users)
     .orderBy(desc(users.xp))
     .limit(10);
 
-    return topUsers.map(u => ({
+    return await Promise.all(topUsers.map(async (u) => ({
       id: u.id,
       name: u.name || 'Anonymous',
       avatar: u.avatar || '/default-user.svg',
       level: u.level || 1,
       title: u.title || 'Operative',
       points: u.points || 0,
-      streak: u.streak
-    }));
+      streak: await this.calculateUserStreak(u.id)
+    })));
+  }
+
+  private static async calculateUserStreak(userId: string): Promise<number> {
+    try {
+      const activityDates = await db.execute(sql`
+        SELECT DISTINCT DATE(timestamp) as activity_date
+        FROM analytics_events
+        WHERE user_id = ${userId}
+        ORDER BY activity_date DESC
+        LIMIT 30
+      `);
+
+      if (!activityDates.rows.length) return 0;
+
+      let streak = 0;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const lastActivity = new Date(activityDates.rows[0].activity_date as string);
+      lastActivity.setHours(0, 0, 0, 0);
+      
+      const diffTime = Math.abs(today.getTime() - lastActivity.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays > 1) return 0;
+
+      streak = 1;
+      for (let i = 0; i < activityDates.rows.length - 1; i++) {
+        const current = new Date(activityDates.rows[i].activity_date as string);
+        const next = new Date(activityDates.rows[i + 1].activity_date as string);
+        
+        current.setHours(0, 0, 0, 0);
+        next.setHours(0, 0, 0, 0);
+
+        const diff = (current.getTime() - next.getTime()) / (1000 * 60 * 60 * 24);
+        if (diff === 1) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+
+      return streak;
+    } catch (error) {
+      return 0;
+    }
   }
 
   static async getComments(postId: string, userId?: string): Promise<CommentProps[]> {

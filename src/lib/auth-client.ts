@@ -108,23 +108,6 @@ export async function resend2FACode(args?: { method?: 'email' | 'sms' }) {
   }
   return { data: data.success, error: null as any }
 }
-interface ApproveDeviceParams {
-  deviceFingerprint: string;
-  deviceName: string;
-  deviceType: string;
-  trustDevice: boolean;
-}
-
-interface DenyDeviceParams {
-  deviceFingerprint: string;
-}
-
-export async function approveDevice(_data?: ApproveDeviceParams) { return { data: true, error: null as any } } 
-export async function denyDevice(_data: DenyDeviceParams) { return { data: true, error: null as any } } 
-export async function getSessions() { return { data: { sessions: [] }, error: null as any } }
-export async function revokeSession(args?: any) { return { data: true, error: null as any } }
-export async function revokeOtherSessions() { return { data: true, error: null as any } }
-
 export const authClient = {
   signIn,
   signUp,
@@ -135,12 +118,5 @@ export const authClient = {
   twoFactor: {
     verifyTOTP,
     resendCode: resend2FACode
-  },
-  multiSession: {
-    approveDevice,
-    denyDevice,
-    getSessions,
-    revokeSession,
-    revokeOtherSessions
   }
 }
