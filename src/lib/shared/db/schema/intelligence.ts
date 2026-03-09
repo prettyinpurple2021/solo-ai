@@ -4,7 +4,7 @@ import { users } from './users';
 
 // Contacts
 export const contacts = pgTable("contacts", {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   name: text("name").notNull(),
   email: text("email"),
@@ -23,7 +23,7 @@ export const contacts = pgTable("contacts", {
 
 // Competitor Reports
 export const competitorReports = pgTable("competitor_reports", {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   competitorName: text("competitor_name").notNull(),
   threatLevel: text("threat_level"),
@@ -39,7 +39,7 @@ export const competitorReports = pgTable("competitor_reports", {
 
 // Pivot Analyses
 export const pivotAnalyses = pgTable("pivot_analyses", {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   gaps: jsonb("gaps").default('[]').notNull(),
   generatedAt: timestamp("generated_at").defaultNow().notNull(),
@@ -119,7 +119,7 @@ export const competitorSocialMentions = pgTable("competitor_social_mentions", {
 
 // Search Index table for RAG and global search
 export const searchIndex = pgTable("search_index", {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
   entityType: varchar("entity_type", { length: 50 }).notNull(), // e.g., 'document', 'competitor', 'task'
   entityId: text("entity_id").notNull(),
@@ -382,7 +382,7 @@ export const opportunityMetrics = pgTable('opportunity_metrics', {
 
 // Competitor Activities table
 export const competitorActivities = pgTable('competitor_activities', {
-    id: uuid('id').defaultRandom().primaryKey(),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     competitor_id: text('competitor_id').notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     activity_type: varchar('activity_type', { length: 50 }).notNull(),

@@ -2,8 +2,8 @@ import { pgTable, text, timestamp, uuid, jsonb, index } from 'drizzle-orm/pg-cor
 import { users } from './users';
 
 export const trafficLogs = pgTable('traffic_logs', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  sessionId: uuid('session_id').notNull(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  sessionId: text('session_id').notNull(),
   userId: text('user_id').references(() => users.id, { onDelete: 'set null' }),
   url: text('url').notNull(),
   referrer: text('referrer'),

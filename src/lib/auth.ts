@@ -14,24 +14,12 @@ import { authConfig } from "@/auth.config"
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
-  // Use getDb() to bypass the Proxy issues, fallback to mock/null for build time
-  adapter: (() => {
-    try {
-      const adapter = DrizzleAdapter(getDb(), {
-        usersTable: users,
-        accountsTable: accounts,
-        sessionsTable: sessions,
-        verificationTokensTable: verificationTokens,
-      });
-      logInfo("NextAuth DrizzleAdapter initialized successfully.");
-      return adapter as import("next-auth/adapters").Adapter;
-    } catch (e) {
-      // During build time or if DB is not available, return a partial/mock adapter
-      // This prevents the "Unsupported database type" error from crashing the build
-      logError("CRITICAL: Failed to initialize NextAuth adapter:", e);
-      return undefined;
-    }
-  })(),
+  adapter: DrizzleAdapter(db, {
+    usersTable: users,
+    accountsTable: accounts,
+    sessionsTable: sessions,
+    verificationTokensTable: verificationTokens,
+  }),
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID,

@@ -21,7 +21,7 @@ export interface AnswerData {
 
 // User Skills table - Tracking individual skill progressions
 export const userSkills = pgTable('user_skills', {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
     skill_name: varchar('skill_name', { length: 255 }).notNull(), // e.g., 'Decision Making', 'Priority Setting'
     current_level: integer('current_level').notNull().default(1),
@@ -37,7 +37,7 @@ export const userSkills = pgTable('user_skills', {
 
 // Assessments table - Holds knowledge check configuration
 export const assessments = pgTable('assessments', {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     module_id: text('module_id').notNull().references(() => learningModules.id, { onDelete: 'cascade' }),
     title: varchar('title', { length: 255 }).notNull(),
     description: text('description'),
@@ -53,9 +53,9 @@ export const assessments = pgTable('assessments', {
 
 // Assessment Submissions table - User's attempt history
 export const assessmentSubmissions = pgTable('assessment_submissions', {
-    id: uuid('id').primaryKey().defaultRandom(),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-    assessment_id: uuid('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
+    assessment_id: text('assessment_id').notNull().references(() => assessments.id, { onDelete: 'cascade' }),
     score: integer('score').notNull(),
     passed: boolean('passed').notNull(),
     answers_data: jsonb('answers_data').$type<AnswerData[]>().notNull().default([]), // Array of user answers

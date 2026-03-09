@@ -60,7 +60,7 @@ export const challengeParticipants = pgTable('challenge_participants', {
 
 // Achievements table
 export const achievements = pgTable('achievements', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   name: varchar('name', { length: 255 }).notNull().unique(),
   title: varchar('title', { length: 255 }).notNull(),
   description: text('description'),
@@ -74,9 +74,9 @@ export const achievements = pgTable('achievements', {
 
 // User achievements table
 export const userAchievements = pgTable('user_achievements', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  achievement_id: uuid('achievement_id').notNull().references(() => achievements.id, { onDelete: 'cascade' }),
+  achievement_id: text('achievement_id').notNull().references(() => achievements.id, { onDelete: 'cascade' }),
   earned_at: timestamp('earned_at').defaultNow().notNull(),
   metadata: jsonb('metadata').default('{}').notNull(),
 }, (table) => ({

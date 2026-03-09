@@ -283,7 +283,7 @@ export const productivityInsights = pgTable('productivity_insights', {
 
 // Analytics Events table
 export const analyticsEvents = pgTable('analytics_events', {
-    id: uuid('id').defaultRandom().primaryKey(),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     user_id: text('user_id').references(() => users.id, { onDelete: 'set null' }),
     event: varchar('event', { length: 100 }).notNull(),
     properties: jsonb('properties').default('{}').notNull(),
@@ -330,7 +330,7 @@ export const customReports = pgTable('custom_reports', {
 
 // User Brand Settings
 export const userBrandSettings = pgTable('user_brand_settings', {
-    id: uuid('id').defaultRandom().primaryKey(),
+    id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
     user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }).unique(),
     company_name: varchar('company_name', { length: 255 }),
     tagline: varchar('tagline', { length: 500 }),

@@ -56,7 +56,7 @@ export const postReactions = pgTable('post_reactions', {
 
 // Calendar Connections
 export const calendarConnections = pgTable('calendar_connections', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   provider: varchar('provider', { length: 50 }).notNull(), // google, outlook, apple
   access_token: text('access_token').notNull(),
@@ -75,7 +75,7 @@ export const calendarConnections = pgTable('calendar_connections', {
 
 // Social Media Connections
 export const socialMediaConnections = pgTable('social_media_connections', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   platform: varchar('platform', { length: 50 }).notNull(), // linkedin, twitter, facebook, instagram, youtube
   access_token: text('access_token').notNull(),
@@ -99,7 +99,7 @@ export const socialMediaConnections = pgTable('social_media_connections', {
 
 // Payment Provider Connections
 export const paymentProviderConnections = pgTable('payment_provider_connections', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   provider: varchar('provider', { length: 50 }).notNull(), // stripe, paypal, square, etc.
   account_id: varchar('account_id', { length: 255 }), 
@@ -121,7 +121,7 @@ export const paymentProviderConnections = pgTable('payment_provider_connections'
 
 // Push Subscriptions
 export const pushSubscriptions = pgTable('push_subscriptions', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
   user_id: text('user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
   endpoint: varchar('endpoint', { length: 1000 }).notNull(),
   p256dh_key: varchar('p256dh_key', { length: 500 }).notNull(),
