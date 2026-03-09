@@ -182,16 +182,16 @@ export function VoiceChat({ agentId, agentName, agentAvatar, onTranscript, onRes
 
   const getAgentGreeting = () => {
     const greetings = {
-      roxy: "Hey founder! Ready to organize your empire? Let's chat! 💪",
-      blaze: "What's up, money-maker! Ready to scale some serious business? 🔥",
-      echo: "Hey creative queen! Let's brainstorm some viral content together! ✨",
-      lumi: "Hello there! Need some legal guidance for your empire? I'm here! 🛡️",
-      vex: "Tech time! What systems can I help you architect today? ⚙️",
-      lexi: "Data-driven decisions incoming! What insights do you need? 📊",
-      nova: "Design magic awaits! What beautiful things shall we create? 🎨",
-      glitch: "Quality check time! Let's perfect your empire together! 🔍",
+      roxy: "Greetings, Founder! Ready to organize your strategic foundation? Let's chat! 💪",
+      blaze: "Welcome! Ready to scale your business velocity? 🔥",
+      echo: "Greetings, Founder! Let's strategize some high-impact content together! ✨",
+      lumi: "Hello! Need some regulatory guidance for your business? I'm here! 🛡️",
+      vex: "Systems initialized. What infrastructure shall we architect today? ⚙️",
+      lexi: "Data-driven insights ready. What metrics shall we analyze? 📊",
+      nova: "Visual systems ready. What innovative designs shall we create? 🎨",
+      glitch: "Quality protocols active. Let's optimize your foundation! 🔍",
     }
-    return greetings[agentId as keyof typeof greetings] || "Hey founder! How can I help you today? 💪"
+    return greetings[agentId as keyof typeof greetings] || "Greetings, Founder! How can I assist your mission today? 💪"
   }
 
   return (

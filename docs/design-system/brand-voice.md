@@ -49,23 +49,22 @@ Exponential trajectory    → Rapidly expanding success curve
 
 ### ✅ Use:
 
-- "Innovator"
-- "Architect"
-- "Creator"
-- "Visionary"
-- "Digital Pioneer"
-- "Future Builder"
-- "Tech Titan"
-- "Entrepreneur"
 - "Founder"
-- "Operator"
+- "Architect"
+- "Visionary"
+- "Innovator"
+- "Elite Operator"
+- "Industry Leader"
+- "Legacy Builder"
+- "Strategic Partner"
+- "Entrepreneur"
 
 ### ❌ Don't Use:
 
-- "Boss"
-- "Queen"
-- "Empire"
-- "Master"
+- "Boss" / "Solo Boss"
+- "Queen" / "Girlboss" / "Babe"
+- "Slay" / "Crush" / "Dominate"
+- "Empire" (Use "Foundation", "Legacy", or "Infrastructure" instead)
 - "Warrior"
 
 ---

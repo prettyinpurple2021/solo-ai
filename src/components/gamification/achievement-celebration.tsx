@@ -133,26 +133,26 @@ export function AchievementCelebration({ achievement, onClose, onShare }: Achiev
           {/* Celebration Messages */}
           <div className="text-center space-y-2">
             <div className="text-lg font-bold empowering-text">
-              {achievement.rarity === "legendary" && "🚨 LEGENDARY BOSS ALERT! 🚨"}
+              {achievement.rarity === "legendary" && "🚨 LEGACY ARCHITECT ALERT! 🚨"}
               {achievement.rarity === "epic" && "EPIC ACHIEVEMENT UNLOCKED! 💥"}
-              {achievement.rarity === "rare" && "RARE BOSS ENERGY! ✨"}
-              {achievement.rarity === "common" && "Founder move completed! 🎉"}
+              {achievement.rarity === "rare" && "ELITE STRATEGIST ENERGY! ✨"}
+              {achievement.rarity === "common" && "Strategic move completed! 🎉"}
             </div>
             <p className="text-muted-foreground font-medium">
               {achievement.rarity === "legendary" &&
-                "You've reached mythical status! This is the kind of founder energy legends are made of! 👑💎"}
+                "You've reached mythical status! This is the kind of visionary energy legacies are made of! 🏛️💎"}
               {achievement.rarity === "epic" &&
-                "You're absolutely slaying! This achievement puts you in the top tier of founder babes! 🔥👑"}
+                "Outstanding performance! This achievement puts you in the top tier of industry leaders! 🔥🏛️"}
               {achievement.rarity === "rare" &&
-                "Look at you being all legendary! This is rare achievement energy! ✨💪"}
+                "Impressive execution! This is elite-tier achievement energy! ✨💪"}
               {achievement.rarity === "common" &&
-                "Every founder journey starts with moves like this! Keep crushing it! 💪"}
+                "Every founder journey starts with strategic moves like this! Keep building! 💪"}
             </p>
           </div>
 
           <div className="flex gap-3">
             <Button onClick={onClose} variant="outline" className="flex-1 bg-transparent">
-              Continue Slaying
+              Continue Building
             </Button>
             {onShare && (
               <Button onClick={onShare} className="punk-button text-white flex-1">
@@ -230,15 +230,15 @@ export function LevelUpCelebration({ newLevel, oldLevel, onClose }: LevelUpCeleb
           </Card>
 
           <div className="text-center space-y-2">
-            <div className="text-xl font-bold empowering-text">🚀 BOSS LEVEL ACHIEVED! 🚀</div>
+            <div className="text-xl font-bold empowering-text">🚀 ELITE ARCHITECT STATUS! 🚀</div>
             <p className="text-muted-foreground font-medium">
-              Your empire is growing stronger! These new perks will help you dominate even harder! 💪👑
+              Your business foundation is growing stronger! These new perks will help you scale even further! 💪🏛️
             </p>
           </div>
 
           <Button onClick={onClose} className="w-full punk-button text-white text-lg py-3">
             <Sparkles className="mr-2 h-5 w-5" />
-            Continue Building Empire
+            Continue Building Legacy
           </Button>
         </div>
       </DialogContent>
@@ -256,7 +256,7 @@ export function StreakCelebration({ streakCount, onClose }: StreakCelebrationPro
 
   const getStreakMessage = (count: number) => {
     if (count >= 30) return "UNSTOPPABLE FORCE! 🌟"
-    if (count >= 14) return "CONSISTENCY QUEEN! 👑"
+    if (count >= 14) return "CONSISTENCY ARCHITECT! 🏛️"
     if (count >= 7) return "STREAK MASTER! 🔥"
     if (count >= 3) return "MOMENTUM BUILDING! ⚡"
     return "STREAK STARTED! 💪"
@@ -264,7 +264,7 @@ export function StreakCelebration({ streakCount, onClose }: StreakCelebrationPro
 
   const getStreakEmoji = (count: number) => {
     if (count >= 30) return "🌟"
-    if (count >= 14) return "👑"
+    if (count >= 14) return "🏛️"
     if (count >= 7) return "🔥"
     if (count >= 3) return "⚡"
     return "💪"
@@ -290,10 +290,10 @@ export function StreakCelebration({ streakCount, onClose }: StreakCelebrationPro
 
         <div className="space-y-4 text-center">
           <p className="text-muted-foreground font-medium">
-            {streakCount >= 30 && "30 days of pure founder energy! You're absolutely legendary! 🌟"}
-            {streakCount >= 14 && streakCount < 30 && "Two weeks of consistency! You're building an empire! 👑"}
-            {streakCount >= 7 && streakCount < 14 && "One week strong! This is how habits are built! 🔥"}
-            {streakCount >= 3 && streakCount < 7 && "Building momentum! Keep this energy going! ⚡"}
+            {streakCount >= 30 && "30 days of pure visionary energy! You're absolutely legendary! 🌟"}
+            {streakCount >= 14 && streakCount < 30 && "Two weeks of consistency! You're building a legacy! 🏛️"}
+            {streakCount >= 7 && streakCount < 14 && "One week strong! This is how industry habits are built! 🔥"}
+            {streakCount >= 3 && streakCount < 7 && "Building momentum! Keep this focus going! ⚡"}
             {streakCount < 3 && "Every streak starts with day one! You've got this! 💪"}
           </p>
 

@@ -4,8 +4,8 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useMemo } from "react"
 import { useTemplates } from "@/hooks/use-templates-swr"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { CyberCard } from "@/components/ui/cyber-card"
+import { CyberButton } from "@/components/ui/cyber-button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { 
@@ -24,7 +24,6 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { TemplateRenderer } from "@/components/templates/template-renderer"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Loading } from "@/components/ui/loading"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export default function WorkspacePage() {
@@ -116,7 +115,10 @@ export default function WorkspacePage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center p-6">
-        <Loading variant="pulse" text="Loading workspace..." />
+        <div className="animate-pulse flex flex-col items-center gap-4">
+          <div className="w-16 h-16 border-4 border-neon-cyan border-t-transparent rounded-full animate-spin" />
+          <p className="text-neon-cyan font-orbitron tracking-widest text-sm">INITIALIZING WORKSPACE...</p>
+        </div>
       </div>
     )
   }
@@ -132,10 +134,10 @@ export default function WorkspacePage() {
         <div className="mb-8">
           <div className="flex items-center gap-4 mb-4">
             <Link href="/dashboard/templates">
-              <Button variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
+              <CyberButton variant="ghost" size="sm" className="text-gray-400 hover:text-white hover:bg-white/10 transition-colors">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Templates
-              </Button>
+              </CyberButton>
             </Link>
           </div>
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -151,9 +153,9 @@ export default function WorkspacePage() {
             {/* Quick Actions */}
             <div className="flex shrink-0">
                <Link href="/dashboard/templates">
-                <Button className="bg-neon-cyan text-black hover:bg-neon-cyan/80 font-bold border border-neon-cyan/50 shadow-[0_0_15px_rgba(11,228,236,0.3)] transition-all">
+                <CyberButton className="bg-neon-cyan text-black hover:bg-neon-cyan/80 font-bold border border-neon-cyan/50 shadow-[0_0_15px_rgba(11,228,236,0.3)] transition-all">
                   Browse Catalog
-                </Button>
+                </CyberButton>
               </Link>
             </div>
           </div>
@@ -162,8 +164,8 @@ export default function WorkspacePage() {
         {/* Metrics Bar */}
         {stats.total > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-10">
-            <Card className="bg-dark-card/50 border-gray-800 backdrop-blur-sm">
-              <CardContent className="p-4 flex items-center gap-4">
+            <CyberCard className="bg-dark-card/50 border-gray-800 backdrop-blur-sm" variant="empowerment">
+              <div className="p-4 flex items-center gap-4">
                 <div className="p-3 bg-neon-cyan/10 rounded-lg text-neon-cyan">
                   <FolderOpen className="h-6 w-6" />
                 </div>
@@ -171,10 +173,10 @@ export default function WorkspacePage() {
                   <p className="text-sm text-gray-400">Total Documents</p>
                   <p className="text-2xl font-bold text-white font-orbitron">{stats.total}</p>
                 </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-dark-card/50 border-gray-800 backdrop-blur-sm">
-              <CardContent className="p-4 flex items-center gap-4">
+              </div>
+            </CyberCard>
+            <CyberCard className="bg-dark-card/50 border-gray-800 backdrop-blur-sm" variant="empowerment">
+              <div className="p-4 flex items-center gap-4">
                 <div className="p-3 bg-neon-magenta/10 rounded-lg text-neon-magenta">
                   <Clock className="h-6 w-6" />
                 </div>
@@ -182,10 +184,10 @@ export default function WorkspacePage() {
                   <p className="text-sm text-gray-400">Est. Time Saved</p>
                   <p className="text-2xl font-bold text-white font-orbitron">{stats.timeSavedHrs.toFixed(1)} hrs</p>
                 </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-dark-card/50 border-gray-800 backdrop-blur-sm">
-              <CardContent className="p-4 flex items-center gap-4">
+              </div>
+            </CyberCard>
+            <CyberCard className="bg-dark-card/50 border-gray-800 backdrop-blur-sm" variant="empowerment">
+              <div className="p-4 flex items-center gap-4">
                 <div className="p-3 bg-neon-lime/10 rounded-lg text-neon-lime">
                   <TrendingUp className="h-6 w-6" />
                 </div>
@@ -193,8 +195,8 @@ export default function WorkspacePage() {
                   <p className="text-sm text-gray-400">Top Category</p>
                   <p className="text-2xl font-bold text-white font-orbitron capitalize">{stats.topCategory}</p>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </CyberCard>
           </div>
         )}
 
@@ -258,26 +260,26 @@ export default function WorkspacePage() {
               }
             </p>
             {searchQuery || categoryFilter !== 'all' ? (
-              <Button 
+              <CyberButton 
                 variant="outline" 
                 onClick={() => { setSearchQuery(""); setCategoryFilter("all"); setSortBy("newest"); }}
                 className="border-gray-600 text-gray-300 hover:text-white"
               >
                 Clear Filters
-              </Button>
+              </CyberButton>
             ) : (
               <Link href="/dashboard/templates">
-                <Button className="bg-white text-black hover:bg-gray-200 font-bold px-8">
+                <CyberButton className="bg-white text-black hover:bg-gray-200 font-bold px-8">
                   Explore Templates
-                </Button>
+                </CyberButton>
               </Link>
             )}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTemplates.map((template) => (
-              <Card key={template.id} className="group bg-dark-card border-gray-800 hover:border-neon-cyan/50 hover:shadow-[0_0_20px_rgba(11,228,236,0.15)] transition-all duration-500 overflow-hidden flex flex-col h-full">
-                <CardContent className="p-0 flex flex-col h-full">
+              <CyberCard key={template.id} className="group bg-dark-card border-gray-800 hover:border-neon-cyan/50 hover:shadow-[0_0_20px_rgba(11,228,236,0.15)] transition-all duration-500 overflow-hidden flex flex-col h-full" variant="empowerment">
+                <div className="p-0 flex flex-col h-full">
                   <div className="p-6 flex-1">
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex items-center gap-3">
@@ -309,14 +311,14 @@ export default function WorkspacePage() {
                   <div className="p-4 bg-gray-900/50 border-t border-gray-800 flex items-center justify-between gap-2 mt-auto">
                     <Dialog>
                       <DialogTrigger asChild>
-                        <Button
+                        <CyberButton
                           variant="ghost"
                           className="flex-1 text-gray-300 hover:text-white hover:bg-neon-cyan/10 hover:border-transparent transition-all"
                           onClick={() => setSelectedTemplate(template.template_slug)}
                         >
                           <Eye className="h-4 w-4 mr-2" />
                           View Document
-                        </Button>
+                        </CyberButton>
                       </DialogTrigger>
                       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-black border-neon-cyan/50 text-white rounded-xl">
                         <DialogHeader>
@@ -331,7 +333,7 @@ export default function WorkspacePage() {
                     </Dialog>
 
                     <div className="flex gap-1">
-                      <Button
+                      <CyberButton
                         variant="ghost"
                         size="icon"
                         onClick={() => exportTemplate(template)}
@@ -339,9 +341,9 @@ export default function WorkspacePage() {
                         title="Export Data"
                       >
                         <Download className="h-4 w-4" />
-                      </Button>
+                      </CyberButton>
 
-                      <Button
+                      <CyberButton
                         variant="ghost"
                         size="icon"
                         onClick={() => {
@@ -353,11 +355,11 @@ export default function WorkspacePage() {
                         title="Delete Document"
                       >
                         <Trash2 className="h-4 w-4" />
-                      </Button>
+                      </CyberButton>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </CyberCard>
             ))}
           </div>
         )}

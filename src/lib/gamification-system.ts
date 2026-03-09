@@ -41,10 +41,10 @@ export const achievements: Achievement[] = [
   // Productivity Achievements
   {
     id: "first_task",
-    title: "First Founder Move",
-    description: "Complete your first task like the queen you are!",
+    title: "Initial Launch",
+    description: "Complete your first task and begin your journey!",
     icon: "CheckSquare",
-    emoji: "👑",
+    emoji: "🚀",
     category: "productivity",
     rarity: "common",
     points: 10,
@@ -52,8 +52,8 @@ export const achievements: Achievement[] = [
   },
   {
     id: "task_crusher",
-    title: "Task Crusher",
-    description: "Complete 50 tasks - you're unstoppable!",
+    title: "Operational Excellence",
+    description: "Complete 50 tasks - your efficiency is unmatched!",
     icon: "Target",
     emoji: "💪",
     category: "productivity",
@@ -63,8 +63,8 @@ export const achievements: Achievement[] = [
   },
   {
     id: "goal_slayer",
-    title: "Goal Slayer",
-    description: "Complete your first major goal!",
+    title: "Strategic Milestone",
+    description: "Complete your first major objective!",
     icon: "Trophy",
     emoji: "🏆",
     category: "productivity",
@@ -74,10 +74,10 @@ export const achievements: Achievement[] = [
   },
   {
     id: "empire_builder",
-    title: "Empire Builder",
-    description: "Complete 10 major goals - you're building an empire!",
+    title: "Empire Architect",
+    description: "Complete 10 major goals - you're building a legacy!",
     icon: "Crown",
-    emoji: "🏰",
+    emoji: "🏛️",
     category: "productivity",
     rarity: "legendary",
     points: 500,
@@ -87,8 +87,8 @@ export const achievements: Achievement[] = [
   // Focus & Wellness Achievements
   {
     id: "focus_master",
-    title: "Focus Master",
-    description: "Complete 25 focus sessions - your concentration is legendary!",
+    title: "Deep Work Master",
+    description: "Complete 25 focus sessions - your concentration is elite!",
     icon: "Brain",
     emoji: "🧠",
     category: "wellness",
@@ -97,11 +97,11 @@ export const achievements: Achievement[] = [
     requirements: { type: "count", target: 25, metric: "focus_sessions" },
   },
   {
-    id: "zen_queen",
-    title: "Zen Queen",
+    id: "peak_performance",
+    title: "Peak Performance",
     description: "Maintain wellness score above 80% for a week",
     icon: "Heart",
-    emoji: "🧘‍♀️",
+    emoji: "🧘",
     category: "wellness",
     rarity: "epic",
     points: 250,
@@ -110,8 +110,8 @@ export const achievements: Achievement[] = [
 
   // Streak Achievements
   {
-    id: "consistency_boss",
-    title: "Consistency Founder",
+    id: "consistency_pro",
+    title: "Consistency Pro",
     description: "Maintain a 7-day productivity streak!",
     icon: "Flame",
     emoji: "🔥",
@@ -123,7 +123,7 @@ export const achievements: Achievement[] = [
   {
     id: "unstoppable_force",
     title: "Unstoppable Force",
-    description: "30-day streak - you're absolutely unstoppable!",
+    description: "30-day streak - you're defining the industry!",
     icon: "Zap",
     emoji: "⚡",
     category: "streak",
@@ -135,7 +135,7 @@ export const achievements: Achievement[] = [
   // Social & Collaboration
   {
     id: "ai_whisperer",
-    title: "AI Whisperer",
+    title: "AI Strategist",
     description: "Have 100 conversations with your AI squad",
     icon: "MessageCircle",
     emoji: "🤖",
@@ -145,11 +145,11 @@ export const achievements: Achievement[] = [
     requirements: { type: "count", target: 100, metric: "ai_conversations" },
   },
   {
-    id: "collaboration_queen",
-    title: "Collaboration Queen",
+    id: "synergy_master",
+    title: "Synergy Master",
     description: "Complete 5 multi-agent collaboration projects",
     icon: "Users",
-    emoji: "👯‍♀️",
+    emoji: "🤝",
     category: "social",
     rarity: "epic",
     points: 300,
@@ -160,7 +160,7 @@ export const achievements: Achievement[] = [
 export const levels: LevelInfo[] = [
   {
     level: 1,
-    title: "Founder Rookie",
+    title: "Founder Apprentice",
     emoji: "🌱",
     pointsRequired: 0,
     perks: ["Access to AI Squad", "Basic task management"],
@@ -168,7 +168,7 @@ export const levels: LevelInfo[] = [
   },
   {
     level: 5,
-    title: "Rising Founder",
+    title: "Emerging Leader",
     emoji: "🚀",
     pointsRequired: 500,
     perks: ["Advanced analytics", "Custom themes", "Priority AI responses"],
@@ -176,7 +176,7 @@ export const levels: LevelInfo[] = [
   },
   {
     level: 10,
-    title: "Founder",
+    title: "Visionary Founder",
     emoji: "💪",
     pointsRequired: 1500,
     perks: ["Collaboration features", "Advanced wellness tracking", "Custom celebrations"],
@@ -184,15 +184,15 @@ export const levels: LevelInfo[] = [
   },
   {
     level: 15,
-    title: "Empire Queen",
-    emoji: "👑",
+    title: "Elite Architect",
+    emoji: "🏛️",
     pointsRequired: 3000,
     perks: ["All features unlocked", "VIP AI responses", "Custom agent personalities"],
     color: "bg-gradient-to-r from-pink-400 to-pink-500",
   },
   {
     level: 20,
-    title: "Legendary Founder",
+    title: "Legacy Builder",
     emoji: "✨",
     pointsRequired: 5000,
     perks: ["Exclusive features", "Beta access", "Founder Hall of Fame"],
@@ -297,20 +297,20 @@ export class GamificationEngine {
 
   generateCelebration(achievement: Achievement): string {
     const celebrations = {
-      common: ["Nice work, founder! 🎉", "You're on fire! 🔥", "Founder move unlocked! 💪"],
+      common: ["Great progress, Founder! 🎉", "You're on a roll! 🔥", "Strategic move unlocked! 💪"],
       rare: [
-        "YASSS QUEEN! That's rare achievement energy! ✨",
-        "Look at you being all legendary! 👑",
-        "This is what I call BOSS LEVEL! 🚀",
+        "Exceptional work! That's rare achievement energy! ✨",
+        "Impressive progress! You're operating at a legendary level! 🏛️",
+        "This is what I call Elite Tier! 🚀",
       ],
       epic: [
-        "EPIC ACHIEVEMENT UNLOCKED! You're absolutely slaying! 💥",
-        "This is the kind of founder energy we LIVE for! 🔥👑",
-        "LEGENDARY status incoming! You're unstoppable! ⚡",
+        "EPIC ACHIEVEMENT UNLOCKED! You're dominating your market! 💥",
+        "This is the kind of visionary energy we thrive on! 🔥🏛️",
+        "Legendary status confirmed! You're unstoppable! ⚡",
       ],
       legendary: [
-        "🚨 LEGENDARY BOSS ALERT! 🚨 You've reached mythical status! 🏆✨",
-        "EMPIRE LEVEL UNLOCKED! You're not just a founder, you're THE BOSS! 👑💎",
+        "🚨 LEGACY ALERT! 🚨 You've reached mythical status! 🏆✨",
+        "EMPIRE LEVEL UNLOCKED! You're not just a founder, you're an ARCHITECT! 🏛️💎",
         "HISTORY MADE! This achievement is absolutely LEGENDARY! 🌟💪",
       ],
     }

@@ -84,7 +84,7 @@ export const TemplateSaveIntegration: React.FC<TemplateSaveIntegrationProps> = (
   const handleManualSave = async () => {
     if (!templateData || Object.keys(templateData).length === 0) {
       toast({
-        title: "Nothing to save, queen! 👑",
+        title: "No strategic data to synchronize.",
         description: "Fill out some template fields first to save your progress.",
         variant: "default"
       })
@@ -93,8 +93,8 @@ export const TemplateSaveIntegration: React.FC<TemplateSaveIntegrationProps> = (
 
     if (!saveTitle.trim()) {
       toast({
-        title: "Title needed, babe! ✨",
-        description: "Please enter a title for your template save.",
+        title: "Identification required. ✨",
+        description: "Please enter a title for your strategic save.",
         variant: "destructive"
       })
       return

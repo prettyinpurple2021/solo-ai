@@ -98,7 +98,7 @@ const AI_AGENTS: Agent[] = [
     id: "lexi",
     name: "lexi",
     display_name: "Lexi",
-    description: "Strategy Analyst & Data Queen",
+    description: "Strategy Analyst & Data Architect",
     personality: "Data-driven insights insurgent, analytical powerhouse",
     capabilities: ["Data Analysis", "Market Research", "Performance Metrics", "Strategic Insights"],
     accent_color: "#6366F1"

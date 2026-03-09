@@ -41,7 +41,7 @@ export const BrandStudioSaveIntegration: React.FC<BrandStudioSaveIntegrationProp
   const handleSave = async () => {
     if (!brandData || Object.keys(brandData).length === 0) {
       toast({
-        title: "Nothing to save, babe! 💄",
+        title: "No data to synchronize.",
         description: "Create some brand work first to save it to your briefcase.",
         variant: "default"
       })
@@ -50,7 +50,7 @@ export const BrandStudioSaveIntegration: React.FC<BrandStudioSaveIntegrationProp
 
     if (!saveTitle.trim()) {
       toast({
-        title: "Title needed, queen! 👑",
+        title: "Identification required. ✨",
         description: "Please enter a title for your brand work.",
         variant: "destructive"
       })

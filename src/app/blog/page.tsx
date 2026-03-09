@@ -20,7 +20,7 @@ export default function BlogPage() {
               <span className="text-xs font-bold tracking-widest text-neon-purple uppercase">Knowledge Base</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold text-white mb-6">
-              BOSS <span className="text-neon-purple">BLOG</span>
+              FOUNDER <span className="text-neon-purple">BLOG</span>
             </h1>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto font-mono">
               Strategic intelligence and insights for building your empire.

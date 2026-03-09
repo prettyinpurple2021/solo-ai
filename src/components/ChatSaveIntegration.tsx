@@ -60,7 +60,7 @@ export const ChatSaveIntegration: React.FC<ChatSaveIntegrationProps> = ({
   const handleManualSave = async () => {
     if (messages.length === 0) {
       toast({
-        title: "Nothing to save, queen! 👑",
+        title: "No transmission data to log.",
         description: "Start chatting to save your conversation.",
         variant: "default"
       })

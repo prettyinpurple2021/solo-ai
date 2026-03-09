@@ -101,7 +101,7 @@ export const metadata = {
     siteName: 'SoloSuccess AI',
     images: [
       {
-        url: '/images/soloboss-hero-silhouette.jpg',
+        url: '/images/solosuccess-hero-silhouette.jpg',
         width: 1200,
         height: 630,
         alt: 'SoloSuccess AI - AI Co-founder Platform',

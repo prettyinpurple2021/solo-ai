@@ -135,6 +135,6 @@ When working with AI assistance, reference these documents for:
 
 ---
 
-**Built with ❤️, rebellion, and the power of AI by a girlboss who refused to settle for mediocre tools.** 🚀💜
+**Built with ❤️, innovation, and the power of AI for solo founders who refuse to settle for mediocre tools.** 🚀💜
 
-*Ready to dominate your industry with SoloSuccess AI!*
+*Ready to scale your impact with SoloSuccess AI!*

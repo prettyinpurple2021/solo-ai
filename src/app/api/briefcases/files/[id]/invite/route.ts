@@ -86,7 +86,7 @@ export const POST = withDocumentAuth(
         const appUrl = process.env.APP_URL || 'https://solosuccess.ai'
         const inviteLink = `${appUrl}/briefcase/invite/accept?doc=${encodeURIComponent(documentId)}&email=${encodeURIComponent(email)}`
         await resend.emails.send({
-          from: 'SoloBoss AI <noreply@solosuccess.ai>',
+          from: 'SoloSuccess AI <noreply@solosuccess.ai>',
           to: email,
           subject: `You have been invited to access "${document.name}"`,
           html: `<p>Hello,</p>

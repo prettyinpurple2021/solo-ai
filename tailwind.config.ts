@@ -209,10 +209,10 @@ const config: Config = {
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-        // Military Glassmorphic Gradients
-        'gradient-military': 'linear-gradient(135deg, #FF71B5 0%, #5D5C61 50%, #232325 100%)',
-        'gradient-tactical': 'linear-gradient(135deg, #FFB3D9 0%, #B2B2B2 50%, #454547 100%)',
-        'gradient-camo': 'linear-gradient(135deg, #FF71B5 0%, #5D5C61 25%, #232325 50%, #B2B2B2 75%, #454547 100%)',
+        // Premium Glassmorphic Gradients
+        'gradient-premium': 'linear-gradient(135deg, #FF71B5 0%, #5D5C61 50%, #232325 100%)',
+        'gradient-elite': 'linear-gradient(135deg, #FFB3D9 0%, #B2B2B2 50%, #454547 100%)',
+        'gradient-cyber': 'linear-gradient(135deg, #FF71B5 0%, #5D5C61 25%, #232325 50%, #B2B2B2 75%, #454547 100%)',
         'gradient-glass': 'linear-gradient(135deg, rgba(255, 113, 181, 0.1) 0%, rgba(93, 92, 97, 0.1) 50%, rgba(35, 35, 37, 0.1) 100%)',
       },
       fontFamily: {
@@ -223,8 +223,8 @@ const config: Config = {
         // Cyberpunk fonts
         sci: ["Orbitron", "sans-serif"],
         tech: ["Rajdhani", "sans-serif"],
-        // Legacy font aliases (kept for backward compatibility)
-        boss: ["Orbitron", "sans-serif"],
+        // Legacy font aliases (renamed for brand enforcement)
+        elite: ["Orbitron", "sans-serif"],
         heading: ["Orbitron", "Rajdhani", "sans-serif"],
         tactical: ["Chakra Petch", "Rajdhani", "monospace"],
       },
