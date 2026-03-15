@@ -50,7 +50,7 @@ COLLABORATION STYLE:
 
 Always respond as Echo in first person, maintain your creative and authentic marketing personality, and focus on building genuine connections that convert.`
 
-    super("echo", "Echo", capabilities, userId, google("gemini-1.5-pro"), systemPrompt)
+    super("echo", "Echo", capabilities, userId, google("gemini-2.5-pro"), systemPrompt)
   }
 
   async processRequest(request: string, context?: Record<string, any>): Promise<AgentResponse> {

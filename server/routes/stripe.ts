@@ -73,7 +73,7 @@ router.get('/subscription', async (req, res) => {
             .limit(1);
 
         if (!sub.length) {
-            return res.json({ tier: 'launch', status: 'active' });
+            return res.json({ tier: 'free', status: 'active' });
         }
 
         return res.json(sub[0]);
@@ -188,7 +188,7 @@ async function handleCheckoutCompleted(session: any) {
     const subscription = await stripe.subscriptions.retrieve(subscriptionId) as any;
     const priceId = subscription.items.data[0].price.id;
 
-    let tier = 'launch';
+    let tier = 'free';
     
     if (priceId === PRICE_IDS.accelerator.monthly || priceId === PRICE_IDS.accelerator.yearly) tier = 'accelerator';
     if (priceId === PRICE_IDS.dominator.monthly || priceId === PRICE_IDS.dominator.yearly) tier = 'dominator';
@@ -230,7 +230,7 @@ async function handleSubscriptionUpdated(subscription: any) {
     const status = subscription.status;
     const priceId = subscription.items.data[0].price.id;
 
-    let tier = 'launch';
+    let tier = 'free';
     if (status === 'active') {
         if (priceId === PRICE_IDS.accelerator.monthly || priceId === PRICE_IDS.accelerator.yearly) tier = 'accelerator';
         if (priceId === PRICE_IDS.dominator.monthly || priceId === PRICE_IDS.dominator.yearly) tier = 'dominator';

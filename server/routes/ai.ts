@@ -351,7 +351,7 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
         `;
 
         const chat = ai!.chats.create({
-            model: 'gemini-2.0-flash-exp', // Standardizing on stable model or intended version
+            model: 'gemini-2.5-pro', // Standardizing on stable model or intended version
             config: {
                 systemInstruction: fullSystemInstruction,
                 temperature: 0.8,
@@ -416,7 +416,7 @@ router.post('/competitor-report', requireAi, requireSubscription('dominator'), a
         `;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -503,7 +503,7 @@ router.post('/war-room', requireAi, requireSubscription('dominator'), async (req
         `;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -566,7 +566,7 @@ router.post('/briefing', requireAi, async (req: Request, res: Response) => {
         const prompt = `${context}\n${deepMind}\nGenerate Daily Briefing. Return JSON with summary, focusPoints, threatAlerts, motivationalQuote.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -638,7 +638,7 @@ router.post('/tactical-plan', requireAi, async (req: Request, res: Response) => 
         `;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",
@@ -684,7 +684,7 @@ router.post('/incinerator', requireAi, requireSubscription('accelerator'), async
         Return JSON with roastSummary, survivalScore, feedback, rewrittenContent.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -714,7 +714,7 @@ router.post('/pitch-deck', requireAi, async (req: Request, res: Response) => {
         const prompt = `${context}\nGenerate 10-slide pitch deck. Return JSON with title, slides (title, keyPoint, content, visualIdea).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -742,7 +742,7 @@ router.post('/blue-oceans', requireAi, async (req: Request, res: Response) => {
         const prompt = `${context}\nFind 3 Blue Ocean market gaps. Return JSON with currentIndustry, gaps(name, description, competitionScore, profitabilityScore, soloFitScore, whyItWorks, firstStep).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -776,7 +776,7 @@ router.post('/tribe-blueprint', requireAi, async (req: Request, res: Response) =
         const prompt = `${context}\nGenerate Tribe Blueprint. Audience: ${audience}. Enemy: ${enemy}. Return JSON with manifesto(title, enemy, belief, tagline), rituals(name, frequency, description, action), engagementLoops(array of strings).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -811,7 +811,7 @@ router.post('/amplified-content', requireAi, async (req: Request, res: Response)
         const prompt = `${context}\nAmplify content: "${source}". Return JSON with sourceTitle, twitterThread (array of strings), linkedinPost, tiktokScript, newsletterSection.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -842,7 +842,7 @@ router.post('/social-strategy', requireAi, async (req: Request, res: Response) =
         const prompt = `${context}\nMISSION: SOCIAL STRATEGY (The Amplifier). Act as Echo (CMO). Analyze Brand DNA. Generate strategy. Return JSON with pillars(title, description), cadence, personaTactics(persona, tactic), sampleHooks(array of strings).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -878,7 +878,7 @@ router.post('/launch-strategy', requireAi, async (req: Request, res: Response) =
         const prompt = `${context}\nLaunch Strategy for "${product}" on ${date}. Return JSON with phases(name, events(day, title, description, owner, channel)).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -915,7 +915,7 @@ router.post('/job-description', requireAi, async (req: Request, res: Response) =
         const prompt = `${context}\nMISSION: HIRE TALENT (The Scout). ROLE: "${roleTitle}". TYPE: "${employmentType}". Act as Roxy. Create Job Description. Return JSON with roleTitle, hook, responsibilities, requirements, perks.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -952,7 +952,7 @@ router.post('/interview-guide', requireAi, async (req: Request, res: Response) =
         const prompt = `${context}\nMISSION: VET TALENT. ROLE: "${roleTitle}". FOCUS: "${keyFocus}". Act as Roxy & Glitch. Create Interview Guide. Return JSON with roleTitle, questions(question, whatToLookFor, redFlag).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -986,7 +986,7 @@ router.post('/sop', requireAi, async (req: Request, res: Response) => {
         const prompt = `${context}\nMISSION: DELEGATION SYSTEM (SOP). TASK: "${taskName}". Act as Roxy. Create SOP. Return JSON with taskName, goal, steps(step, action, details), definitionOfDone.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1023,7 +1023,7 @@ router.post('/board-report', requireAi, async (req: Request, res: Response) => {
         const prompt = `${context}\nGenerate Board Meeting Report based on data: ${dataSummary}. Return JSON with ceoScore, executiveSummary, consensus, grades(agentId, department, grade, score, summary, keyIssue).`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1057,7 +1057,7 @@ router.post('/financial-audit', requireAi, async (req: Request, res: Response) =
         const prompt = `Audit these financials: ${JSON.stringify(financials)}. Return JSON with runwayScore, verdict, strategicMoves, riskFactors.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1091,7 +1091,7 @@ router.post('/tech-audit', requireAi, async (req: Request, res: Response) => {
         const prompt = `Audit tech stack: ${stack}. Return JSON with score, verdict, pros, cons, recommendations.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1130,7 +1130,7 @@ router.post('/cold-email', requireAi, async (req: Request, res: Response) => {
         const prompt = `${context}\nDraft cold email for ${contact.name}, ${contact.role} at ${contact.company}. Notes: ${contact.notes}.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { responseMimeType: "text/plain" }
         });
@@ -1155,7 +1155,7 @@ router.post('/negotiation-prep', requireAi, async (req: Request, res: Response) 
         const prompt = `${context}\nAct as Shadow (COO). Negotiate deal: "${dealContext}" with "${otherParty}". My goals: ${goals}. Return JSON with leveragePoints, concessions, scripts(line, reasoning), counterMoves.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1192,7 +1192,7 @@ router.post('/legal-doc', requireAi, requireSubscription('dominator'), async (re
         const prompt = `${context}\n${persona}\nDraft ${type}. Details: ${details}. Include strict standard legal disclaimer that this is AI generated.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { responseMimeType: "text/plain" }
         });
@@ -1218,7 +1218,7 @@ router.post('/contract-analysis', requireAi, requireSubscription('dominator'), a
         const prompt = `${context}\n${persona}\nAnalyze contract: ${text.substring(0, 20000)}. Return JSON with safetyScore, verdict, criticalRisks, suggestions.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1259,7 +1259,7 @@ router.post('/stoic-coaching', requireAi, async (req: Request, res: Response) =>
         const prompt = `${context}\n${persona}\nCoaching for: ${inputData}. Offer Stoic wisdom and a practical exercise. Return JSON with wisdom, exercise, reflectionQuestion.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1296,7 +1296,7 @@ router.post('/roleplay-reply', requireAi, async (req: Request, res: Response) =>
         const prompt = `Roleplay: ${scenario.title}. Role: ${scenario.opponentRole}. History: ${JSON.stringify(history)}. User: ${userInput}. Respond in character.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { responseMimeType: "text/plain" }
         });
@@ -1318,7 +1318,7 @@ router.post('/roleplay-feedback', requireAi, async (req: Request, res: Response)
         const prompt = `Roleplay Analysis: ${scenario.moduleTitle}. History: ${JSON.stringify(history)}. Provide feedback on user performance. Return JSON with score, strengths, improvements, coaching.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1380,7 +1380,7 @@ router.post('/code-solution', requireAi, async (req: Request, res: Response) => 
         const prompt = `Solve coding problem: ${problem}. Return JSON with language, code, explanation.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1413,7 +1413,7 @@ router.post('/simulation', requireAi, async (req: Request, res: Response) => {
         const prompt = `Simulate scenario: ${scenario}. Return JSON with likelyCase, bestCase, worstCase, strategicAdvice.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 responseMimeType: "application/json", 
@@ -1449,7 +1449,7 @@ router.post('/market-pulse', requireAi, async (req: Request, res: Response) => {
         const prompt = `${context}\nMISSION: MARKET PULSE. INDUSTRY: "${industry || 'general tech'}". Act as Glitch. Find market trends. Summary bullet points.`;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { 
                 tools: [{ googleSearch: {} }] 
@@ -1500,7 +1500,7 @@ router.post('/analyze-opportunity', requireAi, async (req: Request, res: Respons
         `;
 
         const response = await ai!.models.generateContent({
-            model: 'gemini-2.0-flash-exp',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: {
                 responseMimeType: "application/json",

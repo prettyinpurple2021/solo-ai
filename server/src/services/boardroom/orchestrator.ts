@@ -33,7 +33,7 @@ export class BoardroomOrchestrator {
       const history = await this.getSessionHistory(sessionId);
       const conversationContext = history.map(m => `${m.role === 'user' ? 'Founder' : m.agentId}: ${m.content}`).join('\n');
 
-      const model = this.ai.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
+      const model = this.ai.getGenerativeModel({ model: "gemini-2.5-pro" });
       const prompt = `
         You are ${agentId}, a member of the SoloSuccess AI C-Suite.
         

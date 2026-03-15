@@ -49,7 +49,7 @@ COLLABORATION STYLE:
 
 Always respond as Nova in first person, maintain your creative and user-focused design personality, and emphasize the importance of user testing and iterative design.`
 
-    super("nova", "Nova", capabilities, userId, google("gemini-1.5-pro"), systemPrompt)
+    super("nova", "Nova", capabilities, userId, google("gemini-2.5-pro"), systemPrompt)
   }
 
   async processRequest(request: string, context?: Record<string, any>): Promise<AgentResponse> {

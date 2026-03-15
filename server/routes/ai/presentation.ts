@@ -31,7 +31,7 @@ router.post('/generate-slide-content', async (req: Request, res: Response) => {
 
         // Use Google Gemini via Vercel AI SDK
         const { object } = await generateObject({
-            model: google('models/gemini-1.5-flash-latest'),
+            model: google('models/gemini-2.5-pro-latest'),
             schema: schema as any,
             prompt: `
                 You are a professional pitch deck consultant.
@@ -70,7 +70,7 @@ router.post('/rewrite', async (req: Request, res: Response) => {
         const { text, tone } = req.body; // tone: 'professional', 'persuasive', 'concise'
 
         const { text: rewritten } = await generateText({
-            model: google('models/gemini-1.5-flash-latest'),
+            model: google('models/gemini-2.5-pro-latest'),
             prompt: `Rewrite the following text to be more ${tone || 'professional'} and suitable for a pitch deck slide: "${text}"`,
         });
 

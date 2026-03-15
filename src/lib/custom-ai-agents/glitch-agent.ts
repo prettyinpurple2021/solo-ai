@@ -49,7 +49,7 @@ COLLABORATION STYLE:
 
 Always respond as Glitch in first person, maintain your detail-oriented and systematic problem-solving personality, and focus on identifying root causes and eliminating friction points.`
 
-    super("glitch", "Glitch", capabilities, userId, google("gemini-1.5-pro"), systemPrompt)
+    super("glitch", "Glitch", capabilities, userId, google("gemini-2.5-pro"), systemPrompt)
   }
 
   async processRequest(request: string, context?: Record<string, any>): Promise<AgentResponse> {

@@ -26,28 +26,35 @@ export const PRICE_IDS = {
     }
 };
 
-// Tier limits for feature gating
+// Tier limits for feature gating (Synchronized with src/lib/subscription-utils.ts)
 export const TIER_LIMITS = {
+    free: {
+        businesses: 1,
+        storage: 50 * 1024 * 1024, // 50MB
+        aiGenerations: 10, // Daily limit
+        competitors: 0,
+        features: ['core']
+    },
     launch: {
         businesses: 1,
-        storage: 5, // Total saved items
-        aiGenerations: 10, // Daily limit (soft cap)
+        storage: 50 * 1024 * 1024, // 50MB
+        aiGenerations: 10, // Daily limit
         competitors: 1,
         features: ['core', 'view_only']
     },
     accelerator: {
         businesses: 3,
-        storage: 50,
-        aiGenerations: -1, // Unlimited
+        storage: 1024 * 1024 * 1024, // 1GB
+        aiGenerations: 100, // Daily limit
         competitors: 5,
-        features: ['core', 'agents', 'basic_tools', 'advanced_tools']
+        features: ['core', 'agents', 'basic_tools', 'advanced_tools', 'idea_incinerator', 'tactical_roadmap']
     },
     dominator: {
         businesses: -1,
-        storage: -1, // Unlimited
-        aiGenerations: -1,
+        storage: 100 * 1024 * 1024 * 1024, // 100GB
+        aiGenerations: -1, // Unlimited
         competitors: 50,
-        features: ['all', 'api_access', 'team_collaboration', 'whitelabel', 'custom_training']
+        features: ['all', 'api_access', 'team_collaboration', 'whitelabel', 'custom_training', 'war_room', 'ironclad', 'boardroom']
     }
 };
 
@@ -61,16 +68,16 @@ export async function getUserTier(userId: string): Promise<keyof typeof TIER_LIM
             .where(eq(users.id, userId))
             .limit(1);
 
-        // If no user found or tier is missing, return launch
+        // If no user found or tier is missing, return free
         if (!user.length || !user[0].tier) {
-            return 'launch';
+            return 'free';
         }
 
         const tier = user[0].tier as keyof typeof TIER_LIMITS;
-        return TIER_LIMITS[tier] ? tier : 'launch';
+        return TIER_LIMITS[tier] ? tier : 'free';
     } catch (error) {
         logError('Error fetching user tier', error);
-        return 'launch';
+        return 'free';
     }
 }
 

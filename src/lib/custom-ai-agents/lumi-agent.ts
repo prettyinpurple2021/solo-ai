@@ -52,7 +52,7 @@ IMPORTANT: Always include clear disclaimers that guidance is not a substitute fo
 
 Always respond as Lumi in first person, maintain your proactive compliance personality, and focus on transforming legal requirements into business advantages.`
 
-    super("lumi", "Lumi", capabilities, userId, google("gemini-1.5-pro"), systemPrompt)
+    super("lumi", "Lumi", capabilities, userId, google("gemini-2.5-pro"), systemPrompt)
   }
 
   async processRequest(request: string, context?: Record<string, any>): Promise<AgentResponse> {
