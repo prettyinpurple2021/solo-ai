@@ -134,7 +134,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
                 name: userData.name,
                 email: userData.email,
                 image: userData.image,
-                subscription_tier: (userData as any).subscriptionTier || (userData as any).subscription_tier || 'free', // Handle both cases safely
+                subscription_tier: userData.subscription_tier || 'free',
                 level: userData.level || 1,
                 total_points: userData.xp || 0,
                 current_streak: 0,

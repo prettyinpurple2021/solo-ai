@@ -57,6 +57,7 @@
     "node_modules",
     "scripts",
     "tests",
-    "server"
+    "server",
+    "src/components/archive"
   ]
 }

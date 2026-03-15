@@ -341,8 +341,33 @@ export class CollaborationHub {
       // Validate message
       const validatedMessage = AgentMessageSchema.parse(message)
       
-      // Check if session exists
-      const session = this.activeSessions.get(validatedMessage.sessionId)
+      // Check if session exists in memory, or hydrate from DB
+      let session = this.activeSessions.get(validatedMessage.sessionId)
+      
+      if (!session) {
+        logInfo(`Session ${validatedMessage.sessionId} not in memory, attempting hydration from DB...`)
+        const dbSession = await db.query.collaborationSessions.findFirst({
+          where: eq(collaborationSessions.id, validatedMessage.sessionId),
+          with: { participants: true }
+        })
+
+        if (dbSession) {
+          session = {
+            id: dbSession.id,
+            userId: dbSession.user_id,
+            projectName: dbSession.name,
+            participatingAgents: dbSession.participants.map(p => p.agent_id),
+            sessionStatus: dbSession.status as any,
+            sessionType: 'project', // Default or from metadata
+            createdAt: dbSession.created_at || new Date(),
+            updatedAt: dbSession.updated_at || new Date(),
+            metadata: dbSession.metadata as Record<string, any>
+          }
+          this.activeSessions.set(session.id, session)
+          logInfo(`✅ Hydrated session ${session.id} from DB`)
+        }
+      }
+
       if (!session) {
         throw new Error(`Session ${validatedMessage.sessionId} not found`)
       }

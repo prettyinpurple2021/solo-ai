@@ -25,6 +25,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       })
       return adapter as any
     } catch (e) {
+      if (process.env.NODE_ENV === 'production' && !process.env.NEXT_PHASE?.includes('build')) {
+        logError("CRITICAL: Database adapter initialization failed in production!", e);
+      } else {
+        logWarn("Database adapter initialization failed. This is expected during build time if DB is not accessible.");
+      }
       // Return undefined during build if DB is not accessible
       return undefined
     }

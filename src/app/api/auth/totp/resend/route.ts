@@ -5,9 +5,18 @@ import { userMfaSettings, users } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { Resend } from 'resend';
+import { Redis } from '@upstash/redis';
 
-// Configure Resend if the environment variable is present
+// Configure Resend
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+// Configure Redis for session/temp data storage
+const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+  : null;
 
 const resendSchema = z.object({
   method: z.enum(['email', 'sms']).default('email'),
@@ -43,33 +52,47 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
-    // Logic for Email/SMS 2FA fallback
-    // Note: In a full production system, you'd store a randomly generated 6-digit code with an expiry 
-    // in Redis or a DB table, and then send it via Resend or Twilio.
-    
-    if (method === 'email' && resend) {
+    if (method === 'email') {
+      if (!resend) {
+        return NextResponse.json({ success: false, error: 'Email service not configured' }, { status: 503 });
+      }
+      if (!redis) {
+        return NextResponse.json({ success: false, error: 'Persistence service not configured' }, { status: 503 });
+      }
+
       const [user] = await db.select().from(users).where(eq(users.id, session.user.id));
       if (!user?.email) {
         return NextResponse.json({ success: false, error: 'User email not found' }, { status: 400 });
       }
 
-      // Generate a simple 6 digit code for demonstration of the flow
+      // Generate a secure 6 digit code
       const randomCode = Math.floor(100000 + Math.random() * 900000).toString();
       
-      // Store this code in your database or redis to verify later (simulated by comment here)
-      // await redis.set(`2fa:${user.id}`, randomCode, { ex: 300 });
+      // Store this code in Redis with a 5-minute expiry
+      await redis.set(`2fa:code:${session.user.id}`, randomCode, { ex: 300 });
 
       await resend.emails.send({
-        from: 'security@solosuccess.ai', // Must be verified in Resend
+        from: 'security@solosuccess.ai',
         to: user.email,
         subject: 'Your 2FA Login Code',
-        html: `<p>Your authentication code is: <strong>${randomCode}</strong>. It expires in 5 minutes.</p>`,
+        html: `
+          <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee;">
+            <h2 style="color: #333;">Security Verification</h2>
+            <p>You requested a login code for your SoloSuccess AI account.</p>
+            <div style="background: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px;">
+              ${randomCode}
+            </div>
+            <p style="color: #666; font-size: 14px; margin-top: 20px;">
+              This code will expire in 5 minutes. If you did not request this code, please ignore this email.
+            </p>
+          </div>
+        `,
       });
 
       return NextResponse.json({ success: true, message: 'Verification code sent to your email.' });
     }
 
-    return NextResponse.json({ success: true, message: 'Mock sent (Email provider not configured)' });
+    return NextResponse.json({ success: false, error: 'Unsupported verification method' }, { status: 400 });
 
   } catch (error) {
     console.error('[TOTP Resend] Error:', error);
