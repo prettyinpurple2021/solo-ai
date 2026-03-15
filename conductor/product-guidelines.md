@@ -18,7 +18,7 @@ SoloSuccess AI is not a chatbot gallery; it is an elite-tier Autonomous Business
 - **Operational Clarity:** Visualizations must focus on *task progress*, *data flow*, and *market intelligence*, rather than character-based agent avatars.
 
 ## Production Mandates
-- **Deterministic Task Fulfillment:** Replace all "simulations" with high-fidelity, production-ready task execution logic.
+- **Deterministic Execution:** All core engines (Strategy Nexus, Compliance Grid, Neural Syndicate) must use high-fidelity, DB-backed execution logic. "Simulations" are deprecated in favor of real task routing.
 - **Engineered Reliability:**
     - **Data Integrity:** Mandatory Zod validation across the unified state boundary.
     - **Intelligence Freshness:** Real-time data streams for Competitive Intelligence must have sub-minute latency.

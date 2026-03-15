@@ -38,9 +38,11 @@ SoloSuccess AI justifies its subscription value by offering a comprehensive "AI 
 
 ## Production Constraints & Mandates
 
-### 1. Validation & Safety
+### 1. Core Engineering & Safety
 - **Schema Enforcement:** Zod validation is mandatory for ALL inputs (Client -> Server Actions, API routes, and DB writes).
-- **Type Safety:** 100% TypeScript coverage. `any` is strictly prohibited. Use explicit interfaces for all agent-generated content.
+- **Type Safety:** 100% TypeScript coverage. `any` is strictly prohibited. Zero `type-check` errors in production code.
+- **State Persistence:** Database-backed session state management for multi-agent collaboration via `SessionManager`.
+- **Real-Time Intelligence:** Gemini 2.0 Flash based strategic insight generation and market-data-driven opportunity scoring.
 
 ### 2. Error Handling & Resilience
 - **Global Boundaries:** React Error Boundaries at the route level and component level for graceful degradation.
