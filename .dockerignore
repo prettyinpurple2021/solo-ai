@@ -29,6 +29,9 @@ playwright/.cache/
 # IDE and editor files
 .vscode/
 .idea/
+.cursor/
+.cursorrules
+.cursorignore
 *.swp
 *.swo
 *~
@@ -41,98 +44,53 @@ playwright/.cache/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # Git
 .git
 .gitignore
 .gitattributes
+.gitea/
 
 # Documentation
 README.md
+ROADMAP.md
+REAL_ROADMAP.md
+FEATURES_AND_TIERS.md
+LAUNCH_CHECKLIST.md
+GEMINI.md
 *.md
 docs/
-wiki/
 
-# Logs
+# Logs and reports
 logs
 *.log
+*.txt
+readiness-report.md.resolved
+scratchpad_ni1r7nnk.md.resolved
+type-check-errors.txt
 
-# Runtime data
-pids
-*.pid
-*.seed
-*.pid.lock
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+.circleci/
+railway-deploy/
+render.yaml
+fly.toml
 
-# Coverage directory used by tools like istanbul
-coverage/
+# Misc
+.agent/
+.agents/
+.gemini/
+.devcontainer/
+.storybook/
+conductor/
+examples/
+test/
+tests/
 
-# Dependency directories
-jspm_packages/
-
-# Optional npm cache directory
-.npm
-
-# Optional REPL history
-.node_repl_history
-
-# Output of 'npm pack'
-*.tgz
-
-# Yarn Integrity file
-.yarn-integrity
-
-# dotenv environment variables file
-.env
-
-# parcel-bundler cache (https://parceljs.org/)
-.cache
-.parcel-cache
-
-# next.js build output
-.next
-
-# nuxt.js build output
-.nuxt
-
-# vuepress build output
-.vuepress/dist
-
-# Serverless directories
-.serverless
-
-# FuseBox cache
-.fusebox/
-
-# DynamoDB Local files
-.dynamodb/
-
-# TernJS port file
-.tern-port
-
-# Stores VSCode versions used for testing VSCode extensions
-.vscode-test
-
-# Temporary folders
-tmp/
-temp/
-
-# Docker
-Dockerfile*
-docker-compose*
-.dockerignore
-# Note: server/.dockerignore is ignored - Docker only reads .dockerignore from build context root
-# The Dockerfile explicitly copies server/ files, so we exclude frontend directories here
-
-# Exclude Next.js frontend directories (we only build the server)
-app/
-components/
-hooks/
-lib/
-public/
-styles/
-
-# Exclude only root-level Next.js/frontend config files
-# Using / prefix ensures patterns only match root-level files, not server/drizzle.config.ts
+# Config files (if not needed for build)
 /next.config.*
 /tailwind.config.*
 /postcss.config.*
@@ -140,18 +98,22 @@ styles/
 /playwright.config.*
 /jest.config.*
 /stackbit.config.*
-# Note: /drizzle.config.* is NOT excluded - root Dockerfile (line 53) copies it, and server/Dockerfile copies server/drizzle.config.ts
-# Note: server/drizzle.config.ts and server/tsconfig.json are explicitly copied by server/Dockerfile and must NOT be excluded
-# Note: Root package.json is not excluded - Dockerfile explicitly copies server/package.json
 
-# CI/CD
-.github/
-.gitlab-ci.yml
-.travis.yml
-.circleci/
+# Deployment configs
+.vercelignore
+.railwayignore
+deploying*
 
-# Misc
+# Temporary files
 *.ico
-desktop.ini
-
-VERCEL_ENV_SETUP.md
+verify_phase*.cjs
+check-*.ts
+fix*.ts
+replace-uuid.cjs
+drop-tags.*
+generate-auto.cjs
+skills-lock.json
+metadata.json
+openapi.json
+sanity.*
+Implementation*

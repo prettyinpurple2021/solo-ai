@@ -1,69 +1,52 @@
 # Use the official Node.js 20 Alpine image as base
-FROM node:20.19.5-alpine AS base
-
-# Install dependencies only when needed
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
+FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat
+
+# Install production dependencies
+FROM base AS deps
 WORKDIR /app
+COPY package*.json ./
+RUN npm install --omit=dev
 
-# Install dependencies based on the preferred package manager
-COPY package.json package-lock.json* ./
-RUN npm ci --only=production
-
-# Rebuild the source code only when needed
+# Build stage
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
-# Set environment variables for build
-ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
 
-# Build the application
-RUN npm run build
+COPY package*.json ./
+RUN npm install
 
-# Production image, copy all the files and run next
+COPY . .
+RUN npm run build && npm cache clean --force
+
+# Production image
 FROM base AS runner
 WORKDIR /app
-
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
-
-# Create a non-root user
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-# Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-# Copy the built application
-COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
-
-# Copy package.json and node_modules
-COPY --from=builder /app/package.json ./package.json
-COPY --from=deps /app/node_modules ./node_modules
-
-# Copy database schema and migrations
-COPY --from=builder /app/db ./db
-COPY --from=builder /app/migrations ./migrations
-COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
-
-# Copy scripts directory for database setup
-COPY --from=builder /app/scripts ./scripts
-
-# Copy data directory if it exists
-COPY --from=builder /app/data ./data
-
-USER nextjs
-
-EXPOSE 3000
-
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-# Start the application
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs && \
+    mkdir -p .next && \
+    chown -R nextjs:nodejs .next
+
+# Copy built application and dependencies
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
+COPY --from=deps /app/node_modules ./node_modules
+
+# Copy database and script files
+COPY --from=builder --chown=nextjs:nodejs /app/db ./db
+COPY --from=builder --chown=nextjs:nodejs /app/migrations ./migrations
+COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+
+USER nextjs
+EXPOSE 3000
+
 CMD ["npm", "start"]
