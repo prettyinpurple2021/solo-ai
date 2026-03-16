@@ -1,0 +1,5 @@
+﻿
+> solosuccess-ai@0.0.0 test
+> node --experimental-vm-modules node_modules/jest/bin/jest.js
+
+[dotenv@17.2.3] injecting env (46) from .env -- tip: ΓÜÖ∩╕Å  enable debug logging with { debug: true }

@@ -3,10 +3,11 @@
 ## 🛑 RELEASE BLOCKERS (MUST FIX)
 
 ### 🚨 HARDCODED VALUE & MOCK AUDIT (COMPREHENSIVE)
+
 *The following items were identified via exhaustice codebase scan and MUST be resolved.*
 
 | Priority | File | Issue | Remediation | Status |
-|----------|------|-------|-------------|--------|
+| ---------- | ------ | ------- | ------------- | -------- |
 | 🔴 **CRITICAL** | `server/routes/dashboard.ts` (Line 87) | **Hardcoded Subscription Tier**: `subscription_tier: 'free'` | **MUST FIX**: Query the `users` table to get real tier. Paying users currently get Free tier. | ✅ FIXED |
 | 🔴 **CRITICAL** | `server/routes/ai.ts` (Line 351) | **Empty AI Insights**: `insights: []` | Implement actual AI insight generation or remove feature. | ✅ FIXED |
 | 🔴 **CRITICAL** | `src/middleware.ts` (Line 4) | **Demo Session Tracking**: "Simple in-memory session tracking for demo/dev" | Verify if cookie-based approach is sufficient for V1 or Replace with Redis/DB session store. | ✅ FIXED |
@@ -23,46 +24,54 @@
 | 🟡 Medium | `src/lib/social-media-monitor.ts` | **Cleanup**: Comments about "Removed mock data" | Verify real API integration is functioning. | ✅ VERIFIED |
 
 ### 💳 Payments & Subscriptions
+
 - [x] **SYNC LIMITS**: `src/lib/stripe.ts` limits DO NOT MATCH `src/lib/subscription-utils.ts`.
-    - *Action:* Updated `stripe.ts` and server configs to reflect strict tiering.
+  - *Action:* Updated `stripe.ts` and server configs to reflect strict tiering.
 - [x] **WEBHOOKS**: Verify `server/routes/stripe.ts` or `src/app/api/webhooks/stripe/route.ts` handles:
-    - `customer.subscription.updated` (tier changes)
-    - `customer.subscription.deleted` (access revocation)
-    - `invoice.payment_failed` (grace period/lockout)
+  - `customer.subscription.updated` (tier changes)
+  - `customer.subscription.deleted` (access revocation)
+  - `invoice.payment_failed` (grace period/lockout)
 
 ### 🧠 AI & Backend
+
 - [x] **Environment Variables**:
-    - [x] `GEMINI_API_KEY`: Verified usage in production code.
-    - [x] `GOOGLE_CLIENT_ID`: Verified for auth.
+  - [x] `GEMINI_API_KEY`: Verified usage in production code.
+  - [x] `GOOGLE_CLIENT_ID`: Verified for auth.
 - [x] **AI Routes**: Verified `server/routes/ai.ts` is reachable and standardized on Gemini 2.5 Pro.
 
 ### 🛠 Type Safety
+
 - [x] **Strict Mode**: `npm run type-check` passed with zero errors.
 
 ## 🟡 FUNCTIONAL VERIFICATION (Manual Test)
 
 ### 1. The "Free Tier" Trap
+
 - [ ] Create a new account.
 - [ ] send 10 messages to Aura.
 - [ ] **VERIFY:** 11th message fails with "Upgrade Required".
 
 ### 2. The "Accelerator" Upgrade
+
 - [ ] Upgrade to Accelerator (Test Mode Stripe).
 - [ ] **VERIFY:** Access to Blaze, Glitch, Vex unlocked.
 - [ ] **VERIFY:** Chat limit increases to 100.
 - [ ] **VERIFY:** Storage limit shows 1GB.
 
 ### 3. The "Dominator" Power
+
 - [ ] Upgrade to Dominator.
 - [ ] **VERIFY:** Access to ALL agents (Roxy, Lexi, Nova, etc.).
 - [ ] **VERIFY:** Chat is unlimited.
 - [ ] **VERIFY:** Access to "War Room" and "Competitor Stalker".
 
 ## 🟢 UI/UX POLISH
+
 - [x] **Empty States**: Verified "The Briefcase" and "The War Room" look good with 0 data.
 - [x] **Loading States**: Verified skeletons/spinners on AI generation.
 - [x] **Mobile**: Basic responsiveness check on Dashboard.
 
 ## 📝 POST-LAUNCH
+
 - [ ] PayPal Integration (Deferred)
 - [ ] Advanced Learning Algorithms (Deferred)

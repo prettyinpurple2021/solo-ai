@@ -1,14 +1,18 @@
 
 import { jest, describe, it, expect, beforeEach } from '@jest/globals';
-import { LearningEngine } from '../learning-engine';
-import { db } from '../database-client';
-import { users, tasks } from '@/shared/db/schema';
-import { eq, sql } from 'drizzle-orm';
 
-// Mock the database client
-const mockFindFirst = jest.fn();
-const mockFindMany = jest.fn();
-const mockSelect = jest.fn();
+// Provide a dummy fetch to satisfy the Neon driver during module resolution if it leaks
+if (typeof global.fetch === 'undefined') {
+  (global as any).fetch = jest.fn(() => Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve({}),
+  })) as any;
+}
+
+// Mock the database client COMPLETELY before any other imports
+const mockFindFirst = jest.fn() as any;
+const mockFindMany = jest.fn() as any;
+const mockSelect = jest.fn() as any;
 
 jest.mock('../database-client', () => ({
   db: {
@@ -29,7 +33,10 @@ jest.mock('../database-client', () => ({
   }
 }));
 
-describe('Production Logic Verification', () => {
+// Now import the code that uses the mock
+import { LearningEngine } from '../learning-engine';
+
+describe('Production Logic Verification (Final Attempt)', () => {
   const mockUserId = 'test-user-id';
 
   beforeEach(() => {
@@ -44,26 +51,26 @@ describe('Production Logic Verification', () => {
       const engine = new LearningEngine(mockUserId);
       
       // Mock user data
-      mockFindFirst.mockResolvedValue({
+      mockFindFirst.mockReturnValue(Promise.resolve({
         level: 10,
         xp: 1000
-      });
+      }));
       
       // Mock progress
-      mockFindMany.mockResolvedValue([
+      mockFindMany.mockReturnValue(Promise.resolve([
         { status: 'completed' },
         { status: 'completed' }
-      ]);
+      ]));
 
       // Mock total users (100)
       mockSelect.mockReturnValueOnce({
-        from: jest.fn().mockResolvedValue([{ count: 100 }])
+        from: jest.fn().mockReturnValue(Promise.resolve([{ count: 100 }]))
       });
 
       // Mock users below (95)
       mockSelect.mockReturnValueOnce({
         from: jest.fn().mockReturnThis(),
-        where: jest.fn().mockResolvedValue([{ count: 95 }])
+        where: jest.fn().mockReturnValue(Promise.resolve([{ count: 95 }]))
       });
 
       const analytics = await engine.getLearningAnalytics();
@@ -73,29 +80,28 @@ describe('Production Logic Verification', () => {
     it('should calculate correct peer rank for Top 50%', async () => {
       const engine = new LearningEngine(mockUserId);
       
-      mockFindFirst.mockResolvedValue({ level: 5, xp: 500 });
-      mockFindMany.mockResolvedValue([]);
+      mockFindFirst.mockReturnValue(Promise.resolve({ level: 5, xp: 500 }));
+      mockFindMany.mockReturnValue(Promise.resolve([]));
       
       // Total 100, Below 60 -> 60th percentile
-      mockSelect.mockReturnValueOnce({ from: jest.fn().mockResolvedValue([{ count: 100 }]) });
-      mockSelect.mockReturnValueOnce({ from: jest.fn().mockReturnThis(), where: jest.fn().mockResolvedValue([{ count: 60 }]) });
+      mockSelect.mockReturnValueOnce({ from: jest.fn().mockReturnValue(Promise.resolve([{ count: 100 }])) });
+      mockSelect.mockReturnValueOnce({ from: jest.fn().mockReturnThis(), where: jest.fn().mockReturnValue(Promise.resolve([{ count: 60 }])) });
 
       const analytics = await engine.getLearningAnalytics();
       expect(analytics.peer_rank).toBe('Top 50%');
     });
   });
 
-  describe('Dashboard - Task Prioritization', () => {
-    // This tests the logic moved into the dashboard route
+  describe('Dashboard - Task Prioritization Logic', () => {
     it('should sort tasks by due_date correctly', () => {
       const now = new Date();
       const tomorrow = new Date(now.getTime() + 86400000);
       const nextWeek = new Date(now.getTime() + 86400000 * 7);
 
       const mockTasks = [
-        { id: '1', title: 'Future Task', due_date: nextWeek, status: 'pending', priority: 'medium' },
-        { id: '2', title: 'Urgent Task', due_date: tomorrow, status: 'pending', priority: 'high' },
-        { id: '3', title: 'No Date Task', due_date: null, status: 'pending', priority: 'low' }
+        { id: '1', title: 'Future Task', due_date: nextWeek },
+        { id: '2', title: 'Urgent Task', due_date: tomorrow },
+        { id: '3', title: 'No Date Task', due_date: null }
       ];
 
       const sorted = [...mockTasks].sort((a, b) => {

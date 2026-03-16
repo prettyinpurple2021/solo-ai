@@ -1,0 +1,442 @@
+
+> solosuccess-ai@0.0.0 test
+> node --experimental-vm-modules node_modules/jest/bin/jest.js
+
+[dotenv@17.2.3] injecting env (46) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+(node:29044) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS src/lib/services/competitor-service.integration.test.ts
+  ● Console
+
+    console.log
+      [dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+
+    console.log
+      Fetched 0 insights for user 3db434f0-f5c5-410e-a1a3-8e8f6589fc3b
+
+      at Object.<anonymous> (src/lib/services/competitor-service.integration.test.ts:63:13)
+
+(node:18512) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:24072) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:21776) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL test/server/realtime/boardroom.test.ts
+  ● Boardroom Socket Namespace › should allow joining a session room
+
+    ReferenceError: require is not defined
+
+    [0m [90m 12 |[39m     [36mconst[39m httpServer [33m=[39m createServer()[33m;[39m
+     [90m 13 |[39m     io [33m=[39m [36mnew[39m [33mServer[39m(httpServer[33m,[39m {
+    [31m[1m>[22m[39m[90m 14 |[39m       wsEngine[33m:[39m require([32m"ws"[39m)[33m.[39m[33mServer[39m
+     [90m    |[39m                              [31m[1m^[22m[39m
+     [90m 15 |[39m     })[33m;[39m
+     [90m 16 |[39m     setIo(io [36mas[39m any)[33m;[39m
+     [90m 17 |[39m     [0m
+
+      at Object.<anonymous> (test/server/realtime/boardroom.test.ts:14:30)
+
+  ● Boardroom Socket Namespace › should handle streaming agent responses
+
+    ReferenceError: require is not defined
+
+    [0m [90m 12 |[39m     [36mconst[39m httpServer [33m=[39m createServer()[33m;[39m
+     [90m 13 |[39m     io [33m=[39m [36mnew[39m [33mServer[39m(httpServer[33m,[39m {
+    [31m[1m>[22m[39m[90m 14 |[39m       wsEngine[33m:[39m require([32m"ws"[39m)[33m.[39m[33mServer[39m
+     [90m    |[39m                              [31m[1m^[22m[39m
+     [90m 15 |[39m     })[33m;[39m
+     [90m 16 |[39m     setIo(io [36mas[39m any)[33m;[39m
+     [90m 17 |[39m     [0m
+
+      at Object.<anonymous> (test/server/realtime/boardroom.test.ts:14:30)
+
+(node:21364) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:25968) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL src/lib/__tests__/scraping-scheduler.test.ts
+  ● ScrapingScheduler › createJob › should create a new scraping job with valid parameters
+
+    Failed query: insert into "scraping_jobs" ("id", "competitor_id", "user_id", "job_type", "url", "priority", "frequency_type", "frequency_value", "frequency_timezone", "next_run_at", "last_run_at", "retry_count", "max_retries", "status", "config", "created_at", "updated_at") values ($1, $2, $3, $4, $5, $6, $7, $8, default, $9, default, default, $10, $11, $12, default, default)
+    params: 313da693-ad16-4ad6-8613-8e3f4ba00837,1,user123,website,https://example.com,medium,interval,360,2026-03-17T01:13:26.753Z,3,pending,{"changeDetection":{"enabled":true,"threshold":5}}
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:73:11)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:75:21)
+
+    Cause:
+    NeonDbError: Error connecting to database: (k ?? fetch) is not a function
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at execute (node_modules/@neondatabase/serverless/index.mjs:1549:24)
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:71:12)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:75:21)
+
+  ● ScrapingScheduler › createJob › should use default values for optional parameters
+
+    Failed query: insert into "scraping_jobs" ("id", "competitor_id", "user_id", "job_type", "url", "priority", "frequency_type", "frequency_value", "frequency_timezone", "next_run_at", "last_run_at", "retry_count", "max_retries", "status", "config", "created_at", "updated_at") values ($1, $2, $3, $4, $5, $6, $7, $8, default, $9, default, default, $10, $11, $12, default, default)
+    params: c9e3e82e-5888-49a1-8ca6-abbbe4f96202,1,user123,pricing,https://example.com/pricing,medium,interval,180,2026-03-16T22:13:26.833Z,3,pending,{}
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:73:11)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:90:21)
+
+    Cause:
+    NeonDbError: Error connecting to database: (k ?? fetch) is not a function
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at execute (node_modules/@neondatabase/serverless/index.mjs:1549:24)
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:71:12)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:90:21)
+
+  ● ScrapingQueueProcessor › addJob › should add a job to the queue
+
+    Failed query: insert into "scraping_jobs" ("id", "competitor_id", "user_id", "job_type", "url", "priority", "frequency_type", "frequency_value", "frequency_timezone", "next_run_at", "last_run_at", "retry_count", "max_retries", "status", "config", "created_at", "updated_at") values ($1, $2, $3, $4, $5, $6, $7, $8, default, $9, default, default, $10, $11, $12, default, default)
+    params: 0982204c-f92e-453d-983a-56110111761e,1,user123,website,https://example.com,medium,interval,360,2026-03-17T01:13:26.877Z,3,pending,{}
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:73:11)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at ScrapingQueueProcessor.addJob (src/lib/scraping-queue-processor.ts:150:19)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:162:21)
+
+    Cause:
+    NeonDbError: Error connecting to database: (k ?? fetch) is not a function
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at execute (node_modules/@neondatabase/serverless/index.mjs:1549:24)
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:71:12)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at ScrapingQueueProcessor.addJob (src/lib/scraping-queue-processor.ts:150:19)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:162:21)
+
+  ● ScrapingQueueProcessor › createDefaultJobs › should create default jobs for a competitor with domain
+
+    Failed query: insert into "scraping_jobs" ("id", "competitor_id", "user_id", "job_type", "url", "priority", "frequency_type", "frequency_value", "frequency_timezone", "next_run_at", "last_run_at", "retry_count", "max_retries", "status", "config", "created_at", "updated_at") values ($1, $2, $3, $4, $5, $6, $7, $8, default, $9, default, default, $10, $11, $12, default, default)
+    params: d03f524f-d692-450b-87a6-78ce95c5f255,1,user123,website,https://example.com,medium,interval,360,2026-03-17T01:13:26.885Z,3,pending,{"changeDetection":{"enabled":true,"threshold":5},"selectors":{"content":["main",".content","#content","article"]},"respectRobotsTxt":true}
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:73:11)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at ScrapingQueueProcessor.addJob (src/lib/scraping-queue-processor.ts:150:19)
+      at ScrapingQueueProcessor.createDefaultJobs (src/lib/scraping-queue-processor.ts:243:28)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:179:22)
+
+    Cause:
+    NeonDbError: Error connecting to database: (k ?? fetch) is not a function
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at execute (node_modules/@neondatabase/serverless/index.mjs:1549:24)
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:71:12)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at ScrapingQueueProcessor.addJob (src/lib/scraping-queue-processor.ts:150:19)
+      at ScrapingQueueProcessor.createDefaultJobs (src/lib/scraping-queue-processor.ts:243:28)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:179:22)
+
+  ● ScrapingQueueProcessor › createDefaultJobs › should handle competitor without domain
+
+    Failed query: insert into "scraping_jobs" ("id", "competitor_id", "user_id", "job_type", "url", "priority", "frequency_type", "frequency_value", "frequency_timezone", "next_run_at", "last_run_at", "retry_count", "max_retries", "status", "config", "created_at", "updated_at") values ($1, $2, $3, $4, $5, $6, $7, $8, default, $9, default, default, $10, $11, $12, default, default)
+    params: 27e7f4f7-8521-43ee-bd9a-581516707aa2,1,user123,social,https://linkedin.com/company/example,medium,interval,480,2026-03-17T03:13:26.888Z,3,pending,{"platform":"linkedin","changeDetection":{"enabled":true,"threshold":1}}
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:73:11)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at ScrapingQueueProcessor.addJob (src/lib/scraping-queue-processor.ts:150:19)
+      at ScrapingQueueProcessor.createDefaultJobs (src/lib/scraping-queue-processor.ts:333:31)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:192:22)
+
+    Cause:
+    NeonDbError: Error connecting to database: (k ?? fetch) is not a function
+
+    [0m [90m 70 |[39m     [36mconst[39m nextRunAt [33m=[39m [36mthis[39m[33m.[39mcalculateNextRun(params[33m.[39mfrequencyType [33m||[39m [32m'interval'[39m[33m,[39m params[33m.[39mfrequencyValue[33m,[39m params[33m.[39mfrequencyTimezone [33m?[39m[33m?[39m undefined)
+     [90m 71 |[39m
+    [31m[1m>[22m[39m[90m 72 |[39m     [36mawait[39m db[33m.[39minsert(scrapingJobs)[33m.[39mvalues({
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 73 |[39m       id[33m:[39m jobId[33m,[39m
+     [90m 74 |[39m       competitor_id[33m:[39m params[33m.[39mcompetitorId[33m,[39m
+     [90m 75 |[39m       user_id[33m:[39m params[33m.[39muserId[33m,[39m[0m
+
+      at execute (node_modules/@neondatabase/serverless/index.mjs:1549:24)
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:71:12)
+      at ScrapingScheduler.createJob (src/lib/database-scraping-scheduler.ts:72:5)
+      at ScrapingQueueProcessor.addJob (src/lib/scraping-queue-processor.ts:150:19)
+      at ScrapingQueueProcessor.createDefaultJobs (src/lib/scraping-queue-processor.ts:333:31)
+      at Object.<anonymous> (src/lib/__tests__/scraping-scheduler.test.ts:192:22)
+
+(node:34972) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL src/lib/__tests__/production-logic.test.ts
+  ● Production Logic Verification (Final Attempt) › LearningEngine - Peer Rank Calculation › should calculate correct peer rank for top 10%
+
+    Failed query: select "id", "user_id", "module_id", "status", "metadata", "last_position", "completed_at", "last_accessed_at" from "user_learning_progress" "userLearningProgress" where "userLearningProgress"."user_id" = $1
+    params: test-user-id
+
+    [0m [90m 337 |[39m [90m   */[39m
+     [90m 338 |[39m   [36masync[39m getUserProgress() {
+    [31m[1m>[22m[39m[90m 339 |[39m     [36mreturn[39m [36mawait[39m db[33m.[39mquery[33m.[39muserLearningProgress[33m.[39mfindMany({
+     [90m     |[39m            [31m[1m^[22m[39m
+     [90m 340 |[39m       where[33m:[39m eq(userLearningProgress[33m.[39muser_id[33m,[39m [36mthis[39m[33m.[39muserId)[33m,[39m
+     [90m 341 |[39m     })[33m;[39m
+     [90m 342 |[39m   }[0m
+
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:73:11)
+      at NeonHttpPreparedQuery.execute (node_modules/src/neon-http/session.ts:83:18)
+      at LearningEngine.getUserProgress (src/lib/learning-engine.ts:339:12)
+      at LearningEngine.getLearningAnalytics (src/lib/learning-engine.ts:348:22)
+      at Object.<anonymous> (src/lib/__tests__/production-logic.test.ts:76:25)
+
+    Cause:
+    TypeError: Cannot read properties of undefined (reading 'map')
+
+    [0m [90m 337 |[39m [90m   */[39m
+     [90m 338 |[39m   [36masync[39m getUserProgress() {
+    [31m[1m>[22m[39m[90m 339 |[39m     [36mreturn[39m [36mawait[39m db[33m.[39mquery[33m.[39muserLearningProgress[33m.[39mfindMany({
+     [90m     |[39m            [31m[1m^[22m[39m
+     [90m 340 |[39m       where[33m:[39m eq(userLearningProgress[33m.[39muser_id[33m,[39m [36mthis[39m[33m.[39muserId)[33m,[39m
+     [90m 341 |[39m     })[33m;[39m
+     [90m 342 |[39m   }[0m
+
+      at processQueryResult (node_modules/@neondatabase/serverless/index.mjs:1563:15)
+      at execute (node_modules/@neondatabase/serverless/index.mjs:1554:83)
+      at node_modules/src/neon-http/session.ts:84:11
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:71:12)
+      at NeonHttpPreparedQuery.execute (node_modules/src/neon-http/session.ts:83:18)
+      at LearningEngine.getUserProgress (src/lib/learning-engine.ts:339:12)
+      at LearningEngine.getLearningAnalytics (src/lib/learning-engine.ts:348:22)
+      at Object.<anonymous> (src/lib/__tests__/production-logic.test.ts:76:25)
+
+  ● Production Logic Verification (Final Attempt) › LearningEngine - Peer Rank Calculation › should calculate correct peer rank for Top 50%
+
+    Failed query: select "id", "user_id", "module_id", "status", "metadata", "last_position", "completed_at", "last_accessed_at" from "user_learning_progress" "userLearningProgress" where "userLearningProgress"."user_id" = $1
+    params: test-user-id
+
+    [0m [90m 337 |[39m [90m   */[39m
+     [90m 338 |[39m   [36masync[39m getUserProgress() {
+    [31m[1m>[22m[39m[90m 339 |[39m     [36mreturn[39m [36mawait[39m db[33m.[39mquery[33m.[39muserLearningProgress[33m.[39mfindMany({
+     [90m     |[39m            [31m[1m^[22m[39m
+     [90m 340 |[39m       where[33m:[39m eq(userLearningProgress[33m.[39muser_id[33m,[39m [36mthis[39m[33m.[39muserId)[33m,[39m
+     [90m 341 |[39m     })[33m;[39m
+     [90m 342 |[39m   }[0m
+
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:73:11)
+      at NeonHttpPreparedQuery.execute (node_modules/src/neon-http/session.ts:83:18)
+      at LearningEngine.getUserProgress (src/lib/learning-engine.ts:339:12)
+      at LearningEngine.getLearningAnalytics (src/lib/learning-engine.ts:348:22)
+      at Object.<anonymous> (src/lib/__tests__/production-logic.test.ts:90:25)
+
+    Cause:
+    TypeError: Cannot read properties of undefined (reading 'map')
+
+    [0m [90m 337 |[39m [90m   */[39m
+     [90m 338 |[39m   [36masync[39m getUserProgress() {
+    [31m[1m>[22m[39m[90m 339 |[39m     [36mreturn[39m [36mawait[39m db[33m.[39mquery[33m.[39muserLearningProgress[33m.[39mfindMany({
+     [90m     |[39m            [31m[1m^[22m[39m
+     [90m 340 |[39m       where[33m:[39m eq(userLearningProgress[33m.[39muser_id[33m,[39m [36mthis[39m[33m.[39muserId)[33m,[39m
+     [90m 341 |[39m     })[33m;[39m
+     [90m 342 |[39m   }[0m
+
+      at processQueryResult (node_modules/@neondatabase/serverless/index.mjs:1563:15)
+      at execute (node_modules/@neondatabase/serverless/index.mjs:1554:83)
+      at node_modules/src/neon-http/session.ts:84:11
+      at NeonHttpPreparedQuery.queryWithCache (node_modules/src/pg-core/session.ts:71:12)
+      at NeonHttpPreparedQuery.execute (node_modules/src/neon-http/session.ts:83:18)
+      at LearningEngine.getUserProgress (src/lib/learning-engine.ts:339:12)
+      at LearningEngine.getLearningAnalytics (src/lib/learning-engine.ts:348:22)
+      at Object.<anonymous> (src/lib/__tests__/production-logic.test.ts:90:25)
+
+FAIL test/server/services/boardroom/orchestrator.test.ts
+  ● Console
+
+    console.error
+      Error generating response for agent-1: TypeError: fetch is not a function
+          at ApiClient.apiCall (C:\Users\prett\Documents\SoloSuccess-AI\server\node_modules\@google\genai\src\_api_client.ts:596:12)
+          at ApiClient.unaryApiCall (C:\Users\prett\Documents\SoloSuccess-AI\server\node_modules\@google\genai\src\_api_client.ts:482:17)
+          at ApiClient.request (C:\Users\prett\Documents\SoloSuccess-AI\server\node_modules\@google\genai\src\_api_client.ts:377:17)
+          at processTicksAndRejections (node:internal/process/task_queues:103:5)
+          at Models.generateContent (C:\Users\prett\Documents\SoloSuccess-AI\server\node_modules\@google\genai\src\models.ts:69:14)
+          at BoardroomOrchestrator.generateResponse (C:\Users\prett\Documents\SoloSuccess-AI\server\src\services\boardroom\orchestrator.ts:51:24)
+          at Object.<anonymous> (C:\Users\prett\Documents\SoloSuccess-AI\test\server\services\boardroom\orchestrator.test.ts:16:22)
+
+    [0m [90m 56 |[39m       [36mreturn[39m { content[33m:[39m response[33m.[39mtext [33m||[39m [32m"Consensus pending..."[39m }[33m;[39m
+     [90m 57 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 58 |[39m       console[33m.[39merror([32m`Error generating response for ${agentId}:`[39m[33m,[39m error)[33m;[39m
+     [90m    |[39m               [31m[1m^[22m[39m
+     [90m 59 |[39m       [36mreturn[39m { content[33m:[39m [32m`Agent ${agentId} encountered a neural synchronization error.`[39m }[33m;[39m
+     [90m 60 |[39m     }
+     [90m 61 |[39m   }[0m
+
+      at BoardroomOrchestrator.generateResponse (server/src/services/boardroom/orchestrator.ts:58:15)
+      at Object.<anonymous> (test/server/services/boardroom/orchestrator.test.ts:16:22)
+
+  ● BoardroomOrchestrator › should generate a response from an agent
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "Mock response from agent-1"
+    Received: "Agent agent-1 encountered a neural synchronization error."
+
+    [0m [90m 16 |[39m     [36mconst[39m response [33m=[39m [36mawait[39m orchestrator[33m.[39mgenerateResponse([32m"agent-1"[39m[33m,[39m [32m"session-1"[39m[33m,[39m [32m"Hello"[39m)[33m;[39m
+     [90m 17 |[39m     expect(response)[33m.[39mtoBeDefined()[33m;[39m
+    [31m[1m>[22m[39m[90m 18 |[39m     expect(response[33m.[39mcontent)[33m.[39mtoBe([32m"Mock response from agent-1"[39m)[33m;[39m
+     [90m    |[39m                              [31m[1m^[22m[39m
+     [90m 19 |[39m   })[33m;[39m
+     [90m 20 |[39m
+     [90m 21 |[39m   it([32m"should cycle through speakers"[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.<anonymous> (test/server/services/boardroom/orchestrator.test.ts:18:30)
+
+PASS test/server/db/boardroom-schema.test.ts
+PASS test/personality.test.ts
+PASS test/compliance-scanner.test.ts
+PASS src/lib/shared/schemas.test.ts
+PASS src/lib/services/competitor-service.test.ts
+PASS test/server/routes/boardroom.test.ts
+FAIL src/lib/shared/db/schema/schema.test.ts
+  ● Test suite failed to run
+
+    ReferenceError: jest is not defined
+
+    [0m [90m 1 |[39m
+    [31m[1m>[22m[39m[90m 2 |[39m jest[33m.[39mmock([32m'uuid'[39m[33m,[39m () [33m=>[39m ({
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 3 |[39m   v4[33m:[39m () [33m=>[39m [32m'test-uuid'[39m
+     [90m 4 |[39m }))[33m;[39m
+     [90m 5 |[39m[0m
+
+      at src/lib/shared/db/schema/schema.test.ts:2:1
+
+FAIL test/templates-delete.test.ts
+  ● Test suite failed to run
+
+    TypeError: Class extends value undefined is not a constructor or null
+
+      at Object.<anonymous> (node_modules/next/src/server/web/spec-extension/request.ts:54:14)
+      at Object.<anonymous> (node_modules/next/server.js:2:16)
+
+FAIL test/scraping-scheduler.test.ts
+  ● Test suite failed to run
+
+    ReferenceError: jest is not defined
+
+    [0m [90m 2 |[39m
+     [90m 3 |[39m [90m// Mock the web scraping service[39m
+    [31m[1m>[22m[39m[90m 4 |[39m jest[33m.[39mmock([32m'@/lib/web-scraping-service'[39m[33m,[39m () [33m=>[39m ({
+     [90m   |[39m [31m[1m^[22m[39m
+     [90m 5 |[39m   webScrapingService[33m:[39m {
+     [90m 6 |[39m     scrapeCompetitorWebsite[33m:[39m jest[33m.[39mfn()[33m,[39m
+     [90m 7 |[39m     monitorPricingPages[33m:[39m jest[33m.[39mfn()[33m,[39m[0m
+
+      at test/scraping-scheduler.test.ts:4:1
+
+PASS test/web-scraping-service.test.ts (10.551 s)
+FAIL test/competitor-enrichment.test.ts (13.296 s)
+  ● CompetitorEnrichmentService › enrichCompetitorProfile › should successfully enrich a competitor profile with domain
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 40 |[39m
+     [90m 41 |[39m   describe([32m'enrichCompetitorProfile'[39m[33m,[39m () [33m=>[39m {
+    [31m[1m>[22m[39m[90m 42 |[39m     it([32m'should successfully enrich a competitor profile with domain'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 43 |[39m       [36mconst[39m competitorData[33m:[39m [33mPartial[39m[33m<[39m[33mCompetitorProfile[39m[33m>[39m [33m=[39m {
+     [90m 44 |[39m         name[33m:[39m [32m'TechCorp Solutions'[39m[33m,[39m
+     [90m 45 |[39m         domain[33m:[39m [32m'https://techcorp.com'[39m[33m,[39m[0m
+
+      at test/competitor-enrichment.test.ts:42:5
+      at test/competitor-enrichment.test.ts:41:3
+      at test/competitor-enrichment.test.ts:27:1
+
+  ● CompetitorEnrichmentService › enrichCompetitorProfile › should assess threat level correctly
+
+    thrown: "Exceeded timeout of 5000 ms for a test.
+    Add a timeout value to this test to increase the timeout, if this is a long-running test. See https://jestjs.io/docs/api#testname-fn-timeout."
+
+    [0m [90m 68 |[39m     })
+     [90m 69 |[39m
+    [31m[1m>[22m[39m[90m 70 |[39m     it([32m'should assess threat level correctly'[39m[33m,[39m [36masync[39m () [33m=>[39m {
+     [90m    |[39m     [31m[1m^[22m[39m
+     [90m 71 |[39m       [36mconst[39m competitorData[33m:[39m [33mPartial[39m[33m<[39m[33mCompetitorProfile[39m[33m>[39m [33m=[39m {
+     [90m 72 |[39m         name[33m:[39m [32m'Large Enterprise Corp'[39m[33m,[39m
+     [90m 73 |[39m         domain[33m:[39m [32m'https://enterprise.com'[39m[33m,[39m[0m
+
+      at test/competitor-enrichment.test.ts:70:5
+      at test/competitor-enrichment.test.ts:41:3
+      at test/competitor-enrichment.test.ts:27:1
+
+A worker process has failed to exit gracefully and has been force exited. This is likely caused by tests leaking due to improper teardown. Try running with --detectOpenHandles to find leaks. Active timers can also cause this, ensure that .unref() was called on them.
+Test Suites: 8 failed, 8 passed, 16 total
+Tests:       12 failed, 62 passed, 74 total
+Snapshots:   0 total
+Time:        17.375 s
+Ran all test suites.
