@@ -10,7 +10,7 @@ export class BoardroomOrchestrator {
 
   constructor() {
     if (process.env.GEMINI_API_KEY) {
-      this.ai = new GoogleGenAI(process.env.GEMINI_API_KEY);
+      this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     }
   }
 
@@ -33,7 +33,6 @@ export class BoardroomOrchestrator {
       const history = await this.getSessionHistory(sessionId);
       const conversationContext = history.map(m => `${m.role === 'user' ? 'Founder' : m.agentId}: ${m.content}`).join('\n');
 
-      const model = this.ai.getGenerativeModel({ model: "gemini-2.5-pro" });
       const prompt = `
         You are ${agentId}, a member of the SoloSuccess AI C-Suite.
         
@@ -49,9 +48,12 @@ export class BoardroomOrchestrator {
         - Direct your response to the founder or the previous speaker if appropriate.
       `;
 
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      return { content: response.text().trim() || "Consensus pending..." };
+      const response = await this.ai.models.generateContent({
+        model: "gemini-2.5-pro",
+        contents: [{ role: 'user', parts: [{ text: prompt }] }]
+      });
+
+      return { content: response.text || "Consensus pending..." };
     } catch (error) {
       console.error(`Error generating response for ${agentId}:`, error);
       return { content: `Agent ${agentId} encountered a neural synchronization error.` };

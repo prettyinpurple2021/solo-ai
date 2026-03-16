@@ -357,6 +357,18 @@ export class LearningEngine {
     const currentXP = user?.xp || 0;
     const currentLevel = user?.level || 1;
     
+    // Calculate real peer rank percentile
+    const totalUsersResult = await db.select({ count: sql<number>`count(*)` }).from(users);
+    const totalUsers = Number(totalUsersResult[0]?.count || 1);
+    
+    const usersBelowResult = await db.select({ count: sql<number>`count(*)` })
+        .from(users)
+        .where(sql`${users.level} < ${currentLevel} OR (${users.level} = ${currentLevel} AND ${users.xp} <= ${currentXP})`);
+    const usersBelow = Number(usersBelowResult[0]?.count || 0);
+    
+    const percentile = totalUsers > 0 ? Math.round((usersBelow / totalUsers) * 100) : 100;
+    const peerRank = percentile >= 90 ? "Top 10%" : percentile >= 75 ? "Top 25%" : percentile >= 50 ? "Top 50%" : "Rising Star";
+
     // Quadratic XP threshold: 100 * (level-1)^2 and 100 * level^2
     const lowerThreshold = 100 * Math.pow(currentLevel - 1, 2);
     const upperThreshold = 100 * Math.pow(currentLevel, 2);
@@ -371,7 +383,7 @@ export class LearningEngine {
       current_xp: currentXP,
       next_level_progress: Math.max(0, Math.min(100, nextLevelProgress)),
       learning_velocity: "Steady",
-      peer_rank: "Top 50%", 
+      peer_rank: peerRank, 
     };
   }
 

@@ -26,10 +26,17 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
         // 2. Fetch Today's Tasks
         const userTasks = await db.select().from(tasks)
             .where(eq(tasks.user_id, userId))
-            .orderBy(desc(tasks.created_at));
+            .orderBy(desc(tasks.priority), desc(tasks.created_at));
 
         const todaysTasks = userTasks
             .filter(t => t.status !== 'done')
+            .sort((a, b) => {
+                // Prioritize by due_date if available
+                if (a.due_date && b.due_date) return a.due_date.getTime() - b.due_date.getTime();
+                if (a.due_date) return -1;
+                if (b.due_date) return 1;
+                return 0;
+            })
             .slice(0, 5);
 
         const completedTasksCount = userTasks.filter(t => t.status === 'done').length;
@@ -76,9 +83,8 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
                 } else {
                     // Generate new insight via Gemini
                     if (process.env.GEMINI_API_KEY) {
-                        const { GoogleGenerativeAI } = await import('@google/generative-ai');
-                        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-                        const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+                        const { GoogleGenAI } = await import('@google/genai');
+                        const genAI = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
                         const prompt = `
                             Generate a single, short, motivating sentence (max 15 words) for a solopreneur.
@@ -90,9 +96,12 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
                             Do not use hashtags. Be punchy and direct.
                         `;
 
-                        const result = await model.generateContent(prompt);
-                        const response = await result.response;
-                        const text = response.text().trim();
+                        const response = await genAI.models.generateContent({
+                            model: "gemini-2.5-pro",
+                            contents: [{ role: 'user', parts: [{ text: prompt }] }]
+                        });
+
+                        const text = response.text?.trim() || "";
                         
                         if (text) {
                             dailyInsight = text;
@@ -149,7 +158,7 @@ router.get('/', authMiddleware, async (req: Request, res: Response) => {
                 description: t.description,
                 status: t.status,
                 priority: t.priority,
-                due_date: null, // No due date in schema
+                due_date: t.due_date,
                 goal: null
             })),
             activeGoals: activeGoals.map((g: any, i: number) => ({
