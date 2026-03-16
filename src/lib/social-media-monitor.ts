@@ -1229,7 +1229,7 @@ export class SocialMediaMonitor {
       try {
         const { GoogleGenerativeAI } = await import('@google/generative-ai')
         const genAI = new GoogleGenerativeAI(googleApiKey)
-        const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+        const model = genAI.getGenerativeModel({ model: 'gemini-2.5-pro' })
 
         const prompt = `Analyze the sentiment of this text and return ONLY a JSON object with: score (-1 to 1), magnitude (0 to 1), label (positive/negative/neutral), confidence (0 to 1). Text: ${content.substring(0, 1000)}`
         
