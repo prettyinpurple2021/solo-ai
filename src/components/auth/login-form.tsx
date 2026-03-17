@@ -40,7 +40,7 @@ export function LoginForm() {
               type="email"
               name="email"
               autoComplete="email"
-              placeholder="agent@solosuccess.ai"
+              placeholder="support@solosuccesss.com"
               required
               className="bg-dark-bg/50 border-white/10 text-white focus:border-neon-cyan focus:ring-neon-cyan/20 transition-all font-mono"
             />

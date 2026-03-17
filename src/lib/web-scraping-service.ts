@@ -89,7 +89,7 @@ export interface ScrapingResult<T = unknown> {
 // Default configuration
 const DEFAULT_CONFIG: ScrapingConfig = {
   respectRobotsTxt: true,
-  userAgent: 'SoloSuccess-Intelligence-Bot/1.0 (+https://solosuccess.ai/robots)',
+  userAgent: 'SoloSuccess-Intelligence-Bot/1.0 (+https://solosuccessai.fun/robots)',
   requestDelay: 1000, // 1 second between requests
   maxRetries: 3,
   timeout: 30000, // 30 seconds

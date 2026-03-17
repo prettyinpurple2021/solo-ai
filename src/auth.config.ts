@@ -50,7 +50,8 @@ export const authConfig = {
             
             // Generate token for backend API authentication
             const { generateBackendToken } = await import('@/lib/jwt-utils')
-            token.backendToken = generateBackendToken(user.id, user.email || '')
+            token.backendToken = generateBackendToken(user.id as string, (user.email as string) || '')
+
         }
         if (trigger === "update" && session) {
             token = { ...token, ...session }

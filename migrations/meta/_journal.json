@@ -15,6 +15,13 @@
       "when": 1772858217305,
       "tag": "0001_careful_lila_cheney",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1773711399454,
+      "tag": "0002_furry_clea",
+      "breakpoints": true
     }
   ]
 }

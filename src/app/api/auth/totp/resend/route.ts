@@ -72,7 +72,7 @@ export async function POST(req: Request) {
       await redis.set(`2fa:code:${session.user.id}`, randomCode, { ex: 300 });
 
       await resend.emails.send({
-        from: 'security@solosuccess.ai',
+        from: 'support@solosuccesss.com',
         to: user.email,
         subject: 'Your 2FA Login Code',
         html: `

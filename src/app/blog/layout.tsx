@@ -4,7 +4,7 @@ import type { Metadata } from 'next'
 import { headers } from 'next/headers'
 import Script from 'next/script'
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://solosuccess.ai'
+const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://solosuccessai.fun'
 
 export default function BlogLayout({ children }: { children: ReactNode }) {
   const blogSchema = {

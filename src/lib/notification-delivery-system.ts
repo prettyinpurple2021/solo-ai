@@ -204,7 +204,7 @@ export class NotificationDeliverySystem {
     }
 
     const response = await this.resend.emails.send({
-      from: process.env.FROM_EMAIL || 'alerts@solosuccess.ai',
+      from: process.env.FROM_EMAIL || 'support@solosuccesss.com',
       to: toEmail,
       subject: template.subject,
       html: template.html,

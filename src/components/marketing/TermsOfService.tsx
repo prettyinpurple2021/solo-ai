@@ -12,7 +12,7 @@ export function TermsOfService() {
                     <section className="mb-8">
                         <h2 className="text-2xl font-bold text-white mb-4">1. Agreement to Terms</h2>
                         <p className="text-zinc-400">
-                            By accessing our website at solosuccess.ai, you agree to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
+                            By accessing our website at solosuccessai.fun, you agree to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws. If you do not agree with any of these terms, you are prohibited from using or accessing this site.
                         </p>
                     </section>
 

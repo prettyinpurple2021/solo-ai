@@ -13,7 +13,7 @@ async function handlePing(request: NextRequest) {
     return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
   }
 
-  const sitemapUrl = 'https://solosuccess.ai/sitemap.xml'
+  const sitemapUrl = 'https://solosuccessai.fun/sitemap.xml'
   try {
     const [g, b] = await Promise.all([
       fetch(`${ENDPOINTS.google}${encodeURIComponent(sitemapUrl)}`),

@@ -52,7 +52,7 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
 export async function verifyAdminPin(email: string, pin: string): Promise<boolean> {
     try {
         // Only allow specific admin email
-        if (email !== 'support@solosuccessai.fun') {
+        if (email !== 'support@solosuccesss.com') {
             return false;
         }
 

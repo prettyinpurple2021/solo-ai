@@ -117,7 +117,7 @@ function generateEmailContent(alerts: any[], template: string, _priority: string
                 </div>
               `).join('')}
               ${alertCount > 5 ? `<p><em>...and ${alertCount - 5} more alert${alertCount - 5 > 1 ? 's' : ''}</em></p>` : ''}
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccess.ai'}/dashboard/competitors" class="cta-button">
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccessai.fun'}/dashboard/competitors" class="cta-button">
                 View All Alerts →
               </a>
             </div>
@@ -126,7 +126,7 @@ function generateEmailContent(alerts: any[], template: string, _priority: string
       </html>
     `
     
-    text = `${subject}\n\nYou have ${alertCount} new competitor alert${alertCount > 1 ? 's' : ''}:\n\n${alerts.slice(0, 5).map(alert => `- ${alert.title} (${alert.competitor?.name || 'Unknown'}) - ${alert.severity.toUpperCase()}`).join('\n')}${alertCount > 5 ? `\n...and ${alertCount - 5} more` : ''}\n\nView all alerts: ${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccess.ai'}/dashboard/competitors`
+    text = `${subject}\n\nYou have ${alertCount} new competitor alert${alertCount > 1 ? 's' : ''}:\n\n${alerts.slice(0, 5).map(alert => `- ${alert.title} (${alert.competitor?.name || 'Unknown'}) - ${alert.severity.toUpperCase()}`).join('\n')}${alertCount > 5 ? `\n...and ${alertCount - 5} more` : ''}\n\nView all alerts: ${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccessai.fun'}/dashboard/competitors`
   } else if (template === 'detailed') {
     subject = `Detailed Competitor Intelligence: ${alertCount} Alert${alertCount > 1 ? 's' : ''}`
     html = `
@@ -166,7 +166,7 @@ function generateEmailContent(alerts: any[], template: string, _priority: string
                   <p><small>Created: ${new Date(alert.createdAt).toLocaleString()}</small></p>
                 </div>
               `).join('')}
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccess.ai'}/dashboard/competitors" class="cta-button">
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccessai.fun'}/dashboard/competitors" class="cta-button">
                 View Full Dashboard →
               </a>
             </div>
@@ -210,7 +210,7 @@ function generateEmailContent(alerts: any[], template: string, _priority: string
                   <p>${alert.description}</p>
                 </div>
               `).join('')}
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccess.ai'}/dashboard/competitors" class="cta-button">
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccessai.fun'}/dashboard/competitors" class="cta-button">
                 View Critical Alerts →
               </a>
             </div>
@@ -251,7 +251,7 @@ async function sendNotification(
       const { subject, html, text } = generateEmailContent(alerts, template, priority)
       
       const response = await resendClient.emails.send({
-        from: process.env.FROM_EMAIL || 'SoloSuccess AI <alerts@solosuccess.ai>',
+        from: process.env.FROM_EMAIL || 'SoloSuccess AI <support@solosuccesss.com>',
         to: user.email,
         subject,
         html,
@@ -389,9 +389,9 @@ async function sendNotification(
       
       let message = ''
       if (criticalCount > 0) {
-        message = `🚨 SoloSuccess Alert: ${criticalCount} CRITICAL competitor alert${criticalCount > 1 ? 's' : ''} require immediate attention. Check dashboard: ${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccess.ai'}/dashboard/competitors`
+        message = `🚨 SoloSuccess Alert: ${criticalCount} CRITICAL competitor alert${criticalCount > 1 ? 's' : ''} require immediate attention. Check dashboard: ${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccessai.fun'}/dashboard/competitors`
       } else {
-        message = `SoloSuccess Alert: ${alertCount} new competitor alert${alertCount > 1 ? 's' : ''}. Check dashboard: ${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccess.ai'}/dashboard/competitors`
+        message = `SoloSuccess Alert: ${alertCount} new competitor alert${alertCount > 1 ? 's' : ''}. Check dashboard: ${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccessai.fun'}/dashboard/competitors`
       }
 
       const response = await twilioClient.messages.create({

@@ -18,7 +18,7 @@ export class EmailService {
      * Send an email using Resend
      */
     static async sendEmail(options: EmailOptions): Promise<boolean> {
-        const { to, subject, html, text, from = 'SoloSuccess AI <noreply@solosuccess.ai>' } = options
+        const { to, subject, html, text, from = 'SoloSuccess AI <support@solosuccesss.com>' } = options
 
         // If no API key, log the email and return true (simulation mode)
         if (!resend) {

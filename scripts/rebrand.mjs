@@ -49,7 +49,7 @@ const replacements = [
   { regex: /girlboss-badge/g, replace: 'elite-badge' },
   { regex: /BossCard/g, replace: 'CyberCard' },
   { regex: /BossButton/g, replace: 'CyberButton' },
-  { regex: /solobossai\.fun/gi, replace: 'solosuccess.ai' },
+  { regex: /solobossai\.fun/gi, replace: 'solosuccessai.fun' },
   { regex: /solobossai/gi, replace: 'solosuccess' },
   { regex: /\bBoss Babe\b/g, replace: 'Founder' },
   { regex: /\bboss babe\b/g, replace: 'founder' },

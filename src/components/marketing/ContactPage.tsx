@@ -23,7 +23,7 @@ export function ContactPage() {
                                 </div>
                                 <div>
                                     <h3 className="font-bold text-white mb-1 uppercase tracking-wide">Email Us</h3>
-                                    <p className="text-gray-400">support@solosuccess.ai</p>
+                                    <p className="text-gray-400">support@solosuccesss.com</p>
                                     <p className="text-gray-500 text-sm mt-1">We reply within 24 hours.</p>
                                 </div>
                             </div>
@@ -77,7 +77,7 @@ export function ContactPage() {
                                 <label className="text-sm font-bold font-mono text-neon-lime uppercase tracking-wider">Email</label>
                                 <Input
                                     type="email"
-                                    placeholder="identity@solosuccess.ai"
+                                    placeholder="support@solosuccesss.com"
                                     className="bg-dark-bg border-gray-700 focus:border-neon-lime focus:ring-neon-lime/20"
                                 />
                             </div>

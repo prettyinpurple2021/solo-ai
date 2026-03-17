@@ -275,7 +275,7 @@ export const CyberFooter = () => {
               <div className="w-8 h-8 bg-neon-cyan/20 rounded-sm border border-neon-cyan flex items-center justify-center">
                 <span className="font-bold text-neon-cyan">S</span>
               </div>
-              <span className="font-sci font-bold text-white">SOLOSUCCESS.AI</span>
+              <span className="font-sci font-bold text-white">solosuccessai.fun</span>
             </div>
             <p className="text-xs text-gray-500">Autonomous Business Infrastructure for the next generation of founders.</p>
           </div>

@@ -15,7 +15,7 @@ export const sendWelcomeEmail = async (email: string, name: string) => {
     }
     
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_EMAIL || "SoloSuccess AI <noreply@solosuccess.ai>",
+      from: process.env.FROM_EMAIL || "SoloSuccess AI <support@solosuccesss.com>",
       to: [email],
       subject: "Welcome to SoloSuccess AI - Your Empire Awaits! 👑",
       html: `
@@ -76,10 +76,10 @@ export const sendPasswordResetEmail = async (email: string, name: string, resetT
       return { success: false, error: 'Email service not configured' }
     }
     
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccess.ai'}/reset-password?token=${resetToken}`
+    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccessai.fun'}/reset-password?token=${resetToken}`
     
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_EMAIL || "SoloSuccess AI <noreply@solosuccess.ai>",
+      from: process.env.FROM_EMAIL || "SoloSuccess AI <support@solosuccesss.com>",
       to: [email],
       subject: "Reset Your Password - SoloSuccess AI 🔐",
       html: `
@@ -139,7 +139,7 @@ export const sendSubscriptionConfirmation = async (email: string, name: string, 
     }
     
     const { data, error } = await resend.emails.send({
-      from: process.env.FROM_EMAIL || "SoloSuccess AI <noreply@solosuccess.ai>",
+      from: process.env.FROM_EMAIL || "SoloSuccess AI <support@solosuccesss.com>",
       to: [email],
       subject: `Welcome to ${planName} - Your Empire Just Leveled Up! 🚀`,
       html: `

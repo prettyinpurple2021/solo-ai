@@ -100,7 +100,7 @@ export function AdminDashboard() {
                     <h2 className="text-xl font-semibold capitalize">{currentView}</h2>
                     <div className="flex items-center gap-4">
                         <div className="text-sm text-zinc-500">
-                            Logged in as <span className="text-emerald-500">support@solosuccessai.fun</span>
+                            Logged in as <span className="text-emerald-500">support@solosuccesss.com</span>
                         </div>
                     </div>
                 </header>

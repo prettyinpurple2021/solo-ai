@@ -82,7 +82,7 @@ export function ForgotPasswordForm() {
                   onChange={(e) => setEmail(e.target.value)}
                   required 
                   className="pl-10 bg-dark-bg/50 border-white/10 focus:border-neon-cyan/50 text-white placeholder:text-gray-500 font-mono" 
-                  placeholder="agent@solosuccess.ai" 
+                  placeholder="support@solosuccesss.com" 
                 />
               </div>
             </div>

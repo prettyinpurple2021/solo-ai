@@ -54,7 +54,7 @@ export function PrivacyPolicy() {
                         <h2 className="text-2xl font-bold text-white mb-4">5. Contact Us</h2>
                         <p className="text-zinc-400">
                             If you have any questions about this privacy policy or our privacy practices, please contact us at: <br />
-                            <a href="mailto:privacy@solosuccess.ai" className="text-emerald-400 hover:underline">privacy@solosuccess.ai</a>
+                            <a href="mailto:support@solosuccesss.com" className="text-emerald-400 hover:underline">support@solosuccesss.com</a>
                         </p>
                     </section>
                 </div>

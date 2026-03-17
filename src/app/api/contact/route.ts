@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
             const resend = new Resend(process.env.RESEND_API_KEY);
             await resend.emails.send({
                 from: 'SoloSuccess AI <onboarding@resend.dev>', // Update validation domain in prod
-                to: 'admin@solosuccess.ai', // Configurable admin email
+                to: 'support@solosuccesss.com', // Configurable admin email
                 subject: `New Contact Request: ${type}`,
                 html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Type:</strong> ${type}</p>`
             });

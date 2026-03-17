@@ -95,11 +95,11 @@ export default function HelpPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <a
-                href="mailto:support@solosuccessai.fun"
+                href="mailto:support@solosuccesss.com"
                 className="flex items-center gap-2 text-neon-cyan hover:text-cyber-purple font-mono"
               >
                 <Mail className="w-5 h-5" />
-                support@solosuccessai.fun
+                support@solosuccesss.com
               </a>
               <a
                 href="/contact"

@@ -83,10 +83,10 @@ export const POST = withDocumentAuth(
           throw new Error('RESEND_API_KEY not configured')
         }
         const resend = new Resend(resendApiKey)
-        const appUrl = process.env.APP_URL || 'https://solosuccess.ai'
+        const appUrl = process.env.APP_URL || 'https://solosuccessai.fun'
         const inviteLink = `${appUrl}/briefcase/invite/accept?doc=${encodeURIComponent(documentId)}&email=${encodeURIComponent(email)}`
         await resend.emails.send({
-          from: 'SoloSuccess AI <noreply@solosuccess.ai>',
+          from: 'SoloSuccess AI <support@solosuccesss.com>',
           to: email,
           subject: `You have been invited to access "${document.name}"`,
           html: `<p>Hello,</p>

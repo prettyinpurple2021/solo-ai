@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import { logInfo, logError } from './utils/logger';
 
 async function createAdminUser() {
-  const email = 'testadmin@solosuccess.ai';
+  const email = 'testsupport@solosuccesss.com';
   const password = 'TestAdmin123!';
   const username = 'testadmin';
   const fullName = 'Test Admin';
