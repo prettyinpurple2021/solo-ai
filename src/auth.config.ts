@@ -47,6 +47,10 @@ export const authConfig = {
             token.name = user.full_name || user.name || token.name
             token.role = user.role
             token.subscription_tier = user.subscription_tier
+            
+            // Generate token for backend API authentication
+            const { generateBackendToken } = await import('@/lib/jwt-utils')
+            token.backendToken = generateBackendToken(user.id, user.email || '')
         }
         if (trigger === "update" && session) {
             token = { ...token, ...session }
@@ -62,6 +66,10 @@ export const authConfig = {
                 
                 session.user.role = (token.role as string) || 'user'
                 session.user.subscription_tier = (token.subscription_tier as string) || 'free'
+                
+                // Expose backend token to the client
+                // @ts-ignore
+                session.backendToken = token.backendToken as string
             }
         }
         return session

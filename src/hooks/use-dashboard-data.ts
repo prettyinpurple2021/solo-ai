@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { useState, useEffect, useCallback } from 'react'
+import { useSession } from 'next-auth/react'
 
 
 export interface DashboardData {
@@ -101,6 +102,7 @@ export interface DashboardData {
 }
 
 export function useDashboardData() {
+  const { data: session } = useSession()
   const [data, setData] = useState<DashboardData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -111,66 +113,26 @@ export function useDashboardData() {
       setLoading(true)
       setError(null)
       
-      // Try to get JWT token from localStorage first (for custom auth)
-      const token = localStorage.getItem('authToken')
+      // Try to get backend token from NextAuth session
+      const backendToken = session?.backendToken
       
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
       }
       
-      // Only add Authorization header if we have a JWT token
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
+      // Add Authorization header if we have a backend token
+      if (backendToken) {
+        headers['Authorization'] = `Bearer ${backendToken}`
       }
       
       const response = await fetch('/api/dashboard', {
         method: 'GET',
         headers,
-        credentials: 'include', // Include cookies for Better Auth
-        // Add cache busting to ensure fresh data
         cache: 'no-cache',
       })
       
       if (!response.ok) {
         if (response.status === 401) {
-          // Token expired or invalid - check if we have a NextAuth session
-          localStorage.removeItem('authToken')
-          
-          // Check for NextAuth session before redirecting
-          try {
-            // Check NextAuth session endpoint
-            const sessionResponse = await fetch('/api/auth/session', {
-              credentials: 'include',
-              cache: 'no-cache',
-            })
-            
-            if (sessionResponse.ok) {
-              const sessionData = await sessionResponse.json()
-              if (sessionData?.user) {
-                // We have a NextAuth session, retry the dashboard request
-                // The cookies should be sent automatically
-                const retryResponse = await fetch('/api/dashboard', {
-                  method: 'GET',
-                  headers: {
-                    'Content-Type': 'application/json',
-                  },
-                  credentials: 'include',
-                  cache: 'no-cache',
-                })
-                
-                if (retryResponse.ok) {
-                  const retryData = await retryResponse.json()
-                  setData(retryData)
-                  setLastUpdated(new Date())
-                  return
-                }
-              }
-            }
-          } catch (sessionError) {
-            // Session check failed, proceed with redirect after a delay
-            logError('Session check failed:', undefined, sessionError instanceof Error ? sessionError : undefined)
-          }
-          
           // No valid session found after all retries, redirect to login
           setError('Authentication expired. Please sign in again.')
           // Only redirect if we're not already on the login page
@@ -191,23 +153,27 @@ export function useDashboardData() {
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [session?.backendToken])
 
   // Initial fetch
   useEffect(() => {
-    fetchDashboardData()
-  }, [fetchDashboardData])
+    if (session?.user) {
+      fetchDashboardData()
+    }
+  }, [fetchDashboardData, session?.user])
 
   // PERFORMANCE OPTIMIZATION: Increased auto-refresh from 30s to 5 minutes
   // to reduce unnecessary API calls and database load
   // User can still manually refresh if needed
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchDashboardData()
+      if (session?.user) {
+        fetchDashboardData()
+      }
     }, 300000) // 5 minutes (300 seconds)
 
     return () => clearInterval(interval)
-  }, [fetchDashboardData])
+  }, [fetchDashboardData, session?.user])
 
   // Manual refetch function
   const refetch = useCallback(() => {
