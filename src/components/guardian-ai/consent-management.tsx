@@ -49,50 +49,39 @@ interface CookieBanner {
 
 export function ConsentManagement() {
   const [activeTab, setActiveTab] = useState("banner")
-  const [dataRequests] = useState<DataRequest[]>([
-    {
-      id: "1",
-      userId: "user123",
-      userEmail: "john@example.com",
-      requestType: "access",
-      status: "completed",
-      submittedAt: new Date("2024-01-15"),
-      completedAt: new Date("2024-01-17"),
-      notes: "Data exported and sent to user"
-    },
-    {
-      id: "2",
-      userId: "user456",
-      userEmail: "jane@example.com",
-      requestType: "deletion",
-      status: "processing",
-      submittedAt: new Date("2024-01-20"),
-      notes: "Scheduled for deletion on 2024-02-20"
-    }
-  ])
+  const [isLoading, setIsLoading] = useState(true)
+  const [dataRequests, setDataRequests] = useState<DataRequest[]>([])
+  const [consentLogs, setConsentLogs] = useState<ConsentLog[]>([])
 
-  const [consentLogs] = useState<ConsentLog[]>([
-    {
-      id: "1",
-      userId: "user123",
-      userEmail: "john@example.com",
-      consentType: "cookies",
-      action: "granted",
-      timestamp: new Date("2024-01-15T10:30:00"),
-      ipAddress: "192.168.1.1",
-      userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-    },
-    {
-      id: "2",
-      userId: "user456",
-      userEmail: "jane@example.com",
-      consentType: "marketing",
-      action: "denied",
-      timestamp: new Date("2024-01-16T14:20:00"),
-      ipAddress: "192.168.1.2",
-      userAgent: "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+  useEffect(() => {
+    fetchData()
+  }, [activeTab])
+
+  const fetchData = async () => {
+    try {
+      setIsLoading(true)
+      const type = activeTab === 'requests' ? 'requests' : 'consent'
+      const res = await fetch(`/api/guardian?type=${type}`)
+      const data = await res.json()
+      
+      if (activeTab === 'requests') {
+        setDataRequests(data.map((r: any) => ({
+          ...r,
+          submittedAt: new Date(r.submittedAt),
+          completedAt: r.completedAt ? new Date(r.completedAt) : undefined
+        })))
+      } else {
+        setConsentLogs(data.map((l: any) => ({
+          ...l,
+          timestamp: new Date(l.timestamp)
+        })))
+      }
+    } catch (error) {
+      console.error('Failed to fetch guardian data', error)
+    } finally {
+      setIsLoading(false)
     }
-  ])
+  }
 
   const [cookieBanner, setCookieBanner] = useState<CookieBanner>({
     id: "1",

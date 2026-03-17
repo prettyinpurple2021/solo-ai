@@ -77,7 +77,7 @@ export function ContactPage() {
                                 <label className="text-sm font-bold font-mono text-neon-lime uppercase tracking-wider">Email</label>
                                 <Input
                                     type="email"
-                                    placeholder="jane@example.com"
+                                    placeholder="identity@solosuccess.ai"
                                     className="bg-dark-bg border-gray-700 focus:border-neon-lime focus:ring-neon-lime/20"
                                 />
                             </div>

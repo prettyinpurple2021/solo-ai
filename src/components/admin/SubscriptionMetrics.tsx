@@ -33,37 +33,37 @@ export function SubscriptionMetrics() {
         {
             label: 'Total MRR',
             value: `$${metrics?.mrr || 0}`,
-            change: '+12%',
+            change: 'Live',
             icon: <DollarSign className="text-emerald-500" size={24} />,
             color: 'bg-emerald-500/10 border-emerald-500/20'
         },
         {
             label: 'Active Subscribers',
             value: metrics?.activeSubscriptions || 0,
-            change: '+5%',
+            change: 'Real-time',
             icon: <Users className="text-blue-500" size={24} />,
             color: 'bg-blue-500/10 border-blue-500/20'
         },
         {
             label: 'Total Users',
             value: metrics?.totalUsers || 0,
-            change: '+8%',
+            change: 'Verified',
             icon: <TrendingUp className="text-purple-500" size={24} />,
             color: 'bg-purple-500/10 border-purple-500/20'
         },
         {
             label: 'Conversion Rate',
-            value: '3.2%',
-            change: '+0.4%',
+            value: metrics?.conversionRate || '0%',
+            change: 'Actual',
             icon: <CreditCard className="text-orange-500" size={24} />,
             color: 'bg-orange-500/10 border-orange-500/20'
         }
     ];
 
-    const data = [
-        { name: 'Starter', value: 45, color: '#10b981' },
-        { name: 'Professional', value: 28, color: '#8b5cf6' },
-        { name: 'Empire', value: 12, color: '#f59e0b' },
+    const chartData = metrics?.tierDistribution || [
+        { name: 'Accelerator', value: 0, color: '#10b981' },
+        { name: 'Dominator', value: 0, color: '#8b5cf6' },
+        { name: 'Launch', value: 0, color: '#f59e0b' },
     ];
 
     return (
@@ -75,7 +75,7 @@ export function SubscriptionMetrics() {
                             <div className={`p-3 rounded-xl ${stat.color.split(' ')[0]}`}>
                                 {stat.icon}
                             </div>
-                            <span className="text-emerald-400 text-sm font-medium bg-emerald-500/10 px-2 py-1 rounded-full">
+                            <span className="text-emerald-400 text-xs font-mono uppercase bg-emerald-500/10 px-2 py-1 rounded-full">
                                 {stat.change}
                             </span>
                         </div>
@@ -87,10 +87,10 @@ export function SubscriptionMetrics() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div className="glass-card p-6 rounded-2xl border border-white/10">
-                    <h3 className="text-lg font-semibold text-white mb-6">Subscription Tiers</h3>
+                    <h3 className="text-lg font-semibold text-white mb-6 font-orbitron uppercase tracking-wider">Subscription Tiers</h3>
                     <div className="h-64">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data}>
+                            <BarChart data={chartData}>
                                 <XAxis dataKey="name" stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
                                 <YAxis stroke="#71717a" fontSize={12} tickLine={false} axisLine={false} />
                                 <Tooltip
@@ -99,7 +99,7 @@ export function SubscriptionMetrics() {
                                     cursor={{ fill: 'rgba(255,255,255,0.05)' }}
                                 />
                                 <Bar dataKey="value" radius={[4, 4, 0, 0]}>
-                                    {data.map((entry, index) => (
+                                    {chartData.map((entry: any, index: number) => (
                                         <Cell key={`cell-${index}`} fill={entry.color} />
                                     ))}
                                 </Bar>
@@ -109,22 +109,28 @@ export function SubscriptionMetrics() {
                 </div>
 
                 <div className="glass-card p-6 rounded-2xl border border-white/10">
-                    <h3 className="text-lg font-semibold text-white mb-6">Recent Activity</h3>
+                    <h3 className="text-lg font-semibold text-white mb-6 font-orbitron uppercase tracking-wider">Recent Activity</h3>
                     <div className="space-y-4">
-                        {[1, 2, 3, 4, 5].map((_, i) => (
-                            <div key={i} className="flex items-center justify-between p-3 hover:bg-white/5 rounded-xl transition-colors">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-500 text-xs font-bold">
-                                        JD
+                        {metrics?.recentActivity?.length > 0 ? (
+                            metrics.recentActivity.map((activity: any, i: number) => (
+                                <div key={i} className="flex items-center justify-between p-3 hover:bg-white/5 rounded-xl transition-colors border border-white/5">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 rounded-full bg-neon-purple/10 flex items-center justify-center text-neon-purple text-xs font-bold border border-neon-purple/20">
+                                            {activity.email?.substring(0, 2).toUpperCase() || '??'}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm text-white font-medium capitalize">{activity.tier} Subscription Update</p>
+                                            <p className="text-xs text-zinc-500 font-mono">{activity.email}</p>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <p className="text-sm text-white font-medium">New subscription started</p>
-                                        <p className="text-xs text-zinc-500">john.doe@example.com • Starter Plan</p>
-                                    </div>
+                                    <span className="text-[10px] text-zinc-500 font-mono">
+                                        {activity.time ? new Date(activity.time).toLocaleDateString() : 'Just now'}
+                                    </span>
                                 </div>
-                                <span className="text-xs text-zinc-500">2m ago</span>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <div className="text-center py-12 text-zinc-500 font-mono text-sm uppercase">No recent activity logged</div>
+                        )}
                     </div>
                 </div>
             </div>
