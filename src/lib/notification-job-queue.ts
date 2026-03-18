@@ -527,6 +527,11 @@ export class NotificationJobQueue {
    * Process a single job by sending the notification
    */
   private async processJob(job: NotificationJob): Promise<void> {
+    const systemToken = process.env.NOTIFICATION_JOB_TOKEN
+    if (!systemToken) {
+      throw new Error('NOTIFICATION_JOB_TOKEN is required for internal notification dispatch')
+    }
+
     // Make internal API call to send the notification
     const payload = {
       title: job.title,
@@ -549,9 +554,10 @@ export class NotificationJobQueue {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        // Use a system token or bypass auth for internal job processing
+        // Use a shared secret token so internal jobs cannot be spoofed.
         'X-System-Job': 'true',
-        'X-Job-Id': job.id
+        'X-Job-Id': job.id,
+        'X-System-Token': systemToken
       },
       body: JSON.stringify(payload)
     })

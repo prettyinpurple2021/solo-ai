@@ -4,7 +4,7 @@ import { NextRequest, NextResponse} from 'next/server'
 import { authenticateRequest} from '@/lib/auth-server'
 import { neon } from '@neondatabase/serverless'
 import { rateLimitByIp} from '@/lib/rate-limit'
-import { getIdempotencyKeyFromRequest, reserveIdempotencyKey} from '@/lib/idempotency'
+import { getIdempotencyKeyFromRequest, reserveIdempotencyKeyNeon } from '@/lib/idempotency'
 
 
 
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
     // Idempotency support: use provided key
     const key = getIdempotencyKeyFromRequest(request)
     if (key) {
-      const reserved = await reserveIdempotencyKey(sql as any, key)
+      const reserved = await reserveIdempotencyKeyNeon(sql as any, key)
       if (!reserved) {
         return NextResponse.json({ error: 'Duplicate request' }, { status: 409 })
       }

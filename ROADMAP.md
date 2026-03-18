@@ -1,19 +1,27 @@
 # ROADMAP.md
 
-## Phase 1: Launch/Stabilize
-- **Objective**: Ensure smooth public launch and collect initial user feedback.
-  - Finalize bug fixes outlined in the Launch Checklist.
-  - Conduct load testing and ensure stability under expected user load.
-  - Formalize monitoring and alerting strategies.
+### Phase 1: Launch/Stabilize
+- **Stability and Consistency**:
+  - Finalize critical bug fixes and consistency checks in payment and subscription logic.
+  - Confirm all core agents are operating and interacting as expected.
 
-## Phase 2: Growth/Features
-- **Objective**: Expand feature set and user base.
-  - Introduce new subscription tiers based on user feedback.
-  - Implement additional AI agents and integrations based on demand.
-  - Develop mobile app enhancements and improve UI/UX for desktop.
+- **Testing and Feedback**:
+  - Conduct final rounds of testing and initiate a feedback loop with early users.
 
-## Phase 3: Scale
-- **Objective**: Scale infrastructure and operations.
-  - Optimize database queries and consider sharding strategies.
-  - Scale horizontally with microservices to improve performance.
-  - Enhance data analytics dashboard for deeper insights into user behavior and product usage.
+### Phase 2: Growth/Features
+- **Feature Expansion**:
+  - Explore integrating additional agents (e.g., Aura and Finn) once validated.
+  - Expand feature set based on user feedback and potential market demands.
+
+- **Performance Enhancements**:
+  - Address scalability and performance enhancing opportunities before user base scales.
+
+### Phase 3: Scale
+- **Infrastructure and Scaling**:
+  - Implement infrastructure improvements for scaling, aiming for team and enterprise readiness.
+  
+- **Partnerships and Integrations**:
+  - Develop partnerships and API integrations that expand platform capabilities.
+  
+- **Global Reach**:
+  - Localize app for international markets and start exploring global expansion.

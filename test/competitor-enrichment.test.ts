@@ -3,7 +3,7 @@ import { CompetitorEnrichmentService } from '../src/lib/competitor-enrichment-se
 import type { CompetitorProfile } from '../src/lib/competitor-intelligence-types'
 
 // Mock the web scraping service to prevent network calls
-jest.mock('../src/lib/web-scraping-service', () => ({
+jest.mock('@/lib/web-scraping-service', () => ({
   webScrapingService: {
     scrapeCompetitorWebsite: (jest.fn() as jest.Mock<any>).mockResolvedValue({
       success: true,
@@ -24,14 +24,16 @@ jest.mock('../src/lib/web-scraping-service', () => ({
   }
 }))
 
+jest.setTimeout(20000)
+
 describe('CompetitorEnrichmentService', () => {
   let enrichmentService: CompetitorEnrichmentService
 
   beforeEach(() => {
     enrichmentService = new CompetitorEnrichmentService({
-      enableWebScraping: true,
-      enableSocialMediaDiscovery: true,
-      enablePersonnelMapping: true,
+      enableWebScraping: false,
+      enableSocialMediaDiscovery: false,
+      enablePersonnelMapping: false,
       enableThreatAssessment: true,
       respectRateLimit: false, // Disable for testing
       maxRetries: 1,

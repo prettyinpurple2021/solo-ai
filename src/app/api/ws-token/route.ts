@@ -2,7 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production'
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET || process.env.AUTH_SECRET
+  if (!secret) {
+    throw new Error('JWT secret is not configured. Set JWT_SECRET or AUTH_SECRET.')
+  }
+  return secret
+}
 
 /**
  * GET /api/ws-token
@@ -33,7 +39,7 @@ export async function GET(req: NextRequest) {
     // Sign a short-lived token (15 minutes) using the same secret as the Express backend
     const token = jwt.sign(
       { userId: String(userId), email: email ?? '' },
-      JWT_SECRET,
+      getJwtSecret(),
       { expiresIn: '15m' }
     )
 

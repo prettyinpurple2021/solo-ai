@@ -14,12 +14,21 @@ function getSql() {
   return neon(url)
 }
 
+function isAuthorizedPathForUser(pathname: string, userId: string): boolean {
+  return pathname.startsWith(`users/${userId}/`)
+}
+
 // Unified route that handles both ID-based and pathname-based file serving
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   context: { params: Promise<{ param: string }> }
 ) {
   try {
+    const { user, error } = await authenticateRequest()
+    if (error || !user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const params = await context.params
     const param = params.param
     
@@ -30,10 +39,10 @@ export async function GET(
     
     if (isUuid) {
       // Handle ID-based file serving (documents table)
-      return await handleIdBasedFile(param)
+      return await handleIdBasedFile(param, user.id as string)
     } else {
       // Handle pathname-based file serving (file_storage table)
-      return await handlePathnameBasedFile(param)
+      return await handlePathnameBasedFile(param, user.id as string)
     }
   } catch (error) {
     logError('Error serving file:', error)
@@ -75,11 +84,13 @@ function normalizeBinary(data: unknown): Uint8Array {
 }
 
 // Handle ID-based file serving from documents table (Edge-safe via Neon HTTP)
-async function handleIdBasedFile(id: string) {
+async function handleIdBasedFile(id: string, userId: string) {
   try {
     const sql = getSql()
     const rows = await sql`
-      SELECT id, content_type, content, filename FROM documents WHERE id = ${id}
+      SELECT id, content_type, content, filename
+      FROM documents
+      WHERE id = ${id} AND user_id = ${userId}
     `
 
     if (rows.length === 0) {
@@ -99,7 +110,7 @@ async function handleIdBasedFile(id: string) {
       headers: {
         'Content-Type': file.content_type,
         'Content-Disposition': `inline; filename="${file.filename}"`,
-        'Cache-Control': 'public, max-age=31536000, immutable',
+        'Cache-Control': 'private, no-store',
       },
     })
   } catch (error) {
@@ -109,9 +120,13 @@ async function handleIdBasedFile(id: string) {
 }
 
 // Handle pathname-based file serving from file_storage table
-async function handlePathnameBasedFile(pathname: string) {
+async function handlePathnameBasedFile(pathname: string, userId: string) {
   try {
     const decodedPathname = decodeURIComponent(pathname)
+    if (!isAuthorizedPathForUser(decodedPathname, userId)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
     const sql = getSql()
     
     // Fetch file from database
@@ -136,7 +151,7 @@ async function handlePathnameBasedFile(pathname: string) {
         'Content-Type': file.content_type,
         'Content-Length': file.file_size.toString(),
         'Content-Disposition': `attachment; filename="${file.filename}"`,
-        'Cache-Control': 'public, max-age=31536000', // Cache for 1 year
+        'Cache-Control': 'private, no-store',
       },
     })
   } catch (error) {
@@ -147,10 +162,15 @@ async function handlePathnameBasedFile(pathname: string) {
 
 // DELETE endpoint - handles both ID-based and pathname-based deletion
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   context: { params: Promise<{ param: string }> }
 ) {
   try {
+    const { user, error } = await authenticateRequest()
+    if (error || !user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const params = await context.params
     const param = params.param
     
@@ -161,10 +181,10 @@ export async function DELETE(
     
     if (isUuid) {
       // Handle ID-based file deletion (documents table)
-      return await handleIdBasedFileDeletion(param)
+      return await handleIdBasedFileDeletion(param, user.id as string)
     } else {
       // Handle pathname-based file deletion (file_storage table)
-      return await handlePathnameBasedFileDeletion(param)
+      return await handlePathnameBasedFileDeletion(param, user.id as string)
     }
   } catch (error) {
     logError('Error deleting file:', error)
@@ -173,16 +193,11 @@ export async function DELETE(
 }
 
 // Handle ID-based file deletion from documents table
-async function handleIdBasedFileDeletion(id: string) {
+async function handleIdBasedFileDeletion(id: string, userId: string) {
   try {
-    const { user, error } = await authenticateRequest()
-    if (error || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
     const sql = getSql()
     const deletedRows = await sql`
-      DELETE FROM documents WHERE id = ${id} AND user_id = ${user.id}
+      DELETE FROM documents WHERE id = ${id} AND user_id = ${userId}
       RETURNING id
     ` as any[]
 
@@ -198,9 +213,13 @@ async function handleIdBasedFileDeletion(id: string) {
 }
 
 // Handle pathname-based file deletion from file_storage table
-async function handlePathnameBasedFileDeletion(pathname: string) {
+async function handlePathnameBasedFileDeletion(pathname: string, userId: string) {
   try {
     const decodedPathname = decodeURIComponent(pathname)
+    if (!isAuthorizedPathForUser(decodedPathname, userId)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
     const sql = getSql()
     
     // Delete file from database

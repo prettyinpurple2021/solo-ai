@@ -118,6 +118,7 @@ function ComponentRenderer({ component, isSelected, onSelect, onUpdate, onDelete
     const { position, style, type, content } = component
     const [isEditing, setIsEditing] = useState(false)
     const textRef = useRef<HTMLDivElement>(null)
+    const renderedText = typeof content === 'object' && 'text' in content ? String(content.text ?? '') : ''
     
     // Convert 0-360 rotation to style
     const rotate = position.rotation || 0
@@ -201,8 +202,9 @@ function ComponentRenderer({ component, isSelected, onSelect, onUpdate, onDelete
                     ) : (
                         <div 
                             className="w-full h-full p-2 whitespace-pre-wrap outline-none pointer-events-none"
-                            dangerouslySetInnerHTML={{ __html: typeof content === 'object' && 'text' in content ? content.text : '' }} 
-                        />
+                        >
+                            {renderedText}
+                        </div>
                     )
                 )}
                 {type === 'image' && (

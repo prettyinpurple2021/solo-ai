@@ -96,6 +96,33 @@ interface EmailCampaignBuilderProps {
   onExport?: (format: 'json' | 'pdf' | 'csv') => void
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
+}
+
+function stripHtml(value: string): string {
+  return value.replace(/<[^>]*>/g, '')
+}
+
+function safeUrl(value: string | undefined, fallback = '#'): string {
+  if (!value) return fallback
+  try {
+    if (value.startsWith('/') || value.startsWith('#')) return value
+    const parsed = new URL(value)
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return value
+    }
+    return fallback
+  } catch {
+    return fallback
+  }
+}
+
 export default function EmailCampaignBuilder({ template, onSave: _onSave, onExport: _onExport }: EmailCampaignBuilderProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [_data, setData] = useState<EmailCampaignData>({
@@ -359,18 +386,33 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
 
       switch (block.type) {
         case 'text':
-          return `<div style="${baseStyles}">${block.content.html || block.content.text}</div>`
+          return `<div style="${baseStyles}">${
+            escapeHtml(
+              String(
+                block.content.text ||
+                (block.content.html ? stripHtml(String(block.content.html)) : '')
+              )
+            ).replaceAll('\n', '<br />')
+          }</div>`
         case 'image':
-          return `<div style="${baseStyles}">
-            ${block.content.link ? `<a href="${block.content.link}">` : ''}
-            <img src="${block.content.src || '/placeholder-image.png'}" 
-                 alt="${block.content.alt}" 
+          {
+            const link = safeUrl(block.content.link, '')
+            const src = safeUrl(block.content.src, '/placeholder-image.png')
+            const alt = escapeHtml(String(block.content.alt || 'Email image'))
+            return `<div style="${baseStyles}">
+            ${link ? `<a href="${escapeHtml(link)}">` : ''}
+            <img src="${escapeHtml(src)}" 
+                 alt="${alt}" 
                  style="width: ${block.content.width}; max-width: 100%; height: auto;" />
-            ${block.content.link ? '</a>' : ''}
+            ${link ? '</a>' : ''}
           </div>`
+          }
         case 'button':
-          return `<div style="${baseStyles}">
-            <a href="${block.content.link}" 
+          {
+            const href = safeUrl(block.content.link, '#')
+            const buttonText = escapeHtml(String(block.content.text || 'Click Here'))
+            return `<div style="${baseStyles}">
+            <a href="${escapeHtml(href)}" 
                style="
                  display: inline-block;
                  background-color: ${block.content.backgroundColor};
@@ -380,9 +422,10 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
                  border-radius: ${block.content.borderRadius};
                  font-weight: bold;
                ">
-              ${block.content.text}
+              ${buttonText}
             </a>
           </div>`
+          }
         case 'divider':
           return `<div style="${baseStyles}">
             <hr style="
@@ -395,8 +438,8 @@ export default function EmailCampaignBuilder({ template, onSave: _onSave, onExpo
         case 'social':
           return `<div style="${baseStyles}">
             ${block.content.platforms.map((platform: any) => 
-              `<a href="${platform.url}" style="margin: 0 10px; text-decoration: none;">
-                ${platform.icon} ${platform.name}
+              `<a href="${escapeHtml(safeUrl(platform.url, '#'))}" style="margin: 0 10px; text-decoration: none;">
+                ${escapeHtml(String(platform.icon || ''))} ${escapeHtml(String(platform.name || ''))}
                </a>`
             ).join('')}
           </div>`

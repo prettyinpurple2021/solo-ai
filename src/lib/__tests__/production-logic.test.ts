@@ -14,7 +14,7 @@ const mockFindFirst = jest.fn() as any;
 const mockFindMany = jest.fn() as any;
 const mockSelect = jest.fn() as any;
 
-jest.mock('../database-client', () => ({
+jest.mock('@/lib/database-client', () => ({
   db: {
     select: mockSelect,
     update: jest.fn().mockReturnThis(),

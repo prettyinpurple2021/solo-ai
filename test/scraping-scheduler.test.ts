@@ -1,3 +1,4 @@
+import { jest } from '@jest/globals'
 import { ScrapingScheduler } from '@/lib/scraping-scheduler'
 
 // Mock the web scraping service

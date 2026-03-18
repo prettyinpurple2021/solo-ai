@@ -78,15 +78,27 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 
-    // Check if this is a system job (from job queue)
-    const isSystemJob = request.headers.get('X-System-Job') === 'true'
+    // Check if this is a trusted internal system job (from job queue)
+    const requestedSystemJob = request.headers.get('X-System-Job') === 'true'
     const jobId = request.headers.get('X-Job-Id')
+    let isSystemJob = false
 
     let user: any = null
     let isAdmin = false
 
-    if (isSystemJob) {
-      // System jobs bypass user authentication
+    if (requestedSystemJob) {
+      const expectedSystemToken = process.env.NOTIFICATION_JOB_TOKEN
+      const providedSystemToken = request.headers.get('X-System-Token')
+      if (!expectedSystemToken) {
+        logError('NOTIFICATION_JOB_TOKEN is not configured; rejecting system job request')
+        return NextResponse.json({ error: 'System job processing is not configured' }, { status: 503 })
+      }
+      if (!providedSystemToken || providedSystemToken !== expectedSystemToken) {
+        logWarn('Rejected system job request with invalid token', { jobId })
+        return NextResponse.json({ error: 'Unauthorized system job request' }, { status: 401 })
+      }
+
+      isSystemJob = true
       logInfo(`Processing system job: ${jobId}`)
     } else {
       // Regular API calls require authentication

@@ -8,6 +8,43 @@ import { logError } from '@/lib/logger'
 const securityManager = AgentSecurityManager.getInstance()
 const _securityMiddleware = new SecurityMiddleware()
 
+type AuthUser = {
+  id: string
+  email?: string | null
+}
+
+async function requireAuthenticatedUser(): Promise<
+  { user: AuthUser; response?: never } | { user?: never; response: NextResponse }
+> {
+  const { user, error } = await authenticateRequest()
+  if (error || !user?.id) {
+    return {
+      response: NextResponse.json({ error: 'Unauthorized' }, { status: 401 }),
+    }
+  }
+
+  return {
+    user: {
+      id: user.id as string,
+      email: (user as { email?: string | null }).email ?? null,
+    },
+  }
+}
+
+async function canManageSecurityForOtherUsers(userId: string): Promise<boolean> {
+  const canGrant = await securityManager.authorizeAgentAccess(
+    userId,
+    'system',
+    'grant_permissions'
+  )
+  const canRevoke = await securityManager.authorizeAgentAccess(
+    userId,
+    'system',
+    'revoke_permissions'
+  )
+  return canGrant || canRevoke
+}
+
 
 export async function GET(request: NextRequest) {
   try {
@@ -170,6 +207,9 @@ async function getUserPermissions(request: NextRequest) {
 
 async function getSecurityConfig(_request: NextRequest) {
   try {
+    const auth = await requireAuthenticatedUser()
+    if (auth.response) return auth.response
+
     const config = await securityManager.getSecurityConfig()
     
     return NextResponse.json({
@@ -285,17 +325,31 @@ async function revokePermission(request: NextRequest) {
 
 async function createSession(request: NextRequest) {
   try {
+    const auth = await requireAuthenticatedUser()
+    if (auth.response) return auth.response
+
     const body = await request.json()
     const { userId, metadata = {} } = body
 
-    if (!userId) {
+    const targetUserId = userId || auth.user.id
+    if (!targetUserId) {
       return NextResponse.json(
         { error: 'userId is required' },
         { status: 400 }
       )
     }
 
-    const sessionId = await securityManager.createSession(userId, metadata)
+    if (targetUserId !== auth.user.id) {
+      const privileged = await canManageSecurityForOtherUsers(auth.user.id)
+      if (!privileged) {
+        return NextResponse.json(
+          { error: 'Insufficient permissions to create sessions for other users' },
+          { status: 403 }
+        )
+      }
+    }
+
+    const sessionId = await securityManager.createSession(targetUserId, metadata)
 
     return NextResponse.json({
       success: true,
@@ -313,6 +367,9 @@ async function createSession(request: NextRequest) {
 
 async function validateSession(request: NextRequest) {
   try {
+    const auth = await requireAuthenticatedUser()
+    if (auth.response) return auth.response
+
     const body = await request.json()
     const { sessionId } = body
 
@@ -324,6 +381,15 @@ async function validateSession(request: NextRequest) {
     }
 
     const validation = await securityManager.validateSession(sessionId)
+    if (validation.valid && validation.userId && validation.userId !== auth.user.id) {
+      const privileged = await canManageSecurityForOtherUsers(auth.user.id)
+      if (!privileged) {
+        return NextResponse.json(
+          { error: 'Insufficient permissions to validate this session' },
+          { status: 403 }
+        )
+      }
+    }
 
     return NextResponse.json({
       success: true,
@@ -341,6 +407,9 @@ async function validateSession(request: NextRequest) {
 
 async function destroySession(request: NextRequest) {
   try {
+    const auth = await requireAuthenticatedUser()
+    if (auth.response) return auth.response
+
     const body = await request.json()
     const { sessionId } = body
 
@@ -349,6 +418,17 @@ async function destroySession(request: NextRequest) {
         { error: 'sessionId is required' },
         { status: 400 }
       )
+    }
+
+    const validation = await securityManager.validateSession(sessionId)
+    if (validation.valid && validation.userId && validation.userId !== auth.user.id) {
+      const privileged = await canManageSecurityForOtherUsers(auth.user.id)
+      if (!privileged) {
+        return NextResponse.json(
+          { error: 'Insufficient permissions to destroy this session' },
+          { status: 403 }
+        )
+      }
     }
 
     await securityManager.destroySession(sessionId)

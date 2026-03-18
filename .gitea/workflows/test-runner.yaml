@@ -3,14 +3,29 @@ run-name: Testing Enchanted NightMare Infrastructure 🚀
 on: [push]
 
 jobs:
-  simple-check:
+  quality-gate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Confirm Online
-        run: |
-          echo "SoloSuccess AI infrastructure is connected!"
-          echo "Docker Runner is working on port 3001."
-          echo "Ready for production builds."
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type check
+        run: npm run type-check
+
+      - name: Unit and integration tests
+        run: npm test -- --runInBand
+
+      - name: Production build
+        run: npm run build

@@ -26,7 +26,6 @@ const nextConfig = {
       "recharts",
     ],
     webpackBuildWorker: true,
-    turbopack: {},
   },
 
   compress: true,

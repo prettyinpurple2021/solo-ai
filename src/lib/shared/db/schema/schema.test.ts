@@ -1,4 +1,6 @@
 
+import { jest } from '@jest/globals'
+
 jest.mock('uuid', () => ({
   v4: () => 'test-uuid'
 }));

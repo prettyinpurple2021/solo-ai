@@ -1,5 +1,12 @@
-const JWT_SECRET = process.env.JWT_SECRET || process.env.AUTH_SECRET || 'your-secret-key-change-in-production'
 const JWT_TTL_SECONDS = 7 * 24 * 60 * 60 // 7 days
+
+function getJwtSecret(): string {
+  const secret = process.env.JWT_SECRET || process.env.AUTH_SECRET
+  if (!secret) {
+    throw new Error('JWT secret is not configured. Set JWT_SECRET or AUTH_SECRET.')
+  }
+  return secret
+}
 
 function base64UrlEncode(input: string | Uint8Array): string {
   const bytes = typeof input === 'string' ? new TextEncoder().encode(input) : input
@@ -20,6 +27,7 @@ function base64UrlEncode(input: string | Uint8Array): string {
  * Generates an HS256 JWT that works in both Node and Edge runtimes.
  */
 export async function generateBackendToken(userId: string, email: string): Promise<string> {
+  const jwtSecret = getJwtSecret()
   const now = Math.floor(Date.now() / 1000)
   const header = {
     alg: 'HS256',
@@ -38,7 +46,7 @@ export async function generateBackendToken(userId: string, email: string): Promi
 
   const key = await crypto.subtle.importKey(
     'raw',
-    new TextEncoder().encode(JWT_SECRET),
+    new TextEncoder().encode(jwtSecret),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign']

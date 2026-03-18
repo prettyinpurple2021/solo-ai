@@ -29,30 +29,32 @@ if (typeof global.MessagePort === 'undefined') {
   global.MessagePort = class MessagePort {};
 }
 
-// Polyfill fetch if missing - use a simpler polyfill for JSDOM to avoid Undici timer issues
-if (typeof global.fetch === 'undefined') {
-  // Use node-fetch style simple polyfill or native if available in Node 18+
-  if (parseInt(process.versions.node.split('.')[0]) >= 18) {
-    // @ts-ignore
-    global.fetch = globalThis.fetch;
-    // @ts-ignore
-    global.Request = globalThis.Request;
-    // @ts-ignore
-    global.Response = globalThis.Response;
-    // @ts-ignore
-    global.Headers = globalThis.Headers;
-  } else {
-    // Fallback for older node if absolutely needed, but prefer native
-    const { fetch, Request, Response, Headers } = await import('undici');
-    // @ts-ignore
-    global.fetch = fetch;
-    // @ts-ignore
-    global.Request = Request;
-    // @ts-ignore
-    global.Response = Response;
-    // @ts-ignore
-    global.Headers = Headers;
-  }
+// Polyfill fetch primitives if missing or invalid.
+if (typeof global.fetch !== 'function' && typeof globalThis.fetch === 'function') {
+  // @ts-ignore
+  global.fetch = globalThis.fetch;
+}
+
+if (typeof global.Request !== 'function') {
+  // @ts-ignore
+  global.Request = globalThis.Request || class Request {};
+}
+
+if (typeof global.Response !== 'function') {
+  // @ts-ignore
+  global.Response = globalThis.Response || class Response {};
+}
+
+if (typeof global.Headers !== 'function') {
+  // @ts-ignore
+  global.Headers = globalThis.Headers || class Headers {};
+}
+
+if (typeof global.fetch !== 'function') {
+  // Fallback mock for environments where Fetch API is unavailable.
+  // Tests that need fetch should mock responses explicitly.
+  // @ts-ignore
+  global.fetch = jest.fn(async () => ({ ok: true, json: async () => ({}), text: async () => '' }));
 }
 
 // Mock scrollIntoView which is not implemented in jsdom

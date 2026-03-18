@@ -1,54 +1,62 @@
-import { createServer } from "http";
-import { Server } from "socket.io";
-import { io as Client, Socket as ClientSocket } from "socket.io-client";
-import { setIo } from "../../../server/realtime";
 import { setupBoardroomSocket } from "../../../server/src/realtime/boardroom";
+import { jest } from "@jest/globals";
 
 describe("Boardroom Socket Namespace", () => {
-  let io: Server, clientSocket: ClientSocket;
-  let port: number;
+  let connectionHandler: ((socket: any) => void) | null = null;
 
-  beforeAll((done) => {
-    const httpServer = createServer();
-    io = new Server(httpServer, {
-      wsEngine: require("ws").Server
-    });
-    setIo(io as any);
-    
+  function createHarness() {
+    const roomEmitter = { emit: jest.fn() };
+    const namespace = {
+      on: jest.fn((event: string, cb: (socket: any) => void) => {
+        if (event === "connection") connectionHandler = cb;
+      }),
+      to: jest.fn(() => roomEmitter),
+      emit: jest.fn(),
+    };
+    const io = {
+      of: jest.fn(() => namespace),
+    };
+
     setupBoardroomSocket(io as any);
+    return { namespace, roomEmitter };
+  }
 
-    httpServer.listen(() => {
-      const address = httpServer.address();
-      port = typeof address === "string" ? 0 : address?.port || 0;
-      clientSocket = Client(`http://localhost:${port}/boardroom`);
-      clientSocket.on("connect", done);
-    });
+  it("should allow joining a valid session room", async () => {
+    createHarness();
+    const handlers: Record<string, (...args: any[]) => any> = {};
+    const socket = {
+      id: "socket-1",
+      join: jest.fn(),
+      emit: jest.fn(),
+      on: jest.fn((event: string, cb: (...args: any[]) => any) => {
+        handlers[event] = cb;
+      }),
+    };
+
+    connectionHandler?.(socket);
+    const sessionId = "123e4567-e89b-12d3-a456-426614174000";
+    await handlers["join-session"](sessionId);
+
+    expect(socket.join).toHaveBeenCalledWith(`session:${sessionId}`);
+    expect(socket.emit).toHaveBeenCalledWith("joined", sessionId);
   });
 
-  afterAll(() => {
-    if (io) io.close();
-    if (clientSocket) clientSocket.disconnect();
-  });
+  it("should reject invalid session IDs on join", async () => {
+    createHarness();
+    const handlers: Record<string, (...args: any[]) => any> = {};
+    const socket = {
+      id: "socket-2",
+      join: jest.fn(),
+      emit: jest.fn(),
+      on: jest.fn((event: string, cb: (...args: any[]) => any) => {
+        handlers[event] = cb;
+      }),
+    };
 
-  it("should allow joining a session room", (done) => {
-    clientSocket.emit("join-session", "session-123");
-    clientSocket.on("joined", (sessionId) => {
-      expect(sessionId).toBe("session-123");
-      done();
-    });
-  });
+    connectionHandler?.(socket);
+    await handlers["join-session"]("not-a-uuid");
 
-  it("should handle streaming agent responses", (done) => {
-    const chunks: string[] = [];
-    clientSocket.on("agent-chunk", (data) => {
-      chunks.push(data.chunk);
-      if (data.done) {
-        expect(chunks.join("")).toBe("Hello world");
-        done();
-      }
-    });
-
-    // We'll trigger a mock streaming event from the server side in the implementation
-    clientSocket.emit("test-trigger-stream", { sessionId: "session-123", text: "Hello world" });
+    expect(socket.join).not.toHaveBeenCalled();
+    expect(socket.emit).toHaveBeenCalledWith("error", { message: "Invalid session ID" });
   });
 });

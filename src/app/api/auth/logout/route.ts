@@ -10,10 +10,15 @@ export async function DELETE(_request: NextRequest) {
   try {
     const response = NextResponse.json({ success: true })
     
-    // Clear the auth token cookie
-    response.cookies.set('auth-token', '', {
+    // Clear the canonical auth token cookie.
+    response.cookies.set('auth_token', '', {
       ...AUTH_COOKIE_OPTIONS,
       maxAge: 0, // Expire immediately
+    })
+    // Backward compatibility cleanup for legacy cookie name.
+    response.cookies.set('auth-token', '', {
+      ...AUTH_COOKIE_OPTIONS,
+      maxAge: 0,
     })
 
     return response

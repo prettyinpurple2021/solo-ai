@@ -1,5 +1,3 @@
-import { ScrapingScheduler } from '../database-scraping-scheduler'
-import { queueProcessor } from '../scraping-queue-processor'
 import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals'
 
 // Mock uuid to avoid ESM issues and generate unique values
@@ -39,6 +37,10 @@ jest.mock('@/db/index', () => ({
     })
   }
 }))
+
+// Import after mocks so scheduler/processor bind to mocked db.
+import { ScrapingScheduler } from '../database-scraping-scheduler'
+import { queueProcessor } from '../scraping-queue-processor'
 
 describe('ScrapingScheduler', () => {
   let scheduler: ScrapingScheduler
