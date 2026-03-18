@@ -49,8 +49,8 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 | ID | Severity | Area | Issue | Status | Verification |
 |---|---|---|---|---|---|
-| HIGH-001 | HIGH | Quality Gate | Failing test suites (`npm test`) | IN_PROGRESS | Reduced from 8 to 3 failing suites |
-| HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates (`.gitea/workflows/deploy.yaml`) | OPEN | Pending |
+| HIGH-001 | HIGH | Quality Gate | Failing test suites (`npm test`) | DONE | `npm test -- --runInBand` passed (16/16 suites) |
+| HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates (`.gitea/workflows/deploy.yaml`) | DONE | Deploy workflow now runs validate + tests pre-deploy |
 | HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | OPEN | Pending |
 | HIGH-004 | HIGH | Auth | Logout cookie name mismatch (`auth_token` vs `auth-token`) | DONE | `npm run lint` passed |
 | HIGH-005 | HIGH | Reliability | Upload idempotency helper mismatch (`upload` route + `idempotency` helper) | DONE | `npm run lint` passed |
@@ -216,6 +216,33 @@ Use this block whenever an item is completed:
   - Result: pass; prior invalid-next-config warning is no longer present.
 - Status: DONE
 
+### HIGH-001: Stabilize test suite to green
+- What changed:
+  - Reworked remaining failing tests to use ESM-safe mocking with `jest.unstable_mockModule`.
+  - Removed transitive Next runtime coupling from template deletion tests by mocking `next/server`.
+  - Converted DB-bound failing tests to deterministic unit mocks.
+- Files updated:
+  - `src/lib/__tests__/production-logic.test.ts`
+  - `src/lib/__tests__/scraping-scheduler.test.ts`
+  - `test/templates-delete.test.ts`
+- Why this improves production readiness:
+  - Restores trustworthy automated regression signal and unblocks strict CI gating.
+- Verification:
+  - Command: `npm test -- --runInBand`
+  - Result: pass (`16 passed, 16 total`; `97 tests passed`)
+- Status: DONE
+
+### HIGH-002: Enforce quality gates in production deploy workflow
+- What changed:
+  - Added required `npm run validate` and `npm test -- --runInBand` steps before production deploy.
+- Files updated:
+  - `.gitea/workflows/deploy.yaml`
+- Why this improves production readiness:
+  - Prevents production deployments when lint/type/test quality gates fail.
+- Verification:
+  - Static workflow review confirms deploy now depends on validation + tests.
+- Status: DONE
+
 ## New findings discovered during remediation
 
 - Build still reports large client chunk warning:
@@ -249,7 +276,7 @@ Use this block whenever an item is completed:
   - `src/lib/__tests__/production-logic.test.ts` (mocking not binding under ESM; still hitting real DB path)
   - `src/lib/__tests__/scraping-scheduler.test.ts` (same ESM mock binding issue)
   - `test/templates-delete.test.ts` (ESM import/parsing issue from transitive module chain)
-- Status: IN_PROGRESS
+- Status: DONE
 
 ### SEC-HARDEN-AGENT-SESSION-001: Close destroySession authorization gap
 - What changed:

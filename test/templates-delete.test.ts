@@ -1,4 +1,4 @@
-import { jest, describe, it, expect, beforeEach } from '@jest/globals'
+import { jest, describe, it, expect, beforeEach, beforeAll } from '@jest/globals'
 
 type VerifyAuthResult = {
   user: { id: string } | null
@@ -19,28 +19,56 @@ const selectMock = jest.fn(() => ({ from: fromMock }))
 const deleteWhereMock = jest.fn<() => Promise<Array<{ id: string }>>>()
 const deleteMock = jest.fn(() => ({ where: deleteWhereMock }))
 
-jest.mock('@/lib/auth-server', () => ({
-  verifyAuth: verifyAuthMock,
-}))
+let DELETE: any
 
-jest.mock('@/db', () => ({
-  db: {
-    select: selectMock,
-    delete: deleteMock,
-  },
-}))
+beforeAll(async () => {
+  await jest.unstable_mockModule('next/server', () => {
+    class MockNextResponse {
+      status: number
+      private body: unknown
+      constructor(body: unknown, init?: { status?: number }) {
+        this.body = body
+        this.status = init?.status ?? 200
+      }
+      static json(body: unknown, init?: { status?: number }) {
+        return new MockNextResponse(body, init)
+      }
+      async json() {
+        return this.body
+      }
+    }
 
-jest.mock('@/shared/db/schema', () => ({
-  templates: {
-    id: 'id',
-    user_id: 'user_id',
-  },
-}))
+    return {
+      NextResponse: MockNextResponse,
+    }
+  })
 
-jest.mock('drizzle-orm', () => ({
-  eq: (...args: unknown[]) => ({ kind: 'eq', args }),
-  and: (...args: unknown[]) => ({ kind: 'and', args }),
-}))
+  await jest.unstable_mockModule('@/lib/auth-server', () => ({
+    verifyAuth: verifyAuthMock,
+  }))
+
+  await jest.unstable_mockModule('@/db', () => ({
+    db: {
+      select: selectMock,
+      delete: deleteMock,
+    },
+  }))
+
+  await jest.unstable_mockModule('@/shared/db/schema', () => ({
+    templates: {
+      id: 'id',
+      user_id: 'user_id',
+    },
+  }))
+
+  await jest.unstable_mockModule('drizzle-orm', () => ({
+    eq: (...args: unknown[]) => ({ kind: 'eq', args }),
+    and: (...args: unknown[]) => ({ kind: 'and', args }),
+  }))
+
+  const routeMod = await import('@/app/api/templates/[id]/route')
+  DELETE = routeMod.DELETE
+})
 
 describe('DELETE /api/templates/[id]', () => {
   beforeEach(() => {
@@ -49,10 +77,8 @@ describe('DELETE /api/templates/[id]', () => {
 
   it('returns 401 when user is not authenticated', async () => {
     verifyAuthMock.mockResolvedValue({ user: null, error: 'Unauthorized' })
-    const { DELETE } = await import('@/app/api/templates/[id]/route')
-
     const res = await DELETE(
-      new Request('http://localhost') as any,
+      {} as any,
       { params: Promise.resolve({ id: '123' }) }
     )
 
@@ -63,10 +89,8 @@ describe('DELETE /api/templates/[id]', () => {
   it('returns 404 when template is not owned by the user', async () => {
     verifyAuthMock.mockResolvedValue({ user: { id: 'user-1' }, error: null })
     limitMock.mockResolvedValue([])
-    const { DELETE } = await import('@/app/api/templates/[id]/route')
-
     const res = await DELETE(
-      new Request('http://localhost') as any,
+      {} as any,
       { params: Promise.resolve({ id: 'template-1' }) }
     )
 
@@ -80,10 +104,8 @@ describe('DELETE /api/templates/[id]', () => {
     verifyAuthMock.mockResolvedValue({ user: { id: 'user-2' }, error: null })
     limitMock.mockResolvedValue([{ id: 'template-2', user_id: 'user-2' }])
     deleteWhereMock.mockResolvedValue([{ id: 'template-2' }])
-    const { DELETE } = await import('@/app/api/templates/[id]/route')
-
     const res = await DELETE(
-      new Request('http://localhost') as any,
+      {} as any,
       { params: Promise.resolve({ id: 'template-2' }) }
     )
 

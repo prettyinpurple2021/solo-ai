@@ -30,6 +30,12 @@ jobs:
       - name: Install Project Dependencies
         run: npm ci
 
+      - name: Validate code quality gates
+        run: npm run validate
+
+      - name: Run full test suite
+        run: npm test -- --runInBand
+
       - name: Build Local Project for Vercel
         run: vercel build --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
         env:

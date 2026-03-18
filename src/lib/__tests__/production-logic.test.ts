@@ -1,40 +1,34 @@
+import { jest, describe, it, expect, beforeEach, beforeAll } from '@jest/globals';
 
-import { jest, describe, it, expect, beforeEach } from '@jest/globals';
-
-// Provide a dummy fetch to satisfy the Neon driver during module resolution if it leaks
-if (typeof global.fetch === 'undefined') {
-  (global as any).fetch = jest.fn(() => Promise.resolve({
-    ok: true,
-    json: () => Promise.resolve({}),
-  })) as any;
-}
-
-// Mock the database client COMPLETELY before any other imports
 const mockFindFirst = jest.fn() as any;
 const mockFindMany = jest.fn() as any;
 const mockSelect = jest.fn() as any;
 
-jest.mock('@/lib/database-client', () => ({
-  db: {
-    select: mockSelect,
-    update: jest.fn().mockReturnThis(),
-    set: jest.fn().mockReturnThis(),
-    where: jest.fn().mockReturnThis(),
-    insert: jest.fn().mockReturnThis(),
-    values: jest.fn().mockReturnThis(),
-    query: {
-      users: {
-        findFirst: mockFindFirst,
-      },
-      userLearningProgress: {
-        findMany: mockFindMany,
-      }
-    }
-  }
-}));
+let LearningEngine: any;
 
-// Now import the code that uses the mock
-import { LearningEngine } from '../learning-engine';
+beforeAll(async () => {
+  await jest.unstable_mockModule('@/lib/database-client', () => ({
+    db: {
+      select: mockSelect,
+      update: jest.fn().mockReturnThis(),
+      set: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      insert: jest.fn().mockReturnThis(),
+      values: jest.fn().mockReturnThis(),
+      query: {
+        users: {
+          findFirst: mockFindFirst,
+        },
+        userLearningProgress: {
+          findMany: mockFindMany,
+        },
+      },
+    },
+  }));
+
+  const mod = await import('../learning-engine');
+  LearningEngine = mod.LearningEngine;
+});
 
 describe('Production Logic Verification (Final Attempt)', () => {
   const mockUserId = 'test-user-id';

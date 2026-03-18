@@ -1,49 +1,50 @@
-import { jest, describe, it, expect, beforeEach, afterEach } from '@jest/globals'
+import { jest, describe, it, expect, beforeEach, afterEach, beforeAll } from '@jest/globals'
 
-// Mock uuid to avoid ESM issues and generate unique values
-jest.mock('uuid', () => {
-  let uuidCounter = 0
-  return {
-    v4: jest.fn(() => `mock-uuid-v4-${++uuidCounter}`),
-  }
+let ScrapingScheduler: any
+let queueProcessor: any
+
+beforeAll(async () => {
+  await jest.unstable_mockModule('uuid', () => {
+    let uuidCounter = 0
+    return {
+      v4: jest.fn(() => `mock-uuid-v4-${++uuidCounter}`),
+    }
+  })
+
+  await jest.unstable_mockModule('@/db/index', () => ({
+    db: {
+      insert: jest.fn().mockReturnValue({
+        values: jest.fn().mockResolvedValue([] as any),
+      }),
+      select: jest.fn().mockReturnValue({
+        from: jest.fn().mockReturnValue({
+          where: jest.fn().mockReturnValue({
+            limit: jest.fn().mockReturnValue([]),
+            orderBy: jest.fn().mockReturnValue({
+              limit: jest.fn().mockReturnValue([]),
+            }),
+          }),
+        }),
+      }),
+      update: jest.fn().mockReturnValue({
+        set: jest.fn().mockReturnValue({
+          where: jest.fn().mockResolvedValue([] as any),
+        }),
+      }),
+      delete: jest.fn().mockReturnValue({
+        where: jest.fn().mockResolvedValue([] as any),
+      }),
+    },
+  }))
+
+  const schedulerMod = await import('../database-scraping-scheduler')
+  const queueMod = await import('../scraping-queue-processor')
+  ScrapingScheduler = schedulerMod.ScrapingScheduler
+  queueProcessor = queueMod.queueProcessor
 })
 
-// Mock the database
-jest.mock('@/db/index', () => ({
-  db: {
-    insert: jest.fn().mockReturnValue({
-      // @ts-ignore - Drizzle mocking types
-      values: jest.fn().mockResolvedValue([] as any)
-    }),
-    select: jest.fn().mockReturnValue({
-      from: jest.fn().mockReturnValue({
-        where: jest.fn().mockReturnValue({
-          limit: jest.fn().mockReturnValue([]),
-          orderBy: jest.fn().mockReturnValue({
-            limit: jest.fn().mockReturnValue([])
-          })
-        })
-      })
-    }),
-    update: jest.fn().mockReturnValue({
-      set: jest.fn().mockReturnValue({
-        // @ts-ignore - Drizzle mocking types
-        where: jest.fn().mockResolvedValue([] as any)
-      })
-    }),
-    delete: jest.fn().mockReturnValue({
-      // @ts-ignore - Drizzle mocking types
-      where: jest.fn().mockResolvedValue([] as any)
-    })
-  }
-}))
-
-// Import after mocks so scheduler/processor bind to mocked db.
-import { ScrapingScheduler } from '../database-scraping-scheduler'
-import { queueProcessor } from '../scraping-queue-processor'
-
 describe('ScrapingScheduler', () => {
-  let scheduler: ScrapingScheduler
+  let scheduler: any
 
   beforeEach(() => {
     scheduler = ScrapingScheduler.getInstance()
