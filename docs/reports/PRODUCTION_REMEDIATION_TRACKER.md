@@ -71,7 +71,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 Use this block whenever an item is completed:
 
 ```md
-### [ITEM-ID] Title
+### ITEM-ID: Title
 - What changed:
   - ...
 - Files updated:
@@ -84,7 +84,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 ```
 
-### [CRIT-001] Lock down `/api/files/[param]` access control
+### CRIT-001: Lock down `/api/files/[param]` access control
 - What changed:
   - Added mandatory authentication checks for both `GET` and `DELETE`.
   - Enforced ownership for UUID-based file reads by requiring `documents.user_id = authenticated_user`.
@@ -99,7 +99,7 @@ Use this block whenever an item is completed:
   - Result: pass (`eslint . --max-warnings 0`)
 - Status: DONE
 
-### [CRIT-002] Protect system notification dispatch from header spoofing
+### CRIT-002: Protect system notification dispatch from header spoofing
 - What changed:
   - Removed blind trust in `X-System-Job`.
   - Added mandatory shared-secret validation for system jobs using `NOTIFICATION_JOB_TOKEN`.
@@ -114,7 +114,7 @@ Use this block whenever an item is completed:
   - Result: pass (`eslint . --max-warnings 0`)
 - Status: DONE
 
-### [CRIT-003] Require authentication for security/session operations
+### CRIT-003: Require authentication for security/session operations
 - What changed:
   - Added centralized auth guard helper in security route.
   - Enforced auth for config/session actions that were previously callable without auth.
@@ -128,7 +128,7 @@ Use this block whenever an item is completed:
   - Result: pass (`eslint . --max-warnings 0`)
 - Status: DONE
 
-### [CRIT-004] Remove unsafe JWT default secret fallback
+### CRIT-004: Remove unsafe JWT default secret fallback
 - What changed:
   - Removed hardcoded fallback JWT secret behavior.
   - Added strict secret resolution requiring `JWT_SECRET` or `AUTH_SECRET`.
@@ -143,7 +143,7 @@ Use this block whenever an item is completed:
   - Result: pass (`eslint . --max-warnings 0`)
 - Status: DONE
 
-### [CRIT-005] Harden HTML rendering against XSS in campaign/editor views
+### CRIT-005: Harden HTML rendering against XSS in campaign/editor views
 - What changed:
   - Replaced unsafe text HTML rendering in pitch deck canvas with plain text rendering.
   - Added HTML escaping, URL validation, and HTML stripping in email preview generation path.
@@ -157,7 +157,7 @@ Use this block whenever an item is completed:
   - Result: pass (`eslint . --max-warnings 0`)
 - Status: DONE
 
-### [CRIT-006] Remove credential-like database example value
+### CRIT-006: Remove credential-like database example value
 - What changed:
   - Replaced credential-like `DATABASE_URL` value with generic placeholder format.
 - Files updated:
@@ -168,7 +168,7 @@ Use this block whenever an item is completed:
   - Static review of updated env example file.
 - Status: DONE
 
-### [CRIT-007] Convert test runner workflow into real quality gate
+### CRIT-007: Convert test runner workflow into real quality gate
 - What changed:
   - Replaced no-op echo workflow with real CI checks: install, lint, type-check, test, production build.
 - Files updated:
@@ -179,7 +179,7 @@ Use this block whenever an item is completed:
   - Static workflow review confirms all gate steps are present.
 - Status: DONE
 
-### [HIGH-004] Standardize logout cookie invalidation
+### HIGH-004: Standardize logout cookie invalidation
 - What changed:
   - Updated logout endpoint to clear canonical `auth_token`.
   - Kept backward-compatible clearing of legacy `auth-token`.
@@ -192,7 +192,7 @@ Use this block whenever an item is completed:
   - Result: pass (`eslint . --max-warnings 0`)
 - Status: DONE
 
-### [HIGH-005] Fix idempotency helper mismatch in upload API
+### HIGH-005: Fix idempotency helper mismatch in upload API
 - What changed:
   - Switched upload API to use `reserveIdempotencyKeyNeon` for Neon SQL-template client compatibility.
 - Files updated:
@@ -204,7 +204,7 @@ Use this block whenever an item is completed:
   - Result: pass (`eslint . --max-warnings 0`)
 - Status: DONE
 
-### [HIGH-007] Remove invalid Next.js experimental config key
+### HIGH-007: Remove invalid Next.js experimental config key
 - What changed:
   - Removed invalid `experimental.turbopack` key from Next config.
 - Files updated:
@@ -226,7 +226,7 @@ Use this block whenever an item is completed:
 
 ## Active high-priority work in progress
 
-### [HIGH-001] Test suite stabilization progress
+### HIGH-001: Test suite stabilization progress
 - What changed:
   - Fixed multiple Jest/ESM compatibility issues in test files and setup.
   - Resolved boardroom orchestrator test instability by removing external API dependency.
@@ -250,4 +250,16 @@ Use this block whenever an item is completed:
   - `src/lib/__tests__/scraping-scheduler.test.ts` (same ESM mock binding issue)
   - `test/templates-delete.test.ts` (ESM import/parsing issue from transitive module chain)
 - Status: IN_PROGRESS
+
+### SEC-HARDEN-AGENT-SESSION-001: Close destroySession authorization gap
+- What changed:
+  - Verified and fixed authorization bypass condition in `destroySession` where invalid/no-owner sessions could be destroyed by any authenticated user.
+  - Added explicit rejection for invalid/expired sessions before deletion.
+  - Enforced owner-or-privileged check for all destroy attempts, including sessions with missing owner metadata.
+- Files updated:
+  - `src/app/api/agents/security/route.ts`
+- Verification:
+  - Command: `npm run lint`
+  - Result: pass (`eslint . --max-warnings 0`)
+- Status: DONE
 

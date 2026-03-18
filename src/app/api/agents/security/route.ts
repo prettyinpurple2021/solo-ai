@@ -421,7 +421,23 @@ async function destroySession(request: NextRequest) {
     }
 
     const validation = await securityManager.validateSession(sessionId)
-    if (validation.valid && validation.userId && validation.userId !== auth.user.id) {
+    if (!validation.valid) {
+      return NextResponse.json(
+        { error: 'Session not found or already expired' },
+        { status: 404 }
+      )
+    }
+
+    // Only owner or privileged operators can destroy sessions.
+    if (!validation.userId) {
+      const privileged = await canManageSecurityForOtherUsers(auth.user.id)
+      if (!privileged) {
+        return NextResponse.json(
+          { error: 'Insufficient permissions to destroy this session' },
+          { status: 403 }
+        )
+      }
+    } else if (validation.userId !== auth.user.id) {
       const privileged = await canManageSecurityForOtherUsers(auth.user.id)
       if (!privileged) {
         return NextResponse.json(
