@@ -8,7 +8,7 @@ import { getIdempotencyKeyFromRequest, reserveIdempotencyKey} from '@/lib/idempo
 
 
 
-export const runtime = 'edge'
+export const runtime = 'nodejs'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
