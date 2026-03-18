@@ -8,3 +8,8 @@ This file tracks all major tracks for the project. Each track has its own detail
 - [x] **Track: brand_enforcement** - [Plan](./tracks/brand_enforcement/plan.md)
 - [x] **Track: project_remediation** - [Plan](./tracks/project_remediation/plan.md)
 
+---
+
+- [ ] **Track: Implement all deferred Phase 2 and V2 features, including AI enhancements, PayPal/Outlook integrations, and advanced infrastructure.**
+*Link: [./tracks/deferred_features_v2_20260317/](./tracks/deferred_features_v2_20260317/)*
+
