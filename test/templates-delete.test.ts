@@ -1,12 +1,22 @@
 import { jest, describe, it, expect, beforeEach } from '@jest/globals'
 
-const verifyAuthMock = jest.fn()
+type VerifyAuthResult = {
+  user: { id: string } | null
+  error: string | null | undefined
+}
 
-const limitMock = jest.fn()
+type TemplateOwnershipRow = {
+  id: string
+  user_id: string
+}
+
+const verifyAuthMock = jest.fn<() => Promise<VerifyAuthResult>>()
+
+const limitMock = jest.fn<() => Promise<TemplateOwnershipRow[]>>()
 const whereMock = jest.fn(() => ({ limit: limitMock }))
 const fromMock = jest.fn(() => ({ where: whereMock }))
 const selectMock = jest.fn(() => ({ from: fromMock }))
-const deleteWhereMock = jest.fn()
+const deleteWhereMock = jest.fn<() => Promise<Array<{ id: string }>>>()
 const deleteMock = jest.fn(() => ({ where: deleteWhereMock }))
 
 jest.mock('@/lib/auth-server', () => ({

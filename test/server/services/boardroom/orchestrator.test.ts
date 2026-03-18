@@ -1,10 +1,14 @@
 import { BoardroomOrchestrator } from "../../../../server/src/services/boardroom/orchestrator";
 import { jest } from '@jest/globals';
 
+const generateContentMock = jest
+  .fn<() => Promise<{ text: string }>>()
+  .mockResolvedValue({ text: "Mock response from agent-1" });
+
 jest.mock("@google/genai", () => ({
   GoogleGenAI: jest.fn().mockImplementation(() => ({
     models: {
-      generateContent: jest.fn().mockResolvedValue({ text: "Mock response from agent-1" }),
+      generateContent: generateContentMock,
     },
   })),
 }));
