@@ -203,9 +203,12 @@ export class AgentCollaborationSystem {
     collaborationResponses: AgentResponse[],
     context?: Record<string, any>
   ): Promise<AgentWorkflow> {
-    // @ts-ignore - preventing type resolution depth
-    const module = await import("@/lib/workflow-engine") as any
-    const WorkflowEngine = module.WorkflowEngine
+    const { WorkflowEngine } = (await import("@/lib/workflow-engine")) as unknown as {
+      WorkflowEngine: new () => {
+        createWorkflow: (workflow: unknown, userId: string) => Promise<any>
+        executeWorkflow: (workflowId: string, inputs: unknown, userId: string) => Promise<any>
+      }
+    }
     const engine = new WorkflowEngine()
     
     // Map agent tasks to workflow nodes
@@ -303,9 +306,11 @@ export class AgentCollaborationSystem {
 
   // Execute a workflow
   async executeWorkflow(workflowId: string): Promise<AgentWorkflow> {
-    // @ts-ignore - preventing type resolution depth
-    const module = await import("@/lib/workflow-engine") as any
-    const WorkflowEngine = module.WorkflowEngine
+    const { WorkflowEngine } = (await import("@/lib/workflow-engine")) as unknown as {
+      WorkflowEngine: new () => {
+        executeWorkflow: (workflowId: string, inputs: unknown, userId: string) => Promise<any>
+      }
+    }
     const engine = new WorkflowEngine()
     
     try {

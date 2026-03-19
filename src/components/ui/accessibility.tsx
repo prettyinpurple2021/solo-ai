@@ -24,6 +24,11 @@ interface AccessibilityContextType {
   setFocusVisible: (visible: boolean) => void
 }
 
+type AccessibilityPrefs = Pick<
+  AccessibilityContextType,
+  "highContrast" | "reducedMotion" | "screenReader" | "fontSize" | "focusVisible"
+>
+
 // Lazy context creation to prevent build errors
 let AccessibilityContext: React.Context<AccessibilityContextType | undefined> | undefined
 
@@ -50,7 +55,7 @@ export function AccessibilityProvider({ children }: { children: React.ReactNode 
   
   const { session } = useAuth()
   
-  const accessibilityPrefs = preferences.accessibility || {
+  const accessibilityPrefs: AccessibilityPrefs = (preferences.accessibility as AccessibilityPrefs | undefined) || {
     highContrast: false,
     reducedMotion: false,
     screenReader: false,

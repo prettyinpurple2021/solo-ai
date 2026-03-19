@@ -1,10 +1,9 @@
-// @ts-nocheck
 'use client'
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import React, { useState, useEffect } from 'react'
+import { logError } from '@/lib/logger'
+import type { FC } from 'react'
+import { useState, useEffect } from 'react'
 import { Crown, Sparkles, Bell, CheckCheck, Search } from 'lucide-react'
-import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 import GlobalSearch from './archive/GlobalSearch'
 import { useAuth } from '@/hooks/use-auth'
@@ -43,7 +42,7 @@ interface Notification {
   type: string
 }
 
-export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
+export const DashboardHeader: FC<DashboardHeaderProps> = ({
   title,
   subtitle,
   className = '',

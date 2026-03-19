@@ -1,5 +1,4 @@
 "use client"
-// @ts-nocheck
 
 import React, { useState, useCallback, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'

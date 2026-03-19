@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client'
 
 import * as React from 'react'
@@ -7,7 +6,7 @@ import {
 import { DayButton, DayPicker, getDefaultClassNames} from 'react-day-picker'
 
 import { cn} from '@/lib/utils'
-import { Button, buttonVariants} from '@/components/ui/button'
+import { Button, buttonVariants, type ButtonVariant } from '@/components/ui/button'
 
 function Calendar({
   className,
@@ -19,7 +18,7 @@ function Calendar({
   components,
   ...props
 }: React.ComponentProps<typeof DayPicker> & {
-  buttonVariant?: React.ComponentProps<typeof Button>['variant']
+  buttonVariant?: ButtonVariant
 }) {
   const defaultClassNames = getDefaultClassNames()
 
@@ -174,6 +173,7 @@ function CalendarDayButton({
   className,
   day,
   modifiers,
+  children,
   ...props
 }: React.ComponentProps<typeof DayButton>) {
   const defaultClassNames = getDefaultClassNames()
@@ -204,7 +204,9 @@ function CalendarDayButton({
         className
       )}
       {...props}
-    />
+    >
+      {children ?? day.date.getDate()}
+    </Button>
   )
 }
 

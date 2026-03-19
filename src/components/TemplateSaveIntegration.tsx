@@ -1,8 +1,7 @@
-// @ts-nocheck
 'use client'
 
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
-import React, { useState, useEffect } from 'react'
+import { logError } from '@/lib/logger'
+import React, { useState, useEffect, useCallback } from 'react'
 import { Save, Star, Crown, Heart, Sparkles } from 'lucide-react'
 import { briefcaseAutoSaver } from '@/utils/briefcase-auto-save'
 import { Button } from '@/components/ui/button'
@@ -44,27 +43,7 @@ export const TemplateSaveIntegration: React.FC<TemplateSaveIntegrationProps> = (
     }
   }, [templateTitle, saveTitle])
 
-  // Auto-save functionality (when enabled)
-  useEffect(() => {
-    if (!autoSave || !templateData) return
-
-    const currentDataString = JSON.stringify(templateData)
-    
-    // Only auto-save if data has changed and we have meaningful content
-    if (currentDataString !== lastSavedData && Object.keys(templateData).length > 0) {
-      setShowAutoSaveIndicator(true)
-      
-      // Auto-save after a delay
-      const timeoutId = setTimeout(() => {
-        handleAutoSave()
-        setShowAutoSaveIndicator(false)
-      }, 3000)
-
-      return () => clearTimeout(timeoutId)
-    }
-  }, [templateData, autoSave, lastSavedData])
-
-  const handleAutoSave = async () => {
+  const handleAutoSave = useCallback(async () => {
     if (!templateData || Object.keys(templateData).length === 0) return
 
     try {
@@ -77,9 +56,35 @@ export const TemplateSaveIntegration: React.FC<TemplateSaveIntegrationProps> = (
       
       setLastSavedData(JSON.stringify(templateData))
     } catch (error) {
-      logError('Auto-save error:', error)
+      logError(
+        'Auto-save error:',
+        error instanceof Error ? error : new Error(String(error)),
+      )
     }
-  }
+  }, [templateData, templateSlug, saveTitle, progress])
+
+  // Auto-save functionality (when enabled)
+  useEffect(() => {
+    if (!autoSave || !templateData) {
+      return undefined
+    }
+
+    const currentDataString = JSON.stringify(templateData)
+
+    // Only auto-save if data has changed and we have meaningful content
+    if (currentDataString === lastSavedData || Object.keys(templateData).length === 0) {
+      return undefined
+    }
+
+    setShowAutoSaveIndicator(true)
+
+    const timeoutId = setTimeout(() => {
+      void handleAutoSave()
+      setShowAutoSaveIndicator(false)
+    }, 3000)
+
+    return () => clearTimeout(timeoutId)
+  }, [templateData, autoSave, lastSavedData, handleAutoSave])
 
   const handleManualSave = async () => {
     if (!templateData || Object.keys(templateData).length === 0) {

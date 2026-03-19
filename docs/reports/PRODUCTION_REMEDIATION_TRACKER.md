@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-18
+Last updated: 2026-03-19
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -33,6 +33,10 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 - Created this tracker as the single source of truth for remediation progress.
 - Initial audit consolidated and prioritized into actionable items below.
 
+### 2026-03-19
+
+- Completed **HIGH-006**: removed file-level `@ts-nocheck` from production `src`, replaced remaining suppressions with real types/guards, and fixed surfaced TypeScript issues (effects, hooks, learning module types, template flows).
+
 ## Critical remediation queue
 
 | ID | Severity | Area | Issue | Status | Verification |
@@ -54,7 +58,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 | HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | DONE | `npm audit --omit=dev --json` now reports low-only (4 total, 0 high, 0 critical) |
 | HIGH-004 | HIGH | Auth | Logout cookie name mismatch (`auth_token` vs `auth-token`) | DONE | `npm run lint` passed |
 | HIGH-005 | HIGH | Reliability | Upload idempotency helper mismatch (`upload` route + `idempotency` helper) | DONE | `npm run lint` passed |
-| HIGH-006 | HIGH | Maintainability | Broad `@ts-nocheck` and `@ts-ignore` in production code paths | OPEN | Pending |
+| HIGH-006 | HIGH | Maintainability | Broad `@ts-nocheck` and `@ts-ignore` in production code paths | DONE | `npm run validate` + `npm test -- --runInBand` passed; production `src` has zero `@ts-nocheck`; remaining `@ts-ignore` only in test setup (`src/test/setup.ts`, `competitor-service.integration.test.ts`) |
 | HIGH-007 | HIGH | Config | Invalid Next.js config warning (`experimental.turbopack`) | DONE | `npm run build` warning removed |
 
 ## Medium-priority hardening queue
@@ -265,6 +269,28 @@ Use this block whenever an item is completed:
   - Result: suites/tests pass (`16/16`, `97/97`), with known lingering open-handle warning after completion.
 - Status: DONE
 
+### HIGH-006: Remove broad TypeScript suppressions from production paths
+- What changed:
+  - Eliminated `@ts-nocheck` from all production files under `src` (none remain).
+  - Replaced ad-hoc `@ts-ignore` with proper typings, narrowings, and `logError(message, Error)` patterns where TypeScript surfaced real issues.
+  - Fixed follow-on errors: `useEffect` return consistency, `SpeechRecognition` globals, Neon query helper typing, learning module/exercise shapes, offer naming generator state, interactive tutorial progress map, template auto-save callback ordering, and related hook return types.
+- Files updated (representative):
+  - `src/components/learning/learning-module.tsx`, `src/lib/learning-engine.ts`
+  - `src/components/onboarding/interactive-tutorial.tsx`, `src/components/TemplateSaveIntegration.tsx`
+  - `src/components/collaboration/MessageInterface.tsx`, `SessionControls.tsx`
+  - `src/components/templates/offer-naming-generator.tsx`, `upsell-flow-builder.tsx`
+  - `src/hooks/use-task-intelligence.ts`, `use-templates-swr.ts`
+  - Plus prior branch changes: `global.d.ts`, auth, unified-briefcase, workflow/agent dynamic imports, etc.
+- Why this improves production readiness:
+  - Compiler and ESLint now enforce real contracts on shipped code instead of hiding defects behind blanket ignores.
+- Verification:
+  - Command: `npm run validate`
+  - Result: pass (`eslint . --max-warnings 0`, web + server `tsc --noEmit`).
+  - Command: `npm test -- --runInBand`
+  - Result: `16/16` suites, `97/97` tests passed (known non-blocking Jest open-handle / late log noise unchanged).
+  - Spot check: `rg '@ts-nocheck' src` → no matches; `@ts-ignore` remains only under test harness files listed above.
+- Status: DONE
+
 ## New findings discovered during remediation
 
 - Build still reports large client chunk warning:
@@ -275,7 +301,6 @@ Use this block whenever an item is completed:
 
 ## Next execution queue
 
-- HIGH-006 (`OPEN`): remove broad `@ts-nocheck`/`@ts-ignore` usage from production paths.
 - MED-001 (`OPEN`): align Node version across local, CI, and Docker runtime.
 - MED-002 (`OPEN`): remove runtime schema/table creation from request-time code paths.
 - MED-003 (`OPEN`): replace legacy/archive imports in active production code.

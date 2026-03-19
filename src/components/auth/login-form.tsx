@@ -16,8 +16,7 @@ export function LoginForm() {
   const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
   const error = searchParams.get('error');
   
-  // @ts-ignore
-  const [errorMessage, formAction, isPending] = useActionState(
+  const [errorMessage, formAction, isPending] = useActionState<string | undefined, FormData>(
     authenticateAction,
     undefined
   );

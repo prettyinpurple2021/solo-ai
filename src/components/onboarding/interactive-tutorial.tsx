@@ -39,6 +39,20 @@ interface InteractiveTutorialProps {
   onStepChange?: (stepIndex: number, stepData: TutorialStep) => void // Callback for step changes
 }
 
+/** Saved step state per tutorial (stored in user preferences). */
+type TutorialProgressEntry = {
+  step?: number
+  completed?: string[]
+  startTime?: string
+  lastUpdated?: string
+}
+
+type TutorialProgressMap = Record<string, TutorialProgressEntry>
+
+function isTutorialProgressMap(value: unknown): value is TutorialProgressMap {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
 export function InteractiveTutorial({ 
   open, 
   onCompleteAction, 
@@ -509,7 +523,10 @@ export function InteractiveTutorial({
   })
   
   const tutorialKey = `tutorial-${tutorialType}`
-  const currentTutorialProgress = preferences.tutorialProgress?.[tutorialKey] || {}
+  const tutorialProgress: TutorialProgressMap = isTutorialProgressMap(preferences.tutorialProgress)
+    ? preferences.tutorialProgress
+    : {}
+  const currentTutorialProgress = tutorialProgress[tutorialKey] || {}
   
   // Load saved progress on mount
   useEffect(() => {
@@ -546,9 +563,9 @@ export function InteractiveTutorial({
         }
         
         // Update tutorial progress
-        const newProgress = {
-          ...preferences.tutorialProgress,
-          [tutorialKey]: progressData
+        const newProgress: TutorialProgressMap = {
+          ...tutorialProgress,
+          [tutorialKey]: progressData,
         }
         
         setPreference('tutorialProgress', newProgress).catch(error => {
@@ -563,7 +580,7 @@ export function InteractiveTutorial({
         logWarn('Failed to save tutorial progress:', error)
       }
     }
-  }, [open, currentStep, completedSteps, startTime, tutorialKey, userPreferences, preferences.tutorialProgress, setPreference])
+  }, [open, currentStep, completedSteps, startTime, tutorialKey, userPreferences, tutorialProgress, setPreference])
 
   // Tutorial analytics tracking
   const trackTutorialEvent = (event: string, data?: any) => {

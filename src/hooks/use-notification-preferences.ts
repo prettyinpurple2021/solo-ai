@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { useState, useEffect, useCallback } from 'react';
 import { NotificationPreferences, NotificationChannel } from '@/lib/notification-delivery-system';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 
 import { Button} from '@/components/ui/button';
@@ -125,7 +124,7 @@ export function UpsellFlowBuilder() {
       case 'initial-offer': return <DollarSign className="w-4 h-4 text-neon-cyan" />;
       case 'upsell': return <TrendingUp className="w-4 h-4 text-neon-lime" />;
       case 'downsell': return <ArrowRight className="w-4 h-4 text-neon-orange" />;
-      case 'loyalty': return <Badge className="w-4 h-4 text-neon-purple" />;
+      case 'loyalty': return <Badge className="w-4 h-4 text-neon-purple" variant="purple">★</Badge>;
       default: return <Plus className="w-4 h-4" />;
     }
   };

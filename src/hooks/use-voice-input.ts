@@ -17,21 +17,20 @@ export function useVoiceInput(): UseVoiceInputResult {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isSupported, setIsSupported] = useState(false);
-  const [recognition, setRecognition] = useState<any>(null);
+  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // @ts-ignore
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
       
-      if (SpeechRecognition) {
+      if (SpeechRecognitionCtor) {
         setIsSupported(true);
-        const recognitionInstance = new SpeechRecognition();
+        const recognitionInstance = new SpeechRecognitionCtor();
         recognitionInstance.continuous = true;
         recognitionInstance.interimResults = true;
         recognitionInstance.lang = "en-US";
 
-        recognitionInstance.onresult = (event: any) => {
+        recognitionInstance.onresult = (event: SpeechRecognitionEvent) => {
           let finalTranscript = "";
           for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
@@ -45,7 +44,7 @@ export function useVoiceInput(): UseVoiceInputResult {
           }
         };
 
-        recognitionInstance.onerror = (event: any) => {
+        recognitionInstance.onerror = (event: SpeechRecognitionErrorEvent) => {
           logError("Speech recognition error", event.error);
           setIsListening(false);
           toast.error("Voice input error: " + event.error);

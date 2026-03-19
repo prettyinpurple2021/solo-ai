@@ -69,8 +69,7 @@ export const authConfig = {
                 session.user.subscription_tier = (token.subscription_tier as string) || 'free'
                 
                 // Expose backend token to the client
-                // @ts-ignore
-                session.backendToken = token.backendToken as string
+                session.backendToken = (token.backendToken as string) || undefined
             }
         }
         return session

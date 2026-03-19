@@ -4,9 +4,15 @@ import { logInfo, logWarn } from '@/lib/logger'
 
 // Helper for direct query execution
 // Helper for direct query execution
+type NeonQueryClient = ((query: string, params?: unknown[]) => Promise<any[]>) & {
+  unsafe?: (query: string, params?: unknown[]) => Promise<any[]>
+}
+
 async function query(text: string, params: unknown[] = []): Promise<any[]> {
-  const sql = getSql()
-  // @ts-ignore - neon client call signature mismatch with dynamic params
+  const sql = getSql() as unknown as NeonQueryClient
+  if (typeof sql.unsafe === 'function') {
+    return await sql.unsafe(text, params)
+  }
   return await sql(text, params)
 }
 
@@ -111,9 +117,8 @@ export class UnifiedBriefcaseManager {
    */
   async getDefaultBriefcase(userId: string): Promise<UserBriefcase> {
     // Check if user has a default briefcase
-    const sql = getSql()
-    // @ts-ignore - neon client typing issue
-    const result = await sql(`
+    const sql = getSql() as unknown as NeonQueryClient
+    const result = await query(`
       SELECT * FROM user_briefcases 
       WHERE user_id = $1 AND is_default = true
       LIMIT 1
@@ -460,9 +465,7 @@ export class UnifiedBriefcaseManager {
    * Get user's current avatar
    */
   async getUserAvatar(userId: string): Promise<BriefcaseItem | null> {
-    const sql = getSql()
-    // @ts-ignore - neon client typing issue
-    const result = await sql(`
+    const result = await query(`
       SELECT * FROM briefcase_items 
       WHERE user_id = $1 AND type = 'avatar'
       ORDER BY created_at DESC
@@ -523,8 +526,7 @@ export class UnifiedBriefcaseManager {
    */
   async deleteItem(userId: string, itemId: string): Promise<boolean> {
     // Get item details for blob cleanup
-    const sql = getSql()
-    const result = await (sql as any)(`
+    const result = await query(`
       SELECT blob_url FROM briefcase_items 
       WHERE id = $1 AND user_id = $2
     `, [itemId, userId])

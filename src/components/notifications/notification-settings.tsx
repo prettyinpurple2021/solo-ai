@@ -81,7 +81,7 @@ export default function NotificationSettings({ className = "" }: NotificationSet
     fallbackToLocalStorage: true
   })
   
-  const preferences = userPrefs.notifications || {
+  const preferences: NotificationPreferences = (userPrefs.notifications as NotificationPreferences | undefined) || {
     enabled: false,
     taskReminders: true,
     goalDeadlines: true,
@@ -135,8 +135,8 @@ export default function NotificationSettings({ className = "" }: NotificationSet
         }))
         
         // Enable notifications
-        const newPrefs = { ...preferences, enabled: true }
-        savePreferences(newPrefs)
+        const newPrefs: NotificationPreferences = { ...preferences, enabled: true }
+        await savePreferences(newPrefs)
         
         toast({
           title: "Notifications Enabled",
@@ -163,8 +163,8 @@ export default function NotificationSettings({ className = "" }: NotificationSet
       }
     } else {
       // Just toggle the enabled state
-      const newPrefs = { ...preferences, enabled: !preferences.enabled }
-      savePreferences(newPrefs)
+      const newPrefs: NotificationPreferences = { ...preferences, enabled: !preferences.enabled }
+      await savePreferences(newPrefs)
     }
   }
 
@@ -178,8 +178,8 @@ export default function NotificationSettings({ className = "" }: NotificationSet
         }))
       }
       
-      const newPrefs = { ...preferences, enabled: false }
-      savePreferences(newPrefs)
+      const newPrefs: NotificationPreferences = { ...preferences, enabled: false }
+      await savePreferences(newPrefs)
       
       toast({
         title: "Notifications Disabled",

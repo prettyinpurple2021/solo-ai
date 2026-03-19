@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client'
 
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
@@ -343,6 +342,10 @@ const MessageInterface: React.FC<{ sessionId: string }> = ({ sessionId }) => {
 
   // Fetch messages
   useEffect(() => {
+    if (!sessionId) {
+      return
+    }
+
     const fetchMessages = async () => {
       try {
         const response = await fetch(`/api/collaboration/sessions/${sessionId}/messages`)
@@ -351,18 +354,18 @@ const MessageInterface: React.FC<{ sessionId: string }> = ({ sessionId }) => {
           setMessages(data.data?.messages || [])
         }
       } catch (error) {
-        logError('Error fetching messages:', error)
+        logError(
+          'Error fetching messages:',
+          error instanceof Error ? error : new Error(String(error)),
+        )
       } finally {
         setLoading(false)
       }
     }
 
-    if (sessionId) {
-      fetchMessages()
-      // Set up polling for new messages
-      const interval = setInterval(fetchMessages, 5000)
-      return () => clearInterval(interval)
-    }
+    void fetchMessages()
+    const interval = setInterval(() => void fetchMessages(), 5000)
+    return () => clearInterval(interval)
   }, [sessionId])
 
   // Auto-scroll to bottom when new messages arrive

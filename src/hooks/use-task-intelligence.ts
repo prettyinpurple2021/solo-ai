@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { useState, useCallback, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
@@ -59,13 +58,16 @@ export function useTaskIntelligence(options: UseTaskIntelligenceOptions = {}) {
   const getTaskSuggestion = useCallback(async (
     task: TaskIntelligenceData, 
     allTasks: TaskIntelligenceData[]
-  ): Promise<TaskSuggestion> => {
+  ): Promise<TaskSuggestion | null> => {
     if (!user || !enableAI) return null
 
     try {
       return await engine.generateTaskSuggestion(task, allTasks)
     } catch (err) {
-      logError('Error getting task suggestion:', err)
+      logError(
+        'Error getting task suggestion:',
+        err instanceof Error ? err : new Error(String(err)),
+      )
       return null
     }
   }, [user, enableAI, engine])

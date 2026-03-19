@@ -73,8 +73,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           }
           
           logInfo("[Auth] User found, comparing passwords...");
-          // @ts-ignore
-          const passwordsMatch = await bcrypt.compare(password, user.password || "")
+          const passwordHash = typeof user.password === 'string' ? user.password : ''
+          const passwordsMatch = await bcrypt.compare(password, passwordHash)
           
           if (passwordsMatch) {
             logInfo("[Auth] Authentication successful for:", email);

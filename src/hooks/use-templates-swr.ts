@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client'
 
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
@@ -47,7 +46,10 @@ export function useTemplates() {
       
       return true
     } catch (err) {
-      logError(err)
+      logError(
+        'Template delete failed',
+        err instanceof Error ? err : new Error(String(err)),
+      )
       toast.error("Failed to delete template", { 
         description: err instanceof Error ? err.message : "An unknown error occurred." 
       })
@@ -86,7 +88,10 @@ export function useTemplates() {
       
       return true
     } catch (err) {
-      logError('Export failed', err)
+      logError(
+        'Export failed',
+        err instanceof Error ? err : new Error(String(err)),
+      )
       toast.error("Export failed", { 
         description: err instanceof Error ? err.message : "An unknown error occurred." 
       })
@@ -137,7 +142,10 @@ export function useTemplateSave() {
       setIsSaving(false)
       return data
     } catch (err) {
-      logError(err)
+      logError(
+        'Template save failed',
+        err instanceof Error ? err : new Error(String(err)),
+      )
       toast.error("Failed to save template", { 
         description: err instanceof Error ? err.message : "An unknown error occurred." 
       })

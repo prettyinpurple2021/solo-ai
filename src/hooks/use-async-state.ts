@@ -1,5 +1,4 @@
-// @ts-nocheck
-import React, { useState } from "react"
+import { useState } from "react"
 
 export interface AsyncState<T> {
   data: T | null
@@ -19,8 +18,8 @@ export interface AsyncActions<T> {
  * Reduces duplication across hooks that perform async operations
  */
 export function useAsyncState<T>(initialData: T | null = null): AsyncState<T> & AsyncActions<T> {
-  const [data, setData] = useState<T (initialData)
-  const [loading, setLoading] = useState(true)
+  const [data, setData] = useState<T | null>(initialData)
+  const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
 
   const reset = () => {

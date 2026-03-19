@@ -14,6 +14,7 @@ declare module "next-auth" {
       avatar_url?: string | null
       stripe_customer_id?: string | null
     } & DefaultSession["user"]
+    backendToken?: string
   }
 
   interface User {

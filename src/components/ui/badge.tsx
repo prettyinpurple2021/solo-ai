@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import type { MouseEventHandler, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 
 interface BadgeProps {
@@ -9,6 +9,7 @@ interface BadgeProps {
   size?: 'sm' | 'md' | 'lg'
   glitch?: boolean
   className?: string
+  onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
 export const Badge = ({ 
@@ -16,7 +17,8 @@ export const Badge = ({
   variant = 'cyan',
   size = 'md',
   glitch = false,
-  className = ''
+  className = '',
+  onClick,
 }: BadgeProps) => {
   // Theme not available during static generation - use defaults
   const theme = undefined
@@ -39,19 +41,35 @@ export const Badge = ({
     default: 'border-gray-200 text-gray-800 bg-white dark:border-gray-700 dark:text-gray-200 dark:bg-gray-900',
   }
   
+  const sharedClassName = cn(
+    'border-2',
+    variants[variant],
+    theme === 'aggressive' ? 'rounded-none' : 'rounded-sm',
+    'font-bold uppercase tracking-wide',
+    'inline-block',
+    sizeClasses[size],
+    glitch && 'glitch-hover',
+    'transition-all duration-300',
+    className,
+  )
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className={cn(sharedClassName, 'cursor-pointer text-left')}
+        data-text={glitch ? String(children) : undefined}
+      >
+        {children}
+      </button>
+    )
+  }
+
   return (
-    <span className={cn(
-      'border-2',
-      variants[variant],
-      theme === 'aggressive' ? 'rounded-none' : 'rounded-sm',
-      'font-bold uppercase tracking-wide',
-      'inline-block',
-      sizeClasses[size],
-      glitch && 'glitch-hover',
-      'transition-all duration-300',
-      className
-    )}
-    data-text={glitch ? String(children) : undefined}
+    <span
+      className={sharedClassName}
+      data-text={glitch ? String(children) : undefined}
     >
       {children}
     </span>

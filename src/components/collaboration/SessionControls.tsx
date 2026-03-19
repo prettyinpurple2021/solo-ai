@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client'
 
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
@@ -90,6 +89,10 @@ const SessionControlPanel: React.FC<{ sessionId: string }> = ({ sessionId }) => 
 
   // Fetch session control state
   useEffect(() => {
+    if (!sessionId) {
+      return
+    }
+
     const fetchControlState = async () => {
       try {
         const response = await fetch(`/api/collaboration/sessions/${sessionId}/control`)
@@ -98,7 +101,10 @@ const SessionControlPanel: React.FC<{ sessionId: string }> = ({ sessionId }) => 
           setControlState(data.data)
         }
       } catch (error) {
-        logError('Error fetching control state:', error)
+        logError(
+          'Error fetching control state:',
+          error instanceof Error ? error : new Error(String(error)),
+        )
       } finally {
         setLoading(false)
       }
@@ -112,17 +118,17 @@ const SessionControlPanel: React.FC<{ sessionId: string }> = ({ sessionId }) => 
           setAvailableAgents(data.data?.agents || [])
         }
       } catch (error) {
-        logError('Error fetching agents:', error)
+        logError(
+          'Error fetching agents:',
+          error instanceof Error ? error : new Error(String(error)),
+        )
       }
     }
 
-    if (sessionId) {
-      fetchControlState()
-      fetchAgents()
-      // Poll for updates
-      const interval = setInterval(fetchControlState, 10000)
-      return () => clearInterval(interval)
-    }
+    void fetchControlState()
+    void fetchAgents()
+    const interval = setInterval(() => void fetchControlState(), 10000)
+    return () => clearInterval(interval)
   }, [sessionId])
 
   // Handle session actions
@@ -396,6 +402,10 @@ const ContextManagement: React.FC<{ sessionId: string }> = ({ sessionId }) => {
 
   // Fetch contexts
   useEffect(() => {
+    if (!sessionId) {
+      return
+    }
+
     const fetchContexts = async () => {
       try {
         const params = new URLSearchParams({ sessionId })
@@ -405,18 +415,18 @@ const ContextManagement: React.FC<{ sessionId: string }> = ({ sessionId }) => {
           setContexts(data.data?.entries || [])
         }
       } catch (error) {
-        logError('Error fetching contexts:', error)
+        logError(
+          'Error fetching contexts:',
+          error instanceof Error ? error : new Error(String(error)),
+        )
       } finally {
         setLoading(false)
       }
     }
 
-    if (sessionId) {
-      fetchContexts()
-      // Poll for updates
-      const interval = setInterval(fetchContexts, 15000)
-      return () => clearInterval(interval)
-    }
+    void fetchContexts()
+    const interval = setInterval(() => void fetchContexts(), 15000)
+    return () => clearInterval(interval)
   }, [sessionId])
 
   // Filter contexts

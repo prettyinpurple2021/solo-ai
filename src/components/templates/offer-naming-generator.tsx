@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 
 import { Button} from '@/components/ui/button';
@@ -21,6 +20,8 @@ interface NameOption {
 
 export function OfferNamingGenerator() {
   const [productDescription, setProductDescription] = useState('');
+  const [desiredVibe, setDesiredVibe] = useState('');
+  const [keywords, setKeywords] = useState('');
   const [targetAudience, setTargetAudience] = useState('');
   const [tone, setTone] = useState('');
   const [pricePoint, setPricePoint] = useState('');
@@ -120,8 +121,12 @@ export function OfferNamingGenerator() {
 
   const handleSave = async () => {
     const templateData = {
-      productDetails,
+      productDescription,
       targetAudience,
+      tone,
+      pricePoint,
+      industry,
+      keyBenefits,
       desiredVibe,
       keywords,
       generatedNames,
@@ -165,8 +170,8 @@ export function OfferNamingGenerator() {
             <Textarea
               id="productDetails"
               placeholder="Describe what you're offering. What problem does it solve? What transformation does it provide?"
-              value={productDetails}
-              onChange={(e) => setProductDetails(e.target.value)}
+              value={productDescription}
+              onChange={(e) => setProductDescription(e.target.value)}
               rows={4}
             />
           </div>

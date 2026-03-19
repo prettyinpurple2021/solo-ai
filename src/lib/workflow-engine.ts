@@ -333,9 +333,17 @@ export class WorkflowEngine {
         
         try {
           // Dynamic import to avoid circular dependencies
-          // @ts-ignore - preventing type resolution depth
-          const module = await import('@/lib/custom-ai-agents/agent-collaboration-system') as any
-          const AgentCollaborationSystem = module.AgentCollaborationSystem
+          const { AgentCollaborationSystem } = (await import('@/lib/custom-ai-agents/agent-collaboration-system')) as unknown as {
+            AgentCollaborationSystem: new (userId: string) => {
+              processRequest: (
+                request: string,
+                context?: Record<string, unknown>,
+                primaryAgentId?: string
+              ) => Promise<{
+                primaryResponse: { content: string; confidence: number }
+              }>
+            }
+          }
           
           if (!context.userId) {
              throw new Error("User ID is required for AI tasks")

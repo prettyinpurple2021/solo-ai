@@ -1,4 +1,3 @@
-// @ts-nocheck
 'use client';
 
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'

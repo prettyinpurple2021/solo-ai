@@ -1,20 +1,19 @@
-// @ts-nocheck
-import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
+import { logError } from '@/lib/logger'
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 
 
 interface UseUserPreferencesOptions {
-  defaultValues?: Record<string, any>
+  defaultValues?: Record<string, unknown>
   fallbackToLocalStorage?: boolean
 }
 
 interface UserPreferencesHook {
-  preferences: Record<string, any>
+  preferences: Record<string, unknown>
   loading: boolean
   error: string | null
-  setPreference: (key: string, value: any) => Promise<void>
-  setPreferences: (prefs: Record<string, any>) => Promise<void>
+  setPreference: (key: string, value: unknown) => Promise<void>
+  setPreferences: (prefs: Record<string, unknown>) => Promise<void>
   getPreference: {
     <T>(key: string, defaultValue: T): T
     <T>(key: string): T | undefined
@@ -27,7 +26,7 @@ export function useUserPreferences(
   options: UseUserPreferencesOptions = {}
 ): UserPreferencesHook {
   const { getToken } = useAuth()
-  const [preferences, setPreferencesState] = useState<Record<string, any>>(options.defaultValues || {})
+  const [preferences, setPreferencesState] = useState<Record<string, unknown>>(options.defaultValues || {})
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const loadingRef = useRef(false) // Prevent multiple simultaneous calls
@@ -110,7 +109,7 @@ export function useUserPreferences(
   }, [getAuthHeaders, options.defaultValues, options.fallbackToLocalStorage])
 
   // Set a single preference
-  const setPreference = useCallback(async (key: string, value: any) => {
+  const setPreference = useCallback(async (key: string, value: unknown) => {
     try {
       const headers = await getAuthHeaders()
       const response = await fetch('/api/preferences', {
@@ -142,7 +141,7 @@ export function useUserPreferences(
   }, [getAuthHeaders, options.fallbackToLocalStorage])
 
   // Set multiple preferences at once
-  const setPreferences = useCallback(async (prefs: Record<string, any>) => {
+  const setPreferences = useCallback(async (prefs: Record<string, unknown>) => {
     try {
       const headers = await getAuthHeaders()
       const response = await fetch('/api/preferences', {
@@ -176,12 +175,16 @@ export function useUserPreferences(
   }, [getAuthHeaders, options.fallbackToLocalStorage])
 
   // Get a specific preference with optional default value
-  const getPreference = useCallback((<T>(key: string, defaultValue?: T): T | undefined => {
-    return preferences[key] !== undefined ? preferences[key] : defaultValue
-  }) as {
-    <T>(key: string, defaultValue: T): T
-    <T>(key: string): T | undefined
-  }, [preferences])
+  const getPreference = useCallback(
+    (<T,>(key: string, defaultValue?: T): T | undefined => {
+      const value = preferences[key]
+      return value !== undefined ? (value as T) : defaultValue
+    }) as {
+      <T>(key: string, defaultValue: T): T
+      <T>(key: string): T | undefined
+    },
+    [preferences],
+  )
 
   // Remove a preference
   const removePreference = useCallback(async (key: string) => {

@@ -55,14 +55,17 @@ export default function TeamPage() {
   }
 
   const startListening = () => {
-    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
       alert('Speech recognition is not supported in this browser.');
       return;
     }
 
-    // @ts-ignore - separate declaration for browser compatibility
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    const recognition = new SpeechRecognition();
+    const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognitionCtor) {
+      alert('Speech recognition is not supported in this browser.');
+      return
+    }
+    const recognition = new SpeechRecognitionCtor();
 
     recognition.continuous = false;
     recognition.interimResults = false;
@@ -72,14 +75,14 @@ export default function TeamPage() {
       setIsListening(true);
     };
 
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setMessage(transcript);
       // Optional: Auto-send after voice input
       // handleSendMessage(); 
     };
 
-    recognition.onerror = (event: any) => {
+    recognition.onerror = (event: SpeechRecognitionErrorEvent) => {
       logError('Speech recognition error', event.error);
       setIsListening(false);
     };

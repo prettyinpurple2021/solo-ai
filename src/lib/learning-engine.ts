@@ -37,6 +37,63 @@ export interface ProgressData {
   last_position?: number;
 }
 
+/** Quiz item for interactive learning-module UI */
+export interface QuizQuestion {
+  id: string;
+  question: string;
+  options: string[];
+  correct_answer: number;
+}
+
+/** Exercise step in a module (UI layer) */
+export interface LearningExercise {
+  id?: string;
+  title?: string;
+  description?: string;
+  instructions?: string;
+  hints?: string[];
+  [key: string]: unknown;
+}
+
+/** Module shape consumed by `LearningModuleComponent` */
+export interface LearningModule {
+  id: string;
+  title?: string;
+  description?: string;
+  content_type?: string;
+  content_url?: string;
+  /** e.g. beginner | intermediate | advanced */
+  difficulty?: string;
+  duration_minutes?: number;
+  quiz_questions?: QuizQuestion[];
+  exercises?: LearningExercise[];
+}
+
+/** Skill / progress types used by `useLearning` analytics hooks */
+export interface Skill {
+  id: string;
+  name: string;
+  category?: string;
+  current_level?: number;
+  [key: string]: unknown;
+}
+
+export interface UserProgress {
+  module_id: string;
+  status?: string;
+  completion_percentage?: number;
+  time_spent?: number;
+  [key: string]: unknown;
+}
+
+export interface LearningRecommendation {
+  id: string;
+  module_id?: string;
+  reason?: string;
+  priority?: string;
+  [key: string]: unknown;
+}
+
 export class LearningEngine {
   private userId: string;
 

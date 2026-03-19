@@ -1,5 +1,4 @@
 import { logError } from '@/lib/logger'
-// @ts-ignore
 import pdf from 'pdf-parse'
 import mammoth from 'mammoth'
 import ExcelJS from 'exceljs'

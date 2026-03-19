@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { useState, useCallback } from 'react'
 import { IntelligenceBriefing, BriefingType } from '@/lib/intelligence-briefing-system'

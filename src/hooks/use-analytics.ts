@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { logger, logError, logWarn, logInfo, logDebug, logApi, logDb, logAuth } from '@/lib/logger'
 import { useCallback, useEffect, useRef } from 'react'
 import { useAuth } from './use-auth'

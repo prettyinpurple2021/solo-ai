@@ -1,10 +1,9 @@
-// @ts-nocheck
 'use client'
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Play, Pause, CheckCircle, Clock, BookOpen, Target, ArrowLeft, ArrowRight, Star } from 'lucide-react'
-import { LearningModule, QuizQuestion } from '@/lib/learning-engine'
+import { type LearningExercise, type LearningModule, type QuizQuestion } from '@/lib/learning-engine'
 
 interface LearningModuleProps {
   module: LearningModule
@@ -66,7 +65,7 @@ export default function LearningModuleComponent({ module, onProgress, onComplete
   const handleQuizComplete = () => {
     if (module.quiz_questions) {
       const correctAnswers = module.quiz_questions.filter(
-        (question, index) => quizAnswers[question.id] === question.correct_answer
+        (question: QuizQuestion) => quizAnswers[question.id] === question.correct_answer
       ).length
       
       const score = Math.round((correctAnswers / module.quiz_questions.length) * 100)
@@ -107,6 +106,7 @@ export default function LearningModuleComponent({ module, onProgress, onComplete
       case 'beginner': return 'text-neon-lime bg-dark-card border-neon-lime'
       case 'intermediate': return 'text-neon-orange bg-dark-card border-neon-orange'
       case 'advanced': return 'text-neon-magenta bg-dark-card border-neon-magenta'
+      case 'unspecified': return 'text-gray-500 bg-dark-card border-gray-700'
       default: return 'text-gray-500 bg-dark-card border-gray-700'
     }
   }
@@ -131,12 +131,12 @@ export default function LearningModuleComponent({ module, onProgress, onComplete
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <div className={`px-3 py-1 rounded-sm text-sm font-medium font-mono border ${getDifficultyColor(module.difficulty)}`}>
-                {module.difficulty}
+              <div className={`px-3 py-1 rounded-sm text-sm font-medium font-mono border ${getDifficultyColor(module.difficulty ?? 'unspecified')}`}>
+                {module.difficulty ?? '—'}
               </div>
               <div className="flex items-center gap-1 text-gray-300 font-mono">
                 <Clock className="w-4 h-4" />
-                <span>{module.duration_minutes}m</span>
+                <span>{module.duration_minutes != null ? `${module.duration_minutes}m` : '—'}</span>
               </div>
             </div>
           </div>
@@ -245,17 +245,18 @@ function ContentSection({ module, onProgress, isPlaying }: {
   const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    if (isPlaying) {
-      const interval = setInterval(() => {
-        setProgress(prev => {
-          const newProgress = Math.min(100, prev + 0.5)
-          onProgress(newProgress)
-          return newProgress
-        })
-      }, 100)
-
-      return () => clearInterval(interval)
+    if (!isPlaying) {
+      return undefined
     }
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        const newProgress = Math.min(100, prev + 0.5)
+        onProgress(newProgress)
+        return newProgress
+      })
+    }, 100)
+
+    return () => clearInterval(interval)
   }, [isPlaying, onProgress])
 
   return (
@@ -373,7 +374,7 @@ function QuizSection({ questions, answers, onAnswer, onComplete, completed }: {
       <div className="mb-6">
         <h3 className="text-xl font-semibold font-orbitron uppercase tracking-wider text-white mb-4">{currentQ.question}</h3>
         <div className="space-y-3">
-          {currentQ.options.map((option, index) => (
+          {currentQ.options.map((option: string, index: number) => (
             <button
               key={index}
               onClick={() => onAnswer(currentQ.id, index)}
@@ -413,14 +414,28 @@ function QuizSection({ questions, answers, onAnswer, onComplete, completed }: {
 }
 
 function ExerciseSection({ exercises, onComplete, completed }: {
-  exercises: any[]
+  exercises: LearningExercise[]
   onComplete: () => void
   completed: boolean
 }) {
   const [currentExercise, setCurrentExercise] = useState(0)
   const [exerciseAnswers, setExerciseAnswers] = useState<{ [exerciseId: string]: string }>({})
 
+  if (exercises.length === 0) {
+    return (
+      <div className="text-center text-gray-300 font-mono py-8">
+        No exercises are available for this module yet.
+      </div>
+    )
+  }
+
   const currentEx = exercises[currentExercise]
+  if (!currentEx) {
+    return null
+  }
+
+  const exerciseKey = currentEx.id ?? `exercise-${currentExercise}`
+  const hintList = Array.isArray(currentEx.hints) ? currentEx.hints.filter((h): h is string => typeof h === 'string') : []
 
   if (completed) {
     return (
@@ -444,32 +459,32 @@ function ExerciseSection({ exercises, onComplete, completed }: {
       </div>
 
       <div className="mb-6">
-        <h3 className="text-xl font-semibold font-orbitron uppercase tracking-wider text-white mb-4">{currentEx.title}</h3>
-        <p className="text-gray-300 mb-4 font-mono">{currentEx.description}</p>
+        <h3 className="text-xl font-semibold font-orbitron uppercase tracking-wider text-white mb-4">{currentEx.title ?? 'Exercise'}</h3>
+        <p className="text-gray-300 mb-4 font-mono">{currentEx.description ?? ''}</p>
         
         <div className="bg-dark-hover rounded-sm p-4 mb-4 border border-gray-700">
           <h4 className="font-semibold text-white mb-2 font-mono">Instructions:</h4>
-          <p className="text-gray-300 font-mono">{currentEx.instructions}</p>
+          <p className="text-gray-300 font-mono">{currentEx.instructions ?? ''}</p>
         </div>
 
         <div className="mb-4">
           <label className="block text-white font-medium mb-2 font-mono">Your Answer:</label>
           <textarea
-            value={exerciseAnswers[currentEx.id] || ''}
+            value={exerciseAnswers[exerciseKey] || ''}
             onChange={(e) => setExerciseAnswers(prev => ({
               ...prev,
-              [currentEx.id]: e.target.value
+              [exerciseKey]: e.target.value
             }))}
             className="w-full h-32 p-4 bg-dark-card border border-neon-purple rounded-sm text-gray-300 placeholder-gray-500 focus:border-neon-cyan focus:outline-none resize-none font-mono"
             placeholder="Enter your response here..."
           />
         </div>
 
-        {currentEx.hints && currentEx.hints.length > 0 && (
+        {hintList.length > 0 && (
           <div className="bg-dark-card border border-neon-orange rounded-sm p-4 mb-4">
             <h4 className="font-semibold text-neon-orange mb-2 font-mono">Hints:</h4>
             <ul className="text-gray-300 space-y-1 font-mono">
-              {currentEx.hints.map((hint: string, index: number) => (
+              {hintList.map((hint, index) => (
                 <li key={index}>• {hint}</li>
               ))}
             </ul>
@@ -495,7 +510,7 @@ function ExerciseSection({ exercises, onComplete, completed }: {
               onComplete()
             }
           }}
-          disabled={!exerciseAnswers[currentEx.id]}
+          disabled={!exerciseAnswers[exerciseKey]?.trim()}
           className="px-6 py-3 bg-gradient-to-r from-neon-purple to-neon-cyan text-white rounded-sm hover:shadow-[0_0_15px_rgba(11,228,236,0.2)] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-mono font-bold uppercase tracking-wider"
         >
           {currentExercise === exercises.length - 1 ? 'Complete Exercise' : 'Next'}
