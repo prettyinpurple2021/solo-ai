@@ -14,7 +14,7 @@ beforeAll(async () => {
   await jest.unstable_mockModule('@/db/index', () => ({
     db: {
       insert: jest.fn().mockReturnValue({
-        values: jest.fn().mockResolvedValue([] as any),
+        values: jest.fn().mockImplementation(async () => []),
       }),
       select: jest.fn().mockReturnValue({
         from: jest.fn().mockReturnValue({
@@ -28,11 +28,11 @@ beforeAll(async () => {
       }),
       update: jest.fn().mockReturnValue({
         set: jest.fn().mockReturnValue({
-          where: jest.fn().mockResolvedValue([] as any),
+          where: jest.fn().mockImplementation(async () => []),
         }),
       }),
       delete: jest.fn().mockReturnValue({
-        where: jest.fn().mockResolvedValue([] as any),
+        where: jest.fn().mockImplementation(async () => []),
       }),
     },
   }))

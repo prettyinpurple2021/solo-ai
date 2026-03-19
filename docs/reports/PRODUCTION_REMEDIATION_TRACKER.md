@@ -20,11 +20,11 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Current readiness baseline
 
-- Overall launch readiness score: `39/100` (not launch ready)
+- Overall launch readiness score: `76/100` (hardening in progress)
 - Build/lint/type-check: passing
-- Test suite: failing
-- CI gate quality: insufficient for production
-- Security: multiple critical issues present
+- Test suite: passing (with lingering open-handle warning after completion)
+- CI gate quality: enforced for deploy/test workflows
+- Security: critical and high dependency vulnerabilities remediated (remaining low-only production advisories)
 
 ## Work log
 
@@ -51,7 +51,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 |---|---|---|---|---|---|
 | HIGH-001 | HIGH | Quality Gate | Failing test suites (`npm test`) | DONE | `npm test -- --runInBand` passed (16/16 suites) |
 | HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates (`.gitea/workflows/deploy.yaml`) | DONE | Deploy workflow now runs validate + tests pre-deploy |
-| HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | OPEN | Pending |
+| HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | DONE | `npm audit --omit=dev --json` now reports low-only (4 total, 0 high, 0 critical) |
 | HIGH-004 | HIGH | Auth | Logout cookie name mismatch (`auth_token` vs `auth-token`) | DONE | `npm run lint` passed |
 | HIGH-005 | HIGH | Reliability | Upload idempotency helper mismatch (`upload` route + `idempotency` helper) | DONE | `npm run lint` passed |
 | HIGH-006 | HIGH | Maintainability | Broad `@ts-nocheck` and `@ts-ignore` in production code paths | OPEN | Pending |
@@ -243,6 +243,28 @@ Use this block whenever an item is completed:
   - Static workflow review confirms deploy now depends on validation + tests.
 - Status: DONE
 
+### HIGH-003: Remediate production dependency vulnerabilities
+- What changed:
+  - Upgraded vulnerable production dependencies (`axios`, `express-rate-limit`, `jspdf`, `socket.io-client`, `undici`).
+  - Upgraded Next.js security patch line to `next@16.2.0` and aligned `eslint-config-next@16.2.0`.
+  - Moved `@ducanh2912/next-pwa` into `devDependencies` so build-time tooling is not shipped in production runtime dependency graph.
+  - Updated TypeScript config to exclude generated `.next` output from direct compilation to prevent generated-artifact type breakage during `tsc --noEmit`.
+- Files updated:
+  - `package.json`
+  - `package-lock.json`
+  - `tsconfig.json`
+  - `src/lib/__tests__/scraping-scheduler.test.ts`
+- Why this improves production readiness:
+  - Removes launch-blocking high/critical production dependency advisories while preserving lint/type/test quality gates.
+- Verification:
+  - Command: `npm audit --omit=dev --json`
+  - Result: `4 low, 0 moderate, 0 high, 0 critical` (remaining issues tied to upstream `@stackframe/stack` chain only).
+  - Command: `npm run validate`
+  - Result: pass (`lint` and both `type-check` targets passed).
+  - Command: `npm test -- --runInBand`
+  - Result: suites/tests pass (`16/16`, `97/97`), with known lingering open-handle warning after completion.
+- Status: DONE
+
 ## New findings discovered during remediation
 
 - Build still reports large client chunk warning:
@@ -251,42 +273,18 @@ Use this block whenever an item is completed:
 - Build warns that edge runtime on certain pages disables static generation.
   - Severity: MEDIUM (cost/performance concern; review route runtime strategy).
 
-## Active high-priority work in progress
+## Next execution queue
 
-### HIGH-001: Test suite stabilization progress
-- What changed:
-  - Fixed multiple Jest/ESM compatibility issues in test files and setup.
-  - Resolved boardroom orchestrator test instability by removing external API dependency.
-  - Reworked realtime boardroom test to deterministic event-handler unit coverage.
-  - Fixed competitor enrichment suite timeouts/mocking.
-- Files updated:
-  - `src/test/setup.ts`
-  - `test/server/services/boardroom/orchestrator.test.ts`
-  - `test/server/realtime/boardroom.test.ts`
-  - `test/competitor-enrichment.test.ts`
-  - `test/scraping-scheduler.test.ts`
-  - `src/lib/shared/db/schema/schema.test.ts`
-  - `src/lib/__tests__/production-logic.test.ts`
-  - `src/lib/__tests__/scraping-scheduler.test.ts`
-  - `test/templates-delete.test.ts`
-- Current verification snapshot:
-  - Command: `npm test -- --runInBand`
-  - Result: **3 failing suites, 13 passing suites** (was 8 failing suites before this stabilization pass).
-- Remaining failing suites:
-  - `src/lib/__tests__/production-logic.test.ts` (mocking not binding under ESM; still hitting real DB path)
-  - `src/lib/__tests__/scraping-scheduler.test.ts` (same ESM mock binding issue)
-  - `test/templates-delete.test.ts` (ESM import/parsing issue from transitive module chain)
-- Status: DONE
+- HIGH-006 (`OPEN`): remove broad `@ts-nocheck`/`@ts-ignore` usage from production paths.
+- MED-001 (`OPEN`): align Node version across local, CI, and Docker runtime.
+- MED-002 (`OPEN`): remove runtime schema/table creation from request-time code paths.
+- MED-003 (`OPEN`): replace legacy/archive imports in active production code.
+- MED-004 (`OPEN`): reconcile contradictory readiness documentation/status outputs.
 
-### SEC-HARDEN-AGENT-SESSION-001: Close destroySession authorization gap
-- What changed:
-  - Verified and fixed authorization bypass condition in `destroySession` where invalid/no-owner sessions could be destroyed by any authenticated user.
-  - Added explicit rejection for invalid/expired sessions before deletion.
-  - Enforced owner-or-privileged check for all destroy attempts, including sessions with missing owner metadata.
-- Files updated:
-  - `src/app/api/agents/security/route.ts`
-- Verification:
-  - Command: `npm run lint`
-  - Result: pass (`eslint . --max-warnings 0`)
-- Status: DONE
+## Known non-blocking residuals
+
+- `npm audit --omit=dev` still reports 4 low vulnerabilities via `@stackframe/stack` -> `elliptic` chain.  
+  - Current fix requires forced downgrade to `@stackframe/stack@2.5.30` (breaking change), so this is deferred pending upstream patch path.
+- Jest completes all suites but process lingers due open handles in test environment.  
+  - Follow-up hardening: run with `--detectOpenHandles`, identify leaking handles, and close timers/sockets explicitly in teardown.
 
