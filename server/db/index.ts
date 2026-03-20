@@ -74,9 +74,10 @@ function getDbInstance(): ServerDb {
  * until the first query runs.
  */
 export const db = new Proxy({} as ServerDb, {
-    get(_target, prop, receiver) {
+    get(_target, prop, _proxyReceiver) {
         const real = getDbInstance();
-        const value = Reflect.get(real as object, prop, receiver);
+        // Pass `real` as Reflect.get's receiver so getters (e.g. relational `query`) see correct `this`.
+        const value = Reflect.get(real as object, prop, real);
         return typeof value === 'function' ? value.bind(real) : value;
     },
 });
