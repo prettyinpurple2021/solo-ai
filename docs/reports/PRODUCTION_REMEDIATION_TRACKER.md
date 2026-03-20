@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-19
+Last updated: 2026-03-20
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -22,7 +22,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 - Overall launch readiness score: `76/100` (hardening in progress)
 - Build/lint/type-check: passing
-- Test suite: passing (with lingering open-handle warning after completion)
+- Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown)
 - CI gate quality: enforced for deploy/test workflows
 - Security: critical and high dependency vulnerabilities remediated (remaining low-only production advisories)
 
@@ -69,6 +69,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 | MED-002 | MEDIUM | Reliability | Runtime schema/table creation in request paths | OPEN | Pending |
 | MED-003 | MEDIUM | Code Health | Legacy/archive imports in active production paths | OPEN | Pending |
 | MED-004 | MEDIUM | Observability | Contradictory readiness docs and status signals | OPEN | Pending |
+| MED-005 | MEDIUM | Test hygiene | Jest open handles / async work after suite completion (process lingers; late `console.error` e.g. Neon connect) | DONE | `npm test` + `npm test -- --runInBand` exit promptly; `npm run validate` pass |
 
 ## Change checklist template (for each completed item)
 
@@ -287,7 +288,7 @@ Use this block whenever an item is completed:
   - Command: `npm run validate`
   - Result: pass (`eslint . --max-warnings 0`, web + server `tsc --noEmit`).
   - Command: `npm test -- --runInBand`
-  - Result: `16/16` suites, `97/97` tests passed (known non-blocking Jest open-handle / late log noise unchanged).
+  - Result: `16/16` suites, `97/97` tests passed (Jest open-handle issue later fixed under **MED-005**).
   - Spot check: `rg '@ts-nocheck' src` → no matches; `@ts-ignore` remains only under test harness files listed above.
 - Status: DONE
 
@@ -310,6 +311,5 @@ Use this block whenever an item is completed:
 
 - `npm audit --omit=dev` still reports 4 low vulnerabilities via `@stackframe/stack` -> `elliptic` chain.  
   - Current fix requires forced downgrade to `@stackframe/stack@2.5.30` (breaking change), so this is deferred pending upstream patch path.
-- Jest completes all suites but process lingers due open handles in test environment.  
-  - Follow-up hardening: run with `--detectOpenHandles`, identify leaking handles, and close timers/sockets explicitly in teardown.
+- **Jest / async leaks:** if new suites import long-lived clients (Redis, sockets, timers), re-run `npm test -- --detectOpenHandles` and add targeted teardown or mocks. **MED-005** addressed the Express `pg` pool path.
 

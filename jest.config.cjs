@@ -22,4 +22,5 @@ module.exports = {
   },
   // Ensure we load env variables for integration tests
   globalSetup: '<rootDir>/src/test/global-setup.ts',
+  globalTeardown: '<rootDir>/src/test/global-teardown.ts',
 };
