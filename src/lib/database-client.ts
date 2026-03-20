@@ -18,11 +18,13 @@ let _db: NeonHttpDatabase<typeof schema> | null = null
  */
 export function getDb() {
   // logInfo("[DB] getDb() called"); // Verbose
-  // Prevent DB usage during build - check multiple build indicators
-  const isBuildTime = 
+  // Prevent DB usage during Next static build — not during Jest (Node also has no DATABASE_URL in CI).
+  const isJest =
+    process.env.JEST_WORKER_ID !== undefined || process.env.NODE_ENV === 'test'
+  const isBuildTime =
     process.env.NEXT_PHASE === 'phase-production-build' ||
     process.env.SKIP_DB_CHECK === 'true' ||
-    (typeof window === 'undefined' && !process.env.DATABASE_URL)
+    (!isJest && typeof window === 'undefined' && !process.env.DATABASE_URL)
 
   if (isBuildTime && !process.env.DATABASE_URL) {
     logger.warn('[DB] Database client access blocked during build time');

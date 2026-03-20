@@ -4,22 +4,46 @@
 import { jest, describe, it, expect, beforeEach } from '@jest/globals'
 import { getIntelligencePageData } from './competitor-service'
 
-// Mock the database
-jest.mock('@/db', () => ({
-  db: {
-    select: jest.fn().mockReturnThis(),
-    from: jest.fn().mockReturnThis(),
-    leftJoin: jest.fn().mockReturnThis(),
-    where: jest.fn().mockReturnThis(),
-    orderBy: jest.fn().mockReturnThis(),
-    limit: jest.fn().mockReturnThis(),
+jest.mock('../database-client', () => {
+  const buildListChain = () => {
+    const chain: Record<string, jest.Mock> = {}
+    chain.select = jest.fn(() => chain)
+    chain.from = jest.fn(() => chain)
+    chain.leftJoin = jest.fn(() => chain)
+    chain.where = jest.fn(() => chain)
+    chain.orderBy = jest.fn(() => Promise.resolve([]))
+    return chain
+  }
+
+  const buildCountChain = () => {
+    const chain: Record<string, jest.Mock> = {}
+    chain.select = jest.fn(() => chain)
+    chain.from = jest.fn(() => chain)
+    chain.where = jest.fn(() => Promise.resolve([{ count: 0 }]))
+    return chain
+  }
+
+  const mockDb = {
+    select: jest.fn(() => {
+      const n = mockDb.select.mock.calls.length
+      // getIntelligencePageData: two list queries (opportunities, alerts), then two count queries
+      if (n <= 2) return buildListChain()
+      return buildCountChain()
+    }),
     query: {
       intelligenceData: {
-        findMany: jest.fn<any>().mockResolvedValue([])
-      }
-    }
+        findMany: jest.fn<any>().mockResolvedValue([]),
+      },
+    },
   }
-}))
+
+  return {
+    getDb: jest.fn(() => mockDb),
+    db: mockDb,
+    withTransaction: jest.fn(),
+    checkDatabaseHealth: jest.fn(),
+  }
+})
 
 describe('CompetitorService', () => {
   beforeEach(() => {
@@ -28,10 +52,9 @@ describe('CompetitorService', () => {
 
   describe('getIntelligencePageData', () => {
     it('should fetch and format intelligence data correctly', async () => {
-      // This test will fail initially because the method doesn't exist
       const userId = 'user-123'
       const data = await getIntelligencePageData(userId)
-      
+
       expect(data).toHaveProperty('insights')
       expect(data).toHaveProperty('stats')
       expect(data).toHaveProperty('market_position')
