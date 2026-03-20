@@ -1,0 +1,11 @@
+$kind: http-request
+name: Delete Alert
+method: DELETE
+url: '{{baseUrl}}/api/alerts/{{alertId}}'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: alertId
+    value: ''

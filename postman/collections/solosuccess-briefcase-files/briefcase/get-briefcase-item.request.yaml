@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Briefcase Item
+method: GET
+url: '{{baseUrl}}/api/briefcase/{{itemId}}'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: itemId
+    value: ''

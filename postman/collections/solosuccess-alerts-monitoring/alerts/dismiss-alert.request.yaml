@@ -1,0 +1,18 @@
+$kind: http-request
+name: Dismiss Alert
+method: POST
+url: '{{baseUrl}}/api/alerts/{{alertId}}/dismiss'
+order: 6000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: alertId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "reason": "acknowledged",
+      "note": "Will review later"
+    }

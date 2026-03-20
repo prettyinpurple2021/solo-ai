@@ -1,0 +1,11 @@
+$kind: http-request
+name: Like Post
+method: POST
+url: '{{baseUrl}}/api/community/posts/{{postId}}/like'
+order: 7000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: postId
+    value: ''

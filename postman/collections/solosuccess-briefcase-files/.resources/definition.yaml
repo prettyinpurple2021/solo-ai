@@ -1,13 +1,23 @@
 $kind: collection
 name: SoloSuccess - Briefcase & Files
 description: |-
-  File management, briefcase storage, and document handling features.
+  API endpoints for managing briefcase items, files, and folders in the SoloSuccess AI application.
   
-  Authentication: All endpoints require authentication via session cookie or API key.
+  ## Features
+  - Briefcase item management
+  - File upload and download
+  - Folder organization
+  - File sharing
 variables:
   - key: baseUrl
     value: 'http://localhost:3000'
+    description: Base URL for the API
+  - key: itemId
+    value: ''
+    description: Briefcase item ID
   - key: fileId
     value: ''
+    description: File ID
   - key: folderId
     value: ''
+    description: Folder ID

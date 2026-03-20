@@ -1,0 +1,4 @@
+$kind: collection
+name: Competitors
+description: Competitor tracking and analysis
+order: 1000

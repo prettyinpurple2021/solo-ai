@@ -1,0 +1,16 @@
+$kind: http-request
+name: Add Payment Method
+method: POST
+url: '{{baseUrl}}/api/billing/payment-methods'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "type": "card",
+      "token": "tok_visa",
+      "setAsDefault": true
+    }

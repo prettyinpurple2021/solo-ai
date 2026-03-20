@@ -1,0 +1,4 @@
+$kind: collection
+name: Search
+description: Search functionality
+order: 6000

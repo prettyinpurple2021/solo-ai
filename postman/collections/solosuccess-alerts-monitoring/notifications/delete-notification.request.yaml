@@ -1,0 +1,11 @@
+$kind: http-request
+name: Delete Notification
+method: DELETE
+url: '{{baseUrl}}/api/notifications/{{notificationId}}'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: notificationId
+    value: ''

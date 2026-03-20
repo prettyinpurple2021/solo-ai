@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Tasks
+method: GET
+url: '{{baseUrl}}/api/tasks'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json

@@ -1,0 +1,17 @@
+$kind: http-request
+name: List Insights
+method: GET
+url: '{{baseUrl}}/api/insights'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: type
+    value: ''
+    description: Filter by insight type
+    disabled: true
+  - key: limit
+    value: '20'
+    description: Number of insights to return
+    disabled: true

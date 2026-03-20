@@ -1,0 +1,11 @@
+$kind: http-request
+name: Download Invoice PDF
+method: GET
+url: '{{baseUrl}}/api/billing/invoices/{{invoiceId}}/pdf'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: invoiceId
+    value: ''

@@ -1,0 +1,21 @@
+$kind: http-request
+name: List Briefcase Items
+method: GET
+url: '{{baseUrl}}/api/briefcase'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: folderId
+    value: ''
+    description: Filter by folder ID
+    disabled: true
+  - key: type
+    value: ''
+    description: Filter by item type (document, image, video, etc.)
+    disabled: true
+  - key: search
+    value: ''
+    description: Search query
+    disabled: true

@@ -1,0 +1,25 @@
+$kind: http-request
+name: Update Notification Preferences
+method: PATCH
+url: '{{baseUrl}}/api/notifications/preferences'
+order: 7000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "email": {
+        "enabled": true,
+        "frequency": "daily",
+        "types": ["alerts", "insights", "tasks"]
+      },
+      "push": {
+        "enabled": true,
+        "types": ["alerts", "mentions"]
+      },
+      "inApp": {
+        "enabled": true
+      }
+    }

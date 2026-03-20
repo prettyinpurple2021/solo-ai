@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Goals
+method: GET
+url: '{{baseUrl}}/api/goals'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json

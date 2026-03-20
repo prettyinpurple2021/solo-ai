@@ -1,0 +1,18 @@
+$kind: http-request
+name: Create Goal
+method: POST
+url: '{{baseUrl}}/api/goals'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Increase Revenue",
+      "description": "Increase monthly revenue by 20%",
+      "targetDate": "2025-12-31",
+      "category": "financial",
+      "milestones": []
+    }

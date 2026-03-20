@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Folder
+method: GET
+url: '{{baseUrl}}/api/folders/{{folderId}}'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: folderId
+    value: ''

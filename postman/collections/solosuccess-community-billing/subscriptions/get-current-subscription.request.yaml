@@ -1,0 +1,8 @@
+$kind: http-request
+name: Get Current Subscription
+method: GET
+url: '{{baseUrl}}/api/subscriptions/current'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json

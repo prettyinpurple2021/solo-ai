@@ -1,0 +1,4 @@
+$kind: collection
+name: Content
+description: AI content generation
+order: 2000

@@ -1,0 +1,17 @@
+$kind: http-request
+name: List Invoices
+method: GET
+url: '{{baseUrl}}/api/billing/invoices'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: status
+    value: ''
+    description: Filter by status (paid, pending, failed)
+    disabled: true
+  - key: limit
+    value: '10'
+    description: Number of invoices to return
+    disabled: true

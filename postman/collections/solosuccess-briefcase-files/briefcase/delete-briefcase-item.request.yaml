@@ -1,0 +1,11 @@
+$kind: http-request
+name: Delete Briefcase Item
+method: DELETE
+url: '{{baseUrl}}/api/briefcase/{{itemId}}'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: itemId
+    value: ''

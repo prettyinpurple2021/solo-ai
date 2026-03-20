@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Notification
+method: GET
+url: '{{baseUrl}}/api/notifications/{{notificationId}}'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: notificationId
+    value: ''

@@ -1,0 +1,11 @@
+$kind: http-request
+name: Delete Folder
+method: DELETE
+url: '{{baseUrl}}/api/folders/{{folderId}}'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: folderId
+    value: ''

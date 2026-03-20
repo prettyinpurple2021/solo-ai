@@ -1,0 +1,20 @@
+$kind: http-request
+name: Update Alert
+method: PATCH
+url: '{{baseUrl}}/api/alerts/{{alertId}}'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: alertId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "title": "Updated Alert Title",
+      "priority": "medium",
+      "enabled": true,
+      "channels": ["email", "in-app", "sms"]
+    }

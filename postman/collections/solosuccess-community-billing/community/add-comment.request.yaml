@@ -1,0 +1,18 @@
+$kind: http-request
+name: Add Comment
+method: POST
+url: '{{baseUrl}}/api/community/posts/{{postId}}/comments'
+order: 6000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: postId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "content": "Great tips! I've also found that setting up alerts helps a lot.",
+      "parentId": null
+    }

@@ -1,7 +1,48 @@
--- Baseline tables previously created at request-time (MED-002).
--- Apply with your normal migration process (`npm run db:push` / drizzle migrate / manual SQL).
+-- Baseline tables for API routes (MED-002). Safe to re-run (IF NOT EXISTS / IF NOT EXISTS columns).
+--
+-- EASIEST (from your laptop, same folder as the app):
+--   npm run db:apply-api-baseline
+--   Uses DATABASE_URL from .env.local or .env — no Neon copy/paste needed.
+--
+-- ALTERNATIVE — Neon SQL Editor:
+-- 1. Open Neon dashboard → your project → SQL Editor.
+-- 2. Paste this ENTIRE file and click Run once.
+--    If Neon shows "can't compose", use plain SQL mode or run blocks one at a time.
+--
+-- If you get errors about "users" table missing, run your full app migrations first
+-- (migrations/0000_*.sql through 0002_*.sql) or `npm run db:push` with DATABASE_URL set.
 
+-- 1) push_subscriptions: create if missing (your DB had no table yet, so ALTER alone failed).
+CREATE TABLE IF NOT EXISTS "push_subscriptions" (
+	"id" text PRIMARY KEY NOT NULL DEFAULT (gen_random_uuid()::text),
+	"user_id" text NOT NULL,
+	"endpoint" varchar(1000) NOT NULL,
+	"p256dh_key" varchar(500) NOT NULL,
+	"auth_key" varchar(500) NOT NULL,
+	"device_info" jsonb DEFAULT '{}'::jsonb NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"last_used_at" timestamp,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+
+-- 2) Older DBs that already had push_subscriptions without last_used_at:
 ALTER TABLE "push_subscriptions" ADD COLUMN IF NOT EXISTS "last_used_at" timestamp;
+
+-- 3) Optional: link to users when that table exists (skips if already added).
+DO $$
+BEGIN
+	IF EXISTS (
+		SELECT 1 FROM information_schema.tables
+		WHERE table_schema = 'public' AND table_name = 'users'
+	) AND NOT EXISTS (
+		SELECT 1 FROM pg_constraint WHERE conname = 'push_subscriptions_user_id_users_id_fk'
+	) THEN
+		ALTER TABLE "push_subscriptions"
+			ADD CONSTRAINT "push_subscriptions_user_id_users_id_fk"
+			FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;
+	END IF;
+END $$;
 
 CREATE UNIQUE INDEX IF NOT EXISTS "push_subscriptions_endpoint_unique" ON "push_subscriptions" ("endpoint");
 

@@ -1,0 +1,19 @@
+$kind: http-request
+name: Update Folder
+method: PATCH
+url: '{{baseUrl}}/api/folders/{{folderId}}'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: folderId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "name": "Updated Marketing Materials",
+      "description": "Updated folder description",
+      "color": "#10B981"
+    }

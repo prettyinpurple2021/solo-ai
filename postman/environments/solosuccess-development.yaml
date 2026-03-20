@@ -1,0 +1,17 @@
+$kind: environment
+name: SoloSuccess - Development
+variables:
+  - key: baseUrl
+    value: 'http://localhost:3000'
+    enabled: true
+  - key: authToken
+    value: ''
+    enabled: true
+    secret: true
+  - key: userId
+    value: ''
+    enabled: true
+  - key: apiKey
+    value: ''
+    enabled: true
+    secret: true

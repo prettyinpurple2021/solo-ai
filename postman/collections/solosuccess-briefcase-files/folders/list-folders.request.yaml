@@ -1,0 +1,13 @@
+$kind: http-request
+name: List Folders
+method: GET
+url: '{{baseUrl}}/api/folders'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: parentId
+    value: ''
+    description: Filter by parent folder ID
+    disabled: true

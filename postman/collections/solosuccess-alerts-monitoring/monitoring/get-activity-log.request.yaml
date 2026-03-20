@@ -1,0 +1,25 @@
+$kind: http-request
+name: Get Activity Log
+method: GET
+url: '{{baseUrl}}/api/activity'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: startDate
+    value: ''
+    description: Filter from date (ISO 8601)
+    disabled: true
+  - key: endDate
+    value: ''
+    description: Filter to date (ISO 8601)
+    disabled: true
+  - key: type
+    value: ''
+    description: Filter by activity type
+    disabled: true
+  - key: limit
+    value: '50'
+    description: Number of activities to return
+    disabled: true

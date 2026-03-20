@@ -1,0 +1,21 @@
+$kind: http-request
+name: List Notifications
+method: GET
+url: '{{baseUrl}}/api/notifications'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: read
+    value: 'false'
+    description: Filter by read status
+    disabled: true
+  - key: type
+    value: ''
+    description: Filter by notification type
+    disabled: true
+  - key: limit
+    value: '20'
+    description: Number of notifications to return
+    disabled: true

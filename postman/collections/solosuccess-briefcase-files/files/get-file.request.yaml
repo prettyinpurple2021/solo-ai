@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get File
+method: GET
+url: '{{baseUrl}}/api/files/{{fileId}}'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: fileId
+    value: ''

@@ -1,0 +1,18 @@
+$kind: http-request
+name: Create Task
+method: POST
+url: '{{baseUrl}}/api/tasks'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Review competitor analysis",
+      "description": "Review the latest competitor analysis report",
+      "priority": "high",
+      "dueDate": "2025-01-15",
+      "goalId": null
+    }

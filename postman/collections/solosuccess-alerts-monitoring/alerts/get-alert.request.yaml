@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Alert
+method: GET
+url: '{{baseUrl}}/api/alerts/{{alertId}}'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: alertId
+    value: ''

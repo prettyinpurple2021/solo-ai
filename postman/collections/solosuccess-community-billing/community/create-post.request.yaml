@@ -1,0 +1,17 @@
+$kind: http-request
+name: Create Post
+method: POST
+url: '{{baseUrl}}/api/community/posts'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Tips for Competitor Analysis",
+      "content": "Here are some strategies I've found helpful for tracking competitors...",
+      "category": "tips",
+      "tags": ["competitor-analysis", "strategy", "tips"]
+    }

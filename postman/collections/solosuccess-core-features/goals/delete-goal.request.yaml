@@ -1,0 +1,11 @@
+$kind: http-request
+name: Delete Goal
+method: DELETE
+url: '{{baseUrl}}/api/goals/{{goalId}}'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: goalId
+    value: ''

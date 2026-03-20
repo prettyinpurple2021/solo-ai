@@ -1,13 +1,29 @@
 $kind: collection
 name: SoloSuccess - Community & Billing
 description: |-
-  Community features, billing, subscriptions, and payment management.
+  API endpoints for community features and billing management in the SoloSuccess AI application.
   
-  Authentication: All endpoints require authentication via session cookie or API key.
+  ## Features
+  - Community posts and discussions
+  - Subscription management
+  - Billing and invoices
+  - Payment methods
 variables:
   - key: baseUrl
     value: 'http://localhost:3000'
+    description: Base URL for the API
   - key: postId
     value: ''
+    description: Community post ID
+  - key: commentId
+    value: ''
+    description: Comment ID
   - key: subscriptionId
     value: ''
+    description: Subscription ID
+  - key: invoiceId
+    value: ''
+    description: Invoice ID
+  - key: paymentMethodId
+    value: ''
+    description: Payment method ID

@@ -1,0 +1,14 @@
+$kind: http-request
+name: Get Billing Portal URL
+method: POST
+url: '{{baseUrl}}/api/billing/portal'
+order: 7000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "returnUrl": "{{baseUrl}}/settings/billing"
+    }

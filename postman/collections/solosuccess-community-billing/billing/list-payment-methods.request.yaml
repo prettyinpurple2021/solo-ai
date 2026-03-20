@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Payment Methods
+method: GET
+url: '{{baseUrl}}/api/billing/payment-methods'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json

@@ -1,0 +1,15 @@
+$kind: http-request
+name: Create Chat
+method: POST
+url: '{{baseUrl}}/api/chat'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Business Strategy Discussion",
+      "context": "competitor_analysis"
+    }

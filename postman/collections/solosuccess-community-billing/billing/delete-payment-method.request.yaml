@@ -1,0 +1,11 @@
+$kind: http-request
+name: Delete Payment Method
+method: DELETE
+url: '{{baseUrl}}/api/billing/payment-methods/{{paymentMethodId}}'
+order: 6000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: paymentMethodId
+    value: ''

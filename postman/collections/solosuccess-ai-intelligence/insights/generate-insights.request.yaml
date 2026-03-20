@@ -1,0 +1,17 @@
+$kind: http-request
+name: Generate Insights
+method: POST
+url: '{{baseUrl}}/api/insights/generate'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "context": "business",
+      "dataSource": "competitors",
+      "timeRange": "30d",
+      "focusAreas": ["market-trends", "opportunities", "threats"]
+    }

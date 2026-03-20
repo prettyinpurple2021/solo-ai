@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
       try {
         const pushSubscription = {
           endpoint: subscription.endpoint,
-          expirationTime: subscription.expiration_time,
+          expirationTime: expirationFromSubscriptionRow(subscription),
           keys: {
             p256dh: subscription.p256dh_key,
             auth: subscription.auth_key

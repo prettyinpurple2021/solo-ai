@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Content
+method: GET
+url: '{{baseUrl}}/api/content/{{contentId}}'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: contentId
+    value: ''

@@ -1,0 +1,8 @@
+$kind: http-request
+name: Get Dashboard Stats
+method: GET
+url: '{{baseUrl}}/api/dashboard/stats'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json

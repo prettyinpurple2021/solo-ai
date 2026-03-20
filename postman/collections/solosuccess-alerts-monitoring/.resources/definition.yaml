@@ -1,13 +1,20 @@
 $kind: collection
 name: SoloSuccess - Alerts & Monitoring
 description: |-
-  Alert management, notifications, and monitoring features for tracking competitors and business metrics.
+  API endpoints for managing alerts, notifications, and monitoring in the SoloSuccess AI application.
   
-  Authentication: All endpoints require authentication via session cookie or API key.
+  ## Features
+  - Alert management and configuration
+  - Notification preferences
+  - Activity monitoring
+  - System health checks
 variables:
   - key: baseUrl
     value: 'http://localhost:3000'
+    description: Base URL for the API
   - key: alertId
     value: ''
+    description: Alert ID
   - key: notificationId
     value: ''
+    description: Notification ID

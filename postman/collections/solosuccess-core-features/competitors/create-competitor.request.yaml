@@ -1,0 +1,17 @@
+$kind: http-request
+name: Create Competitor
+method: POST
+url: '{{baseUrl}}/api/competitors'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Acme Corp",
+      "website": "https://acme.com",
+      "description": "Main competitor in the market",
+      "industry": "Technology"
+    }

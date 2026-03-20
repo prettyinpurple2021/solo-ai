@@ -1,0 +1,18 @@
+$kind: http-request
+name: Update Workspace
+method: PATCH
+url: '{{baseUrl}}/api/workspace'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "My Business Workspace",
+      "settings": {
+        "defaultView": "dashboard",
+        "theme": "dark"
+      }
+    }

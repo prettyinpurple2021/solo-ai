@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Competitor
+method: GET
+url: '{{baseUrl}}/api/competitors/{{competitorId}}'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: competitorId
+    value: ''

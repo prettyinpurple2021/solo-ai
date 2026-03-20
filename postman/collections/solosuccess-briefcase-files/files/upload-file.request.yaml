@@ -1,0 +1,23 @@
+$kind: http-request
+name: Upload File
+method: POST
+url: '{{baseUrl}}/api/files/upload'
+order: 2000
+headers:
+  - key: Content-Type
+    value: multipart/form-data
+body:
+  type: formdata
+  content:
+    - key: file
+      type: file
+      src: ''
+      description: File to upload
+    - key: folderId
+      type: text
+      value: ''
+      description: Target folder ID (optional)
+    - key: description
+      type: text
+      value: ''
+      description: File description (optional)

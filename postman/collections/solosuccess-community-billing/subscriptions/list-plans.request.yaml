@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Available Plans
+method: GET
+url: '{{baseUrl}}/api/subscriptions/plans'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json

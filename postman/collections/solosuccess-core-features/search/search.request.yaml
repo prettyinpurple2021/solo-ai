@@ -1,0 +1,15 @@
+$kind: http-request
+name: Search
+method: GET
+url: '{{baseUrl}}/api/search'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: q
+    value: 'competitor'
+  - key: type
+    value: 'all'
+  - key: limit
+    value: '20'

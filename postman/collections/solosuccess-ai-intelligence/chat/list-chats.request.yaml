@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Chats
+method: GET
+url: '{{baseUrl}}/api/chat'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json

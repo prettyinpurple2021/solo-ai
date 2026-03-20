@@ -1,0 +1,19 @@
+$kind: http-request
+name: Update Post
+method: PATCH
+url: '{{baseUrl}}/api/community/posts/{{postId}}'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: postId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "title": "Updated: Tips for Competitor Analysis",
+      "content": "Updated content with more strategies...",
+      "tags": ["competitor-analysis", "strategy", "tips", "updated"]
+    }

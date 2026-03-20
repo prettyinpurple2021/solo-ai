@@ -1,0 +1,4 @@
+$kind: collection
+name: Chat
+description: AI chat and conversation management
+order: 1000

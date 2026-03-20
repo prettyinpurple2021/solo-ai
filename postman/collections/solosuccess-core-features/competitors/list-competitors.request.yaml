@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Competitors
+method: GET
+url: '{{baseUrl}}/api/competitors'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json

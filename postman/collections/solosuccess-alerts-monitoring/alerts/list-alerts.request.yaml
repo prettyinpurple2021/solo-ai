@@ -1,0 +1,21 @@
+$kind: http-request
+name: List Alerts
+method: GET
+url: '{{baseUrl}}/api/alerts'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: status
+    value: 'active'
+    description: Filter by status (active, dismissed, resolved)
+    disabled: true
+  - key: type
+    value: ''
+    description: Filter by alert type
+    disabled: true
+  - key: priority
+    value: ''
+    description: Filter by priority (low, medium, high, critical)
+    disabled: true

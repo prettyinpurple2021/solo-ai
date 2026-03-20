@@ -1,0 +1,24 @@
+$kind: http-request
+name: Create Alert
+method: POST
+url: '{{baseUrl}}/api/alerts'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "title": "Competitor Price Change",
+      "type": "competitor",
+      "priority": "high",
+      "description": "Alert when competitor changes pricing",
+      "conditions": {
+        "competitorId": "{{competitorId}}",
+        "metric": "price",
+        "threshold": 10,
+        "operator": "change_percent"
+      },
+      "channels": ["email", "in-app"]
+    }

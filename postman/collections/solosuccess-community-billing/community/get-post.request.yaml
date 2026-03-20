@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Post
+method: GET
+url: '{{baseUrl}}/api/community/posts/{{postId}}'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: postId
+    value: ''

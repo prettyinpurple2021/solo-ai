@@ -1,0 +1,8 @@
+$kind: http-request
+name: Mark All Notifications Read
+method: POST
+url: '{{baseUrl}}/api/notifications/read-all'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json

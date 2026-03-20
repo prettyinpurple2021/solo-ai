@@ -1,0 +1,17 @@
+$kind: http-request
+name: List Files
+method: GET
+url: '{{baseUrl}}/api/files'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: folderId
+    value: ''
+    description: Filter by folder ID
+    disabled: true
+  - key: mimeType
+    value: ''
+    description: Filter by MIME type
+    disabled: true

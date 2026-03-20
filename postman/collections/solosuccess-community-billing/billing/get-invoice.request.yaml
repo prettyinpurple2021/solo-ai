@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Invoice
+method: GET
+url: '{{baseUrl}}/api/billing/invoices/{{invoiceId}}'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: invoiceId
+    value: ''

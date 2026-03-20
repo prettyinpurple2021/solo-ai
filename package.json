@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "npm run validate && cross-env NODE_OPTIONS='--max-old-space-size=8192' next build --webpack",
+    "build": "npm run validate && cross-env NODE_OPTIONS='--max-old-space-size=16384' next build --webpack",
     "start": "next start",
     "lint": "eslint . --max-warnings 0",
     "validate": "npm run lint && npm run type-check",
@@ -23,6 +23,7 @@
     "start:all": "concurrently \"npm run start\" \"cd server && npm run start\"",
     "db:generate": "drizzle-kit generate --config=server/drizzle.config.ts",
     "db:push": "drizzle-kit push --config=server/drizzle.config.ts",
+    "db:apply-api-baseline": "node scripts/apply-api-tables-baseline.mjs",
     "db:studio": "drizzle-kit studio --config=server/drizzle.config.ts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js"
   },

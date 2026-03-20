@@ -1,0 +1,8 @@
+$kind: http-request
+name: Get Notification Preferences
+method: GET
+url: '{{baseUrl}}/api/notifications/preferences'
+order: 6000
+headers:
+  - key: Content-Type
+    value: application/json

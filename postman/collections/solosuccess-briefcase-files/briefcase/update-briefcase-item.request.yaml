@@ -1,0 +1,20 @@
+$kind: http-request
+name: Update Briefcase Item
+method: PATCH
+url: '{{baseUrl}}/api/briefcase/{{itemId}}'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: itemId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "name": "Updated Business Plan 2024",
+      "description": "Updated annual business plan",
+      "tags": ["business", "planning", "2024", "updated"],
+      "folderId": null
+    }

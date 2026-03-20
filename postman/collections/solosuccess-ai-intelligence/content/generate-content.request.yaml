@@ -1,0 +1,18 @@
+$kind: http-request
+name: Generate Content
+method: POST
+url: '{{baseUrl}}/api/content/generate'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "type": "blog_post",
+      "topic": "Industry trends for 2025",
+      "tone": "professional",
+      "length": "medium",
+      "keywords": ["innovation", "technology", "growth"]
+    }

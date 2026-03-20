@@ -1,0 +1,21 @@
+$kind: http-request
+name: List Community Posts
+method: GET
+url: '{{baseUrl}}/api/community/posts'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json
+queryParams:
+  - key: category
+    value: ''
+    description: Filter by category
+    disabled: true
+  - key: sort
+    value: 'recent'
+    description: Sort order (recent, popular, trending)
+    disabled: true
+  - key: limit
+    value: '20'
+    description: Number of posts to return
+    disabled: true

@@ -1,9 +1,6 @@
 $kind: collection
 name: SoloSuccess - Core Features
-description: |-
-  Core business features for SoloSuccess AI including competitors, goals, tasks, workspace, and dashboard functionality.
-  
-  Authentication: All endpoints require authentication via session cookie or API key.
+description: Core business features including competitors, goals, tasks, workspace, and dashboard
 variables:
   - key: baseUrl
     value: 'http://localhost:3000'

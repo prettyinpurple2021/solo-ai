@@ -1,0 +1,17 @@
+$kind: http-request
+name: Accept Suggestion
+method: POST
+url: '{{baseUrl}}/api/suggestions/{{suggestionId}}/accept'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: suggestionId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "feedback": "This suggestion was helpful"
+    }

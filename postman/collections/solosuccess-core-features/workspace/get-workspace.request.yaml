@@ -1,0 +1,8 @@
+$kind: http-request
+name: Get Workspace
+method: GET
+url: '{{baseUrl}}/api/workspace'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json

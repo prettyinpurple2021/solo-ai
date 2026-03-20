@@ -1,0 +1,11 @@
+$kind: http-request
+name: Delete Content
+method: DELETE
+url: '{{baseUrl}}/api/content/{{contentId}}'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: contentId
+    value: ''

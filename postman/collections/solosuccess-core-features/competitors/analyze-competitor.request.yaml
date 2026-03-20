@@ -1,0 +1,18 @@
+$kind: http-request
+name: Analyze Competitor
+method: POST
+url: '{{baseUrl}}/api/competitors/{{competitorId}}/analyze'
+order: 6000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: competitorId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "analysisType": "full",
+      "includeInsights": true
+    }

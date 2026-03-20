@@ -14,3 +14,33 @@ body:
       "password": "securePassword123",
       "name": "John Doe"
     }
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Status is 200 or 201", function () {
+        pm.expect(pm.response.code).to.be.oneOf([200, 201]);
+      });
+
+      pm.test("Response has JSON body", function () {
+        pm.response.to.be.json;
+      });
+
+      const json = pm.response.json();
+
+      pm.test("Response contains token or user", function () {
+        pm.expect(json).to.satisfy(function(body) {
+          return body.token || body.user || body.accessToken;
+        });
+      });
+
+      if (json.token) {
+        pm.environment.set("authToken", json.token);
+      } else if (json.accessToken) {
+        pm.environment.set("authToken", json.accessToken);
+      }
+
+      const userId = (json.user && json.user.id) || json.id || json.userId;
+      if (userId) {
+        pm.environment.set("userId", userId);
+      }

@@ -1,0 +1,17 @@
+$kind: http-request
+name: Dismiss Insight
+method: POST
+url: '{{baseUrl}}/api/insights/{{insightId}}/dismiss'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: insightId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "reason": "not-relevant"
+    }

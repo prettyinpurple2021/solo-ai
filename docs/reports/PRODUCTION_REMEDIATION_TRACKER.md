@@ -307,7 +307,7 @@ Use this block whenever an item is completed:
 
 ### MED-002: No DDL in request paths
 - What changed: Push subscribe, analytics `events`, newsletter, exit-intent survey, and notification send logging now use Drizzle/`getDb()` inserts only. Added schema tables in `marketing.ts`, `push_subscriptions` unique endpoint + `last_used_at`, and idempotent SQL baseline `migrations/0003_api_tables_baseline.sql`.
-- **Deploy:** Run `0003` (or equivalent `db:push`/migrate) on any database that previously depended on API `CREATE TABLE IF NOT EXISTS` before relying solely on new code.
+- **Deploy:** From project root run **`npm run db:apply-api-baseline`** (reads `DATABASE_URL` from `.env.local` / `.env` and applies `migrations/0003_api_tables_baseline.sql`). Or paste that SQL into Neon SQL Editor if you prefer.
 - Verification: `npm run validate`, `npm test -- --runInBand`.
 - Status: DONE
 

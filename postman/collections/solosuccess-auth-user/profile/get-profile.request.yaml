@@ -3,3 +3,31 @@ name: Get Profile
 method: GET
 url: '{{baseUrl}}/api/profile'
 order: 1000
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{authToken}}'
+scripts:
+  - type: afterResponse
+    language: text/javascript
+    code: |-
+      pm.test("Get profile returns 200", function () {
+        pm.response.to.have.status(200);
+      });
+
+      pm.test("Response time is under 2000ms", function () {
+        pm.expect(pm.response.responseTime).to.be.below(2000);
+      });
+
+      pm.test("Response has JSON body", function () {
+        pm.response.to.be.json;
+      });
+
+      const json = pm.response.json();
+
+      pm.test("Profile contains user fields", function () {
+        pm.expect(json).to.satisfy(function(body) {
+          return body.email || body.name || body.id || body.user;
+        });
+      });

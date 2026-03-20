@@ -1,0 +1,18 @@
+$kind: http-request
+name: Update Competitor
+method: PATCH
+url: '{{baseUrl}}/api/competitors/{{competitorId}}'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: competitorId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "name": "Acme Corporation",
+      "notes": "Updated competitor information"
+    }

@@ -1,0 +1,11 @@
+$kind: http-request
+name: Delete Post
+method: DELETE
+url: '{{baseUrl}}/api/community/posts/{{postId}}'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: postId
+    value: ''

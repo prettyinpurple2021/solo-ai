@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Insight
+method: GET
+url: '{{baseUrl}}/api/insights/{{insightId}}'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: insightId
+    value: ''

@@ -1,0 +1,18 @@
+$kind: http-request
+name: Update Subscription
+method: PATCH
+url: '{{baseUrl}}/api/subscriptions/{{subscriptionId}}'
+order: 4000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: subscriptionId
+    value: ''
+body:
+  type: json
+  content: |-
+    {
+      "planId": "pro-annual",
+      "prorationBehavior": "create_prorations"
+    }

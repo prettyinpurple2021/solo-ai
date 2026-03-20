@@ -1,0 +1,11 @@
+$kind: http-request
+name: Delete File
+method: DELETE
+url: '{{baseUrl}}/api/files/{{fileId}}'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: fileId
+    value: ''

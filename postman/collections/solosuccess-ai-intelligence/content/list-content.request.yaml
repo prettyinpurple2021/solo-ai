@@ -1,0 +1,8 @@
+$kind: http-request
+name: List Generated Content
+method: GET
+url: '{{baseUrl}}/api/content'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json

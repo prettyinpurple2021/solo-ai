@@ -1,0 +1,17 @@
+$kind: http-request
+name: Create Folder
+method: POST
+url: '{{baseUrl}}/api/folders'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Marketing Materials",
+      "parentId": null,
+      "description": "Folder for marketing documents and assets",
+      "color": "#3B82F6"
+    }

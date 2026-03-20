@@ -1,0 +1,11 @@
+$kind: http-request
+name: Get Suggestion
+method: GET
+url: '{{baseUrl}}/api/suggestions/{{suggestionId}}'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+pathVariables:
+  - key: suggestionId
+    value: ''

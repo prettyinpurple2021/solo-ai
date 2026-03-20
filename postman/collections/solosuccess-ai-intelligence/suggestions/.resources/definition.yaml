@@ -1,0 +1,4 @@
+$kind: collection
+name: Suggestions
+description: AI suggestions and recommendations
+order: 5000

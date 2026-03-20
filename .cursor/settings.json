@@ -1,0 +1,22 @@
+{
+  "plugins": {
+    "neon-postgres": {
+      "enabled": true
+    },
+    "vercel": {
+      "enabled": true
+    },
+    "postman": {
+      "enabled": true
+    },
+    "context7-plugin": {
+      "enabled": true
+    },
+    "stripe": {
+      "enabled": true
+    },
+    "browse": {
+      "enabled": true
+    }
+  }
+}

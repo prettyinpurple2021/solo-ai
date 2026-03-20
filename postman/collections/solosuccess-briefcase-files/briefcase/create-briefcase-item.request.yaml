@@ -1,0 +1,22 @@
+$kind: http-request
+name: Create Briefcase Item
+method: POST
+url: '{{baseUrl}}/api/briefcase'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "Business Plan 2024",
+      "type": "document",
+      "folderId": null,
+      "description": "Annual business plan and strategy document",
+      "tags": ["business", "planning", "2024"],
+      "metadata": {
+        "source": "manual",
+        "priority": "high"
+      }
+    }

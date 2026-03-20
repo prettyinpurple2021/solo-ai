@@ -1,0 +1,4 @@
+$kind: collection
+name: Tasks
+description: Task management
+order: 3000
