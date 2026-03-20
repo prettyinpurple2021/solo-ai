@@ -1,0 +1,8 @@
+$kind: collection
+name: SoloSuccess - Auth & User
+description: |-
+  Authentication, user profile, preferences, and onboarding endpoints for SoloSuccess AI.
+  Most endpoints require authentication via session cookie or Bearer token.
+variables:
+  - key: baseUrl
+    value: 'http://localhost:3000'

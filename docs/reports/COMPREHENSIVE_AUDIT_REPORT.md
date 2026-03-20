@@ -3,7 +3,9 @@
 
 **Generated:** December 2025  
 **Scope:** Entire codebase analysis  
-**Status:** Production Readiness Assessment
+**Status:** Production Readiness Assessment (historical snapshot)
+
+**Authoritative live status:** For current OPEN/DONE remediation work, use **[PRODUCTION_REMEDIATION_TRACKER.md](./PRODUCTION_REMEDIATION_TRACKER.md)**. This audit remains the detailed findings archive; the tracker is the day-to-day source of truth so scores and queue status do not contradict each other.
 
 ---
 

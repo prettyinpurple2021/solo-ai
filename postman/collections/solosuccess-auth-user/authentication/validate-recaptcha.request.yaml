@@ -1,0 +1,14 @@
+$kind: http-request
+name: Validate reCAPTCHA
+method: POST
+url: '{{baseUrl}}/api/recaptcha/validate'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "token": "recaptcha-token-here"
+    }

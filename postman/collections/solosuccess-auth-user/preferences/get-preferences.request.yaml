@@ -1,0 +1,8 @@
+$kind: http-request
+name: Get Preferences
+method: GET
+url: '{{baseUrl}}/api/preferences'
+order: 1000
+headers:
+  - key: Content-Type
+    value: application/json

@@ -1,46 +1,55 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/database-client'
+import { newsletterSubscribers } from '@/lib/shared/db/schema/marketing'
 import { rateLimitByIp } from '@/lib/rate-limit'
+import { logError } from '@/lib/logger'
 import { z } from 'zod'
 
 const NewsletterSchema = z.object({
   email: z.string().email('Invalid email address'),
-  source: z.string().optional()
+  source: z.string().optional(),
 })
 
 export async function POST(req: NextRequest) {
   try {
-    // Rate limiting to prevent abuse
     const rateLimitResult = await rateLimitByIp(req, { requests: 5, window: 3600 })
     if (!rateLimitResult.allowed) {
-      return NextResponse.json({ error: 'Rate limit exceeded. Please try again later.' }, { status: 429 })
+      return NextResponse.json(
+        { error: 'Rate limit exceeded. Please try again later.' },
+        { status: 429 },
+      )
     }
 
     const body = await req.json().catch(() => ({}))
-    
-    // Validate input with Zod
     const validation = NewsletterSchema.safeParse(body)
     if (!validation.success) {
       return NextResponse.json(
-        { error: 'Invalid email address', details: validation.error.errors },
-        { status: 400 }
+        { error: 'Invalid email address', details: validation.error.flatten() },
+        { status: 400 },
       )
     }
 
     const { email, source } = validation.data
 
-    const sql = neon(process.env.DATABASE_URL as string)
-    await sql`create table if not exists newsletter_subscribers (
-      id serial primary key,
-      email varchar(255) unique not null,
-      source varchar(255),
-      created_at timestamptz default now()
-    )`;
-    await sql`insert into newsletter_subscribers (email, source) values (${email}, ${source ?? 'blog_hero'}) on conflict (email) do nothing`;
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ error: 'Server misconfigured' }, { status: 503 })
+    }
+
+    const db = getDb()
+    await db
+      .insert(newsletterSubscribers)
+      .values({
+        email,
+        source: source ?? 'blog_hero',
+      })
+      .onConflictDoNothing({ target: newsletterSubscribers.email })
+
     return NextResponse.json({ ok: true })
   } catch (e) {
+    logError(
+      'newsletter subscribe failed',
+      e instanceof Error ? e : new Error(String(e)),
+    )
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
-
-

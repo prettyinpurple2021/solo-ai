@@ -1,0 +1,4 @@
+$kind: collection
+name: Profile
+description: User profile management and progress tracking
+order: 2000

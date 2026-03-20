@@ -1,0 +1,15 @@
+$kind: http-request
+name: Create API Key
+method: POST
+url: '{{baseUrl}}/api/profile/api-keys'
+order: 5000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "name": "My API Key",
+      "expiresAt": "2025-12-31T23:59:59Z"
+    }

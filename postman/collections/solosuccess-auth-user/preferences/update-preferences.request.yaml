@@ -1,0 +1,21 @@
+$kind: http-request
+name: Update Preferences
+method: PATCH
+url: '{{baseUrl}}/api/preferences'
+order: 2000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "theme": "dark",
+      "notifications": {
+        "email": true,
+        "push": true,
+        "sms": false
+      },
+      "language": "en",
+      "timezone": "America/New_York"
+    }

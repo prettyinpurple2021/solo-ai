@@ -128,11 +128,13 @@ export const pushSubscriptions = pgTable('push_subscriptions', {
   auth_key: varchar('auth_key', { length: 500 }).notNull(),
   device_info: jsonb('device_info').default('{}').notNull(),
   is_active: boolean('is_active').default(true).notNull(),
+  last_used_at: timestamp('last_used_at'),
   created_at: timestamp('created_at').defaultNow().notNull(),
   updated_at: timestamp('updated_at').defaultNow().notNull(),
 }, (table) => ({
   userIdIdx: index('push_subscriptions_user_id_idx').on(table.user_id),
   endpointIdx: index('push_subscriptions_endpoint_idx').on(table.endpoint),
   isActiveIdx: index('push_subscriptions_is_active_idx').on(table.is_active),
+  endpointUnique: uniqueIndex('push_subscriptions_endpoint_unique').on(table.endpoint),
 }));
 

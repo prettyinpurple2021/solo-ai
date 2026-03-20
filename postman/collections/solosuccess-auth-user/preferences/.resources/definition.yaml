@@ -1,0 +1,4 @@
+$kind: collection
+name: Preferences
+description: User preferences and settings management
+order: 3000

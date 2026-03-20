@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
-import { neon } from '@neondatabase/serverless'
-
+import { getDb } from '@/lib/database-client'
+import { analyticsEvents } from '@/lib/shared/db/schema/business'
+import { logError } from '@/lib/logger'
 
 export async function POST(req: Request) {
   try {
@@ -25,23 +26,30 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'event_name required' }, { status: 400 })
     }
 
-    const sql = neon(process.env.DATABASE_URL as string)
-    await sql`create table if not exists analytics_events (
-      id serial primary key,
-      event_name varchar(255) not null,
-      user_id varchar(255),
-      path text,
-      referrer text,
-      utm jsonb default '{}': jsonb,
-      metadata jsonb default '{}': jsonb,
-      created_at timestamptz default now()
-    )`;
-    await sql`insert into analytics_events (event_name, user_id, path, referrer, utm, metadata)
-      values (${event_name}, ${user_id ?? null}, ${path ?? null}, ${referrer ?? null}, ${JSON.stringify(utm)}, ${JSON.stringify(metadata)})`;
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json({ error: 'Server misconfigured' }, { status: 503 })
+    }
+
+    const db = getDb()
+    const properties: Record<string, unknown> = {
+      path: path ?? null,
+      referrer: referrer ?? null,
+      utm,
+    }
+
+    await db.insert(analyticsEvents).values({
+      user_id: user_id ?? null,
+      event: event_name,
+      properties,
+      metadata: typeof metadata === 'object' && metadata !== null ? metadata : {},
+    })
+
     return NextResponse.json({ ok: true })
   } catch (e) {
+    logError(
+      'analytics_events insert failed',
+      e instanceof Error ? e : new Error(String(e)),
+    )
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
-
-

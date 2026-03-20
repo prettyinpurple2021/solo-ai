@@ -1,0 +1,4 @@
+$kind: collection
+name: Authentication
+description: User registration, authentication, and token management
+order: 1000

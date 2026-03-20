@@ -1,0 +1,6 @@
+# Use this workspace to collaborate
+workspace:
+  id: 9e25b4c9-a2d7-4117-874f-2e5d1df9874c
+localResources:
+  specs:
+    - ..\openapi.json

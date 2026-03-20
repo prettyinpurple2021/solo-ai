@@ -1,0 +1,13 @@
+$kind: collection
+name: SoloSuccess - AI & Intelligence
+description: |-
+  AI-powered features including chat, content generation, insights, and intelligence services.
+  
+  Authentication: All endpoints require authentication via session cookie or API key.
+variables:
+  - key: baseUrl
+    value: 'http://localhost:3000'
+  - key: chatId
+    value: ''
+  - key: messageId
+    value: ''

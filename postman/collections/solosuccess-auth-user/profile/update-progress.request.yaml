@@ -1,0 +1,15 @@
+$kind: http-request
+name: Update Progress
+method: POST
+url: '{{baseUrl}}/api/profile/progress'
+order: 3000
+headers:
+  - key: Content-Type
+    value: application/json
+body:
+  type: json
+  content: |-
+    {
+      "step": "onboarding_complete",
+      "data": {}
+    }

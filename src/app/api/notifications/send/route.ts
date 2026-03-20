@@ -1,6 +1,8 @@
 import { logError, logWarn, logInfo,} from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSql } from '@/lib/api-utils'
+import { getDb } from '@/lib/database-client'
+import { notificationLogs } from '@/lib/shared/db/schema/marketing'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import { notificationJobQueue } from '@/lib/notification-job-queue'
@@ -11,6 +13,21 @@ import webpush from 'web-push'
 export const runtime = 'nodejs'
 
 export const dynamic = 'force-dynamic'
+
+function expirationFromSubscriptionRow(row: {
+  expiration_time?: unknown
+  device_info?: unknown
+}): number | null {
+  if (typeof row.expiration_time === 'number') {
+    return row.expiration_time
+  }
+  const di = row.device_info
+  if (di && typeof di === 'object' && di !== null && 'expirationTime' in di) {
+    const v = (di as { expirationTime?: unknown }).expirationTime
+    return typeof v === 'number' ? v : null
+  }
+  return null
+}
 
 // VAPID configuration - deferred to runtime
 let vapidConfigured = false
@@ -296,37 +313,16 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Create notification_logs table if it doesn't exist
-    await sql`
-      CREATE TABLE IF NOT EXISTS notification_logs (
-        id SERIAL PRIMARY KEY,
-        sent_by VARCHAR(255),
-        title TEXT,
-        body TEXT,
-        target_count INTEGER,
-        success_count INTEGER,
-        error_count INTEGER,
-        payload JSONB,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-      )
-    `
-
-    // Log notification sending
-    await sql`
-      INSERT INTO notification_logs (
-        sent_by, title, body, target_count, success_count, error_count, 
-        payload, created_at
-      ) VALUES (
-        ${user?.id || 'system'}, 
-        ${notification.title}, 
-        ${notification.body}, 
-        ${subscriptions.length}, 
-        ${results.length}, 
-        ${errors.length}, 
-        ${JSON.stringify(payload)}, 
-        NOW()
-      )
-    `
+    const dbLog = getDb()
+    await dbLog.insert(notificationLogs).values({
+      sent_by: user?.id ?? 'system',
+      title: notification.title,
+      body: notification.body,
+      target_count: subscriptions.length,
+      success_count: results.length,
+      error_count: errors.length,
+      payload,
+    })
 
     return NextResponse.json({
       success: true,

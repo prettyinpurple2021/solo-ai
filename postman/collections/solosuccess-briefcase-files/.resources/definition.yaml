@@ -1,0 +1,13 @@
+$kind: collection
+name: SoloSuccess - Briefcase & Files
+description: |-
+  File management, briefcase storage, and document handling features.
+  
+  Authentication: All endpoints require authentication via session cookie or API key.
+variables:
+  - key: baseUrl
+    value: 'http://localhost:3000'
+  - key: fileId
+    value: ''
+  - key: folderId
+    value: ''

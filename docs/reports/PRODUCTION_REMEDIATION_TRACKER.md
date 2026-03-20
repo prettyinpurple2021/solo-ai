@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-20
+Last updated: 2026-03-21
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -37,6 +37,14 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 - Completed **HIGH-006**: removed file-level `@ts-nocheck` from production `src`, replaced remaining suppressions with real types/guards, and fixed surfaced TypeScript issues (effects, hooks, learning module types, template flows).
 
+### 2026-03-20
+
+- Completed **MED-005**: lazy Express `pg` pool + Jest `globalTeardown` for clean test exit.
+
+### 2026-03-21
+
+- Completed **MED-001–MED-004**: Node 20 in Gitea workflows + `package.json` engines; removed API-route `CREATE TABLE` patterns; moved `GlobalSearch` out of `archive/`; audit report now defers live status to this tracker.
+
 ## Critical remediation queue
 
 | ID | Severity | Area | Issue | Status | Verification |
@@ -65,10 +73,10 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 | ID | Severity | Area | Issue | Status | Verification |
 |---|---|---|---|---|---|
-| MED-001 | MEDIUM | Runtime | Node version drift across CI and Docker | OPEN | Pending |
-| MED-002 | MEDIUM | Reliability | Runtime schema/table creation in request paths | OPEN | Pending |
-| MED-003 | MEDIUM | Code Health | Legacy/archive imports in active production paths | OPEN | Pending |
-| MED-004 | MEDIUM | Observability | Contradictory readiness docs and status signals | OPEN | Pending |
+| MED-001 | MEDIUM | Runtime | Node version drift across CI and Docker | DONE | `package.json` `engines.node >=20`; Gitea `test-runner` + `deploy` use Node `20`; Dockerfiles already `node:20` |
+| MED-002 | MEDIUM | Reliability | Runtime schema/table creation in request paths | DONE | Removed DDL from API routes; Drizzle + `migrations/0003_api_tables_baseline.sql` (apply to DBs that relied on old runtime creates) |
+| MED-003 | MEDIUM | Code Health | Legacy/archive imports in active production paths | DONE | `DashboardHeader` imports `@/components/GlobalSearch`; archive re-exports for compatibility |
+| MED-004 | MEDIUM | Observability | Contradictory readiness docs and status signals | DONE | `COMPREHENSIVE_AUDIT_REPORT.md` points to this tracker as authoritative live status |
 | MED-005 | MEDIUM | Test hygiene | Jest open handles / async work after suite completion (process lingers; late `console.error` e.g. Neon connect) | DONE | `npm test` + `npm test -- --runInBand` exit promptly; `npm run validate` pass |
 
 ## Change checklist template (for each completed item)
@@ -292,6 +300,32 @@ Use this block whenever an item is completed:
   - Spot check: `rg '@ts-nocheck' src` → no matches; `@ts-ignore` remains only under test harness files listed above.
 - Status: DONE
 
+### MED-001: Align Node.js across CI, Docker, and declared engines
+- What changed: Root `package.json` `engines` documents Node 20+; Gitea `test-runner.yaml` and `deploy.yaml` use `node-version: '20'` to match `Dockerfile` / `server/Dockerfile` / `railway-deploy/Dockerfile`.
+- Verification: `npm run validate`, `npm test -- --runInBand` pass on Node 20-class toolchain.
+- Status: DONE
+
+### MED-002: No DDL in request paths
+- What changed: Push subscribe, analytics `events`, newsletter, exit-intent survey, and notification send logging now use Drizzle/`getDb()` inserts only. Added schema tables in `marketing.ts`, `push_subscriptions` unique endpoint + `last_used_at`, and idempotent SQL baseline `migrations/0003_api_tables_baseline.sql`.
+- **Deploy:** Run `0003` (or equivalent `db:push`/migrate) on any database that previously depended on API `CREATE TABLE IF NOT EXISTS` before relying solely on new code.
+- Verification: `npm run validate`, `npm test -- --runInBand`.
+- Status: DONE
+
+### MED-003: Active path off `archive/`
+- What changed: `src/components/GlobalSearch.tsx` is the canonical module; `DashboardHeader` imports it directly; `archive/GlobalSearch.tsx` re-exports only.
+- Verification: `npm run lint`, `npm run type-check:web`.
+- Status: DONE
+
+### MED-004: Single status story for audits vs tracker
+- What changed: `docs/reports/COMPREHENSIVE_AUDIT_REPORT.md` header notes the tracker is authoritative for OPEN/DONE; audit remains historical detail.
+- Verification: Doc review.
+- Status: DONE
+
+### MED-005: Jest clean exit (Express `pg` pool)
+- What changed: Lazy `server/db` pool + `src/test/global-teardown.ts`; Proxy `Reflect.get` receiver fix uses real Drizzle instance.
+- Verification: `npm test`, `npm test -- --runInBand`.
+- Status: DONE
+
 ## New findings discovered during remediation
 
 - Build still reports large client chunk warning:
@@ -302,10 +336,8 @@ Use this block whenever an item is completed:
 
 ## Next execution queue
 
-- MED-001 (`OPEN`): align Node version across local, CI, and Docker runtime.
-- MED-002 (`OPEN`): remove runtime schema/table creation from request-time code paths.
-- MED-003 (`OPEN`): replace legacy/archive imports in active production code.
-- MED-004 (`OPEN`): reconcile contradictory readiness documentation/status outputs.
+- **Performance / cost (from “New findings” below):** large client PWA precache chunk; review edge vs static for hot routes.
+- **Ongoing:** keep `npm audit` low-chain advisories on radar until `@stackframe/stack` upstream moves.
 
 ## Known non-blocking residuals
 

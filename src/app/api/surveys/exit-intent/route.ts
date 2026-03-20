@@ -1,26 +1,11 @@
-import { logError, logDebug,} from '@/lib/logger'
+import { logError, logDebug } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
-import { neon } from '@neondatabase/serverless'
+import { getDb } from '@/lib/database-client'
+import { exitIntentSurveys, userSurveyStatus } from '@/lib/shared/db/schema/marketing'
+import { and, eq } from 'drizzle-orm'
 import * as jose from 'jose'
 
-// Edge runtime removed for better stability with DB connections
-// export const runtime = 'edge'
-
-// Force dynamic rendering
 export const dynamic = 'force-dynamic'
-
-function getSql() {
-  const url = process.env.DATABASE_URL
-  if (!url) {
-    return null
-  }
-  try {
-    return neon(url)
-  } catch (error) {
-    logError('Failed to initialize Neon client', { error })
-    return null
-  }
-}
 
 async function getUserIdFromToken(request: NextRequest): Promise<string | null> {
   try {
@@ -39,41 +24,34 @@ async function getUserIdFromToken(request: NextRequest): Promise<string | null> 
 
 export async function GET(req: NextRequest) {
   try {
-    const sql = getSql()
-    if (!sql) {
-      // Fail gracefully if DB is not configured (e.g. build time or missing env)
+    if (!process.env.DATABASE_URL) {
       return NextResponse.json({ status: null, canShow: true })
     }
-    const userId = await getUserIdFromToken(req)
 
-    // Create table if it doesn't exist
-    await sql`create table if not exists user_survey_status (
-      id serial primary key,
-      user_id varchar(255),
-      survey_type varchar(50) not null,
-      status varchar(20) not null, -- 'submitted' or 'dismissed'
-      created_at timestamptz default now(),
-      unique(user_id, survey_type)
-    )`
+    const userId = await getUserIdFromToken(req)
+    const db = getDb()
 
     if (!userId) {
-      // For anonymous users, return default state
       return NextResponse.json({ status: null, canShow: true })
     }
 
-    // Check if user has already interacted with exit-intent survey
-    const result = await sql`
-      select status from user_survey_status 
-      where user_id = ${userId} and survey_type = 'exit-intent'
-    `
+    const rows = await db
+      .select({ status: userSurveyStatus.status })
+      .from(userSurveyStatus)
+      .where(
+        and(eq(userSurveyStatus.user_id, userId), eq(userSurveyStatus.survey_type, 'exit-intent')),
+      )
+      .limit(1)
 
-    const status = result.length > 0 ? result[0].status : null
-    const canShow = status === null // Only show if no previous interaction
+    const status = rows.length > 0 ? rows[0].status : null
+    const canShow = status === null
 
     return NextResponse.json({ status, canShow })
   } catch (error) {
-    // Log but fail open so the user isn't bothered by a console error
-    logError('Survey status check error (handled):', { error })
+    logError(
+      'Survey status check error (handled):',
+      error instanceof Error ? error : new Error(String(error)),
+    )
     return NextResponse.json({ status: null, canShow: true })
   }
 }
@@ -81,79 +59,69 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const { role, goal, blocker, email, action } = await req.json().catch(() => ({}))
-    const sql = getSql()
-    if (!sql) {
-      logError('DATABASE_URL missing or Neon client init failed for exit-intent POST')
+    if (!process.env.DATABASE_URL) {
+      logError('DATABASE_URL missing for exit-intent POST')
       return NextResponse.json({ error: 'Database unavailable' }, { status: 503 })
     }
+
     const userId = await getUserIdFromToken(req)
+    const db = getDb()
 
     logDebug('Survey submission data:', { role, goal, blocker, email, action, userId })
 
-    // Create tables if they don't exist - with proper error handling
-    try {
-      await sql`create table if not exists exit_intent_surveys (
-        id serial primary key,
-        user_id varchar(255),
-        role varchar(120),
-        goal text,
-        blocker text,
-        email varchar(255),
-        created_at timestamptz default now()
-      )`
-    } catch (tableError) {
-      logError('Error creating exit_intent_surveys table:', tableError)
-      // If table creation fails, try to continue anyway
-    }
-
-    await sql`create table if not exists user_survey_status (
-      id serial primary key,
-      user_id varchar(255),
-      survey_type varchar(50) not null,
-      status varchar(20) not null,
-      created_at timestamptz default now(),
-      unique(user_id, survey_type)
-    )`
-
     if (action === 'dismiss') {
-      // User clicked skip/dismiss
       if (userId) {
-        await sql`
-          insert into user_survey_status (user_id, survey_type, status) 
-          values (${userId}, 'exit-intent', 'dismissed')
-          on conflict (user_id, survey_type) do update set 
-            status = 'dismissed', created_at = now()
-        `
+        await db
+          .insert(userSurveyStatus)
+          .values({
+            user_id: userId,
+            survey_type: 'exit-intent',
+            status: 'dismissed',
+          })
+          .onConflictDoUpdate({
+            target: [userSurveyStatus.user_id, userSurveyStatus.survey_type],
+            set: { status: 'dismissed', created_at: new Date() },
+          })
       }
       return NextResponse.json({ ok: true, action: 'dismissed' })
-    } else {
-      // User submitted survey
-      try {
-        await sql`
-          insert into exit_intent_surveys (user_id, role, goal, blocker, email) 
-          values (${userId || null}, ${role || null}, ${goal || null}, ${blocker || null}, ${email || null})
-        `
-        logDebug('Survey data inserted successfully')
-      } catch (insertError) {
-        logError('Error inserting survey data:', insertError)
-        // Continue with status update even if survey data insert fails
-      }
-
-      if (userId) {
-        await sql`
-          insert into user_survey_status (user_id, survey_type, status) 
-          values (${userId}, 'exit-intent', 'submitted')
-          on conflict (user_id, survey_type) do update set 
-            status = 'submitted', created_at = now()
-        `
-      }
-
-      return NextResponse.json({ ok: true, action: 'submitted' })
     }
+
+    try {
+      await db.insert(exitIntentSurveys).values({
+        user_id: userId || null,
+        role: role || null,
+        goal: goal || null,
+        blocker: blocker || null,
+        email: email || null,
+      })
+      logDebug('Survey data inserted successfully')
+    } catch (insertError) {
+      logError(
+        'Error inserting survey data:',
+        insertError instanceof Error ? insertError : new Error(String(insertError)),
+      )
+    }
+
+    if (userId) {
+      await db
+        .insert(userSurveyStatus)
+        .values({
+          user_id: userId,
+          survey_type: 'exit-intent',
+          status: 'submitted',
+        })
+        .onConflictDoUpdate({
+          target: [userSurveyStatus.user_id, userSurveyStatus.survey_type],
+          set: { status: 'submitted', created_at: new Date() },
+        })
+    }
+
+    return NextResponse.json({ ok: true, action: 'submitted' })
   } catch (error) {
-    logError('Survey submission error:', { error })
+    logError(
+      'Survey submission error:',
+      error instanceof Error ? error : new Error(String(error)),
+    )
     return NextResponse.json({ error: 'Server error' }, { status: 500 })
   }
 }
-
-

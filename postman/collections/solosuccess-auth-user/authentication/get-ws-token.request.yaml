@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get WebSocket Token
+method: GET
+url: '{{baseUrl}}/api/ws-token'
+order: 2000
