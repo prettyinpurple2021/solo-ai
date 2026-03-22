@@ -1,6 +1,6 @@
-'use client'
+"use client"
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from "react"
 
 interface NeuralNetworkCanvasProps {
   particleCount?: number
@@ -15,16 +15,23 @@ export function NeuralNetworkCanvas({
 }: NeuralNetworkCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
+  // Sync backing-store size before paint to avoid default 300×150 flash / layout nits (CLS).
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas || typeof window === "undefined") return
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+  }, [])
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    // Set canvas size
-    let width = window.innerWidth
-    let height = window.innerHeight
+    let width = canvas.width || window.innerWidth
+    let height = canvas.height || window.innerHeight
 
     function resize() {
       if (!canvas) return
@@ -34,7 +41,7 @@ export function NeuralNetworkCanvas({
       canvas.height = height
     }
 
-    window.addEventListener('resize', resize)
+    window.addEventListener("resize", resize)
     resize()
 
     // Particle configuration
@@ -52,8 +59,8 @@ export function NeuralNetworkCanvas({
       mouse.y = null
     }
 
-    window.addEventListener('mousemove', handleMouseMove)
-    window.addEventListener('mouseout', handleMouseOut)
+    window.addEventListener("mousemove", handleMouseMove)
+    window.addEventListener("mouseout", handleMouseOut)
 
     // Particle Class
     class Particle {
@@ -144,9 +151,9 @@ export function NeuralNetworkCanvas({
     animate()
 
     return () => {
-      window.removeEventListener('resize', resize)
-      window.removeEventListener('mousemove', handleMouseMove)
-      window.removeEventListener('mouseout', handleMouseOut)
+      window.removeEventListener("resize", resize)
+      window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("mouseout", handleMouseOut)
     }
   }, [particleCount, connectionDistance, mouseDistance])
 
@@ -154,9 +161,10 @@ export function NeuralNetworkCanvas({
     <canvas
       ref={canvasRef}
       id="neural-network"
-      className="fixed top-0 left-0 w-full h-full -z-10 pointer-events-none"
+      className="pointer-events-none fixed left-0 top-0 -z-10 block h-full w-full max-h-[100vh] max-w-[100vw]"
       style={{
-        background: 'radial-gradient(circle at 50% 50%, transparent 0%, #020005 100%)',
+        background:
+          "radial-gradient(circle at 50% 50%, transparent 0%, #020005 100%)",
       }}
       aria-hidden="true"
     />

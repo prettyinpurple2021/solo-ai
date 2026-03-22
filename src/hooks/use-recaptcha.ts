@@ -62,7 +62,7 @@ export function useRecaptcha(options: UseRecaptchaOptions = {}) {
 
     if (!isReady) {
       const errorMsg = 'reCAPTCHA not ready'
-      logError('reCAPTCHA not ready. Site key:', RECAPTCHA_CONFIG.siteKey)
+      logError('reCAPTCHA not ready')
       setError(errorMsg)
       onError?.(errorMsg)
       return null

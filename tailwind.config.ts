@@ -216,13 +216,11 @@ const config: Config = {
         'gradient-glass': 'linear-gradient(135deg, rgba(255, 113, 181, 0.1) 0%, rgba(93, 92, 97, 0.1) 50%, rgba(35, 35, 37, 0.1) 100%)',
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
-        // Cyberpunk Design System v3 fonts
-        orbitron: 'var(--font-orbitron)',
-        // Cyberpunk fonts
-        sci: ["Orbitron", "sans-serif"],
-        tech: ["Rajdhani", "sans-serif"],
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "ui-monospace", "monospace"],
+        orbitron: "var(--font-orbitron)",
+        sci: ["var(--font-orbitron)", "sans-serif"],
+        tech: ["var(--font-raj)", "sans-serif"],
         // Legacy font aliases (renamed for brand enforcement)
         elite: ["Orbitron", "sans-serif"],
         heading: ["Orbitron", "Rajdhani", "sans-serif"],

@@ -19,6 +19,9 @@
     --neon-lime: 84 100% 50%;
     --neon-orange: 32 100% 50%;
     --radius: 0px; /* Sharp technical edges */
+    /* Used by scrollbar + .gradient-* utilities (was undefined → invisible thumb) */
+    --gradient-primary: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%);
+    --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #9333ea 100%);
   }
 
   .dark {
@@ -108,23 +111,30 @@
     background-color: #0a0c10;
   }
 
-  /* Custom scrollbar */
+  /* Custom scrollbar (thumb used undefined CSS vars before — invisible) */
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #22d3ee rgb(15 23 42 / 0.85);
+  }
+
   ::-webkit-scrollbar {
-    width: 8px;
+    width: 10px;
+    height: 10px;
   }
 
   ::-webkit-scrollbar-track {
-    background: rgba(139, 92, 246, 0.1);
-    border-radius: 10px;
+    background: rgb(15 23 42 / 0.9);
+    border-radius: 8px;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: var(--gradient-primary);
-    border-radius: 10px;
+    background: linear-gradient(180deg, #22d3ee 0%, #a855f7 100%);
+    border-radius: 8px;
+    border: 2px solid rgb(2 4 12 / 0.95);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: var(--gradient-secondary);
+    background: linear-gradient(180deg, #06b6d4 0%, #c084fc 100%);
   }
 }
 

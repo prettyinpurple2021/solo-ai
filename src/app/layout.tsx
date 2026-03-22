@@ -1,6 +1,6 @@
 import "./globals.css"
 import type { ReactNode } from 'react'
-import { Inter, Orbitron, JetBrains_Mono } from "next/font/google"
+import { Inter, Orbitron, JetBrains_Mono, Rajdhani } from "next/font/google"
 import Script from 'next/script'
 import { cn } from "@/lib/utils"
 import { ThemeProvider } from "@/components/theme-provider"
@@ -12,7 +12,6 @@ import ExitIntentSurvey from "@/components/marketing/exit-intent-survey-wrapper"
 import { AccessibilityProvider } from "@/components/ui/accessibility"
 import { ChatProvider } from "@/components/providers/chat-provider"
 import { SmartTipManager } from "@/components/ui/smart-tip"
-import { FeedbackWidget } from "@/components/feedback/feedback-widget"
 import { CssScriptCleanup } from "@/components/util/css-script-cleanup"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -29,19 +28,25 @@ const orbitronFont = Orbitron({
   display: 'swap',
 })
 
-const jetbrainsMonoFont = JetBrains_Mono({ 
-  subsets: ['latin'], 
-  variable: '--font-mono',
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
+const jetbrainsMonoFont = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
 })
 
-// Legacy font configuration - using runtime-loaded fonts via link tags
-// These objects define CSS variables that map to font families in globals.css
-const inter = { variable: '--font-inter', className: 'font-sans' }
-const jetbrains = { variable: '--font-mono', className: 'font-mono' }
-const orbitron = { variable: '--font-sci', className: 'font-sci' }
-const rajdhani = { variable: '--font-tech', className: 'font-tech' }
+const interFont = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+})
+
+const rajdhaniFont = Rajdhani({
+  subsets: ["latin"],
+  variable: "--font-raj",
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+})
 
 export const metadata = {
   title: {
@@ -158,7 +163,6 @@ export default function RootLayout({
               <PWAInstallPrompt />
               {!exitIntentDisabled && <ExitIntentSurvey />}
               <SmartTipManager />
-              <FeedbackWidget />
               <CssScriptCleanup />
             </AccessibilityProvider>
           </OfflineProvider>
@@ -168,7 +172,11 @@ export default function RootLayout({
   )
 
   return (
-    <html lang="en" suppressHydrationWarning className={`${orbitronFont.variable} ${jetbrainsMonoFont.variable} ${inter.variable} ${jetbrains.variable} ${orbitron.variable} ${rajdhani.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${orbitronFont.variable} ${jetbrainsMonoFont.variable} ${interFont.variable} ${rajdhaniFont.variable}`}
+    >
       <head>
         <Script
           id="strip-css-scripts"
@@ -233,19 +241,6 @@ export default function RootLayout({
             `
           }}
         />
-        {/* Optimize font loading */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href={`https://fonts.googleapis.com/css2?` +
-                `family=Inter:wght@300;400;500;600;700;800;900&` +
-                `family=JetBrains+Mono:wght@400;500;600;700&` +
-                `family=Orbitron:wght@400;500;600;700;800;900&` +
-                `family=Rajdhani:wght@300;400;500;600;700&` +
-                `display=swap`}
-          rel="stylesheet"
-        />
-        
         {/* Search engine verification placeholders */}
         <meta name="google-site-verification" content="CHANGE_ME" />
         <meta name="msvalidate.01" content="CHANGE_ME" />
@@ -259,10 +254,8 @@ export default function RootLayout({
           "min-h-screen bg-dark-bg text-white font-mono antialiased",
           orbitronFont.variable,
           jetbrainsMonoFont.variable,
-          inter.variable,
-          jetbrains.variable,
-          orbitron.variable,
-          rajdhani.variable
+          interFont.variable,
+          rajdhaniFont.variable
         )}
       >
         {/* Structured Data */}

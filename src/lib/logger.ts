@@ -53,7 +53,12 @@ class Logger {
     const formattedMessage = this.formatLogEntry(entry)
     // Use appropriate console method based on log level
     // Only log to console in development or for critical errors
-    if (this.isDevelopment || level === LogLevel.ERROR) {
+    const allowTestConsole =
+      process.env.DEBUG_WEB_LOGS === '1' || process.env.NODE_ENV !== 'test'
+    if (
+      allowTestConsole &&
+      (this.isDevelopment || level === LogLevel.ERROR)
+    ) {
       switch (level) {
         case LogLevel.ERROR:
           if (typeof console !== 'undefined' && console.error) {

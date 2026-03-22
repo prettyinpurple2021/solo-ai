@@ -93,7 +93,6 @@ export function RecaptchaProvider({ children }: RecaptchaProviderProps) {
 
   const handleScriptLoad = () => {
     logInfo('reCAPTCHA script loaded successfully')
-    logInfo('reCAPTCHA site key:', RECAPTCHA_SITE_KEY)
     setIsLoading(false)
     
     // Check if grecaptcha is available, with retry logic

@@ -12,15 +12,40 @@ import { sql } from 'drizzle-orm'
 
 let _db: NeonHttpDatabase<typeof schema> | null = null
 
+/** Singleton: Jest + no DATABASE_URL — getDb() returns; first real DB op throws with guidance. */
+let _jestUnconfiguredDb: NeonHttpDatabase<typeof schema> | null = null
+
+function getJestUnconfiguredDbProxy(): NeonHttpDatabase<typeof schema> {
+  if (_jestUnconfiguredDb) return _jestUnconfiguredDb
+  const message =
+    'DATABASE_URL is not set in Jest. Mock `src/lib/database-client`, or set DATABASE_URL for integration tests.'
+  _jestUnconfiguredDb = new Proxy({} as NeonHttpDatabase<typeof schema>, {
+    get() {
+      throw new Error(message)
+    },
+  })
+  return _jestUnconfiguredDb
+}
+
+/**
+ * CI / custom runners sometimes omit NODE_ENV=test and JEST_WORKER_ID; npm test still sets npm_lifecycle_event.
+ */
+function isJestRuntime(): boolean {
+  if (process.env.JEST_WORKER_ID !== undefined) return true
+  if (process.env.NODE_ENV === 'test') return true
+  if (process.env.npm_lifecycle_event === 'test') return true
+  const g = globalThis as typeof globalThis & { jest?: unknown }
+  return typeof g.jest !== 'undefined'
+}
+
 /**
  * Get the centralized database client
  * Uses lazy initialization to avoid build-time database calls
  */
 export function getDb() {
   // logInfo("[DB] getDb() called"); // Verbose
-  // Prevent DB usage during Next static build — not during Jest (Node also has no DATABASE_URL in CI).
-  const isJest =
-    process.env.JEST_WORKER_ID !== undefined || process.env.NODE_ENV === 'test'
+  // Next static build: block without DATABASE_URL. Jest often has no URL in CI.
+  const isJest = isJestRuntime()
   const isBuildTime =
     process.env.NEXT_PHASE === 'phase-production-build' ||
     process.env.SKIP_DB_CHECK === 'true' ||
@@ -29,6 +54,10 @@ export function getDb() {
   if (isBuildTime && !process.env.DATABASE_URL) {
     logger.warn('[DB] Database client access blocked during build time');
     throw new Error('Database client is not available during build time')
+  }
+
+  if (isJest && !process.env.DATABASE_URL) {
+    return getJestUnconfiguredDbProxy()
   }
 
   if (!_db) {
@@ -117,7 +146,12 @@ export async function ensureSchema(): Promise<void> {
     // This would typically run migrations
     // Verify connectivity via simple query execution
     await db.execute('SELECT 1');
-    await checkDatabaseHealth()
+    const health = await checkDatabaseHealth()
+    if (!health.healthy) {
+      const detail = health.error ?? 'unknown error'
+      logError('Database unhealthy during schema verification:', new Error(detail))
+      throw new Error(`Database schema verification failed: ${detail}`)
+    }
     logger.info('Database schema verified')
   } catch (error) {
     logError('Schema verification failed:', error)

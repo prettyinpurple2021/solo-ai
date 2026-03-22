@@ -1,6 +1,6 @@
 
 import { Server as SocketServer } from "socket.io";
-import { logInfo, logError } from "../../utils/logger";
+import { logInfo, logError, caughtToError } from "../../utils/logger";
 import { z } from "zod";
 
 /**
@@ -27,7 +27,7 @@ export function setupCommandCenterSocket(io: SocketServer) {
           activeAgents: []
         });
       } catch (error) {
-        logError("HUD sync failed", { error, userId });
+        logError("HUD sync failed", caughtToError(error), { userId });
         socket.emit("error", { message: "Failed to sync HUD state" });
       }
     });

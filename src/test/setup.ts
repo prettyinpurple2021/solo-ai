@@ -61,8 +61,3 @@ if (typeof global.fetch !== 'function') {
 if (typeof window !== 'undefined' && window.HTMLElement) {
   window.HTMLElement.prototype.scrollIntoView = jest.fn();
 }
-
-// Mock scrollIntoView which is not implemented in jsdom
-if (typeof window !== 'undefined' && window.HTMLElement) {
-  window.HTMLElement.prototype.scrollIntoView = jest.fn();
-}

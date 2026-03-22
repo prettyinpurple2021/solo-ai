@@ -1,0 +1,6 @@
+---
+alwaysApply: true
+---
+# Product context — real public launch
+
+SoloSuccess AI is being built for a **real public launch**: real end users, real trust, and **real revenue**. Treat every change as something that could ship to paying customers tomorrow: security, reliability, observability, UX polish, and honest behavior (no “demo-only” shortcuts that would embarrass you in production). Align with [00-project-standards.mdc](mdc:00-project-standards.mdc).

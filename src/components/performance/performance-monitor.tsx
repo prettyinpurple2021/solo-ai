@@ -73,7 +73,6 @@ export function PerformanceMonitor() {
       }
     }
     return undefined
-    return undefined
   }, [])
 
   if (!isVisible || isClosed) return null
@@ -87,10 +86,14 @@ export function PerformanceMonitor() {
 
   const getScoreColor = (score: string) => {
     switch (score) {
-      case 'good': return 'bg-green-100 text-green-800'
-      case 'needs-improvement': return 'bg-yellow-100 text-yellow-800'
-      case 'poor': return 'bg-red-100 text-red-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case 'good':
+        return 'border border-emerald-500/50 bg-emerald-500/15 text-emerald-300'
+      case 'needs-improvement':
+        return 'border border-amber-500/50 bg-amber-500/15 text-amber-200'
+      case 'poor':
+        return 'border border-red-500/50 bg-red-500/15 text-red-300'
+      default:
+        return 'border border-zinc-600 bg-zinc-800/80 text-zinc-300'
     }
   }
 
@@ -99,11 +102,11 @@ export function PerformanceMonitor() {
   const clsScore = getScore(metrics.cls, { good: 0.1, poor: 0.25 })
 
   return (
-    <Card className="fixed bottom-4 right-4 w-80 z-50 bg-white/95 backdrop-blur-sm border-2">
+    <Card className="fixed bottom-4 right-4 z-50 w-80 border border-cyan-500/35 bg-dark-bg/95 text-zinc-100 shadow-[0_0_24px_rgba(34,211,238,0.12)] backdrop-blur-md">
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-sm flex items-center gap-2">
-            <Activity className="w-4 h-4" />
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold text-zinc-100">
+            <Activity className="h-4 w-4 text-cyan-400" />
             Performance Monitor
           </CardTitle>
           <div className="flex items-center gap-1">
@@ -111,41 +114,41 @@ export function PerformanceMonitor() {
               variant="ghost"
               size="sm"
               onClick={() => setIsMinimized(!isMinimized)}
-              className="h-6 w-6 p-0 hover:bg-gray-100"
+              className="h-6 w-6 p-0 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
               title={isMinimized ? "Expand" : "Minimize"}
             >
-              {isMinimized ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+              {isMinimized ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsClosed(true)}
-              className="h-6 w-6 p-0 hover:bg-gray-100"
+              className="h-6 w-6 p-0 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100"
               title="Close"
             >
-              <X className="w-3 h-3" />
+              <X className="h-3 w-3" />
             </Button>
           </div>
         </div>
         {!isMinimized && (
-          <CardDescription className="text-xs">
-            Core Web Vitals & Performance Metrics
+          <CardDescription className="text-xs text-zinc-500">
+            Core Web Vitals (dev) — LCP, FID, CLS
           </CardDescription>
         )}
       </CardHeader>
       {!isMinimized && (
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 text-zinc-200">
         {/* LCP */}
         <div className="space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium">LCP</span>
-            <Badge className={`text-xs ${getScoreColor(lcpScore)}`}>
+            <span className="text-xs font-medium text-zinc-300">LCP</span>
+            <Badge className={`text-xs font-medium ${getScoreColor(lcpScore)}`}>
               {lcpScore.replace('-', ' ')}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <Clock className="w-3 h-3 text-gray-500" />
-            <span className="text-xs text-gray-600">
+            <Clock className="h-3 w-3 text-cyan-500/70" />
+            <span className="text-xs text-zinc-400">
               {metrics.lcp ? `${Math.round(metrics.lcp)}ms` : 'Measuring...'}
             </span>
           </div>
@@ -158,14 +161,14 @@ export function PerformanceMonitor() {
         {/* FID */}
         <div className="space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium">FID</span>
-            <Badge className={`text-xs ${getScoreColor(fidScore)}`}>
+            <span className="text-xs font-medium text-zinc-300">FID</span>
+            <Badge className={`text-xs font-medium ${getScoreColor(fidScore)}`}>
               {fidScore.replace('-', ' ')}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <Zap className="w-3 h-3 text-gray-500" />
-            <span className="text-xs text-gray-600">
+            <Zap className="h-3 w-3 text-cyan-500/70" />
+            <span className="text-xs text-zinc-400">
               {metrics.fid ? `${Math.round(metrics.fid)}ms` : 'Measuring...'}
             </span>
           </div>
@@ -178,14 +181,14 @@ export function PerformanceMonitor() {
         {/* CLS */}
         <div className="space-y-1">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-medium">CLS</span>
-            <Badge className={`text-xs ${getScoreColor(clsScore)}`}>
+            <span className="text-xs font-medium text-zinc-300">CLS</span>
+            <Badge className={`text-xs font-medium ${getScoreColor(clsScore)}`}>
               {clsScore.replace('-', ' ')}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
-            <TrendingUp className="w-3 h-3 text-gray-500" />
-            <span className="text-xs text-gray-600">
+            <TrendingUp className="h-3 w-3 text-cyan-500/70" />
+            <span className="text-xs text-zinc-400">
               {metrics.cls ? metrics.cls.toFixed(3) : 'Measuring...'}
             </span>
           </div>
@@ -196,17 +199,17 @@ export function PerformanceMonitor() {
         </div>
 
         {/* Additional Metrics */}
-        <div className="pt-2 border-t">
+        <div className="border-t border-zinc-700/80 pt-2">
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div>
-              <span className="text-gray-500">TTFB:</span>
-              <span className="ml-1 font-medium">
+              <span className="text-zinc-500">TTFB:</span>
+              <span className="ml-1 font-medium text-zinc-200">
                 {metrics.ttfb ? `${Math.round(metrics.ttfb)}ms` : 'N/A'}
               </span>
             </div>
             <div>
-              <span className="text-gray-500">Load:</span>
-              <span className="ml-1 font-medium">
+              <span className="text-zinc-500">Load:</span>
+              <span className="ml-1 font-medium text-zinc-200">
                 {metrics.loadTime ? `${Math.round(metrics.loadTime)}ms` : 'N/A'}
               </span>
             </div>

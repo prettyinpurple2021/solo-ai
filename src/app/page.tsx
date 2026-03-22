@@ -1,29 +1,44 @@
 'use client'
 
-import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
-import { NeuralNetworkCanvas } from '@/components/cyber/NeuralNetworkCanvas'
+import dynamic from 'next/dynamic'
 import { Server, Brain,} from 'lucide-react'
 
-import { 
-  FeaturesSection, 
-  AgentsSection, 
-  PricingSection, 
-  FAQSection,
-  CyberFooter
-} from '@/components/home/landing-sections'
+import { CyberFooter } from '@/components/home/landing-sections'
 import { InlineSSLogo } from '@/components/cyber/InlineSSLogo'
 
-// --- Types & Interfaces ---
+const NeuralNetworkCanvasLazy = dynamic(
+  () =>
+    import('@/components/cyber/NeuralNetworkCanvas').then((m) => ({
+      default: m.NeuralNetworkCanvas,
+    })),
+  {
+    ssr: false,
+    loading: () => (
+      <div
+        className="pointer-events-none fixed inset-0 -z-10 bg-[#020005]"
+        aria-hidden
+      />
+    ),
+  }
+)
+
+const HomeBelowFold = dynamic(() => import('@/components/home/home-below-fold'), {
+  loading: () => (
+    <div
+      className="min-h-[1400px] w-full bg-dark-bg"
+      aria-busy
+      aria-label="Loading page sections"
+    />
+  ),
+})
+
 interface HudMetricProps {
   label: string
   value: string
   status: 'active' | 'stabilizing' | 'offline'
   pcolor: string
 }
-
-// --- Components ---
 
 const HudMetric = ({ label, value, status, pcolor }: HudMetricProps) => (
   <div className="space-y-1 font-mono text-xs tracking-wider">
@@ -34,8 +49,8 @@ const HudMetric = ({ label, value, status, pcolor }: HudMetricProps) => (
       </span>
     </div>
     <div className="h-1 w-full bg-dark-card relative overflow-hidden">
-      <div 
-        className={`absolute top-0 left-0 h-full ${pcolor === 'cyan' ? 'bg-neon-cyan' : 'bg-neon-purple'}`} 
+      <div
+        className={`absolute top-0 left-0 h-full ${pcolor === 'cyan' ? 'bg-neon-cyan' : 'bg-neon-purple'}`}
         style={{ width: status === 'active' ? '100%' : '60%' }}
       >
         {status === 'stabilizing' && (
@@ -93,17 +108,15 @@ const Navbar = () => (
 )
 
 export default function HomePage() {
-  const [, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
   return (
     <main className="min-h-screen bg-dark-bg relative overflow-hidden flex flex-col selection:bg-neon-cyan selection:text-black">
       {/* 1. Global Background Effects */}
-      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none fixed">
-        <NeuralNetworkCanvas particleCount={60} connectionDistance={150} mouseDistance={200} />
+      <div className="pointer-events-none fixed inset-0 z-0 opacity-40">
+        <NeuralNetworkCanvasLazy
+          particleCount={42}
+          connectionDistance={150}
+          mouseDistance={200}
+        />
       </div>
       
       {/* Scanline Effect */}
@@ -119,12 +132,7 @@ export default function HomePage() {
         <div className="max-w-[1240px] px-6 lg:px-8 mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-0 min-h-[calc(100vh-140px)] mb-20">
           
           {/* --- LEFT COLUMN: CONTENT (Text/Headline) --- */}
-          <motion.div 
-            initial={{ opacity: 0, x: -50 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="w-full lg:w-[48%] space-y-8 text-center lg:text-left relative z-20"
-          >
+          <div className="relative z-20 w-full space-y-8 text-center lg:w-[48%] lg:text-left">
             {/* Headline */}
             <div className="space-y-4">
               <div className="inline-block px-3 py-1 mb-2 border border-neon-cyan/30 bg-neon-cyan/10 rounded-sm">
@@ -161,29 +169,10 @@ export default function HomePage() {
                 </button>
               </Link>
             </div>
-
-            {/* Stats Row */}
-            <div className="flex flex-row justify-center lg:justify-start gap-12 border-t border-white/5 pt-8 mt-2">
-              {[
-                { label: 'Active Nodes', value: '10K+' },
-                { label: 'Uptime', value: '99.9%' },
-                { label: 'Tasks', value: '500K+' },
-              ].map((stat, i) => (
-                <div key={i} className="text-center lg:text-left">
-                  <div className="text-2xl font-mono text-white mb-1">{stat.value}</div>
-                  <div className="text-[10px] text-gray-500 uppercase tracking-widest font-mono">{stat.label}</div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+          </div>
 
           {/* --- RIGHT COLUMN: HUD VISUAL --- */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="w-full max-w-lg lg:max-w-full lg:w-[45%] relative z-10"
-          >
+          <div className="relative z-10 w-full max-w-lg lg:w-[45%] lg:max-w-full">
             {/* HUD Container */}
             <div className="relative bg-dark-bg/90 border border-neon-cyan/50 p-6 md:p-8 backdrop-blur-md shadow-[0_0_40px_rgba(11,228,236,0.1)] group hover:border-neon-cyan transition-colors duration-500">
               
@@ -220,26 +209,24 @@ export default function HomePage() {
                    </p>
                 </div>
 
-                {/* Progress Bars */}
                 <div className="space-y-6">
-                  <HudMetric 
-                    label="ACTIVE AGENTS" 
-                    value="8/8 ONLINE" 
-                    status="active" 
-                    pcolor="cyan" 
+                  <HudMetric
+                    label="ACTIVE AGENTS"
+                    value="8/8 ONLINE"
+                    status="active"
+                    pcolor="cyan"
                   />
-                  <HudMetric 
-                    label="SYSTEM SYNC" 
-                    value="OPTIMIZING..." 
-                    status="stabilizing" 
-                    pcolor="purple" 
+                  <HudMetric
+                    label="SYSTEM SYNC"
+                    value="OPTIMIZING..."
+                    status="stabilizing"
+                    pcolor="purple"
                   />
                 </div>
 
-                {/* Terminal Log Output */}
-                <div className="mt-6 p-4 bg-dark-card border border-gray-700 font-mono text-[10px] text-gray-400 rounded-sm h-32 overflow-hidden relative">
-                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent to-dark-bg/90 pointer-events-none" />
-                  <div className="space-y-2 opacity-80">
+                <div className="relative mt-6 h-32 overflow-hidden rounded-sm border border-gray-700 bg-dark-card p-4 font-mono text-[10px] text-gray-400">
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-dark-bg/90" />
+                  <div className="relative space-y-2 opacity-80">
                     <p><span className="text-neon-cyan">{'>'}</span> Initializing intelligence modules...</p>
                     <p><span className="text-neon-cyan">{'>'}</span> Loading business data streams...</p>
                     <p><span className="text-neon-cyan">{'>'}</span> Optimizing agent networks...</p>
@@ -250,14 +237,10 @@ export default function HomePage() {
               </div>
 
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* --- APPENDED SECTIONS --- */}
-        <FeaturesSection />
-        <AgentsSection />
-        <PricingSection />
-        <FAQSection />
+        <HomeBelowFold />
 
       </div>
       

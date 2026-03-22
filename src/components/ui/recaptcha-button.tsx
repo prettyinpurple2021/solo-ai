@@ -70,7 +70,7 @@ export function RecaptchaButton({
     
     if (!isReady) {
       const errorMsg = 'reCAPTCHA not ready. Please wait a moment and try again.'
-      logError('reCAPTCHA not ready. Site key:', RECAPTCHA_CONFIG.siteKey)
+      logError('reCAPTCHA not ready')
       onError?.(errorMsg)
       return
     }

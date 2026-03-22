@@ -1,13 +1,8 @@
 "use client"
-import dynamic from 'next/dynamic'
-import type { ThemeProviderProps } from "next-themes"
-import { useEffect } from "react"
 
-// Dynamically import ThemeProvider to prevent build-time context creation
-const NextThemesProvider = dynamic(
-  () => import("next-themes").then(mod => mod.ThemeProvider),
-  { ssr: false }
-)
+import type { ThemeProviderProps } from "next-themes"
+import { ThemeProvider as NextThemesProvider } from "next-themes"
+import { useEffect } from "react"
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   useEffect(() => {

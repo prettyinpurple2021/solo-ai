@@ -1,5 +1,5 @@
 import { Server as SocketServer } from "socket.io";
-import { logInfo, logError } from "../../utils/logger";
+import { logInfo, logError, caughtToError } from "../../utils/logger";
 import { BoardroomEventSchema, BlackboardUpdateSchema } from "@/shared/schemas";
 import { BlackboardManager } from "../services/boardroom/blackboard";
 import { z } from "zod";
@@ -24,7 +24,9 @@ export function setupBoardroomSocket(io: SocketServer) {
         
         socket.emit("joined", validatedId);
       } catch (error) {
-        logError("Failed to join boardroom session", { error, sessionId });
+        logError("Failed to join boardroom session", caughtToError(error), {
+          sessionId,
+        });
         socket.emit("error", { message: "Invalid session ID" });
       }
     });
@@ -40,7 +42,9 @@ export function setupBoardroomSocket(io: SocketServer) {
         // Broadcast new state to all participants in the session
         boardroomNamespace.to(`session:${sessionId}`).emit("state-updated", newState);
       } catch (error) {
-        logError("Blackboard state update failed", { error, data });
+        logError("Blackboard state update failed", caughtToError(error), {
+          dataSummary: typeof data === "object" ? JSON.stringify(data).slice(0, 500) : String(data),
+        });
         socket.emit("error", { message: "Failed to update collaborative state" });
       }
     });
@@ -57,7 +61,9 @@ export function setupBoardroomSocket(io: SocketServer) {
           boardroomNamespace.emit("event", validatedEvent);
         }
       } catch (error) {
-        logError("Invalid boardroom event received", { error, data });
+        logError("Invalid boardroom event received", caughtToError(error), {
+          dataSummary: typeof data === "object" ? JSON.stringify(data).slice(0, 500) : String(data),
+        });
         socket.emit("error", { message: "Invalid event format" });
       }
     });
