@@ -63,8 +63,8 @@ export class CollaborationService {
       { id: 'blaze', name: 'Blaze', specialization: 'Revenue Growth', status: 'available', capabilities: ['Sales', 'Scaling'] },
       { id: 'vex', name: 'Vex', specialization: 'Operations Efficiency', status: 'available', capabilities: ['Process', 'Automation'] },
       { id: 'lumi', name: 'Lumi', specialization: 'Quality Assurance', status: 'available', capabilities: ['Testing', 'Standards'] },
-      { id: 'ace', name: 'Ace', specialization: 'Sales & Pipeline', status: 'available', capabilities: ['Sales', 'Revenue'] },
-      { id: 'aurara', name: 'Aurara', specialization: 'Brand & Creative', status: 'available', capabilities: ['Brand', 'Creative'] }
+      { id: 'finn', name: 'Finn', specialization: 'Sales & Pipeline', status: 'available', capabilities: ['Sales', 'Revenue'] },
+      { id: 'aura', name: 'Aura', specialization: 'Brand & Creative', status: 'available', capabilities: ['Brand', 'Creative'] }
     ];
     
     return agents;

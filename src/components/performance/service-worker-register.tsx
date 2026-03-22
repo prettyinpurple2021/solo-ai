@@ -16,6 +16,8 @@ export function ServiceWorkerRegister() {
   const [deferredPrompt, setDeferredPrompt] = useState<Event | null>(null)
 
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return
+
     // Check if service worker is supported
     if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
       setIsSupported(true)
@@ -53,6 +55,7 @@ export function ServiceWorkerRegister() {
   }, [])
 
   const registerServiceWorker = async () => {
+    if (typeof navigator === 'undefined') return
     try {
       if ('serviceWorker' in navigator) {
         // Check if service worker is already registered

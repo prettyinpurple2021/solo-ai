@@ -71,6 +71,7 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
   
   // Ensure we reflect real online status on mount (avoid SSR mismatch)
   useEffect(() => {
+    if (typeof navigator === 'undefined') return
     setSyncStatus((prev) => ({ ...prev, isOnline: navigator.onLine }))
     // Keep ref in sync so transitions are detected correctly
     prevOnlineRef.current = navigator.onLine
@@ -348,8 +349,9 @@ const OfflineDataManager = React.forwardRef<OfflineDataManagerRef, OfflineDataMa
     }
   }, [syncStatus.isOnline, syncStatus.isSyncing, pendingActions, onSyncComplete, onSyncError, loadPendingActions, syncAction, removePendingAction, updatePendingActionRetries])
 
-  // Track previous online state to detect offline->online transitions
-  const prevOnlineRef = React.useRef<boolean>(navigator.onLine)
+  // Track previous online state to detect offline->online transitions.
+  // Must not read navigator during SSR (root layout mounts OfflineDataManager on the server).
+  const prevOnlineRef = React.useRef<boolean>(true)
 
   // Listen for online/offline status
   useEffect(() => {

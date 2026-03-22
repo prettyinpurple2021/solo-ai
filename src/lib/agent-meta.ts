@@ -8,8 +8,9 @@ export interface AgentMeta {
   sizes?: Record<string, any>
 }
 
-// Fallback metadata for agents - optimized images in /public/images/optimized/agents/
-// Used when dynamic loading fails or agent is not found in meta.json files
+// Fallback metadata for agents — mostly /public/images/optimized/agents/*.jpg;
+// Aura & Finn use /public/images/agents/*.png (canonical roster avatars).
+// Used when dynamic loading fails or agent is not found in meta.json files.
 // This is client-safe and works in both server and client components
 const fallbackAgentMeta: Record<string, AgentMeta> = {
   roxy: {
@@ -44,13 +45,22 @@ const fallbackAgentMeta: Record<string, AgentMeta> = {
     image: '/images/optimized/agents/nova.jpg',
     alt: 'Nova - Product Innovation Strategist',
   },
+  aura: {
+    image: '/images/agents/aura.png',
+    alt: 'Aura - Brand Presence & Creative Synthesis',
+  },
+  finn: {
+    image: '/images/agents/finn.png',
+    alt: 'Finn - Sales Closer & Pipeline Architect',
+  },
+  // Legacy IDs (older clients / stored rows)
   aurara: {
-    image: '/images/optimized/agents/echo.jpg',
-    alt: 'Aurara - Brand Presence & Creative Synthesis',
+    image: '/images/agents/aura.png',
+    alt: 'Aura - Brand Presence & Creative Synthesis',
   },
   ace: {
-    image: '/images/optimized/agents/blaze.jpg',
-    alt: 'Ace - Sales Closer & Pipeline Architect',
+    image: '/images/agents/finn.png',
+    alt: 'Finn - Sales Closer & Pipeline Architect',
   },
 }
 

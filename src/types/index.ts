@@ -4,8 +4,8 @@ export enum AgentId {
     LEXI = 'LEXI',
     GLITCH = 'GLITCH',
     LUMI = 'LUMI',
-    ACE = 'ACE',
-    AURARA = 'AURARA',
+    FINN = 'FINN',
+    AURA = 'AURA',
     NOVA = 'NOVA',
     BLAZE = 'BLAZE',
     VEX = 'VEX'

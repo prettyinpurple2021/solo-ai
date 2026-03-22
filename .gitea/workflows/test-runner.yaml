@@ -4,7 +4,8 @@ on: [push]
 
 jobs:
   quality-gate:
-    runs-on: ubuntu-latest
+    # Self-hosted Gitea runner (Enchanted NightMare). `ubuntu-latest` only matches GitHub-hosted runners.
+    runs-on: self-hosted
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

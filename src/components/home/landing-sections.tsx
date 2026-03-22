@@ -19,7 +19,7 @@ const features = [
     icon: Sparkles,
     title: "10 Specialized AI Agents",
     description:
-      "Meet Roxy, Blaze, Echo, Lumi, Vex, Lexi, Nova, Glitch, Aurara, and Ace — your personal AI team that never sleeps.",
+      "Meet Roxy, Blaze, Echo, Lumi, Vex, Lexi, Nova, Glitch, Aura, and Finn — your personal AI team that never sleeps.",
   },
   {
     icon: Target,
@@ -98,8 +98,8 @@ const agents = [
   { name: "Vex", role: "Tech & Automation", color: "text-green-400" },
   { name: "Lexi", role: "Data & Analytics", color: "text-yellow-400" },
   { name: "Nova", role: "Innovation & Growth", color: "text-pink-500" },
-  { name: "Aurara", role: "Brand & Creative", color: "text-fuchsia-400" },
-  { name: "Ace", role: "Sales & Pipeline", color: "text-amber-400" },
+  { name: "Aura", role: "Brand & Creative", color: "text-fuchsia-400" },
+  { name: "Finn", role: "Sales & Pipeline", color: "text-amber-400" },
 ]
 
 export const AgentsSection = ({ className }: SectionProps) => {

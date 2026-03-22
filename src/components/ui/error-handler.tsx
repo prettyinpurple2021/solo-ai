@@ -44,6 +44,8 @@ export function ErrorHandler({
   const [retryCount, setRetryCount] = useState(0)
 
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return
+
     const handleOnline = () => setIsOnline(true)
     const handleOffline = () => setIsOnline(false)
 
@@ -440,6 +442,8 @@ export function OfflineIndicator() {
   const [isOnline, setIsOnline] = useState(true)
 
   useEffect(() => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return
+
     const handleOnline = () => setIsOnline(true)
     const handleOffline = () => setIsOnline(false)
 

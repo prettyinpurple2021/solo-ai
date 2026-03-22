@@ -114,18 +114,18 @@ const AI_AGENTS: Agent[] = [
     accent_color: "#EF4444"
   },
   {
-    id: "aurara",
-    name: "aurara",
-    display_name: "Aurara",
+    id: "aura",
+    name: "aura",
+    display_name: "Aura",
     description: "Brand Presence & Creative Synthesis",
     personality: "Visionary, rhythmic, emotionally intelligent storyteller for your founder voice",
     capabilities: ["Brand Narrative", "Campaign Hooks", "Voice & Tone", "Creative Direction"],
     accent_color: "#E879F9"
   },
   {
-    id: "ace",
-    name: "ace",
-    display_name: "Ace",
+    id: "finn",
+    name: "finn",
+    display_name: "Finn",
     description: "Sales Closer & Pipeline Architect",
     personality: "Direct, high-trust closer — discovery, objections, and deal momentum",
     capabilities: ["Outbound Sequences", "Discovery & Demo", "Objection Handling", "Deal Strategy"],
@@ -514,13 +514,13 @@ ${selectedMessageToSave.content}`
                       </div>
                     )
 
-                    // Tier 1: Free Agents (Aurara)
-                    if (agent.id === 'aurara') {
+                    // Tier 1: Free Agents (Aura)
+                    if (agent.id === 'aura') {
                       return card
                     }
 
-                    // Tier 2: Accelerator Agents (Blaze, Glitch, Vex)
-                    if (['blaze', 'glitch', 'vex'].includes(agent.id)) {
+                    // Tier 2: Accelerator Agents — matches subscription-utils ACCELERATOR
+                    if (['blaze', 'glitch', 'vex', 'finn'].includes(agent.id)) {
                       return (
                         <FeatureGate key={agent.id} feature="pro-agents">
                           {card}
@@ -528,7 +528,7 @@ ${selectedMessageToSave.content}`
                       )
                     }
 
-                    // Tier 3: Dominator Agents (Roxy, Lexi, Nova, Echo, Lumi, Ace)
+                    // Tier 3: Dominator Agents (Roxy, Lexi, Nova, Echo, Lumi)
                     return (
                         <FeatureGate key={agent.id} feature="elite-agents">
                           {card}

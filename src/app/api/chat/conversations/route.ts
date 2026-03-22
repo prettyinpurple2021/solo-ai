@@ -26,10 +26,10 @@ function getAgentName(agentId: string): string {
     'glitch': 'Glitch',
     'lumi': 'Lumi',
     'vex': 'Vex',
-    'aurara': 'Aurara',
-    'ace': 'Ace',
     'aura': 'Aura',
     'finn': 'Finn',
+    'aurara': 'Aura',
+    'ace': 'Finn',
     'collaborative': 'Collaborative AI',
     'default': 'AI Assistant'
   }

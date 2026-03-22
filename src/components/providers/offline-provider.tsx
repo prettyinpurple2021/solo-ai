@@ -19,6 +19,8 @@ export function OfflineProvider({ children }: { children: React.ReactNode }) {
     const [isOnline, setIsOnline] = useState(true) // Default to true, will update on mount
 
     useEffect(() => {
+        if (typeof window === 'undefined' || typeof navigator === 'undefined') return
+
         setIsOnline(navigator.onLine)
 
         const handleOnline = () => setIsOnline(true)

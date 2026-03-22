@@ -183,27 +183,34 @@ export function withMobilePWA<T extends object>(Component: React.ComponentType<T
 export const mobileUtils = {
   // Check if device is mobile
   isMobile: () => {
+    if (typeof navigator === 'undefined') return false
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   },
 
   // Check if app is running as PWA
   isPWA: () => {
-    return window.matchMedia('(display-mode: standalone)').matches || 
+    if (typeof window === 'undefined') return false
+    return window.matchMedia('(display-mode: standalone)').matches ||
            (window.navigator as any).standalone === true
   },
 
   // Get device orientation
   getOrientation: () => {
+    if (typeof window === 'undefined') return 'portrait'
     return window.innerHeight > window.innerWidth ? 'portrait' : 'landscape'
   },
 
   // Check if device supports touch
   isTouchDevice: () => {
+    if (typeof window === 'undefined' || typeof navigator === 'undefined') return false
     return 'ontouchstart' in window || navigator.maxTouchPoints > 0
   },
 
   // Get safe area insets for notched devices
   getSafeAreaInsets: () => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') {
+      return { top: 0, right: 0, bottom: 0, left: 0 }
+    }
     const style = getComputedStyle(document.documentElement)
     return {
       top: parseInt(style.getPropertyValue('--safe-area-inset-top') || '0'),

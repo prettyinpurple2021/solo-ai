@@ -122,18 +122,18 @@ const AI_AGENTS: Agent[] = [
     accent_color: "#EF4444"
   },
   {
-    id: "aurara",
-    name: "aurara",
-    display_name: "Aurara",
+    id: "aura",
+    name: "aura",
+    display_name: "Aura",
     description: "Brand Presence & Creative Synthesis",
     personality: "Visionary storyteller for founder voice and market-facing energy",
     capabilities: ["Brand Narrative", "Campaign Hooks", "Voice & Tone", "Creative Direction"],
     accent_color: "#E879F9"
   },
   {
-    id: "ace",
-    name: "ace",
-    display_name: "Ace",
+    id: "finn",
+    name: "finn",
+    display_name: "Finn",
     description: "Sales Closer & Pipeline Architect",
     personality: "Direct, trustworthy closer focused on pipeline and deal momentum",
     capabilities: ["Outbound Sequences", "Discovery & Demo", "Objection Handling", "Deal Strategy"],

@@ -11,6 +11,7 @@ import { logError } from '../utils/logger';
 import { requireSubscription, checkUsage, TIER_LEVELS } from '../middleware/subscription';
 import { UsageTracker } from '../utils/usage-tracker';
 import { DominatorAgentOutputSchema } from '../../src/lib/shared/schemas';
+import { canonicalAgentId } from '../../src/lib/agent-id-normalize';
 
 // --- SCHEMAS ---
 const ChatRequestSchema = z.object({
@@ -310,17 +311,18 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
         const userTier = await UsageTracker.getUserTier(userId);
         const tierLevel = TIER_LEVELS[userTier as keyof typeof TIER_LEVELS] || 0;
 
-        // Define Agent Tiers (Must match frontend logic)
+        // Define Agent Tiers (Must match frontend + subscription-utils AGENT_ACCESS)
         const FREE_AGENTS = ['aura'];
-        const ACCELERATOR_AGENTS = ['blaze', 'glitch', 'vex'];
-        const DOMINATOR_AGENTS = ['roxy', 'lexi', 'nova', 'echo', 'lumi', 'finn'];
+        const ACCELERATOR_AGENTS = ['blaze', 'glitch', 'vex', 'finn'];
+        const DOMINATOR_AGENTS = ['roxy', 'lexi', 'nova', 'echo', 'lumi'];
 
+        const routeAgentId = canonicalAgentId(agentId);
         let requiredTierLevel = 0; // Free
-        if (DOMINATOR_AGENTS.includes(agentId)) {
+        if (DOMINATOR_AGENTS.includes(routeAgentId)) {
             requiredTierLevel = TIER_LEVELS['dominator'];
-        } else if (ACCELERATOR_AGENTS.includes(agentId)) {
+        } else if (ACCELERATOR_AGENTS.includes(routeAgentId)) {
             requiredTierLevel = TIER_LEVELS['accelerator'];
-        } else if (!FREE_AGENTS.includes(agentId)) {
+        } else if (!FREE_AGENTS.includes(routeAgentId)) {
             requiredTierLevel = TIER_LEVELS['dominator'];
         }
 
@@ -337,7 +339,22 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
         const context = await getContext(userId);
         const deepMind = await getDeepMindContext(userId);
 
-        const systemInstruction = SYSTEM_INSTRUCTIONS[agentId as keyof typeof SYSTEM_INSTRUCTIONS] || "You are a helpful AI assistant.";
+        const routeToAgentId: Record<string, AgentId> = {
+            roxy: AgentId.ROXY,
+            echo: AgentId.ECHO,
+            lexi: AgentId.LEXI,
+            glitch: AgentId.GLITCH,
+            lumi: AgentId.LUMI,
+            nova: AgentId.NOVA,
+            blaze: AgentId.BLAZE,
+            vex: AgentId.VEX,
+            aura: AgentId.AURA,
+            finn: AgentId.FINN,
+        };
+        const resolvedAgentEnum = routeToAgentId[routeAgentId];
+        const systemInstruction = resolvedAgentEnum
+            ? SYSTEM_INSTRUCTIONS[resolvedAgentEnum]
+            : "You are a helpful AI assistant.";
 
         const fullSystemInstruction = `
             ${systemInstruction}
@@ -624,8 +641,8 @@ router.post('/tactical-plan', requireAi, async (req: Request, res: Response) => 
             
             ASSIGNABLE AGENTS (Team SoloSuccess):
             - Roxy: Business Coach / Strategy
-            - Aurara: Brand Presence & Creative Synthesis
-            - Ace: Sales Closer & Pipeline Architect
+            - Aura: Brand Presence & Creative Synthesis
+            - Finn: Sales Closer & Pipeline Architect
             - Echo: Marketing & Communication
             - Lexi: Data & Strategic Insights
             - Nova: Product & UX Vision
