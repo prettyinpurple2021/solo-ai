@@ -44,11 +44,9 @@ export function PerformanceMonitor() {
         }
       })
 
-      observer.observe({ type: 'largest-contentful-paint', buffered: true } as PerformanceObserverInit)
-      observer.observe({ entryTypes: ['first-input', 'layout-shift'] })
+      // One observe() call only: multiple observe() configs are not reliable across browsers for the same observer.
+      observer.observe({ entryTypes: ['largest-contentful-paint', 'first-input', 'layout-shift'] })
 
-      // Navigation timing only — do not reset LCP/FCP/CLS (they are updated by observers; a full
-      // replace caused races and made dev LCP look confusing vs. what the browser reported).
       const navigationEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming
       if (navigationEntry) {
         const loadEnd = navigationEntry.loadEventEnd
@@ -93,18 +91,12 @@ export function PerformanceMonitor() {
         return 'border border-amber-500/50 bg-amber-500/15 text-amber-200'
       case 'poor':
         return 'border border-red-500/50 bg-red-500/15 text-red-300'
-      case 'pending':
-        return 'border border-zinc-600 bg-zinc-800/80 text-zinc-400'
       default:
         return 'border border-zinc-600 bg-zinc-800/80 text-zinc-300'
     }
   }
 
-  // LCP === 0 means we have not received an LCP entry yet; do not label that as "good".
-  const lcpScore =
-    metrics.lcp > 0
-      ? getScore(metrics.lcp, { good: 2500, poor: 4000 })
-      : 'pending'
+  const lcpScore = getScore(metrics.lcp, { good: 2500, poor: 4000 })
   const fidScore = getScore(metrics.fid, { good: 100, poor: 300 })
   const clsScore = getScore(metrics.cls, { good: 0.1, poor: 0.25 })
 
@@ -150,7 +142,7 @@ export function PerformanceMonitor() {
           <div className="flex items-center justify-between">
             <span className="text-xs font-medium text-zinc-300">LCP</span>
             <Badge className={`text-xs font-medium ${getScoreColor(lcpScore)}`}>
-              {lcpScore === 'pending' ? 'measuring' : lcpScore.replace('-', ' ')}
+              {lcpScore.replace('-', ' ')}
             </Badge>
           </div>
           <div className="flex items-center gap-2">
