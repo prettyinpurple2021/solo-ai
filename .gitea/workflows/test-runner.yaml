@@ -4,8 +4,9 @@ on: [push]
 
 jobs:
   quality-gate:
-    # Self-hosted Gitea runner (Enchanted NightMare). `ubuntu-latest` only matches GitHub-hosted runners.
-    runs-on: self-hosted
+    # Must match an *online* act_runner label (Site Admin → Actions → Runners, or runner register command).
+    # Default docker runner label is usually `ubuntu-latest`, not `self-hosted`.
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4

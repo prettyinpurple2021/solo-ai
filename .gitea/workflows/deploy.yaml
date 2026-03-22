@@ -7,8 +7,8 @@ on:
 
 jobs:
   deploy-to-vercel:
-    # Same runner as test-runner — must match labels on your Gitea act_runner registration.
-    runs-on: self-hosted
+    # Must match an *online* act_runner label (same as test-runner).
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
