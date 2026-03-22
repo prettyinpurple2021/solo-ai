@@ -2,7 +2,7 @@ $kind: environment
 name: SoloSuccess - Development
 variables:
   - key: baseUrl
-    value: 'https://solosuccessai.fun'
+    value: 'http://localhost:3000'
     enabled: true
   - key: authToken
     value: ''
