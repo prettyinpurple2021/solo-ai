@@ -24,15 +24,15 @@ export const AGENTS = {
   BLAZE: 'blaze',
   VEX: 'vex',
   LUMI: 'lumi',
-  AURA: 'aura', 
-  FINN: 'finn',
+  AURARA: 'aurara',
+  ACE: 'ace',
 } as const;
 
 // 1. Agent Access Rules
 export const AGENT_ACCESS: Record<SubscriptionTier, string[]> = {
-  [TIERS.FREE]: [AGENTS.AURA],
-  [TIERS.LAUNCH]: [AGENTS.AURA],
-  [TIERS.ACCELERATOR]: [AGENTS.AURA, AGENTS.BLAZE, AGENTS.GLITCH, AGENTS.VEX, AGENTS.FINN],
+  [TIERS.FREE]: [AGENTS.AURARA],
+  [TIERS.LAUNCH]: [AGENTS.AURARA],
+  [TIERS.ACCELERATOR]: [AGENTS.AURARA, AGENTS.BLAZE, AGENTS.GLITCH, AGENTS.VEX, AGENTS.ACE],
   [TIERS.DOMINATOR]: Object.values(AGENTS),
 };
 
@@ -209,7 +209,9 @@ export async function canAccessFeature(
  */
 export async function canAccessAgent(userId: string, agentId: string): Promise<boolean> {
   const subscription = await getUserSubscription(userId);
-  const normalizedId = agentId.toLowerCase();
+  let normalizedId = agentId.toLowerCase();
+  if (normalizedId === 'aura') normalizedId = 'aurara';
+  if (normalizedId === 'finn') normalizedId = 'ace';
   return subscription.features.allowedAgents.includes(normalizedId);
 }
 

@@ -120,6 +120,24 @@ const AI_AGENTS: Agent[] = [
     personality: "Root cause investigator, creative problem solver",
     capabilities: ["Five Whys Analysis", "Problem Solving", "Innovation", "Creative Solutions"],
     accent_color: "#EF4444"
+  },
+  {
+    id: "aurara",
+    name: "aurara",
+    display_name: "Aurara",
+    description: "Brand Presence & Creative Synthesis",
+    personality: "Visionary storyteller for founder voice and market-facing energy",
+    capabilities: ["Brand Narrative", "Campaign Hooks", "Voice & Tone", "Creative Direction"],
+    accent_color: "#E879F9"
+  },
+  {
+    id: "ace",
+    name: "ace",
+    display_name: "Ace",
+    description: "Sales Closer & Pipeline Architect",
+    personality: "Direct, trustworthy closer focused on pipeline and deal momentum",
+    capabilities: ["Outbound Sequences", "Discovery & Demo", "Objection Handling", "Deal Strategy"],
+    accent_color: "#FBBF24"
   }
 ]
 

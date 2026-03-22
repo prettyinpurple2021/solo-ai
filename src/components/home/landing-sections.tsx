@@ -17,8 +17,9 @@ interface SectionProps {
 const features = [
   {
     icon: Sparkles,
-    title: "8 Specialized AI Agents",
-    description: "Meet Roxy, Blaze, Echo, Lumi, Vex, Lexi, Nova, and Glitch - your personal AI team that never sleeps.",
+    title: "10 Specialized AI Agents",
+    description:
+      "Meet Roxy, Blaze, Echo, Lumi, Vex, Lexi, Nova, Glitch, Aurara, and Ace — your personal AI team that never sleeps.",
   },
   {
     icon: Target,
@@ -96,7 +97,9 @@ const agents = [
   { name: "Lumi", role: "Legal & Docs Agent", color: "text-blue-400" },
   { name: "Vex", role: "Tech & Automation", color: "text-green-400" },
   { name: "Lexi", role: "Data & Analytics", color: "text-yellow-400" },
-  { name: "Nova", role: "Innovation & Growth", color: "text-pink-500" }
+  { name: "Nova", role: "Innovation & Growth", color: "text-pink-500" },
+  { name: "Aurara", role: "Brand & Creative", color: "text-fuchsia-400" },
+  { name: "Ace", role: "Sales & Pipeline", color: "text-amber-400" },
 ]
 
 export const AgentsSection = ({ className }: SectionProps) => {
@@ -113,7 +116,7 @@ export const AgentsSection = ({ className }: SectionProps) => {
             MEET THE <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-cyan to-neon-purple">SQUAD</span>
           </h2>
           <p className="text-gray-400 max-w-2xl mx-auto">
-            8 specialized AI agents working in perfect sync to accelerate your business growth.
+            10 specialized AI agents working in perfect sync to accelerate your business growth.
           </p>
         </div>
 
@@ -166,7 +169,7 @@ const pricingPlans = [
     price: "$29",
     period: "/month",
     description: "For empire builders",
-    features: ["All 8 Agents", "Unlimited Automations", "24/7 Priority Support", "Custom API Access"],
+    features: ["All 10 Agents", "Unlimited Automations", "24/7 Priority Support", "Custom API Access"],
     highlight: false,
     cta: "Contact Sales"
   },

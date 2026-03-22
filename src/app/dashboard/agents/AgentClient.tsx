@@ -114,22 +114,22 @@ const AI_AGENTS: Agent[] = [
     accent_color: "#EF4444"
   },
   {
-    id: "aura",
-    name: "aura",
-    display_name: "Aura",
-    description: "Wellness & Balance Guardian",
-    personality: "Calm, centered, holistic wellness advocate",
-    capabilities: ["Stress Management", "Work-Life Balance", "Mindfulness", "Burnout Prevention"],
-    accent_color: "#14B8A6"
+    id: "aurara",
+    name: "aurara",
+    display_name: "Aurara",
+    description: "Brand Presence & Creative Synthesis",
+    personality: "Visionary, rhythmic, emotionally intelligent storyteller for your founder voice",
+    capabilities: ["Brand Narrative", "Campaign Hooks", "Voice & Tone", "Creative Direction"],
+    accent_color: "#E879F9"
   },
   {
-    id: "finn",
-    name: "finn",
-    display_name: "Finn",
-    description: "Profit & Cashflow Expert",
-    personality: "Financial wizard, ROI-focused, pragmatic strategist",
-    capabilities: ["Cashflow Analysis", "Profit Optimization", "Financial Modeling", "Expense Audit"],
-    accent_color: "#22C55E"
+    id: "ace",
+    name: "ace",
+    display_name: "Ace",
+    description: "Sales Closer & Pipeline Architect",
+    personality: "Direct, high-trust closer — discovery, objections, and deal momentum",
+    capabilities: ["Outbound Sequences", "Discovery & Demo", "Objection Handling", "Deal Strategy"],
+    accent_color: "#FBBF24"
   }
 ]
 
@@ -514,8 +514,8 @@ ${selectedMessageToSave.content}`
                       </div>
                     )
 
-                    // Tier 1: Free Agents (Aura)
-                    if (agent.id === 'aura') {
+                    // Tier 1: Free Agents (Aurara)
+                    if (agent.id === 'aurara') {
                       return card
                     }
 
@@ -528,7 +528,7 @@ ${selectedMessageToSave.content}`
                       )
                     }
 
-                    // Tier 3: Dominator Agents (Roxy, Lexi, Nova, Echo, Lumi, Finn)
+                    // Tier 3: Dominator Agents (Roxy, Lexi, Nova, Echo, Lumi, Ace)
                     return (
                         <FeatureGate key={agent.id} feature="elite-agents">
                           {card}

@@ -26,7 +26,7 @@ const pricingPlans = [
     price: 'SCALE',
     subtitle: 'Full System Suite',
     features: [
-      '8 Specialized Agents',
+      '10 Specialized Agents',
       'Unlimited Processes',
       'Priority Data Streams',
       'Quantum Encryption+',

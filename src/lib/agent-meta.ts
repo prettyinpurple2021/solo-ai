@@ -44,6 +44,14 @@ const fallbackAgentMeta: Record<string, AgentMeta> = {
     image: '/images/optimized/agents/nova.jpg',
     alt: 'Nova - Product Innovation Strategist',
   },
+  aurara: {
+    image: '/images/optimized/agents/echo.jpg',
+    alt: 'Aurara - Brand Presence & Creative Synthesis',
+  },
+  ace: {
+    image: '/images/optimized/agents/blaze.jpg',
+    alt: 'Ace - Sales Closer & Pipeline Architect',
+  },
 }
 
 // Load agent metadata dynamically from public/agents directory.

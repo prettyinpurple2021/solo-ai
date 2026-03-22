@@ -624,15 +624,15 @@ router.post('/tactical-plan', requireAi, async (req: Request, res: Response) => 
             
             ASSIGNABLE AGENTS (Team SoloSuccess):
             - Roxy: Business Coach / Strategy
-            - Finn: Profit & Cashflow Specialist
-            - Aura: Wellness Guardian / High Performance
-            - Echo: Marketing Guru
-            - Lexi: Legal Eagle
-            - Nova: Product Visionary
-            - Lumi: Compliance & QA
-            - Blaze: Sales & Growth
-            - Glitch: Systems & Tech expert
-            - Vex: Operations Manager
+            - Aurara: Brand Presence & Creative Synthesis
+            - Ace: Sales Closer & Pipeline Architect
+            - Echo: Marketing & Communication
+            - Lexi: Data & Strategic Insights
+            - Nova: Product & UX Vision
+            - Lumi: Compliance & Legal Guardian
+            - Blaze: Growth & Performance
+            - Glitch: QA & Root-Cause Problem Solving
+            - Vex: Technical Architecture & Systems
             
             Return a JSON array of tasks that efficiently utilize these specialists.
         `;

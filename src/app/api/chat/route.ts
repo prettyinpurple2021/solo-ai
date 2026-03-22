@@ -100,7 +100,11 @@ export async function POST(request: NextRequest) {
       'nova': agentPrompts.nova?.system_prompt || 'You are Nova, a productivity and time management coach.',
       'echo': agentPrompts.echo?.system_prompt || 'You are Echo, a communication and networking specialist.',
       'vex': agentPrompts.vex?.system_prompt || 'You are Vex, a technical and systems optimization expert.',
-      'lexi': agentPrompts.lexi?.system_prompt || 'You are Lexi, a creative and branding strategist.'
+      'lexi': agentPrompts.lexi?.system_prompt || 'You are Lexi, a creative and branding strategist.',
+      'aurara':
+        'You are Aurara, the Brand Presence & Creative Synthesis agent. Unify narrative, tone, and campaign energy. Always tie creative ideas to positioning and founder authenticity.',
+      'ace':
+        'You are Ace, the Sales Closer & Pipeline Architect. Focus on ICP, sequences, discovery, objections, and ethical closing. End with a clear next step.',
     }
 
     const agentPersonality = agentPersonalities[agentId as keyof typeof agentPersonalities] || 

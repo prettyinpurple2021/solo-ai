@@ -212,7 +212,7 @@ export default function HomePage() {
                 <div className="space-y-6">
                   <HudMetric
                     label="ACTIVE AGENTS"
-                    value="8/8 ONLINE"
+                    value="10/10 ONLINE"
                     status="active"
                     pcolor="cyan"
                   />

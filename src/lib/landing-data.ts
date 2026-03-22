@@ -205,6 +205,44 @@ export const aiAgents: AIAgent[] = [
     isVoiceEnabled: true,
     specialties: ['UI/UX Design', 'Wireframing', 'Design Systems', 'User Experience'],
   },
+  {
+    id: 'aurara',
+    name: 'Aurara',
+    role: 'Brand Presence & Creative Synthesis',
+    specialty: 'Narrative, Voice & Campaign Energy',
+    image: getAgentMeta('aurara')?.image || '/images/agents/aurara.png',
+    description:
+      'Unifies your founder story, visual rhythm, and market-facing voice so prospects feel a single, unmistakable brand.',
+    skills: ['Brand Narrative', 'Positioning', 'Campaign Hooks', 'Voice & Tone', 'Creative Direction'],
+    personality: {
+      tone: 'Expressive and intuitive',
+      approach: 'Synthesis-first, emotionally intelligent',
+      strengths: ['Story architecture', 'Cross-channel consistency', 'Founder-authentic messaging'],
+    },
+    color: 'from-fuchsia-500 to-pink-500',
+    avatar: getAgentMeta('aurara')?.image || '/images/agents/aurara.png',
+    isVoiceEnabled: true,
+    specialties: ['Brand Narrative', 'Positioning', 'Campaign Hooks', 'Voice & Tone', 'Creative Direction'],
+  },
+  {
+    id: 'ace',
+    name: 'Ace',
+    role: 'Sales Closer & Pipeline Architect',
+    specialty: 'Outbound, Discovery & Deal Velocity',
+    image: getAgentMeta('ace')?.image || '/images/agents/ace.png',
+    description:
+      'Builds repeatable revenue motion: ICP clarity, sequences, discovery, objections, and ethical closing pressure.',
+    skills: ['Outbound Sequences', 'Discovery Calls', 'Objection Handling', 'Proposals', 'Deal Strategy'],
+    personality: {
+      tone: 'Direct and trustworthy',
+      approach: 'Process-driven, metrics-aware',
+      strengths: ['Pipeline design', 'Negotiation framing', 'Next-step accountability'],
+    },
+    color: 'from-amber-500 to-orange-500',
+    avatar: getAgentMeta('ace')?.image || '/images/agents/ace.png',
+    isVoiceEnabled: true,
+    specialties: ['Outbound Sequences', 'Discovery Calls', 'Objection Handling', 'Proposals', 'Deal Strategy'],
+  },
 ]
 
 export interface FAQ {

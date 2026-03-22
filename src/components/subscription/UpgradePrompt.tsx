@@ -18,13 +18,13 @@ const TIER_DETAILS: Record<Tier, { name: string; icon: any; color: string; benef
         name: 'Launch', 
         icon: Rocket, 
         color: 'text-neon-cyan',
-        benefits: ['100 Conversations/day', 'Aura AI Agent', '50MB Storage']
+        benefits: ['100 Conversations/day', 'Aurara AI Agent', '50MB Storage']
     },
     accelerator: { 
         name: 'Accelerator', 
         icon: Zap, 
         color: 'text-neon-purple',
-        benefits: ['Unlimited Conversations', '8 AI Agents', 'Advanced Incinerator', '1GB Storage']
+        benefits: ['Unlimited Conversations', '10 AI Agents', 'Advanced Incinerator', '1GB Storage']
     },
     dominator: { 
         name: 'Dominator', 
