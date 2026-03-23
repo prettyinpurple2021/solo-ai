@@ -71,14 +71,22 @@ jobs:
           VERCEL_ORG_ID: "team_08fevWvXfZL6nNdSQmcxlIaK"
           VERCEL_PROJECT_ID: "prj_dcQO7rZFCxxwHnxaorYGiyItkj8B"
 
+      - name: Railway API via GitHub (CLI skipped)
+        if: ${{ secrets.RAILWAY_USE_CLI_DEPLOY == 'false' || secrets.RAILWAY_USE_CLI_DEPLOY == '0' }}
+        run: echo "RAILWAY_USE_CLI_DEPLOY is off — deploy the Express API from the GitHub mirror in Railway; see .gitea/README.md."
+
       - name: Install Railway CLI
+        if: ${{ secrets.RAILWAY_USE_CLI_DEPLOY != 'false' && secrets.RAILWAY_USE_CLI_DEPLOY != '0' }}
         run: npm install -g @railway/cli
 
       # Deploy from job cwd (repo root). Do not pass `.` as PATH — Railway CLI then sets archive prefix to absolute cwd while walking `.`, and strip_prefix fails with "prefix not found".
       # server/Dockerfile + railway.toml need repo root context. Skips if secrets are unset — see .gitea/README.md.
       # If Railway already auto-deploys from a Git repo, do NOT add these secrets (avoid double deploys).
       - name: Deploy Express API to Railway
+        if: ${{ secrets.RAILWAY_USE_CLI_DEPLOY != 'false' && secrets.RAILWAY_USE_CLI_DEPLOY != '0' }}
         env:
+          # Set RAILWAY_USE_CLI_DEPLOY=false when the API deploys from GitHub (mirror) — avoids double deploy + CLI upload timeouts.
+          RAILWAY_USE_CLI_DEPLOY: ${{ secrets.RAILWAY_USE_CLI_DEPLOY }}
           # Project deploy token uses RAILWAY_TOKEN; personal/account tokens often need RAILWAY_API_TOKEN (same secret value is fine).
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
@@ -87,6 +95,12 @@ jobs:
           RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}
         run: |
           set -e
+          case "${RAILWAY_USE_CLI_DEPLOY}" in
+            false|FALSE|0)
+              echo "Skipping Railway CLI deploy: RAILWAY_USE_CLI_DEPLOY is disabled (API should deploy via GitHub mirror — see .gitea/README.md)."
+              exit 0
+              ;;
+          esac
           if [ -z "${RAILWAY_TOKEN}" ] || [ -z "${RAILWAY_PROJECT_ID}" ] || [ -z "${RAILWAY_ENVIRONMENT}" ] || [ -z "${RAILWAY_SERVICE}" ]; then
             echo "Skipping Railway deploy: set Gitea repository secrets RAILWAY_TOKEN, RAILWAY_PROJECT_ID, RAILWAY_ENVIRONMENT, RAILWAY_SERVICE (see .gitea/README.md)."
             exit 0

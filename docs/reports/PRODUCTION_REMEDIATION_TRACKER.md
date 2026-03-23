@@ -53,6 +53,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 - **Gitea → Railway:** `deploy.yaml` uses **`railway up --ci`** with no path argument; **`railway up .`** caused CLI tarball **`prefix not found`** (walk root `.` vs absolute `archive_prefix_path` in `@railway/cli`).
 - **Railway CLI indexing on Linux:** `.agent/skills/gemini-api-dev` was a **git-tracked symlink** to an **absolute Windows path**, so Gitea runners failed during `Indexing...` with `No such file or directory`. **Fix:** removed that path from version control (ignore entry + canonical content remains under `.agents/skills/gemini-api-dev`) and added **`.agent`** / **`.cursor`** to **`.railwayignore`** so deploy uploads skip dev-only trees.
 - **Railway `railway up` upload timeout:** `@railway/cli` uses a **30s** `reqwest` timeout; full-monorepo gzip uploads exceeded it (`operation timed out` on `backboard.railway.com/.../up`). **Fix:** expanded **`.railwayignore`** to match **`server/Dockerfile`** `COPY` inputs only (trim `src/lib` to `shared/` + `agent-id-normalize.ts`, drop `server/dist`, tests, Postman, etc.) and **retry `railway up` 3×** in **`.gitea/workflows/deploy.yaml`**.
+- **Gitea + Railway without CLI:** Documented **GitHub push mirror → Railway Git deploy** in **`.gitea/README.md`**; added optional secret **`RAILWAY_USE_CLI_DEPLOY=false`** and workflow **`if:`** guards so the pipeline skips **`railway up`** when the API is deployed from GitHub (avoids double deploy with mirror + CLI).
 
 ### 2026-03-21
 

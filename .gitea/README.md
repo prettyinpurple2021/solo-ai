@@ -8,7 +8,36 @@ This directory contains the necessary configurations for our transition from Git
   - `test-runner.yaml` — lint, typecheck, tests, production build on every push.
   - `deploy.yaml` — on push to `main`: quality gates + **Vercel** (Next.js) + optional **Railway** (Express `server/`).
 
-### Railway from Gitea (optional, “wired in code”)
+### Railway: pick **one** deploy path (important)
+
+| Mode | What happens | Gitea secrets |
+|------|----------------|---------------|
+| **A. CLI from Gitea** | After Vercel, `railway up` uploads a tarball (30s HTTP limit in official CLI). | All four `RAILWAY_*` below; leave `RAILWAY_USE_CLI_DEPLOY` **unset** or `true`. |
+| **B. Git via GitHub mirror (recommended for Gitea)** | You push to Gitea → mirror updates GitHub → Railway builds from GitHub (no tarball). | Add **`RAILWAY_USE_CLI_DEPLOY`** = `false` and **remove** (or never set) the four `RAILWAY_*` secrets so the workflow does not also run `railway up`. |
+
+**Never** use A and B on the **same** Railway service or you get **double deploys**.
+
+---
+
+### B) GitHub mirror + Railway (step by step)
+
+Use this when Gitea is your main remote but Railway only integrates with **GitHub**.
+
+1. **GitHub:** Create an empty repository (e.g. `your-org/SoloSuccess-AI-mirror`), default branch **`main`** (match Gitea).
+2. **GitHub PAT:** [Fine-grained or classic token](https://github.com/settings/tokens) with **`Contents: Read and write`** on that repo (classic: `repo` scope).
+3. **Gitea mirror:** Open your **Gitea** repo → **Settings** → **Repository** → **Mirrors** (or **Push Mirror**, depending on version) → add remote:
+   - URL form: `https://github.com/OWNER/REPO.git`
+   - Authentication: your GitHub username + PAT (or embed `https://USER:TOKEN@github.com/OWNER/REPO.git` if your Gitea version requires it).
+   - Enable **push** mirroring on **`main`** (or “sync now” after each push until you confirm auto-sync).
+4. **Verify:** Push a commit to Gitea `main` → confirm the same commit appears on GitHub `main` within a minute or two.
+5. **Railway:** Project → your **API service** → **Settings** → connect **GitHub** → choose the **mirror** repo → branch **`main`**. Railway reads repo-root **`railway.toml`**, which sets **`dockerfilePath = "server/Dockerfile"`** (build context = repo root). No need to set a separate “Dockerfile path” unless the dashboard overrides it.
+6. **Gitea Actions:** Add repository secret **`RAILWAY_USE_CLI_DEPLOY`** = `false` (exact). **Delete** `RAILWAY_TOKEN`, `RAILWAY_PROJECT_ID`, `RAILWAY_ENVIRONMENT`, and `RAILWAY_SERVICE` if you had them, so the deploy job stays green and only Railway-on-GitHub deploys the API.
+
+First deploy after connecting GitHub may require you to click **Deploy** once in Railway; afterwards pushes to GitHub (via mirror) trigger builds.
+
+---
+
+### A) Railway from Gitea via CLI (optional)
 
 After a successful Vercel deploy, `deploy.yaml` runs `railway up --ci` from the **repository root** (no path argument — using `.` breaks the CLI tarball step with `prefix not found`). Ensure **`railway.toml`** and **`server/Dockerfile`** are in the repo; Railway **Root Directory** = repo root, **Dockerfile** = `server/Dockerfile` if not using config-as-code. Add these **repository secrets** in Gitea (**Settings → Actions → Secrets**):
 
@@ -21,7 +50,9 @@ After a successful Vercel deploy, `deploy.yaml` runs `railway up --ci` from the 
 
 If **any** of these four are missing, the workflow **skips** Railway and only deploys Vercel (no failure).
 
-**Do not** enable this **and** Railway’s own “deploy from Git” on the same service, or every push can trigger **two** deploys. Pick one: **Gitea → Railway CLI** (secrets above) **or** Railway’s built-in Git integration.
+Optional explicit opt-out without deleting secrets: set **`RAILWAY_USE_CLI_DEPLOY`** to **`false`** — the Railway CLI step exits immediately (use with **mirror + GitHub** mode above).
+
+**Do not** enable CLI deploy **and** Railway’s “deploy from Git” on the **same** service, or every push can trigger **two** deploys.
 
 ### If Railway step fails with `Unauthorized`
 
@@ -67,5 +98,5 @@ That is the **npm registry connection dropping** inside the runner container (fl
 The project is currently being migrated to a Gitea-hosted repository to ensure complete ownership and privacy of the SoloSuccess AI codebase. All CI/CD processes are being transitioned to Gitea Actions.
 
 ---
-**Last Updated:** December 30, 2025
+**Last Updated:** March 23, 2026  
 **Status:** In Progress
