@@ -1,4 +1,6 @@
 node_modules
+.agent
+.cursor
 .next
 out
 build

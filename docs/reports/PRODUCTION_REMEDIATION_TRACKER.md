@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-21
+Last updated: 2026-03-23
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -51,6 +51,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 - **Railway:** Renamed root Next.js container file to **`Dockerfile.next`** (updated `docker-compose.yml`, `docs/deployment/DOCKER.md`) so Railway no longer auto-selects the frontend `Dockerfile` instead of **`server/Dockerfile`** / **`railway.toml`**.
 - **Gitea → Railway:** `deploy.yaml` uses **`railway up --ci`** with no path argument; **`railway up .`** caused CLI tarball **`prefix not found`** (walk root `.` vs absolute `archive_prefix_path` in `@railway/cli`).
+- **Railway CLI indexing on Linux:** `.agent/skills/gemini-api-dev` was a **git-tracked symlink** to an **absolute Windows path**, so Gitea runners failed during `Indexing...` with `No such file or directory`. **Fix:** removed that path from version control (ignore entry + canonical content remains under `.agents/skills/gemini-api-dev`) and added **`.agent`** / **`.cursor`** to **`.railwayignore`** so deploy uploads skip dev-only trees.
 
 ### 2026-03-21
 

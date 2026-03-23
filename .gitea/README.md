@@ -30,6 +30,10 @@ If **any** of these four are missing, the workflow **skips** Railway and only de
 3. **Trim IDs:** `RAILWAY_PROJECT_ID` and `RAILWAY_SERVICE` must be plain UUIDs/IDs — no URL path, no spaces. `RAILWAY_ENVIRONMENT` must match the dropdown **exactly** (e.g. `production`).
 4. The workflow sets **both** `RAILWAY_TOKEN` and `RAILWAY_API_TOKEN` from the same Gitea secret so either token type works with current CLI versions.
 
+### If Railway step fails during `Indexing...` (Linux runner)
+
+`railway up` walks the repo; **broken symlinks** (e.g. Windows-absolute paths in git) cause `No such file or directory`. The repo uses **`.railwayignore`** to exclude dev-only trees (`.agent`, `.cursor`, etc.). Do not commit symlinks that point outside the clone or use machine-specific absolute paths.
+
 ### Run a workflow without committing
 
 There is **no** one global CLI like `vercel --prod` for Gitea itself. After `workflow_dispatch` is in the YAML (see `deploy.yaml` / `test-runner.yaml`):

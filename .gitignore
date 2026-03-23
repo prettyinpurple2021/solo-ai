@@ -25,6 +25,9 @@ dist-ssr
 server/.env
 server/.env.local
 
+# Local symlink only (canonical skill is .agents/skills/gemini-api-dev); absolute symlinks break Linux CI
+.agent/skills/gemini-api-dev
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
