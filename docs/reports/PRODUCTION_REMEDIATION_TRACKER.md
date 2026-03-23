@@ -32,7 +32,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 - Removed unused **Fly.io** (`fly.toml`) and **Render** (`render.yaml`) configs from the repo. Production target for this project is **Vercel (frontend) + Railway (backend API)**; README and `env.example` headers updated to match.
 - Added **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](../deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** — explicit map of which env vars belong on Vercel, Railway, or both.
-- **Gitea `deploy.yaml`:** optional `railway up` for `server/` when `RAILWAY_*` secrets are set (see `.gitea/README.md`); avoids double-deploy with Railway Git integration.
+- **Gitea `deploy.yaml`:** optional `railway up .` when `RAILWAY_*` secrets are set (see `.gitea/README.md`); avoids double-deploy with Railway Git integration.
 
 ### 2026-03-18
 
@@ -50,6 +50,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 ### 2026-03-21
 
 - Completed **MED-001–MED-004**: Node 20 in Gitea workflows + `package.json` engines; removed API-route `CREATE TABLE` patterns; moved `GlobalSearch` out of `archive/`; audit report now defers live status to this tracker.
+- **Railway API Docker:** `server/Dockerfile` now builds from **repo root** (copies `server/` plus `src/lib/shared`, `src/types`, `src/lib/agent-id-normalize.ts`); declared missing API deps (`drizzle-orm`, `ai`, `@ai-sdk/google`); `server/tsconfig` excludes shared tests and pins `drizzle-orm`/`zod` to `server/node_modules`; shared `users` schema no longer imports `next-auth` types. Gitea `railway up .` (was `railway up server --path-as-root`). **Dual `drizzle-orm` types:** root `tsconfig.json` maps `drizzle-orm` to `./node_modules/drizzle-orm`; Next routes that use `@/server/db` import schema from `@/server/db/schema` and operators from `@/server/db`; `server/db` re-exports `count`. Verified: `docker build -f server/Dockerfile .`, `cd server && npm run build`, `npm run validate`.
 
 ## Critical remediation queue
 

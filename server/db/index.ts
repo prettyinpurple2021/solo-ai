@@ -94,4 +94,4 @@ export async function closeServerDatabasePool(): Promise<void> {
 }
 
 // Re-export common operators to avoid "dual package hazard"
-export { eq, gt, lt, gte, lte, ne, isNull, isNotNull, inArray, notInArray, exists, notExists, and, or, not, asc, desc, sql } from 'drizzle-orm';
+export { eq, gt, lt, gte, lte, ne, isNull, isNotNull, inArray, notInArray, exists, notExists, and, or, not, asc, desc, sql, count } from 'drizzle-orm';

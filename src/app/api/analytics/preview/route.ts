@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/server/db';
-import { users, usageTracking } from '@/shared/db/schema';
-import { sql, eq, gte, and, count, lt } from 'drizzle-orm';
+import { db, sql, eq, gte, and, count, lt } from '@/server/db';
+import { users, usageTracking } from '@/server/db/schema';
 import { auth } from '@/lib/auth';
 import { logError } from '@/lib/logger';
 

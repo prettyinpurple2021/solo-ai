@@ -1,6 +1,8 @@
 import { uuid, integer, pgTable, varchar, text, timestamp, boolean, jsonb, decimal, index, uniqueIndex, foreignKey, primaryKey, pgEnum } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
-import { type AdapterAccount } from "next-auth/adapters" // Assuming this is needed if strictly typing, but Drizzle usually infers.
+
+/** NextAuth adapter account `type` — kept local so shared schema compiles without a `next-auth` dependency (e.g. Express API Docker image). */
+type AuthAdapterAccountType = 'oauth' | 'oidc' | 'email' | 'credentials' | 'webauthn';
 
 // Users table - NextAuth compatible
 export const users = pgTable('users', {
@@ -45,7 +47,7 @@ export const accounts = pgTable(
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    type: text("type").$type<AdapterAccount["type"]>().notNull(),
+    type: text("type").$type<AuthAdapterAccountType>().notNull(),
     provider: text("provider").notNull(),
     providerAccountId: text("providerAccountId").notNull(),
     refresh_token: text("refresh_token"),

@@ -2,9 +2,8 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
-import { db } from '@/server/db';
-import { users } from '@/shared/db/schema';
-import { eq } from 'drizzle-orm';
+import { db, eq } from '@/server/db';
+import { users } from '@/server/db/schema';
 import { logError, logInfo } from '@/lib/logger';
 
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;

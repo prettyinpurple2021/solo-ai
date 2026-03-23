@@ -1,10 +1,9 @@
 
 import { NextResponse } from 'next/server';
-import { db } from '@/server/db';
+import { db, eq, sql, count, and, gte, desc } from '@/server/db';
 import { logError } from '@/lib/logger';
-import { tasks, goals } from '@/shared/db/schema';
+import { tasks, goals } from '@/server/db/schema';
 import { auth } from '@/lib/auth';
-import { eq, sql, count, and, gte, desc } from 'drizzle-orm';
 
 export async function POST(req: Request) {
   try {

@@ -10,7 +10,7 @@ This directory contains the necessary configurations for our transition from Git
 
 ### Railway from Gitea (optional, “wired in code”)
 
-After a successful Vercel deploy, `deploy.yaml` can run `railway up` on the `server/` directory. Add these **repository secrets** in Gitea (**Settings → Actions → Secrets**):
+After a successful Vercel deploy, `deploy.yaml` runs `railway up .` from the **repository root** so `server/Dockerfile` can include shared `src/` files. In Railway, set **Root Directory** to the repo root (leave empty / `.`) and **Dockerfile** to `server/Dockerfile`. Add these **repository secrets** in Gitea (**Settings → Actions → Secrets**):
 
 | Secret | Where to get it |
 |--------|------------------|

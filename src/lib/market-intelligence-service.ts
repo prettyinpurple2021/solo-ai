@@ -1,7 +1,6 @@
 import { logError, logInfo, logWarn } from './logger'
-import { db } from '@/server/db'
-import { marketIntelligenceCache, competitorNewsArticles, competitorSocialMentions } from '@/shared/db/schema'
-import { eq, and, gte } from 'drizzle-orm'
+import { db, eq, and, gte } from '@/server/db'
+import { marketIntelligenceCache, competitorNewsArticles, competitorSocialMentions } from '@/server/db/schema'
 import { nanoid } from 'nanoid'
 
 /**

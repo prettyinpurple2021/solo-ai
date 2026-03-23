@@ -34,13 +34,13 @@ Go to [railway.app](https://railway.app) and log in.
 
 ## Step 3 — Service already there vs new project
 
-**If the service already exists** (one **SoloSuccess AI** card): open it → **Settings** → confirm **Root Directory** is **`server`** (or your deploy uses `server/Dockerfile`). You can skip “create project” steps.
+**If the service already exists** (one **SoloSuccess AI** card): open it → **Settings** → **Root Directory** must be the **repository root** (empty or `.`), not `server`. Set **Dockerfile** to **`server/Dockerfile`** so the image build can copy shared `src/lib/shared` and related paths. You can skip “create project” steps.
 
 **If you are creating from scratch:**
 
 1. **New Project** → connect a repository Railway supports **or** use **Empty Project** / **Docker** / **Railway CLI** if your code lives only on Gitea (Railway’s built-in picker is often GitHub/GitLab; Gitea-only flows commonly use a **mirror**, **CLI**, or **container registry**).
-2. Set **Root Directory** to **`server`** when the repo is this monorepo.
-3. Deploy — Railway should use `server/Dockerfile` when present.
+2. Set **Root Directory** to **repo root** (leave blank / `.`) and **Dockerfile** to **`server/Dockerfile`** (this monorepo’s API image needs both `server/` and `src/`).
+3. Deploy.
 
 ## Step 4 — Add Environment Variables in Railway
 Once deployed, click on your service → **"Variables"** tab → add each one:

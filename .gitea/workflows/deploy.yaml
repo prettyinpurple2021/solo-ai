@@ -74,7 +74,7 @@ jobs:
       - name: Install Railway CLI
         run: npm install -g @railway/cli
 
-      # Pushes the server/ folder to Railway (Dockerfile build). Skips if secrets are unset — see .gitea/README.md.
+      # Pushes the repo root so server/Dockerfile can COPY monorepo src/ paths; set Railway Dockerfile path to server/Dockerfile and root directory to repo root (.). Skips if secrets are unset — see .gitea/README.md.
       # If Railway already auto-deploys from a Git repo, do NOT add these secrets (avoid double deploys).
       - name: Deploy Express API to Railway
         env:
@@ -90,7 +90,7 @@ jobs:
             echo "Skipping Railway deploy: set Gitea repository secrets RAILWAY_TOKEN, RAILWAY_PROJECT_ID, RAILWAY_ENVIRONMENT, RAILWAY_SERVICE (see .gitea/README.md)."
             exit 0
           fi
-          railway up server --ci --path-as-root \
+          railway up . --ci \
             --project "${RAILWAY_PROJECT_ID}" \
             --environment "${RAILWAY_ENVIRONMENT}" \
             --service "${RAILWAY_SERVICE}"

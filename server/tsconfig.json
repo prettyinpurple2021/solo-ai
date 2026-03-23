@@ -19,16 +19,25 @@
             ],
             "@/shared/*": [
                 "../src/lib/shared/*"
+            ],
+            "drizzle-orm": [
+                "./node_modules/drizzle-orm"
+            ],
+            "drizzle-orm/*": [
+                "./node_modules/drizzle-orm/*"
+            ],
+            "zod": [
+                "./node_modules/zod"
             ]
         }
     },
     "include": [
         "./**/*.ts",
-        "../src/lib/shared/**/*.ts",
-        "../src/db/**/*.ts"
+        "../src/lib/shared/**/*.ts"
     ],
     "exclude": [
         "node_modules",
-        "dist"
+        "dist",
+        "../src/**/*.test.ts"
     ]
 }
