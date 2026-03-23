@@ -1,6 +1,14 @@
+# Shrink `railway up` uploads: @railway/cli uses a fixed 30s HTTP timeout on the upload
+# request (reqwest Client::builder().timeout(30s)); large tarballs fail with "operation timed out".
+# Include only what server/Dockerfile needs from the repo root besides server/:
+#   src/lib/shared/**, src/types/**, src/lib/agent-id-normalize.ts
+
 node_modules
 .agent
+.agents
 .cursor
+.gemini
+.postman
 .next
 out
 build
@@ -10,9 +18,38 @@ build
 docs
 public
 scripts
+test
+tests
+postman
+coverage
+e2e
+playwright-report
+railway-deploy
+.storybook
+conductor
+content
+data
+drizzle
+dynamic
+examples
+migrations
+
 src/app
 src/components
 src/hooks
 src/styles
-*/*.test.ts
-*/*.spec.ts
+src/db
+src/sanity
+src/services
+
+# Everything under src/lib except shared/ and agent-id-normalize.ts
+src/lib/*
+!src/lib/shared/
+!src/lib/shared/**
+!src/lib/agent-id-normalize.ts
+
+**/*.test.ts
+**/*.spec.ts
+**/__tests__
+
+server/dist

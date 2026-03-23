@@ -34,6 +34,10 @@ If **any** of these four are missing, the workflow **skips** Railway and only de
 
 `railway up` walks the repo; **broken symlinks** (e.g. Windows-absolute paths in git) cause `No such file or directory`. The repo uses **`.railwayignore`** to exclude dev-only trees (`.agent`, `.cursor`, etc.). Do not commit symlinks that point outside the clone or use machine-specific absolute paths.
 
+### If Railway fails with `operation timed out` on `backboard.railway.com` / `.../environment/.../up`
+
+The official **`@railway/cli` HTTP client uses a 30-second timeout** on requests, including the gzip upload. Large monorepo tarballs often exceed that. This repo trims **`.railwayignore`** to the files **`server/Dockerfile`** actually `COPY`s (plus `railway.toml`). The deploy workflow also **retries `railway up` up to 3 times** with backoff. If it still fails, use **Railway’s Git integration** for the API service instead of CLI from Gitea, or run deploy from a network with faster egress to Railway.
+
 ### Run a workflow without committing
 
 There is **no** one global CLI like `vercel --prod` for Gitea itself. After `workflow_dispatch` is in the YAML (see `deploy.yaml` / `test-runner.yaml`):

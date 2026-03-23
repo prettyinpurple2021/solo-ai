@@ -91,7 +91,18 @@ jobs:
             echo "Skipping Railway deploy: set Gitea repository secrets RAILWAY_TOKEN, RAILWAY_PROJECT_ID, RAILWAY_ENVIRONMENT, RAILWAY_SERVICE (see .gitea/README.md)."
             exit 0
           fi
-          railway up --ci \
-            --project "${RAILWAY_PROJECT_ID}" \
-            --environment "${RAILWAY_ENVIRONMENT}" \
-            --service "${RAILWAY_SERVICE}"
+          # Railway CLI hard-codes a ~30s HTTP timeout on upload; slow links need a small tarball (.railwayignore) + retries.
+          attempt=1
+          max=3
+          while [ "$attempt" -le "$max" ]; do
+            if railway up --ci \
+              --project "${RAILWAY_PROJECT_ID}" \
+              --environment "${RAILWAY_ENVIRONMENT}" \
+              --service "${RAILWAY_SERVICE}"; then
+              exit 0
+            fi
+            echo "railway up failed (attempt ${attempt} of ${max}) — network or upload timeout; retrying after backoff"
+            attempt=$((attempt + 1))
+            sleep 45
+          done
+          exit 1
