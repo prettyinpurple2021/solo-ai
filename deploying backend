@@ -14,9 +14,9 @@ Push to **your** Git remote (this project may use **Gitea**, not GitHub). Railwa
 
 ## How this repo connects to Railway (important)
 
-**Optional — wired in CI:** If you add the four Railway secrets documented in [`.gitea/README.md`](.gitea/README.md), [`.gitea/workflows/deploy.yaml`](.gitea/workflows/deploy.yaml) runs `railway up . --ci` from the repo root after each successful **main** branch deploy to Vercel. If those secrets are **not** set, the workflow skips Railway (no error).
+**Optional — wired in CI:** If you add the four Railway secrets documented in [`.gitea/README.md`](.gitea/README.md), [`.gitea/workflows/deploy.yaml`](.gitea/workflows/deploy.yaml) runs `railway up --ci` from the repo root after each successful **main** branch deploy to Vercel (do not use `railway up .` — it triggers Railway CLI `prefix not found`). If those secrets are **not** set, the workflow skips Railway (no error).
 
-**CLI from your PC:** Run `railway up` from the **repository root**. The repo includes **[`railway.toml`](railway.toml)** (API → **`server/Dockerfile`**). The Next.js image is **`Dockerfile.next`** (not named `Dockerfile`) so Railway’s auto-detector does not grab the frontend by mistake.
+**CLI from your PC:** From the **repository root**, run **`railway up`** or **`railway up --ci`** — avoid **`railway up .`** (`prefix not found` in the CLI). The repo includes **[`railway.toml`](railway.toml)** (API → **`server/Dockerfile`**). The Next.js image is **`Dockerfile.next`** so Railway’s auto-detector does not grab the frontend by mistake.
 
 Otherwise the codebase still does not record whether you use a **Git mirror**, **manual CLI**, or **registry** — that is whatever you configured in the Railway dashboard. Do **not** use both Railway’s Git auto-deploy **and** the Gitea `railway up` step on the same service (double deploys).
 
