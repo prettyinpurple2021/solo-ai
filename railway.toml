@@ -1,4 +1,4 @@
-# Express API (server/). Root Dockerfile is the Next.js app for Vercel — without this, Railway builds the wrong image.
+# Express API (server/). Next.js uses Dockerfile.next at repo root (not `Dockerfile`) so Railway does not auto-pick the wrong image.
 [build]
 builder = "DOCKERFILE"
 dockerfilePath = "server/Dockerfile"

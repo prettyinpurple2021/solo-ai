@@ -207,7 +207,7 @@ export async function POST(request: NextRequest) {
 
 ### Deployment
 
-- `Dockerfile` - Container configuration
+- `Dockerfile.next` - Next.js container configuration (repo root)
 - `cloudbuild.yaml` - Google Cloud Build
 - `deploy-gcp.sh` - Deployment script
 

@@ -29,11 +29,11 @@ docker-compose up -d --build
 ### Build the Application Image
 
 ```bash
-# Build the Docker image
-docker build -t solosuccess-ai .
+# Build the Next.js Docker image (see Dockerfile.next at repo root)
+docker build -f Dockerfile.next -t solosuccess-ai .
 
 # Build with specific tag
-docker build -t solosuccess-ai:latest .
+docker build -f Dockerfile.next -t solosuccess-ai:latest .
 ```
 
 ### Run the Application Container
@@ -119,7 +119,7 @@ docker-compose ps
 
 ```bash
 # Build production image
-docker build -t solosuccess-ai:production .
+docker build -f Dockerfile.next -t solosuccess-ai:production .
 
 # Tag for registry
 docker tag solosuccess-ai:production your-registry/solosuccess-ai:latest
@@ -202,9 +202,9 @@ docker system prune -a
 
 ## Performance Optimization
 
-1. **Multi-stage Build**: The Dockerfile uses multi-stage builds for smaller images
+1. **Multi-stage Build**: `Dockerfile.next` uses multi-stage builds for smaller images
 2. **Layer Caching**: Dependencies are cached in separate layers
-3. **Production Build**: Uses Next.js standalone output for optimal performance
+3. **Production Build**: Uses Next.js production build in the image
 
 ## Monitoring
 

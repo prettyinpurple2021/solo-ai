@@ -1,3 +1,5 @@
+# Next.js production image (docker-compose, local/Vercel-style builds).
+# Not named `Dockerfile` at repo root so Railway uses `server/Dockerfile` + railway.toml for the API.
 # Use the official Node.js 20 Alpine image as base
 FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat

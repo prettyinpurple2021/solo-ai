@@ -23,7 +23,7 @@ services:
   app:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.next
     container_name: solosuccess-app
     restart: unless-stopped
     ports:

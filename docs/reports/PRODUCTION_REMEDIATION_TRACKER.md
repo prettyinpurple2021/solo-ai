@@ -47,6 +47,10 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 - Completed **MED-005**: lazy Express `pg` pool + Jest `globalTeardown` for clean test exit.
 
+### 2026-03-23
+
+- **Railway:** Renamed root Next.js container file to **`Dockerfile.next`** (updated `docker-compose.yml`, `docs/deployment/DOCKER.md`) so Railway no longer auto-selects the frontend `Dockerfile` instead of **`server/Dockerfile`** / **`railway.toml`**.
+
 ### 2026-03-21
 
 - Completed **MED-001–MED-004**: Node 20 in Gitea workflows + `package.json` engines; removed API-route `CREATE TABLE` patterns; moved `GlobalSearch` out of `archive/`; audit report now defers live status to this tracker.
@@ -308,7 +312,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### MED-001: Align Node.js across CI, Docker, and declared engines
-- What changed: Root `package.json` `engines` documents Node 20+; Gitea `test-runner.yaml` and `deploy.yaml` use `node-version: '20'` to match `Dockerfile` / `server/Dockerfile` / `railway-deploy/Dockerfile`.
+- What changed: Root `package.json` `engines` documents Node 20+; Gitea `test-runner.yaml` and `deploy.yaml` use `node-version: '20'` to match `Dockerfile.next` / `server/Dockerfile` / `railway-deploy/Dockerfile`.
 - Verification: `npm run validate`, `npm test -- --runInBand` pass on Node 20-class toolchain.
 - Status: DONE
 
