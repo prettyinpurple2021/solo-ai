@@ -60,7 +60,9 @@ jobs:
       # If Railway already auto-deploys from a Git repo, do NOT add these secrets (avoid double deploys).
       - name: Deploy Express API to Railway
         env:
+          # Project deploy token uses RAILWAY_TOKEN; personal/account tokens often need RAILWAY_API_TOKEN (same secret value is fine).
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+          RAILWAY_API_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
           RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
           RAILWAY_ENVIRONMENT: ${{ secrets.RAILWAY_ENVIRONMENT }}
           RAILWAY_SERVICE: ${{ secrets.RAILWAY_SERVICE }}

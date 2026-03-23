@@ -23,6 +23,13 @@ If **any** of these four are missing, the workflow **skips** Railway and only de
 
 **Do not** enable this **and** Railway’s own “deploy from Git” on the same service, or every push can trigger **two** deploys. Pick one: **Gitea → Railway CLI** (secrets above) **or** Railway’s built-in Git integration.
 
+### If Railway step fails with `Unauthorized`
+
+1. **Use a project token (best):** Railway dashboard → open **this project** → **Settings** → **Tokens** → create a token scoped to **this project** → paste into Gitea `RAILWAY_TOKEN`. Personal tokens from **Account settings** sometimes fail for `railway up` if the project lives under a team/workspace the token cannot access.
+2. **No quotes in Gitea:** When pasting the token, do not include `"` or `'` around the value. Re-save the secret if unsure.
+3. **Trim IDs:** `RAILWAY_PROJECT_ID` and `RAILWAY_SERVICE` must be plain UUIDs/IDs — no URL path, no spaces. `RAILWAY_ENVIRONMENT` must match the dropdown **exactly** (e.g. `production`).
+4. The workflow sets **both** `RAILWAY_TOKEN` and `RAILWAY_API_TOKEN` from the same Gitea secret so either token type works with current CLI versions.
+
 ## 🔄 Migration Status
 
 The project is currently being migrated to a Gitea-hosted repository to ensure complete ownership and privacy of the SoloSuccess AI codebase. All CI/CD processes are being transitioned to Gitea Actions.
