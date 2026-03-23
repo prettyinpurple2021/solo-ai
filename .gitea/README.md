@@ -50,6 +50,10 @@ curl -sS -X POST \
 
 Replace `YOUR_GITEA_HOST`, `OWNER`, `REPO`, and the workflow path if your Gitea version uses a different `workflows/` identifier (some use the file name under `.gitea/workflows/`).
 
+### Job failed on `npm ci` with `ECONNRESET` / `network aborted`
+
+That is the **npm registry connection dropping** inside the runner container (flaky internet, firewall, or rate limits)—not your app code. **Re-run the workflow**; `deploy.yaml` and `test-runner.yaml` retry `npm ci` up to **3** times with longer fetch timeouts. If it keeps failing, check that the host running **act_runner** can reach `https://registry.npmjs.org` (proxy/DNS/firewall).
+
 ## 🔄 Migration Status
 
 The project is currently being migrated to a Gitea-hosted repository to ensure complete ownership and privacy of the SoloSuccess AI codebase. All CI/CD processes are being transitioned to Gitea Actions.

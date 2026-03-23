@@ -30,8 +30,24 @@ jobs:
           VERCEL_ORG_ID: "team_08fevWvXfZL6nNdSQmcxlIaK"
           VERCEL_PROJECT_ID: "prj_dcQO7rZFCxxwHnxaorYGiyItkj8B"
 
+      # Transient ECONNRESET to registry.npmjs.org is common on self-hosted runners; retry + longer npm timeouts.
       - name: Install Project Dependencies
-        run: npm ci
+        run: |
+          npm config set fetch-retries 5
+          npm config set fetch-retry-mintimeout 20000
+          npm config set fetch-retry-maxtimeout 120000
+          attempt=1
+          max=3
+          while [ "$attempt" -le "$max" ]; do
+            if npm ci; then
+              exit 0
+            fi
+            echo "npm ci failed (attempt $attempt of $max) — registry/network blip; cleaning node_modules and retrying"
+            rm -rf node_modules
+            attempt=$((attempt + 1))
+            sleep 25
+          done
+          exit 1
 
       - name: Validate code quality gates
         run: npm run validate
