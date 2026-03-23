@@ -14,7 +14,9 @@ Push to **your** Git remote (this project may use **Gitea**, not GitHub). Railwa
 
 ## How this repo connects to Railway (important)
 
-**Optional — wired in CI:** If you add the four Railway secrets documented in [`.gitea/README.md`](.gitea/README.md), [`.gitea/workflows/deploy.yaml`](.gitea/workflows/deploy.yaml) runs `railway up server --ci --path-as-root` after each successful **main** branch deploy to Vercel. If those secrets are **not** set, the workflow skips Railway (no error).
+**Optional — wired in CI:** If you add the four Railway secrets documented in [`.gitea/README.md`](.gitea/README.md), [`.gitea/workflows/deploy.yaml`](.gitea/workflows/deploy.yaml) runs `railway up . --ci` from the repo root after each successful **main** branch deploy to Vercel. If those secrets are **not** set, the workflow skips Railway (no error).
+
+**CLI from your PC:** Run `railway up` from the **repository root** (same folder as `package.json` for the Next app). The repo includes **[`railway.toml`](railway.toml)** so Railway builds **`server/Dockerfile`** (the API). Without it, Railway picks the root **`Dockerfile`** and tries to build the **Next.js** app on Railway instead.
 
 Otherwise the codebase still does not record whether you use a **Git mirror**, **manual CLI**, or **registry** — that is whatever you configured in the Railway dashboard. Do **not** use both Railway’s Git auto-deploy **and** the Gitea `railway up` step on the same service (double deploys).
 
@@ -34,7 +36,7 @@ Go to [railway.app](https://railway.app) and log in.
 
 ## Step 3 — Service already there vs new project
 
-**If the service already exists** (one **SoloSuccess AI** card): open it → **Settings** → **Root Directory** must be the **repository root** (empty or `.`), not `server`. Set **Dockerfile** to **`server/Dockerfile`** so the image build can copy shared `src/lib/shared` and related paths. You can skip “create project” steps.
+**If the service already exists** (one **SoloSuccess AI** card): open it → **Settings** → **Root Directory** must be the **repository root** (empty or `.`), not `server`. Set **Dockerfile** to **`server/Dockerfile`** (or rely on **[`railway.toml`](railway.toml)** in the repo, which sets the same thing in code). The image build must copy shared `src/lib/shared` and related paths. You can skip “create project” steps.
 
 **If you are creating from scratch:**
 

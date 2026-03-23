@@ -1,0 +1,7 @@
+# Express API (server/). Root Dockerfile is the Next.js app for Vercel — without this, Railway builds the wrong image.
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "server/Dockerfile"
+
+[deploy]
+healthcheckPath = "/api/health"
