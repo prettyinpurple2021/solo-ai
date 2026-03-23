@@ -30,6 +30,26 @@ If **any** of these four are missing, the workflow **skips** Railway and only de
 3. **Trim IDs:** `RAILWAY_PROJECT_ID` and `RAILWAY_SERVICE` must be plain UUIDs/IDs — no URL path, no spaces. `RAILWAY_ENVIRONMENT` must match the dropdown **exactly** (e.g. `production`).
 4. The workflow sets **both** `RAILWAY_TOKEN` and `RAILWAY_API_TOKEN` from the same Gitea secret so either token type works with current CLI versions.
 
+### Run a workflow without committing
+
+There is **no** one global CLI like `vercel --prod` for Gitea itself. After `workflow_dispatch` is in the YAML (see `deploy.yaml` / `test-runner.yaml`):
+
+1. Open the **repository** on Gitea → **Actions**.
+2. Click the workflow name (e.g. **SoloSuccess-Production-Deploy**).
+3. Use **Run workflow** / **Dispatch workflow** (wording depends on Gitea version) and choose branch **`main`**.
+
+**API (optional):** with a [personal access token](https://docs.gitea.com/usage/actions#personal-access-token) that has `write:actions` (or repo scope per your server):
+
+```bash
+curl -sS -X POST \
+  "https://YOUR_GITEA_HOST/api/v1/repos/OWNER/REPO/actions/workflows/deploy.yaml/dispatches" \
+  -H "Authorization: token YOUR_GITEA_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"ref":"main"}'
+```
+
+Replace `YOUR_GITEA_HOST`, `OWNER`, `REPO`, and the workflow path if your Gitea version uses a different `workflows/` identifier (some use the file name under `.gitea/workflows/`).
+
 ## 🔄 Migration Status
 
 The project is currently being migrated to a Gitea-hosted repository to ensure complete ownership and privacy of the SoloSuccess AI codebase. All CI/CD processes are being transitioned to Gitea Actions.

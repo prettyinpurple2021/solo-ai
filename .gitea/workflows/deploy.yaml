@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main # This tells Gitea: "Only run this when I save code to the main branch"
+  # Manual run: repo → Actions → "SoloSuccess-Production-Deploy" → Run workflow (no commit needed).
+  workflow_dispatch:
 
 jobs:
   deploy-to-vercel:

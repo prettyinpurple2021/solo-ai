@@ -1,6 +1,8 @@
 name: SoloSuccess-Verify-Connection
 run-name: Testing Enchanted NightMare Infrastructure 🚀
-on: [push]
+on:
+  push:
+  workflow_dispatch:
 
 jobs:
   quality-gate:
