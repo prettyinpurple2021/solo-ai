@@ -26,9 +26,23 @@ Use this when Gitea is your main remote but Railway only integrates with **GitHu
 1. **GitHub:** Create an empty repository (e.g. `your-org/SoloSuccess-AI-mirror`), default branch **`main`** (match Gitea).
 2. **GitHub PAT:** [Fine-grained or classic token](https://github.com/settings/tokens) with **`Contents: Read and write`** on that repo (classic: `repo` scope).
 3. **Gitea mirror:** Open your **Gitea** repo → **Settings** → **Repository** → **Mirrors** (or **Push Mirror**, depending on version) → add remote:
-   - URL form: `https://github.com/OWNER/REPO.git`
-   - Authentication: your GitHub username + PAT (or embed `https://USER:TOKEN@github.com/OWNER/REPO.git` if your Gitea version requires it).
+   - **Clone URL:** use the normal HTTPS URL only if your Gitea UI has **separate** username/password (or “access token”) fields — then set **Username** = your **GitHub username** (or for some setups, any non-empty placeholder) and **Password** / **Token** = your **PAT** (not your GitHub account password).
+   - If there is **no** auth section, or push still fails, put credentials **in the URL** (Git then does not need to prompt):
+     - `https://GITHUB_USERNAME:YOUR_PAT@github.com/OWNER/REPO.git`
+     - If your PAT contains `@`, `#`, `%`, `+`, or other reserved characters, you must **percent-encode** them in the URL (or generate a new classic PAT with only hex-like characters).
    - Enable **push** mirroring on **`main`** (or “sync now” after each push until you confirm auto-sync).
+
+#### Mirror push: `could not read Username for 'https://github.com'` / `terminal prompts disabled`
+
+That means Git is using **HTTPS without stored credentials**. Mirrors run in the background, so Git **cannot** open an interactive username prompt.
+
+**Fix:** Supply auth using one of:
+
+1. **Gitea fields:** Username + token/password on the mirror form (see step 3), **or**
+2. **Embedded URL:** `https://USER:PAT@github.com/OWNER/REPO.git` with a PAT that has **`repo`** (classic) or **Contents: Read and write** on that repository (fine-grained).
+
+**Do not** commit the PAT into any file in the repo; keep it only in Gitea’s mirror settings.
+
 4. **Verify:** Push a commit to Gitea `main` → confirm the same commit appears on GitHub `main` within a minute or two.
 5. **Railway:** Project → your **API service** → **Settings** → connect **GitHub** → choose the **mirror** repo → branch **`main`**. Railway reads repo-root **`railway.toml`**, which sets **`dockerfilePath = "server/Dockerfile"`** (build context = repo root). No need to set a separate “Dockerfile path” unless the dashboard overrides it.
 6. **Gitea Actions:** Add repository secret **`RAILWAY_USE_CLI_DEPLOY`** = `false` (exact). **Delete** `RAILWAY_TOKEN`, `RAILWAY_PROJECT_ID`, `RAILWAY_ENVIRONMENT`, and `RAILWAY_SERVICE` if you had them, so the deploy job stays green and only Railway-on-GitHub deploys the API.
