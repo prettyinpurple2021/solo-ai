@@ -1,4 +1,4 @@
-import 'dotenv/config';
+import './env-load';
 import * as Sentry from '@sentry/node';
 
 // Initialize Sentry before importing express for automatic instrumentation

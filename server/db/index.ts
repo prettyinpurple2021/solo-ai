@@ -4,11 +4,7 @@ import { Pool } from 'pg';
 import * as sharedSchema from '../../src/lib/shared/db/schema';
 
 const schema = { ...sharedSchema };
-import dotenv from 'dotenv';
 import { logInfo, logWarn, logError } from '../utils/logger';
-
-dotenv.config({ path: '../.env.local', quiet: true });
-dotenv.config({ quiet: true });
 
 const connectionString = process.env.DATABASE_URL;
 

@@ -1,21 +1,46 @@
 # Deploying Your Backend to Railway
 
+**Where do environment variables go (Vercel vs Railway)?** See **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** — full table for every group of vars.
+
 Your code changes are done. Now follow these steps in your browser.
 
-## Step 1 — Push your code to GitHub first
-Your Railway app needs to pull the code from GitHub. Make sure your latest code is pushed.
+## What counts as the “API service” on Railway?
+
+If you see **one** card (e.g. **SoloSuccess AI**), **that card is your API service**. Open it → **Variables** is where backend env vars go. You do **not** need a second card unless you added something extra (e.g. a separate Postgres plugin).
+
+## Step 1 — Push your latest code
+
+Push to **your** Git remote (this project may use **Gitea**, not GitHub). Railway only rebuilds from whatever source **you** connected (connected Git provider, mirror repo, Docker image, or CLI deploy).
+
+## How this repo connects to Railway (important)
+
+**Optional — wired in CI:** If you add the four Railway secrets documented in [`.gitea/README.md`](.gitea/README.md), [`.gitea/workflows/deploy.yaml`](.gitea/workflows/deploy.yaml) runs `railway up server --ci --path-as-root` after each successful **main** branch deploy to Vercel. If those secrets are **not** set, the workflow skips Railway (no error).
+
+Otherwise the codebase still does not record whether you use a **Git mirror**, **manual CLI**, or **registry** — that is whatever you configured in the Railway dashboard. Do **not** use both Railway’s Git auto-deploy **and** the Gitea `railway up` step on the same service (double deploys).
+
+So **only your Railway dashboard** (or your memory of setup) tells the truth. On [railway.app](https://railway.app) open the **SoloSuccess AI** service → **Settings**:
+
+| What you see | Likely method |
+|----------------|---------------|
+| **Connected repo** (GitHub / GitLab) with your app name | Git integration — if code “really” lives on Gitea, that is often a **mirror** or second remote of the same repo. |
+| **Docker image** URL (e.g. GHCR, Docker Hub) | **Registry** deploy. |
+| **Empty / template** and you deploy from your PC | Often **Railway CLI** (`railway link` + `railway up`) or manual image push. |
+
+**Deployments** tab: each deploy usually shows the trigger (Git commit, CLI, image digest).
 
 ## Step 2 — Log into Railway
-Go to [railway.app](https://railway.app) and log in to your account.
 
-## Step 3 — Create a New Service
-1. Click **"New Project"**
-2. Select **"Deploy from GitHub repo"**
-3. Select your `SoloSuccess-AI` repository
-4. When it asks for the **Root Directory**, type: `server`
-5. Click **Deploy**
+Go to [railway.app](https://railway.app) and log in.
 
-Railway will detect the `Dockerfile` and build your server automatically.
+## Step 3 — Service already there vs new project
+
+**If the service already exists** (one **SoloSuccess AI** card): open it → **Settings** → confirm **Root Directory** is **`server`** (or your deploy uses `server/Dockerfile`). You can skip “create project” steps.
+
+**If you are creating from scratch:**
+
+1. **New Project** → connect a repository Railway supports **or** use **Empty Project** / **Docker** / **Railway CLI** if your code lives only on Gitea (Railway’s built-in picker is often GitHub/GitLab; Gitea-only flows commonly use a **mirror**, **CLI**, or **container registry**).
+2. Set **Root Directory** to **`server`** when the repo is this monorepo.
+3. Deploy — Railway should use `server/Dockerfile` when present.
 
 ## Step 4 — Add Environment Variables in Railway
 Once deployed, click on your service → **"Variables"** tab → add each one:
@@ -29,7 +54,7 @@ Once deployed, click on your service → **"Variables"** tab → add each one:
 | `GEMINI_API_KEY` | *(copy from `server/.env`)* |
 | `UPSTASH_REDIS_REST_URL` | *(copy from `server/.env`)* |
 | `UPSTASH_REDIS_REST_TOKEN` | *(copy from `server/.env`)* |
-| `SENTRY_DSN` | *(copy from `server/index.ts` line 38)* |
+| `SENTRY_DSN` | *(optional — from your [Sentry](https://sentry.io) project → DSN)* |
 
 > [!IMPORTANT]
 > The `JWT_SECRET` you set in Railway **must also be set in Vercel** with the same value. Both sides need to match.

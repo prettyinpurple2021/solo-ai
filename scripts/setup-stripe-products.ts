@@ -2,6 +2,16 @@
 import 'dotenv/config';
 import Stripe from 'stripe';
 
+/**
+ * Creates Stripe Products/Prices for paid tiers that match the app:
+ * @see src/lib/pricing.ts (SUBSCRIPTION_TIERS, PRICE_IDS)
+ * @see src/lib/subscription-utils.ts (TIERS: free, launch, accelerator, dominator)
+ *
+ * Env vars the Next.js app reads: STRIPE_ACCELERATOR_PRICE_ID, STRIPE_DOMINATOR_PRICE_ID
+ * (and optional yearly: STRIPE_*_YEARLY_PRICE_ID).
+ *
+ * Legacy names solo/pro/agency are not used by checkout or webhooks.
+ */
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
     apiVersion: '2025-12-15.clover' as any,
 });
@@ -12,32 +22,24 @@ async function setupProducts() {
         return;
     }
 
-    console.log('🔄 Setting up Stripe products...');
+    console.log('🔄 Setting up Stripe products (Accelerator + Dominator, monthly)...');
 
     const products = [
         {
-            name: 'SoloSuccess AI - Solo',
-            description: 'For the side-hustler. Includes 50 saved items, unlimited AI text, and 5 competitors.',
-            price: 2900, // $29.00
+            name: 'SoloSuccess AI — Accelerator',
+            description: 'Pro-agents, expanded limits, and growth tooling for serious founders.',
+            price: 1900, // $19.00 — matches src/lib/pricing.ts ACCELERATOR.price
             currency: 'usd',
             interval: 'month',
-            key: 'solo'
+            key: 'accelerator'
         },
         {
-            name: 'SoloSuccess AI - Pro',
-            description: 'For the full-time founder. Includes unlimited storage, AI text, and 15 competitors.',
-            price: 4900, // $49.00
+            name: 'SoloSuccess AI — Dominator',
+            description: 'Full squad, war room, and maximum limits.',
+            price: 2900, // $29.00 — matches src/lib/pricing.ts DOMINATOR.price
             currency: 'usd',
             interval: 'month',
-            key: 'pro'
-        },
-        {
-            name: 'SoloSuccess AI - Agency',
-            description: 'For power users & teams. Unlimited everything and API access.',
-            price: 9900, // $99.00
-            currency: 'usd',
-            interval: 'month',
-            key: 'agency'
+            key: 'dominator'
         }
     ];
 
@@ -68,13 +70,12 @@ async function setupProducts() {
         }
     }
 
-    console.log('\n--- NEW PRICE IDs (Copy these to your .env.local and Railway) ---');
-    console.log(`STRIPE_SOLO_PRICE_ID=${results.solo}`);
-    console.log(`STRIPE_PRO_PRICE_ID=${results.pro}`);
-    console.log(`STRIPE_AGENCY_PRICE_ID=${results.agency}`);
-    console.log(`NEXT_PUBLIC_STRIPE_SOLO_PRICE_ID=${results.solo}`);
-    console.log(`NEXT_PUBLIC_STRIPE_PRO_PRICE_ID=${results.pro}`);
-    console.log(`NEXT_PUBLIC_STRIPE_AGENCY_PRICE_ID=${results.agency}`);
+    console.log('\n--- Copy into .env / deployment (see src/lib/pricing.ts) ---');
+    console.log(`STRIPE_ACCELERATOR_PRICE_ID=${results.accelerator ?? ''}`);
+    console.log(`STRIPE_DOMINATOR_PRICE_ID=${results.dominator ?? ''}`);
+    console.log('\nOptional yearly prices: create in Stripe Dashboard, then set:');
+    console.log('# STRIPE_ACCELERATOR_YEARLY_PRICE_ID=price_...');
+    console.log('# STRIPE_DOMINATOR_YEARLY_PRICE_ID=price_...');
 }
 
 setupProducts();

@@ -22,7 +22,7 @@
 ### TL;DR - Get Live in 15 Minutes
 
 1. **Set up environment variables** in your hosting platform (see [Environment Variables](#environment-variables))
-2. **Deploy** to your hosting platform (Vercel, Netlify, etc.)
+2. **Deploy** the Next.js app to **Vercel** and the Express API (`server/`) to **Railway** (see `railway-deploy/` and README “Live site”).
 3. **Set up database** at [Neon Console](https://console.neon.tech) and run migrations
 4. **Test** your live site and configure custom domain
 5. **Launch!** 🎉
@@ -167,7 +167,7 @@ QSTASH_TOKEN=""
 1. **Connect Repository:**
    - Go to [Vercel Dashboard](https://vercel.com/dashboard)
    - Click "New Project"
-   - Connect your GitHub repository
+   - Connect your Git repository (hosting flow depends on your Git provider)
 
 2. **Environment Variables:**
    - Go to Project Settings → Environment Variables
@@ -183,7 +183,7 @@ QSTASH_TOKEN=""
 1. **Connect Repository:**
    - Go to [Netlify Dashboard](https://app.netlify.com/)
    - Click "New site from Git"
-   - Connect your GitHub repository
+   - Connect your Git repository (hosting flow depends on your Git provider)
 
 2. **Build Settings:**
    - Build command: `npm run build`
@@ -193,12 +193,9 @@ QSTASH_TOKEN=""
    - Site Settings → Environment Variables
    - Add all required variables
 
-#### Option 3: Other Platforms
-- Most modern hosting platforms (Render, Railway, etc.) support Next.js
-- Follow platform-specific documentation for Next.js deployment
-- Ensure environment variables are configured
-- Build command: `npm run build`
-- Start command: `npm start`
+#### Option 3: Other platforms
+- **This repository’s intended production split:** **Vercel** for Next.js, **Railway** for the Express server (`server/`). See README and `deploying backend`.
+- Other hosts can work; mirror the same env vars and keep `JWT_SECRET` / `DATABASE_URL` aligned between Vercel and the API service.
 
 ### Step 2: Database Setup
 

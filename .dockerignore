@@ -76,8 +76,6 @@ type-check-errors.txt
 .travis.yml
 .circleci/
 railway-deploy/
-render.yaml
-fly.toml
 
 # Misc
 .agent/

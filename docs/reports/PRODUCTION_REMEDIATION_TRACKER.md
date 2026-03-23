@@ -28,6 +28,12 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Work log
 
+### 2026-03-20
+
+- Removed unused **Fly.io** (`fly.toml`) and **Render** (`render.yaml`) configs from the repo. Production target for this project is **Vercel (frontend) + Railway (backend API)**; README and `env.example` headers updated to match.
+- Added **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](../deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** — explicit map of which env vars belong on Vercel, Railway, or both.
+- **Gitea `deploy.yaml`:** optional `railway up` for `server/` when `RAILWAY_*` secrets are set (see `.gitea/README.md`); avoids double-deploy with Railway Git integration.
+
 ### 2026-03-18
 
 - Created this tracker as the single source of truth for remediation progress.
