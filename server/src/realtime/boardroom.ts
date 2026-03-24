@@ -1,6 +1,6 @@
 import { Server as SocketServer } from "socket.io";
 import { logInfo, logError, caughtToError } from "../../utils/logger";
-import { BoardroomEventSchema, BlackboardUpdateSchema } from "@/shared/schemas";
+import { BoardroomEventSchema, BlackboardUpdateSchema } from "../../../src/lib/shared/schemas";
 import { BlackboardManager } from "../services/boardroom/blackboard";
 import { z } from "zod";
 
