@@ -2,11 +2,12 @@ import { Request, Response, NextFunction } from 'express';
 import { verifyToken } from '../utils/jwt';
 
 export function authMiddleware(req: Request, res: Response, next: NextFunction) {
-    // Get token from Authorization header or cookie
+    // Only accept tokens from the Authorization: Bearer header.
+    // Cookie-based auth is intentionally not supported to prevent CSRF attacks.
     const authHeader = req.headers.authorization;
     const token = authHeader?.startsWith('Bearer ')
         ? authHeader.substring(7)
-        : req.cookies?.token;
+        : undefined;
 
     if (!token) {
         res.status(401).json({ error: 'Unauthorized - No token provided' });
@@ -31,7 +32,7 @@ export function optionalAuth(req: Request, arg_Response: Response, next: NextFun
     const authHeader = req.headers.authorization;
     const token = authHeader?.startsWith('Bearer ')
         ? authHeader.substring(7)
-        : req.cookies?.token;
+        : undefined;
 
     if (token) {
         const decoded = verifyToken(token);

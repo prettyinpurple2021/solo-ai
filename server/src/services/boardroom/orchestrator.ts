@@ -3,6 +3,7 @@ import { boardroomSessions, boardroomMessages } from "../../../../src/lib/shared
 import { eq, asc } from "drizzle-orm";
 import { AgentId } from "../../../../src/types";
 import { GoogleGenAI } from "@google/genai";
+import { logError } from "../../../utils/logger";
 
 export class BoardroomOrchestrator {
   private agents = [AgentId.ROXY, AgentId.ECHO, AgentId.LEXI];
@@ -55,7 +56,7 @@ export class BoardroomOrchestrator {
 
       return { content: response.text || "Consensus pending..." };
     } catch (error) {
-      console.error(`Error generating response for ${agentId}:`, error);
+      logError(`Error generating response for ${agentId}:`, error);
       return { content: `Agent ${agentId} encountered a neural synchronization error.` };
     }
   }

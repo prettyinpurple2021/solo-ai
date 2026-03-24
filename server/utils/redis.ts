@@ -9,10 +9,14 @@ let redisClient: Redis | null = null;
  */
 export function getRedis(): Redis {
     if (!redisClient) {
-        redisClient = new Redis({
-            url: process.env.UPSTASH_REDIS_REST_URL!,
-            token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-        });
+        const url = process.env.UPSTASH_REDIS_REST_URL;
+        const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+        if (!url || !token) {
+            throw new Error(
+                'UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN environment variables are required but not set.'
+            );
+        }
+        redisClient = new Redis({ url, token });
     }
     return redisClient;
 }
