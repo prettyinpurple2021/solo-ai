@@ -43,32 +43,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # Gitea Service
-  gitea:
-    image: gitea/gitea:latest
-    container_name: solosuccess-gitea
-    restart: unless-stopped
-    ports:
-      - "3002:3000"
-      - "2222:22"
-    environment:
-      - USER_UID=1000
-      - USER_GID=1000
-      - GITEA__database__DB_TYPE=postgres
-      - GITEA__database__HOST=postgres:5432
-      - GITEA__database__NAME=gitea
-      - GITEA__database__USER=gitea
-      - GITEA__database__PASSWD=gitea_password
-      - GITEA__server__ROOT_URL=http://localhost:3002/
-      - GITEA__server__SSH_DOMAIN=localhost
-      - GITEA__server__SSH_PORT=2222
-    volumes:
-      - gitea_data:/data
-    depends_on:
-      - postgres
-
 volumes:
   postgres_data:
-    driver: local
-  gitea_data:
     driver: local

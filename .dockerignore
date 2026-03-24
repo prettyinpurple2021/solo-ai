@@ -88,6 +88,11 @@ examples/
 test/
 tests/
 
+# Symlinks (Docker on Windows has issues with these)
+src/components/archive/TheCodex.tsx
+src/components/archive/ToastSystem.tsx
+src/components/archive/UniversalSearch.tsx
+
 # Config files (if not needed for build)
 /next.config.*
 /tailwind.config.*

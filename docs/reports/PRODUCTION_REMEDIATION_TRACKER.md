@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-23
+Last updated: 2026-03-24
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -23,16 +23,20 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 - Overall launch readiness score: `76/100` (hardening in progress)
 - Build/lint/type-check: passing
 - Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown)
-- CI gate quality: enforced for deploy/test workflows
+- CI gate quality: run **`npm run validate`** and **`npm test`** before push; add **GitHub Actions** under `.github/workflows` when you want automated remote gates (in-repo Gitea workflows were removed 2026-03-24)
 - Security: critical and high dependency vulnerabilities remediated (remaining low-only production advisories)
 
 ## Work log
+
+### 2026-03-24
+
+- **GitHub `main`:** Merged GitHub’s initial **`.gitattributes`** commit with **`--allow-unrelated-histories`**, then removed root **`console_logs.txt`** from **all** commits via **`git filter-branch`** (blobs exceeded GitHub’s **100 MB** limit and blocked push). After cleanup, **`git push -f origin main`** to [prettyinpurple2021/SoloSuccess_AI](https://github.com/prettyinpurple2021/SoloSuccess_AI) succeeded. **`console_logs.txt`** remains in **`.gitignore`** — do not commit log dumps.
 
 ### 2026-03-20
 
 - Removed unused **Fly.io** (`fly.toml`) and **Render** (`render.yaml`) configs from the repo. Production target for this project is **Vercel (frontend) + Railway (backend API)**; README and `env.example` headers updated to match.
 - Added **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](../deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** — explicit map of which env vars belong on Vercel, Railway, or both.
-- **Gitea `deploy.yaml`:** optional `railway up --ci` when `RAILWAY_*` secrets are set (see `.gitea/README.md`); avoids double-deploy with Railway Git integration.
+- **(Historical)** Optional `railway up --ci` from CI when `RAILWAY_*` secrets were set on Gitea; that workflow lived under `.gitea/workflows` (removed — use Railway’s **GitHub** integration or CLI from your machine).
 
 ### 2026-03-18
 
@@ -49,16 +53,17 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ### 2026-03-23
 
+- **Gitea removed from repo:** Deleted **`.gitea/workflows/*`** and **`.gitea/README.md`**; removed the **`gitea`** service from **`docker-compose.yml`**. **GitHub** is the intended Git remote; **Vercel** and **Railway** should use GitHub Git integration on **`main`**. Until **`.github/workflows`** exists, treat **`npm run validate`** + **`npm test -- --runInBand`** as the pre-push quality gate.
 - **Railway:** Renamed root Next.js container file to **`Dockerfile.next`** (updated `docker-compose.yml`, `docs/deployment/DOCKER.md`) so Railway no longer auto-selects the frontend `Dockerfile` instead of **`server/Dockerfile`** / **`railway.toml`**.
-- **Gitea → Railway:** `deploy.yaml` uses **`railway up --ci`** with no path argument; **`railway up .`** caused CLI tarball **`prefix not found`** (walk root `.` vs absolute `archive_prefix_path` in `@railway/cli`).
-- **Railway CLI indexing on Linux:** `.agent/skills/gemini-api-dev` was a **git-tracked symlink** to an **absolute Windows path**, so Gitea runners failed during `Indexing...` with `No such file or directory`. **Fix:** removed that path from version control (ignore entry + canonical content remains under `.agents/skills/gemini-api-dev`) and added **`.agent`** / **`.cursor`** to **`.railwayignore`** so deploy uploads skip dev-only trees.
-- **Railway `railway up` upload timeout:** `@railway/cli` uses a **30s** `reqwest` timeout; full-monorepo gzip uploads exceeded it (`operation timed out` on `backboard.railway.com/.../up`). **Fix:** expanded **`.railwayignore`** to match **`server/Dockerfile`** `COPY` inputs only (trim `src/lib` to `shared/` + `agent-id-normalize.ts`, drop `server/dist`, tests, Postman, etc.) and **retry `railway up` 3×** in **`.gitea/workflows/deploy.yaml`**.
-- **Gitea + Railway without CLI:** Documented **GitHub push mirror → Railway Git deploy** in **`.gitea/README.md`**; added optional secret **`RAILWAY_USE_CLI_DEPLOY=false`** and workflow **`if:`** guards so the pipeline skips **`railway up`** when the API is deployed from GitHub (avoids double deploy with mirror + CLI).
+- **Railway CLI:** Former CI `deploy.yaml` used **`railway up --ci`** with no path argument; **`railway up .`** caused CLI tarball **`prefix not found`** (walk root `.` vs absolute `archive_prefix_path` in `@railway/cli`).
+- **Railway CLI indexing on Linux:** `.agent/skills/gemini-api-dev` was a **git-tracked symlink** to an **absolute Windows path**, so Linux CI runners failed during `Indexing...` with `No such file or directory`. **Fix:** removed that path from version control (ignore entry + canonical content remains under `.agents/skills/gemini-api-dev`) and added **`.agent`** / **`.cursor`** to **`.railwayignore`** so deploy uploads skip dev-only trees.
+- **Railway `railway up` upload timeout:** `@railway/cli` uses a **30s** `reqwest` timeout; full-monorepo gzip uploads exceeded it (`operation timed out` on `backboard.railway.com/.../up`). **Fix:** expanded **`.railwayignore`** to match **`server/Dockerfile`** `COPY` inputs only (trim `src/lib` to `shared/` + `agent-id-normalize.ts`, drop `server/dist`, tests, Postman, etc.) and **retry `railway up` 3×** in the former deploy workflow.
+- **Railway without CLI from CI:** **GitHub** → Railway Git deploy avoids tarball upload limits; optional **`RAILWAY_USE_CLI_DEPLOY=false`** pattern applied when Gitea mirrored to GitHub (Gitea CI removed 2026-03-24).
 
 ### 2026-03-21
 
-- Completed **MED-001–MED-004**: Node 20 in Gitea workflows + `package.json` engines; removed API-route `CREATE TABLE` patterns; moved `GlobalSearch` out of `archive/`; audit report now defers live status to this tracker.
-- **Railway API Docker:** `server/Dockerfile` now builds from **repo root** (copies `server/` plus `src/lib/shared`, `src/types`, `src/lib/agent-id-normalize.ts`); declared missing API deps (`drizzle-orm`, `ai`, `@ai-sdk/google`); `server/tsconfig` excludes shared tests and pins `drizzle-orm`/`zod` to `server/node_modules`; shared `users` schema no longer imports `next-auth` types. Gitea `railway up --ci` from repo root (not `railway up .` — CLI `prefix not found`; was `railway up server --path-as-root`). **Dual `drizzle-orm` types:** root `tsconfig.json` maps `drizzle-orm` to `./node_modules/drizzle-orm`; Next routes that use `@/server/db` import schema from `@/server/db/schema` and operators from `@/server/db`; `server/db` re-exports `count`. Verified: `docker build -f server/Dockerfile .`, `cd server && npm run build`, `npm run validate`.
+- Completed **MED-001–MED-004**: Node 20 in former CI workflows + `package.json` engines; removed API-route `CREATE TABLE` patterns; moved `GlobalSearch` out of `archive/`; audit report now defers live status to this tracker.
+- **Railway API Docker:** `server/Dockerfile` now builds from **repo root** (copies `server/` plus `src/lib/shared`, `src/types`, `src/lib/agent-id-normalize.ts`); declared missing API deps (`drizzle-orm`, `ai`, `@ai-sdk/google`); `server/tsconfig` excludes shared tests and pins `drizzle-orm`/`zod` to `server/node_modules`; shared `users` schema no longer imports `next-auth` types. **`railway up --ci`** from repo root (not `railway up .` — CLI `prefix not found`; was `railway up server --path-as-root`). **Dual `drizzle-orm` types:** root `tsconfig.json` maps `drizzle-orm` to `./node_modules/drizzle-orm`; Next routes that use `@/server/db` import schema from `@/server/db/schema` and operators from `@/server/db`; `server/db` re-exports `count`. Verified: `docker build -f server/Dockerfile .`, `cd server && npm run build`, `npm run validate`.
 
 ## Critical remediation queue
 
@@ -70,14 +75,14 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 | CRIT-004 | CRITICAL | Auth Security | Unsafe JWT fallback secret in `src/lib/jwt-utils.ts` and `src/app/api/ws-token/route.ts` | DONE | `npm run lint` passed |
 | CRIT-005 | CRITICAL | Frontend Security | XSS risk via unsanitized `dangerouslySetInnerHTML` in email/pitch rendering | DONE | `npm run lint` passed |
 | CRIT-006 | CRITICAL | Secrets Hygiene | Credential-like `DATABASE_URL` present in `server/.env.example` | DONE | Static file verification |
-| CRIT-007 | CRITICAL | CI/CD | No real test gate in `.gitea/workflows/test-runner.yaml` | DONE | Workflow updated with real gates |
+| CRIT-007 | CRITICAL | CI/CD | No real test gate in CI | DONE | Was `.gitea/workflows/test-runner.yaml` (removed 2026-03-24); run `npm run validate` + `npm test` locally or add `.github/workflows` |
 
 ## High-priority remediation queue
 
 | ID | Severity | Area | Issue | Status | Verification |
 |---|---|---|---|---|---|
 | HIGH-001 | HIGH | Quality Gate | Failing test suites (`npm test`) | DONE | `npm test -- --runInBand` passed (16/16 suites) |
-| HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates (`.gitea/workflows/deploy.yaml`) | DONE | Deploy workflow now runs validate + tests pre-deploy |
+| HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates in CI | DONE | Was `.gitea/workflows/deploy.yaml` (removed 2026-03-24); pre-push: `npm run validate` + `npm test`; or GitHub Actions |
 | HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | DONE | `npm audit --omit=dev --json` now reports low-only (4 total, 0 high, 0 critical) |
 | HIGH-004 | HIGH | Auth | Logout cookie name mismatch (`auth_token` vs `auth-token`) | DONE | `npm run lint` passed |
 | HIGH-005 | HIGH | Reliability | Upload idempotency helper mismatch (`upload` route + `idempotency` helper) | DONE | `npm run lint` passed |
@@ -88,7 +93,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 | ID | Severity | Area | Issue | Status | Verification |
 |---|---|---|---|---|---|
-| MED-001 | MEDIUM | Runtime | Node version drift across CI and Docker | DONE | `package.json` `engines.node >=20`; Gitea `test-runner` + `deploy` use Node `20`; Dockerfiles already `node:20` |
+| MED-001 | MEDIUM | Runtime | Node version drift across CI and Docker | DONE | `package.json` `engines.node >=20`; Dockerfiles `node:20`; former CI workflows used Node `20` (removed with `.gitea/`) |
 | MED-002 | MEDIUM | Reliability | Runtime schema/table creation in request paths | DONE | Removed DDL from API routes; Drizzle + `migrations/0003_api_tables_baseline.sql` (apply to DBs that relied on old runtime creates) |
 | MED-003 | MEDIUM | Code Health | Legacy/archive imports in active production paths | DONE | `DashboardHeader` imports `@/components/GlobalSearch`; archive re-exports for compatibility |
 | MED-004 | MEDIUM | Observability | Contradictory readiness docs and status signals | DONE | `COMPREHENSIVE_AUDIT_REPORT.md` points to this tracker as authoritative live status |
@@ -200,11 +205,11 @@ Use this block whenever an item is completed:
 - What changed:
   - Replaced no-op echo workflow with real CI checks: install, lint, type-check, test, production build.
 - Files updated:
-  - `.gitea/workflows/test-runner.yaml`
+  - Was `.gitea/workflows/test-runner.yaml` (removed 2026-03-24 — use local `npm run validate` / `npm test` or GitHub Actions).
 - Why this improves production readiness:
-  - Establishes enforceable build quality validation in CI before release decisions.
+  - Establishes enforceable build quality validation before release decisions.
 - Verification:
-  - Static workflow review confirms all gate steps are present.
+  - Same commands locally: `npm run validate`, `npm test -- --runInBand`.
 - Status: DONE
 
 ### HIGH-004: Standardize logout cookie invalidation
@@ -264,11 +269,11 @@ Use this block whenever an item is completed:
 - What changed:
   - Added required `npm run validate` and `npm test -- --runInBand` steps before production deploy.
 - Files updated:
-  - `.gitea/workflows/deploy.yaml`
+  - Was `.gitea/workflows/deploy.yaml` (removed 2026-03-24).
 - Why this improves production readiness:
-  - Prevents production deployments when lint/type/test quality gates fail.
+  - Prevents shipping when lint/type/test quality gates fail (run the same commands before push, or reintroduce CI under `.github/workflows`).
 - Verification:
-  - Static workflow review confirms deploy now depends on validation + tests.
+  - Local: `npm run validate` + `npm test -- --runInBand` pass.
 - Status: DONE
 
 ### HIGH-003: Remediate production dependency vulnerabilities
@@ -316,7 +321,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### MED-001: Align Node.js across CI, Docker, and declared engines
-- What changed: Root `package.json` `engines` documents Node 20+; Gitea `test-runner.yaml` and `deploy.yaml` use `node-version: '20'` to match `Dockerfile.next` / `server/Dockerfile` / `railway-deploy/Dockerfile`.
+- What changed: Root `package.json` `engines` documents Node 20+; former CI used `node-version: '20'` to match `Dockerfile.next` / `server/Dockerfile` / `railway-deploy/Dockerfile` (`.gitea/workflows` removed 2026-03-24).
 - Verification: `npm run validate`, `npm test -- --runInBand` pass on Node 20-class toolchain.
 - Status: DONE
 
