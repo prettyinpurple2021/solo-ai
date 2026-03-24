@@ -141,7 +141,7 @@ Stripe’s webhook in this codebase is implemented under **Next** (`/api/stripe/
 
 ## 3. Railway only (Express `server/`)
 
-Set these on **Railway** for the service whose **root directory** is `server`.
+Set these on **Railway** for the **API** service. In the service **Settings**, **Root Directory** must be the **repository root** (empty or `.`); the image is built with **`server/Dockerfile`** via root **`railway.toml`** (not a `server`-only root).
 
 ### Strongly recommended / required for a sane API
 
@@ -188,7 +188,7 @@ If **all** checkout and webhooks go through **Vercel**, you still **must** keep 
 3. On **Vercel**, set everything in sections **1** and **2**, including **`NEXT_PUBLIC_SOCKET_URL` = Railway URL** (same secret **JWT_SECRET**).  
 4. Redeploy **Vercel**.
 
-Step-by-step Railway clicks: see the repo file **`deploying backend`** in the project root.
+Step-by-step Railway (GitHub): **[RAILWAY_CONNECT.md](./RAILWAY_CONNECT.md)**.
 
 ---
 

@@ -22,7 +22,7 @@
 ### TL;DR - Get Live in 15 Minutes
 
 1. **Set up environment variables** in your hosting platform (see [Environment Variables](#environment-variables))
-2. **Deploy** the Next.js app to **Vercel** and the Express API (`server/`) to **Railway** (see `railway-deploy/` and README “Live site”).
+2. **Deploy** the Next.js app to **Vercel** and the Express API (`server/`) to **Railway** (see **[RAILWAY_CONNECT.md](./RAILWAY_CONNECT.md)** and root README “Live site”).
 3. **Set up database** at [Neon Console](https://console.neon.tech) and run migrations
 4. **Test** your live site and configure custom domain
 5. **Launch!** 🎉
@@ -194,7 +194,7 @@ QSTASH_TOKEN=""
    - Add all required variables
 
 #### Option 3: Other platforms
-- **This repository’s intended production split:** **Vercel** for Next.js, **Railway** for the Express server (`server/`). See README and `deploying backend`.
+- **This repository’s intended production split:** **Vercel** for Next.js, **Railway** for the Express server (`server/`). See README and **[RAILWAY_CONNECT.md](./RAILWAY_CONNECT.md)**.
 - Other hosts can work; mirror the same env vars and keep `JWT_SECRET` / `DATABASE_URL` aligned between Vercel and the API service.
 
 ### Step 2: Database Setup
