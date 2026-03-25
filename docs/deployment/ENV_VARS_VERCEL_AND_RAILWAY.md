@@ -9,6 +9,8 @@ Use **Railway** → your API service → **Variables**.
 
 **Rule of thumb:** If the name starts with `NEXT_PUBLIC_`, it **only** goes on **Vercel** (it is sent to the browser). Secrets almost never use that prefix.
 
+**Stay aligned between hosts:** After changing production URLs or shared secrets, use the checklist in **[VERCEL_RAILWAY_ALIGNMENT.md](./VERCEL_RAILWAY_ALIGNMENT.md)** and run `npm run verify:deployment-alignment` locally.
+
 ---
 
 ## 1. Same value on BOTH Vercel and Railway
