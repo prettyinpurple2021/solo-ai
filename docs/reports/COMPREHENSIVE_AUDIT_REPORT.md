@@ -7,6 +7,8 @@
 
 **Authoritative live status:** For current OPEN/DONE remediation work, use **[PRODUCTION_REMEDIATION_TRACKER.md](./PRODUCTION_REMEDIATION_TRACKER.md)**. This audit remains the detailed findings archive; the tracker is the day-to-day source of truth so scores and queue status do not contradict each other.
 
+**Supplement (2026-03-24):** GitHub Actions CI was added at `.github/workflows/ci.yml` (lint, type-check, Jest). PWA/Workbox precache size handling was adjusted in `next.config.mjs` (`maximumFileSizeToCacheInBytes`). Details and verification live in the tracker.
+
 ---
 
 ## 🚨 CRITICAL COMPILATION ERRORS (44 Total) - **FIXED ✅**

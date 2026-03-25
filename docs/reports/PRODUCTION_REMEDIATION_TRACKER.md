@@ -20,17 +20,20 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Current readiness baseline
 
-- Overall launch readiness score: `76/100` (hardening in progress)
+- Overall launch readiness score: `78/100` (hardening in progress)
 - Build/lint/type-check: passing
 - Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown)
-- CI gate quality: run **`npm run validate`** and **`npm test`** before push; add **GitHub Actions** under `.github/workflows` when you want automated remote gates (in-repo Gitea workflows were removed 2026-03-24)
+- CI gate quality: **GitHub Actions** **`.github/workflows/ci.yml`** runs **`npm run validate`** + **`npm test -- --runInBand`** on push and pull requests to **`main`** (root + **`server`** `npm ci`). Still run the same commands locally before push; Railway deploys from GitHub **`main`** after CI green.
 - Security: critical and high dependency vulnerabilities remediated (remaining low-only production advisories)
 
 ## Work log
 
 ### 2026-03-24
 
+- **Railway + GitHub:** Backend deploy on Railway succeeded and the repo is connected to GitHub for Git-based deploys. Treat **`main`** as the release branch; merge only after local or CI green (**`npm run validate`**, **`npm test -- --runInBand`**).
 - **GitHub `main`:** Merged GitHub’s initial **`.gitattributes`** commit with **`--allow-unrelated-histories`**, then removed root **`console_logs.txt`** from **all** commits via **`git filter-branch`** (blobs exceeded GitHub’s **100 MB** limit and blocked push). After cleanup, **`git push -f origin main`** to [prettyinpurple2021/SoloSuccess_AI](https://github.com/prettyinpurple2021/SoloSuccess_AI) succeeded. **`console_logs.txt`** remains in **`.gitignore`** — do not commit log dumps.
+- **CI on GitHub:** Added **`.github/workflows/ci.yml`** (Node 20, `npm ci` at repo root and **`server/`**, **`npm run validate`**, **`npm test -- --runInBand`**).
+- **PWA / Workbox:** Set **`workboxOptions.maximumFileSizeToCacheInBytes`** to **6 MiB** in **`next.config.mjs`** so large **`/_next/static/chunks/...`** assets are not excluded from precache with oversize warnings on production build.
 
 ### 2026-03-20
 
@@ -75,14 +78,14 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 | CRIT-004 | CRITICAL | Auth Security | Unsafe JWT fallback secret in `src/lib/jwt-utils.ts` and `src/app/api/ws-token/route.ts` | DONE | `npm run lint` passed |
 | CRIT-005 | CRITICAL | Frontend Security | XSS risk via unsanitized `dangerouslySetInnerHTML` in email/pitch rendering | DONE | `npm run lint` passed |
 | CRIT-006 | CRITICAL | Secrets Hygiene | Credential-like `DATABASE_URL` present in `server/.env.example` | DONE | Static file verification |
-| CRIT-007 | CRITICAL | CI/CD | No real test gate in CI | DONE | Was `.gitea/workflows/test-runner.yaml` (removed 2026-03-24); run `npm run validate` + `npm test` locally or add `.github/workflows` |
+| CRIT-007 | CRITICAL | CI/CD | No real test gate in CI | DONE | `.github/workflows/ci.yml` on `main`; also run `npm run validate` + `npm test -- --runInBand` locally before push |
 
 ## High-priority remediation queue
 
 | ID | Severity | Area | Issue | Status | Verification |
 |---|---|---|---|---|---|
 | HIGH-001 | HIGH | Quality Gate | Failing test suites (`npm test`) | DONE | `npm test -- --runInBand` passed (16/16 suites) |
-| HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates in CI | DONE | Was `.gitea/workflows/deploy.yaml` (removed 2026-03-24); pre-push: `npm run validate` + `npm test`; or GitHub Actions |
+| HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates in CI | DONE | Pre-push: `npm run validate` + `npm test -- --runInBand`; remote: `.github/workflows/ci.yml` on `main` |
 | HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | DONE | `npm audit --omit=dev --json` now reports low-only (4 total, 0 high, 0 critical) |
 | HIGH-004 | HIGH | Auth | Logout cookie name mismatch (`auth_token` vs `auth-token`) | DONE | `npm run lint` passed |
 | HIGH-005 | HIGH | Reliability | Upload idempotency helper mismatch (`upload` route + `idempotency` helper) | DONE | `npm run lint` passed |
@@ -98,6 +101,9 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 | MED-003 | MEDIUM | Code Health | Legacy/archive imports in active production paths | DONE | `DashboardHeader` imports `@/components/GlobalSearch`; archive re-exports for compatibility |
 | MED-004 | MEDIUM | Observability | Contradictory readiness docs and status signals | DONE | `COMPREHENSIVE_AUDIT_REPORT.md` points to this tracker as authoritative live status |
 | MED-005 | MEDIUM | Test hygiene | Jest open handles / async work after suite completion (process lingers; late `console.error` e.g. Neon connect) | DONE | `npm test` + `npm test -- --runInBand` exit promptly; `npm run validate` pass |
+| MED-006 | MEDIUM | Performance | PWA precache size limit vs large Next.js client chunks (Workbox default 2 MiB) | DONE | `npm run build` (production); no “exceeds maximum size” precache warning for `/_next/static/chunks/` |
+| MED-007 | MEDIUM | CI/CD | Remote quality gate on GitHub after Gitea workflow removal | DONE | `.github/workflows/ci.yml` — validate + Jest on push/PR to `main` |
+| MED-008 | MEDIUM | Cost / perf | Edge runtime on some routes prevents static generation (build-time hint) | OPEN | Inventory routes using `edge`; decide static vs Node per route; measure Vercel cost |
 
 ## Change checklist template (for each completed item)
 
@@ -205,11 +211,13 @@ Use this block whenever an item is completed:
 - What changed:
   - Replaced no-op echo workflow with real CI checks: install, lint, type-check, test, production build.
 - Files updated:
-  - Was `.gitea/workflows/test-runner.yaml` (removed 2026-03-24 — use local `npm run validate` / `npm test` or GitHub Actions).
+  - Was `.gitea/workflows/test-runner.yaml` (removed 2026-03-24).
+  - **Now:** `.github/workflows/ci.yml` — `npm ci` (root + `server/`), `npm run validate`, `npm test -- --runInBand` on push/PR to `main`.
 - Why this improves production readiness:
   - Establishes enforceable build quality validation before release decisions.
 - Verification:
-  - Same commands locally: `npm run validate`, `npm test -- --runInBand`.
+  - Local: `npm run validate`, `npm test -- --runInBand` (pass).
+  - Remote: GitHub Actions **CI** workflow green on `main`.
 - Status: DONE
 
 ### HIGH-004: Standardize logout cookie invalidation
@@ -346,18 +354,30 @@ Use this block whenever an item is completed:
 - Verification: `npm test`, `npm test -- --runInBand`.
 - Status: DONE
 
+### MED-006: Raise Workbox precache size limit for large Next chunks
+- What changed: Set `workboxOptions.maximumFileSizeToCacheInBytes` to **6 MiB** in `@ducanh2912/next-pwa` config so shared client chunks are precached without Workbox “exceeds maximum size” warnings.
+- Files updated: `next.config.mjs`
+- Why this improves production readiness: Clearer production builds, predictable offline/PWA precache behavior for large bundles.
+- Verification: `npm run build` (production); grep/build log free of precache maximum-size errors for `/_next/static/chunks/`.
+- Status: DONE
+
+### MED-007: GitHub Actions CI (validate + test)
+- What changed: Added workflow running Node 20, `npm ci` at root and `server/`, `npm run validate`, `npm test -- --runInBand` on push and pull_request to `main`.
+- Files updated: `.github/workflows/ci.yml`
+- Why this improves production readiness: Every merge to `main` is checked remotely (aligns with Vercel/Railway deploys from GitHub).
+- Verification: Push to `main` → GitHub **Actions** tab → **CI** job green; local: `npm run validate`, `npm test -- --runInBand`.
+- Status: DONE
+
 ## New findings discovered during remediation
 
-- Build still reports large client chunk warning:
-  - `/_next/static/chunks/23106-5ffa6c21e78e6e6d.js` exceeds PWA precache limit.
-  - Severity: MEDIUM (performance optimization needed, not launch-blocking).
-- Build warns that edge runtime on certain pages disables static generation.
-  - Severity: MEDIUM (cost/performance concern; review route runtime strategy).
+- ~~Build still reports large client chunk warning (PWA precache limit).~~ **Addressed under MED-006** (`workboxOptions.maximumFileSizeToCacheInBytes`).
+- Build warns that edge runtime on certain pages disables static generation — tracked as **MED-008** (cost/performance; review route runtime strategy).
 
 ## Next execution queue
 
-- **Performance / cost (from “New findings” below):** large client PWA precache chunk; review edge vs static for hot routes.
+- **MED-008:** Inventory App Router segments using Edge runtime; decide static vs Node for hot routes; confirm Vercel cost/behavior.
 - **Ongoing:** keep `npm audit` low-chain advisories on radar until `@stackframe/stack` upstream moves.
+- **Post-deploy:** Smoke-test production API (Railway health, auth, DB) against **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](../deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** checklist.
 
 ## Known non-blocking residuals
 

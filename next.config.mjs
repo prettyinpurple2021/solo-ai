@@ -112,6 +112,10 @@ const withPWA = (await import("@ducanh2912/next-pwa")).default({
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   sourcemap: false,
+  // Workbox default precache cap is 2 MiB; large Next.js shared chunks exceed it and spam the build log.
+  workboxOptions: {
+    maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+  },
 });
 
 export default withPWA(nextConfig);
