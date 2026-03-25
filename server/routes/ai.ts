@@ -312,8 +312,8 @@ router.post('/chat', authMiddleware, requireAi, checkUsage('conversations', 1), 
         const tierLevel = TIER_LEVELS[userTier as keyof typeof TIER_LEVELS] || 0;
 
         // Define Agent Tiers (Must match frontend + subscription-utils AGENT_ACCESS)
-        const FREE_AGENTS = ['aura'];
-        const ACCELERATOR_AGENTS = ['blaze', 'glitch', 'vex', 'finn'];
+        const FREE_AGENTS = ['aura', 'finn'];
+        const ACCELERATOR_AGENTS = ['blaze', 'glitch', 'vex'];
         const DOMINATOR_AGENTS = ['roxy', 'lexi', 'nova', 'echo', 'lumi'];
 
         const routeAgentId = canonicalAgentId(agentId);

@@ -4,6 +4,7 @@ export type { AgentCapabilities, AgentMemory, AgentTask, AgentResponse } from ".
 
 // Individual agents
 export { AuraAgent } from "./aura-agent"
+export { FinnAgent } from "./finn-agent"
 export { RoxyAgent } from "./roxy-agent"
 export { BlazeAgent } from "./blaze-agent"
 export { EchoAgent } from "./echo-agent"

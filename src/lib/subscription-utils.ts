@@ -29,10 +29,10 @@ export const AGENTS = {
   FINN: 'finn',
 } as const;
 
-// 1. Agent Access Rules
+// 1. Agent Access Rules — Aura + Finn are always on the team (every tier)
 export const AGENT_ACCESS: Record<SubscriptionTier, string[]> = {
-  [TIERS.FREE]: [AGENTS.AURA],
-  [TIERS.LAUNCH]: [AGENTS.AURA],
+  [TIERS.FREE]: [AGENTS.AURA, AGENTS.FINN],
+  [TIERS.LAUNCH]: [AGENTS.AURA, AGENTS.FINN],
   [TIERS.ACCELERATOR]: [AGENTS.AURA, AGENTS.BLAZE, AGENTS.GLITCH, AGENTS.VEX, AGENTS.FINN],
   [TIERS.DOMINATOR]: Object.values(AGENTS),
 };

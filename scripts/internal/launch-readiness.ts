@@ -99,7 +99,7 @@ async function analyzeReadiness(context: string) {
 
     FACTS ABOUT THIS REPO (do not claim the opposite):
     - Edge auth and route gating live in src/proxy.ts (NextAuth middleware wrapper), not necessarily src/middleware.ts.
-    - Custom agent collaboration may register multiple agents including Aura and Finn in addition to the eight named cores — count and list what the code actually registers.
+    - The custom-agent collaboration roster is ten agents: aura, finn, roxy, blaze, echo, lumi, vex, lexi, nova, glitch. Aura and Finn are first-class team members (also reflected in subscription AGENT_ACCESS for all tiers).
 
     OBJECTIVES:
     1. **Subscription / billing alignment**: Compare stripe.ts (SDK, checkout) vs subscription-utils.ts (tier limits, agent access). Note behavioral gaps, not fictional duplicate constants.

@@ -31,7 +31,7 @@ These are **worth checking** before launch; they are **not** the same as “file
 | Topic | What to verify | Notes |
 |--------|----------------|--------|
 | Subscription vs Stripe | User `subscription_tier` and feature gates match what Stripe prices + webhooks apply. | Limits and agent access are centralized in **`src/lib/subscription-utils.ts`**; **`src/lib/stripe.ts`** is Stripe SDK + checkout/portal — compare **behavior** across the app, not duplicate constants in one file. |
-| Custom agents registry | Collaboration system loads the agents you sell / gate. | **`src/lib/custom-ai-agents/agent-collaboration-system.ts`** registers **nine** ids: `aura`, `roxy`, `blaze`, `echo`, `lumi`, `vex`, `lexi`, `nova`, `glitch` — not “8 only”; **Aura** is intentional alongside the eight core names. |
+| Custom agents registry | Collaboration system loads the full agent roster. | **`agent-collaboration-system.ts`** registers **ten** agents: **`aura`**, **`finn`**, plus **`roxy`**, **`blaze`**, **`echo`**, **`lumi`**, **`vex`**, **`lexi`**, **`nova`**, **`glitch`**. **Aura** and **Finn** are core team members on every tier (**`AGENT_ACCESS`** in **`subscription-utils.ts`**). |
 | Route protection | Protected routes redirect when logged out. | Next.js uses **`src/proxy.ts`** (session + gating), **not** `src/middleware.ts`. Saying “middleware is missing” is **incorrect** for this repo. |
 
 ---

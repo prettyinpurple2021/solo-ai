@@ -1,6 +1,7 @@
 import { logError, logWarn,} from '@/lib/logger'
 import { CustomAgent, AgentResponse,} from "./core-agent"
 import { AuraAgent } from "./aura-agent"
+import { FinnAgent } from "./finn-agent"
 import { RoxyAgent } from "./roxy-agent"
 import { BlazeAgent } from "./blaze-agent"
 import { EchoAgent } from "./echo-agent"
@@ -31,8 +32,9 @@ export class AgentCollaborationSystem {
   }
 
   private initializeAgents(): void {
-    // Initialize all 9 agents
+    // Full roster: Aura + Finn + eight specialized cores (10 CustomAgent implementations)
     this.agents.set("aura", new AuraAgent(this.userId))
+    this.agents.set("finn", new FinnAgent(this.userId))
     this.agents.set("roxy", new RoxyAgent(this.userId))
     this.agents.set("blaze", new BlazeAgent(this.userId))
     this.agents.set("echo", new EchoAgent(this.userId))
@@ -101,13 +103,31 @@ export class AgentCollaborationSystem {
       return "aura"
     }
 
+    // Tactical sales & pipeline (Finn) — full team member, not an add-on
+    if (
+      requestLower.includes("finn") ||
+      requestLower.includes("sales") ||
+      requestLower.includes("pipeline") ||
+      requestLower.includes("objection") ||
+      requestLower.includes("discovery") ||
+      requestLower.includes("icp") ||
+      requestLower.includes("outreach") ||
+      requestLower.includes("proposal") ||
+      requestLower.includes("closing") ||
+      requestLower.includes("closer") ||
+      requestLower.includes("quota") ||
+      (requestLower.includes("deal") && (requestLower.includes("close") || requestLower.includes("negotiat")))
+    ) {
+      return "finn"
+    }
+
     // Strategic decision-making
     if (requestLower.includes("decision") || requestLower.includes("strategy") || requestLower.includes("plan")) {
       return "roxy"
     }
     
-    // Growth and sales
-    if (requestLower.includes("growth") || requestLower.includes("sales") || requestLower.includes("revenue")) {
+    // Growth and revenue strategy (Blaze); "sales" language routes to Finn above
+    if (requestLower.includes("growth") || requestLower.includes("revenue") || requestLower.includes("scale") || requestLower.includes("funnel")) {
       return "blaze"
     }
     

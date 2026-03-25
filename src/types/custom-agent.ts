@@ -10,6 +10,11 @@ export interface AgentContext {
     revenueImpact: string; // or number, based on usage, inferred as any/unknown previously
     timestamp: Date;
   }>;
+  salesPatterns?: Array<{
+    motion: string;
+    outcome: boolean | undefined;
+    timestamp: Date;
+  }>;
   contentPatterns?: Array<any>; // Using any for now to unblock, can refine later
   problemPatterns?: Array<any>;
   analysisPatterns?: Array<any>;
