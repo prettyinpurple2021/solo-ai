@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    # Weekly production bundle verification (UTC)
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -40,10 +44,12 @@ jobs:
         run: npm test -- --runInBand
 
   production-build:
-    # Runs only on `push` to `main` to verify Next.js can build production bundles.
-    # This avoids the extra time/cost on every PR while still catching build regressions
-    # before releases.
-    if: github.event_name == 'push'
+    # Runs on:
+    # - `push` to `main` (catch regressions immediately)
+    # - weekly `schedule` (catch slow/rare build regressions)
+    # - manual `workflow_dispatch`
+    # Avoids PR runs to keep CI cost controlled.
+    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
