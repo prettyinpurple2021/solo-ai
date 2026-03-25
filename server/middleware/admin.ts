@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { db } from '../db';
 import { users, adminActions } from '../../src/lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
+import { logError } from '../utils/logger';
 
 // Extend Express Request to include user info
 declare global {
@@ -14,6 +15,16 @@ declare global {
         }
     }
 }
+
+/**
+ * The configured admin email — validated at startup so a missing env var
+ * surfaces immediately rather than silently disabling admin operations.
+ */
+const _adminEmail = process.env.ADMIN_EMAIL;
+if (!_adminEmail) {
+    throw new Error('ADMIN_EMAIL environment variable is required but not set.');
+}
+const ADMIN_EMAIL: string = _adminEmail;
 
 /**
  * Middleware to require admin access
@@ -40,19 +51,20 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
         req.userRole = user.role;
         next();
     } catch (error) {
-        console.error('Admin middleware error:', error);
+        logError('Admin middleware error:', error);
         res.status(500).json({ error: 'Internal server error' });
         return;
     }
 }
 
 /**
- * Verify admin PIN for secure admin operations
+ * Verify admin PIN for secure admin operations.
+ * The expected admin email is read from the ADMIN_EMAIL env var (validated at startup).
  */
 export async function verifyAdminPin(email: string, pin: string): Promise<boolean> {
     try {
-        // Only allow specific admin email
-        if (email !== 'support@solosuccesss.com') {
+        // Only allow the configured admin email
+        if (email !== ADMIN_EMAIL) {
             return false;
         }
 
@@ -67,7 +79,7 @@ export async function verifyAdminPin(email: string, pin: string): Promise<boolea
         // Compare PIN with stored hash
         return await bcrypt.compare(pin, user.admin_pin_hash);
     } catch (error) {
-        console.error('PIN verification error:', error);
+        logError('PIN verification error:', error);
         return false;
     }
 }
@@ -97,6 +109,6 @@ export async function logAdminAction(
             metadata: details
         });
     } catch (error) {
-        console.error('Failed to log admin action:', error);
+        logError('Failed to log admin action:', error);
     }
 }

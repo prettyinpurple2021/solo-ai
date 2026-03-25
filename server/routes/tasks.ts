@@ -4,28 +4,23 @@ import { tasks } from '../../src/lib/shared/db/schema';
 import { eq, and, desc } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
 import { logError } from '../utils/logger';
-import { Redis } from '@upstash/redis';
+import { getRedis } from '../utils/redis';
 import { broadcastToUser } from '../realtime';
 import { SearchIndexer } from '../utils/searchIndexer';
 
 const router = express.Router();
 router.use(authMiddleware);
 
-const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL!,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
-
 const getCached = async (key: string) => {
-    try { return await redis.get(key); } catch (e) { return null; }
+    try { return await getRedis().get(key); } catch (e) { return null; }
 };
 
 const setCache = async (key: string, data: any) => {
-    try { await redis.set(key, JSON.stringify(data), { ex: 3600 }); } catch (e) { logError('Redis set error:', e); }
+    try { await getRedis().set(key, JSON.stringify(data), { ex: 3600 }); } catch (e) { logError('Redis set error:', e); }
 };
 
 const invalidateCache = async (key: string) => {
-    try { await redis.del(key); } catch (e) { logError('Redis del error:', e); }
+    try { await getRedis().del(key); } catch (e) { logError('Redis del error:', e); }
 };
 
 router.get('/', async (req, res) => {

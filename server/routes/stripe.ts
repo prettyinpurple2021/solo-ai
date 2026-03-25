@@ -1,21 +1,34 @@
 import express from 'express';
+import { rateLimit } from 'express-rate-limit';
 import { stripe, PRICE_IDS } from '../stripe-config';
 import { db } from '../db';
 import { subscriptions, users, usageTracking } from '../../src/lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { logError, logInfo } from '../utils/logger';
+import { authMiddleware } from '../middleware/auth';
 
 const router = express.Router();
 
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
 
-// Create Checkout Session
-router.post('/create-checkout-session', async (req, res) => {
-    try {
-        const { tier, billing, userId } = req.body;
+// Rate limiter: max 20 billing requests per IP per 15 minutes
+const stripeLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 20,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' },
+});
 
-        if (!tier || !billing || !userId) {
-            return res.status(400).json({ error: 'Missing tier, billing cycle, or userId' });
+// Create Checkout Session
+router.post('/create-checkout-session', stripeLimiter, authMiddleware, async (req, res) => {
+    try {
+        // Use the authenticated user's ID from the JWT — never trust userId from the body
+        const userId = req.userId!;
+        const { tier, billing } = req.body;
+
+        if (!tier || !billing) {
+            return res.status(400).json({ error: 'Missing tier or billing cycle' });
         }
 
         // Validate tier
@@ -60,13 +73,9 @@ router.post('/create-checkout-session', async (req, res) => {
 });
 
 // Get Subscription Status
-router.get('/subscription', async (req, res) => {
+router.get('/subscription', stripeLimiter, authMiddleware, async (req, res) => {
     try {
-        const userId = (req.headers['x-user-id'] || req.query.userId) as string;
-
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
+        const userId = req.userId!;
 
         const sub = await db.select().from(subscriptions)
             .where(eq(subscriptions.userId, userId))
@@ -84,16 +93,9 @@ router.get('/subscription', async (req, res) => {
 });
 
 // Get Usage Statistics
-router.get('/usage', async (req, res) => {
+router.get('/usage', stripeLimiter, authMiddleware, async (req, res) => {
     try {
-        const userId = (req.headers['x-user-id'] || req.query.userId) as string;
-
-        if (!userId) {
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-
-        // Get current month in format YYYY-MM
-        const currentMonth = new Date().toISOString().slice(0, 7);
+        const userId = req.userId!;
 
         const usage = await db.select().from(usageTracking)
             .where(
@@ -117,13 +119,9 @@ router.get('/usage', async (req, res) => {
 });
 
 // Create Customer Portal Session
-router.post('/customer-portal', async (req, res) => {
+router.post('/customer-portal', stripeLimiter, authMiddleware, async (req, res) => {
     try {
-        const { userId } = req.body;
-
-        if (!userId) {
-            return res.status(400).json({ error: 'Missing userId' });
-        }
+        const userId = req.userId!;
 
         // Get customer ID from subscription
         const sub = await db.select().from(subscriptions)
