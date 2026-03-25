@@ -15,6 +15,7 @@ if (process.env.SENTRY_DSN) {
 }
 
 import express, { Request, Response } from 'express';
+import { rateLimit } from 'express-rate-limit';
 import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
 import cors from 'cors';
@@ -124,6 +125,18 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
+
+// Global API rate limiter — 200 requests per 15 minutes per IP.
+// Fine-grained limiters (e.g. stripe routes) apply stricter limits on top.
+const globalApiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 200,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' },
+    skip: (req) => req.path === '/api/health', // health checks are never rate-limited
+});
+app.use('/api', globalApiLimiter);
 
 // Routes
 app.use('/api/auth', authRouter);

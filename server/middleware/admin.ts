@@ -17,6 +17,16 @@ declare global {
 }
 
 /**
+ * The configured admin email — validated at startup so a missing env var
+ * surfaces immediately rather than silently disabling admin operations.
+ */
+const _adminEmail = process.env.ADMIN_EMAIL;
+if (!_adminEmail) {
+    throw new Error('ADMIN_EMAIL environment variable is required but not set.');
+}
+const ADMIN_EMAIL: string = _adminEmail;
+
+/**
  * Middleware to require admin access
  * Must be used after requireAuth middleware
  */
@@ -49,18 +59,12 @@ export async function requireAdmin(req: Request, res: Response, next: NextFuncti
 
 /**
  * Verify admin PIN for secure admin operations.
- * The expected admin email is read from ADMIN_EMAIL env var.
+ * The expected admin email is read from the ADMIN_EMAIL env var (validated at startup).
  */
 export async function verifyAdminPin(email: string, pin: string): Promise<boolean> {
     try {
-        const adminEmail = process.env.ADMIN_EMAIL;
-        if (!adminEmail) {
-            logError('ADMIN_EMAIL environment variable is not set');
-            return false;
-        }
-
         // Only allow the configured admin email
-        if (email !== adminEmail) {
+        if (email !== ADMIN_EMAIL) {
             return false;
         }
 
