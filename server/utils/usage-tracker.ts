@@ -1,15 +1,9 @@
 
-import { Redis } from '@upstash/redis';
 import { db } from '../db';
 import { users } from '../../src/lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { logError } from './logger';
-
-// Initialize Redis (using the same env vars as index.ts)
-const redis = new Redis({
-    url: process.env.UPSTASH_REDIS_REST_URL!,
-    token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-});
+import { getRedis } from './redis';
 
 export type UsageMetric = 'conversations' | 'storage' | 'aiGenerations';
 export type SubscriptionTier = 'free' | 'launchpad' | 'accelerator' | 'dominator';
@@ -38,7 +32,7 @@ export class UsageTracker {
     static async getUserTier(userId: string): Promise<SubscriptionTier> {
         // Try cache first
         const cacheKey = `user:tier:${userId}`;
-        const cached = await redis.get<string>(cacheKey);
+        const cached = await getRedis().get<string>(cacheKey);
         if (cached) return cached as SubscriptionTier;
 
         try {
@@ -46,7 +40,7 @@ export class UsageTracker {
             const tier = normalizeTier(user[0]?.tier || 'free');
             
             // Cache for 10 minutes
-            await redis.setex(cacheKey, 600, tier);
+            await getRedis().setex(cacheKey, 600, tier);
             return tier;
         } catch (error) {
             logError('Failed to get user tier', error);
@@ -59,10 +53,10 @@ export class UsageTracker {
         if (metric === 'storage') {
             // Storage is persistent, not daily
             const storageKey = `usage:storage:${userId}`;
-            const usage = await redis.get<number>(storageKey);
+            const usage = await getRedis().get<number>(storageKey);
             return usage || 0;
         }
-        const usage = await redis.get<number>(key);
+        const usage = await getRedis().get<number>(key);
         return usage || 0;
     }
 
@@ -79,13 +73,13 @@ export class UsageTracker {
 
         if (metric === 'storage') {
             const storageKey = `usage:storage:${userId}`;
-            return await redis.incrby(storageKey, amount);
+            return await getRedis().incrby(storageKey, amount);
         } else {
             const key = this.getDailyKey(userId, metric);
-            const newValue = await redis.incrby(key, amount);
+            const newValue = await getRedis().incrby(key, amount);
             // Set expire if new key (24 hours + buffer)
             if (newValue === amount) {
-                await redis.expire(key, 86400 + 3600);
+                await getRedis().expire(key, 86400 + 3600);
             }
             return newValue;
         }

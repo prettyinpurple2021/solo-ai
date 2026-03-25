@@ -1,8 +1,11 @@
 import jwt from 'jsonwebtoken';
 
 /** Must match `/api/ws-token` signing secret: same as Vercel `JWT_SECRET`, or `AUTH_SECRET` if only that is set. */
-const JWT_SECRET =
-    process.env.JWT_SECRET || process.env.AUTH_SECRET || 'your-secret-key-change-in-production';
+const _jwtSecret = process.env.JWT_SECRET || process.env.AUTH_SECRET;
+if (!_jwtSecret) {
+    throw new Error('JWT_SECRET (or AUTH_SECRET) environment variable is required but not set.');
+}
+const JWT_SECRET: string = _jwtSecret;
 const JWT_EXPIRES_IN = '7d'; // Token expires in 7 days
 
 export function generateToken(userId: string, email: string): string {

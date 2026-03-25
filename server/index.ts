@@ -1,18 +1,21 @@
 import './env-load';
 import * as Sentry from '@sentry/node';
 
-// Initialize Sentry before importing express for automatic instrumentation
-Sentry.init({
-    dsn: process.env.SENTRY_DSN || "https://c658e25682ffbbce0cd373c74bf48f1d@o4510500686331904.ingest.us.sentry.io/4510500686659584",
-    environment: process.env.NODE_ENV || 'development',
-    tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
-    integrations: [
-        Sentry.httpIntegration(),
-        Sentry.expressIntegration(),
-    ],
-});
+// Initialize Sentry only when a DSN is explicitly configured
+if (process.env.SENTRY_DSN) {
+    Sentry.init({
+        dsn: process.env.SENTRY_DSN,
+        environment: process.env.NODE_ENV || 'development',
+        tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+        integrations: [
+            Sentry.httpIntegration(),
+            Sentry.expressIntegration(),
+        ],
+    });
+}
 
 import express, { Request, Response } from 'express';
+import { rateLimit } from 'express-rate-limit';
 import { createServer } from 'http';
 import { Server as SocketServer } from 'socket.io';
 import cors from 'cors';
@@ -23,7 +26,6 @@ import { logInfo, logWarn, logError } from './utils/logger';
 import path from 'path';
 import { verifyToken } from './utils/jwt';
 import { authMiddleware } from './middleware/auth';
-import cookieParser from 'cookie-parser';
 
 // Route Imports
 import { authRouter } from './routes/auth';
@@ -123,7 +125,18 @@ app.use(cors({
     credentials: true
 }));
 app.use(express.json());
-app.use(cookieParser());
+
+// Global API rate limiter — 200 requests per 15 minutes per IP.
+// Fine-grained limiters (e.g. stripe routes) apply stricter limits on top.
+const globalApiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 200,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' },
+    skip: (req) => req.path === '/api/health', // health checks are never rate-limited
+});
+app.use('/api', globalApiLimiter);
 
 // Routes
 app.use('/api/auth', authRouter);

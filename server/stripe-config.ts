@@ -5,9 +5,26 @@ import { subscriptions, users } from '../src/lib/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { logError } from './utils/logger';
 
-// Initialize Stripe with secret key from environment
-export const stripe = new (Stripe as any)(process.env.STRIPE_SECRET_KEY || '', {
-    apiVersion: '2025-12-15.clover' as any,
+let stripeClient: InstanceType<typeof Stripe> | null = null;
+
+function getStripeClient(): InstanceType<typeof Stripe> {
+    if (!process.env.STRIPE_SECRET_KEY) {
+        throw new Error('STRIPE_SECRET_KEY is not set');
+    }
+    if (!stripeClient) {
+        stripeClient = new (Stripe as any)(process.env.STRIPE_SECRET_KEY, {
+            apiVersion: '2025-12-15.clover' as any,
+        });
+    }
+    return stripeClient!;
+}
+
+// Lazy proxy so importing this module never crashes at startup when STRIPE_SECRET_KEY is absent.
+// The error is only thrown when a stripe method is actually called.
+export const stripe = new Proxy({} as InstanceType<typeof Stripe>, {
+    get(_target, prop) {
+        return Reflect.get(getStripeClient() as object, prop);
+    },
 });
 
 // Price IDs for each tier

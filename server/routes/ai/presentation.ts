@@ -2,12 +2,23 @@ import express, { Request, Response } from 'express';
 import { google } from '@ai-sdk/google';
 import { generateObject, generateText } from 'ai';
 import { z } from 'zod';
+import { rateLimit } from 'express-rate-limit';
 import { authMiddleware } from '../../middleware/auth';
 import { checkSuspended } from '../../middleware/checkSuspended';
 import { logError } from '../../utils/logger';
 
 const router = express.Router();
 
+// Rate limit: 30 AI generation requests per 15 minutes per IP
+const aiLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please try again later.' },
+});
+
+router.use(aiLimiter);
 router.use((authMiddleware as any));
 router.use(checkSuspended as any);
 
