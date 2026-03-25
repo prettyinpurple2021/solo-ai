@@ -14,8 +14,14 @@ const router = Router();
 router.post('/', authMiddleware, async (req: Request, res: Response) => {
     try {
         const userId = req.userId!;
-        const { q, filters } = req.query; // q can be in query or body, let's check both
-        const query = (req.query.q as string) || (req.body.query as string) || '';
+        // q can be in query string or body; ensure we only accept a string, not an array or other type
+        const rawQuery = (req.query as any).q ?? (req.body as any).query ?? '';
+
+        if (typeof rawQuery !== 'string') {
+            return res.json([]);
+        }
+
+        const query = rawQuery;
 
         if (!query || query.length < 2) {
             return res.json([]);
