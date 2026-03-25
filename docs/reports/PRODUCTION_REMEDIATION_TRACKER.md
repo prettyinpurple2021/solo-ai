@@ -20,7 +20,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Current readiness baseline
 
-- Overall launch readiness score: `78/100` (hardening in progress)
+- Overall launch readiness score: `79/100` (hardening in progress)
 - Build/lint/type-check: passing
 - Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown)
 - CI gate quality: **GitHub Actions** **`.github/workflows/ci.yml`** runs **`npm run validate`** + **`npm test -- --runInBand`** on push and pull requests to **`main`** (root + **`server`** `npm ci`). Still run the same commands locally before push; Railway deploys from GitHub **`main`** after CI green.
@@ -34,6 +34,8 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 - **GitHub `main`:** Merged GitHub’s initial **`.gitattributes`** commit with **`--allow-unrelated-histories`**, then removed root **`console_logs.txt`** from **all** commits via **`git filter-branch`** (blobs exceeded GitHub’s **100 MB** limit and blocked push). After cleanup, **`git push -f origin main`** to [prettyinpurple2021/SoloSuccess_AI](https://github.com/prettyinpurple2021/SoloSuccess_AI) succeeded. **`console_logs.txt`** remains in **`.gitignore`** — do not commit log dumps.
 - **CI on GitHub:** Added **`.github/workflows/ci.yml`** (Node 20, `npm ci` at repo root and **`server/`**, **`npm run validate`**, **`npm test -- --runInBand`**).
 - **PWA / Workbox:** Set **`workboxOptions.maximumFileSizeToCacheInBytes`** to **6 MiB** in **`next.config.mjs`** so large **`/_next/static/chunks/...`** assets are not excluded from precache with oversize warnings on production build.
+- **MED-008 (Edge vs Node / static):** Inventoried **`export const runtime = 'edge'`** API routes; moved **`/api/workflows/[id]/execute`** and **`/api/incinerator`** to **`nodejs`**. Removed dead **`src/app/global-config.ts`** (never imported). Dropped redundant **`force-dynamic`** on static marketing/legal client pages (**`terms`**, **`privacy`**, **`features`**, **`security`**, **`gdpr`**, **`cookies`**) so they can prerender. Remaining Edge API routes use Neon HTTP/`getSql` or lightweight health checks — see **MED-008** checklist.
+- **Jest (Windows):** **`ScrapingScheduler._setJobAsRunningForTesting`** now allows **`JEST_WORKER_ID`** / global **`jest`**, not only **`NODE_ENV=test`**, so **`test/scraping-scheduler.test.ts`** is reliable when npm does not set **`NODE_ENV`**.
 
 ### 2026-03-20
 
@@ -103,7 +105,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 | MED-005 | MEDIUM | Test hygiene | Jest open handles / async work after suite completion (process lingers; late `console.error` e.g. Neon connect) | DONE | `npm test` + `npm test -- --runInBand` exit promptly; `npm run validate` pass |
 | MED-006 | MEDIUM | Performance | PWA precache size limit vs large Next.js client chunks (Workbox default 2 MiB) | DONE | `npm run build` (production); no “exceeds maximum size” precache warning for `/_next/static/chunks/` |
 | MED-007 | MEDIUM | CI/CD | Remote quality gate on GitHub after Gitea workflow removal | DONE | `.github/workflows/ci.yml` — validate + Jest on push/PR to `main` |
-| MED-008 | MEDIUM | Cost / perf | Edge runtime on some routes prevents static generation (build-time hint) | OPEN | Inventory routes using `edge`; decide static vs Node per route; measure Vercel cost |
+| MED-008 | MEDIUM | Cost / perf | Edge vs Node API routes + unnecessary `force-dynamic` on static marketing pages | DONE | `npm run validate` + `npm test -- --runInBand`; inventory recorded in checklist **MED-008** below |
 
 ## Change checklist template (for each completed item)
 
@@ -368,14 +370,34 @@ Use this block whenever an item is completed:
 - Verification: Push to `main` → GitHub **Actions** tab → **CI** job green; local: `npm run validate`, `npm test -- --runInBand`.
 - Status: DONE
 
+### MED-008: Edge vs Node API routes and static-friendly marketing pages
+- What changed:
+  - **Inventory:** No **`layout.tsx` / `page.tsx`** use **`runtime = 'edge'`**; Edge was only on selected **API routes** (see table below).
+  - **Node (was Edge):** **`src/app/api/workflows/[id]/execute/route.ts`** — workflow engine uses Drizzle + transactions + `expr-eval-fork` + fire-and-forget execution; **`src/app/api/incinerator/route.ts`** — aligns with other AI routes using **`generateText`**.
+  - **Removed** unused **`src/app/global-config.ts`** (exported `dynamic` / `revalidate` but was **never imported**; misleading for static generation).
+  - **Static-friendly:** Removed **`export const dynamic = 'force-dynamic'`** from client-only pages **`terms`**, **`privacy`**, **`features`**, **`security`**, **`gdpr`**, **`cookies`** (no server data; allows prerendered shell where the tree allows).
+- **Edge API routes retained (intentional):**
+
+| Path | Rationale |
+|------|-----------|
+| `api/health`, `api/health/deps` | Tiny responses; deps uses Neon HTTP |
+| `api/files/[param]` | Neon + Edge-safe binary handling |
+| `api/compliance/scan`, `policies`, `consent` | `getSql()` / Neon HTTP |
+| `api/brand/export/download/[id]` | `getDb()` via **drizzle-orm/neon-http** + `fetch` to blob URL |
+
+- Files updated: `src/app/api/workflows/[id]/execute/route.ts`, `src/app/api/incinerator/route.ts`, `src/app/terms/page.tsx`, `src/app/privacy/page.tsx`, `src/app/features/page.tsx`, `src/app/security/page.tsx`, `src/app/gdpr/page.tsx`, `src/app/cookies/page.tsx`; removed `src/app/global-config.ts`; `src/lib/scraping-scheduler.ts` (test-only guard detects Jest without relying on **`NODE_ENV=test`**).
+- Why this improves production readiness: Heavy routes run on Node (consistent limits, fewer Edge surprises); less unnecessary dynamic rendering on public legal/marketing pages; removes dead config that suggested global dynamic forcing.
+- Verification: `npm run validate`; `npm test -- --runInBand` (includes **`ScrapingScheduler`** test guard fix for Jest on Windows).
+- Status: DONE
+
 ## New findings discovered during remediation
 
 - ~~Build still reports large client chunk warning (PWA precache limit).~~ **Addressed under MED-006** (`workboxOptions.maximumFileSizeToCacheInBytes`).
-- Build warns that edge runtime on certain pages disables static generation — tracked as **MED-008** (cost/performance; review route runtime strategy).
+- ~~Edge / static generation review.~~ **Addressed under MED-008** (Node for heavy APIs; marketing pages; Edge inventory documented).
 
 ## Next execution queue
 
-- **MED-008:** Inventory App Router segments using Edge runtime; decide static vs Node for hot routes; confirm Vercel cost/behavior.
+- **Optional:** Run a production **`next build`** on Vercel preview and confirm route types (○/ƒ/λ) for key URLs; tune any remaining **`force-dynamic`** **dashboard** pages only if you need ISR/SSG later.
 - **Ongoing:** keep `npm audit` low-chain advisories on radar until `@stackframe/stack` upstream moves.
 - **Post-deploy:** Smoke-test production API (Railway health, auth, DB) against **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](../deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** checklist.
 

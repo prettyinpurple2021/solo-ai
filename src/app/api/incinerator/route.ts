@@ -6,7 +6,8 @@ import { z } from 'zod'
 import { generateText } from 'ai'
 import { getTeamMemberConfig } from '@/lib/ai-config'
 
-export const runtime = 'edge'
+// Node runtime: aligns with other AI routes (`/api/chat`, etc.) and avoids Edge bundle / timeout edge cases for `generateText`.
+export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
 const incineratorSchema = z.object({

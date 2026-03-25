@@ -1,7 +1,5 @@
 'use client'
 
-export const dynamic = 'force-dynamic'
-
 import Link from 'next/link'
 import { CyberPageLayout } from '@/components/cyber/CyberPageLayout'
 import { HudBorder } from '@/components/cyber/HudBorder'

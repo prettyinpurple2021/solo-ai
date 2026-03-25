@@ -4,8 +4,9 @@ import { logError, logInfo } from '@/lib/logger'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import { workflowEngine, WorkflowExecution } from '@/lib/workflow-engine'
 
-// Edge runtime enabled
-export const runtime = 'edge'
+// Node runtime: workflow engine uses Drizzle transactions, expr-eval, and background execution — not a good fit for Edge isolates.
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
 
 // POST /api/workflows/[id]/execute - Execute workflow
 export async function POST(

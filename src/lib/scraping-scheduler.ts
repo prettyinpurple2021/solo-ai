@@ -788,7 +788,11 @@ export class ScrapingScheduler {
    * @param jobId The ID of the job to set as running
    */
   _setJobAsRunningForTesting(jobId: string): void {
-    if (process.env.NODE_ENV !== 'test') {
+    const inJest =
+      process.env.NODE_ENV === 'test' ||
+      process.env.JEST_WORKER_ID !== undefined ||
+      typeof (globalThis as typeof globalThis & { jest?: unknown }).jest !== 'undefined'
+    if (!inJest) {
       throw new Error('This method is for testing purposes only.')
     }
     this.runningJobs.add(jobId)

@@ -1,7 +1,5 @@
 "use client"
 
-export const dynamic = 'force-dynamic'
-
 import Link from "next/link"
 import { Shield, FileText, Download, Trash2, Edit, Eye, Lock, CheckCircle } from "lucide-react"
 import { CyberPageLayout } from '@/components/cyber/CyberPageLayout'
