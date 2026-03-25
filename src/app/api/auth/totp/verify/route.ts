@@ -4,6 +4,7 @@ import { db } from '@/lib/database-client';
 import { userMfaSettings } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifySync } from 'otplib';
+import { logError } from '@/lib/logger';
 
 export async function POST(req: Request) {
   try {
@@ -50,7 +51,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true });
 
   } catch (error) {
-    console.error('[TOTP Verify] Error:', error);
+    logError(
+      '[TOTP Verify] Error',
+      error instanceof Error ? error : new Error(String(error))
+    );
     return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
   }
 }

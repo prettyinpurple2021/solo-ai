@@ -12,6 +12,7 @@ import { Switch} from "@/components/ui/switch"
 import { Alert, AlertDescription} from "@/components/ui/alert"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import { Shield, Settings, Clock, Eye, AlertTriangle, Download, CheckCircle} from "lucide-react"
+import { logError } from "@/lib/logger"
 
 interface DataRequest {
   id: string
@@ -77,7 +78,10 @@ export function ConsentManagement() {
         })))
       }
     } catch (error) {
-      console.error('Failed to fetch guardian data', error)
+      logError(
+        "Failed to fetch guardian data",
+        error instanceof Error ? error : new Error(String(error))
+      )
     } finally {
       setIsLoading(false)
     }

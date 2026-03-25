@@ -94,8 +94,7 @@ export async function POST(req: Request) {
       }
 
       default:
-        // Unhandled event type
-        // console.log(`Unhandled event type ${event.type}`)
+        break
     }
 
     // Record processed event

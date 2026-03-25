@@ -6,6 +6,7 @@ import { SkillsRadar } from "@/components/learning/skills-radar";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { logError } from "@/lib/logger";
 
 export default function LearningDashboard() {
   const [data, setData] = useState<any>(null);
@@ -20,7 +21,10 @@ export default function LearningDashboard() {
           setData(json);
         }
       } catch (err) {
-        console.error("Failed to load learning data", err);
+        logError(
+          "Failed to load learning data",
+          err instanceof Error ? err : new Error(String(err))
+        );
       } finally {
         setLoading(false);
       }

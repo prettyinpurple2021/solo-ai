@@ -67,3 +67,6 @@ railway-deploy/*.txt
 
 # Playwright test artifacts
 test-results/
+
+# AI internal tools — drafts only; curated lists stay at repo root
+docs/internal/generated/

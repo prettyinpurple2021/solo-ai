@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-24
+Last updated: 2026-03-25
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -20,13 +20,20 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Current readiness baseline
 
-- Overall launch readiness score: `79/100` (hardening in progress)
-- Build/lint/type-check: passing
-- Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown)
-- CI gate quality: **GitHub Actions** **`.github/workflows/ci.yml`** runs **`npm run validate`** + **`npm test -- --runInBand`** on push and pull requests to **`main`** (root + **`server`** `npm ci`). Still run the same commands locally before push; Railway deploys from GitHub **`main`** after CI green.
-- Security: critical and high dependency vulnerabilities remediated (remaining low-only production advisories)
+- Overall launch readiness score: `82/100` (ready for public launch with documented dependency and CI caveats below)
+- Build/lint/type-check: passing (verified **`npm run validate`** on 2026-03-25)
+- Production build: passing (verified **`next build --webpack`** on 2026-03-25; 185 static pages generated; PWA / Workbox compiled without precache size errors for large chunks)
+- Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown); **`16/16`** suites, **`97/97`** tests (2026-03-25)
+- CI gate quality: **GitHub Actions** **`.github/workflows/ci.yml`** runs **`npm run validate`** + **`npm test -- --runInBand`** on push and pull requests to **`main`** (root + **`server`** `npm ci`). **`next build` is not** in CI (time/cost); run **`npm run build`** or **`next build --webpack`** locally or on Vercel preview before major releases.
+- Security: no **critical** or **high** production advisories in last `npm audit --omit=dev`; **6** open issues (**4 low**, **2 moderate**) — see **Known non-blocking residuals** and **HIGH-003** verification note below
+- Observability: stray **`console.error`** on learning, TOTP, and guardian UI paths replaced with **`logError`** (**MED-009**)
 
 ## Work log
+
+### 2026-03-25
+
+- **Full launch-readiness review:** Ran **`npm run validate`**, **`npm test -- --runInBand`**, **`next build --webpack`**, and **`npm audit --omit=dev`**. All quality gates and production build succeeded locally. Documented current **`npm audit`** picture (6 issues: **elliptic** / `@stackframe/stack` chain + **fast-xml-parser** / `@aws-sdk/xml-builder` chain).
+- **MED-009 (logging):** Replaced direct **`console.error`** with **`logError`** from **`@/lib/logger`** in TOTP resend/verify routes, learning API routes, learning dashboard + assessment UI, guardian consent management, and **`submitAssessmentAction`**. Removed dead commented **`console.log`** in Stripe webhook default branch; dropped unused **`LearningEngineService`** import from **`src/app/api/learning/[moduleId]/route.ts`**.
 
 ### 2026-03-24
 
@@ -89,7 +96,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 |---|---|---|---|---|---|
 | HIGH-001 | HIGH | Quality Gate | Failing test suites (`npm test`) | DONE | `npm test -- --runInBand` passed (16/16 suites) |
 | HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates in CI | DONE | Pre-push: `npm run validate` + `npm test -- --runInBand`; remote: `.github/workflows/ci.yml` on `main` |
-| HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | DONE | `npm audit --omit=dev --json` now reports low-only (4 total, 0 high, 0 critical) |
+| HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | DONE | No critical/high; as of **2026-03-25** `npm audit --omit=dev` reports **6** (4 low, 2 moderate): `elliptic` via `@stackframe/stack`; `fast-xml-parser` via `@aws-sdk/xml-builder` (transitive). Treat as monitor / upstream — not launch-blocking. |
 | HIGH-004 | HIGH | Auth | Logout cookie name mismatch (`auth_token` vs `auth-token`) | DONE | `npm run lint` passed |
 | HIGH-005 | HIGH | Reliability | Upload idempotency helper mismatch (`upload` route + `idempotency` helper) | DONE | `npm run lint` passed |
 | HIGH-006 | HIGH | Maintainability | Broad `@ts-nocheck` and `@ts-ignore` in production code paths | DONE | `npm run validate` + `npm test -- --runInBand` passed; production `src` has zero `@ts-nocheck`; remaining `@ts-ignore` only in test setup (`src/test/setup.ts`, `competitor-service.integration.test.ts`) |
@@ -107,6 +114,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 | MED-006 | MEDIUM | Performance | PWA precache size limit vs large Next.js client chunks (Workbox default 2 MiB) | DONE | `npm run build` (production); no “exceeds maximum size” precache warning for `/_next/static/chunks/` |
 | MED-007 | MEDIUM | CI/CD | Remote quality gate on GitHub after Gitea workflow removal | DONE | `.github/workflows/ci.yml` — validate + Jest on push/PR to `main` |
 | MED-008 | MEDIUM | Cost / perf | Edge vs Node API routes + unnecessary `force-dynamic` on static marketing pages | DONE | `npm run validate` + `npm test -- --runInBand`; inventory recorded in checklist **MED-008** below |
+| MED-009 | MEDIUM | Observability | Direct `console.error` in production learning / TOTP / guardian paths (bypasses structured logger) | DONE | `npm run validate`; `npm test -- --runInBand`; see work log **2026-03-25** |
 
 ## Change checklist template (for each completed item)
 
@@ -301,13 +309,13 @@ Use this block whenever an item is completed:
 - Why this improves production readiness:
   - Removes launch-blocking high/critical production dependency advisories while preserving lint/type/test quality gates.
 - Verification:
-  - Command: `npm audit --omit=dev --json`
-  - Result: `4 low, 0 moderate, 0 high, 0 critical` (remaining issues tied to upstream `@stackframe/stack` chain only).
+  - Command: `npm audit --omit=dev --json` (**2026-03-25** re-check)
+  - Result: **`6` vulnerabilities** — **`4 low`** (`elliptic` via `@stackframe/stack` / `@stackframe/stack-shared`), **`2 moderate`** (`fast-xml-parser` via `@aws-sdk/xml-builder`). **0 high, 0 critical.**
   - Command: `npm run validate`
   - Result: pass (`lint` and both `type-check` targets passed).
   - Command: `npm test -- --runInBand`
-  - Result: suites/tests pass (`16/16`, `97/97`), with known lingering open-handle warning after completion.
-- Status: DONE
+  - Result: suites/tests pass (`16/16`, `97/97`).
+- Status: DONE (ongoing monitoring for upstream patches)
 
 ### HIGH-006: Remove broad TypeScript suppressions from production paths
 - What changed:
@@ -391,6 +399,16 @@ Use this block whenever an item is completed:
 - Verification: `npm run validate`; `npm test -- --runInBand` (includes **`ScrapingScheduler`** test guard fix for Jest on Windows).
 - Status: DONE
 
+### MED-009: Route client and API errors through structured logger
+- What changed:
+  - Swapped **`console.error`** for **`logError`** from **`@/lib/logger`** on TOTP (**`resend`**, **`verify`**), learning APIs (**`/api/learning`**, module GET, assess POST), learning dashboard page, assessment dialog, **`submitAssessmentAction`**, and guardian **ConsentManagement** fetch error path.
+  - Stripe webhook: removed commented debug **`console.log`**; default unhandled branch is a quiet **`break`** (events still recorded when handled).
+  - Removed unused **`LearningEngineService`** import from **`src/app/api/learning/[moduleId]/route.ts`**.
+- Files updated: `src/app/api/auth/totp/resend/route.ts`, `src/app/api/auth/totp/verify/route.ts`, `src/app/api/learning/route.ts`, `src/app/api/learning/[moduleId]/route.ts`, `src/app/api/learning/[moduleId]/assess/route.ts`, `src/app/dashboard/learning/page.tsx`, `src/components/learning/assessment-dialog.tsx`, `src/lib/actions/learning-actions.ts`, `src/components/guardian-ai/consent-management.tsx`, `src/app/api/stripe/webhook/route.ts`
+- Why this improves production readiness: Consistent structured logging, aligns with project “no raw console noise” standard, keeps server and client error reporting on one code path where appropriate.
+- Verification: **`npm run validate`**; **`npm test -- --runInBand`**
+- Status: DONE
+
 ## New findings discovered during remediation
 
 - ~~Build still reports large client chunk warning (PWA precache limit).~~ **Addressed under MED-006** (`workboxOptions.maximumFileSizeToCacheInBytes`).
@@ -398,13 +416,14 @@ Use this block whenever an item is completed:
 
 ## Next execution queue
 
-- **Optional:** Run a production **`next build`** on Vercel preview and confirm route types (○/ƒ/λ) for key URLs; tune any remaining **`force-dynamic`** **dashboard** pages only if you need ISR/SSG later.
-- **Ongoing:** keep `npm audit` low-chain advisories on radar until `@stackframe/stack` upstream moves.
+- **Optional (CI):** Add a workflow job or scheduled run that executes **`next build --webpack`** (or Vercel **Build** on preview) so production bundles are verified remotely; current CI stops at validate + Jest.
+- **Optional:** Run a production **`next build`** on Vercel preview and confirm route types (static ○ vs dynamic ƒ) for key URLs; tune any remaining **`force-dynamic`** **dashboard** pages only if you need ISR/SSG later.
+- **Ongoing:** keep `npm audit --omit=dev` advisories on radar — **`@stackframe/stack` → elliptic** and **`@aws-sdk/xml-builder` → fast-xml-parser`** (moderate) until upstream bumps land.
 - **Post-deploy:** Smoke-test production API (Railway health, auth, DB) against **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](../deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** checklist.
 
 ## Known non-blocking residuals
 
-- `npm audit --omit=dev` still reports 4 low vulnerabilities via `@stackframe/stack` -> `elliptic` chain.  
-  - Current fix requires forced downgrade to `@stackframe/stack@2.5.30` (breaking change), so this is deferred pending upstream patch path.
+- **`npm audit --omit=dev` (2026-03-25):** **4 low** — `elliptic` via **`@stackframe/stack`**. Mitigation: **`elliptic`** override in **`package.json`**; full clearing may require **`@stackframe/stack`** upgrade or breaking **`npm audit fix --force`** downgrade — defer until upstream.
+- **2 moderate** — **`fast-xml-parser`** (entity expansion / falsy evaluation advisory) via **`@aws-sdk/xml-builder`**. Monitor AWS SDK / transitive updates; not individually imported for app logic in most paths.
 - **Jest / async leaks:** if new suites import long-lived clients (Redis, sockets, timers), re-run `npm test -- --detectOpenHandles` and add targeted teardown or mocks. **MED-005** addressed the Express `pg` pool path.
 

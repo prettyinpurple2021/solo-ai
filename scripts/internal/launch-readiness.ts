@@ -1,4 +1,7 @@
-
+/**
+ * AI-assisted launch notes. Writes ONLY under docs/internal/generated/ (gitignored).
+ * Curated checklists stay at repo root — never overwrite LAUNCH_CHECKLIST.md / ROADMAP.md here.
+ */
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
@@ -10,6 +13,9 @@ dotenv.config({ path: '.env.local' });
 dotenv.config();
 
 const PROJECT_ROOT = process.cwd();
+/** Never write AI output to repo root — those files are human-curated. */
+const OUTPUT_DIR = path.join(PROJECT_ROOT, 'docs', 'internal', 'generated');
+const SECTION_BREAK = '---SECTION_BREAK---';
 
 // Files to analyze for context
 const KEY_FILES = [
@@ -18,7 +24,7 @@ const KEY_FILES = [
   'src/lib/subscription-utils.ts',
   'server/db/schema.ts',
   'src/lib/custom-ai-agents/agent-collaboration-system.ts',
-  'src/middleware.ts',
+  'src/proxy.ts',
   '.env.example'
 ];
 
@@ -64,7 +70,7 @@ async function gatherContext() {
     }
   }
 
-  // Also list the structure of src/lib/custom-ai-agents to verify the 8 agents
+  // Also list custom-ai-agents directory for registry context
   try {
     const agentsDir = path.join(PROJECT_ROOT, 'src/lib/custom-ai-agents');
     if (fs.existsSync(agentsDir)) {
@@ -88,26 +94,24 @@ async function analyzeReadiness(context: string) {
   const { text } = await generateText({
     model: openai('gpt-4o'),
     system: `You are the Setup CTO of "SoloSuccess AI". Your job is to bring this project to a public launch.
-    
-    The user wants a unified "Launch To-Do List" and "Roadmap".
-    
-    CRITICAL OBJECTIVES:
-    1. **Subscription Logic Consistency**: Compare 'stripe.ts' and 'subscription-utils.ts'. Identify ANY discrepancies in limits (e.g. team members, agent counts). This is P0.
-    2. **Agent Verification**: Verify that the 8 core agents (Roxy, Blaze, Echo, Lumi, Vex, Lexi, Nova, Glitch) are present and registered in the collaboration system.
-    3. **Payment Readiness**: properties in schema vs stripe config.
-    4. **Feature Completeness**: Identify missing routes or logic based on the schema (e.g. if 'competitors' table exists, is there logic for it?).
-    
-    Output Format:
-    Return a MARKDOWN string with two distinct sections using "---SECTION_BREAK---" as a separator.
-    
-    Section 1: LAUNCH_CHECKLIST.md
-    - A strict checklist of tasks to complete before launch.
-    - Group by: 🔴 Critical (Must Fix), 🟡 Important (Should Fix), 🟢 Polish.
-    - Be specific about file names and discrepancies found.
 
-    Section 2: ROADMAP.md
-    - A strategic view for post-launch.
-    - Phases: Phase 1 (Launch/Stabilize), Phase 2 (Growth/Features), Phase 3 (Scale).
+    Produce a draft "Launch To-Do List" and "Roadmap" for engineer review only.
+
+    FACTS ABOUT THIS REPO (do not claim the opposite):
+    - Edge auth and route gating live in src/proxy.ts (NextAuth middleware wrapper), not necessarily src/middleware.ts.
+    - Custom agent collaboration may register multiple agents including Aura and Finn in addition to the eight named cores — count and list what the code actually registers.
+
+    OBJECTIVES:
+    1. **Subscription / billing alignment**: Compare stripe.ts (SDK, checkout) vs subscription-utils.ts (tier limits, agent access). Note behavioral gaps, not fictional duplicate constants.
+    2. **Agent registry**: List agents actually registered in agent-collaboration-system.ts.
+    3. **Payment readiness**: Schema / webhooks vs Stripe usage where visible in context.
+    4. **Feature completeness**: High-level gaps vs schema (if context shows them).
+
+    Output format (STRICT):
+    - Return plain Markdown only. Do NOT wrap the whole response in a fenced code block.
+    - Use exactly one line containing only: ${SECTION_BREAK}
+    - Before that line: body of LAUNCH_CHECKLIST_DRAFT (sections: Critical / Important / Polish).
+    - After that line: body of ROADMAP_DRAFT (Phase 1 Launch/Stabilize, Phase 2 Growth, Phase 3 Scale).
     `,
     prompt: `Project Context:\n${context}`
   });
@@ -115,27 +119,44 @@ async function analyzeReadiness(context: string) {
   return text;
 }
 
+function stripOuterFencedMarkdown(raw: string): string {
+  let s = raw.trim();
+  const fence = /^```(?:markdown|md)?\s*\n?([\s\S]*?)\n?```\s*$/i;
+  const m = s.match(fence);
+  if (m) return m[1].trim();
+  return s;
+}
+
 async function main() {
   try {
     console.log('🚀 Starting Launch Readiness Audit...');
-    
+
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+
     const context = await gatherContext();
-    const result = await analyzeReadiness(context);
-    
-    const [checklistContent, roadmapContent] = result.split('---SECTION_BREAK---');
+    const resultRaw = await analyzeReadiness(context);
+    const result = stripOuterFencedMarkdown(resultRaw);
 
-    if (checklistContent) {
-      fs.writeFileSync(path.join(PROJECT_ROOT, 'LAUNCH_CHECKLIST.md'), checklistContent.trim());
-      console.log('✅ Generated LAUNCH_CHECKLIST.md');
+    const parts = result.split(SECTION_BREAK);
+    const checklistContent = parts[0]?.trim();
+    const roadmapContent = parts.length > 1 ? parts.slice(1).join(SECTION_BREAK).trim() : '';
+
+    if (parts.length >= 2 && checklistContent && roadmapContent) {
+      fs.writeFileSync(path.join(OUTPUT_DIR, 'LAUNCH_CHECKLIST_DRAFT.md'), `${checklistContent}\n`);
+      fs.writeFileSync(path.join(OUTPUT_DIR, 'ROADMAP_DRAFT.md'), `${roadmapContent}\n`);
+      console.log(`✅ Wrote ${path.relative(PROJECT_ROOT, path.join(OUTPUT_DIR, 'LAUNCH_CHECKLIST_DRAFT.md'))}`);
+      console.log(`✅ Wrote ${path.relative(PROJECT_ROOT, path.join(OUTPUT_DIR, 'ROADMAP_DRAFT.md'))}`);
+    } else {
+      const fallbackPath = path.join(OUTPUT_DIR, 'launch-readiness-raw.md');
+      fs.writeFileSync(fallbackPath, result);
+      console.warn(
+        `⚠️  Missing "${SECTION_BREAK}" or empty section — full response saved to ${path.relative(PROJECT_ROOT, fallbackPath)}`
+      );
     }
 
-    if (roadmapContent) {
-      fs.writeFileSync(path.join(PROJECT_ROOT, 'ROADMAP.md'), roadmapContent.trim());
-      console.log('✅ Generated ROADMAP.md');
-    }
-
-    console.log('\nAudit complete! Review the generated markdown files.');
-    
+    console.log(
+      `\nAudit complete. Drafts are under docs/internal/generated/ (gitignored). Do not commit as replacements for root LAUNCH_CHECKLIST.md or ROADMAP.md without human review.`
+    );
   } catch (error) {
     console.error('❌ Audit failed:', error);
     process.exit(1);

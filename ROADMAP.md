@@ -1,27 +1,23 @@
-# ROADMAP.md
+# Roadmap
 
-### Phase 1: Launch/Stabilize
-- **Stability and Consistency**:
-  - Finalize critical bug fixes and consistency checks in payment and subscription logic.
-  - Confirm all core agents are operating and interacting as expected.
+High-level direction only; delivery order follows **[docs/reports/PRODUCTION_REMEDIATION_TRACKER.md](docs/reports/PRODUCTION_REMEDIATION_TRACKER.md)** and product priorities.
 
-- **Testing and Feedback**:
-  - Conduct final rounds of testing and initiate a feedback loop with early users.
+## Phase 1 — Launch / stabilize
 
-### Phase 2: Growth/Features
-- **Feature Expansion**:
-  - Explore integrating additional agents (e.g., Aura and Finn) once validated.
-  - Expand feature set based on user feedback and potential market demands.
+- Keep CI green (`validate` + Jest on `main`); run full **`npm run build`** or Vercel build before major releases.
+- Monitoring: structured logging (`@/lib/logger`), optional `LOG_INGEST_URL`, error tracking if configured.
+- Harden billing path: Stripe webhooks, subscription tier on user record, and **`subscription-utils`** / gating aligned after price or tier changes.
 
-- **Performance Enhancements**:
-  - Address scalability and performance enhancing opportunities before user base scales.
+## Phase 2 — Growth / features
 
-### Phase 3: Scale
-- **Infrastructure and Scaling**:
-  - Implement infrastructure improvements for scaling, aiming for team and enterprise readiness.
-  
-- **Partnerships and Integrations**:
-  - Develop partnerships and API integrations that expand platform capabilities.
-  
-- **Global Reach**:
-  - Localize app for international markets and start exploring global expansion.
+- Deeper analytics and usage visibility for founders.
+- Agent and template expansion where subscription tiers support it (see **`AGENT_ACCESS`** in **`subscription-utils.ts`**).
+
+## Phase 3 — Scale
+
+- Cost and performance as usage grows (DB indexes, caching, background jobs).
+- API / integration surface where it supports partnerships (without rushing public API before product fit).
+
+---
+
+*Previously this file was corrupted by an automated audit script that merged checklist content and stray markdown fences. The launch checklist now lives in **LAUNCH_CHECKLIST.md**; this file is roadmap-only.*

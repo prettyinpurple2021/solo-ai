@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { submitAssessmentAction } from "@/lib/actions/learning-actions";
+import { logError } from "@/lib/logger";
 
 export function AssessmentDialog({ open, onOpenChange, moduleId, moduleTitle }: { open: boolean, onOpenChange: (open: boolean) => void, moduleId: string, moduleTitle: string }) {
   const [assessment, setAssessment] = useState<any>(null);
@@ -36,7 +37,7 @@ export function AssessmentDialog({ open, onOpenChange, moduleId, moduleTitle }: 
         setAssessment(json.assessment);
       }
     } catch (e) {
-      console.error(e);
+      logError("AssessmentDialog loadAssessment failed", e instanceof Error ? e : new Error(String(e)));
     } finally {
       setLoading(false);
     }

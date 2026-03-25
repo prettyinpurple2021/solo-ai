@@ -2,6 +2,7 @@
 
 import { auth } from '@/lib/auth';
 import { LearningEngineService } from '@/lib/services/learning-engine-service';
+import { logError } from '@/lib/logger';
 
 export type ActionState = {
   success?: boolean;
@@ -37,7 +38,10 @@ export async function submitAssessmentAction(prevState: ActionState, formData: F
     const result = await LearningEngineService.submitAssessment(session.user.id, assessmentId, answers);
     return { success: true, data: result };
   } catch (error: unknown) {
-    console.error(`Error in submitAssessmentAction:`, error);
+    logError(
+      'Error in submitAssessmentAction',
+      error instanceof Error ? error : new Error(String(error))
+    );
     const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
     return { error: errorMessage };
   }

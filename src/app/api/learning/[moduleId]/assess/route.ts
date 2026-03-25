@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { LearningEngineService } from '@/lib/services/learning-engine-service';
+import { logError } from '@/lib/logger';
 
 export async function POST(
   req: NextRequest,
@@ -28,7 +29,10 @@ export async function POST(
 
     return NextResponse.json(result);
   } catch (error: unknown) {
-    console.error(`Error in POST /api/learning/${resolvedModuleId}/assess:`, error);
+    logError(
+      `Error in POST /api/learning/${resolvedModuleId}/assess`,
+      error instanceof Error ? error : new Error(String(error))
+    );
     const errorMessage = error instanceof Error ? error.message : 'Internal Server Error';
     return NextResponse.json({ error: errorMessage }, { status: 500 });
   }

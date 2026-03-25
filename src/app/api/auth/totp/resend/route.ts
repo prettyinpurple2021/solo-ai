@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 import { Resend } from 'resend';
 import { Redis } from '@upstash/redis';
+import { logError } from '@/lib/logger';
 
 // Configure Resend
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
@@ -95,7 +96,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: 'Unsupported verification method' }, { status: 400 });
 
   } catch (error) {
-    console.error('[TOTP Resend] Error:', error);
+    logError(
+      '[TOTP Resend] Error',
+      error instanceof Error ? error : new Error(String(error))
+    );
     return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 });
   }
 }

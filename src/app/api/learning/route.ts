@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { db } from '@/db'
 import { learningPaths, userLearningProgress } from '@/shared/db/schema/content'
 import { eq } from 'drizzle-orm'
+import { logError } from '@/lib/logger'
 
 export const dynamic = 'force-dynamic'
 
@@ -32,7 +33,10 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ paths, progress })
   } catch (error) {
-    console.error('Error in GET /api/learning:', error)
+    logError(
+      'Error in GET /api/learning',
+      error instanceof Error ? error : new Error(String(error))
+    )
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
   }
 }

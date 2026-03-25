@@ -9,6 +9,8 @@
 
 **Supplement (2026-03-24):** GitHub Actions CI was added at `.github/workflows/ci.yml` (lint, type-check, Jest). PWA/Workbox precache size handling was adjusted in `next.config.mjs` (`maximumFileSizeToCacheInBytes`). **MED-008** in the tracker documents Edge vs Node API routes and static-friendly marketing pages. Details and verification live in the tracker.
 
+**Supplement (2026-03-25):** Full launch-readiness pass: **`npm run validate`**, **`npm test -- --runInBand`**, and **`next build --webpack`** all succeeded locally (185 prerendered/static segments in app router; PWA compiled). **`npm audit --omit=dev`** reports **6** issues — **4 low** (`elliptic` via `@stackframe/stack`) and **2 moderate** (`fast-xml-parser` via `@aws-sdk/xml-builder`); **0 critical, 0 high**. Learning, TOTP, guardian consent, and related paths now use **`logError`** from `@/lib/logger` instead of raw **`console.error`** (**MED-009** in tracker). **Readiness score and queue:** see **[PRODUCTION_REMEDIATION_TRACKER.md](./PRODUCTION_REMEDIATION_TRACKER.md)** (`82/100` with documented residuals). GitHub CI does not yet run a full production build; recommend **`npm run build`** or Vercel preview before major releases.
+
 ---
 
 ## 🚨 CRITICAL COMPILATION ERRORS (44 Total) - **FIXED ✅**

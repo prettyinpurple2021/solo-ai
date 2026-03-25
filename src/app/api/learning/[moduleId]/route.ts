@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth';
 import { learningModules } from '@/shared/db/schema/content';
 import { assessments } from '@/shared/db/schema/learning';
 import { eq } from 'drizzle-orm';
-import { LearningEngineService } from '@/lib/services/learning-engine-service';
+import { logError } from '@/lib/logger';
 
 export async function GET(
   req: NextRequest,
@@ -36,7 +36,10 @@ export async function GET(
 
     return NextResponse.json({ module: moduleInfo, assessment: assessment ?? null });
   } catch (error) {
-    console.error(`Error in GET /api/learning/${resolvedModuleId}:`, error);
+    logError(
+      `Error in GET /api/learning/${resolvedModuleId}`,
+      error instanceof Error ? error : new Error(String(error))
+    );
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
