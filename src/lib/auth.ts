@@ -17,7 +17,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   // Use getDb() wrapper to prevent "Unsupported database type" errors during build time
   adapter: (() => {
     try {
-      const adapter = DrizzleAdapter(db, {
+      // `db` is a Proxy; the Auth.js DrizzleAdapter expects a real drizzle client instance.
+      const realDb = getDb()
+      const adapter = DrizzleAdapter(realDb, {
         usersTable: users,
         accountsTable: accounts,
         sessionsTable: sessions,
