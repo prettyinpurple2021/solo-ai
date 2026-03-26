@@ -53,13 +53,8 @@ export async function processVoiceIntent(text: string): Promise<VoiceIntent> {
     return result.object;
   } catch (error) {
     logError("Voice intent processing failed", error as Error);
-    // Return a minimal valid object as fallback if AI fails
-    return {
-      title: text.slice(0, 50),
-      description: text,
-      priority: "medium",
-      estimatedMinutes: 30,
-      actions: []
-    };
+    // Do not fabricate/guess tasks when the AI pipeline fails.
+    // Let the caller decide how to surface the error to the user.
+    throw new Error("Failed to process voice command");
   }
 }

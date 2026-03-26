@@ -101,10 +101,11 @@ export default function CompetitorsClient({ initialCompetitors, initialStats, in
   const [timelineFilter, setTimelineFilter] = useState<string>("24h")
   const [historicalData, setHistoricalData] = useState<any[]>([])
   const [loadingMetrics, setLoadingMetrics] = useState(false)
+  const [metricsError, setMetricsError] = useState<string | null>(null)
   const [metricsStats, setMetricsStats] = useState({
-    market_shift: "+4.2%",
-    sentiment_delta: "-1.8%",
-    threat_velocity: "STABLE"
+    market_shift: "N/A",
+    sentiment_delta: "N/A",
+    threat_velocity: "N/A"
   })
 
   useEffect(() => {
@@ -115,6 +116,7 @@ export default function CompetitorsClient({ initialCompetitors, initialStats, in
 
   const fetchHistoricalMetrics = async () => {
     setLoadingMetrics(true)
+    setMetricsError(null)
     try {
       const response = await fetch(`/api/competitors/metrics?range=${timelineFilter}`)
       if (response.ok) {
@@ -122,29 +124,18 @@ export default function CompetitorsClient({ initialCompetitors, initialStats, in
         setHistoricalData(data.metrics || [])
         if (data.stats) setMetricsStats(data.stats)
       } else {
-        setHistoricalData(generateMockHistoricalData())
+        setHistoricalData([])
+        setMetricsStats({ market_shift: 'N/A', sentiment_delta: 'N/A', threat_velocity: 'N/A' })
+        setMetricsError('Unable to load competitor metrics. Please try again.')
       }
     } catch (e) {
       logError("Failed to fetch metrics", e)
-      setHistoricalData(generateMockHistoricalData())
+      setHistoricalData([])
+      setMetricsStats({ market_shift: 'N/A', sentiment_delta: 'N/A', threat_velocity: 'N/A' })
+      setMetricsError('Unable to load competitor metrics. Please try again.')
     } finally {
       setLoadingMetrics(false)
     }
-  }
-
-  const generateMockHistoricalData = () => {
-    const dates = Array.from({ length: 7 }, (_, i) => {
-      const d = new Date()
-      d.setDate(d.getDate() - (6 - i))
-      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    })
-
-    return dates.map(date => ({
-      date,
-      'Market Share': Math.random() * 20 + 10,
-      'Search Volume': Math.random() * 100 + 50,
-      'Sentiment': Math.random() * 100,
-    }))
   }
 
   const handleRefresh = async () => {
@@ -349,6 +340,13 @@ export default function CompetitorsClient({ initialCompetitors, initialStats, in
                     </SelectContent>
                   </Select>
                 </div>
+
+                {metricsError ? (
+                  <div className="p-4 border border-neon-cyan/20 bg-dark-bg rounded-none">
+                    <p className="font-mono text-xs text-neon-magenta">Metrics unavailable</p>
+                    <p className="mt-1 text-sm text-gray-400 font-mono">{metricsError}</p>
+                  </div>
+                ) : null}
 
                 <div className="h-[400px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
