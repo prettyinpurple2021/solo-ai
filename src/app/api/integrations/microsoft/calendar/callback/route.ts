@@ -73,7 +73,11 @@ export async function GET(req: NextRequest) {
       ))
       .limit(1)
 
-    const expiresAt = new Date(Date.now() + tokens.expires_in * 1000)
+    const expiresInSeconds = Number(tokens?.expires_in)
+    const expiresAt =
+      Number.isFinite(expiresInSeconds) && expiresInSeconds > 0
+        ? new Date(Date.now() + expiresInSeconds * 1000)
+        : null
 
     const connectionData = {
       user_id: userId,

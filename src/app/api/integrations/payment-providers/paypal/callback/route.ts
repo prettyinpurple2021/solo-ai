@@ -82,13 +82,19 @@ export async function GET(req: NextRequest) {
       ))
       .limit(1)
 
+    const expiresInSeconds = Number(tokens?.expires_in)
+    const expiresAt =
+      Number.isFinite(expiresInSeconds) && expiresInSeconds > 0
+        ? new Date(Date.now() + expiresInSeconds * 1000)
+        : null
+
     const connectionData = {
       user_id: userId,
       provider: 'paypal',
       account_id: accountId,
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token,
-      expires_at: new Date(Date.now() + tokens.expires_in * 1000),
+      expires_at: expiresAt,
       account_email: accountEmail,
       account_name: accountName,
       is_active: true,
