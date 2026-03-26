@@ -84,15 +84,19 @@ export default auth((req) => {
   // ---------------------------------------------------------
   const isApiRequest = pathname.startsWith('/api')
   const isExcluded = pathname.includes('.') // Static files, images, etc.
+  const userAgent = req.headers.get('user-agent') || ''
+  const isUptimeBot =
+    /SentryUptimeBot/i.test(userAgent) ||
+    /UptimeRobot/i.test(userAgent)
   
-  if (!isApiRequest && !isExcluded && sessionId) {
+  if (!isApiRequest && !isExcluded && !isUptimeBot && sessionId) {
     // Non-blocking log persistence
     TrafficService.logRequest({
       sessionId,
       userId: req.auth?.user?.id,
       url: req.url,
       referrer: req.headers.get('referer') || undefined,
-      userAgent: req.headers.get('user-agent') || undefined,
+      userAgent: userAgent || undefined,
       ipAddress: req.headers.get('x-forwarded-for') || undefined,
       metadata: {
         method: req.method,

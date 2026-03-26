@@ -55,7 +55,17 @@ export class TrafficService {
       if (e?.code === '42P01' || message.includes('relation "traffic_logs" does not exist')) {
         return
       }
-      logError('TrafficService: Failed to log request', error);
+      logError(
+        'TrafficService: Failed to log request',
+        {
+          code: typeof e?.code === 'string' ? e.code : undefined,
+          message,
+          detail: typeof e?.detail === 'string' ? e.detail : undefined,
+          hint: typeof e?.hint === 'string' ? e.hint : undefined,
+          constraint: typeof e?.constraint === 'string' ? e.constraint : undefined,
+        },
+        e instanceof Error ? e : undefined,
+      )
       // We don't throw here to avoid breaking the main request flow
     }
   }
