@@ -85,3 +85,31 @@ CREATE TABLE IF NOT EXISTS "user_survey_status" (
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS "user_survey_status_user_id_survey_type_key" ON "user_survey_status" ("user_id", "survey_type");
+
+-- 4) user_preferences: required by /api/preferences (production-safe; no runtime DDL).
+CREATE TABLE IF NOT EXISTS "user_preferences" (
+	"id" text PRIMARY KEY NOT NULL DEFAULT (gen_random_uuid()::text),
+	"user_id" text NOT NULL,
+	"preference_key" text NOT NULL,
+	"preference_value" jsonb NOT NULL DEFAULT '{}'::jsonb,
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+
+-- Optional: link to users when that table exists (skips if already added).
+DO $$
+BEGIN
+	IF EXISTS (
+		SELECT 1 FROM information_schema.tables
+		WHERE table_schema = 'public' AND table_name = 'users'
+	) AND NOT EXISTS (
+		SELECT 1 FROM pg_constraint WHERE conname = 'user_preferences_user_id_users_id_fk'
+	) THEN
+		ALTER TABLE "user_preferences"
+			ADD CONSTRAINT "user_preferences_user_id_users_id_fk"
+			FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE;
+	END IF;
+END $$;
+
+CREATE UNIQUE INDEX IF NOT EXISTS "user_preferences_user_id_preference_key_key"
+	ON "user_preferences" ("user_id", "preference_key");
