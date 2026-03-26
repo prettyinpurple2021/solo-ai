@@ -49,6 +49,12 @@ export class TrafficService {
         metadata: data.metadata || {},
       });
     } catch (error) {
+      // If the table isn't deployed yet, fail silently (do not spam logs on every request).
+      const e = error as any
+      const message = typeof e?.message === 'string' ? e.message : ''
+      if (e?.code === '42P01' || message.includes('relation "traffic_logs" does not exist')) {
+        return
+      }
       logError('TrafficService: Failed to log request', error);
       // We don't throw here to avoid breaking the main request flow
     }

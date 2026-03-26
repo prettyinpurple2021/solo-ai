@@ -113,3 +113,35 @@ END $$;
 
 CREATE UNIQUE INDEX IF NOT EXISTS "user_preferences_user_id_preference_key_key"
 	ON "user_preferences" ("user_id", "preference_key");
+
+-- 5) traffic_logs: required by TrafficService analytics logging middleware.
+CREATE TABLE IF NOT EXISTS "traffic_logs" (
+	"id" text PRIMARY KEY NOT NULL DEFAULT (gen_random_uuid()::text),
+	"session_id" text NOT NULL,
+	"user_id" text,
+	"url" text NOT NULL,
+	"referrer" text,
+	"user_agent" text,
+	"ip_address" text,
+	"metadata" jsonb DEFAULT '{}'::jsonb,
+	"timestamp" timestamp DEFAULT now() NOT NULL
+);
+
+-- Optional: link to users when that table exists (skips if already added).
+DO $$
+BEGIN
+	IF EXISTS (
+		SELECT 1 FROM information_schema.tables
+		WHERE table_schema = 'public' AND table_name = 'users'
+	) AND NOT EXISTS (
+		SELECT 1 FROM pg_constraint WHERE conname = 'traffic_logs_user_id_users_id_fk'
+	) THEN
+		ALTER TABLE "traffic_logs"
+			ADD CONSTRAINT "traffic_logs_user_id_users_id_fk"
+			FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE SET NULL;
+	END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS "traffic_logs_session_id_idx" ON "traffic_logs" USING btree ("session_id");
+CREATE INDEX IF NOT EXISTS "traffic_logs_user_id_idx" ON "traffic_logs" USING btree ("user_id");
+CREATE INDEX IF NOT EXISTS "traffic_logs_timestamp_idx" ON "traffic_logs" USING btree ("timestamp");
