@@ -24,6 +24,7 @@ import { setupBoardroomSocket } from './src/realtime/boardroom';
 import { setupCommandCenterSocket, broadcastRevenueUpdate, broadcastAgentActivity } from './src/realtime/command-center';
 import { logInfo, logWarn, logError } from './utils/logger';
 import path from 'path';
+import fs from 'fs';
 import { verifyToken } from './utils/jwt';
 import { authMiddleware } from './middleware/auth';
 
@@ -156,14 +157,6 @@ app.use('/api/competitors', competitorsRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/briefcase', briefcaseRouter);
 
-// Serve static files from the frontend build folder
-app.use(express.static(path.join(__dirname, '../../client/dist')));
-
-// Handle any requests that don't match the ones above by sending back the main index.html
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
-});
-
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({
@@ -173,6 +166,27 @@ app.get('/api/health', (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+
+const clientDistDir = path.resolve(__dirname, '../../client/dist');
+const clientIndexHtmlPath = path.join(clientDistDir, 'index.html');
+
+// Serve frontend only if it exists in the container.
+// Railway runs API-only (frontend is on Vercel), so `client/dist` typically won't be present there.
+if (fs.existsSync(clientIndexHtmlPath)) {
+    app.use(express.static(clientDistDir));
+
+    // Handle any requests that don't match the ones above by sending back the main index.html
+    app.get('*', (req, res) => {
+        res.sendFile(clientIndexHtmlPath);
+    });
+} else {
+    logInfo(`Frontend dist not found at ${clientIndexHtmlPath}. Running in API-only mode.`);
+
+    // Basic root response so platform probes don't crash the process.
+    app.get('/', (req, res) => {
+        res.status(200).json({ status: 'ok', service: 'solosuccess-api' });
+    });
+}
 
 // Sentry error handler must be after all routes
 Sentry.setupExpressErrorHandler(app);
