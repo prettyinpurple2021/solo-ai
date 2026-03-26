@@ -12,7 +12,12 @@ function toDayKey(d: Date): string {
 
 function formatDay(dayKey: string): string {
   const d = new Date(`${dayKey}T00:00:00.000Z`);
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  // Render in UTC to match `toDayKey()` grouping (UTC).
+  return d.toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
 }
 
 function formatSignedPercent(delta: number): string {
