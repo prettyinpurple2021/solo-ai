@@ -156,6 +156,14 @@ app.use('/api/competitors', competitorsRouter);
 app.use('/api/notifications', notificationsRouter);
 app.use('/api/briefcase', briefcaseRouter);
 
+// Serve static files from the frontend build folder
+app.use(express.static(path.join(__dirname, '../../client/dist')));
+
+// Handle any requests that don't match the ones above by sending back the main index.html
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../../client/dist/index.html'));
+});
+
 // Health Check
 app.get('/api/health', (req, res) => {
     res.json({
