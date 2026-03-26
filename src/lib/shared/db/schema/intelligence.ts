@@ -405,3 +405,21 @@ export const competitorActivities = pgTable('competitor_activities', {
     detectedAtIdx: index('competitor_activities_detected_at_idx').on(table.detected_at),
   }));
 
+// Competitor Metrics table - Time-series snapshots
+export const competitorMetrics = pgTable("competitor_metrics", {
+  id: text('id').primaryKey().$defaultFn(() => crypto.randomUUID()),
+  competitorId: text("competitor_id").notNull().references(() => competitorProfiles.id, { onDelete: 'cascade' }),
+  userId: text("user_id").notNull().references(() => users.id, { onDelete: 'cascade' }),
+  metricName: varchar("metric_name", { length: 100 }).notNull(),
+  metricValue: decimal("metric_value", { precision: 15, scale: 4 }).notNull(),
+  unit: varchar("unit", { length: 50 }),
+  snapshotDate: timestamp("snapshot_date").defaultNow().notNull(),
+  source: varchar("source", { length: 100 }),
+  metadata: jsonb("metadata").default('{}').notNull(),
+}, (table) => ({
+  competitorIdIdx: index("competitor_metrics_competitor_id_idx").on(table.competitorId),
+  userIdIdx: index("competitor_metrics_user_id_idx").on(table.userId),
+  metricNameIdx: index("competitor_metrics_metric_name_idx").on(table.metricName),
+  snapshotDateIdx: index("competitor_metrics_snapshot_date_idx").on(table.snapshotDate),
+}));
+

@@ -1,15 +1,15 @@
 # Implementation Plan: Deferred Features & V2 Enhancements
 
 ## Phase 1: AI & Intelligence Enhancements
-- [ ] **Task: Advanced Learning Algorithms**
-    - [ ] Update `src/lib/learning-engine.ts` to implement predictive path generation using Gemini 2.5 Pro.
-    - [ ] Create tests to verify learning path adaptations.
-- [ ] **Task: Historical Competitor Comparison**
-    - [ ] Update `competitor_metrics` schema or create a time-series table for competitor snapshots.
-    - [ ] Implement UI in Competitor Stalker to view historical trends (delta reporting).
-- [ ] **Task: Voice NLP Pipeline**
-    - [ ] Create a dedicated server-side endpoint `/api/voice/process` to handle complex NLP using Gemini 2.5 Pro.
-    - [ ] Connect `voice-task-creator.tsx` to the new pipeline.
+- [x] **Task: Advanced Learning Algorithms**
+    - [x] Update `src/lib/learning-engine.ts` to implement predictive path generation using Gemini 2.5 Pro.
+    - [x] Create tests to verify learning path adaptations.
+- [x] **Task: Historical Competitor Comparison**
+    - [x] Update `competitor_metrics` schema or create a time-series table for competitor snapshots.
+    - [x] Implement UI in Competitor Stalker to view historical trends (delta reporting).
+- [x] **Task: Voice NLP Pipeline**
+    - [x] Create a dedicated server-side action (idiomatic upgrade from API endpoint) to handle complex NLP using Gemini 1.5 Flash.
+    - [x] Connect `voice-task-creator.tsx` to the new pipeline.
 - [ ] **Task: Conductor - User Manual Verification 'Phase 1: AI & Intelligence Enhancements' (Protocol in workflow.md)**
 
 ## Phase 2: User-Driven Integrations

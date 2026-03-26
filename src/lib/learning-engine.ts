@@ -10,6 +10,7 @@ import { eq, and, asc, desc, sql } from "drizzle-orm";
 import { logError, logWarn, logInfo } from "@/lib/logger";
 import { generateObject } from "ai";
 import { openai } from "@/lib/ai-config";
+import { google } from "@ai-sdk/google";
 import { z } from "zod";
 
 
@@ -442,6 +443,63 @@ export class LearningEngine {
       learning_velocity: "Steady",
       peer_rank: peerRank, 
     };
+  }
+
+  /**
+   * Generate a predictive, personalized learning path using Gemini 2.5 Pro
+   */
+  async generatePredictivePath() {
+    // 1. Get user context
+    const user = await db.query.users.findFirst({
+        where: eq(users.id, this.userId),
+        columns: { bio: true, level: true, xp: true }
+    });
+    
+    // 2. Analyze current skill gaps
+    const gaps = await this.analyzeSkillGaps();
+    
+    // 3. Define schema for the predictive path
+    const predictivePathSchema = z.object({
+      path_title: z.string(),
+      description: z.string(),
+      modules: z.array(z.object({
+        title: z.string(),
+        description: z.string(),
+        reasoning: z.string(),
+        estimated_duration_minutes: z.number()
+      }))
+    });
+
+    try {
+        logInfo(`Generating predictive path for user ${this.userId} using Gemini 2.5 Pro`);
+        
+        const result = await generateObject({
+            model: google("gemini-2.5-pro"),
+            schema: predictivePathSchema as any,
+            prompt: `
+              As a world-class business mentor and pedagogical expert, generate a tailored, predictive learning path for a solo entrepreneur.
+              
+              User Context:
+              - Bio: ${user?.bio || "Solo entrepreneur building a high-impact business."}
+              - Experience Level: ${user?.level}
+              - Total XP: ${user?.xp}
+              
+              Current Skill Gaps:
+              ${JSON.stringify(gaps, null, 2)}
+              
+              Requirements:
+              - Create a cohesive 5-module path that directly addresses their critical gaps.
+              - Each module must have a clear "reasoning" that explains why it was chosen based on their current progress and gaps.
+              - Ensure the path feels progressive, starting from their current level.
+              - The path should be highly practical and results-oriented.
+            `
+        }) as any;
+
+        return result.object;
+    } catch (e) {
+        logError('Predictive Path Generation failed', e as Error);
+        throw new Error('Failed to generate predictive learning path');
+    }
   }
 
   /**

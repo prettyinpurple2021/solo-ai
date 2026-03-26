@@ -14,9 +14,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Mic, MicOff, Loader2, Sparkles } from "lucide-react"
+import { Mic, MicOff, Loader2, Sparkles, ListChecks } from "lucide-react"
 import { toast } from "sonner"
 import { logError } from "@/lib/logger"
+import { processVoiceIntent, VoiceIntent } from "@/lib/actions/voice-actions"
 
 interface VoiceTaskCreatorProps {
     isOpen: boolean
@@ -26,6 +27,7 @@ interface VoiceTaskCreatorProps {
         description?: string
         priority: 'low' | 'medium' | 'high' | 'urgent',
         estimatedMinutes?: number
+        actions?: { type: string, content: string, order: number }[]
     }) => Promise<void>
 }
 
@@ -33,12 +35,7 @@ export function VoiceTaskCreator({ isOpen, onClose, onTaskCreate }: VoiceTaskCre
     const [isListening, setIsListening] = useState(false)
     const [isProcessing, setIsProcessing] = useState(false)
     const [transcript, setTranscript] = useState("")
-    const [parsedTask, setParsedTask] = useState<{
-        title: string
-        description: string
-        priority: 'low' | 'medium' | 'high' | 'urgent',
-        estimatedMinutes: number
-    } | null>(null)
+    const [parsedTask, setParsedTask] = useState<VoiceIntent | null>(null)
 
     const recognitionRef = useRef<any>(null)
 
@@ -98,29 +95,8 @@ export function VoiceTaskCreator({ isOpen, onClose, onTaskCreate }: VoiceTaskCre
 
         setIsProcessing(true)
         try {
-            // Heuristic keyword extraction
-            // (Full NLP pipeline deferred to server-side job)
-
-            const lowerText = text.toLowerCase()
-            let priority: 'low' | 'medium' | 'high' | 'urgent' = 'medium'
-            if (lowerText.includes('urgent') || lowerText.includes('asap')) priority = 'urgent'
-            else if (lowerText.includes('high') || lowerText.includes('important')) priority = 'high'
-            else if (lowerText.includes('low')) priority = 'low'
-
-            let minutes = 30
-            const timeMatch = text.match(/(\d+)\s*(minute|min|hour)/i)
-            if (timeMatch) {
-                const val = parseInt(timeMatch[1])
-                if (timeMatch[2].startsWith('hour')) minutes = val * 60
-                else minutes = val
-            }
-
-            setParsedTask({
-                title: text.slice(0, 50) + (text.length > 50 ? "..." : ""), // Simple title extraction
-                description: text,
-                priority,
-                estimatedMinutes: minutes,
-            })
+            const result = await processVoiceIntent(text);
+            setParsedTask(result);
         } catch (error) {
             logError("Error processing voice command:", error)
             toast.error("Failed to process voice command")
@@ -226,6 +202,25 @@ export function VoiceTaskCreator({ isOpen, onClose, onTaskCreate }: VoiceTaskCre
                                     />
                                 </div>
                             </div>
+
+                            {parsedTask.actions && parsedTask.actions.length > 0 && (
+                                <div className="space-y-2">
+                                    <Label className="flex items-center gap-2">
+                                        <ListChecks className="w-4 h-4 text-purple-600" />
+                                        Extracted Steps (Deep Command)
+                                    </Label>
+                                    <div className="space-y-2 bg-muted/50 p-3 rounded-md">
+                                        {parsedTask.actions.map((action, idx) => (
+                                            <div key={idx} className="flex items-start gap-3 text-sm">
+                                                <span className="bg-purple-600 text-white w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-[10px]">
+                                                    {idx + 1}
+                                                </span>
+                                                <p className="text-gray-300">{action.content}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
