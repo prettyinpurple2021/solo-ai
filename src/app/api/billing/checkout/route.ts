@@ -12,19 +12,27 @@ export async function POST(req: NextRequest) {
         }
 
         const { tier } = await req.json()
+        const normalizedTier = typeof tier === 'string' ? tier.toLowerCase().trim() : ''
 
-        const priceId = tier === 'accelerator' ? PRICE_IDS.accelerator.monthly : 
-                        tier === 'dominator' ? PRICE_IDS.dominator.monthly : '';
+        const priceId =
+            normalizedTier === 'accelerator'
+                ? (PRICE_IDS.accelerator.monthly || PRICE_IDS.accelerator.yearly)
+                : normalizedTier === 'dominator'
+                    ? (PRICE_IDS.dominator.monthly || PRICE_IDS.dominator.yearly)
+                    : '';
 
         if (!priceId) {
-            return NextResponse.json({ error: 'Invalid plan selected or missing price ID' }, { status: 400 })
+            return NextResponse.json(
+                { error: 'Invalid plan selected or missing Stripe price configuration' },
+                { status: 400 },
+            )
         }
 
         if (!stripe) {
             return NextResponse.json({ error: 'Stripe is not configured in this environment' }, { status: 500 })
         }
 
-        logInfo(`Creating checkout session for user ${session.user.id}, tier: ${tier}, price: ${priceId}`)
+        logInfo(`Creating checkout session for user ${session.user.id}, tier: ${normalizedTier}, price: ${priceId}`)
 
         const checkoutSession = await stripe.checkout.sessions.create({
             mode: 'subscription',
@@ -38,9 +46,10 @@ export async function POST(req: NextRequest) {
             customer_email: session.user.email || undefined,
             client_reference_id: session.user.id,
             success_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/pricing`,
+            cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/dashboard/billing`,
             metadata: {
                 userId: session.user.id,
+                tier: normalizedTier,
             }
         });
 

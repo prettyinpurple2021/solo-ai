@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-25
+Last updated: 2026-03-26
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -29,6 +29,14 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 - Observability: stray **`console.error`** on learning, TOTP, and guardian UI paths replaced with **`logError`** (**MED-009**)
 
 ## Work log
+
+### 2026-03-26
+
+- **Production auth adapter fix:** Updated **`src/lib/auth.ts`** to initialize `DrizzleAdapter` with **`getDb()`** (real drizzle instance) rather than the proxy export. This addressed production auth-adapter initialization errors (`Unsupported database type (object)`).
+- **Production DB schema alignment (preferences + traffic):** Extended **`migrations/0003_api_tables_baseline.sql`** with idempotent creation/indexing for **`user_preferences`** and **`traffic_logs`** (plus optional FKs), then applied via **`npm run db:apply-api-baseline`**. Vercel 500s on **`/api/preferences`** (`relation "user_preferences" does not exist`) stopped after deploy + migration.
+- **Traffic logging hardening:** Updated **`src/proxy.ts`** to skip uptime bots (**SentryUptimeBot** / **UptimeRobot**) and reduced non-actionable noise. Updated **`src/lib/traffic-service.ts`** error context to include DB error metadata (`code`, `detail`, `hint`, `constraint`) for faster production debugging.
+- **Billing UX/error-noise hardening:** Updated **`src/app/dashboard/billing/page.tsx`** to treat expected free-tier states as user guidance (not hard failures): handle **404** from billing portal gracefully, route `launch` downgrade through cancel-subscription flow, and avoid throw-driven error spam for expected **400/404** checkout/portal responses.
+- **Validation:** Ran **`npm run validate`** after each substantive change set; lint + web/server type-check passed.
 
 ### 2026-03-25
 

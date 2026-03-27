@@ -4,7 +4,7 @@ export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from "react"
 import { useAuth } from "@/hooks/use-auth"
-import { logError } from "@/lib/logger"
+import { logError, logInfo } from "@/lib/logger"
 import { useToast } from "@/hooks/use-toast"
 import { motion } from "framer-motion"
 import {
@@ -57,11 +57,34 @@ export default function BillingPage() {
     try {
       const response = await fetch('/api/billing/portal', { method: 'POST' });
       const data = await response.json();
-      
-      if (data.url) {
+
+      if (response.ok && data.url) {
         window.location.href = data.url;
+        return
+      }
+
+      // Expected state for free users: no paid Stripe customer yet.
+      if (response.status === 404) {
+        toast({
+          title: "No Active Paid Subscription",
+          description: "You are currently on a free plan. Choose a paid tier to enable billing portal access.",
+        })
+        return
+      }
+
+      if (!response.ok) {
+        logInfo('Billing portal request returned non-OK status', { status: response.status, error: data?.error })
+        toast({
+          title: "Portal Unavailable",
+          description: data?.error || "Unable to open billing portal right now.",
+          variant: "destructive"
+        })
       } else {
-        throw new Error(data.error || 'Failed to open portal');
+        toast({
+          title: "Portal Unavailable",
+          description: "Unable to open billing portal right now.",
+          variant: "destructive"
+        })
       }
     } catch (error) {
       logError('Billing portal error:', error);
@@ -76,6 +99,48 @@ export default function BillingPage() {
   }
 
   const handleUpgrade = async (tier: string) => {
+    // Free/Launch is not a Stripe checkout plan.
+    // If user is paid, this requests cancellation at period end.
+    if (tier === 'launch') {
+      setIsLoading(true)
+      try {
+        const response = await fetch('/api/stripe/cancel-subscription', { method: 'POST' })
+        const data = await response.json()
+
+        if (response.ok) {
+          toast({
+            title: "Downgrade Scheduled",
+            description: data?.message || "Your subscription will be canceled at the end of the current billing period.",
+          })
+          return
+        }
+
+        if (response.status === 404) {
+          toast({
+            title: "Already on Free Plan",
+            description: "No active paid subscription was found.",
+          })
+          return
+        }
+
+        toast({
+          title: "Downgrade Error",
+          description: data?.error || "Unable to process downgrade right now.",
+          variant: "destructive"
+        })
+      } catch (error) {
+        logError('Downgrade error:', error)
+        toast({
+          title: "Downgrade Error",
+          description: "Unable to process downgrade right now.",
+          variant: "destructive"
+        })
+      } finally {
+        setIsLoading(false)
+      }
+      return
+    }
+
     setIsLoading(true)
     toast({
       title: "Upgrade Initiated",
@@ -90,10 +155,33 @@ export default function BillingPage() {
       });
 
       const data = await response.json();
-      if (data.url) {
+      if (response.ok && data.url) {
         window.location.href = data.url;
+        return
+      }
+
+      // Do not treat expected validation errors as hard app failures.
+      if (response.status === 400) {
+        toast({
+          title: "Plan Selection Required",
+          description: data?.error || "Please select a valid paid plan.",
+        })
+        return
+      }
+
+      if (!response.ok) {
+        logInfo('Checkout request returned non-OK status', { status: response.status, error: data?.error, tier })
+        toast({
+          title: "Checkout Error",
+          description: data?.error || "Failed to initiate checkout. Please try again later.",
+          variant: "destructive"
+        })
       } else {
-        throw new Error(data.error || 'Checkout failed');
+        toast({
+          title: "Checkout Error",
+          description: "Failed to initiate checkout. Please try again later.",
+          variant: "destructive"
+        })
       }
     } catch (error) {
       logError('Checkout error:', error);
