@@ -4,7 +4,15 @@ import { db } from '@/lib/database-client';
 import { userMfaSettings } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifySync } from 'otplib';
+import { Redis } from '@upstash/redis';
 import { logError } from '@/lib/logger';
+
+const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN,
+    })
+  : null;
 
 export async function POST(req: Request) {
   try {
@@ -24,7 +32,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Invalid or missing TOTP code' }, { status: 400 });
     }
 
-    // Fetch the user's MFA settings
+    // First allow short-lived emailed OTP verification (resend flow).
+    // This is for accounts without TOTP app enabled.
+    if (redis) {
+      const redisKey = `2fa:code:${session.user.id}`;
+      const pendingCode = await redis.get<string>(redisKey);
+      if (pendingCode && pendingCode === code) {
+        // One-time consume to prevent replay.
+        await redis.del(redisKey);
+        return NextResponse.json({ success: true, message: 'Verified via emailed code' });
+      }
+    }
+
+    // Fetch the user's MFA settings for authenticator-app / backup-code flows.
     const [mfaSettings] = await db
       .select()
       .from(userMfaSettings)

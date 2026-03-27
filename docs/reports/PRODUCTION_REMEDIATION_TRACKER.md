@@ -30,6 +30,14 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Work log
 
+### 2026-03-25
+
+- **Feature reality audit (phase 1):** Performed a production truth-pass across user-facing flows and identified highest-impact breakpoints in auth MFA contracts, integrations API route mismatches, and dashboard action endpoint mismatches. Prioritized immediate fixes by user impact and launch risk.
+- **2FA resend/verify contract fix:** Updated **`src/app/api/auth/totp/verify/route.ts`** to support one-time verification of emailed OTP codes stored in Redis (`2fa:code:${userId}`) before TOTP-app validation, and consume matching codes on success to prevent replay.
+- **Integrations compatibility endpoints:** Added **`src/app/api/integrations/status/route.ts`** and dynamic compatibility routes **`src/app/api/integrations/[provider]/connect/route.ts`**, **`src/app/api/integrations/[provider]/disconnect/route.ts`** to match current Integration Hub expectations and unblock connect/disconnect/status flows for Google Calendar.
+- **Briefcase upload path correction:** Updated **`src/app/dashboard/agents/AgentClient.tsx`** to call **`/api/briefcases/upload`** (existing route) instead of non-existent **`/api/briefcase/upload`**.
+- **Validation:** Ran **`npm run validate`** after changes; lint and web/server type-check passed.
+
 ### 2026-03-26
 
 - **Production auth adapter fix:** Updated **`src/lib/auth.ts`** to initialize `DrizzleAdapter` with **`getDb()`** (real drizzle instance) rather than the proxy export. This addressed production auth-adapter initialization errors (`Unsupported database type (object)`).

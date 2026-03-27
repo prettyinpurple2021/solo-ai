@@ -402,7 +402,7 @@ ${selectedMessageToSave.content}`
       formData.append('tags', saveForm.tags)
       
       const token = localStorage.getItem('authToken')
-      const response = await fetch('/api/briefcase/upload', {
+      const response = await fetch('/api/briefcases/upload', {
         method: 'POST',
         headers: {
           ...(token ? { 'Authorization': `Bearer ${token}` } : {}),

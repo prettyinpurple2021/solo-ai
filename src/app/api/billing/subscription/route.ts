@@ -8,11 +8,17 @@ export async function GET(req: NextRequest) {
     const session = await auth()
     const userIdFromSession = session?.user?.id
     const userIdFromQuery = req.nextUrl.searchParams.get('userId')
-    const userId = userIdFromSession || userIdFromQuery
 
-    if (!userId) {
+    // Enforce user isolation: session identity is the source of truth.
+    if (!userIdFromSession) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
+    if (userIdFromQuery && userIdFromQuery !== userIdFromSession) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
+    const userId = userIdFromSession
 
     const sql = getSql()
     const res = await sql`
