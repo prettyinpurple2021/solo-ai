@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
-import { getTemporalWorkflow, saveTemporalWorkflow } from '@/lib/temporal-workflow-store'
+import {
+  getTemporalWorkflow,
+  markTemporalWorkflowFailed,
+  saveTemporalWorkflow,
+} from '@/lib/temporal-workflow-store'
 import { logError } from '@/lib/logger'
 
 export const runtime = 'nodejs'
@@ -125,6 +129,3 @@ export async function POST(request: NextRequest) {
   }
 }
 
-function markTemporalWorkflowFailed(arg0: { workflowId: string; endpoint: string; userId: string; startTime: string; error: unknown }) {
-  throw new Error('Function not implemented.')
-}

@@ -4,6 +4,9 @@ import { createSubscriptionCheckoutForUser } from '@/lib/billing/checkout'
 import { logError, logInfo } from '@/lib/logger'
 import { z } from 'zod'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 const bodySchema = z.object({
   tier: z.enum(['accelerator', 'dominator']),
   billing: z.enum(['monthly', 'yearly']).optional().default('monthly'),
