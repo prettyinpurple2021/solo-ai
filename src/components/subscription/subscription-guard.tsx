@@ -40,7 +40,7 @@ export function SubscriptionGuard({
     }
 
     try {
-      const response = await fetch('/api/stripe/subscription', {
+      const response = await fetch('/api/billing/subscription', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ export function useSubscriptionAccess(requiredTier: 'accelerator' | 'dominator')
 
     const checkAccess = async () => {
       try {
-        const response = await fetch('/api/stripe/subscription')
+        const response = await fetch('/api/billing/subscription')
         if (response.ok) {
           const data = await response.json()
           const userTier = data.subscription?.subscription_tier

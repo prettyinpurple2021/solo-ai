@@ -25,11 +25,18 @@ export const endpoints = {
         register: '/api/auth/register',
         me: '/api/auth/me',
     },
+    billing: {
+        createCheckoutSession: '/api/billing/checkout',
+        subscription: '/api/billing/subscription',
+        portal: '/api/billing/portal',
+        cancelSubscription: '/api/billing/cancel-subscription',
+        reactivateSubscription: '/api/billing/reactivate-subscription',
+    },
     stripe: {
-        createCheckoutSession: '/api/stripe/create-checkout-session',
-        subscription: '/api/stripe/subscription',
+        createCheckoutSession: '/api/billing/checkout',
+        subscription: '/api/billing/subscription',
         usage: '/api/stripe/usage',
-        customerPortal: '/api/stripe/customer-portal',
+        customerPortal: '/api/billing/portal',
     },
     ai: {
         generate: '/api/generate',

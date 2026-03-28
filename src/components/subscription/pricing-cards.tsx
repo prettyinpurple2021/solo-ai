@@ -98,7 +98,7 @@ export function PricingCards() {
 
     setLoading(`${tier}-${billingCycle}`)
     try {
-      const response = await fetch('/api/stripe/create-checkout-session', {
+      const response = await fetch('/api/billing/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

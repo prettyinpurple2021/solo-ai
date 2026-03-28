@@ -104,7 +104,7 @@ export default function BillingPage() {
     if (tier === 'launch') {
       setIsLoading(true)
       try {
-        const response = await fetch('/api/stripe/cancel-subscription', { method: 'POST' })
+        const response = await fetch('/api/billing/cancel-subscription', { method: 'POST' })
         const data = await response.json()
 
         if (response.ok) {

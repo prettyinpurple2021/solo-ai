@@ -229,7 +229,11 @@ export function useCompetitorSpecificAlerts(competitorId: string, limit: number 
       }
 
       const data = await response.json();
-      setAlerts(data.alerts || []);
+      // Support both response contracts:
+      // - array payload from /api/competitors/[id]/alerts
+      // - object payload with { alerts: [...] }
+      const normalizedAlerts = Array.isArray(data) ? data : (data.alerts || []);
+      setAlerts(normalizedAlerts);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch competitor alerts');
       logError('Error fetching competitor alerts:', err);

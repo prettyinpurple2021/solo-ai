@@ -34,7 +34,7 @@ export function SubscriptionManager() {
 
   const fetchSubscription = async () => {
     try {
-      const response = await fetch('/api/stripe/subscription')
+      const response = await fetch('/api/billing/subscription')
       if (response.ok) {
         const data = await response.json()
         setSubscription(data.subscription)
@@ -54,7 +54,7 @@ export function SubscriptionManager() {
   const handleUpgrade = async (tier: 'accelerator' | 'dominator', billing: 'monthly' | 'yearly') => {
     setActionLoading(`upgrade-${tier}-${billing}`)
     try {
-      const response = await fetch('/api/stripe/create-checkout-session', {
+      const response = await fetch('/api/billing/checkout', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -83,7 +83,7 @@ export function SubscriptionManager() {
   const handleManageBilling = async () => {
     setActionLoading('billing')
     try {
-      const response = await fetch('/api/stripe/billing-portal', {
+      const response = await fetch('/api/billing/portal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ export function SubscriptionManager() {
 
     setActionLoading('cancel')
     try {
-      const response = await fetch('/api/stripe/cancel-subscription', {
+      const response = await fetch('/api/billing/cancel-subscription', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ export function SubscriptionManager() {
   const handleReactivateSubscription = async () => {
     setActionLoading('reactivate')
     try {
-      const response = await fetch('/api/stripe/reactivate-subscription', {
+      const response = await fetch('/api/billing/reactivate-subscription', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -1,25 +1,19 @@
-import { logError } from '@/lib/logger'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { rateLimitByIp } from '@/lib/rate-limit'
-import { reactivateSubscription } from '@/lib/billing/subscription-lifecycle'
+import { cancelSubscriptionAtPeriodEnd } from '@/lib/billing/subscription-lifecycle'
+import { logError } from '@/lib/logger'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
-    const rateLimitResult = await rateLimitByIp(request, { requests: 5, window: 60 })
-    if (!rateLimitResult.allowed) {
-      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
-    }
-
     const session = await auth()
     if (!session?.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const result = await reactivateSubscription(session.user.id)
+    const result = await cancelSubscriptionAtPeriodEnd(session.user.id)
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
@@ -31,7 +25,7 @@ export async function POST(request: NextRequest) {
       current_period_end: result.current_period_end,
     })
   } catch (error) {
-    logError('Error reactivating subscription:', error)
+    logError('Billing cancel-subscription failed', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

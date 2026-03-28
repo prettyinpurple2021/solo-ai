@@ -1,58 +1,47 @@
-import { logError,} from '@/lib/logger'
-import { NextRequest, NextResponse} from 'next/server'
-import { authenticateRequest} from '@/lib/auth-server'
-import { rateLimitByIp} from '@/lib/rate-limit'
-import { createBillingPortalSession} from '@/lib/stripe'
+import { logError } from '@/lib/logger'
+import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
+import { rateLimitByIp } from '@/lib/rate-limit'
+import { createBillingPortalForUser } from '@/lib/billing/portal'
+import { isStripeConfigured } from '@/lib/stripe'
 
 export const runtime = 'nodejs'
-
-// Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting
     const rateLimitResult = await rateLimitByIp(request, { requests: 10, window: 60 })
     if (!rateLimitResult.allowed) {
-      return NextResponse.json(
-        { error: 'Rate limit exceeded' },
-        { status: 429 }
-      )
+      return NextResponse.json({ error: 'Rate limit exceeded' }, { status: 429 })
     }
 
-    // Authentication
-    const { user, error } = await authenticateRequest()
-    if (error || !user) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      )
+    const session = await auth()
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Check if user has Stripe customer ID
-    if (!user.stripe_customer_id) {
-      return NextResponse.json(
-        { error: 'No billing information found' },
-        { status: 404 }
-      )
+    if (!isStripeConfigured()) {
+      return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
     }
 
-    // Create billing portal session
-    const session = await createBillingPortalSession(
-      user.stripe_customer_id,
-      `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`
-    )
+    const baseUrl = (process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/+$/, '')
+    const returnUrl = `${baseUrl}/dashboard/billing`
+
+    const result = await createBillingPortalForUser({
+      userId: session.user.id,
+      returnUrl,
+    })
+
+    if (!result.ok) {
+      return NextResponse.json({ error: result.error }, { status: result.status })
+    }
 
     return NextResponse.json({
       success: true,
-      url: session.url
+      url: result.url,
     })
-
   } catch (error) {
     logError('Error creating billing portal session:', error)
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    )
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
