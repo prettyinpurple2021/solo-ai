@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
 import { runOnboardingWorkflow } from '@/lib/onboarding/workflow'
-import { getTemporalWorkflow, saveTemporalWorkflow } from '@/lib/temporal-workflow-store'
+import {
+  getTemporalWorkflow,
+  markTemporalWorkflowFailed,
+  saveTemporalWorkflow,
+} from '@/lib/temporal-workflow-store'
 import { logError } from '@/lib/logger'
 
 export const runtime = 'nodejs'
@@ -32,6 +36,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  let workflowId = ''
+  let workflowUserId = ''
+  let workflowStartIso = ''
+  let runningPersisted = false
+
   try {
     const { user, error } = await authenticateRequest()
     if (error || !user?.id) {
@@ -44,16 +53,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    const workflowId = crypto.randomUUID()
+    workflowId = crypto.randomUUID()
     const startedAt = new Date()
+    workflowUserId = user.id
+    workflowStartIso = startedAt.toISOString()
 
     await saveTemporalWorkflow({
       workflowId,
       endpoint: 'onboarding',
-      userId: user.id,
+      userId: workflowUserId,
       status: 'RUNNING',
-      startTime: startedAt.toISOString(),
+      startTime: workflowStartIso,
     })
+    runningPersisted = true
 
     const result = await runOnboardingWorkflow(workflowId, user.id)
     const completedAt = new Date()
@@ -61,9 +73,9 @@ export async function POST(request: NextRequest) {
     const record = {
       workflowId,
       endpoint: 'onboarding' as const,
-      userId: user.id,
+      userId: workflowUserId,
       status: 'COMPLETED' as const,
-      startTime: startedAt.toISOString(),
+      startTime: workflowStartIso,
       executionTime: String(completedAt.getTime() - startedAt.getTime()),
       result,
     }
@@ -72,7 +84,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(record)
   } catch (error) {
     logError('Temporal onboarding start failed', error)
-    return NextResponse.json({ error: 'Onboarding workflow failed' }, { status: 500 })
+    if (runningPersisted && workflowId && workflowUserId) {
+      try {
+        await markTemporalWorkflowFailed({
+          workflowId,
+          endpoint: 'onboarding',
+          userId: workflowUserId,
+          startTime: workflowStartIso,
+          error,
+        })
+      } catch (persistErr) {
+        logError('Temporal onboarding: failed to persist FAILED status', persistErr)
+      }
+    }
+    return NextResponse.json(
+      {
+        error: 'Onboarding workflow failed',
+        ...(runningPersisted && workflowId ? { workflowId } : {}),
+      },
+      { status: 500 }
+    )
   }
 }
 

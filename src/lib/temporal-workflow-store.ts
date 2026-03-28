@@ -43,3 +43,37 @@ export async function getTemporalWorkflow(workflowId: string): Promise<TemporalW
   return inMemoryStore.get(workflowId) || null
 }
 
+export function formatTemporalWorkflowError(error: unknown): string {
+  if (error instanceof Error) return error.message
+  if (typeof error === 'string') return error
+  try {
+    return JSON.stringify(error)
+  } catch {
+    return 'Unknown error'
+  }
+}
+
+/** Persist FAILED so pollers see terminal state instead of RUNNING until TTL. */
+export async function markTemporalWorkflowFailed(params: {
+  workflowId: string
+  endpoint: TemporalWorkflowRecord['endpoint']
+  userId: string
+  startTime: string
+  error: unknown
+}): Promise<void> {
+  const ended = new Date()
+  const start = new Date(params.startTime)
+  const diff = ended.getTime() - start.getTime()
+  const executionMs = Number.isFinite(diff) && diff >= 0 ? diff : 0
+
+  await saveTemporalWorkflow({
+    workflowId: params.workflowId,
+    endpoint: params.endpoint,
+    userId: params.userId,
+    status: 'FAILED',
+    startTime: params.startTime,
+    executionTime: String(executionMs),
+    error: formatTemporalWorkflowError(params.error),
+  })
+}
+

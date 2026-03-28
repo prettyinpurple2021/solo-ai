@@ -33,6 +33,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  let workflowId = ''
+  let workflowUserId = ''
+  let workflowStartIso = ''
+  let runningPersisted = false
+
   try {
     const { user, error } = await authenticateRequest()
     if (error || !user?.id) {
@@ -50,16 +55,19 @@ export async function POST(request: NextRequest) {
         ? body.briefingType
         : 'daily'
 
-    const workflowId = crypto.randomUUID()
+    workflowId = crypto.randomUUID()
     const startedAt = new Date()
+    workflowUserId = user.id
+    workflowStartIso = startedAt.toISOString()
 
     await saveTemporalWorkflow({
       workflowId,
       endpoint: 'briefings',
-      userId: user.id,
+      userId: workflowUserId,
       status: 'RUNNING',
-      startTime: startedAt.toISOString(),
+      startTime: workflowStartIso,
     })
+    runningPersisted = true
 
     const response = await fetch(`${APP_URL}/api/intelligence/briefings`, {
       method: 'POST',
@@ -83,9 +91,9 @@ export async function POST(request: NextRequest) {
     const record = {
       workflowId,
       endpoint: 'briefings' as const,
-      userId: user.id,
+      userId: workflowUserId,
       status: 'COMPLETED' as const,
-      startTime: startedAt.toISOString(),
+      startTime: workflowStartIso,
       executionTime: String(completedAt.getTime() - startedAt.getTime()),
       result,
     }
@@ -94,7 +102,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(record)
   } catch (error) {
     logError('Temporal briefings start failed', error)
-    return NextResponse.json({ error: 'Briefings workflow failed' }, { status: 500 })
+    if (runningPersisted && workflowId && workflowUserId) {
+      try {
+        await markTemporalWorkflowFailed({
+          workflowId,
+          endpoint: 'briefings',
+          userId: workflowUserId,
+          startTime: workflowStartIso,
+          error,
+        })
+      } catch (persistErr) {
+        logError('Temporal briefings: failed to persist FAILED status', persistErr)
+      }
+    }
+    return NextResponse.json(
+      {
+        error: 'Briefings workflow failed',
+        ...(runningPersisted && workflowId ? { workflowId } : {}),
+      },
+      { status: 500 }
+    )
   }
 }
 
+function markTemporalWorkflowFailed(arg0: { workflowId: string; endpoint: string; userId: string; startTime: string; error: unknown }) {
+  throw new Error('Function not implemented.')
+}

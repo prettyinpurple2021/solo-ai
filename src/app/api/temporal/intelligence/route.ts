@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { authenticateRequest } from '@/lib/auth-server'
-import { getTemporalWorkflow, saveTemporalWorkflow } from '@/lib/temporal-workflow-store'
+import {
+  getTemporalWorkflow,
+  markTemporalWorkflowFailed,
+  saveTemporalWorkflow,
+} from '@/lib/temporal-workflow-store'
 import { logError } from '@/lib/logger'
 
 export const runtime = 'nodejs'
@@ -33,22 +37,30 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  let workflowId = ''
+  let workflowUserId = ''
+  let workflowStartIso = ''
+  let runningPersisted = false
+
   try {
     const { user, error } = await authenticateRequest()
     if (error || !user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const workflowId = crypto.randomUUID()
+    workflowId = crypto.randomUUID()
     const startedAt = new Date()
+    workflowUserId = user.id
+    workflowStartIso = startedAt.toISOString()
 
     await saveTemporalWorkflow({
       workflowId,
       endpoint: 'intelligence',
-      userId: user.id,
+      userId: workflowUserId,
       status: 'RUNNING',
-      startTime: startedAt.toISOString(),
+      startTime: workflowStartIso,
     })
+    runningPersisted = true
 
     const response = await fetch(`${APP_URL}/api/competitors/intelligence`, {
       method: 'GET',
@@ -65,9 +77,9 @@ export async function POST(request: NextRequest) {
     const record = {
       workflowId,
       endpoint: 'intelligence' as const,
-      userId: user.id,
+      userId: workflowUserId,
       status: 'COMPLETED' as const,
-      startTime: startedAt.toISOString(),
+      startTime: workflowStartIso,
       executionTime: String(completedAt.getTime() - startedAt.getTime()),
       result,
     }
@@ -76,7 +88,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(record)
   } catch (error) {
     logError('Temporal intelligence start failed', error)
-    return NextResponse.json({ error: 'Intelligence workflow failed' }, { status: 500 })
+    if (runningPersisted && workflowId && workflowUserId) {
+      try {
+        await markTemporalWorkflowFailed({
+          workflowId,
+          endpoint: 'intelligence',
+          userId: workflowUserId,
+          startTime: workflowStartIso,
+          error,
+        })
+      } catch (persistErr) {
+        logError('Temporal intelligence: failed to persist FAILED status', persistErr)
+      }
+    }
+    return NextResponse.json(
+      {
+        error: 'Intelligence workflow failed',
+        ...(runningPersisted && workflowId ? { workflowId } : {}),
+      },
+      { status: 500 }
+    )
   }
 }
 

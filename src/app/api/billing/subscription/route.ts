@@ -4,6 +4,9 @@ import { fetchUnifiedSubscriptionPayload } from '@/lib/billing/subscription-payl
 import { hasActiveSubscription, getUserSubscription } from '@/lib/stripe-db-utils'
 import { logError } from '@/lib/logger'
 
+export const runtime = 'nodejs'
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: NextRequest) {
   try {
     const session = await auth()
