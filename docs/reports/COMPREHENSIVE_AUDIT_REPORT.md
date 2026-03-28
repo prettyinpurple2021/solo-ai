@@ -11,6 +11,15 @@
 
 **Supplement (2026-03-25):** Full launch-readiness pass: **`npm run validate`**, **`npm test -- --runInBand`**, and **`next build --webpack`** all succeeded locally (185 prerendered/static segments in app router; PWA compiled). **`npm audit --omit=dev`** reports **6** issues — **4 low** (`elliptic` via `@stackframe/stack`) and **2 moderate** (`fast-xml-parser` via `@aws-sdk/xml-builder`); **0 critical, 0 high**. Learning, TOTP, guardian consent, and related paths now use **`logError`** from `@/lib/logger` instead of raw **`console.error`** (**MED-009** in tracker). **Readiness score and queue:** see **[PRODUCTION_REMEDIATION_TRACKER.md](./PRODUCTION_REMEDIATION_TRACKER.md)** (`82/100` with documented residuals). GitHub CI does not yet run a full production build; recommend **`npm run build`** or Vercel preview before major releases.
 
+**Supplement (2026-03-28):** Dependency remediation **Phase A/B** completed across root + API packages.  
+- **Phase A (server + railway-deploy):** upgraded to latest non-breaking patch/minor lines and regenerated lockfiles.  
+  - `npm audit --omit=dev` now reports **0 vulnerabilities** in both `server/` and `railway-deploy/`.  
+- **Phase B (root app):** applied smallest-safe same-major upgrades for core SDK/tooling dependencies (including `@ducanh2912/next-pwa` 10.2.9, AI SDK package line updates, lint/test tooling patch lines), then revalidated with lint and type-check.  
+  - `npm run lint` ✅  
+  - `npm run type-check` ✅  
+  - `npm audit --omit=dev` now reports **4 low** vulnerabilities (all from `@stackframe/stack` → `elliptic`, no high/critical).  
+  - Full `npm audit` still flags dev-tooling high findings tied to deprecated MCP/dev packages and `next-devtools-mcp` dependency chain, which require scoped follow-up (major or package-removal path) rather than force-upgrades.
+
 ---
 
 ## 🚨 CRITICAL COMPILATION ERRORS (44 Total) - **FIXED ✅**
