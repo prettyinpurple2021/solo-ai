@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-26
+Last updated: 2026-03-28
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -20,15 +20,29 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Current readiness baseline
 
-- Overall launch readiness score: `82/100` (ready for public launch with documented dependency and CI caveats below)
+- Overall launch readiness score: `84/100` (ready for public launch with documented dependency and CI caveats below)
 - Build/lint/type-check: passing (verified **`npm run validate`** on 2026-03-25)
 - Production build: passing (verified **`next build --webpack`** on 2026-03-25; 185 static pages generated; PWA / Workbox compiled without precache size errors for large chunks)
 - Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown); **`16/16`** suites, **`97/97`** tests (2026-03-25)
 - CI gate quality: **GitHub Actions** **`.github/workflows/ci.yml`** runs **`npm run validate`** + **`npm test -- --runInBand`** on push and pull requests to **`main`** (root + **`server`** `npm ci`). **`next build` is not** in CI (time/cost); run **`npm run build`** or **`next build --webpack`** locally or on Vercel preview before major releases.
-- Security: no **critical** or **high** production advisories in last `npm audit --omit=dev`; **6** open issues (**4 low**, **2 moderate**) — see **Known non-blocking residuals** and **HIGH-003** verification note below
+- Security: no **critical** or **high** production advisories in latest `npm audit --omit=dev`; current root runtime graph reports **4 low** (all `@stackframe/stack` → `elliptic`), and API package trees (`server/`, `railway-deploy/`) report **0 vulnerabilities**
 - Observability: stray **`console.error`** on learning, TOTP, and guardian UI paths replaced with **`logError`** (**MED-009**)
 
 ## Work log
+
+### 2026-03-28
+
+- **Dependency remediation (Phase A/B):** completed conservative dependency hardening pass scoped to non-breaking/same-major upgrades.
+  - **Phase A (`server/` + `railway-deploy/`):** upgraded patch/minor dependency lines and regenerated lockfiles; applied safe lockfile remediation.
+  - **Phase B (root):** upgraded high-confidence same-major dependencies (AI SDK lines, lint/test/tooling patch lines, networking/runtime packages, PWA tooling line) without major-version migrations.
+- **Validation:**
+  - `npm run lint` ✅
+  - `npm run type-check` ✅
+  - `npm audit --omit=dev --json`:
+    - root: **4 low**, **0 moderate/high/critical** (all from `@stackframe/stack` → `elliptic`)
+    - `server/`: **0**
+    - `railway-deploy/`: **0**
+- **Documentation alignment:** updated `docs/reports/COMPREHENSIVE_AUDIT_REPORT.md` supplement with the same Phase A/B verification snapshot.
 
 ### 2026-03-25
 
@@ -118,7 +132,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 |---|---|---|---|---|---|
 | HIGH-001 | HIGH | Quality Gate | Failing test suites (`npm test`) | DONE | `npm test -- --runInBand` passed (16/16 suites) |
 | HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates in CI | DONE | Pre-push: `npm run validate` + `npm test -- --runInBand`; remote: `.github/workflows/ci.yml` on `main` |
-| HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | DONE | No critical/high; as of **2026-03-25** `npm audit --omit=dev` reports **6** (4 low, 2 moderate): `elliptic` via `@stackframe/stack`; `fast-xml-parser` via `@aws-sdk/xml-builder` (transitive). Treat as monitor / upstream — not launch-blocking. |
+| HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | DONE | No critical/high. As of **2026-03-28**: root reports **4 low** (`@stackframe/stack` → `elliptic`), `server/` and `railway-deploy/` each report **0**. |
 | HIGH-004 | HIGH | Auth | Logout cookie name mismatch (`auth_token` vs `auth-token`) | DONE | `npm run lint` passed |
 | HIGH-005 | HIGH | Reliability | Upload idempotency helper mismatch (`upload` route + `idempotency` helper) | DONE | `npm run lint` passed |
 | HIGH-006 | HIGH | Maintainability | Broad `@ts-nocheck` and `@ts-ignore` in production code paths | DONE | `npm run validate` + `npm test -- --runInBand` passed; production `src` has zero `@ts-nocheck`; remaining `@ts-ignore` only in test setup (`src/test/setup.ts`, `competitor-service.integration.test.ts`) |
@@ -319,24 +333,29 @@ Use this block whenever an item is completed:
 
 ### HIGH-003: Remediate production dependency vulnerabilities
 - What changed:
-  - Upgraded vulnerable production dependencies (`axios`, `express-rate-limit`, `jspdf`, `socket.io-client`, `undici`).
-  - Upgraded Next.js security patch line to `next@16.2.0` and aligned `eslint-config-next@16.2.0`.
-  - Moved `@ducanh2912/next-pwa` into `devDependencies` so build-time tooling is not shipped in production runtime dependency graph.
-  - Updated TypeScript config to exclude generated `.next` output from direct compilation to prevent generated-artifact type breakage during `tsc --noEmit`.
+  - Prior pass removed launch-blocking high/critical production advisories in root runtime graph.
+  - **2026-03-28 follow-up (Phase A/B):**
+    - Updated `server/` + `railway-deploy/` dependency baselines (patch/minor, non-breaking), regenerated lockfiles, and applied safe lockfile remediation.
+    - Applied root same-major dependency upgrades for high-confidence packages (SDK/tooling/runtime patch lines) without major migrations.
 - Files updated:
   - `package.json`
   - `package-lock.json`
-  - `tsconfig.json`
-  - `src/lib/__tests__/scraping-scheduler.test.ts`
+  - `server/package.json`
+  - `server/package-lock.json`
+  - `railway-deploy/package.json`
+  - `railway-deploy/package-lock.json`
 - Why this improves production readiness:
-  - Removes launch-blocking high/critical production dependency advisories while preserving lint/type/test quality gates.
+  - Keeps production package trees free of high/critical advisories while avoiding risky forced major upgrades.
 - Verification:
-  - Command: `npm audit --omit=dev --json` (**2026-03-25** re-check)
-  - Result: **`6` vulnerabilities** — **`4 low`** (`elliptic` via `@stackframe/stack` / `@stackframe/stack-shared`), **`2 moderate`** (`fast-xml-parser` via `@aws-sdk/xml-builder`). **0 high, 0 critical.**
-  - Command: `npm run validate`
-  - Result: pass (`lint` and both `type-check` targets passed).
-  - Command: `npm test -- --runInBand`
-  - Result: suites/tests pass (`16/16`, `97/97`).
+  - Command: `npm audit --omit=dev --json` (**2026-03-28** re-check)
+  - Result:
+    - root: **`4 low`**, **`0 moderate`**, **`0 high`**, **`0 critical`** (all `@stackframe/stack` → `elliptic`)
+    - `server/`: **`0` vulnerabilities**
+    - `railway-deploy/`: **`0` vulnerabilities**
+  - Command: `npm run lint`
+  - Result: pass (`eslint . --max-warnings 0`).
+  - Command: `npm run type-check`
+  - Result: pass (web + server `tsc --noEmit`).
 - Status: DONE (ongoing monitoring for upstream patches)
 
 ### HIGH-006: Remove broad TypeScript suppressions from production paths
@@ -440,12 +459,16 @@ Use this block whenever an item is completed:
 
 - **Optional (CI):** Add a workflow job or scheduled run that executes **`next build --webpack`** (or Vercel **Build** on preview) so production bundles are verified remotely; current CI stops at validate + Jest.
 - **Optional:** Run a production **`next build`** on Vercel preview and confirm route types (static ○ vs dynamic ƒ) for key URLs; tune any remaining **`force-dynamic`** **dashboard** pages only if you need ISR/SSG later.
-- **Ongoing:** keep `npm audit --omit=dev` advisories on radar — **`@stackframe/stack` → elliptic** and **`@aws-sdk/xml-builder` → fast-xml-parser`** (moderate) until upstream bumps land.
+- **Ongoing (runtime):** keep `npm audit --omit=dev` advisories on radar — root currently has **4 low** (`@stackframe/stack` → `elliptic`).
+- **Ongoing (dev tooling):** full `npm audit` still reports high dev-only findings tied to deprecated MCP package chain (`@modelcontextprotocol/server-brave-search`, `@modelcontextprotocol/server-puppeteer`, `next-devtools-mcp`). Handle via scoped package removal/replacement or controlled major path in a dedicated follow-up.
 - **Post-deploy:** Smoke-test production API (Railway health, auth, DB) against **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](../deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** checklist.
 
 ## Known non-blocking residuals
 
-- **`npm audit --omit=dev` (2026-03-25):** **4 low** — `elliptic` via **`@stackframe/stack`**. Mitigation: **`elliptic`** override in **`package.json`**; full clearing may require **`@stackframe/stack`** upgrade or breaking **`npm audit fix --force`** downgrade — defer until upstream.
-- **2 moderate** — **`fast-xml-parser`** (entity expansion / falsy evaluation advisory) via **`@aws-sdk/xml-builder`**. Monitor AWS SDK / transitive updates; not individually imported for app logic in most paths.
+- **`npm audit --omit=dev` (2026-03-28):**
+  - root: **4 low** — `elliptic` via **`@stackframe/stack`**
+  - `server/`: **0**
+  - `railway-deploy/`: **0**
+- **Dev-only advisory residuals (`npm audit` full):** high findings remain in deprecated MCP tooling chain (`@modelcontextprotocol/server-brave-search`, `@modelcontextprotocol/server-puppeteer`, `next-devtools-mcp` / nested `@modelcontextprotocol/sdk` and `undici`). Not shipped in runtime graph; track for cleanup/replacement.
 - **Jest / async leaks:** if new suites import long-lived clients (Redis, sockets, timers), re-run `npm test -- --detectOpenHandles` and add targeted teardown or mocks. **MED-005** addressed the Express `pg` pool path.
 
