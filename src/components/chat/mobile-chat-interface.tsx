@@ -81,9 +81,10 @@ export default function MobileChatInterface({
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight
-    }
+    if (!scrollAreaRef.current) return
+    const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement | null
+    const target = viewport || scrollAreaRef.current
+    target.scrollTop = target.scrollHeight
   }, [messages])
 
   // Select first agent by default
@@ -185,12 +186,9 @@ export default function MobileChatInterface({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {selectedAgent && (
-                <Avatar 
-                  className="w-8 h-8"
-                  style={{ backgroundColor: `var(--bg-color-${Math.random().toString(36).substr(2, 9)})`}}
-                >
+                <Avatar className="w-8 h-8">
                   <AvatarFallback 
-                    style={{ backgroundColor: `var(--bg-color-${Math.random().toString(36).substr(2, 9)})`, color: 'white' }}
+                    style={{ backgroundColor: selectedAgent.accent_color, color: 'white' }}
                     className="text-xs font-bold"
                   >
                     {selectedAgent.display_name.charAt(0)}
@@ -244,7 +242,7 @@ export default function MobileChatInterface({
                       >
                         <Avatar className="w-6 h-6 mr-2">
                           <AvatarFallback 
-                            style={{ backgroundColor: `var(--bg-color-${Math.random().toString(36).substr(2, 9)})`, color: 'white' }}
+                            style={{ backgroundColor: agent.accent_color, color: 'white' }}
                             className="text-xs"
                           >
                             {agent.display_name.charAt(0)}
@@ -301,7 +299,7 @@ export default function MobileChatInterface({
                     {message.role === 'assistant' && selectedAgent && (
                       <Avatar className="w-8 h-8 flex-shrink-0">
                         <AvatarFallback 
-                          style={{ backgroundColor: `var(--bg-color-${Math.random().toString(36).substr(2, 9)})`, color: 'white' }}
+                          style={{ backgroundColor: selectedAgent.accent_color, color: '#ffffff' }}
                           className="text-xs"
                         >
                           {selectedAgent.display_name.charAt(0)}
@@ -310,6 +308,7 @@ export default function MobileChatInterface({
                     )}
                     
                     <div className={cn(
+                      "group",
                       "flex flex-col max-w-[80%]",
                       message.role === 'user' ? "items-end" : "items-start"
                     )}>
@@ -367,7 +366,7 @@ export default function MobileChatInterface({
                     {selectedAgent && (
                       <Avatar className="w-8 h-8 flex-shrink-0">
                         <AvatarFallback 
-                          style={{ backgroundColor: `var(--bg-color-${Math.random().toString(36).substr(2, 9)})`, color: 'white' }}
+                          style={{ backgroundColor: selectedAgent.accent_color, color: '#ffffff' }}
                           className="text-xs"
                         >
                           {selectedAgent.display_name.charAt(0)}
@@ -412,6 +411,7 @@ export default function MobileChatInterface({
                   onClick={isListening ? stopListening : startListening}
                   variant="ghost" 
                   size="sm"
+                  disabled={!selectedAgent || isLoading}
                   className={cn(
                     "h-11 w-11 p-0 transition-colors",
                     isListening ? "text-red-500 hover:text-red-600 bg-red-500/10" : "text-gray-400 hover:text-white"

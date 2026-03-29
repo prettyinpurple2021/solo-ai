@@ -1,7 +1,7 @@
 "use client";
 
 import { logError } from "@/lib/logger";
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { CyberButton } from "@/components/cyber/CyberButton";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -71,6 +71,7 @@ interface BriefcaseClientProps {
 
 export default function BriefcaseClient({ initialDocuments, initialFolders }: BriefcaseClientProps) {
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const mappedDocs = initialDocuments.map(d => ({
     ...d,
@@ -145,13 +146,106 @@ export default function BriefcaseClient({ initialDocuments, initialFolders }: Br
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files || files.length === 0) return;
-    toast({ title: "Upload started", description: "This feature is being hardened." });
+    try {
+      const formData = new FormData();
+      for (const file of Array.from(files)) {
+        formData.append("files", file);
+      }
+
+      const response = await fetch("/api/briefcases/upload", {
+        method: "PUT",
+        body: formData,
+      });
+
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to upload files");
+      }
+
+      const uploadedDocs = Array.isArray(result.results)
+        ? result.results.map((doc: any) => ({
+            id: String(doc.id),
+            name: doc.name || "Untitled",
+            originalName: doc.name || "Untitled",
+            fileType: doc.type || "unknown",
+            mimeType: doc.mimeType || "application/octet-stream",
+            size: Number(doc.size || 0),
+            fileUrl: doc.downloadUrl,
+            category: doc.category || "uncategorized",
+            description: doc.description || undefined,
+            tags: Array.isArray(doc.tags) ? doc.tags : [],
+            isFavorite: false,
+            isPublic: false,
+            downloadCount: 0,
+            viewCount: 0,
+            createdAt: doc.createdAt || new Date().toISOString(),
+            updatedAt: doc.updatedAt || new Date().toISOString(),
+            folderId: undefined,
+          }))
+        : [];
+
+      if (uploadedDocs.length > 0) {
+        setDocuments((prev) => [...uploadedDocs, ...prev]);
+      }
+
+      toast({
+        title: "Upload complete",
+        description: `Uploaded ${uploadedDocs.length} file${uploadedDocs.length === 1 ? "" : "s"}.`,
+      });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Upload failed";
+      toast({
+        title: "Upload failed",
+        description: message,
+        variant: "destructive",
+      });
+    } finally {
+      // Reset so selecting same file again retriggers onChange
+      event.target.value = "";
+    }
   };
 
   const handleCreateFolder = async () => {
     const name = prompt("Enter folder name:");
     if (!name) return;
-    toast({ title: "Action noted", description: "Folder creation hardening in progress." });
+    try {
+      const response = await fetch("/api/briefcases/folders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to create folder");
+      }
+
+      const folder = result.folder;
+      if (folder) {
+        setFolders((prev) => [
+          {
+            id: Number(folder.id),
+            name: folder.name || name,
+            description: folder.description || undefined,
+            color: folder.color || "#8B5CF6",
+            icon: folder.icon || undefined,
+            fileCount: Number(folder.file_count || 0),
+            totalSize: Number(folder.total_size || 0),
+            createdAt: folder.created_at || new Date().toISOString(),
+            updatedAt: folder.updated_at || new Date().toISOString(),
+          },
+          ...prev,
+        ]);
+      }
+
+      toast({ title: "Folder created", description: `"${name}" is ready.` });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to create folder";
+      toast({
+        title: "Folder creation failed",
+        description: message,
+        variant: "destructive",
+      });
+    }
   };
 
   const filteredDocuments = documents.filter((doc) => {
@@ -207,13 +301,16 @@ export default function BriefcaseClient({ initialDocuments, initialFolders }: Br
             <FolderPlus className="w-4 h-4 mr-2" />
             New Folder
           </CyberButton>
-          <label className="cursor-pointer">
-            <CyberButton variant="purple" className="bg-gradient-to-r from-neon-purple to-neon-magenta text-white">
+          <CyberButton
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            variant="purple"
+            className="bg-gradient-to-r from-neon-purple to-neon-magenta text-white"
+          >
               <Upload className="w-4 h-4 mr-2" />
               Upload Files
-            </CyberButton>
-            <input type="file" multiple onChange={handleFileUpload} className="hidden" />
-          </label>
+          </CyberButton>
+          <input ref={fileInputRef} type="file" multiple onChange={handleFileUpload} className="hidden" />
         </div>
 
         {/* Stats */}

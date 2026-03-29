@@ -284,12 +284,10 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setIsLoading(true)
 
     try {
-      const token = localStorage.getItem('authToken')
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
         },
         body: JSON.stringify({
           message: messageContent,
@@ -319,7 +317,7 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
             const { done, value } = await reader.read()
             if (done) break
             
-            const chunk = decoder.decode(value)
+            const chunk = decoder.decode(value, { stream: true })
             assistantContent += chunk
             
             // Update the assistant message in real-time
@@ -329,9 +327,29 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
                 : msg
             ))
           }
+        } else {
+          // Non-stream fallback path for environments that buffer responses.
+          const text = await response.text()
+          const assistantMessage: Message = {
+            id: (Date.now() + 1).toString(),
+            role: "assistant",
+            content: text || "No response received.",
+            timestamp: new Date(),
+            agentId: agentId,
+          }
+          addMessage(assistantMessage)
         }
       } else {
-        throw new Error('Failed to send message')
+        let errorMessage = 'Failed to send message'
+        try {
+          const payload = await response.json()
+          if (payload?.error) {
+            errorMessage = String(payload.error)
+          }
+        } catch {
+          // ignore json parse errors and use fallback message
+        }
+        throw new Error(errorMessage)
       }
     } catch (error) {
       logError('Error sending message:', error)

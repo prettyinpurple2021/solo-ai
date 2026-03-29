@@ -8,6 +8,7 @@ import { Loader2, GraduationCap, Users, Trophy } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { logError } from "@/lib/logger"
+import { isAdminEmail } from "@/lib/admin-access"
 
 export default function DevToolsPage() {
     const [loading, setLoading] = useState<string | null>(null)
@@ -15,14 +16,16 @@ export default function DevToolsPage() {
     const router = useRouter()
 
     useEffect(() => {
-        if (!authLoading && user?.role !== 'admin') {
+        if (authLoading) return
+        const allowed = !!user?.email && isAdminEmail(user.email)
+        if (!allowed) {
             router.push('/dashboard')
         }
     }, [user, authLoading, router])
 
     if (authLoading) return <div className="p-10"><Loader2 className="animate-spin" /></div>
     
-    if (user?.role !== 'admin') return null;
+    if (!user?.email || !isAdminEmail(user.email)) return null;
 
     const runSeed = async (name: string, url: string, method: string = 'POST') => {
         setLoading(name)

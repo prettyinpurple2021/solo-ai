@@ -1,5 +1,6 @@
 import { getStripe } from '@/lib/stripe'
 import { getUserSubscription } from '@/lib/stripe-db-utils'
+import { isAdminEmail } from '@/lib/admin-access'
 
 function normalizeTier(tier: string | null | undefined): string {
   const t = (tier || 'free').toLowerCase()
@@ -39,6 +40,24 @@ export async function fetchUnifiedSubscriptionPayload(
 ): Promise<UnifiedSubscriptionPayload | null> {
   const row = await getUserSubscription(userId)
   if (!row) return null
+
+  // Master admin always gets Dominator-tier access for internal operations.
+  if (isAdminEmail(row.email ?? null)) {
+    return {
+      tier: 'dominator',
+      status: 'active',
+      current_period_end: null,
+      subscription: {
+        subscription_tier: 'dominator',
+        subscription_status: 'active',
+        stripe_customer_id: row.stripe_customer_id,
+        stripe_subscription_id: row.stripe_subscription_id,
+        current_period_start: null,
+        current_period_end: null,
+        cancel_at_period_end: false,
+      },
+    }
+  }
 
   const normalizedTier = normalizeTier(row.subscription_tier)
   const status =

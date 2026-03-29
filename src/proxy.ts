@@ -4,6 +4,7 @@ import { NextResponse } from "next/server"
 import { TrafficService } from "@/lib/traffic-service"
 import { logError, logInfo } from "@/lib/logger"
 import { canAccess } from "@/lib/subscription-gating"
+import { isAdminEmail } from "@/lib/admin-access"
 
 const { auth } = NextAuth(authConfig)
 
@@ -30,6 +31,20 @@ export default auth((req) => {
      // Add callbackUrl to redirect back after login
      signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search)
      return NextResponse.redirect(signInUrl)
+  }
+
+  // Lock /dev tooling to admin email only.
+  if (pathname.startsWith('/dev')) {
+    if (!isLoggedIn) {
+      const signInUrl = new URL('/login', req.url)
+      signInUrl.searchParams.set('callbackUrl', req.nextUrl.pathname + req.nextUrl.search)
+      return NextResponse.redirect(signInUrl)
+    }
+    const email = user?.email || ''
+    if (!isAdminEmail(email)) {
+      logInfo('Access Denied: /dev admin email required', { userId: user?.id, email })
+      return NextResponse.redirect(new URL('/dashboard', req.url))
+    }
   }
 
   // 2. Feature Gating based on Subscription Tier

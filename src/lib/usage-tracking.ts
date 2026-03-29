@@ -1,6 +1,7 @@
 import { logError,} from '@/lib/logger'
 import { neon } from '@neondatabase/serverless'
 import { SUBSCRIPTION_TIERS } from '@/lib/pricing'
+import { isAdminEmail } from '@/lib/admin-access'
 
 function getSql() {
   const url = process.env.DATABASE_URL
@@ -41,7 +42,7 @@ export async function getUserLimits(userId: string) {
   const sql = getSql()
 
   const users = await sql`
-    SELECT subscription_tier, subscription_status
+    SELECT email, subscription_tier, subscription_status
     FROM users
     WHERE id = ${userId}
   `
@@ -50,7 +51,13 @@ export async function getUserLimits(userId: string) {
     throw new Error('User not found')
   }
 
-  const { subscription_tier } = users[0]
+  const { email, subscription_tier } = users[0]
+
+  // Hard bypass for master admin account in launch-critical environments.
+  if (isAdminEmail(email)) {
+    return SUBSCRIPTION_TIERS.DOMINATOR.limits
+  }
+
   const tier = subscription_tier || 'launch'
 
   // Get limits from SUBSCRIPTION_TIERS

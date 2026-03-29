@@ -30,8 +30,8 @@ export default function DashboardLayout({
     points: (user as any).points || 0
   } : undefined
 
-  const subscriptionTier = (user as any)?.subscription_tier || 'free'
-  const isPaidTier = subscriptionTier !== 'free'
+  const subscriptionTier = ((user as any)?.subscription_tier || 'free').toLowerCase()
+  const isPaidTier = subscriptionTier !== 'free' && subscriptionTier !== 'launch'
 
   return (
     <SidebarProvider>
