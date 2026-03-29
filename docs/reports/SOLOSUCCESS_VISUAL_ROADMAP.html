@@ -377,7 +377,7 @@
         what to do next, and the exact launch gates to reach a high-quality, easy-to-maintain, scalable public launch.
       </p>
       <div class="meta">
-        <span class="pill">Last updated: 2026-03-28</span>
+        <span class="pill">Last updated: 2026-03-29</span>
         <span class="pill">Source: PRODUCTION_REMEDIATION_TRACKER.md</span>
         <span class="pill">Mode: Launch Readiness + Scale Plan</span>
       </div>
@@ -387,10 +387,10 @@
       <article class="card span-5">
         <p class="kpi-title">Launch Readiness</p>
         <div class="meter-wrap">
-          <div class="ring" style="--value:84"><b>84%</b></div>
+          <div class="ring" style="--value:86"><b>86%</b></div>
           <ul class="legend">
             <li><b>Great momentum:</b> strong foundation in security, CI, and dependencies.</li>
-            <li><b>Remaining work:</b> close launch gates and clean dev-tooling advisory debt.</li>
+            <li><b>Remaining work:</b> execute launch smoke-test evidence and resolve the remaining next-pwa dev advisory chain.</li>
             <li><b>Goal:</b> 100% gate pass for confident public launch.</li>
           </ul>
         </div>
@@ -426,7 +426,7 @@
       </article>
       <article class="phase active">
         <h3>Phase 1 - Launch Gate Hardening <span class="badge active">Current focus</span></h3>
-        <p>Close dev-tooling advisory chain, add mandatory CI production build, and execute smoke-test evidence for critical flows.</p>
+        <p>Resolve remaining next-pwa dev advisories, keep CI production build gate healthy, and execute smoke-test evidence for critical flows.</p>
       </article>
       <article class="phase next">
         <h3>Phase 2 - Public Launch Execution <span class="badge next">Next</span></h3>
@@ -449,7 +449,7 @@
           </div>
           <div class="item">
             <input id="g2" type="checkbox" />
-            <label for="g2">CI includes and passes production build (`next build --webpack`).</label>
+            <label for="g2">CI includes and passes production build (`next build --webpack`) on PR/push.</label>
           </div>
           <div class="item">
             <input id="g3" type="checkbox" />
@@ -491,17 +491,17 @@
           <tbody>
             <tr>
               <td><b>P0</b></td>
-              <td>Replace/remove deprecated MCP dev packages.</td>
-              <td>Clears dev advisory/deprecation debt.</td>
+              <td>Replace/remove deprecated MCP dev packages. <b>(Done 2026-03-28)</b></td>
+              <td>Cleared dev advisory/deprecation debt from removed MCP chain.</td>
             </tr>
             <tr>
               <td><b>P0</b></td>
-              <td>Add required CI production build stage.</td>
-              <td>Prevents shipping build-time regressions.</td>
+              <td>Add required CI production build stage. <b>(Done 2026-03-28)</b></td>
+              <td>Prevents shipping build-time regressions via enforced PR build gate.</td>
             </tr>
             <tr>
               <td><b>P0</b></td>
-              <td>Run smoke tests on preview/prod and capture evidence.</td>
+              <td>Run smoke tests on preview/prod and capture evidence. <b>(Current focus)</b></td>
               <td>Launch confidence on real critical flows.</td>
             </tr>
             <tr>
@@ -537,7 +537,7 @@
         <p class="kpi-title">Dev-tooling residuals</p>
         <p class="kpi-note">
           <span class="risk-chip high">High (dev only)</span>
-          Deprecated MCP-related tooling chain still appears in full `npm audit`; requires scoped cleanup/replacement plan.
+          Deprecated MCP tooling chain was removed, but full audit still reports dev-only highs through next-pwa/workbox transitive dependencies.
         </p>
       </article>
     </section>
