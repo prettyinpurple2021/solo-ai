@@ -20,15 +20,29 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Current readiness baseline
 
-- Overall launch readiness score: `84/100` (ready for public launch with documented dependency and CI caveats below)
+- Overall launch readiness score: `86/100` (ready for public launch with documented dependency caveats below)
 - Build/lint/type-check: passing (verified **`npm run validate`** on 2026-03-25)
 - Production build: passing (verified **`next build --webpack`** on 2026-03-25; 185 static pages generated; PWA / Workbox compiled without precache size errors for large chunks)
 - Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown); **`16/16`** suites, **`97/97`** tests (2026-03-25)
-- CI gate quality: **GitHub Actions** **`.github/workflows/ci.yml`** runs **`npm run validate`** + **`npm test -- --runInBand`** on push and pull requests to **`main`** (root + **`server`** `npm ci`). **`next build` is not** in CI (time/cost); run **`npm run build`** or **`next build --webpack`** locally or on Vercel preview before major releases.
+- CI gate quality: **GitHub Actions** **`.github/workflows/ci.yml`** runs **`npm run validate`** + **`npm test -- --runInBand`** + **`next build --webpack`** on push and pull requests to **`main`** (root + **`server`** `npm ci`).
 - Security: no **critical** or **high** production advisories in latest `npm audit --omit=dev`; current root runtime graph reports **4 low** (all `@stackframe/stack` → `elliptic`), and API package trees (`server/`, `railway-deploy/`) report **0 vulnerabilities**
 - Observability: stray **`console.error`** on learning, TOTP, and guardian UI paths replaced with **`logError`** (**MED-009**)
 
 ## Work log
+
+### 2026-03-28 (later)
+
+- **Dependency cleanup (Phase C, scoped):** removed deprecated MCP dev tooling from root devDependencies:
+  - `@modelcontextprotocol/server-brave-search`
+  - `@modelcontextprotocol/server-puppeteer`
+  - `next-devtools-mcp`
+- **CI launch gate hardening:** updated `.github/workflows/ci.yml` so `production-build` runs on **pull_request** to `main` in addition to push/schedule/manual.
+- **Validation:**
+  - `npm run lint` ✅
+  - `npm run type-check` ✅
+  - `npm run build` ✅
+  - `npm audit --omit=dev --json` → root **4 low**, **0 high/critical**
+  - `npm audit` (full) → **9 total** (**4 low**, **5 high**) now concentrated in `@ducanh2912/next-pwa` / Workbox transitive chain.
 
 ### 2026-03-28
 
@@ -151,6 +165,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 | MED-007 | MEDIUM | CI/CD | Remote quality gate on GitHub after Gitea workflow removal | DONE | `.github/workflows/ci.yml` — validate + Jest on push/PR to `main` |
 | MED-008 | MEDIUM | Cost / perf | Edge vs Node API routes + unnecessary `force-dynamic` on static marketing pages | DONE | `npm run validate` + `npm test -- --runInBand`; inventory recorded in checklist **MED-008** below |
 | MED-009 | MEDIUM | Observability | Direct `console.error` in production learning / TOTP / guardian paths (bypasses structured logger) | DONE | `npm run validate`; `npm test -- --runInBand`; see work log **2026-03-25** |
+| MED-010 | MEDIUM | CI/CD | Production build was not merge-blocking on PRs to `main` | DONE | `.github/workflows/ci.yml` now runs `production-build` on `pull_request` + `push` to `main`; local `npm run build` passed |
 
 ## Change checklist template (for each completed item)
 
@@ -457,10 +472,10 @@ Use this block whenever an item is completed:
 
 ## Next execution queue
 
-- **Optional (CI):** Add a workflow job or scheduled run that executes **`next build --webpack`** (or Vercel **Build** on preview) so production bundles are verified remotely; current CI stops at validate + Jest.
+- **DONE (CI):** Production build gate is now enforced in CI for **push** and **pull_request** to `main` (`production-build` job runs `next build --webpack`).
 - **Optional:** Run a production **`next build`** on Vercel preview and confirm route types (static ○ vs dynamic ƒ) for key URLs; tune any remaining **`force-dynamic`** **dashboard** pages only if you need ISR/SSG later.
 - **Ongoing (runtime):** keep `npm audit --omit=dev` advisories on radar — root currently has **4 low** (`@stackframe/stack` → `elliptic`).
-- **Ongoing (dev tooling):** full `npm audit` still reports high dev-only findings tied to deprecated MCP package chain (`@modelcontextprotocol/server-brave-search`, `@modelcontextprotocol/server-puppeteer`, `next-devtools-mcp`). Handle via scoped package removal/replacement or controlled major path in a dedicated follow-up.
+- **Ongoing (dev tooling):** full `npm audit` still reports high dev-only findings tied to `@ducanh2912/next-pwa` / Workbox transitive chain; current npm remediation path suggests downgrade to `10.2.6` (undesired regression). Track upstream/fix path before forcing change.
 - **Post-deploy:** Smoke-test production API (Railway health, auth, DB) against **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](../deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** checklist.
 
 ## Known non-blocking residuals
@@ -469,6 +484,19 @@ Use this block whenever an item is completed:
   - root: **4 low** — `elliptic` via **`@stackframe/stack`**
   - `server/`: **0**
   - `railway-deploy/`: **0**
-- **Dev-only advisory residuals (`npm audit` full):** high findings remain in deprecated MCP tooling chain (`@modelcontextprotocol/server-brave-search`, `@modelcontextprotocol/server-puppeteer`, `next-devtools-mcp` / nested `@modelcontextprotocol/sdk` and `undici`). Not shipped in runtime graph; track for cleanup/replacement.
+- **Dev-only advisory residuals (`npm audit` full):** high findings remain in `@ducanh2912/next-pwa` / Workbox transitive chain (`serialize-javascript`, `workbox-build`, `workbox-webpack-plugin`). Runtime graph remains clean of high/critical advisories.
 - **Jest / async leaks:** if new suites import long-lived clients (Redis, sockets, timers), re-run `npm test -- --detectOpenHandles` and add targeted teardown or mocks. **MED-005** addressed the Express `pg` pool path.
+
+### MED-010: Enforce production build in GitHub CI for `main`
+- What changed:
+  - Updated `.github/workflows/ci.yml` so `production-build` runs on `push` **and** `pull_request` to `main` (plus schedule/manual), making production build regressions blocking in PR review.
+  - Removed prior "PR cost-control skip" behavior for production build.
+- Files updated:
+  - `.github/workflows/ci.yml`
+- Why this improves production readiness:
+  - Prevents merge of code that passes lint/type/test but fails real production build.
+- Verification:
+  - Command: `npm run build`
+  - Result: pass (`next build --webpack` succeeded locally after CI config tightening).
+- Status: DONE
 

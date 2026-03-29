@@ -1,6 +1,6 @@
 # SoloSuccess AI - Visual Public Launch Roadmap
 
-Last updated: 2026-03-28  
+Last updated: 2026-03-29  
 Primary source of truth: `docs/reports/PRODUCTION_REMEDIATION_TRACKER.md`
 
 ---
@@ -8,20 +8,20 @@ Primary source of truth: `docs/reports/PRODUCTION_REMEDIATION_TRACKER.md`
 ## 1) Current Progress Snapshot
 
 ### Overall status
-- **Readiness score:** **84/100**
+- **Readiness score:** **85/100**
 - **Runtime security:**  
   - Root app: **4 low** advisories (`@stackframe/stack` -> `elliptic`)  
   - `server/`: **0 vulnerabilities**  
   - `railway-deploy/`: **0 vulnerabilities**
 - **Quality gates:** `npm run lint` and `npm run type-check` passing
-- **CI gap still open:** no mandatory remote `next build` gate yet
+- **CI gate:** remote production build is now configured to run on PRs/pushes to `main`
 
 ### Visual progress meter
 
 ```mermaid
 pie title Public Launch Readiness (Now)
-    "Completed Foundations" : 84
-    "Remaining Hardening" : 16
+    "Completed Foundations" : 85
+    "Remaining Hardening" : 15
 ```
 
 ---
@@ -34,7 +34,7 @@ flowchart LR
     B --> C[Phase 2: Public Launch Execution]
     C --> D[Phase 3: Scale + Maintainability]
 
-    B1[Close dev-tooling advisories<br/>MCP package cleanup/replacement]
+    B1[Close dev-tooling advisories<br/>next-pwa/workbox transitive chain]
     B2[Add CI production build gate<br/>next build --webpack]
     B3[Production smoke-test runbook<br/>auth, billing, uploads, APIs]
 
@@ -70,8 +70,8 @@ flowchart TB
     end
 
     subgraph NEXT[Next Up (Pre-Launch)]
-      N1[Remove/replace deprecated MCP dev packages]
-      N2[Add required CI production build job]
+      N1[Investigate/resolve remaining next-pwa dev advisories]
+      N2[CI production build gate enabled on PR + push]
       N3[Run production smoke-test suite on preview/prod]
     end
 
@@ -89,8 +89,8 @@ flowchart TB
 ## Phase 1 - Launch Gate Hardening (must-pass before broad public launch)
 
 ### Objectives
-1. Remove unresolved **dev-tooling high advisories** (deprecated MCP package chain).
-2. Add **remote production build** to CI gate.
+1. Resolve remaining **dev-only next-pwa advisory chain** with smallest-safe path.
+2. Keep **remote production build** gate enforced in CI.
 3. Run **end-to-end production smoke test** and capture evidence.
 
 ### Deliverables
@@ -105,7 +105,7 @@ flowchart TB
 
 ### Exit criteria (Definition of Done)
 - `npm audit --omit=dev` remains **0 high/critical** across runtime packages.
-- Full CI gate green (validate + tests + production build).
+- Full CI gate green (validate + tests + production build on PR/push to `main`).
 - No Sev-1/Sev-2 issues in smoke test.
 
 ---
@@ -159,8 +159,8 @@ flowchart TB
 
 | Priority | Task | Why it matters | Risk if delayed |
 |---|---|---|---|
-| P0 | Replace/remove deprecated MCP dev packages | Clears unresolved high dev advisories and deprecation debt | Toolchain/security debt grows |
-| P0 | Add production build in CI | Prevents shipping compile/build regressions | Broken deploy risk |
+| P0 | Resolve `@ducanh2912/next-pwa` dev advisory chain with smallest-safe approach | Reduces remaining high findings in full dev audit | Persistent security noise and upgrade uncertainty |
+| P0 | Keep production build in CI (PR + push) and monitor failures | Prevents shipping compile/build regressions | Broken deploy risk |
 | P0 | Run launch smoke-test on preview/prod | Proves real user-critical flows | Public launch incident risk |
 | P1 | Create incident runbook + escalation matrix | Faster recovery under pressure | Longer outages |
 | P1 | Add launch KPI dashboard | Faster decision-making during launch window | Blind spots |
@@ -171,7 +171,7 @@ flowchart TB
 ## 6) Public Launch Readiness Gate (single checklist)
 
 - [ ] Runtime audit clean of high/critical advisories  
-- [ ] CI includes and passes production build  
+- [ ] CI includes and passes production build on PR/push  
 - [ ] Critical flow smoke tests pass in preview/prod  
 - [ ] Monitoring and alerting verified with dry run  
 - [ ] Incident and rollback runbooks complete  

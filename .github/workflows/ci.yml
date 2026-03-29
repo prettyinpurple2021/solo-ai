@@ -44,12 +44,11 @@ jobs:
         run: npm test -- --runInBand
 
   production-build:
-    # Runs on:
-    # - `push` to `main` (catch regressions immediately)
-    # - weekly `schedule` (catch slow/rare build regressions)
-    # - manual `workflow_dispatch`
-    # Avoids PR runs to keep CI cost controlled.
-    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    # Required production bundle gate:
+    # - `pull_request` to `main` (block merge on build regressions)
+    # - `push` to `main` (post-merge safety net)
+    # - weekly `schedule` + manual `workflow_dispatch`
+    if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
