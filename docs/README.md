@@ -31,6 +31,7 @@
 
 - **[Launch Checklist](./launch/launch-checklist.md)** - Complete launch day checklist
 - **[Launch Execution Plan](./launch/launch-execution-plan.md)** - Detailed launch strategy and timeline
+- **[Visual Public Launch Roadmap](./reports/VISUAL_PUBLIC_LAUNCH_ROADMAP.md)** - Founder-friendly progress map + implementation/enhancement plan to public-launch quality
 - **[Launch Strategy](./marketing/launch-strategy.md)** - Marketing plan and user acquisition strategy
 - **[Press Kit](./marketing/press-kit.md)** - Media resources and press materials
 
