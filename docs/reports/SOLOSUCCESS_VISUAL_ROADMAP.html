@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SoloSuccess AI - Visual Public Launch Roadmap</title>
+  <style>
+    :root {
+      --bg: #090d1f;
+      --bg-soft: #0f1733;
+      --card: rgba(255, 255, 255, 0.06);
+      --card-border: rgba(255, 255, 255, 0.14);
+      --text: #e8edff;
+      --muted: #9ca8d8;
+      --cyan: #0be4ec;
+      --magenta: #ff006e;
+      --lime: #39ff14;
+      --purple: #b300ff;
+      --orange: #ff6600;
+      --blue-metal: linear-gradient(135deg, #1f5eff 0%, #4dbbff 45%, #85e3ff 100%);
+      --shadow: 0 14px 36px rgba(4, 11, 38, 0.5);
+      --radius: 16px;
+      --ok: #3ddc97;
+      --warn: #ffb347;
+      --risk: #ff6b6b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(1100px 540px at 10% -10%, rgba(11, 228, 236, 0.2), transparent),
+                  radial-gradient(880px 520px at 100% 0%, rgba(179, 0, 255, 0.14), transparent),
+                  var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", "Inter", Arial, sans-serif;
+      min-height: 100%;
+    }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 26px 20px 80px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+      background: linear-gradient(140deg, rgba(10, 21, 58, 0.94), rgba(10, 16, 39, 0.98));
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      right: -60px;
+      top: -90px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(77, 187, 255, 0.35), transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: clamp(1.6rem, 2.8vw, 2.5rem);
+      line-height: 1.2;
+      letter-spacing: 0.4px;
+    }
+
+    .hero .subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      max-width: 780px;
+      font-size: 1.04rem;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.84rem;
+      color: #dfe7ff;
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .grid.kpis {
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(5px);
+    }
+
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .kpi-title {
+      margin: 0;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .kpi-value {
+      margin: 10px 0 0;
+      font-size: clamp(1.4rem, 2.2vw, 2rem);
+      font-weight: 700;
+    }
+
+    .kpi-note {
+      margin-top: 8px;
+      color: #b8c4ef;
+      font-size: 0.93rem;
+    }
+
+    .meter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .ring {
+      --value: 84;
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      background: conic-gradient(var(--cyan) calc(var(--value) * 1%), rgba(255, 255, 255, 0.15) 0);
+      display: grid;
+      place-items: center;
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .ring::after {
+      content: "";
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      background: #0c1433;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      position: absolute;
+    }
+
+    .ring b {
+      position: relative;
+      z-index: 2;
+      font-size: 1.5rem;
+    }
+
+    .legend {
+      margin: 0;
+      padding-left: 20px;
+      color: #c9d4fb;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    h2 {
+      margin: 34px 0 12px;
+      font-size: 1.3rem;
+      letter-spacing: 0.02em;
+    }
+
+    .timeline {
+      position: relative;
+      margin-top: 4px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .phase {
+      border-left: 4px solid rgba(255, 255, 255, 0.2);
+      padding: 12px 14px 14px 14px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .phase.done { border-left-color: var(--ok); }
+    .phase.active { border-left-color: var(--cyan); }
+    .phase.next { border-left-color: var(--warn); }
+
+    .phase h3 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+    }
+
+    .phase p {
+      margin: 4px 0;
+      color: #c8d4fb;
+      line-height: 1.45;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      margin-left: 6px;
+      border: 1px solid transparent;
+      vertical-align: middle;
+    }
+
+    .badge.done { background: rgba(61, 220, 151, 0.18); border-color: rgba(61, 220, 151, 0.4); color: #aaf8d2; }
+    .badge.active { background: rgba(11, 228, 236, 0.18); border-color: rgba(11, 228, 236, 0.4); color: #b4fcff; }
+    .badge.next { background: rgba(255, 179, 71, 0.18); border-color: rgba(255, 179, 71, 0.4); color: #ffe0b3; }
+
+    .columns {
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+
+    .item input[type="checkbox"] {
+      margin-top: 2px;
+      width: 16px;
+      height: 16px;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+
+    .item label {
+      cursor: pointer;
+      line-height: 1.35;
+      color: #e2e9ff;
+    }
+
+    .gate-bar {
+      margin-top: 10px;
+      width: 100%;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .gate-fill {
+      height: 100%;
+      width: 0;
+      background: var(--blue-metal);
+      transition: width 240ms ease-out;
+    }
+
+    .actions {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    button {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: #e6ecff;
+      padding: 9px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    button:hover {
+      border-color: rgba(11, 228, 236, 0.5);
+      box-shadow: 0 0 0 2px rgba(11, 228, 236, 0.16) inset;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.93rem;
+    }
+
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 10px 8px;
+      vertical-align: top;
+    }
+
+    th {
+      color: #bbcaef;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .risk-chip {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 2px 9px;
+      font-size: 0.74rem;
+      margin-right: 4px;
+      border: 1px solid transparent;
+    }
+
+    .risk-chip.low { color: #d3ffe7; background: rgba(61, 220, 151, 0.15); border-color: rgba(61, 220, 151, 0.36); }
+    .risk-chip.med { color: #ffeccf; background: rgba(255, 179, 71, 0.16); border-color: rgba(255, 179, 71, 0.36); }
+    .risk-chip.high { color: #ffd7d7; background: rgba(255, 107, 107, 0.18); border-color: rgba(255, 107, 107, 0.38); }
+
+    .footer {
+      margin-top: 30px;
+      color: var(--muted);
+      font-size: 0.88rem;
+      text-align: center;
+    }
+
+    @media (max-width: 980px) {
+      .span-4, .span-5, .span-6, .span-7, .span-8 {
+        grid-column: span 12;
+      }
+      .columns {
+        grid-template-columns: 1fr;
+      }
+      .meter-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <h1>SoloSuccess AI - Public Launch Roadmap</h1>
+      <p class="subtitle">
+        Pretty, practical, and founder-friendly: this page shows your current progress, what is complete,
+        what to do next, and the exact launch gates to reach a high-quality, easy-to-maintain, scalable public launch.
+      </p>
+      <div class="meta">
+        <span class="pill">Last updated: 2026-03-28</span>
+        <span class="pill">Source: PRODUCTION_REMEDIATION_TRACKER.md</span>
+        <span class="pill">Mode: Launch Readiness + Scale Plan</span>
+      </div>
+    </section>
+
+    <section class="grid kpis">
+      <article class="card span-5">
+        <p class="kpi-title">Launch Readiness</p>
+        <div class="meter-wrap">
+          <div class="ring" style="--value:84"><b>84%</b></div>
+          <ul class="legend">
+            <li><b>Great momentum:</b> strong foundation in security, CI, and dependencies.</li>
+            <li><b>Remaining work:</b> close launch gates and clean dev-tooling advisory debt.</li>
+            <li><b>Goal:</b> 100% gate pass for confident public launch.</li>
+          </ul>
+        </div>
+      </article>
+
+      <article class="card span-7">
+        <p class="kpi-title">Runtime Security Snapshot</p>
+        <div class="grid" style="grid-template-columns: repeat(3, minmax(0,1fr)); margin-top: 8px;">
+          <div class="card" style="padding: 12px;">
+            <p class="kpi-title">Root App</p>
+            <p class="kpi-value">4 <span style="font-size: 0.9rem; color: #b7c5f1;">low</span></p>
+            <p class="kpi-note">No high/critical runtime advisories.</p>
+          </div>
+          <div class="card" style="padding: 12px;">
+            <p class="kpi-title">server/</p>
+            <p class="kpi-value">0</p>
+            <p class="kpi-note">Runtime audit clean.</p>
+          </div>
+          <div class="card" style="padding: 12px;">
+            <p class="kpi-title">railway-deploy/</p>
+            <p class="kpi-value">0</p>
+            <p class="kpi-note">Runtime audit clean.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <h2>Visual Timeline</h2>
+    <section class="timeline">
+      <article class="phase done">
+        <h3>Phase 0 - Foundations Complete <span class="badge done">Done</span></h3>
+        <p>Critical security hardening, auth reliability fixes, CI validate+test baseline, and dependency remediation (Phase A/B).</p>
+      </article>
+      <article class="phase active">
+        <h3>Phase 1 - Launch Gate Hardening <span class="badge active">Current focus</span></h3>
+        <p>Close dev-tooling advisory chain, add mandatory CI production build, and execute smoke-test evidence for critical flows.</p>
+      </article>
+      <article class="phase next">
+        <h3>Phase 2 - Public Launch Execution <span class="badge next">Next</span></h3>
+        <p>Operate with clear runbooks, alerting confidence, launch KPI dashboards, and day-1 incident response readiness.</p>
+      </article>
+      <article class="phase next">
+        <h3>Phase 3 - Scale + Maintainability <span class="badge next">After launch</span></h3>
+        <p>Define architecture boundaries, strengthen performance/test guardrails, and optimize reliability + cost at higher traffic.</p>
+      </article>
+    </section>
+
+    <h2>Launch Gate Checklist (Interactive)</h2>
+    <section class="columns">
+      <article class="card">
+        <p class="kpi-title">Must-pass gates before broad public launch</p>
+        <div class="checklist" id="gateList">
+          <div class="item">
+            <input id="g1" type="checkbox" />
+            <label for="g1">Runtime audit remains free of high/critical advisories.</label>
+          </div>
+          <div class="item">
+            <input id="g2" type="checkbox" />
+            <label for="g2">CI includes and passes production build (`next build --webpack`).</label>
+          </div>
+          <div class="item">
+            <input id="g3" type="checkbox" />
+            <label for="g3">Critical user flows pass smoke tests (auth, billing, AI, upload, APIs).</label>
+          </div>
+          <div class="item">
+            <input id="g4" type="checkbox" />
+            <label for="g4">Monitoring + alerting validated with one dry-run incident.</label>
+          </div>
+          <div class="item">
+            <input id="g5" type="checkbox" />
+            <label for="g5">Incident + rollback runbooks documented and owner-assigned.</label>
+          </div>
+          <div class="item">
+            <input id="g6" type="checkbox" />
+            <label for="g6">Tracker + launch docs synchronized and up to date.</label>
+          </div>
+        </div>
+        <div class="gate-bar" aria-label="Gate completion progress">
+          <div class="gate-fill" id="gateFill"></div>
+        </div>
+        <p id="gateText" class="kpi-note">0 of 6 gates complete (0%).</p>
+        <div class="actions">
+          <button id="resetBtn" type="button">Reset Checklist</button>
+          <button id="printBtn" type="button">Print / Save as PDF</button>
+        </div>
+      </article>
+
+      <article class="card">
+        <p class="kpi-title">Priority Sequence (Smallest Safe Path)</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Priority</th>
+              <th>Action</th>
+              <th>Impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>P0</b></td>
+              <td>Replace/remove deprecated MCP dev packages.</td>
+              <td>Clears dev advisory/deprecation debt.</td>
+            </tr>
+            <tr>
+              <td><b>P0</b></td>
+              <td>Add required CI production build stage.</td>
+              <td>Prevents shipping build-time regressions.</td>
+            </tr>
+            <tr>
+              <td><b>P0</b></td>
+              <td>Run smoke tests on preview/prod and capture evidence.</td>
+              <td>Launch confidence on real critical flows.</td>
+            </tr>
+            <tr>
+              <td><b>P1</b></td>
+              <td>Finalize incident runbook + escalation matrix.</td>
+              <td>Faster recovery during launch pressure.</td>
+            </tr>
+            <tr>
+              <td><b>P1</b></td>
+              <td>Launch KPI dashboard (activation, errors, latency, payments).</td>
+              <td>Better decisions during launch week.</td>
+            </tr>
+            <tr>
+              <td><b>P2</b></td>
+              <td>Architecture boundaries + ADRs for high-change modules.</td>
+              <td>Cleaner scaling and easier maintenance.</td>
+            </tr>
+          </tbody>
+        </table>
+      </article>
+    </section>
+
+    <h2>Risk + Residuals Overview</h2>
+    <section class="grid" style="grid-template-columns: repeat(2, minmax(0,1fr));">
+      <article class="card">
+        <p class="kpi-title">Runtime residuals</p>
+        <p class="kpi-note">
+          <span class="risk-chip low">Low</span>
+          Root still has 4 low advisories through the `@stackframe/stack` -> `elliptic` transitive chain.
+        </p>
+      </article>
+      <article class="card">
+        <p class="kpi-title">Dev-tooling residuals</p>
+        <p class="kpi-note">
+          <span class="risk-chip high">High (dev only)</span>
+          Deprecated MCP-related tooling chain still appears in full `npm audit`; requires scoped cleanup/replacement plan.
+        </p>
+      </article>
+    </section>
+
+    <p class="footer">
+      Tip: keep this file on your computer and open it in Microsoft Edge anytime to review progress.
+      Your checklist state is saved locally in your browser.
+    </p>
+  </main>
+
+  <script>
+    (function () {
+      var ids = ["g1", "g2", "g3", "g4", "g5", "g6"];
+      var key = "solosuccess_launch_gates_v1";
+      var fill = document.getElementById("gateFill");
+      var text = document.getElementById("gateText");
+      var resetBtn = document.getElementById("resetBtn");
+      var printBtn = document.getElementById("printBtn");
+
+      function load() {
+        try {
+          var raw = localStorage.getItem(key);
+          if (!raw) return {};
+          return JSON.parse(raw);
+        } catch (_e) {
+          return {};
+        }
+      }
+
+      function save(state) {
+        localStorage.setItem(key, JSON.stringify(state));
+      }
+
+      function recalc() {
+        var state = {};
+        var done = 0;
+        for (var i = 0; i < ids.length; i += 1) {
+          var cb = document.getElementById(ids[i]);
+          state[ids[i]] = !!cb.checked;
+          if (cb.checked) done += 1;
+        }
+        var pct = Math.round((done / ids.length) * 100);
+        fill.style.width = pct + "%";
+        text.textContent = done + " of " + ids.length + " gates complete (" + pct + "%).";
+        save(state);
+      }
+
+      var initial = load();
+      for (var i = 0; i < ids.length; i += 1) {
+        var el = document.getElementById(ids[i]);
+        if (initial[ids[i]]) el.checked = true;
+        el.addEventListener("change", recalc);
+      }
+      recalc();
+
+      resetBtn.addEventListener("click", function () {
+        for (var i = 0; i < ids.length; i += 1) {
+          document.getElementById(ids[i]).checked = false;
+        }
+        recalc();
+      });
+
+      printBtn.addEventListener("click", function () {
+        window.print();
+      });
+    })();
+  </script>
+</body>
+</html>
