@@ -1,13 +1,18 @@
-const DEFAULT_ADMIN_EMAIL = 'prettyinpurple2021@gmail.com'
-
 export function getAdminEmails(): string[] {
-  const raw = process.env.ADMIN_EMAILS || DEFAULT_ADMIN_EMAIL
+  const raw = process.env.ADMIN_EMAILS || ''
   return raw
     .split(',')
     .map((entry) => entry.trim().toLowerCase())
     .filter(Boolean)
 }
 
+// WARNING: Admin status is derived solely from the email allowlist configured
+// via the ADMIN_EMAILS environment variable. Email is a mutable identifier and
+// MUST NOT be the sole gate for security-sensitive operations. For authorization
+// decisions that affect billing, data access, or privileged actions, pair this
+// check with an immutable server-side attribute (e.g., a user-id allowlist or
+// a role flag stored in the database). This function returns false when
+// ADMIN_EMAILS is not set, failing closed by default.
 export function isAdminEmail(email?: string | null): boolean {
   if (!email) return false
   return getAdminEmails().includes(email.trim().toLowerCase())
@@ -27,7 +32,8 @@ export function getEffectiveSubscriptionTier(
   tier?: string | null,
   email?: string | null,
 ): 'free' | 'launch' | 'accelerator' | 'dominator' {
-  if (isAdminEmail(email)) return 'dominator'
+  const enableAdminBypass = process.env.ENABLE_ADMIN_BYPASS === 'true'
+  if (enableAdminBypass && isAdminEmail(email)) return 'dominator'
 
   const normalized = (tier || 'free').toLowerCase()
   if (

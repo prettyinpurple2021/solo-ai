@@ -53,8 +53,10 @@ export async function getUserLimits(userId: string) {
 
   const { email, subscription_tier } = users[0]
 
-  // Hard bypass for master admin account in launch-critical environments.
-  if (isAdminEmail(email)) {
+  // Optional hard bypass for master admin account in launch-critical environments.
+  // Controlled via ENABLE_ADMIN_BYPASS env var and fails closed by default.
+  const enableAdminBypass = process.env.ENABLE_ADMIN_BYPASS === 'true'
+  if (enableAdminBypass && isAdminEmail(email)) {
     return SUBSCRIPTION_TIERS.DOMINATOR.limits
   }
 

@@ -31,6 +31,7 @@ export interface UnifiedSubscriptionPayload {
     current_period_end: string | null
     cancel_at_period_end: boolean
     stripe_subscription?: unknown
+    is_admin_override?: boolean
   }
 }
 
@@ -41,8 +42,12 @@ export async function fetchUnifiedSubscriptionPayload(
   const row = await getUserSubscription(userId)
   if (!row) return null
 
-  // Master admin always gets Dominator-tier access for internal operations.
-  if (isAdminEmail(row.email ?? null)) {
+  // Optional override: grants Dominator-tier access to master admin accounts for
+  // internal operations. Controlled via ENABLE_ADMIN_BYPASS env var and fails
+  // closed by default. The `is_admin_override` flag distinguishes this from a
+  // real paid subscription so downstream consumers are not misled.
+  const enableAdminBypass = process.env.ENABLE_ADMIN_BYPASS === 'true'
+  if (enableAdminBypass && isAdminEmail(row.email ?? null)) {
     return {
       tier: 'dominator',
       status: 'active',
@@ -55,6 +60,7 @@ export async function fetchUnifiedSubscriptionPayload(
         current_period_start: null,
         current_period_end: null,
         cancel_at_period_end: false,
+        is_admin_override: true,
       },
     }
   }

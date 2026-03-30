@@ -8,7 +8,6 @@ import { Loader2, GraduationCap, Users, Trophy } from "lucide-react"
 import { useAuth } from "@/hooks/use-auth"
 import { useRouter } from "next/navigation"
 import { logError } from "@/lib/logger"
-import { isAdminEmail } from "@/lib/admin-access"
 
 export default function DevToolsPage() {
     const [loading, setLoading] = useState<string | null>(null)
@@ -17,15 +16,16 @@ export default function DevToolsPage() {
 
     useEffect(() => {
         if (authLoading) return
-        const allowed = !!user?.email && isAdminEmail(user.email)
-        if (!allowed) {
+        // The middleware (proxy.ts) enforces admin-email access at the edge.
+        // This client guard only handles the unauthenticated case for graceful UX.
+        if (!user) {
             router.push('/dashboard')
         }
     }, [user, authLoading, router])
 
     if (authLoading) return <div className="p-10"><Loader2 className="animate-spin" /></div>
     
-    if (!user?.email || !isAdminEmail(user.email)) return null;
+    if (!user) return null;
 
     const runSeed = async (name: string, url: string, method: string = 'POST') => {
         setLoading(name)
