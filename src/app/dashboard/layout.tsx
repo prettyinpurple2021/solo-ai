@@ -6,7 +6,7 @@ import { AppSidebar } from "@/components/app-sidebar"
 import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar"
 import DashboardHeader from "@/components/DashboardHeader"
 import MobileNavigation from "@/components/mobile/mobile-navigation"
-import { useAuth } from "@/hooks/use-auth"
+import { useAuth, type AuthUser } from "@/hooks/use-auth"
 import { ProfileModal } from "@/components/profile/profile-modal"
 import { EnhancedProfileModal } from "@/components/profile/enhanced-profile-modal"
 import { PageTransition } from "@/components/layout/PageTransition"
@@ -22,15 +22,14 @@ export default function DashboardLayout({
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
   // Transform user data for MobileNavigation
-  const mobileNavUser = user ? {
-    name: (user as any).name || (user as any).full_name || user.email?.split('@')[0] || 'User',
-    email: user.email || '',
-    avatar: user.avatar_url || '',
-    level: (user as any).level || 1,
-    points: (user as any).points || 0
+  const typedUser = user as AuthUser | null
+  const mobileNavUser = typedUser ? {
+    name: typedUser.name || typedUser.full_name || typedUser.email?.split('@')[0] || 'User',
+    email: typedUser.email || '',
+    avatar: typedUser.avatar_url || '',
   } : undefined
 
-  const subscriptionTier = ((user as any)?.subscription_tier || 'free').toLowerCase()
+  const subscriptionTier = (typedUser?.subscription_tier || 'free').toLowerCase()
   const isPaidTier = subscriptionTier !== 'free' && subscriptionTier !== 'launch'
 
   return (

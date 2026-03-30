@@ -79,13 +79,13 @@ export default function MobileChatInterface({
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // Auto-scroll to bottom when messages change
+  // Auto-scroll to bottom when messages change or active agent/loading state changes
   useEffect(() => {
     if (!scrollAreaRef.current) return
     const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement | null
     const target = viewport || scrollAreaRef.current
     target.scrollTop = target.scrollHeight
-  }, [messages])
+  }, [messages, selectedAgent?.id, isLoading])
 
   // Select first agent by default
   useEffect(() => {
@@ -171,6 +171,11 @@ export default function MobileChatInterface({
     })
   }
 
+  const agentAvatarStyle = (color: string): React.CSSProperties => ({
+    backgroundColor: color,
+    color: '#ffffff',
+  })
+
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent 
@@ -188,7 +193,7 @@ export default function MobileChatInterface({
               {selectedAgent && (
                 <Avatar className="w-8 h-8">
                   <AvatarFallback 
-                    style={{ backgroundColor: selectedAgent.accent_color, color: 'white' }}
+                    style={agentAvatarStyle(selectedAgent.accent_color)}
                     className="text-xs font-bold"
                   >
                     {selectedAgent.display_name.charAt(0)}
@@ -242,7 +247,7 @@ export default function MobileChatInterface({
                       >
                         <Avatar className="w-6 h-6 mr-2">
                           <AvatarFallback 
-                            style={{ backgroundColor: agent.accent_color, color: 'white' }}
+                            style={agentAvatarStyle(agent.accent_color)}
                             className="text-xs"
                           >
                             {agent.display_name.charAt(0)}
@@ -299,7 +304,7 @@ export default function MobileChatInterface({
                     {message.role === 'assistant' && selectedAgent && (
                       <Avatar className="w-8 h-8 flex-shrink-0">
                         <AvatarFallback 
-                          style={{ backgroundColor: selectedAgent.accent_color, color: '#ffffff' }}
+                          style={agentAvatarStyle(selectedAgent.accent_color)}
                           className="text-xs"
                         >
                           {selectedAgent.display_name.charAt(0)}
@@ -366,7 +371,7 @@ export default function MobileChatInterface({
                     {selectedAgent && (
                       <Avatar className="w-8 h-8 flex-shrink-0">
                         <AvatarFallback 
-                          style={{ backgroundColor: selectedAgent.accent_color, color: '#ffffff' }}
+                          style={agentAvatarStyle(selectedAgent.accent_color)}
                           className="text-xs"
                         >
                           {selectedAgent.display_name.charAt(0)}

@@ -330,10 +330,15 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
         } else {
           // Non-stream fallback path for environments that buffer responses.
           const text = await response.text()
+          if (!text) {
+            // An OK response with no body is unusual; surface it for diagnosis.
+            logWarn('Chat API returned an empty body on a successful non-stream response')
+            throw new Error('Empty response from server')
+          }
           const assistantMessage: Message = {
             id: (Date.now() + 1).toString(),
             role: "assistant",
-            content: text || "No response received.",
+            content: text,
             timestamp: new Date(),
             agentId: agentId,
           }
@@ -346,8 +351,8 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
           if (payload?.error) {
             errorMessage = String(payload.error)
           }
-        } catch {
-          // ignore json parse errors and use fallback message
+        } catch (parseError) {
+          logWarn('Failed to parse error response JSON from chat API', parseError)
         }
         throw new Error(errorMessage)
       }

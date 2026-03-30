@@ -18,7 +18,9 @@ export function isAdminEmail(email?: string | null): boolean {
   return getAdminEmails().includes(email.trim().toLowerCase())
 }
 
-// Backward-compatible alias used by earlier modules.
+// DEPRECATED: This alias exists only for backward compatibility. Do not use it
+// (or `isAdminEmail`) for authorization or access-control decisions.
+// Prefer a role/permission model keyed by an immutable user identifier.
 export const isMasterAdminEmail = isAdminEmail
 
 const TIER_RANK: Record<'free' | 'launch' | 'accelerator' | 'dominator', number> = {

@@ -42,7 +42,7 @@ export default auth((req) => {
     }
     const email = user?.email || ''
     if (!isAdminEmail(email)) {
-      logInfo('Access Denied: /dev admin email required', { userId: user?.id, email })
+      logInfo('Access Denied: /dev admin email required', { userId: user?.id })
       return NextResponse.redirect(new URL('/dashboard', req.url))
     }
   }
