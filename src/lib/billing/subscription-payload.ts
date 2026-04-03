@@ -1,6 +1,6 @@
 import { getStripe } from '@/lib/stripe'
 import { getUserSubscription } from '@/lib/stripe-db-utils'
-import { isAdminEmail } from '@/lib/admin-access'
+import { isAdminIdentity } from '@/lib/admin-access'
 
 function normalizeTier(tier: string | null | undefined): string {
   const t = (tier || 'free').toLowerCase()
@@ -47,7 +47,7 @@ export async function fetchUnifiedSubscriptionPayload(
   // closed by default. The `is_admin_override` flag distinguishes this from a
   // real paid subscription so downstream consumers are not misled.
   const enableAdminBypass = process.env.ENABLE_ADMIN_BYPASS === 'true'
-  if (enableAdminBypass && isAdminEmail(row.email ?? null)) {
+  if (enableAdminBypass && isAdminIdentity(row.email ?? null, userId)) {
     return {
       tier: 'dominator',
       status: 'active',

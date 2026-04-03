@@ -457,9 +457,13 @@ export default function BriefcaseClient({ initialDocuments, initialFolders }: Br
           <Input
             value={folderName}
             onChange={(e) => setFolderName(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleCreateFolder() } }}
+            onKeyDown={(e) => {
+              if (folderCreating) return;
+              if (e.key === 'Enter') { e.preventDefault(); handleCreateFolder() }
+            }}
             placeholder="Folder name..."
             className="bg-dark-bg border-neon-cyan/30 text-white font-mono"
+            disabled={folderCreating}
             autoFocus
           />
           <DialogFooter className="gap-2">

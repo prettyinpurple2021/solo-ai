@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 import { TrafficService } from "@/lib/traffic-service"
 import { logError, logInfo } from "@/lib/logger"
 import { canAccess } from "@/lib/subscription-gating"
-import { isAdminEmail } from "@/lib/admin-access"
+import { isAdminIdentity } from "@/lib/admin-access"
 
 const { auth } = NextAuth(authConfig)
 
@@ -41,7 +41,8 @@ export default auth((req) => {
       return NextResponse.redirect(signInUrl)
     }
     const email = user?.email || ''
-    if (!isAdminEmail(email)) {
+    const userId = user?.id || ''
+    if (!isAdminIdentity(email, userId)) {
       logInfo('Access Denied: /dev admin email required', { userId: user?.id })
       return NextResponse.redirect(new URL('/dashboard', req.url))
     }

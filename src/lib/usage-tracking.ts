@@ -1,7 +1,7 @@
 import { logError,} from '@/lib/logger'
 import { neon } from '@neondatabase/serverless'
 import { SUBSCRIPTION_TIERS } from '@/lib/pricing'
-import { isAdminEmail } from '@/lib/admin-access'
+import { isAdminIdentity } from '@/lib/admin-access'
 
 function getSql() {
   const url = process.env.DATABASE_URL
@@ -56,7 +56,7 @@ export async function getUserLimits(userId: string) {
   // Optional hard bypass for master admin account in launch-critical environments.
   // Controlled via ENABLE_ADMIN_BYPASS env var and fails closed by default.
   const enableAdminBypass = process.env.ENABLE_ADMIN_BYPASS === 'true'
-  if (enableAdminBypass && isAdminEmail(email)) {
+  if (enableAdminBypass && isAdminIdentity(email, userId)) {
     return SUBSCRIPTION_TIERS.DOMINATOR.limits
   }
 

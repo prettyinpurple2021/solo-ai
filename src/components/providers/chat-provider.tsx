@@ -327,6 +327,17 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
                 : msg
             ))
           }
+
+          // Flush any remaining buffered bytes (e.g. trailing multi-byte codepoints).
+          const tail = decoder.decode()
+          if (tail) {
+            assistantContent += tail
+            setMessages(prev => prev.map(msg =>
+              msg.id === assistantMessage.id
+                ? { ...msg, content: assistantContent }
+                : msg
+            ))
+          }
         } else {
           // Non-stream fallback path for environments that buffer responses.
           const text = await response.text()
