@@ -156,6 +156,7 @@
     "@types/react": "19.2.8",
     "@types/react-dom": "19.2.3",
     "esbuild": "^0.25.0",
-    "elliptic": "^6.6.1"
+    "elliptic": "^6.6.1",
+    "serialize-javascript": "7.0.5"
   }
 }

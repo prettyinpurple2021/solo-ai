@@ -18,7 +18,7 @@
   - `npm run lint` ✅  
   - `npm run type-check` ✅  
   - `npm audit --omit=dev` now reports **4 low** vulnerabilities (all from `@stackframe/stack` → `elliptic`, no high/critical).  
-  - Full `npm audit` no longer includes the prior deprecated MCP package chain after removal of `@modelcontextprotocol/server-brave-search`, `@modelcontextprotocol/server-puppeteer`, and `next-devtools-mcp`. Current full-audit highs are concentrated in the PWA build toolchain (`@ducanh2912/next-pwa` -> `workbox` / `serialize-javascript`) and require upstream/vendor path decisions.
+  - Full `npm audit` no longer includes the prior deprecated MCP package chain after removal of `@modelcontextprotocol/server-brave-search`, `@modelcontextprotocol/server-puppeteer`, and `next-devtools-mcp`. ~~Current full-audit highs were concentrated in the PWA build toolchain (`serialize-javascript` via Workbox)~~ — **resolved 2026-03-29** with root **`package.json` `overrides`** → **`serialize-javascript@7.0.5`** plus non-forced **`npm audit fix`**; full dev audit now aligns with production (**4 low** only, `elliptic` / `@stackframe/stack`).
 
 **Supplement (2026-03-28, later):** CI launch gate tightened.  
 - Updated `.github/workflows/ci.yml` so **production build (`next build --webpack`) now runs on pull requests to `main`**, in addition to push/schedule/manual paths. This closes the prior "build not mandatory on PR" gap and improves release confidence.

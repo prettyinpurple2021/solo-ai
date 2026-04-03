@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-28
+Last updated: 2026-03-29
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -20,15 +20,23 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Current readiness baseline
 
-- Overall launch readiness score: `86/100` (ready for public launch with documented dependency caveats below)
+- Overall launch readiness score: `87/100` (ready for public launch; remaining caveat is **`elliptic`** via **`@stackframe/stack`** — low severity, tracked upstream)
 - Build/lint/type-check: passing (verified **`npm run validate`** on 2026-03-25)
 - Production build: passing (verified **`next build --webpack`** on 2026-03-25; 185 static pages generated; PWA / Workbox compiled without precache size errors for large chunks)
 - Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown); **`16/16`** suites, **`97/97`** tests (2026-03-25)
 - CI gate quality: **GitHub Actions** **`.github/workflows/ci.yml`** runs **`npm run validate`** + **`npm test -- --runInBand`** + **`next build --webpack`** on push and pull requests to **`main`** (root + **`server`** `npm ci`).
-- Security: no **critical** or **high** production advisories in latest `npm audit --omit=dev`; current root runtime graph reports **4 low** (all `@stackframe/stack` → `elliptic`), and API package trees (`server/`, `railway-deploy/`) report **0 vulnerabilities**
+- Security: no **critical** or **high** advisories in latest **`npm audit`** (full dev tree) or **`npm audit --omit=dev`**; root reports **4 low** (all `@stackframe/stack` → `elliptic`), and API package trees (`server/`, `railway-deploy/`) report **0 vulnerabilities**. **Phase 1:** `serialize-javascript@7.0.5` **override** clears the former `@ducanh2912/next-pwa` / Workbox **high** chain; **`npm audit fix`** (no `--force`) addressed transient **high** findings (**`@xmldom/xmldom`**, **`lodash`**) surfaced during lockfile refresh.
 - Observability: stray **`console.error`** on learning, TOTP, and guardian UI paths replaced with **`logError`** (**MED-009**)
 
 ## Work log
+
+### 2026-03-29
+
+- **Phase 1 PWA / Workbox hardening:** added **`serialize-javascript@7.0.5`** to root **`package.json` `overrides`** so Workbox’s transitive **`@rollup/plugin-terser`** chain no longer resolves to vulnerable **`serialize-javascript` ≤ 7.0.4**. Regenerated **`package-lock.json`** via **`npm install`**; ran **`npm audit fix`** (no **`--force`**) to clear additional **high** advisories (**`@xmldom/xmldom`**, **`lodash` / `lodash-es`**) introduced by lockfile churn.
+- **Verification:**
+  - **`npm audit`** (full) → **4 low**, **0 high/critical** (same **`elliptic`** / **`@stackframe/stack`** picture as **`npm audit --omit=dev`**)
+  - **`npm audit --omit=dev`** → **4 low**, **0 high/critical**
+  - **`npx next build --webpack`** (with **`NODE_OPTIONS=--max-old-space-size=16384`**, **`NEXT_PUBLIC_APP_URL`**, **`CLIENT_URL`**) → success; PWA compiled **`public/sw.js`**, **185** static segments, **`/~offline`** fallback listed
 
 ### 2026-03-28 (later)
 
@@ -42,7 +50,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
   - `npm run type-check` ✅
   - `npm run build` ✅
   - `npm audit --omit=dev --json` → root **4 low**, **0 high/critical**
-  - `npm audit` (full) → **9 total** (**4 low**, **5 high**) now concentrated in `@ducanh2912/next-pwa` / Workbox transitive chain.
+  - `npm audit` (full) → **9 total** (**4 low**, **5 high**) concentrated in `@ducanh2912/next-pwa` / Workbox transitive chain — **superseded 2026-03-29** (see work log).
 
 ### 2026-03-28
 
@@ -475,16 +483,15 @@ Use this block whenever an item is completed:
 - **DONE (CI):** Production build gate is now enforced in CI for **push** and **pull_request** to `main` (`production-build` job runs `next build --webpack`).
 - **Optional:** Run a production **`next build`** on Vercel preview and confirm route types (static ○ vs dynamic ƒ) for key URLs; tune any remaining **`force-dynamic`** **dashboard** pages only if you need ISR/SSG later.
 - **Ongoing (runtime):** keep `npm audit --omit=dev` advisories on radar — root currently has **4 low** (`@stackframe/stack` → `elliptic`).
-- **Ongoing (dev tooling):** full `npm audit` still reports high dev-only findings tied to `@ducanh2912/next-pwa` / Workbox transitive chain; current npm remediation path suggests downgrade to `10.2.6` (undesired regression). Track upstream/fix path before forcing change.
+- ~~**Ongoing (dev tooling):** full `npm audit` … `@ducanh2912/next-pwa` / Workbox~~ **Resolved 2026-03-29** via **`serialize-javascript@7.0.5` override** (full dev audit now matches production: **4 low** only).
 - **Post-deploy:** Smoke-test production API (Railway health, auth, DB) against **[docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md](../deployment/ENV_VARS_VERCEL_AND_RAILWAY.md)** checklist.
 
 ## Known non-blocking residuals
 
-- **`npm audit --omit=dev` (2026-03-28):**
-  - root: **4 low** — `elliptic` via **`@stackframe/stack`**
+- **`npm audit --omit=dev` / full `npm audit` (2026-03-29):**
+  - root: **4 low** — `elliptic` via **`@stackframe/stack`** (**full** dev tree no longer adds Workbox **`serialize-javascript` highs** after override + **`npm audit fix`**)
   - `server/`: **0**
   - `railway-deploy/`: **0**
-- **Dev-only advisory residuals (`npm audit` full):** high findings remain in `@ducanh2912/next-pwa` / Workbox transitive chain (`serialize-javascript`, `workbox-build`, `workbox-webpack-plugin`). Runtime graph remains clean of high/critical advisories.
 - **Jest / async leaks:** if new suites import long-lived clients (Redis, sockets, timers), re-run `npm test -- --detectOpenHandles` and add targeted teardown or mocks. **MED-005** addressed the Express `pg` pool path.
 
 ### MED-010: Enforce production build in GitHub CI for `main`
