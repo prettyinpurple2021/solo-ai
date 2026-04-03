@@ -15,14 +15,17 @@ export default function DevToolsPage() {
     const router = useRouter()
 
     useEffect(() => {
-        if (!authLoading && user?.role !== 'admin') {
+        if (authLoading) return
+        // The middleware (proxy.ts) enforces admin-email access at the edge.
+        // This client guard only handles the unauthenticated case for graceful UX.
+        if (!user) {
             router.push('/dashboard')
         }
     }, [user, authLoading, router])
 
     if (authLoading) return <div className="p-10"><Loader2 className="animate-spin" /></div>
     
-    if (user?.role !== 'admin') return null;
+    if (!user) return null;
 
     const runSeed = async (name: string, url: string, method: string = 'POST') => {
         setLoading(name)

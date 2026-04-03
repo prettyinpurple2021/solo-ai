@@ -8,7 +8,7 @@ Primary source of truth: `docs/reports/PRODUCTION_REMEDIATION_TRACKER.md`
 ## 1) Current Progress Snapshot
 
 ### Overall status
-- **Readiness score:** **85/100**
+- **Readiness score:** **86/100**
 - **Runtime security:**  
   - Root app: **4 low** advisories (`@stackframe/stack` -> `elliptic`)  
   - `server/`: **0 vulnerabilities**  
@@ -20,8 +20,8 @@ Primary source of truth: `docs/reports/PRODUCTION_REMEDIATION_TRACKER.md`
 
 ```mermaid
 pie title Public Launch Readiness (Now)
-    "Completed Foundations" : 85
-    "Remaining Hardening" : 15
+    "Completed Foundations" : 86
+    "Remaining Hardening" : 14
 ```
 
 ---
