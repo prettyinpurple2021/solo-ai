@@ -181,6 +181,7 @@ export async function hasActiveSubscription(userId: string): Promise<boolean> {
 export async function getUserSubscription(userId: string) {
   try {
     const results = await db.select({
+      email: users.email,
       subscription_tier: users.subscription_tier,
       subscription_status: users.subscription_status,
       stripe_customer_id: users.stripe_customer_id,

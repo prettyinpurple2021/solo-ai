@@ -1,5 +1,6 @@
 import { getStripe } from '@/lib/stripe'
 import { getUserSubscription } from '@/lib/stripe-db-utils'
+import { isAdminEmail } from '@/lib/admin-access'
 
 function normalizeTier(tier: string | null | undefined): string {
   const t = (tier || 'free').toLowerCase()
@@ -30,6 +31,7 @@ export interface UnifiedSubscriptionPayload {
     current_period_end: string | null
     cancel_at_period_end: boolean
     stripe_subscription?: unknown
+    is_admin_override?: boolean
   }
 }
 
@@ -39,6 +41,29 @@ export async function fetchUnifiedSubscriptionPayload(
 ): Promise<UnifiedSubscriptionPayload | null> {
   const row = await getUserSubscription(userId)
   if (!row) return null
+
+  // Optional override: grants Dominator-tier access to master admin accounts for
+  // internal operations. Controlled via ENABLE_ADMIN_BYPASS env var and fails
+  // closed by default. The `is_admin_override` flag distinguishes this from a
+  // real paid subscription so downstream consumers are not misled.
+  const enableAdminBypass = process.env.ENABLE_ADMIN_BYPASS === 'true'
+  if (enableAdminBypass && isAdminEmail(row.email ?? null)) {
+    return {
+      tier: 'dominator',
+      status: 'active',
+      current_period_end: null,
+      subscription: {
+        subscription_tier: 'dominator',
+        subscription_status: 'active',
+        stripe_customer_id: row.stripe_customer_id,
+        stripe_subscription_id: row.stripe_subscription_id,
+        current_period_start: null,
+        current_period_end: null,
+        cancel_at_period_end: false,
+        is_admin_override: true,
+      },
+    }
+  }
 
   const normalizedTier = normalizeTier(row.subscription_tier)
   const status =
