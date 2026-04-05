@@ -14,8 +14,6 @@
     "@ai-sdk/google": "^3.0.53",
     "@google/genai": "^1.47.0",
     "@sentry/node": "^10.46.0",
-    "@types/bcrypt": "^6.0.0",
-    "@types/cookie-parser": "^1.4.10",
     "@upstash/redis": "^1.37.0",
     "ai": "^6.0.141",
     "bcrypt": "^6.0.0",
@@ -35,7 +33,9 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^6.0.0",
     "@types/bcryptjs": "^2.4.6",
+    "@types/cookie-parser": "^1.4.10",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.10",

@@ -37,6 +37,15 @@ const TIER_LEVELS: Record<Tier, number> = {
     'dominator': 2
 };
 
+/** Map API / hook plan strings to FeatureGate tiers (free + launchpad → launch). */
+function normalizePlanForGate(plan: string | undefined): Tier {
+    const p = (plan || 'launch').toLowerCase();
+    if (p === 'free' || p === 'launch' || p === 'launchpad') return 'launch';
+    if (p === 'accelerator') return 'accelerator';
+    if (p === 'dominator') return 'dominator';
+    return 'launch';
+}
+
 interface FeatureGateProps {
     feature: FeatureKey;
     children: React.ReactNode;
@@ -51,9 +60,9 @@ export function FeatureGate({ feature, children, fallback }: FeatureGateProps) {
     }
 
     const requiredTier = FEATURE_REQUIREMENTS[feature];
-    const currentTier = (subscription?.plan || 'launch') as Tier;
+    const currentTier = normalizePlanForGate(subscription?.plan);
 
-    const currentLevel = TIER_LEVELS[currentTier] || 0;
+    const currentLevel = TIER_LEVELS[currentTier];
     const requiredLevel = TIER_LEVELS[requiredTier] || 0;
 
     if (currentLevel >= requiredLevel) {

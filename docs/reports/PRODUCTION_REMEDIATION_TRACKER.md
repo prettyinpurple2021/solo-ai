@@ -30,6 +30,12 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Work log
 
+### 2026-03-29 (continued)
+
+- **Step 2 (`server/` types):** moved **`@types/bcrypt`** and **`@types/cookie-parser`** from **`dependencies`** to **`devDependencies`** (they are compile-time only; **`@types/express`** was already dev-only). Regenerated **`server/package-lock.json`** via **`npm install --prefix server`**.
+- **Step 3 (AI Squad / founder bypass):** middleware (**`src/proxy.ts`**) now uses **`getEffectiveSubscriptionTier()`** so **`ENABLE_ADMIN_BYPASS`** matches billing + usage behavior on tier-gated dashboard routes. **`FeatureGate`** normalizes **`free`**, **`launch`**, and **`launchpad`** to the same gate level as **`launch`**. Documented **`ENABLE_ADMIN_BYPASS`** and **`ADMIN_USER_IDS`** in **`env.example`** and **`docs/deployment/ENV_VARS_VERCEL_AND_RAILWAY.md`**.
+- **Verification:** **`npm run validate`** ✅ · **`npm test -- --runInBand`** ✅ (**17** suites, **101** tests)
+
 ### 2026-03-29
 
 - **Phase 1 PWA / Workbox hardening:** added **`serialize-javascript@7.0.5`** to root **`package.json` `overrides`** so Workbox’s transitive **`@rollup/plugin-terser`** chain no longer resolves to vulnerable **`serialize-javascript` ≤ 7.0.4**. Regenerated **`package-lock.json`** via **`npm install`**; ran **`npm audit fix`** (no **`--force`**) to clear additional **high** advisories (**`@xmldom/xmldom`**, **`lodash` / `lodash-es`**) introduced by lockfile churn.

@@ -4,7 +4,7 @@ import { NextResponse } from "next/server"
 import { TrafficService } from "@/lib/traffic-service"
 import { logError, logInfo } from "@/lib/logger"
 import { canAccess } from "@/lib/subscription-gating"
-import { isAdminIdentity } from "@/lib/admin-access"
+import { getEffectiveSubscriptionTier, isAdminIdentity } from "@/lib/admin-access"
 
 const { auth } = NextAuth(authConfig)
 
@@ -48,9 +48,13 @@ export default auth((req) => {
     }
   }
 
-  // 2. Feature Gating based on Subscription Tier
+  // 2. Feature Gating based on Subscription Tier (respects ENABLE_ADMIN_BYPASS + ADMIN_EMAILS / ADMIN_USER_IDS)
   if (isLoggedIn) {
-    const userTier = user?.subscription_tier || 'free'
+    const userTier = getEffectiveSubscriptionTier(
+      user?.subscription_tier,
+      user?.email,
+      user?.id,
+    )
     
     // Check if the current path is gated
     const gatedPaths = ['/dashboard/competitors', '/dashboard/collaboration', '/dashboard/strategy-nexus', '/dashboard/compliance-grid']
