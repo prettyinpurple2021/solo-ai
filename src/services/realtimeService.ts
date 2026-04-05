@@ -3,7 +3,7 @@
 
 import { io, Socket } from 'socket.io-client';
 import { logInfo, logError } from '@/lib/logger';
-import { API_URL } from '@/lib/api-client';
+import { fetchSocketAuthToken, getSocketIoBaseUrl } from '@/lib/socket-client';
 
 export type RealtimeEvent = 
     | 'task:updated'
@@ -32,22 +32,35 @@ class RealtimeService {
     private userId: string | null = null;
 
     connect(userId: string) {
+        void this.connectAsync(userId);
+    }
+
+    private async connectAsync(userId: string) {
         if (this.socket?.connected && this.userId === userId) {
             return;
         }
 
+        this.socket?.disconnect();
+        this.socket = null;
         this.userId = userId;
 
-        this.socket = io(API_URL, {
+        const token = await fetchSocketAuthToken();
+        if (!token) {
+            logError('Real-time: missing socket token (is /api/ws-token returning 401?)');
+            return;
+        }
+
+        const baseUrl = getSocketIoBaseUrl();
+        this.socket = io(baseUrl, {
             transports: ['websocket', 'polling'],
             reconnection: true,
             reconnectionDelay: 1000,
-            reconnectionAttempts: 5
+            reconnectionAttempts: 5,
+            auth: { token },
         });
 
-        // Join user-specific room
         this.socket.on('connect', () => {
-            this.socket?.emit('join', userId);
+            this.socket?.emit('join');
         });
 
         // Handle real-time events

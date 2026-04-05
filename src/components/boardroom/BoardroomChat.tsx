@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { Crown, Send, Users, MessageSquare } from 'lucide-react';
 import { AGENTS } from '../../constants';
+import { fetchSocketAuthToken, getSocketIoBaseUrl } from '@/lib/socket-client';
+import { logWarn } from '@/lib/logger';
 
 interface Message {
   agentId: string;
@@ -16,32 +18,54 @@ export const BoardroomChat: React.FC<{ sessionId: string }> = ({ sessionId }) =>
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const newSocket = io("http://localhost:5000/boardroom");
-    setSocket(newSocket);
+    let live: Socket | null = null;
+    let cancelled = false;
 
-    newSocket.on("connect", () => {
-      newSocket.emit("join-session", sessionId);
-    });
-
-    newSocket.on("agent-chunk", (data: { chunk: string, done: boolean }) => {
-      setMessages(prev => {
-        const lastMessage = prev[prev.length - 1];
-        if (lastMessage && lastMessage.isStreaming) {
-          const updated = [...prev];
-          updated[updated.length - 1] = {
-            ...lastMessage,
-            content: lastMessage.content + data.chunk,
-            isStreaming: !data.done
-          };
-          return updated;
-        } else {
-          return [...prev, { agentId: 'agent-1', content: data.chunk, isStreaming: !data.done }];
-        }
+    void (async () => {
+      const token = await fetchSocketAuthToken();
+      if (cancelled) return;
+      if (!token) {
+        logWarn('Boardroom: no socket token; user may need to sign in');
+        return;
+      }
+      const base = getSocketIoBaseUrl();
+      const newSocket = io(`${base}/boardroom`, {
+        auth: { token },
+        transports: ['websocket', 'polling'],
       });
-    });
+      if (cancelled) {
+        newSocket.disconnect();
+        return;
+      }
+      live = newSocket;
+      setSocket(newSocket);
+
+      newSocket.on('connect', () => {
+        newSocket.emit('join-session', sessionId);
+      });
+
+      newSocket.on('agent-chunk', (data: { chunk: string; done: boolean }) => {
+        setMessages((prev) => {
+          const lastMessage = prev[prev.length - 1];
+          if (lastMessage && lastMessage.isStreaming) {
+            const updated = [...prev];
+            updated[updated.length - 1] = {
+              ...lastMessage,
+              content: lastMessage.content + data.chunk,
+              isStreaming: !data.done,
+            };
+            return updated;
+          }
+          return [...prev, { agentId: 'agent-1', content: data.chunk, isStreaming: !data.done }];
+        });
+      });
+    })();
 
     return () => {
-      newSocket.disconnect();
+      cancelled = true;
+      live?.disconnect();
+      live = null;
+      setSocket(null);
     };
   }, [sessionId]);
 

@@ -25,7 +25,7 @@ import { setupCommandCenterSocket, broadcastRevenueUpdate, broadcastAgentActivit
 import { logInfo, logWarn, logError } from './utils/logger';
 import path from 'path';
 import fs from 'fs';
-import { verifyToken } from './utils/jwt';
+import { verifyAccessToken } from './utils/jwt';
 import { authMiddleware } from './middleware/auth';
 
 // Route Imports
@@ -129,13 +129,13 @@ io.use((socket, next) => {
         return next(new Error("Authentication error"));
     }
 
-    const decoded = verifyToken(token);
-    if (!decoded) {
-        logWarn(`Socket authentication failed: Invalid token (${socket.id})`);
+    const decoded = verifyAccessToken(token);
+    if (!decoded.ok) {
+        const detail = decoded.reason === 'expired' ? 'Token expired' : 'Invalid or malformed token';
+        logWarn(`Socket authentication failed: ${detail} (${socket.id})`);
         return next(new Error("Authentication error"));
     }
 
-    // Attach verified identity to socket
     socket.data.userId = decoded.userId;
     next();
 });

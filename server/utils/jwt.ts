@@ -16,11 +16,26 @@ export function generateToken(userId: string, email: string): string {
     );
 }
 
-export function verifyToken(token: string): { userId: string; email: string } | null {
+export type AccessTokenVerifyResult =
+    | { ok: true; userId: string; email: string }
+    | { ok: false; reason: 'expired' | 'invalid' };
+
+export function verifyAccessToken(token: string): AccessTokenVerifyResult {
     try {
-        const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
-        return decoded;
+        const decoded = jwt.verify(token, JWT_SECRET) as { userId?: string; email?: string };
+        if (!decoded?.userId || decoded.email === undefined) {
+            return { ok: false, reason: 'invalid' };
+        }
+        return { ok: true, userId: String(decoded.userId), email: decoded.email };
     } catch (error) {
-        return null;
+        if (error instanceof jwt.TokenExpiredError) {
+            return { ok: false, reason: 'expired' };
+        }
+        return { ok: false, reason: 'invalid' };
     }
+}
+
+export function verifyToken(token: string): { userId: string; email: string } | null {
+    const r = verifyAccessToken(token);
+    return r.ok ? { userId: r.userId, email: r.email } : null;
 }

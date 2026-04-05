@@ -23,6 +23,8 @@
 **Supplement (2026-03-28, later):** CI launch gate tightened.  
 - Updated `.github/workflows/ci.yml` so **production build (`next build --webpack`) now runs on pull requests to `main`**, in addition to push/schedule/manual paths. This closes the prior "build not mandatory on PR" gap and improves release confidence.
 
+**Supplement (2026-04-05):** Railway Socket.IO **“Invalid token”** hardening: browser clients now obtain JWTs only via **`GET /api/ws-token`** (with **`credentials: 'include'`**) and connect to **`NEXT_PUBLIC_SOCKET_URL`** via shared **`src/lib/socket-client.ts`** (`HudCommandHeader`, **`realtimeService`**, **`websocket-notification-service`**, **`BoardroomChat`**). Express logs distinguish **expired** vs **invalid/malformed** token (no token value logged). **Operational:** Vercel and Railway must share the same **`JWT_SECRET`** (or **`AUTH_SECRET`**).
+
 ---
 
 ## 🚨 CRITICAL COMPILATION ERRORS (44 Total) - **FIXED ✅**

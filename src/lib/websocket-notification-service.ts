@@ -1,6 +1,7 @@
 import React from 'react';
 import { io, Socket } from 'socket.io-client';
 import { logError, logInfo, logWarn } from '@/lib/logger';
+import { fetchSocketAuthToken, getSocketIoBaseUrl } from '@/lib/socket-client';
 
 type ConnectionStatus = 'connecting' | 'connected' | 'disconnected' | 'error';
 
@@ -51,19 +52,15 @@ class WebSocketNotificationService {
     }
 
     this.userId = userId;
-    const baseUrl =
-      process.env.NEXT_PUBLIC_SOCKET_URL ||
-      `${window.location.protocol}//${window.location.host}`;
+    const baseUrl = getSocketIoBaseUrl();
 
     this.status = 'connecting';
     this.emitStatus();
 
     this.socket?.disconnect();
 
-    // Fetch a short-lived JWT from the Next.js API, then connect
-    fetch('/api/ws-token')
-      .then((res) => res.json())
-      .then(({ token }) => {
+    fetchSocketAuthToken()
+      .then((token) => {
         if (!token) {
           this.status = 'error';
           this.emitStatus();
