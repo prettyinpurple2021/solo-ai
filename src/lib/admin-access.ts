@@ -1,3 +1,6 @@
+import type { SubscriptionTier } from '@/lib/subscription-gating'
+import { normalizeSubscriptionTierLabel, TIER_HIERARCHY } from '@/lib/subscription-gating'
+
 export function getAdminEmails(): string[] {
   const raw = process.env.ADMIN_EMAILS || ''
   return raw
@@ -66,38 +69,20 @@ export function isAdminIdentity(email?: string | null, userId?: string | null): 
   return isAdminEmail(email)
 }
 
-const TIER_RANK: Record<'free' | 'launch' | 'accelerator' | 'dominator', number> = {
-  free: 0,
-  launch: 1,
-  accelerator: 2,
-  dominator: 3,
-}
-
 export function getEffectiveSubscriptionTier(
   tier?: string | null,
   email?: string | null,
   userId?: string | null,
-): 'free' | 'launch' | 'accelerator' | 'dominator' {
+): SubscriptionTier {
   const enableAdminBypass = process.env.ENABLE_ADMIN_BYPASS === 'true'
   if (enableAdminBypass && isAdminIdentity(email, userId)) return 'dominator'
 
-  const normalized = (tier || 'free').toLowerCase()
-  if (
-    normalized === 'free' ||
-    normalized === 'launch' ||
-    normalized === 'accelerator' ||
-    normalized === 'dominator'
-  ) {
-    return normalized
-  }
-
-  return 'free'
+  return normalizeSubscriptionTierLabel(tier)
 }
 
 export function hasTierAccess(
-  effectiveTier: 'free' | 'launch' | 'accelerator' | 'dominator',
+  effectiveTier: SubscriptionTier,
   requiredTier: 'accelerator' | 'dominator',
 ): boolean {
-  return TIER_RANK[effectiveTier] >= TIER_RANK[requiredTier]
+  return TIER_HIERARCHY[effectiveTier] >= TIER_HIERARCHY[requiredTier]
 }
-

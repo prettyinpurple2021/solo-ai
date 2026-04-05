@@ -152,7 +152,8 @@ Set these on **Railway** for the **API** service. In the service **Settings**, *
 | `NODE_ENV` | `production` |
 | `DATABASE_URL` | Same as Vercel |
 | `JWT_SECRET` | Same as Vercel |
-| `CLIENT_URL` | Your **Vercel** site origin, e.g. `https://yourdomain.com` (CORS + redirects) |
+| `CLIENT_URL` | Your **Vercel** site origin, e.g. `https://www.yourdomain.com` (CORS + redirects). The API **automatically allows both apex and `www`** for that host (Socket.IO + Express CORS). |
+| `CORS_ORIGINS` | Optional comma-separated extra origins (preview URLs, second domains). |
 | `PORT` | Often **set automatically by Railway**; if you override, it must match what the container listens on. |
 
 ### AI + Redis used by Express routes

@@ -64,12 +64,51 @@ app.set('trust proxy', 1);
 
 const httpServer = createServer(app);
 const isDevelopment = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
+
+/**
+ * Public site URLs may be served as apex or www; browsers send an exact Origin string.
+ * Mirror both variants (and optional CORS_ORIGINS) so Express + Socket.IO agree with Vercel.
+ */
+function expandPublicOriginVariants(origin: string): string[] {
+    const trimmed = origin.trim();
+    if (!trimmed) return [];
+    try {
+        const u = new URL(trimmed);
+        const proto = u.protocol;
+        const port = u.port ? `:${u.port}` : '';
+        const host = u.hostname.toLowerCase();
+        const out = new Set<string>();
+        out.add(`${proto}//${host}${port}`);
+        const isLocal =
+            host === 'localhost' ||
+            host.startsWith('127.') ||
+            host === '[::1]';
+        if (!isLocal) {
+            if (host.startsWith('www.')) {
+                out.add(`${proto}//${host.slice(4)}${port}`);
+            } else {
+                out.add(`${proto}//www.${host}${port}`);
+            }
+        }
+        return [...out];
+    } catch {
+        return [trimmed];
+    }
+}
+
+const corsOriginsFromEnv = (process.env.CORS_ORIGINS || '')
+    .split(',')
+    .flatMap(expandPublicOriginVariants);
+
 const allowedOrigins = Array.from(
     new Set(
         [
-            process.env.CLIENT_URL || "https://solosuccessai.fun",
-            "https://solosuccessai.fun",
-            ...(isDevelopment ? ["http://localhost:3000", "http://localhost:3001", "http://localhost:3002"] : []),
+            ...corsOriginsFromEnv,
+            ...expandPublicOriginVariants(process.env.CLIENT_URL || 'https://solosuccessai.fun'),
+            ...expandPublicOriginVariants('https://solosuccessai.fun'),
+            ...(isDevelopment
+                ? ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002']
+                : []),
         ].filter(Boolean)
     )
 );
