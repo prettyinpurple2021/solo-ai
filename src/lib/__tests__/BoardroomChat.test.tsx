@@ -1,40 +1,46 @@
 import React from 'react';
 import '@testing-library/jest-dom/jest-globals';
-import { jest, describe, it, expect } from '@jest/globals';
+import { jest, describe, it, expect, beforeAll } from '@jest/globals';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { BoardroomChat } from '@/components/boardroom/BoardroomChat';
 import { AGENTS } from '@/constants';
 import { AgentId } from '@/types';
-import * as SocketIOClient from 'socket.io-client';
 
-jest.mock('@/lib/socket-client', () => ({
-  fetchSocketAuthToken: jest.fn(() => Promise.resolve('mock-jwt')),
-  getSocketIoBaseUrl: jest.fn(() => 'http://localhost:5000'),
-}));
+let BoardroomChat: React.FC<{ sessionId: string }>;
+let mockIo: jest.Mock;
+let mockSocket: { on: jest.Mock; emit: jest.Mock; disconnect: jest.Mock };
 
-jest.mock('socket.io-client', () => {
-  const mSocket = {
+beforeAll(async () => {
+  mockSocket = {
     on: jest.fn(),
     emit: jest.fn(),
     disconnect: jest.fn(),
   };
-  return {
-    __esModule: true,
-    io: jest.fn(() => mSocket),
-  };
+  mockIo = jest.fn(() => mockSocket);
+
+  await jest.unstable_mockModule('@/lib/socket-client', () => ({
+    fetchSocketAuthToken: jest.fn(() => Promise.resolve('mock-jwt')),
+    getSocketIoBaseUrl: jest.fn(() => 'http://localhost:5000'),
+  }));
+
+  await jest.unstable_mockModule('socket.io-client', () => ({
+    io: mockIo,
+  }));
+
+  const mod = await import('@/components/boardroom/BoardroomChat');
+  BoardroomChat = mod.BoardroomChat as React.FC<{ sessionId: string }>;
 });
 
 describe('BoardroomChat Component', () => {
   it('renders the chat interface', async () => {
     render(<BoardroomChat sessionId="session-1" />);
-    await waitFor(() => expect(SocketIOClient.io).toHaveBeenCalled());
+    await waitFor(() => expect(mockIo).toHaveBeenCalled());
     expect(screen.getByText(/Active Discussion/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/DIRECTIVE.../i)).toBeInTheDocument();
   });
 
   it('allows selecting a target agent', async () => {
     render(<BoardroomChat sessionId="session-1" />);
-    await waitFor(() => expect(SocketIOClient.io).toHaveBeenCalled());
+    await waitFor(() => expect(mockIo).toHaveBeenCalled());
     const agentAvatars = screen.getAllByRole('img');
     fireEvent.click(agentAvatars[0]);
 
@@ -44,14 +50,12 @@ describe('BoardroomChat Component', () => {
   it('triggers conclusion event', async () => {
     render(<BoardroomChat sessionId="session-1" />);
     await waitFor(() => {
-      expect(SocketIOClient.io).toHaveBeenCalled();
+      expect(mockIo).toHaveBeenCalled();
     });
     const concludeBtn = screen.getByText(/Conclude/i);
     fireEvent.click(concludeBtn);
 
-    const ioMock = SocketIOClient.io as jest.MockedFunction<typeof SocketIOClient.io>;
-    const mSocket = ioMock.mock.results.at(-1)?.value as { emit: jest.Mock };
-    expect(mSocket.emit).toHaveBeenCalledWith('test-trigger-stream', expect.objectContaining({
+    expect(mockSocket.emit).toHaveBeenCalledWith('test-trigger-stream', expect.objectContaining({
       text: expect.stringContaining('adjourned')
     }));
   });
