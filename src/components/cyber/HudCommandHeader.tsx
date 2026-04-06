@@ -27,10 +27,12 @@ export function HudCommandHeader({ userId, initialMrr = 0, initialGrowth = 0 }: 
       path: '/socket.io',
       transports: ['websocket', 'polling'],
       auth: (cb: (data: object) => void) => {
-        fetchSocketAuthToken().then((token) => {
-          if (!token) setSocketStatus('disconnected')
-          cb({ token: token ?? '' })
-        })
+        fetchSocketAuthToken()
+          .then((token) => {
+            if (!token) setSocketStatus('disconnected')
+            cb({ token: token ?? '' })
+          })
+          .catch(() => cb({ token: '' }))
       },
     })
 

@@ -22,10 +22,12 @@ export const BoardroomChat: React.FC<{ sessionId: string }> = ({ sessionId }) =>
     const newSocket = io(`${base}/boardroom`, {
       transports: ['websocket', 'polling'],
       auth: (cb: (data: object) => void) => {
-        fetchSocketAuthToken().then((token) => {
-          if (!token) logWarn('Boardroom: no socket token; user may need to sign in');
-          cb({ token: token ?? '' });
-        });
+        fetchSocketAuthToken()
+          .then((token) => {
+            if (!token) logWarn('Boardroom: no socket token; user may need to sign in');
+            cb({ token: token ?? '' });
+          })
+          .catch(() => cb({ token: '' }));
       },
     });
 
