@@ -5,7 +5,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BoardroomChat } from '@/components/boardroom/BoardroomChat';
 import { AGENTS } from '@/constants';
 import { AgentId } from '@/types';
-import * as SocketIOClient from 'socket.io-client';
+import { io } from 'socket.io-client';
 
 jest.mock('@/lib/socket-client', () => ({
   fetchSocketAuthToken: jest.fn(() => Promise.resolve('mock-jwt')),
@@ -27,14 +27,14 @@ jest.mock('socket.io-client', () => {
 describe('BoardroomChat Component', () => {
   it('renders the chat interface', async () => {
     render(<BoardroomChat sessionId="session-1" />);
-    await waitFor(() => expect(SocketIOClient.io).toHaveBeenCalled());
+    await waitFor(() => expect(io).toHaveBeenCalled());
     expect(screen.getByText(/Active Discussion/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/DIRECTIVE.../i)).toBeInTheDocument();
   });
 
   it('allows selecting a target agent', async () => {
     render(<BoardroomChat sessionId="session-1" />);
-    await waitFor(() => expect(SocketIOClient.io).toHaveBeenCalled());
+    await waitFor(() => expect(io).toHaveBeenCalled());
     const agentAvatars = screen.getAllByRole('img');
     fireEvent.click(agentAvatars[0]);
 
@@ -44,13 +44,12 @@ describe('BoardroomChat Component', () => {
   it('triggers conclusion event', async () => {
     render(<BoardroomChat sessionId="session-1" />);
     await waitFor(() => {
-      expect(SocketIOClient.io).toHaveBeenCalled();
+      expect(io).toHaveBeenCalled();
     });
     const concludeBtn = screen.getByText(/Conclude/i);
     fireEvent.click(concludeBtn);
 
-    const ioMock = SocketIOClient.io as jest.MockedFunction<typeof SocketIOClient.io>;
-    const mSocket = ioMock.mock.results.at(-1)?.value as { emit: jest.Mock };
+    const mSocket = (io as jest.Mock).mock.results.at(-1)?.value as { emit: jest.Mock };
     expect(mSocket.emit).toHaveBeenCalledWith('test-trigger-stream', expect.objectContaining({
       text: expect.stringContaining('adjourned')
     }));
