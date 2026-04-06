@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { HudStatusRadar } from './HudStatusRadar'
 import { HudTicker } from './HudTicker'
 import { Terminal, Shield, Crosshair } from 'lucide-react'
-import { io, Socket } from 'socket.io-client'
+import { io } from 'socket.io-client'
 import { fetchSocketAuthToken, getSocketIoBaseUrl } from '@/lib/socket-client'
 
 interface HudCommandHeaderProps {
@@ -22,54 +22,40 @@ export function HudCommandHeader({ userId, initialMrr = 0, initialGrowth = 0 }: 
   const [lastEvent, setLastEvent] = useState<string>("SYSTEM_IDLE")
 
   useEffect(() => {
-    let live: Socket | null = null
-    let cancelled = false
+    const base = getSocketIoBaseUrl()
+    const commandCenter = io(`${base}/command-center`, {
+      path: '/socket.io',
+      transports: ['websocket', 'polling'],
+      auth: (cb: (data: object) => void) => {
+        fetchSocketAuthToken().then((token) => {
+          if (!token) setSocketStatus('disconnected')
+          cb({ token: token ?? '' })
+        })
+      },
+    })
 
-    void (async () => {
-      const token = await fetchSocketAuthToken()
-      if (cancelled) return
-      if (!token) {
-        setSocketStatus('disconnected')
-        return
-      }
+    commandCenter.on('connect', () => {
+      setSocketStatus('connected')
+      commandCenter.emit('sync-hud', userId)
+    })
 
-      const base = getSocketIoBaseUrl()
-      const commandCenter = io(`${base}/command-center`, {
-        path: '/socket.io',
-        auth: { token },
-        transports: ['websocket', 'polling'],
-      })
-      if (cancelled) {
-        commandCenter.disconnect()
-        return
-      }
-      live = commandCenter
+    commandCenter.on('disconnect', () => setSocketStatus('disconnected'))
+    commandCenter.on('connect_error', () => setSocketStatus('reconnecting'))
 
-      commandCenter.on('connect', () => {
-        setSocketStatus('connected')
-        commandCenter.emit('sync-hud', userId)
-      })
+    commandCenter.on('revenue-update', (data: { mrr: number; growth: number }) => {
+      setMrr(data.mrr)
+      setGrowth(data.growth)
+      setLastEvent('REVENUE_SYNC_COMPLETED')
+    })
 
-      commandCenter.on('disconnect', () => setSocketStatus('disconnected'))
-      commandCenter.on('connect_error', () => setSocketStatus('reconnecting'))
-
-      commandCenter.on('revenue-update', (data: { mrr: number; growth: number }) => {
-        setMrr(data.mrr)
-        setGrowth(data.growth)
-        setLastEvent('REVENUE_SYNC_COMPLETED')
-      })
-
-      commandCenter.on('global-activity', (data: { agent: string; action: string }) => {
-        setLastEvent(`${data.agent.toUpperCase()}_EXECUTING_OP`)
-        setActiveOps((prev) => prev + 1)
-        setTimeout(() => setActiveOps((prev) => Math.max(0, prev - 1)), 5000)
-      })
-    })()
+    commandCenter.on('global-activity', (data: { agent: string; action: string }) => {
+      setLastEvent(`${data.agent.toUpperCase()}_EXECUTING_OP`)
+      setActiveOps((prev) => prev + 1)
+      setTimeout(() => setActiveOps((prev) => Math.max(0, prev - 1)), 5000)
+    })
 
     return () => {
-      cancelled = true
-      live?.disconnect()
-      live = null
+      commandCenter.disconnect()
     }
   }, [userId])
 

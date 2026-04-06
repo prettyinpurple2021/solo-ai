@@ -18,53 +18,41 @@ export const BoardroomChat: React.FC<{ sessionId: string }> = ({ sessionId }) =>
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let live: Socket | null = null;
-    let cancelled = false;
-
-    void (async () => {
-      const token = await fetchSocketAuthToken();
-      if (cancelled) return;
-      if (!token) {
-        logWarn('Boardroom: no socket token; user may need to sign in');
-        return;
-      }
-      const base = getSocketIoBaseUrl();
-      const newSocket = io(`${base}/boardroom`, {
-        auth: { token },
-        transports: ['websocket', 'polling'],
-      });
-      if (cancelled) {
-        newSocket.disconnect();
-        return;
-      }
-      live = newSocket;
-      setSocket(newSocket);
-
-      newSocket.on('connect', () => {
-        newSocket.emit('join-session', sessionId);
-      });
-
-      newSocket.on('agent-chunk', (data: { chunk: string; done: boolean }) => {
-        setMessages((prev) => {
-          const lastMessage = prev[prev.length - 1];
-          if (lastMessage && lastMessage.isStreaming) {
-            const updated = [...prev];
-            updated[updated.length - 1] = {
-              ...lastMessage,
-              content: lastMessage.content + data.chunk,
-              isStreaming: !data.done,
-            };
-            return updated;
-          }
-          return [...prev, { agentId: 'agent-1', content: data.chunk, isStreaming: !data.done }];
+    const base = getSocketIoBaseUrl();
+    const newSocket = io(`${base}/boardroom`, {
+      transports: ['websocket', 'polling'],
+      auth: (cb: (data: object) => void) => {
+        fetchSocketAuthToken().then((token) => {
+          if (!token) logWarn('Boardroom: no socket token; user may need to sign in');
+          cb({ token: token ?? '' });
         });
+      },
+    });
+
+    setSocket(newSocket);
+
+    newSocket.on('connect', () => {
+      newSocket.emit('join-session', sessionId);
+    });
+
+    newSocket.on('agent-chunk', (data: { chunk: string; done: boolean }) => {
+      setMessages((prev) => {
+        const lastMessage = prev[prev.length - 1];
+        if (lastMessage && lastMessage.isStreaming) {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            ...lastMessage,
+            content: lastMessage.content + data.chunk,
+            isStreaming: !data.done,
+          };
+          return updated;
+        }
+        return [...prev, { agentId: 'agent-1', content: data.chunk, isStreaming: !data.done }];
       });
-    })();
+    });
 
     return () => {
-      cancelled = true;
-      live?.disconnect();
-      live = null;
+      newSocket.disconnect();
       setSocket(null);
     };
   }, [sessionId]);
