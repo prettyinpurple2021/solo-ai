@@ -44,19 +44,20 @@ class RealtimeService {
         this.socket = null;
         this.userId = userId;
 
-        const token = await fetchSocketAuthToken();
-        if (!token) {
-            logError('Real-time: missing socket token (is /api/ws-token returning 401?)');
-            return;
-        }
-
         const baseUrl = getSocketIoBaseUrl();
         this.socket = io(baseUrl, {
             transports: ['websocket', 'polling'],
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionAttempts: 5,
-            auth: { token },
+            auth: (cb: (data: object) => void) => {
+                fetchSocketAuthToken().then((token) => {
+                    if (!token) {
+                        logError('Real-time: missing socket token (is /api/ws-token returning 401?)');
+                    }
+                    cb({ token: token ?? '' });
+                });
+            },
         });
 
         this.socket.on('connect', () => {
