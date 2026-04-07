@@ -98,13 +98,16 @@ async function jsonFetch(path, options = {}) {
       body: JSON.stringify({ title, description })
     });
     console.log(`/api/briefcases (create): ${create.res.status}`);
-    if (create.res.status !== 200 || !create.json?.id) failures++;
-    const createdId = create.json?.id;
+    const createdId = create.json?.briefcase?.id;
+    if (create.res.status !== 200 || createdId == null) failures++;
 
     const list = await jsonFetch('/api/briefcases', { headers: authHeader });
     console.log(`/api/briefcases (list): ${list.res.status}`);
-    if (list.res.status !== 200 || !Array.isArray(list.json)) failures++;
-    const found = Array.isArray(list.json) && list.json.some(b => b.id === createdId);
+    const files = list.json?.files;
+    if (list.res.status !== 200 || !Array.isArray(files)) failures++;
+    const createdIdStr = String(createdId);
+    const found =
+      Array.isArray(files) && files.some((b) => String(b?.id) === createdIdStr);
     console.log(`briefcase roundtrip found=${found}`);
     if (!found) failures++;
 
