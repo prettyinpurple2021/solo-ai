@@ -29,9 +29,9 @@ export function HudBorder({ children, className, variant = 'default', onClick }:
       }}
     >
       {/* Corner accents */}
-      <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-neon-cyan shadow-[0_0_10px_rgba(11,228,236,0.5)]" />
+      <div className="pointer-events-none absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-neon-cyan shadow-[0_0_10px_rgba(11,228,236,0.5)]" />
       <div 
-        className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-neon-cyan shadow-[0_0_10px_rgba(11,228,236,0.5)]"
+        className="pointer-events-none absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-neon-cyan shadow-[0_0_10px_rgba(11,228,236,0.5)]"
         style={{ transform: 'translate(-5px, -5px)' }}
       />
       {/* HUD scanning line */}

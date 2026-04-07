@@ -26,13 +26,16 @@ import Link from 'next/link'
 export default function BillingPage() {
   const { user, loading } = useAuth()
   const { toast } = useToast()
-  const [isLoading, setIsLoading] = useState(false)
+  /** Portal, paid checkout, and launch downgrade must not share one flag — otherwise "Manage Billing" disables all upgrade buttons. */
+  const [portalLoading, setPortalLoading] = useState(false)
+  const [checkoutLoading, setCheckoutLoading] = useState(false)
+  const [downgradeLoading, setDowngradeLoading] = useState(false)
   const [subscription, setSubscription] = useState<SubscriptionInfo | null>(null)
 
   useEffect(() => {
     const fetchSubscription = async () => {
       try {
-        const response = await fetch('/api/billing/subscription')
+        const response = await fetch('/api/billing/subscription', { credentials: 'include' })
         if (response.ok) {
           const data = await response.json()
           setSubscription(data)
@@ -48,14 +51,17 @@ export default function BillingPage() {
   }, [user])
 
   const handleManageBilling = async () => {
-    setIsLoading(true)
+    setPortalLoading(true)
     toast({
       title: "Billing Portal",
       description: "Redirecting to secure billing portal...",
     })
     
     try {
-      const response = await fetch('/api/billing/portal', { method: 'POST' });
+      const response = await fetch('/api/billing/portal', {
+        method: 'POST',
+        credentials: 'include',
+      });
       const data = await response.json();
 
       if (response.ok && data.url) {
@@ -94,7 +100,7 @@ export default function BillingPage() {
         variant: "destructive"
       });
     } finally {
-      setIsLoading(false);
+      setPortalLoading(false);
     }
   }
 
@@ -102,9 +108,12 @@ export default function BillingPage() {
     // Free/Launch is not a Stripe checkout plan.
     // If user is paid, this requests cancellation at period end.
     if (tier === 'launch') {
-      setIsLoading(true)
+      setDowngradeLoading(true)
       try {
-        const response = await fetch('/api/billing/cancel-subscription', { method: 'POST' })
+        const response = await fetch('/api/billing/cancel-subscription', {
+          method: 'POST',
+          credentials: 'include',
+        })
         const data = await response.json()
 
         if (response.ok) {
@@ -136,12 +145,12 @@ export default function BillingPage() {
           variant: "destructive"
         })
       } finally {
-        setIsLoading(false)
+        setDowngradeLoading(false)
       }
       return
     }
 
-    setIsLoading(true)
+    setCheckoutLoading(true)
     toast({
       title: "Upgrade Initiated",
       description: `Processing upgrade to ${tier} plan...`,
@@ -150,6 +159,7 @@ export default function BillingPage() {
     try {
       const response = await fetch('/api/billing/checkout', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ tier })
       });
@@ -160,11 +170,20 @@ export default function BillingPage() {
         return
       }
 
+      if (response.status === 401) {
+        toast({
+          title: "Session expired",
+          description: "Sign in again, then return to billing to continue checkout.",
+          variant: "destructive"
+        })
+        return
+      }
+
       // Do not treat expected validation errors as hard app failures.
       if (response.status === 400) {
         toast({
-          title: "Plan Selection Required",
-          description: data?.error || "Please select a valid paid plan.",
+          title: "Checkout unavailable",
+          description: data?.error || "Confirm Stripe price IDs are set for this environment (see deployment env docs).",
         })
         return
       }
@@ -191,7 +210,7 @@ export default function BillingPage() {
         variant: "destructive"
       });
     } finally {
-      setIsLoading(false);
+      setCheckoutLoading(false);
     }
   }
 
@@ -227,7 +246,7 @@ export default function BillingPage() {
                     Back to Command
                   </CyberButton>
                 </Link>
-                <CyberButton size="sm" onClick={handleManageBilling} disabled={isLoading} variant="purple">
+                <CyberButton size="sm" onClick={handleManageBilling} disabled={portalLoading} variant="purple">
                   <Settings className="w-4 h-4 mr-2" />
                   Manage Billing
                 </CyberButton>
@@ -293,7 +312,7 @@ export default function BillingPage() {
                         : '—'}
                     </p>
                   </div>
-                  <CyberButton size="lg" onClick={() => handleUpgrade('dominator')} variant="purple" disabled={isLoading}>
+                  <CyberButton size="lg" onClick={() => handleUpgrade('dominator')} variant="purple" disabled={checkoutLoading || downgradeLoading}>
                     Upgrade Plan
                     <Zap className="w-4 h-4 ml-2" />
                   </CyberButton>
@@ -306,7 +325,7 @@ export default function BillingPage() {
               {/* Launch Plan */}
               {/* Launch Plan */}
               <HudBorder className="p-8 relative overflow-hidden group hover:border-neon-cyan/50 transition-all duration-300">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <div className="pointer-events-none absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Target className="w-24 h-24 text-neon-cyan" />
                 </div>
 
@@ -324,7 +343,7 @@ export default function BillingPage() {
                   variant="ghost"
                   className="w-full mb-8 border-neon-cyan/30 text-neon-cyan hover:bg-neon-cyan/10"
                   onClick={() => handleUpgrade('launch')}
-                  disabled={subscription?.tier === 'launch' || subscription?.tier === 'free' || isLoading}
+                  disabled={subscription?.tier === 'launch' || subscription?.tier === 'free' || downgradeLoading || checkoutLoading}
                 >
                   {subscription?.tier === 'launch' || subscription?.tier === 'free' ? 'Current Plan' : 'Downgrade'}
                 </CyberButton>
@@ -348,10 +367,10 @@ export default function BillingPage() {
               {/* Accelerator Plan */}
               {/* Accelerator Plan */}
               <HudBorder className="p-8 relative overflow-hidden border-neon-purple/50 shadow-[0_0_20px_rgba(168,85,247,0.2)] transform scale-105 z-10">
-                <div className="absolute top-0 right-0 p-4 opacity-10">
+                <div className="pointer-events-none absolute top-0 right-0 p-4 opacity-10">
                   <Zap className="w-24 h-24 text-neon-purple" />
                 </div>
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 bg-neon-purple text-white text-xs font-bold px-3 py-1 font-mono">
+                <div className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 bg-neon-purple text-white text-xs font-bold px-3 py-1 font-mono">
                   MOST POPULAR
                 </div>
 
@@ -368,7 +387,7 @@ export default function BillingPage() {
                 <CyberButton
                   className="w-full mb-8 bg-neon-purple hover:bg-neon-purple/90"
                   onClick={() => handleUpgrade('accelerator')}
-                  disabled={subscription?.tier === 'accelerator' || isLoading}
+                  disabled={subscription?.tier === 'accelerator' || checkoutLoading || downgradeLoading}
                   variant="purple"
                 >
                   {subscription?.tier === 'accelerator' ? 'Current Plan' : 'Upgrade Now'}
@@ -397,7 +416,7 @@ export default function BillingPage() {
               {/* Dominator Plan */}
               {/* Dominator Plan */}
               <HudBorder className="p-8 relative overflow-hidden group hover:border-neon-magenta/50 transition-all duration-300">
-                <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                <div className="pointer-events-none absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
                   <Crown className="w-24 h-24 text-neon-magenta" />
                 </div>
 
@@ -415,7 +434,7 @@ export default function BillingPage() {
                   variant="ghost"
                   className="w-full mb-8 border-neon-magenta/30 text-neon-magenta hover:bg-neon-magenta/10"
                   onClick={() => handleUpgrade('dominator')}
-                  disabled={subscription?.tier === 'dominator' || isLoading}
+                  disabled={subscription?.tier === 'dominator' || checkoutLoading || downgradeLoading}
                 >
                   {subscription?.tier === 'dominator' ? 'Current Plan' : 'Upgrade Now'}
                 </CyberButton>

@@ -15,6 +15,7 @@ export function CyberButton({
   className,
   variant = 'primary',
   size = 'md',
+  type = 'button',
   ...props
 }: CyberButtonProps) {
   const baseStyles = 'relative overflow-hidden font-sci font-bold tracking-[0.2em] uppercase transition-all duration-300'
@@ -41,6 +42,7 @@ export function CyberButton({
 
   return (
     <motion.button
+      type={type}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       className={cn(
