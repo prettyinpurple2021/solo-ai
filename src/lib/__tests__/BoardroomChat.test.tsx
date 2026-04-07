@@ -35,6 +35,14 @@ beforeAll(async () => {
 });
 
 describe('BoardroomChat Component', () => {
+  function getLastAuthCallback() {
+    const lastCall = mockIo.mock.calls[mockIo.mock.calls.length - 1] as [
+      string,
+      { auth?: (cb: (data: { token: string }) => void) => void },
+    ];
+    return lastCall[1].auth!;
+  }
+
   it('renders the chat interface', async () => {
     render(<BoardroomChat sessionId="session-1" />);
     await waitFor(() => expect(mockIo).toHaveBeenCalled());
@@ -78,33 +86,33 @@ describe('BoardroomChat Component', () => {
     render(<BoardroomChat sessionId="session-auth" />);
     await waitFor(() => expect(mockIo).toHaveBeenCalled());
 
-    const lastCall = mockIo.mock.calls[mockIo.mock.calls.length - 1] as [string, { auth?: (cb: (data: { token: string }) => void) => void }];
-    expect(typeof lastCall[1].auth).toBe('function');
+    const auth = getLastAuthCallback();
+    expect(typeof auth).toBe('function');
 
     const cb = jest.fn();
-    lastCall[1].auth!(cb);
+    auth(cb);
     await waitFor(() => expect(cb).toHaveBeenCalledWith({ token: 'mock-jwt' }));
   });
 
   it('auth callback passes empty token when fetchSocketAuthToken returns null', async () => {
+    mockFetchSocketAuthToken.mockResolvedValueOnce(null);
+
     render(<BoardroomChat sessionId="session-auth-null" />);
     await waitFor(() => expect(mockIo).toHaveBeenCalled());
 
-    const lastCall = mockIo.mock.calls[mockIo.mock.calls.length - 1] as [string, { auth?: (cb: (data: { token: string }) => void) => void }];
     const cb = jest.fn();
-    mockFetchSocketAuthToken.mockResolvedValueOnce(null);
-    lastCall[1].auth!(cb);
+    getLastAuthCallback()(cb);
     await waitFor(() => expect(cb).toHaveBeenCalledWith({ token: '' }));
   });
 
   it('auth callback passes empty token when fetchSocketAuthToken rejects', async () => {
+    mockFetchSocketAuthToken.mockRejectedValueOnce(new Error('network error'));
+
     render(<BoardroomChat sessionId="session-auth-reject" />);
     await waitFor(() => expect(mockIo).toHaveBeenCalled());
 
-    const lastCall = mockIo.mock.calls[mockIo.mock.calls.length - 1] as [string, { auth?: (cb: (data: { token: string }) => void) => void }];
     const cb = jest.fn();
-    mockFetchSocketAuthToken.mockRejectedValueOnce(new Error('network error'));
-    lastCall[1].auth!(cb);
+    getLastAuthCallback()(cb);
     await waitFor(() => expect(cb).toHaveBeenCalledWith({ token: '' }));
   });
 });
