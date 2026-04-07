@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-03-29
+Last updated: 2026-04-06
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -29,6 +29,12 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 - Observability: stray **`console.error`** on learning, TOTP, and guardian UI paths replaced with **`logError`** (**MED-009**)
 
 ## Work log
+
+### 2026-04-06
+
+- **Launch smoke test runbook:** added **`docs/reports/LAUNCH_SMOKE_TEST_RUNBOOK.md`** (preview vs production, automated + manual billing/AI/briefcase checks, evidence table). Wired **`npm run smoke`** → **`scripts/smoke-auth.mjs`**; script now asserts **`/api/health`** and **`/api/health/deps`** JSON **`status: ok`**, trims trailing slash on **`SMOKE_BASE_URL`**, and supports **`SMOKE_SKIP_SIGNUP=1`** for production-style read-only automated checks.
+
+- **Launch operations docs:** added **`docs/deployment/INCIDENT_AND_ROLLBACK_RUNBOOK.md`** (severity, escalation template, Vercel promote-to-production rollback, Railway redeploy/JWT parity, Stripe webhooks, Neon notes) and **`docs/deployment/MONITORING_VERIFICATION.md`** (Vercel/Railway/Sentry/Stripe/Neon dry-run checklist + evidence table). Updated **`docs/reports/VISUAL_PUBLIC_LAUNCH_ROADMAP.md`** readiness snapshot (**87/100**), split launch gate into **repo-complete** vs **operator verification** (smoke + monitoring dry run still require running against live URLs).
 
 ### 2026-03-29 (continued)
 

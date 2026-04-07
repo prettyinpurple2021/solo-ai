@@ -25,6 +25,8 @@
 
 **Supplement (2026-04-05):** Railway Socket.IO **“Invalid token”** hardening: browser clients now obtain JWTs only via **`GET /api/ws-token`** (with **`credentials: 'include'`**) and connect to **`NEXT_PUBLIC_SOCKET_URL`** via shared **`src/lib/socket-client.ts`** (`HudCommandHeader`, **`realtimeService`**, **`websocket-notification-service`**, **`BoardroomChat`**). Express logs distinguish **expired** vs **invalid/malformed** token (no token value logged). **Operational:** Vercel and Railway must share the same **`JWT_SECRET`** (or **`AUTH_SECRET`**).
 
+**Supplement (2026-04-06):** Public-launch **operational runbooks** added: **`LAUNCH_SMOKE_TEST_RUNBOOK.md`** + **`npm run smoke`** (see **`scripts/smoke-auth.mjs`**), **`docs/deployment/INCIDENT_AND_ROLLBACK_RUNBOOK.md`**, **`docs/deployment/MONITORING_VERIFICATION.md`**. **`VISUAL_PUBLIC_LAUNCH_ROADMAP.md`** gate split into repo-complete items vs founder-run smoke and monitoring dry run on live preview/production.
+
 ---
 
 ## 🚨 CRITICAL COMPILATION ERRORS (44 Total) - **FIXED ✅**

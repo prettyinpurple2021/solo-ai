@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-const baseUrl = process.env.SMOKE_BASE_URL || 'http://localhost:3000';
+const baseUrl = (process.env.SMOKE_BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
+const skipSignup = process.env.SMOKE_SKIP_SIGNUP === '1' || process.env.SMOKE_SKIP_SIGNUP === 'true';
 
 function randomEmail() {
   const ts = Date.now();
@@ -26,16 +27,41 @@ async function jsonFetch(path, options = {}) {
 (async () => {
   let failures = 0;
 
-  const publicRoutes = ['/', '/api/health', '/api/health/deps'];
-  for (const path of publicRoutes) {
-    try {
-      const { res } = await jsonFetch(path);
-      console.log(`${path}: ${res.status}`);
-      if (res.status >= 500) failures++;
-    } catch (e) {
-      console.log(`${path}: ERROR ${e.message}`);
-      failures++;
-    }
+  console.log(`[smoke] baseUrl=${baseUrl} skipSignup=${skipSignup}`);
+
+  // Home: must respond without server error
+  try {
+    const { res } = await jsonFetch('/');
+    console.log(`GET /: ${res.status}`);
+    if (res.status >= 500) failures++;
+  } catch (e) {
+    console.log(`GET /: ERROR ${e.message}`);
+    failures++;
+  }
+
+  // Liveness: JSON status ok
+  try {
+    const { res, json } = await jsonFetch('/api/health');
+    console.log(`GET /api/health: ${res.status} body.status=${json?.status ?? 'n/a'}`);
+    if (res.status !== 200 || json?.status !== 'ok') failures++;
+  } catch (e) {
+    console.log(`GET /api/health: ERROR ${e.message}`);
+    failures++;
+  }
+
+  // Dependencies: JSON top-level status ok (HTTP may be 200 even when checks fail)
+  try {
+    const { res, json } = await jsonFetch('/api/health/deps');
+    console.log(`GET /api/health/deps: ${res.status} body.status=${json?.status ?? 'n/a'}`);
+    if (res.status !== 200 || json?.status !== 'ok') failures++;
+  } catch (e) {
+    console.log(`GET /api/health/deps: ERROR ${e.message}`);
+    failures++;
+  }
+
+  if (skipSignup) {
+    console.log('[smoke] SMOKE_SKIP_SIGNUP set — skipping signup and JWT API checks');
+    process.exit(failures ? 1 : 0);
   }
 
   // Create test user (signup) and obtain JWT

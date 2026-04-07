@@ -26,6 +26,7 @@
     "db:apply-api-baseline": "node scripts/apply-api-tables-baseline.mjs",
     "db:studio": "drizzle-kit studio --config=server/drizzle.config.ts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "smoke": "node scripts/smoke-auth.mjs",
     "verify:deployment-alignment": "node scripts/verify-local-vercel-railway-alignment.mjs"
   },
   "dependencies": {

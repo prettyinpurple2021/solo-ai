@@ -1,14 +1,17 @@
 # SoloSuccess AI - Visual Public Launch Roadmap
 
-Last updated: 2026-03-29  
-Primary source of truth: `docs/reports/PRODUCTION_REMEDIATION_TRACKER.md`
+Last updated: 2026-04-06  
+Primary source of truth: `docs/reports/PRODUCTION_REMEDIATION_TRACKER.md`  
+Launch smoke procedure: `docs/reports/LAUNCH_SMOKE_TEST_RUNBOOK.md`  
+Incident / rollback: `docs/deployment/INCIDENT_AND_ROLLBACK_RUNBOOK.md`  
+Monitoring dry run: `docs/deployment/MONITORING_VERIFICATION.md`
 
 ---
 
 ## 1) Current Progress Snapshot
 
 ### Overall status
-- **Readiness score:** **86/100**
+- **Readiness score:** **87/100** (aligned with `PRODUCTION_REMEDIATION_TRACKER.md` baseline)
 - **Runtime security:**  
   - Root app: **4 low** advisories (`@stackframe/stack` -> `elliptic`)  
   - `server/`: **0 vulnerabilities**  
@@ -20,8 +23,8 @@ Primary source of truth: `docs/reports/PRODUCTION_REMEDIATION_TRACKER.md`
 
 ```mermaid
 pie title Public Launch Readiness (Now)
-    "Completed Foundations" : 86
-    "Remaining Hardening" : 14
+    "Completed Foundations" : 87
+    "Remaining Hardening" : 13
 ```
 
 ---
@@ -162,19 +165,26 @@ flowchart TB
 | P0 | Resolve `@ducanh2912/next-pwa` dev advisory chain with smallest-safe approach | Reduces remaining high findings in full dev audit | Persistent security noise and upgrade uncertainty |
 | P0 | Keep production build in CI (PR + push) and monitor failures | Prevents shipping compile/build regressions | Broken deploy risk |
 | P0 | Run launch smoke-test on preview/prod | Proves real user-critical flows | Public launch incident risk |
-| P1 | Create incident runbook + escalation matrix | Faster recovery under pressure | Longer outages |
+| P1 | Incident runbook + escalation matrix — **done** (`docs/deployment/INCIDENT_AND_ROLLBACK_RUNBOOK.md`) | Faster recovery under pressure | Longer outages |
 | P1 | Add launch KPI dashboard | Faster decision-making during launch window | Blind spots |
 | P2 | Architecture boundary cleanup + ADRs | Better maintainability at scale | Slower feature delivery |
 
 ---
 
-## 6) Public Launch Readiness Gate (single checklist)
+## 6) Public Launch Readiness Gate
 
-- [ ] Runtime audit clean of high/critical advisories  
-- [ ] CI includes and passes production build on PR/push  
-- [ ] Critical flow smoke tests pass in preview/prod  
-- [ ] Monitoring and alerting verified with dry run  
-- [ ] Incident and rollback runbooks complete  
-- [ ] Tracker and launch docs synchronized and current
+### Repo and automation (no live URL required)
 
-When all six are checked, SoloSuccess AI is in **high-quality public-launch-ready state** with a clear path to maintainability and scale.
+- [x] **Runtime audit:** no **high/critical** in **`npm audit --omit=dev`** for the root app; residual **low** (`elliptic` / `@stackframe/stack`) tracked upstream — see tracker baseline  
+- [x] **CI production build:** `.github/workflows/ci.yml` runs **`next build --webpack`** on **PR + push** to **`main`** (plus schedule / manual)  
+- [x] **Incident + rollback runbook:** `docs/deployment/INCIDENT_AND_ROLLBACK_RUNBOOK.md`  
+- [x] **Monitoring dry-run procedure:** `docs/deployment/MONITORING_VERIFICATION.md`  
+- [x] **Smoke test procedure + script:** `docs/reports/LAUNCH_SMOKE_TEST_RUNBOOK.md` and **`npm run smoke`**  
+- [x] **Tracker and launch docs synchronized** for 2026-04-06 (this file + `PRODUCTION_REMEDIATION_TRACKER.md`)
+
+### Your verification (run once on real preview/production)
+
+- [ ] **Critical flow smoke tests** — follow `LAUNCH_SMOKE_TEST_RUNBOOK.md`, fill the evidence table, attach date/URL  
+- [ ] **Monitoring dry run** — follow `MONITORING_VERIFICATION.md`, fill the evidence table, then you can treat alerting as “verified”
+
+When both verification boxes are checked **and** the repo items above stay true, SoloSuccess AI is in **high-quality public-launch-ready state** for go-live.
