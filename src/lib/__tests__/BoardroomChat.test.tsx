@@ -1,13 +1,14 @@
 import React from 'react';
 import '@testing-library/jest-dom/jest-globals';
 import { jest, describe, it, expect, beforeAll } from '@jest/globals';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { AGENTS } from '@/constants';
 import { AgentId } from '@/types';
 
 let BoardroomChat: React.FC<{ sessionId: string }>;
 let mockIo: jest.Mock;
 let mockSocket: { on: jest.Mock; emit: jest.Mock; disconnect: jest.Mock };
+let mockFetchSocketAuthToken: jest.Mock<() => Promise<string | null>>;
 
 beforeAll(async () => {
   mockSocket = {
@@ -25,6 +26,9 @@ beforeAll(async () => {
   await jest.unstable_mockModule('socket.io-client', () => ({
     io: mockIo,
   }));
+
+  const socketClientMod = await import('@/lib/socket-client');
+  mockFetchSocketAuthToken = socketClientMod.fetchSocketAuthToken as jest.Mock<() => Promise<string | null>>;
 
   const mod = await import('@/components/boardroom/BoardroomChat');
   BoardroomChat = mod.BoardroomChat as React.FC<{ sessionId: string }>;
@@ -48,15 +52,59 @@ describe('BoardroomChat Component', () => {
   });
 
   it('triggers conclusion event', async () => {
-    render(<BoardroomChat sessionId="session-1" />);
-    await waitFor(() => {
-      expect(mockIo).toHaveBeenCalled();
-    });
-    const concludeBtn = screen.getByText(/Conclude/i);
-    fireEvent.click(concludeBtn);
+    mockSocket.on.mockClear();
+    mockSocket.emit.mockClear();
 
-    expect(mockSocket.emit).toHaveBeenCalledWith('test-trigger-stream', expect.objectContaining({
-      text: expect.stringContaining('adjourned')
-    }));
+    render(<BoardroomChat sessionId="session-conclude" />);
+    await waitFor(() => expect(mockIo).toHaveBeenCalled());
+
+    // Simulate Socket.IO 'connect' so the socket is available in component state
+    const connectHandler = (mockSocket.on.mock.calls as Array<[string, () => void]>)
+      .find(([evt]) => evt === 'connect')?.[1];
+    expect(connectHandler).toBeDefined();
+    await act(async () => connectHandler!());
+
+    fireEvent.click(screen.getByText(/Conclude/i));
+
+    await waitFor(() =>
+      expect(mockSocket.emit).toHaveBeenCalledWith(
+        'test-trigger-stream',
+        expect.objectContaining({ text: expect.stringContaining('adjourned') })
+      )
+    );
+  });
+
+  it('passes an auth callback to io() that provides the fetched token', async () => {
+    render(<BoardroomChat sessionId="session-auth" />);
+    await waitFor(() => expect(mockIo).toHaveBeenCalled());
+
+    const lastCall = mockIo.mock.calls[mockIo.mock.calls.length - 1] as [string, { auth?: (cb: (data: { token: string }) => void) => void }];
+    expect(typeof lastCall[1].auth).toBe('function');
+
+    const cb = jest.fn();
+    lastCall[1].auth!(cb);
+    await waitFor(() => expect(cb).toHaveBeenCalledWith({ token: 'mock-jwt' }));
+  });
+
+  it('auth callback passes empty token when fetchSocketAuthToken returns null', async () => {
+    render(<BoardroomChat sessionId="session-auth-null" />);
+    await waitFor(() => expect(mockIo).toHaveBeenCalled());
+
+    const lastCall = mockIo.mock.calls[mockIo.mock.calls.length - 1] as [string, { auth?: (cb: (data: { token: string }) => void) => void }];
+    const cb = jest.fn();
+    mockFetchSocketAuthToken.mockResolvedValueOnce(null);
+    lastCall[1].auth!(cb);
+    await waitFor(() => expect(cb).toHaveBeenCalledWith({ token: '' }));
+  });
+
+  it('auth callback passes empty token when fetchSocketAuthToken rejects', async () => {
+    render(<BoardroomChat sessionId="session-auth-reject" />);
+    await waitFor(() => expect(mockIo).toHaveBeenCalled());
+
+    const lastCall = mockIo.mock.calls[mockIo.mock.calls.length - 1] as [string, { auth?: (cb: (data: { token: string }) => void) => void }];
+    const cb = jest.fn();
+    mockFetchSocketAuthToken.mockRejectedValueOnce(new Error('network error'));
+    lastCall[1].auth!(cb);
+    await waitFor(() => expect(cb).toHaveBeenCalledWith({ token: '' }));
   });
 });

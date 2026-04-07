@@ -50,13 +50,18 @@ class RealtimeService {
             reconnection: true,
             reconnectionDelay: 1000,
             reconnectionAttempts: 5,
-            auth: (cb: (data: object) => void) => {
-                fetchSocketAuthToken().then((token) => {
-                    if (!token) {
-                        logError('Real-time: missing socket token (is /api/ws-token returning 401?)');
-                    }
-                    cb({ token: token ?? '' });
-                });
+            auth: (cb: (data: { token: string }) => void) => {
+                fetchSocketAuthToken()
+                    .then((token) => {
+                        if (!token) {
+                            logError('Real-time: missing socket token (is /api/ws-token returning 401?)');
+                        }
+                        cb({ token: token ?? '' });
+                    })
+                    .catch((err) => {
+                        logError('Real-time: failed to fetch socket token', err);
+                        cb({ token: '' });
+                    });
             },
         });
 

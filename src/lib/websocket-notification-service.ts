@@ -64,7 +64,7 @@ class WebSocketNotificationService {
       reconnection: true,
       reconnectionDelay: 1000,
       reconnectionAttempts: 5,
-      auth: (cb: (data: object) => void) => {
+      auth: (cb: (data: { token: string }) => void) => {
         fetchSocketAuthToken()
           .then((token) => {
             if (!token) {

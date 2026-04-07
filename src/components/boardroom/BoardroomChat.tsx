@@ -21,7 +21,7 @@ export const BoardroomChat: React.FC<{ sessionId: string }> = ({ sessionId }) =>
     const base = getSocketIoBaseUrl();
     const newSocket = io(`${base}/boardroom`, {
       transports: ['websocket', 'polling'],
-      auth: (cb: (data: object) => void) => {
+      auth: (cb: (data: { token: string }) => void) => {
         fetchSocketAuthToken()
           .then((token) => {
             if (!token) logWarn('Boardroom: no socket token; user may need to sign in');
@@ -31,9 +31,8 @@ export const BoardroomChat: React.FC<{ sessionId: string }> = ({ sessionId }) =>
       },
     });
 
-    setSocket(newSocket);
-
     newSocket.on('connect', () => {
+      setSocket(newSocket);
       newSocket.emit('join-session', sessionId);
     });
 

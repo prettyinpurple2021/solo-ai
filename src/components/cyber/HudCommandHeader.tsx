@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import { HudStatusRadar } from './HudStatusRadar'
 import { HudTicker } from './HudTicker'
@@ -20,6 +20,7 @@ export function HudCommandHeader({ userId, initialMrr = 0, initialGrowth = 0 }: 
   const [socketStatus, setSocketStatus] = useState<'connected' | 'reconnecting' | 'disconnected'>('disconnected')
   const [activeOps, setActiveOps] = useState(0)
   const [lastEvent, setLastEvent] = useState<string>("SYSTEM_IDLE")
+  const activityTimeouts = useRef<ReturnType<typeof setTimeout>[]>([])
 
   useEffect(() => {
     const base = getSocketIoBaseUrl()
@@ -53,11 +54,14 @@ export function HudCommandHeader({ userId, initialMrr = 0, initialGrowth = 0 }: 
     commandCenter.on('global-activity', (data: { agent: string; action: string }) => {
       setLastEvent(`${data.agent.toUpperCase()}_EXECUTING_OP`)
       setActiveOps((prev) => prev + 1)
-      setTimeout(() => setActiveOps((prev) => Math.max(0, prev - 1)), 5000)
+      const id = setTimeout(() => setActiveOps((prev) => Math.max(0, prev - 1)), 5000)
+      activityTimeouts.current.push(id)
     })
 
     return () => {
       commandCenter.disconnect()
+      activityTimeouts.current.forEach(clearTimeout)
+      activityTimeouts.current = []
     }
   }, [userId])
 
