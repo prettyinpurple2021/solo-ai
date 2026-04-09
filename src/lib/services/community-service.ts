@@ -39,9 +39,10 @@ export interface LeaderboardEntry {
 
 export class CommunityService {
   static async getPosts(userId?: string, topicId?: string | null): Promise<PostProps[]> {
+    const normalizedTopicId = topicId?.trim();
     const topicClause: SQL | undefined =
-      topicId && topicId.trim().length > 0
-        ? eq(communityPosts.topic_id, topicId)
+      normalizedTopicId && normalizedTopicId.length > 0
+        ? eq(communityPosts.topic_id, normalizedTopicId)
         : undefined;
 
     const base = db
