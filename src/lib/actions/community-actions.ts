@@ -181,9 +181,7 @@ export async function fetchComments(postId: string) {
 
 export async function getCommunityFeed(topicId?: string | null) {
     const { user } = await authenticateAction();
-    // In a real implementation, CommunityService.getPosts would handle filtering by topicId
-    // For now, we'll just return all posts as before, but with the correct signature.
-    return CommunityService.getPosts(user?.id);
+    return CommunityService.getPosts(user?.id, topicId ?? undefined);
 }
 
 export async function getTopics() {

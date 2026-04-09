@@ -174,22 +174,16 @@ mrr: 0 // TODO: Implement MRR tracking
 
 ### 7. WebSocket Notification Service Simulated
 
-**Status:** ✅ FIXED (Dec 2025)
-**Location:** `lib/websocket-notification-service.ts`
+**Status:** ✅ FIXED (Dec 2025) — verified in codebase (Apr 2026)
+**Location:** `src/lib/websocket-notification-service.ts`
 
-**Issue:** WebSocket connection is simulated with setTimeout, not actually connecting.
+**Issue (historical):** An older revision simulated the connection with `setTimeout` instead of opening a real socket.
 
-```typescript
-logInfo('WebSocket connected (simulated)');
+**Resolution (current implementation):** The client uses **Socket.IO** (`socket.io-client`): it connects with `io(baseUrl, { transports: ['websocket'], auth: … })`, obtains a token via `fetchSocketAuthToken()`, emits `join`, and listens for `notification:new`, `notification:updated`, and `notification:deleted`. Connection lifecycle and errors are logged; there is no simulated “connected” stub in the current file.
 
-// In a real implementation:
-// this.ws = new WebSocket(wsUrl);
-// this.setupEventListeners();
-```
+**Impact (if unfixed):** Real-time notifications would not work.
 
-**Impact:** Real-time notifications don't work. Users won't receive live updates.
-
-**Recommendation:** Implement actual WebSocket connection using Socket.io or native WebSocket API.
+**Recommendation:** Keep the notification server and `NEXT_PUBLIC_*` / socket URL env vars aligned with deployment; monitor `connect_error` logs in production.
 
 ---
 

@@ -113,7 +113,7 @@ export function PathViewer({ path,}: PathViewerProps) {
           <ModulePlayer 
             module={{
               ...activeModule,
-              content: activeModule.content || "Content coming soon..." // Fallback if content missing
+              content: activeModule.content ?? "",
             }}
             onComplete={handleComplete}
             isCompleted={activeModule.status === "completed"}

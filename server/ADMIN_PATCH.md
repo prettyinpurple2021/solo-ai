@@ -96,75 +96,55 @@ router.post('/verify-pin', verifyPinRateLimiter, authMiddleware, async (req: Req
 3. Generate JWT token with admin session
 4. Return `adminToken` in response
 
+
+**Canonical implementation:** `server/routes/admin.ts` — `POST /users/:userId/suspend` updates `users.suspended`, `users.suspended_at`, and `users.suspended_reason`, then inserts an `adminActions` audit row. User IDs are string UUIDs (`req.params.userId`), matching the shared Drizzle schema.
+
+**Reference (matches production; column names are snake_case in DB):**
 ---
 
 ## Change 3: Update /users/:userId/suspend Endpoint
 
-**Location:** Lines 132-149
-
-**Find:**
+**Status (Apr 2026):** This endpoint is **already implemented** in the repository. The “Find” snippet below describes the **pre-patch** behavior only (for older forks or audits). Do not treat those comments as current code.
 ```typescript
-router.post('/users/:userId/suspend', async (req: Request, res: Response) => {
+router.post('/users/:userId/suspend', async (req: express.Request, res: express.Response) => {
     try {
-        const userId = Number(req.params.userId);
-        // In a real app, we'd have a suspended flag or status
-        // For now, we'll just log the action
+        const userId = req.params.userId as string;
+        const { reason } = req.body;
+        const adminUserId = req.userId!;
 
-        await db.insert(adminActions).values({
-            adminUserId: Number(((req as unknown) as AuthRequest).userId!),
-            action: 'suspend_user',
-            targetUserId: userId,
-            details: { reason: req.body.reason }
-        });
-
-        res.json({ success: true, message: 'User suspended (logged)' });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to suspend user' });
-    }
-});
-```
-
-**Replace with:**
-```typescript
-router.post('/users/:userId/suspend', async (req: Request, res: Response) => {
-    try {
-        const userId = Number(req.params.userId);
-        const { reason } = req.body;  // ← ADD THIS LINE
-        const adminUserId = Number(((req as unknown) as AuthRequest).userId!);  // ← ADD THIS LINE
-
-        // ← ADD THESE LINES START
-        // Update user suspended status in database
         await db.update(users)
             .set({
                 suspended: true,
-                suspendedAt: new Date(),
-                suspendedReason: reason || 'Account suspended by administrator'
+                suspended_at: new Date(),
+                suspended_reason: reason || 'Account suspended by administrator'
             })
             .where(eq(users.id, userId));
-        // ← ADD THESE LINES END
 
-        // Log the admin action
         await db.insert(adminActions).values({
-            adminUserId,  // ← MODIFY THIS LINE
+            adminId: adminUserId,
             action: 'suspend_user',
             targetUserId: userId,
-            details: { reason }  // ← MODIFY THIS LINE
+            metadata: { reason }
         });
 
-        res.json({ success: true, message: 'User suspended successfully' });  // ← MODIFY THIS LINE
+        return res.json({ success: true, message: 'User suspended successfully' });
     } catch (error) {
-        console.error('Error suspending user:', error);  // ← ADD THIS LINE
-        res.status(500).json({ error: 'Failed to suspend user' });
+        logError('Error suspending user', error);
+        return res.status(500).json({ error: 'Failed to suspend user' });
     }
 });
 ```
 
-**Summary of changes:**
-1. Extract `reason` and `adminUserId` variables
-2. Add database update to set `suspended`, `suspendedAt`, `suspendedReason`
-3. Use extracted variables in adminActions insert
-4. Update success message
-5. Add error logging
+**Historical “Find” (before patch — do not copy into production):**
+```typescript
+// In a real app, we'd have a suspended flag or status
+// For now, we'll just log the action
+```
+
+**Summary of what was fixed:**
+1. Persist suspension on the user row (`suspended`, timestamps, reason).
+2. Record the action in `admin_actions` for audit.
+3. Return a clear success response; log and 500 on failure.
 
 ---
 
@@ -192,7 +172,7 @@ npm run dev
 ## What These Changes Do
 
 1. **JWT Import**: Enables JWT token generation for admin sessions
-2. **verify-pin**: Returns a2-hour session token that frontend stores
-3. **suspend**: Actually suspends users in database instead of just logging
+2. **verify-pin**: Returns a 2-hour session token that frontend stores
+3. **suspend**: Persists suspension on the user row and writes an audit record (see Change 3 reference above)
 
-All "for now" comments are now removed with production implementations!
+The live `server/routes/admin.ts` file is the source of truth; pre-patch snippets in this guide are archival only.

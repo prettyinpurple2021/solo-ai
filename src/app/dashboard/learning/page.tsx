@@ -110,7 +110,7 @@ export default function LearningDashboard() {
              </CardHeader>
              <CardContent>
                 <div className="w-full flex justify-center py-4">
-                  <SkillsRadar />
+                  <SkillsRadar skillProfile={data.skillProfile} />
                 </div>
              </CardContent>
            </Card>

@@ -8,7 +8,7 @@ import {
   challengeParticipants,
   communityTopics
 } from '@/shared/db/schema';
-import { eq, and, desc, sql, count } from 'drizzle-orm';
+import { eq, desc, sql, SQL } from 'drizzle-orm';
 import { PostProps, CommentProps, Author, Topic } from '@/types/community';
 
 export interface CommunityChallenge {
@@ -38,34 +38,42 @@ export interface LeaderboardEntry {
 }
 
 export class CommunityService {
-  static async getPosts(userId?: string): Promise<PostProps[]> {
-    const posts = await db.select({
-      id: communityPosts.id,
-      title: communityPosts.title,
-      content: communityPosts.content,
-      image: communityPosts.image,
-      created_at: communityPosts.created_at,
-      like_count: communityPosts.like_count,
-      comment_count: communityPosts.comment_count,
-      tags: communityPosts.tags,
-      author: {
-        id: users.id,
-        name: users.full_name,
-        image: users.image,
-        level: users.level,
-      },
-      topic: {
-        id: communityTopics.id,
-        name: communityTopics.name,
-        slug: communityTopics.slug,
-        icon: communityTopics.icon
-      }
-    })
-    .from(communityPosts)
-    .innerJoin(users, eq(communityPosts.user_id, users.id))
-    .innerJoin(communityTopics, eq(communityPosts.topic_id, communityTopics.id))
-    .orderBy(desc(communityPosts.created_at))
-    .limit(50);
+  static async getPosts(userId?: string, topicId?: string | null): Promise<PostProps[]> {
+    const topicClause: SQL | undefined =
+      topicId && topicId.trim().length > 0
+        ? eq(communityPosts.topic_id, topicId)
+        : undefined;
+
+    const base = db
+      .select({
+        id: communityPosts.id,
+        title: communityPosts.title,
+        content: communityPosts.content,
+        image: communityPosts.image,
+        created_at: communityPosts.created_at,
+        like_count: communityPosts.like_count,
+        comment_count: communityPosts.comment_count,
+        tags: communityPosts.tags,
+        author: {
+          id: users.id,
+          name: users.full_name,
+          image: users.image,
+          level: users.level,
+        },
+        topic: {
+          id: communityTopics.id,
+          name: communityTopics.name,
+          slug: communityTopics.slug,
+          icon: communityTopics.icon,
+        },
+      })
+      .from(communityPosts)
+      .innerJoin(users, eq(communityPosts.user_id, users.id))
+      .innerJoin(communityTopics, eq(communityPosts.topic_id, communityTopics.id));
+
+    const posts = await (topicClause ? base.where(topicClause) : base)
+      .orderBy(desc(communityPosts.created_at))
+      .limit(50);
 
     // If userId provided, check if liked
     let userLikes: Set<string> = new Set();

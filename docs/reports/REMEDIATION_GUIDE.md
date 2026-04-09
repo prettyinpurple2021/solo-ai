@@ -684,30 +684,17 @@ const loadCalendarEvents = async () => {
 
 1. **Remove Mock Data Fallback:**
 
-Replace lines 420-430 in `lib/social-media-monitor.ts`:
+**Current code (Apr 2026):** LinkedIn data is fetched via **authorized APIs** using stored access tokens (see `fetchLinkedInCompanyPosts`, `transformLinkedInPosts`, and related methods in `src/lib/social-media-monitor.ts`). Legacy `scrapeLinkedInPosts(handle)` is a **stub that throws** (`Direct scraping not supported. Use monitorLinkedInActivity with userId.`) so callers cannot fall back to fake or scraped data.
+
+If you are maintaining an older branch, replace any mock fallback with:
 
 ```typescript
 private async scrapeLinkedInPosts(handle: string): Promise<SocialMediaPost[]> {
-  try {
-    // In a real implementation, you would use:
-    // - LinkedIn Marketing API
-    // - Ethical web scraping with proper rate limiting
-    
-    const posts = await this.fetchLinkedInCompanyPosts(handle);
-    
-    if (!posts || posts.length === 0) {
-      logWarn(`No LinkedIn posts found for ${handle}`);
-      return [];
-    }
-    
-    return posts;
-  } catch (error) {
-    logError(`Error scraping LinkedIn posts for ${handle}:`, error);
-    // Return empty array instead of mock data
-    return [];
-  }
+  throw new Error('Direct scraping not supported. Use monitorLinkedInActivity with userId.');
 }
 ```
+
+…and route LinkedIn monitoring through the token-based `fetchLinkedInCompanyPosts` / UGC and organization endpoints already implemented in the same file.
 
 1. **Implement Real LinkedIn API Integration:**
 

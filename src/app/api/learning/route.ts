@@ -4,6 +4,7 @@ import { db } from '@/db'
 import { learningPaths, userLearningProgress } from '@/shared/db/schema/content'
 import { eq } from 'drizzle-orm'
 import { logError } from '@/lib/logger'
+import { LearningEngineService } from '@/lib/services/learning-engine-service'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,7 +32,9 @@ export async function GET(request: NextRequest) {
       where: eq(userLearningProgress.user_id, userId)
     })
 
-    return NextResponse.json({ paths, progress })
+    const skillProfile = await LearningEngineService.getUserSkillProfile(userId)
+
+    return NextResponse.json({ paths, progress, skillProfile })
   } catch (error) {
     logError(
       'Error in GET /api/learning',
