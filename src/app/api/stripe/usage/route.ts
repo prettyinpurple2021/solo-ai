@@ -1,17 +1,19 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 import { db } from "@/server/db"; // Use centralized DB client
 import { usageTracking } from "@/server/db/schema";
 import { eq } from "@/server/db";
 import { logError } from '@/lib/logger';
 
-export async function GET(req: NextRequest) {
+export const dynamic = 'force-dynamic'
+
+export async function GET() {
   try {
-    const userIdSearch = req.nextUrl.searchParams.get("userId");
-    const headerUserId = req.headers.get("x-user-id");
-    const userId = userIdSearch || headerUserId;
+    const session = await auth();
+    const userId = session?.user?.id;
 
     if (!userId) {
-      return NextResponse.json({ error: "Unauthorized: Missing User ID" }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const usage = await db.select().from(usageTracking)

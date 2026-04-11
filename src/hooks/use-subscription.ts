@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react"
 import { useUser } from "@/lib/auth-client"
-import { apiClient, endpoints } from "@/lib/api-client"
+import { sameOriginApiClient, endpoints } from "@/lib/api-client"
 import { logError } from "@/lib/logger"
 
 // Public Plans Configuration
@@ -72,27 +72,37 @@ export function useSubscription() {
       setIsLoading(true)
       
       // 1. Fetch Subscription Status
-      const subRes = await apiClient.get(endpoints.stripe.subscription)
-      
+      const subRes = await sameOriginApiClient.get(endpoints.stripe.subscription)
+
       if (subRes.data) {
-        const subData = subRes.data
+        const subData = subRes.data as Record<string, unknown> & {
+          subscription?: { cancel_at_period_end?: boolean }
+        }
+        const periodEnd =
+          (typeof subData.current_period_end === 'string' && subData.current_period_end) ||
+          (typeof subData.currentPeriodEnd === 'string' && subData.currentPeriodEnd) ||
+          null
+        const cancelAtPeriodEnd =
+          !!subData.subscription?.cancel_at_period_end ||
+          !!subData.cancelAtPeriodEnd
         setSubscription({
-          plan: subData.tier || 'free',
-          status: subData.status || 'free',
-          billingCycle: subData.interval || 'monthly',
-          nextBilling: subData.currentPeriodEnd ? new Date(subData.currentPeriodEnd).toISOString() : null,
-          cancelAtPeriodEnd: !!subData.cancelAtPeriodEnd
+          plan: (subData.tier as Subscription['plan']) || 'free',
+          status: (subData.status as Subscription['status']) || 'free',
+          billingCycle: (subData.interval as Subscription['billingCycle']) || 'monthly',
+          nextBilling: periodEnd ? new Date(periodEnd).toISOString() : null,
+          cancelAtPeriodEnd,
         })
       }
 
       // 2. Fetch Usage Statistics
-      const usageRes = await apiClient.get(endpoints.stripe.usage)
+      const usageRes = await sameOriginApiClient.get(endpoints.stripe.usage)
 
       if (usageRes.data) {
         const usageData = usageRes.data
         // Map backend usage to frontend state
         // Note: The backend returns a simpler object, so we merge it with TIER_LIMITS
-        const currentTier = (subRes.data ? subRes.data.tier : 'free') as keyof typeof TIER_LIMITS
+        const subPayload = subRes.data as { tier?: string } | undefined
+        const currentTier = (subPayload?.tier ?? 'free') as keyof typeof TIER_LIMITS
         const limits = TIER_LIMITS[currentTier] || TIER_LIMITS.free
 
         setUsage({
@@ -119,14 +129,17 @@ export function useSubscription() {
   const upgradePlan = async (planKey: 'launchpad' | 'accelerator' | 'dominator') => {
     if (!user?.id) return
 
+    if (planKey === 'launchpad') {
+      alert('Launchpad is the free tier. Choose Accelerator or Dominator to subscribe.')
+      return
+    }
+
     try {
       setIsLoading(true)
-      const res = await apiClient.post(endpoints.stripe.createCheckoutSession, 
-        {
-          tier: planKey === 'launchpad' ? 'launch' : planKey,
-          billing: 'monthly' // Defaulting to monthly for this hook unless extended
-        }
-      )
+      const res = await sameOriginApiClient.post(endpoints.stripe.createCheckoutSession, {
+        tier: planKey,
+        billing: 'monthly',
+      })
 
       if (res.data.url) {
         window.location.href = res.data.url
@@ -145,7 +158,7 @@ export function useSubscription() {
 
     try {
       setIsLoading(true)
-      const res = await apiClient.post(endpoints.stripe.customerPortal)
+      const res = await sameOriginApiClient.post(endpoints.stripe.customerPortal)
 
       if (res.data.url) {
         window.location.href = res.data.url

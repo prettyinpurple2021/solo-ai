@@ -10,6 +10,18 @@ export const apiClient = axios.create({
   withCredentials: true, // Important for cookies/sessions if used
 });
 
+/**
+ * Next.js App Router API routes (`/api/billing/*`, `/api/stripe/*` on the frontend host).
+ * Use this instead of `apiClient` when the handler lives on Vercel, not on Railway (`NEXT_PUBLIC_API_URL`).
+ */
+export const sameOriginApiClient = axios.create({
+  baseURL: '',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  withCredentials: true,
+});
+
 // Add interceptor to include auth token if available (e.g. from NextAuth session or localStorage)
 apiClient.interceptors.request.use((config) => {
     // If we have a way to get the token synchronously, add it here.

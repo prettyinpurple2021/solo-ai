@@ -53,7 +53,14 @@ async function jsonFetch(path, options = {}) {
   try {
     const { res, json } = await jsonFetch('/api/health/deps');
     console.log(`GET /api/health/deps: ${res.status} body.status=${json?.status ?? 'n/a'}`);
-    if (res.status !== 200 || json?.status !== 'ok') failures++;
+    if (res.status !== 200 || json?.status !== 'ok') {
+      if (json?.checks) {
+        console.log('[smoke] /api/health/deps checks:', JSON.stringify(json.checks, null, 2));
+      } else if (json?.message) {
+        console.log('[smoke] /api/health/deps message:', json.message);
+      }
+      failures++;
+    }
   } catch (e) {
     console.log(`GET /api/health/deps: ERROR ${e.message}`);
     failures++;
@@ -68,12 +75,16 @@ async function jsonFetch(path, options = {}) {
   const email = randomEmail();
   const password = 'Test1234!';
   try {
-    const { res, json } = await jsonFetch('/api/auth/signup', {
+    const { res, json, bodyText } = await jsonFetch('/api/auth/signup', {
       method: 'POST',
       body: JSON.stringify({ email, password, metadata: { full_name: 'Smoke Test' } }),
     });
     if (res.status !== 200 || !json?.token) {
-      console.log(`/api/auth/signup: ${res.status} token missing`);
+      const detail =
+        json?.message || json?.error || (bodyText && bodyText.length < 500 ? bodyText : '');
+      console.log(
+        `/api/auth/signup: ${res.status} token missing${detail ? ` — ${detail}` : ''}`
+      );
       failures++;
       process.exit(failures ? 1 : 0);
     }

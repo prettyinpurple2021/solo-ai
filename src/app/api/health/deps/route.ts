@@ -3,8 +3,10 @@ import { NextResponse} from 'next/server';
 import { neon } from '@neondatabase/serverless'
 export const runtime = 'edge';
 
+type DepCheck = { status: string; missing?: string[] }
+
 export async function GET() {
-  const checks = {
+  const checks: Record<'database' | 'auth' | 'env', DepCheck> = {
     database: { status: 'pending' },
     auth: { status: 'pending' },
     env: { status: 'pending' },
@@ -25,19 +27,21 @@ export async function GET() {
       };
     }
     
-    // Check auth environment variables
-    const authEnvVars = ['JWT_SECRET', 'ENCRYPTION_KEY'];
-    const missingAuthVars = authEnvVars.filter(varName => !process.env[varName]);
-    checks.auth = missingAuthVars.length === 0
-      ? { status: 'ok' }
-      : { status: 'error' };
-    
+    // Check auth environment variables (names only in response — never values)
+    const authEnvVars = ['JWT_SECRET', 'ENCRYPTION_KEY'] as const;
+    const missingAuthVars = authEnvVars.filter((varName) => !process.env[varName]);
+    checks.auth =
+      missingAuthVars.length === 0
+        ? { status: 'ok' }
+        : { status: 'error', missing: [...missingAuthVars] };
+
     // Check other critical environment variables
-    const criticalEnvVars = ['DATABASE_URL', 'OPENAI_API_KEY'];
-    const missingEnvVars = criticalEnvVars.filter(varName => !process.env[varName]);
-    checks.env = missingEnvVars.length === 0
-      ? { status: 'ok' }
-      : { status: 'error' };
+    const criticalEnvVars = ['DATABASE_URL', 'OPENAI_API_KEY'] as const;
+    const missingEnvVars = criticalEnvVars.filter((varName) => !process.env[varName]);
+    checks.env =
+      missingEnvVars.length === 0
+        ? { status: 'ok' }
+        : { status: 'error', missing: [...missingEnvVars] };
     
     // Overall status
     const overallStatus = Object.values(checks).some(check => check.status === 'error')
