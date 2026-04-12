@@ -38,6 +38,40 @@
     /* Used by scrollbar + .gradient-* utilities (was undefined → invisible thumb) */
     --gradient-primary: linear-gradient(135deg, #22d3ee 0%, #a855f7 50%, #ec4899 100%);
     --gradient-secondary: linear-gradient(135deg, #06b6d4 0%, #9333ea 100%);
+    /* Accent / founder-tier gradients (.gradient-accent, .text-gradient, .card-founder, etc.) */
+    --gradient-accent: linear-gradient(135deg, #b300ff 0%, #ec4899 50%, #22d3ee 100%);
+    --gradient-empowerment: linear-gradient(
+      135deg,
+      #6366f1 0%,
+      #a855f7 22%,
+      #ec4899 45%,
+      #06b6d4 70%,
+      #10b981 100%
+    );
+    --gradient-founder: linear-gradient(
+      135deg,
+      #8b5cf6 0%,
+      #ec4899 25%,
+      #06b6d4 50%,
+      #f59e0b 75%,
+      #10b981 100%
+    );
+    --gradient-skull: linear-gradient(145deg, #0f0518 0%, #4c1d6e 45%, #ff006e 100%);
+    /* Crown badge: warm metallic; pairs with .crown-badge dark text */
+    --gradient-crown: linear-gradient(135deg, #fde68a 0%, #f59e0b 40%, #b45309 100%);
+    /* Shimmer overlays (.shimmer, .btn-founder::before) */
+    --shimmer-light: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.5),
+      transparent
+    );
+    --shimmer-dark: linear-gradient(
+      90deg,
+      transparent,
+      rgba(11, 228, 236, 0.2),
+      transparent
+    );
   }
 
   .dark {
