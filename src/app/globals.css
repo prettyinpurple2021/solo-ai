@@ -74,12 +74,25 @@
     );
   }
 
+  /* Explicit tokens when `class="dark"` is present (Tailwind darkMode + shadcn). */
   .dark {
     --background: 240 50% 1%; /* even deeper void */
     --foreground: 210 20% 98%;
+    --muted: 240 11% 18%;
     --muted-foreground: 215 18% 74%;
     --border: 240 10% 22%;
     --input: 240 10% 22%;
+    --primary-foreground: 0 0% 100%;
+    --secondary-foreground: 195 55% 6%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 68% 58%;
+    --destructive-foreground: 0 0% 98%;
+    --ring: 183 100% 52%;
+    --chart-1: 312 100% 58%;
+    --chart-2: 183 100% 55%;
+    --chart-3: 280 100% 62%;
+    --chart-4: 84 100% 52%;
+    --chart-5: 32 100% 55%;
   }
 }
 
