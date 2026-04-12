@@ -55,6 +55,12 @@ const nextConfig = {
       "@": path.resolve(__dirname, 'src'),
     };
 
+    // Avoid eval()-based source maps in the browser bundle so a strict CSP
+    // (no 'unsafe-eval') does not conflict with Next dev / HMR.
+    if (dev && !isServer) {
+      config.devtool = "cheap-module-source-map";
+    }
+
     if (isServer) {
       config.optimization = {
         ...config.optimization,

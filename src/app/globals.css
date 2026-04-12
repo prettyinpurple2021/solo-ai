@@ -11,8 +11,24 @@
     --popover: 240 33% 2%;
     --popover-foreground: 210 15% 92%;
     --primary: 312 100% 55%; /* hyper magenta */
+    --primary-foreground: 0 0% 100%;
     --secondary: 183 100% 50%; /* neon cyan */
+    --secondary-foreground: 200 50% 8%;
     --accent: 280 100% 60%; /* psychic purple */
+    --accent-foreground: 0 0% 100%;
+    --muted: 240 12% 14%;
+    /* ≥4.5:1 vs void-black for secondary copy (WCAG AA normal text) */
+    --muted-foreground: 215 18% 72%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 10% 20%;
+    --input: 240 10% 20%;
+    --ring: 312 100% 55%;
+    --chart-1: 312 100% 55%;
+    --chart-2: 183 100% 50%;
+    --chart-3: 280 100% 60%;
+    --chart-4: 84 100% 45%;
+    --chart-5: 32 100% 50%;
     --neon-cyan: 183 100% 50%;
     --neon-magenta: 312 100% 55%;
     --neon-purple: 280 100% 60%;
@@ -27,7 +43,22 @@
   .dark {
     --background: 240 50% 1%; /* even deeper void */
     --foreground: 210 20% 98%;
-    /* ... rest of dark mode vars ... */
+    --muted-foreground: 215 18% 74%;
+    --border: 240 10% 22%;
+    --input: 240 10% 22%;
+  }
+}
+
+/* next-themes uses balanced / aggressive on <html>; lift Tailwind grays for AA on void UI */
+@layer utilities {
+  html.balanced :where(.text-gray-500),
+  html.aggressive :where(.text-gray-500) {
+    color: rgb(163 174 190);
+  }
+
+  html.balanced :where(.text-gray-400),
+  html.aggressive :where(.text-gray-400) {
+    color: rgb(186 198 212);
   }
 }
 
