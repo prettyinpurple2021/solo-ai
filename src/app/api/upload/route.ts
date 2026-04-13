@@ -91,10 +91,10 @@ export async function POST(request: NextRequest) {
       url: `data:${file.type};base64,${base64Data}`,
       message: 'File uploaded successfully' 
     }, { status: 201 })
-  } catch (error) {
-    logError('Error uploading file:', error)
+  } catch (error: any) {
+    logError('Error uploading file:', { error: error?.message || error })
     return NextResponse.json(
-      { error: 'Failed to upload file' },
+      { success: false, error: error?.message ? `Failed to upload file: ${error.message}` : 'Failed to upload file' },
       { status: 500 }
     )
   }
@@ -116,10 +116,10 @@ export async function GET(_request: NextRequest) {
     `
 
     return NextResponse.json({ files })
-  } catch (error) {
-    logError('Error fetching files:', error)
+  } catch (error: any) {
+    logError('Error fetching files:', { error: error?.message || error })
     return NextResponse.json(
-      { error: 'Failed to fetch files' },
+      { success: false, error: error?.message ? `Failed to fetch files: ${error.message}` : 'Failed to fetch files' },
       { status: 500 }
     )
   }

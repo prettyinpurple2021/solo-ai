@@ -27,6 +27,14 @@ export interface Subscription {
   cancelAtPeriodEnd: boolean
 }
 
+export interface SubscriptionData {
+  tier?: string
+  status?: string
+  interval?: string
+  current_period_end?: string
+  cancel_at_period_end?: boolean
+}
+
 export interface Usage {
   conversations: { used: number; limit: number }
   agents: { used: number; limit: number }
@@ -75,13 +83,7 @@ export function useSubscription() {
       const subRes = await sameOriginApiClient.get(endpoints.stripe.subscription)
 
       if (subRes.data) {
-        const subData = subRes.data as {
-          tier?: string
-          status?: string
-          interval?: string
-          current_period_end?: string
-          cancel_at_period_end?: boolean
-        }
+        const subData = subRes.data as SubscriptionData
         const periodEnd = subData.current_period_end || null
         const cancelAtPeriodEnd = !!subData.cancel_at_period_end
 
@@ -101,7 +103,7 @@ export function useSubscription() {
         const usageData = usageRes.data
         // Map backend usage to frontend state
         // Note: The backend returns a simpler object, so we merge it with TIER_LIMITS
-        const subPayload = subRes.data as { tier?: string } | undefined
+        const subPayload = subRes.data as SubscriptionData | undefined
         const currentTier = (subPayload?.tier ?? 'free') as keyof typeof TIER_LIMITS
         const limits = TIER_LIMITS[currentTier] || TIER_LIMITS.free
 

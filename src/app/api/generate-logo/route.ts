@@ -33,11 +33,11 @@ export async function POST(request: NextRequest) {
   try {
     const ip = request.headers.get('x-forwarded-for') || 'unknown'
     const { allowed } = rateLimitByIp('brand:generate-logo', ip, 30_000, 20)
-    if (!allowed) return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    if (!allowed) return NextResponse.json({ success: false, data: null, error: 'Too many requests' }, { status: 429 })
     const { user, error } = await authenticateRequest()
     
     if (error || !user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ success: false, data: null, error: 'Unauthorized' }, { status: 401 })
     }
 
     const BodySchema = z.object({
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     })
     const parsed = BodySchema.safeParse(await request.json())
     if (!parsed.success) {
-      return NextResponse.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
+      return NextResponse.json({ success: false, data: null, error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 })
     }
     const { brandName, style } = parsed.data
 
@@ -73,24 +73,26 @@ export async function POST(request: NextRequest) {
 
         if (workerResponse.ok) {
           const result = await workerResponse.json()
-          return NextResponse.json(result, { status: 200 })
+          return NextResponse.json({ success: true, data: result }, { status: 200 })
         } else {
           const errorText = await workerResponse.text()
           logError('OpenAI Worker logo generation failed:', errorText)
-          return NextResponse.json({ error: 'OpenAI Worker logo generation failed', details: errorText }, { status: 500 })
+          return NextResponse.json({ success: false, data: null, error: 'OpenAI Worker logo generation failed', details: errorText }, { status: 500 })
         }
       } catch (aiError) {
-        logError('OpenAI Worker communication failed:', aiError as any)
-        return NextResponse.json({ error: 'OpenAI Worker communication failed' }, { status: 500 })
+        const errorMessage = aiError instanceof Error ? aiError.message : String(aiError)
+        logError('OpenAI Worker communication failed:', errorMessage)
+        return NextResponse.json({ success: false, data: null, error: 'OpenAI Worker communication failed', details: errorMessage }, { status: 500 })
       }
     } else {
       logError('OPENAI_WORKER is not configured')
-      return NextResponse.json({ error: 'AI service configuration is missing' }, { status: 500 })
+      return NextResponse.json({ success: false, data: null, error: 'AI service configuration is missing' }, { status: 500 })
     }
   } catch (error) {
-    logError('Error generating logos:', error as any)
+    const errorMessage = error instanceof Error ? error.message : String(error)
+    logError('Error generating logos:', errorMessage)
     return NextResponse.json(
-      { error: 'Failed to generate logos' },
+      { success: false, data: null, error: 'Failed to generate logos', details: errorMessage },
       { status: 500 }
     )
   }

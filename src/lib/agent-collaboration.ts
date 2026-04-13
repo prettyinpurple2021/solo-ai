@@ -1,4 +1,4 @@
-import { generateText, generateObject } from "ai"
+import { generateText, generateObject, LanguageModel } from "ai"
 import { z } from "zod"
 import { getTeamMemberConfig } from "./ai-config"
 
@@ -154,8 +154,8 @@ Provide your analysis and recommendations for this phase of the project.
 `
 
     const { text } = await generateText({
-      // Cast to any to support both LanguageModelV1 and V2 at runtime
-      model: agentConfig.model as any,
+      // Cast to LanguageModel to support dynamic models
+      model: agentConfig.model as LanguageModel,
       prompt: collaborationPrompt,
       temperature: 0.7,
       // maxTokens: 800,
@@ -221,7 +221,7 @@ Keep it concise but comprehensive.
 `
 
     const { object } = await generateObject({
-      model: fromConfig.model as any,
+      model: fromConfig.model as LanguageModel,
       system: "You are generating a handoff configuration between two AI agents.",
       prompt: handoffPrompt,
       temperature: 0.6,
@@ -262,7 +262,7 @@ Available agents: roxy, blaze, echo, lumi, vex, lexi, nova, glitch
 
     try {
       const { object } = await generateObject({
-        model: getTeamMemberConfig("lexi").model as any,
+        model: getTeamMemberConfig("lexi").model as LanguageModel,
         system: "Analyze if multi-agent collaboration is recommended for the request.",
         prompt: analysisPrompt,
         temperature: 0.3,
@@ -276,7 +276,7 @@ Available agents: roxy, blaze, echo, lumi, vex, lexi, nova, glitch
 
       return {
         recommended: object.recommended,
-        workflow: object.workflow as keyof typeof collaborationWorkflows | undefined,
+        workflow: object.workflow === null ? undefined : (object.workflow as keyof typeof collaborationWorkflows),
         agents: object.agents,
         reasoning: object.reasoning,
       }
