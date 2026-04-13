@@ -1,2 +1,0 @@
-# solosuccess documents
-

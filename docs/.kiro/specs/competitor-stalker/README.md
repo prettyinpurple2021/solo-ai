@@ -1,2 +1,0 @@
-# competitor-stalker
-
