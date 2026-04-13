@@ -75,16 +75,16 @@ export function useSubscription() {
       const subRes = await sameOriginApiClient.get(endpoints.stripe.subscription)
 
       if (subRes.data) {
-        const subData = subRes.data as Record<string, unknown> & {
-          subscription?: { cancel_at_period_end?: boolean }
+        const subData = subRes.data as {
+          tier?: string
+          status?: string
+          interval?: string
+          current_period_end?: string
+          cancel_at_period_end?: boolean
         }
-        const periodEnd =
-          (typeof subData.current_period_end === 'string' && subData.current_period_end) ||
-          (typeof subData.currentPeriodEnd === 'string' && subData.currentPeriodEnd) ||
-          null
-        const cancelAtPeriodEnd =
-          !!subData.subscription?.cancel_at_period_end ||
-          !!subData.cancelAtPeriodEnd
+        const periodEnd = subData.current_period_end || null
+        const cancelAtPeriodEnd = !!subData.cancel_at_period_end
+
         setSubscription({
           plan: (subData.tier as Subscription['plan']) || 'free',
           status: (subData.status as Subscription['status']) || 'free',

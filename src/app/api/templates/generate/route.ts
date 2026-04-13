@@ -123,9 +123,7 @@ async function generateAITemplate(request: any, userId: string) {
     }
   } catch (error) {
     logError('Error in AI template generation:', error)
-
-    // Fallback to structured mock data if AI fails
-    return generateFallbackTemplate(request, userId)
+    throw error
   }
 }
 
@@ -304,52 +302,5 @@ function parseGenericContent(content: string): any {
     content: content,
     type: 'ai-generated',
     quality: 'high'
-  }
-}
-
-function generateFallbackTemplate(request: any, userId: string) {
-  // Fallback to structured mock data if AI fails
-  const fallbackContent = {
-    'sales-script': [
-      {
-        script: `Hi ${request.persona || 'there'}! I noticed you're in the ${request.industry || 'business'} space. I help ${request.persona || 'businesses'} like yours ${request.offerDetails || 'achieve their goals'}. Would you be interested in a quick 15-minute call to see if this could work for you?`,
-        reasoning: 'Direct, value-focused approach',
-        platform: request.platform || 'general',
-        effectiveness_score: 75
-      }
-    ],
-    'viral-hook': [
-      {
-        hook: `The secret ${request.targetAudience || 'entrepreneurs'} don't want you to know about ${request.contentIdea || 'success'}...`,
-        reasoning: 'Curiosity-driven hook',
-        platform: request.platform || 'social media',
-        engagement_score: 80
-      }
-    ],
-    'offer-naming': [
-      {
-        name: `${request.productDescription || 'Premium'} Mastery Program`,
-        reasoning: 'Clear value proposition',
-        target_appeal: 'high',
-        tone: request.tone || 'professional'
-      }
-    ]
-  }
-
-  return {
-    content: (fallbackContent as any)[request.templateType || request.type] || [{
-      content: 'AI-generated content based on your requirements',
-      type: request.templateType || request.type,
-      generated: true
-    }],
-    metadata: {
-      generatedAt: new Date().toISOString(),
-      generatedBy: userId,
-      model: 'fallback',
-      templateType: request.templateType || request.type,
-      requestType: request.type,
-      isFallback: true
-    },
-    templateType: request.templateType || request.type
   }
 }

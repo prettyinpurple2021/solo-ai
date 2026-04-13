@@ -1,4 +1,5 @@
-import { generateText } from "ai"
+import { generateText, generateObject } from "ai"
+import { z } from "zod"
 import { getTeamMemberConfig } from "./ai-config"
 
 export interface CollaborationTask {
@@ -216,22 +217,27 @@ Generate a professional handoff to ${toAgent} that includes:
 3. Any dependencies or requirements they should be aware of
 4. Questions or areas where they should focus
 
-Keep it concise but comprehensive. Format as a professional handoff note.
+Keep it concise but comprehensive.
 `
 
-    const { text } = await generateText({
+    const { object } = await generateObject({
       model: fromConfig.model as any,
+      system: "You are generating a handoff configuration between two AI agents.",
       prompt: handoffPrompt,
       temperature: 0.6,
-      // maxTokens: 300,
+      schema: z.object({
+        handoffNote: z.string().describe("The professional handoff note/message"),
+        deliverables: z.array(z.string()).describe("List of key deliverables extracted from the context"),
+        instructions: z.string().describe("Specific instructions and requirements for the next agent")
+      })
     })
 
     return {
       fromAgent,
       toAgent,
-      context: text,
-      deliverables: [], // Could be extracted from the text
-      instructions: text,
+      context: object.handoffNote,
+      deliverables: object.deliverables,
+      instructions: object.instructions,
     }
   }
 
@@ -252,25 +258,28 @@ Available collaboration workflows:
 - website-redesign: Full website overhaul project
 
 Available agents: roxy, blaze, echo, lumi, vex, lexi, nova, glitch
-
-Respond with:
-1. Whether this needs collaboration (true/false)
-2. Which workflow fits best (if any)
-3. Which agents should be involved
-4. Brief reasoning
-
-Format as JSON: {"recommended": boolean, "workflow": string|null, "agents": string[], "reasoning": string}
 `
 
-    const { text } = await generateText({
-      model: getTeamMemberConfig("lexi").model as any,
-      prompt: analysisPrompt,
-      temperature: 0.3,
-      // maxTokens: 200,
-    })
-
     try {
-      return JSON.parse(text)
+      const { object } = await generateObject({
+        model: getTeamMemberConfig("lexi").model as any,
+        system: "Analyze if multi-agent collaboration is recommended for the request.",
+        prompt: analysisPrompt,
+        temperature: 0.3,
+        schema: z.object({
+          recommended: z.boolean().describe("Whether this needs collaboration"),
+          workflow: z.enum(["product-launch", "business-strategy", "website-redesign"]).nullable().describe("Which workflow fits best, or null"),
+          agents: z.array(z.string()).describe("Which agents should be involved"),
+          reasoning: z.string().describe("Brief reasoning")
+        })
+      })
+
+      return {
+        recommended: object.recommended,
+        workflow: object.workflow as keyof typeof collaborationWorkflows | undefined,
+        agents: object.agents,
+        reasoning: object.reasoning,
+      }
     } catch {
       return {
         recommended: false,

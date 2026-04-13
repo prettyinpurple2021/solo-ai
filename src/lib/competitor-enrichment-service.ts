@@ -1,3 +1,6 @@
+import { generateObject } from 'ai'
+import { openai } from '@ai-sdk/openai'
+import { z } from 'zod'
 
 import type { 
   CompetitorProfile, 
@@ -656,12 +659,36 @@ export class CompetitorEnrichmentService {
           }
         }
 
-        // Simplified heuristic: look for team/leadership sections
-        // This is a basic implementation - would need more sophisticated parsing for production
+        // Update DOM parsing to use AI for robust team extraction
         if (html.toLowerCase().includes('team') || html.toLowerCase().includes('leadership')) {
-          // Note: Full DOM parsing deferred to specialized microservice (V2) due to complexity
-          // Returning standardized placeholder for V1 robustness.
-          // In production, you'd implement proper team member extraction
+          try {
+            const { object } = await generateObject({
+              model: openai('gpt-4o-mini'),
+              system: 'Extract key team members and leadership personnel from the provided HTML content. Return a JSON structure matching the schema. Focus on finding names, roles, and potential social profiles. Do not include random employees, focus on key leadership if possible.',
+              prompt: `Extract key team members from this HTML: ${html.substring(0, 25000)}`,
+              schema: z.object({
+                people: z.array(z.object({
+                  name: z.string().describe('Full name of the person'),
+                  role: z.string().describe('Job title or role exactly as it appears'),
+                  linkedinProfile: z.string().optional().describe('LinkedIn profile URL if found')
+                }))
+              })
+            });
+            
+            if (object.people && object.people.length > 0) {
+              for (const p of object.people) {
+                results.push({
+                  name: p.name,
+                  role: p.role,
+                  linkedinProfile: p.linkedinProfile,
+                  previousCompanies: []
+                });
+              }
+            }
+          } catch (e) {
+            // AI extraction failed, fallback gracefully and continue silently
+            console.error('Failed to extract team members from HTML via AI:', e);
+          }
         }
 
         if (results.length >= 10) break

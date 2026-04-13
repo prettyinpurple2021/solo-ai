@@ -65,7 +65,7 @@ export const geminiService = {
             return response.text;
         } catch (error) {
             logError('Chat Error:', error);
-            return "I'm having trouble connecting right now. Please try again.";
+            throw error;
         }
     },
 
@@ -75,7 +75,7 @@ export const geminiService = {
             return await apiService.post<CompetitorReport>('/ai/competitor-report', { url, name });
         } catch (error) {
             logError('Competitor Report Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -85,7 +85,7 @@ export const geminiService = {
             return await apiService.post<WarRoomResponse>('/ai/war-room', { topic, previousSessionId });
         } catch (error) {
             logError('War Room Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -95,7 +95,7 @@ export const geminiService = {
             return await apiService.post('/ai/briefing', {});
         } catch (error) {
             logError('Briefing Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -105,7 +105,7 @@ export const geminiService = {
             return await apiService.post<Task[]>('/ai/tactical-plan', { goal });
         } catch (error) {
             logError('Tactical Plan Error:', error);
-            return [];
+            throw error;
         }
     },
 
@@ -115,7 +115,7 @@ export const geminiService = {
             return await apiService.post<IncineratorResponse>('/ai/incinerator', { idea, type, context });
         } catch (error) {
             logError('Incinerator Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -124,7 +124,7 @@ export const geminiService = {
             return await apiService.post<PitchDeck>('/ai/pitch-deck', { businessName, description });
         } catch (error) {
             logError('Pitch Deck Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -133,7 +133,7 @@ export const geminiService = {
             return await apiService.post<PivotAnalysis>('/ai/blue-oceans', { industry });
         } catch (error) {
             logError('Blue Ocean Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -142,7 +142,7 @@ export const geminiService = {
             return await apiService.post<TribeBlueprint>('/ai/tribe-blueprint', { audience, manifesto });
         } catch (error) {
             logError('Tribe Blueprint Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -151,7 +151,7 @@ export const geminiService = {
             return await apiService.post<ContentAmplification>('/ai/amplified-content', { content, platforms });
         } catch (error) {
             logError('Content Amplifier Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -160,7 +160,7 @@ export const geminiService = {
             return await apiService.post<SocialStrategy>('/ai/social-strategy', { platform, goal });
         } catch (error) {
             logError('Social Strategy Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -169,7 +169,7 @@ export const geminiService = {
             return await apiService.post<LaunchStrategy>('/ai/launch-strategy', { product, context });
         } catch (error) {
             logError('Launch Strategy Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -179,7 +179,7 @@ export const geminiService = {
             return await apiService.post<JobDescription>('/ai/job-description', { role, culture });
         } catch (error) {
             logError('JD Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -188,7 +188,7 @@ export const geminiService = {
             return await apiService.post<InterviewGuide>('/ai/interview-guide', { role, focus });
         } catch (error) {
             logError('Interview Guide Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -197,7 +197,7 @@ export const geminiService = {
             return await apiService.post<SOP>('/ai/sop', { processName, goal });
         } catch (error) {
             logError('SOP Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -211,7 +211,7 @@ export const geminiService = {
             return await apiService.post<BoardMeetingReport>('/ai/board-report', { financials, tasks, reports, contacts });
         } catch (error) {
             logError('Board Report Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -220,7 +220,7 @@ export const geminiService = {
             return await apiService.post<FinancialAudit>('/ai/financial-audit', { data });
         } catch (error) {
             logError('Financial Audit Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -229,7 +229,7 @@ export const geminiService = {
             return await apiService.post<TechStackAudit>('/ai/tech-audit', { stack });
         } catch (error) {
             logError('Tech Audit Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -240,7 +240,7 @@ export const geminiService = {
             return response.text;
         } catch (error) {
             logError('Cold Email Error:', error);
-            return 'Failed to generate email.';
+            throw error;
         }
     },
 
@@ -249,7 +249,7 @@ export const geminiService = {
             return await apiService.post<NegotiationPrep>('/ai/negotiation-prep', { contact });
         } catch (error) {
             logError('Negotiation Prep Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -258,7 +258,7 @@ export const geminiService = {
             return await apiService.post<LegalDoc>('/ai/legal-doc', { type, details });
         } catch (error) {
             logError('Legal Doc Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -267,7 +267,7 @@ export const geminiService = {
             return await apiService.post<LegalAnalysis>('/ai/contract-analysis', { text });
         } catch (error) {
             logError('Contract Analysis Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -277,7 +277,7 @@ export const geminiService = {
             return await apiService.post<MentalCoaching>('/ai/stoic-coaching', { mood, stressLevel, primaryBlocker });
         } catch (error) {
             logError('Stoic Coaching Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -287,7 +287,7 @@ export const geminiService = {
             return response.text;
         } catch (error) {
             logError('Roleplay Reply Error:', error);
-            return "...";
+            throw error;
         }
     },
 
@@ -296,7 +296,7 @@ export const geminiService = {
             return await apiService.post<RoleplayFeedback>('/ai/roleplay-feedback', { scenario, history });
         } catch (error) {
             logError('Roleplay Feedback Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -307,7 +307,7 @@ export const geminiService = {
             return response.image;
         } catch (error) {
             logError('Image Gen Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -316,7 +316,7 @@ export const geminiService = {
             return await apiService.post<CodeSnippet>('/ai/code-solution', { problem });
         } catch (error) {
             logError('Code Solution Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -325,7 +325,7 @@ export const geminiService = {
             return await apiService.post<SimulationResult>('/ai/simulation', { scenario });
         } catch (error) {
             logError('Simulation Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -334,7 +334,7 @@ export const geminiService = {
             return await apiService.post<MarketPulse>('/ai/market-pulse', { industry });
         } catch (error) {
             logError('Market Pulse Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -343,7 +343,7 @@ export const geminiService = {
             return await apiService.post<ProductSpec>('/ai/product-spec', { idea });
         } catch (error) {
             logError('Product Spec Error:', error);
-            return null;
+            throw error;
         }
     },
 
@@ -352,7 +352,8 @@ export const geminiService = {
             return await apiService.post<any>('/ai/analyze-opportunity', { opportunity });
         } catch (error) {
             logError('Analyze Opportunity Error:', error);
-            return null;
+            throw error;
         }
     }
 };
+

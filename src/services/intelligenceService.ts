@@ -150,39 +150,8 @@ Respond ONLY with valid JSON.`;
             return intelligence;
         } catch (error) {
             logError('Intelligence generation error:', error);
-
-            // Return fallback intelligence
-            return this.getFallbackIntelligence();
+            throw error;
         }
-    }
-
-    /**
-     * Fallback intelligence if AI fails
-     */
-    private getFallbackIntelligence(): DailyIntelligence {
-        const today = new Date().toISOString().split('T')[0];
-
-        return {
-            date: today,
-            priorityActions: [
-                {
-                    title: 'Review Your Task Board',
-                    reasoning: 'Start your day with a clear picture of what needs to be done',
-                    urgency: 'medium',
-                    estimatedTime: '15 min',
-                    relatedTo: 'roadmap'
-                }
-            ],
-            alerts: [],
-            insights: [
-                {
-                    title: 'Build Momentum',
-                    description: 'Small wins compound. Focus on completing one task before starting another.',
-                    impact: 'medium'
-                }
-            ],
-            motivationalMessage: 'Every small step forward is progress. Keep building! 🚀'
-        };
     }
 
     /**

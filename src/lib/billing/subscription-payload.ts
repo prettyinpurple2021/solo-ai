@@ -33,6 +33,8 @@ export interface UnifiedSubscriptionPayload {
     stripe_subscription?: unknown
     is_admin_override?: boolean
   }
+  cancel_at_period_end: boolean
+  interval: string
 }
 
 export async function fetchUnifiedSubscriptionPayload(
@@ -52,6 +54,8 @@ export async function fetchUnifiedSubscriptionPayload(
       tier: 'dominator',
       status: 'active',
       current_period_end: null,
+      cancel_at_period_end: false,
+      interval: 'monthly',
       subscription: {
         subscription_tier: 'dominator',
         subscription_status: 'active',
@@ -95,10 +99,21 @@ export async function fetchUnifiedSubscriptionPayload(
     ...(stripeSubscription !== undefined ? { stripe_subscription: stripeSubscription } : {}),
   }
 
+  let interval = 'monthly'
+  if (stripeSubscription) {
+    const rawStripe = stripeSubscription as any
+    const apiInterval = rawStripe.items?.data?.[0]?.plan?.interval
+    if (apiInterval) {
+      interval = apiInterval
+    }
+  }
+
   return {
     tier: normalizedTier,
     status,
     current_period_end: currentPeriodEnd,
+    cancel_at_period_end: row.cancel_at_period_end,
+    interval,
     subscription,
   }
 }

@@ -10,6 +10,7 @@ import { db } from '@/db/index'
 import { chatConversations, collaborationSessions, collaborationParticipants } from '@/shared/db/schema'
 import { eq, sql } from 'drizzle-orm'
 import { ContextManager } from './context-manager'
+import { getRedisClient } from '@/lib/upstash/clients'
 
 
 // Types and Interfaces
@@ -93,6 +94,15 @@ export class CollaborationHub {
     this.messageRouter = new MessageRouter(this)
     this.contextManager = new ContextManager()
     this.initializeAgents()
+  }
+
+  private async syncSessionToRedis(session: CollaborationSession): Promise<void> {
+    try {
+      const redis = getRedisClient()
+      await redis.set(`collab_session:${session.id}`, session)
+    } catch (error) {
+      logError(`Failed to sync session ${session.id} to Redis:`, error)
+    }
   }
 
   /**
@@ -259,6 +269,7 @@ export class CollaborationHub {
 
       // Store session in memory
       this.activeSessions.set(sessionId, session)
+      await this.syncSessionToRedis(session)
 
       // Persist session to database
       await db.insert(collaborationSessions).values({
@@ -364,6 +375,7 @@ export class CollaborationHub {
             metadata: dbSession.metadata as Record<string, any>
           }
           this.activeSessions.set(session.id, session)
+          await this.syncSessionToRedis(session)
           logInfo(`✅ Hydrated session ${session.id} from DB`)
         }
       }
@@ -378,6 +390,7 @@ export class CollaborationHub {
       // Update session activity
       session.updatedAt = new Date()
       this.activeSessions.set(session.id, session)
+      await this.syncSessionToRedis(session)
 
       this.emitEvent('message_routed', { 
         sessionId: validatedMessage.sessionId, 
@@ -477,6 +490,7 @@ export class CollaborationHub {
     session.updatedAt = new Date()
 
     this.activeSessions.set(sessionId, session)
+    this.syncSessionToRedis(session).catch(e => logError('Redis sync error in transferSession:', e))
     
     this.emitEvent('session_transferred', { 
       sessionId, 
@@ -519,6 +533,7 @@ export class CollaborationHub {
 
       // Keep session for history but mark as completed
       this.activeSessions.set(sessionId, session)
+      await this.syncSessionToRedis(session)
 
       this.emitEvent('session_completed', { sessionId, reason })
 
