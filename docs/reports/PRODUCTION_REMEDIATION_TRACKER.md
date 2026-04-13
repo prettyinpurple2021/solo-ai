@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-04-06
+Last updated: 2026-04-12
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -29,6 +29,12 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 - Observability: stray **`console.error`** on learning, TOTP, and guardian UI paths replaced with **`logError`** (**MED-009**)
 
 ## Work log
+
+### 2026-04-12
+
+- **Brand Enforcement & Code Quality Sweep:** Completed a comprehensive sweep to enforce the new premium cyberpunk aesthetic and systematically purge all "boss / boss babe" terminology across the entire codebase (`gamification-system.ts`, emails, components, docs, agents). The `/dashboard/workspace` UI was upgraded to use `CyberCard` and `CyberButton` components.
+- **Legacy references removal:** Caught and renamed the legacy image file `soloboss-hero-silhouette.jpg` to `solosuccess-hero-silhouette.jpg` and updated its references in `src/app/layout.tsx`.
+- **Validation:** Ran **`npm run type-check:web`**, and **`npm run lint`**. Both passed successfully with 0 errors/warnings, confirming all component refactors are type-safe and production quality.
 
 ### 2026-04-06
 
@@ -100,7 +106,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 - **Billing UX/error-noise hardening:** Updated **`src/app/dashboard/billing/page.tsx`** to treat expected free-tier states as user guidance (not hard failures): handle **404** from billing portal gracefully, route `launch` downgrade through cancel-subscription flow, and avoid throw-driven error spam for expected **400/404** checkout/portal responses.
 - **Validation:** Ran **`npm run validate`** after each substantive change set; lint + web/server type-check passed.
 
-### 2026-03-25
+### 2026-03-25 (continued)
 
 - **Full launch-readiness review:** Ran **`npm run validate`**, **`npm test -- --runInBand`**, **`next build --webpack`**, and **`npm audit --omit=dev`**. All quality gates and production build succeeded locally. Documented current **`npm audit`** picture (6 issues: **elliptic** / `@stackframe/stack` chain + **fast-xml-parser** / `@aws-sdk/xml-builder` chain).
 - **MED-009 (logging):** Replaced direct **`console.error`** with **`logError`** from **`@/lib/logger`** in TOTP resend/verify routes, learning API routes, learning dashboard + assessment UI, guardian consent management, and **`submitAssessmentAction`**. Removed dead commented **`console.log`** in Stripe webhook default branch; dropped unused **`LearningEngineService`** import from **`src/app/api/learning/[moduleId]/route.ts`**.
@@ -130,7 +136,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 - Completed **HIGH-006**: removed file-level `@ts-nocheck` from production `src`, replaced remaining suppressions with real types/guards, and fixed surfaced TypeScript issues (effects, hooks, learning module types, template flows).
 
-### 2026-03-20
+### 2026-03-20 (continued)
 
 - Completed **MED-005**: lazy Express `pg` pool + Jest `globalTeardown` for clean test exit.
 
@@ -151,7 +157,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 ## Critical remediation queue
 
 | ID | Severity | Area | Issue | Status | Verification |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | CRIT-001 | CRITICAL | API Security | Unauthenticated file access/deletion risk in `src/app/api/files/[param]/route.ts` | DONE | `npm run lint` passed |
 | CRIT-002 | CRITICAL | API Security | Header-based auth bypass in `src/app/api/notifications/send/route.ts` (`X-System-Job`) | DONE | `npm run lint` passed |
 | CRIT-003 | CRITICAL | API Security | Security/session endpoint protections incomplete in `src/app/api/agents/security/route.ts` | DONE | `npm run lint` passed |
@@ -163,7 +169,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 ## High-priority remediation queue
 
 | ID | Severity | Area | Issue | Status | Verification |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | HIGH-001 | HIGH | Quality Gate | Failing test suites (`npm test`) | DONE | `npm test -- --runInBand` passed (16/16 suites) |
 | HIGH-002 | HIGH | CI/CD | Production deploy lacks enforced quality gates in CI | DONE | Pre-push: `npm run validate` + `npm test -- --runInBand`; remote: `.github/workflows/ci.yml` on `main` |
 | HIGH-003 | HIGH | Security | Production dependency vulnerabilities from `npm audit --omit=dev` | DONE | No critical/high. As of **2026-03-28**: root reports **4 low** (`@stackframe/stack` → `elliptic`), `server/` and `railway-deploy/` each report **0**. |
@@ -175,7 +181,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 ## Medium-priority hardening queue
 
 | ID | Severity | Area | Issue | Status | Verification |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | MED-001 | MEDIUM | Runtime | Node version drift across CI and Docker | DONE | `package.json` `engines.node >=20`; Dockerfiles `node:20`; former CI workflows used Node `20` (removed with `.gitea/`) |
 | MED-002 | MEDIUM | Reliability | Runtime schema/table creation in request paths | DONE | Removed DDL from API routes; Drizzle + `migrations/0003_api_tables_baseline.sql` (apply to DBs that relied on old runtime creates) |
 | MED-003 | MEDIUM | Code Health | Legacy/archive imports in active production paths | DONE | `DashboardHeader` imports `@/components/GlobalSearch`; archive re-exports for compatibility |
@@ -206,6 +212,7 @@ Use this block whenever an item is completed:
 ```
 
 ### CRIT-001: Lock down `/api/files/[param]` access control
+
 - What changed:
   - Added mandatory authentication checks for both `GET` and `DELETE`.
   - Enforced ownership for UUID-based file reads by requiring `documents.user_id = authenticated_user`.
@@ -221,6 +228,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### CRIT-002: Protect system notification dispatch from header spoofing
+
 - What changed:
   - Removed blind trust in `X-System-Job`.
   - Added mandatory shared-secret validation for system jobs using `NOTIFICATION_JOB_TOKEN`.
@@ -236,6 +244,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### CRIT-003: Require authentication for security/session operations
+
 - What changed:
   - Added centralized auth guard helper in security route.
   - Enforced auth for config/session actions that were previously callable without auth.
@@ -250,6 +259,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### CRIT-004: Remove unsafe JWT default secret fallback
+
 - What changed:
   - Removed hardcoded fallback JWT secret behavior.
   - Added strict secret resolution requiring `JWT_SECRET` or `AUTH_SECRET`.
@@ -265,6 +275,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### CRIT-005: Harden HTML rendering against XSS in campaign/editor views
+
 - What changed:
   - Replaced unsafe text HTML rendering in pitch deck canvas with plain text rendering.
   - Added HTML escaping, URL validation, and HTML stripping in email preview generation path.
@@ -279,6 +290,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### CRIT-006: Remove credential-like database example value
+
 - What changed:
   - Replaced credential-like `DATABASE_URL` value with generic placeholder format.
 - Files updated:
@@ -290,6 +302,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### CRIT-007: Convert test runner workflow into real quality gate
+
 - What changed:
   - Replaced no-op echo workflow with real CI checks: install, lint, type-check, test, production build.
 - Files updated:
@@ -303,6 +316,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### HIGH-004: Standardize logout cookie invalidation
+
 - What changed:
   - Updated logout endpoint to clear canonical `auth_token`.
   - Kept backward-compatible clearing of legacy `auth-token`.
@@ -316,6 +330,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### HIGH-005: Fix idempotency helper mismatch in upload API
+
 - What changed:
   - Switched upload API to use `reserveIdempotencyKeyNeon` for Neon SQL-template client compatibility.
 - Files updated:
@@ -328,6 +343,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### HIGH-007: Remove invalid Next.js experimental config key
+
 - What changed:
   - Removed invalid `experimental.turbopack` key from Next config.
 - Files updated:
@@ -340,6 +356,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### HIGH-001: Stabilize test suite to green
+
 - What changed:
   - Reworked remaining failing tests to use ESM-safe mocking with `jest.unstable_mockModule`.
   - Removed transitive Next runtime coupling from template deletion tests by mocking `next/server`.
@@ -356,6 +373,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### HIGH-002: Enforce quality gates in production deploy workflow
+
 - What changed:
   - Added required `npm run validate` and `npm test -- --runInBand` steps before production deploy.
 - Files updated:
@@ -367,6 +385,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### HIGH-003: Remediate production dependency vulnerabilities
+
 - What changed:
   - Prior pass removed launch-blocking high/critical production advisories in root runtime graph.
   - **2026-03-28 follow-up (Phase A/B):**
@@ -394,6 +413,7 @@ Use this block whenever an item is completed:
 - Status: DONE (ongoing monitoring for upstream patches)
 
 ### HIGH-006: Remove broad TypeScript suppressions from production paths
+
 - What changed:
   - Eliminated `@ts-nocheck` from all production files under `src` (none remain).
   - Replaced ad-hoc `@ts-ignore` with proper typings, narrowings, and `logError(message, Error)` patterns where TypeScript surfaced real issues.
@@ -416,32 +436,38 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### MED-001: Align Node.js across CI, Docker, and declared engines
+
 - What changed: Root `package.json` `engines` documents Node 20+; former CI used `node-version: '20'` to match `Dockerfile.next` / `server/Dockerfile` / `railway-deploy/Dockerfile` (`.gitea/workflows` removed 2026-03-24).
 - Verification: `npm run validate`, `npm test -- --runInBand` pass on Node 20-class toolchain.
 - Status: DONE
 
 ### MED-002: No DDL in request paths
+
 - What changed: Push subscribe, analytics `events`, newsletter, exit-intent survey, and notification send logging now use Drizzle/`getDb()` inserts only. Added schema tables in `marketing.ts`, `push_subscriptions` unique endpoint + `last_used_at`, and idempotent SQL baseline `migrations/0003_api_tables_baseline.sql`.
 - **Deploy:** From project root run **`npm run db:apply-api-baseline`** (reads `DATABASE_URL` from `.env.local` / `.env` and applies `migrations/0003_api_tables_baseline.sql`). Or paste that SQL into Neon SQL Editor if you prefer.
 - Verification: `npm run validate`, `npm test -- --runInBand`.
 - Status: DONE
 
 ### MED-003: Active path off `archive/`
+
 - What changed: `src/components/GlobalSearch.tsx` is the canonical module; `DashboardHeader` imports it directly; `archive/GlobalSearch.tsx` re-exports only.
 - Verification: `npm run lint`, `npm run type-check:web`.
 - Status: DONE
 
 ### MED-004: Single status story for audits vs tracker
+
 - What changed: `docs/reports/COMPREHENSIVE_AUDIT_REPORT.md` header notes the tracker is authoritative for OPEN/DONE; audit remains historical detail.
 - Verification: Doc review.
 - Status: DONE
 
 ### MED-005: Jest clean exit (Express `pg` pool)
+
 - What changed: Lazy `server/db` pool + `src/test/global-teardown.ts`; Proxy `Reflect.get` receiver fix uses real Drizzle instance.
 - Verification: `npm test`, `npm test -- --runInBand`.
 - Status: DONE
 
 ### MED-006: Raise Workbox precache size limit for large Next chunks
+
 - What changed: Set `workboxOptions.maximumFileSizeToCacheInBytes` to **6 MiB** in `@ducanh2912/next-pwa` config so shared client chunks are precached without Workbox “exceeds maximum size” warnings.
 - Files updated: `next.config.mjs`
 - Why this improves production readiness: Clearer production builds, predictable offline/PWA precache behavior for large bundles.
@@ -449,6 +475,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### MED-007: GitHub Actions CI (validate + test)
+
 - What changed: Added workflow running Node 20, `npm ci` at root and `server/`, `npm run validate`, `npm test -- --runInBand` on push and pull_request to `main`.
 - Files updated: `.github/workflows/ci.yml`
 - Why this improves production readiness: Every merge to `main` is checked remotely (aligns with Vercel/Railway deploys from GitHub).
@@ -456,6 +483,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### MED-008: Edge vs Node API routes and static-friendly marketing pages
+
 - What changed:
   - **Inventory:** No **`layout.tsx` / `page.tsx`** use **`runtime = 'edge'`**; Edge was only on selected **API routes** (see table below).
   - **Node (was Edge):** **`src/app/api/workflows/[id]/execute/route.ts`** — workflow engine uses Drizzle + transactions + `expr-eval-fork` + fire-and-forget execution; **`src/app/api/incinerator/route.ts`** — aligns with other AI routes using **`generateText`**.
@@ -464,7 +492,7 @@ Use this block whenever an item is completed:
 - **Edge API routes retained (intentional):**
 
 | Path | Rationale |
-|------|-----------|
+| --- | --- |
 | `api/health`, `api/health/deps` | Tiny responses; deps uses Neon HTTP |
 | `api/files/[param]` | Neon + Edge-safe binary handling |
 | `api/compliance/scan`, `policies`, `consent` | `getSql()` / Neon HTTP |
@@ -476,6 +504,7 @@ Use this block whenever an item is completed:
 - Status: DONE
 
 ### MED-009: Route client and API errors through structured logger
+
 - What changed:
   - Swapped **`console.error`** for **`logError`** from **`@/lib/logger`** on TOTP (**`resend`**, **`verify`**), learning APIs (**`/api/learning`**, module GET, assess POST), learning dashboard page, assessment dialog, **`submitAssessmentAction`**, and guardian **ConsentManagement** fetch error path.
   - Stripe webhook: removed commented debug **`console.log`**; default unhandled branch is a quiet **`break`** (events still recorded when handled).
@@ -507,6 +536,7 @@ Use this block whenever an item is completed:
 - **Jest / async leaks:** if new suites import long-lived clients (Redis, sockets, timers), re-run `npm test -- --detectOpenHandles` and add targeted teardown or mocks. **MED-005** addressed the Express `pg` pool path.
 
 ### MED-010: Enforce production build in GitHub CI for `main`
+
 - What changed:
   - Updated `.github/workflows/ci.yml` so `production-build` runs on `push` **and** `pull_request` to `main` (plus schedule/manual), making production build regressions blocking in PR review.
   - Removed prior "PR cost-control skip" behavior for production build.
@@ -518,4 +548,3 @@ Use this block whenever an item is completed:
   - Command: `npm run build`
   - Result: pass (`next build --webpack` succeeded locally after CI config tightening).
 - Status: DONE
-

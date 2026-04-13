@@ -118,7 +118,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'SoloSuccess AI — Founder AI Tools',
     description: 'AI Business Assistant, Workflow Automation AI, and AI-powered Productivity for solo founders.',
-    images: ['/images/soloboss-hero-silhouette.jpg'],
+    images: ['/images/solosuccess-hero-silhouette.jpg'],
     creator: '@solosuccessai',
     site: '@solosuccessai',
   },
