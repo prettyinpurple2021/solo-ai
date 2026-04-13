@@ -8,6 +8,12 @@ import { z} from 'zod'
 
 
 
+export interface WorkerResponsePayload {
+  url?: string;
+  logos?: string[];
+  [key: string]: any;
+}
+
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'
 
@@ -72,7 +78,7 @@ export async function POST(request: NextRequest) {
         const workerResponse = await openaiWorker.fetch(workerRequest)
 
         if (workerResponse.ok) {
-          const result = await workerResponse.json()
+          const result = (await workerResponse.json()) as WorkerResponsePayload
           return NextResponse.json({ success: true, data: result }, { status: 200 })
         } else {
           const errorText = await workerResponse.text()

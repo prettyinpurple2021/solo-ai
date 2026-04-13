@@ -91,10 +91,11 @@ export async function POST(request: NextRequest) {
       url: `data:${file.type};base64,${base64Data}`,
       message: 'File uploaded successfully' 
     }, { status: 201 })
-  } catch (error: any) {
-    logError('Error uploading file:', { error: error?.message || error })
+  } catch (error: unknown) {
+    const errorMsg = typeof error === 'object' && error !== null && 'message' in error && typeof (error as any).message === 'string' ? (error as any).message : undefined
+    logError('Error uploading file:', { error: errorMsg || error })
     return NextResponse.json(
-      { success: false, error: error?.message ? `Failed to upload file: ${error.message}` : 'Failed to upload file' },
+      { success: false, error: errorMsg ? `Failed to upload file: ${errorMsg}` : 'Failed to upload file' },
       { status: 500 }
     )
   }
@@ -116,10 +117,11 @@ export async function GET(_request: NextRequest) {
     `
 
     return NextResponse.json({ files })
-  } catch (error: any) {
-    logError('Error fetching files:', { error: error?.message || error })
+  } catch (error: unknown) {
+    const errorMsg = typeof error === 'object' && error !== null && 'message' in error && typeof (error as any).message === 'string' ? (error as any).message : undefined
+    logError('Error fetching files:', { error: errorMsg || error })
     return NextResponse.json(
-      { success: false, error: error?.message ? `Failed to fetch files: ${error.message}` : 'Failed to fetch files' },
+      { success: false, error: errorMsg ? `Failed to fetch files: ${errorMsg}` : 'Failed to fetch files' },
       { status: 500 }
     )
   }

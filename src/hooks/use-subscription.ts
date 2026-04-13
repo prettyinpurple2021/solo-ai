@@ -81,9 +81,9 @@ export function useSubscription() {
       
       // 1. Fetch Subscription Status
       const subRes = await sameOriginApiClient.get(endpoints.stripe.subscription)
+      const subData = subRes.data as SubscriptionData | undefined
 
-      if (subRes.data) {
-        const subData = subRes.data as SubscriptionData
+      if (subData) {
         const periodEnd = subData.current_period_end || null
         const cancelAtPeriodEnd = !!subData.cancel_at_period_end
 
@@ -103,8 +103,7 @@ export function useSubscription() {
         const usageData = usageRes.data
         // Map backend usage to frontend state
         // Note: The backend returns a simpler object, so we merge it with TIER_LIMITS
-        const subPayload = subRes.data as SubscriptionData | undefined
-        const currentTier = (subPayload?.tier ?? 'free') as keyof typeof TIER_LIMITS
+        const currentTier = (subData?.tier ?? 'free') as keyof typeof TIER_LIMITS
         const limits = TIER_LIMITS[currentTier] || TIER_LIMITS.free
 
         setUsage({
