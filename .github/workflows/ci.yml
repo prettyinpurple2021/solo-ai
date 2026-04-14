@@ -72,9 +72,9 @@ jobs:
 
       - name: Production build (next build --webpack)
         env:
-        NODE_OPTIONS: "--max-old-space-size=16384"
-          NEXT_PUBLIC_APP_URL: http://localhost:3000
-          CLIENT_URL: http://localhost:3000
+          NODE_OPTIONS: "--max-old-space-size=16384"
+          NEXT_PUBLIC_APP_URL: https://www.solosuccessai.fun
+          CLIENT_URL: https://www.solosuccessai.fun
           NEXT_PUBLIC_SANITY_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_SANITY_PROJECT_ID }}
           NEXT_PUBLIC_SANITY_DATASET: ${{ secrets.NEXT_PUBLIC_SANITY_DATASET }}
           NEXT_PUBLIC_SANITY_API_VERSION: ${{ secrets.NEXT_PUBLIC_SANITY_API_VERSION }}
