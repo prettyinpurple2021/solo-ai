@@ -220,16 +220,22 @@ Generate a professional handoff to ${toAgent} that includes:
 Keep it concise but comprehensive.
 `
 
+    const handoffSchema: z.ZodType<{
+      handoffNote: string
+      deliverables: string[]
+      instructions: string
+    }> = z.object({
+      handoffNote: z.string().describe("The professional handoff note/message"),
+      deliverables: z.array(z.string()).describe("List of key deliverables extracted from the context"),
+      instructions: z.string().describe("Specific instructions and requirements for the next agent")
+    })
+
     const { object } = await generateObject({
       model: fromConfig.model as LanguageModel,
       system: "You are generating a handoff configuration between two AI agents.",
       prompt: handoffPrompt,
       temperature: 0.6,
-      schema: z.object({
-        handoffNote: z.string().describe("The professional handoff note/message"),
-        deliverables: z.array(z.string()).describe("List of key deliverables extracted from the context"),
-        instructions: z.string().describe("Specific instructions and requirements for the next agent")
-      })
+      schema: handoffSchema
     })
 
     return {
@@ -261,17 +267,24 @@ Available agents: roxy, blaze, echo, lumi, vex, lexi, nova, glitch
 `
 
     try {
+      const collaborationSchema: z.ZodType<{
+        recommended: boolean
+        workflow: "product-launch" | "business-strategy" | "website-redesign" | null
+        agents: string[]
+        reasoning: string
+      }> = z.object({
+        recommended: z.boolean().describe("Whether this needs collaboration"),
+        workflow: z.enum(["product-launch", "business-strategy", "website-redesign"]).nullable().describe("Which workflow fits best, or null"),
+        agents: z.array(z.string()).describe("Which agents should be involved"),
+        reasoning: z.string().describe("Brief reasoning")
+      })
+
       const { object } = await generateObject({
         model: getTeamMemberConfig("lexi").model as LanguageModel,
         system: "Analyze if multi-agent collaboration is recommended for the request.",
         prompt: analysisPrompt,
         temperature: 0.3,
-        schema: z.object({
-          recommended: z.boolean().describe("Whether this needs collaboration"),
-          workflow: z.enum(["product-launch", "business-strategy", "website-redesign"]).nullable().describe("Which workflow fits best, or null"),
-          agents: z.array(z.string()).describe("Which agents should be involved"),
-          reasoning: z.string().describe("Brief reasoning")
-        })
+        schema: collaborationSchema
       })
 
       return {
