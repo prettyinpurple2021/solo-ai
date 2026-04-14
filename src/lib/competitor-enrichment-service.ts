@@ -1,6 +1,5 @@
-import { generateObject } from 'ai'
+import { generateObject, jsonSchema } from 'ai'
 import { openai } from '@ai-sdk/openai'
-import { z } from 'zod'
 
 import type { 
   CompetitorProfile, 
@@ -662,18 +661,29 @@ export class CompetitorEnrichmentService {
         // Update DOM parsing to use AI for robust team extraction
         if (html.toLowerCase().includes('team') || html.toLowerCase().includes('leadership')) {
           try {
-            const teamExtractionSchema: z.ZodType<{
+            const teamExtractionSchema = jsonSchema<{
               people: Array<{
                 name: string
                 role: string
                 linkedinProfile?: string
               }>
-            }> = z.object({
-              people: z.array(z.object({
-                name: z.string().describe('Full name of the person'),
-                role: z.string().describe('Job title or role exactly as it appears'),
-                linkedinProfile: z.string().optional().describe('LinkedIn profile URL if found')
-              }))
+            }>({
+              type: "object",
+              properties: {
+                people: {
+                  type: "array",
+                  items: {
+                    type: "object",
+                    properties: {
+                      name: { type: "string", description: "Full name of the person" },
+                      role: { type: "string", description: "Job title or role exactly as it appears" },
+                      linkedinProfile: { type: "string", description: "LinkedIn profile URL if found" }
+                    },
+                    required: ["name", "role"]
+                  }
+                }
+              },
+              required: ["people"]
             })
 
             const { object } = await generateObject({
