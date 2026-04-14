@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
 import { client } from "@/sanity/lib/client";
+import { projectId } from "@/sanity/env";
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -10,7 +11,9 @@ const POSTS_QUERY = `*[
 const options = { next: { revalidate: 30 } };
 
 export default async function PostsPage() {
-  const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
+  const posts = projectId
+    ? await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options)
+    : [];
 
   return (
     <main className="container mx-auto min-h-screen max-w-3xl p-8">
