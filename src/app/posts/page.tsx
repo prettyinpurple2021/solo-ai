@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { type SanityDocument } from "next-sanity";
-import { client } from "@/sanity/lib/client";
+import { client, isSanityConfigured } from "@/sanity/lib/client";
 
 const POSTS_QUERY = `*[
   _type == "post"
@@ -10,6 +10,17 @@ const POSTS_QUERY = `*[
 const options = { next: { revalidate: 30 } };
 
 export default async function PostsPage() {
+  if (!isSanityConfigured()) {
+    return (
+      <main className="container mx-auto min-h-screen max-w-3xl p-8">
+        <h1 className="text-4xl font-bold mb-8">Posts</h1>
+        <p className="text-muted-foreground">
+          Posts are currently unavailable because Sanity is not configured for this environment.
+        </p>
+      </main>
+    );
+  }
+
   const posts = await client.fetch<SanityDocument[]>(POSTS_QUERY, {}, options);
 
   return (

@@ -6,6 +6,7 @@ import { notificationLogs } from '@/lib/shared/db/schema/marketing'
 import { authenticateRequest } from '@/lib/auth-server'
 import { rateLimitByIp } from '@/lib/rate-limit'
 import { notificationJobQueue } from '@/lib/notification-job-queue'
+import { ensureVapidConfigured } from '@/lib/vapid'
 import { z } from 'zod'
 import webpush from 'web-push'
 
@@ -27,36 +28,6 @@ function expirationFromSubscriptionRow(row: {
     return typeof v === 'number' ? v : null
   }
   return null
-}
-
-// VAPID configuration - deferred to runtime
-let vapidConfigured = false
-
-// Function to configure VAPID keys at runtime
-function ensureVapidConfigured(): boolean {
-  if (vapidConfigured) return true
-
-  const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-  const privateVapidKey = process.env.VAPID_PRIVATE_KEY
-
-  if (publicVapidKey && privateVapidKey && privateVapidKey !== 'your-private-key-here' && privateVapidKey.length > 20) {
-    try {
-      webpush.setVapidDetails(
-        'mailto:prettyinpurple2021@gmail.com',
-        publicVapidKey,
-        privateVapidKey
-      )
-      vapidConfigured = true
-      logInfo('✅ VAPID keys configured successfully')
-      return true
-    } catch (error) {
-      logWarn('⚠️ VAPID configuration failed:', error instanceof Error ? error.message : 'Unknown error')
-      return false
-    }
-  } else {
-    logWarn('⚠️ VAPID keys not configured - push notifications disabled')
-    return false
-  }
 }
 
 const notificationSchema = z.object({
@@ -256,8 +227,9 @@ export async function POST(request: NextRequest) {
 
     // Ensure VAPID is configured before sending
     if (!ensureVapidConfigured()) {
+      logWarn('⚠️ VAPID keys not configured - push notifications disabled')
       return NextResponse.json(
-        { error: 'Push notifications not configured - invalid VAPID keys' },
+        { error: 'VAPID keys not configured' },
         { status: 503 }
       )
     }
