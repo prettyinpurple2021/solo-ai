@@ -3,25 +3,7 @@ import { db } from '@/db/index';
 import { pushSubscriptions } from '@/shared/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { logError, logInfo } from '@/lib/logger';
-
-const initWebPush = () => {
-  const publicKey = process.env.VAPID_PUBLIC_KEY || process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-  const privateKey = process.env.VAPID_PRIVATE_KEY;
-
-  if (!publicKey || !privateKey) {
-    logError('VAPID keys are not configured');
-    return;
-  }
-
-  webpush.setVapidDetails(
-    `mailto:${process.env.VAPID_CONTACT_EMAIL || (process.env.NEXT_PUBLIC_APP_URL ? 'admin@' + new URL(process.env.NEXT_PUBLIC_APP_URL).hostname : 'admin@example.com')}`,
-    publicKey,
-    privateKey
-  );
-};
-
-// Initialize on import
-initWebPush();
+import { ensureVapidConfigured } from '@/lib/vapid';
 
 export interface PushSubscriptionData {
   endpoint: string;
@@ -37,6 +19,11 @@ export const pushNotificationService = {
    */
   async sendToUser(userId: string, title: string, body: string, url?: string) {
     try {
+      if (!ensureVapidConfigured()) {
+        logError('VAPID keys are not configured');
+        return { success: false, error: 'VAPID keys not configured' };
+      }
+
       // Fetch user's active push subscriptions
       const subscriptions = await db
         .select()

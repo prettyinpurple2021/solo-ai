@@ -1,4 +1,4 @@
-import { logError, logInfo, logWarn } from '@/lib/logger'
+import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse} from 'next/server'
 import { db} from '@/db'
 import { competitorAlerts, competitorProfiles} from '@/shared/db/schema'
@@ -11,6 +11,7 @@ import { Resend } from 'resend'
 import webpush from 'web-push'
 import twilio from 'twilio'
 import { getSql } from '@/lib/api-utils'
+import { ensureVapidConfigured } from '@/lib/vapid'
 
 // Twilio + web-push depend on Node.js runtime primitives (Streams, crypto)
 export const runtime = 'nodejs'
@@ -31,7 +32,6 @@ const NotificationDeliverySchema = z.object({
 // Initialize notification services
 let resendClient: Resend | null = null
 let twilioClient: twilio.Twilio | null = null
-let vapidConfigured = false
 
 function initializeServices() {
   // Initialize Resend
@@ -46,24 +46,8 @@ function initializeServices() {
     logInfo('Twilio SMS service initialized')
   }
 
-  // Configure VAPID for web push
-  if (!vapidConfigured) {
-    const publicVapidKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
-    const privateVapidKey = process.env.VAPID_PRIVATE_KEY
-    
-    if (publicVapidKey && privateVapidKey && privateVapidKey !== 'your-private-key-here' && privateVapidKey.length > 20) {
-      try {
-        webpush.setVapidDetails(
-          process.env.VAPID_CONTACT_EMAIL || 'mailto:prettyinpurple2021@gmail.com',
-          publicVapidKey,
-          privateVapidKey
-        )
-        vapidConfigured = true
-        logInfo('VAPID keys configured for push notifications')
-      } catch (error) {
-        logWarn('VAPID configuration failed:', error instanceof Error ? error.message : 'Unknown error')
-      }
-    }
+  if (ensureVapidConfigured()) {
+    logInfo('VAPID keys configured for push notifications')
   }
 }
 
@@ -280,7 +264,7 @@ async function sendNotification(
   // Send push notifications
   if (channels.includes('push')) {
     try {
-      if (!vapidConfigured) {
+      if (!ensureVapidConfigured()) {
         throw new Error('VAPID keys not configured for push notifications')
       }
 
