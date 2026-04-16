@@ -12,7 +12,7 @@ import { NextStudio } from 'next-sanity/studio'
 let config: any
 
 try {
-  config = require('@/sanity.config').default
+  config = require('../../../../sanity.config').default
 } catch {
   config = {}
 }
