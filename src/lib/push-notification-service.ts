@@ -20,8 +20,8 @@ export const pushNotificationService = {
   async sendToUser(userId: string, title: string, body: string, url?: string) {
     try {
       if (!ensureVapidConfigured()) {
-        logError('VAPID keys are not configured');
-        return { success: false, error: 'VAPID keys not configured' };
+        logError('VAPID configuration is missing or invalid');
+        return { success: false, error: 'VAPID configuration is missing or invalid' };
       }
 
       // Fetch user's active push subscriptions
