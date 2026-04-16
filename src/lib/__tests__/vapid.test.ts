@@ -52,7 +52,9 @@ describe('vapid helper', () => {
 
     process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY = 'public'
     process.env.VAPID_PRIVATE_KEY = 'private'
-    process.env.NEXT_PUBLIC_APP_URL = 'https://solosuccessai.fun'
+    Object.assign(process.env, {
+      NEXT_PUBLIC_APP_URL: 'https://solosuccessai.fun',
+    })
 
     const vapid = await import('@/lib/vapid')
     expect(vapid.ensureVapidConfigured()).toBe(true)
