@@ -227,9 +227,9 @@ export async function POST(request: NextRequest) {
 
     // Ensure VAPID is configured before sending
     if (!ensureVapidConfigured()) {
-      logWarn('⚠️ VAPID keys not configured - push notifications disabled')
+      logWarn('⚠️ VAPID configuration missing or invalid - push notifications disabled')
       return NextResponse.json(
-        { error: 'VAPID keys not configured' },
+        { error: 'VAPID configuration missing or invalid' },
         { status: 503 }
       )
     }
