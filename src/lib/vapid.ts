@@ -10,6 +10,34 @@ export interface VapidConfig {
 
 let cachedVapidFingerprint: string | null = null
 
+/**
+ * Returns a fallback contact email for VAPID configuration when
+ * `VAPID_CONTACT_EMAIL` is not set.
+ *
+ * Fallback logic:
+ * - If `NEXT_PUBLIC_APP_URL` is defined and can be parsed as an absolute URL
+ *   (for example, `https://example.com`), the hostname is used to derive
+ *   `admin@<hostname>`.
+ * - If `NEXT_PUBLIC_APP_URL` is missing, empty, or invalid, a generic default
+ *   of `admin@example.com` is returned.
+ */
+function getVapidContactEmailFallback(): string {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL
+
+  if (appUrl) {
+    try {
+      const hostname = new URL(appUrl).hostname
+      if (hostname.length > 0) {
+        return `admin@${hostname}`
+      }
+    } catch {
+      // Fall through to generic default when URL is invalid
+    }
+  }
+
+  return 'admin@example.com'
+}
+
 export function getVapidKeys(): VapidConfig | null {
   const publicKey = process.env.VAPID_PUBLIC_KEY || process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
   const privateKey = process.env.VAPID_PRIVATE_KEY
@@ -18,7 +46,7 @@ export function getVapidKeys(): VapidConfig | null {
     return null
   }
 
-  const contactEmail = process.env.VAPID_CONTACT_EMAIL || 'admin@example.com'
+  const contactEmail = process.env.VAPID_CONTACT_EMAIL || getVapidContactEmailFallback()
 
   return {
     publicKey,
@@ -33,7 +61,7 @@ export function ensureVapidConfigured(): boolean {
     return false
   }
 
-  const fingerprint = `${vapidConfig.publicKey}:${vapidConfig.privateKey}`
+  const fingerprint = `v2:${vapidConfig.contactEmail}:${vapidConfig.publicKey}:${vapidConfig.privateKey}`
   if (cachedVapidFingerprint === fingerprint) {
     return true
   }

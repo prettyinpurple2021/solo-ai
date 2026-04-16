@@ -8,12 +8,27 @@
  */
 
 import { NextStudio } from 'next-sanity/studio'
-import config from '../../../../sanity.config'
+
+let config: any
+
+try {
+  config = require('@/sanity.config').default
+} catch {
+  config = {}
+}
+
+function notFound() {
+  throw new Error('Not found')
+}
 
 export const dynamic = 'force-static'
 
 export { metadata, viewport } from 'next-sanity/studio'
 
 export default function StudioPage() {
+  if (!config) {
+    notFound()
+  }
+
   return <NextStudio config={config} />
 }

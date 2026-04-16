@@ -43,6 +43,58 @@ describe('vapid helper', () => {
     )
   })
 
+  it('derives contact email from app URL when VAPID_CONTACT_EMAIL is unset', async () => {
+    await jest.unstable_mockModule('server-only', () => ({}))
+    const setVapidDetails = jest.fn()
+    await jest.unstable_mockModule('web-push', () => ({
+      default: { setVapidDetails },
+    }))
+
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY = 'public'
+    process.env.VAPID_PRIVATE_KEY = 'private'
+    process.env.NEXT_PUBLIC_APP_URL = 'https://solosuccessai.fun'
+
+    const vapid = await import('@/lib/vapid')
+    expect(vapid.ensureVapidConfigured()).toBe(true)
+    expect(setVapidDetails).toHaveBeenCalledWith(
+      'mailto:admin@solosuccessai.fun',
+      'public',
+      'private'
+    )
+  })
+
+  it('reconfigures web-push when contact email changes', async () => {
+    await jest.unstable_mockModule('server-only', () => ({}))
+    const setVapidDetails = jest.fn()
+    await jest.unstable_mockModule('web-push', () => ({
+      default: { setVapidDetails },
+    }))
+
+    process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY = 'public'
+    process.env.VAPID_PRIVATE_KEY = 'private'
+    process.env.VAPID_CONTACT_EMAIL = 'first@example.com'
+
+    const vapid = await import('@/lib/vapid')
+    expect(vapid.ensureVapidConfigured()).toBe(true)
+
+    process.env.VAPID_CONTACT_EMAIL = 'second@example.com'
+    expect(vapid.ensureVapidConfigured()).toBe(true)
+
+    expect(setVapidDetails).toHaveBeenCalledTimes(2)
+    expect(setVapidDetails).toHaveBeenNthCalledWith(
+      1,
+      'mailto:first@example.com',
+      'public',
+      'private'
+    )
+    expect(setVapidDetails).toHaveBeenNthCalledWith(
+      2,
+      'mailto:second@example.com',
+      'public',
+      'private'
+    )
+  })
+
   it('returns false when web-push rejects VAPID details', async () => {
     await jest.unstable_mockModule('server-only', () => ({}))
     const setVapidDetails = jest.fn(() => {
