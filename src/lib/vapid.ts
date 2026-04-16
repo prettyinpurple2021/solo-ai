@@ -10,6 +10,23 @@ export interface VapidConfig {
 
 let cachedVapidFingerprint: string | null = null
 
+function getDefaultVapidContactEmail(): string {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL
+
+  if (appUrl) {
+    try {
+      const hostname = new URL(appUrl).hostname
+      if (hostname) {
+        return `admin@${hostname}`
+      }
+    } catch {
+      // Fall through to generic default when URL is invalid
+    }
+  }
+
+  return 'admin@example.com'
+}
+
 export function getVapidKeys(): VapidConfig | null {
   const publicKey = process.env.VAPID_PUBLIC_KEY || process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY
   const privateKey = process.env.VAPID_PRIVATE_KEY
@@ -18,7 +35,7 @@ export function getVapidKeys(): VapidConfig | null {
     return null
   }
 
-  const contactEmail = process.env.VAPID_CONTACT_EMAIL || 'admin@example.com'
+  const contactEmail = process.env.VAPID_CONTACT_EMAIL || getDefaultVapidContactEmail()
 
   return {
     publicKey,
@@ -33,7 +50,7 @@ export function ensureVapidConfigured(): boolean {
     return false
   }
 
-  const fingerprint = `${vapidConfig.publicKey}:${vapidConfig.privateKey}`
+  const fingerprint = `${vapidConfig.contactEmail}:${vapidConfig.publicKey}:${vapidConfig.privateKey}`
   if (cachedVapidFingerprint === fingerprint) {
     return true
   }
