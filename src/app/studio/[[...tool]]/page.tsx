@@ -10,6 +10,7 @@
 import { NextStudio } from 'next-sanity/studio'
 import config from '../../../../sanity.config'
 import { isSanityConfigured } from '@/sanity/lib/client'
+import { notFound } from 'next/navigation'
 
 export const dynamic = 'force-static'
 
@@ -17,7 +18,7 @@ export { metadata, viewport } from 'next-sanity/studio'
 
 export default function StudioPage() {
   if (!isSanityConfigured()) {
-    return null
+    notFound()
   }
 
   return <NextStudio config={config} />

@@ -16,7 +16,7 @@ function getDefaultVapidContactEmail(): string {
   if (appUrl) {
     try {
       const hostname = new URL(appUrl).hostname
-      if (hostname) {
+      if (hostname.length > 0) {
         return `admin@${hostname}`
       }
     } catch {
