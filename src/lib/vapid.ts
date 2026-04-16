@@ -10,7 +10,7 @@ export interface VapidConfig {
 
 let cachedVapidFingerprint: string | null = null
 
-function getDefaultVapidContactEmail(): string {
+function getVapidContactEmailFallback(): string {
   const appUrl = process.env.NEXT_PUBLIC_APP_URL
 
   if (appUrl) {
@@ -35,7 +35,7 @@ export function getVapidKeys(): VapidConfig | null {
     return null
   }
 
-  const contactEmail = process.env.VAPID_CONTACT_EMAIL || getDefaultVapidContactEmail()
+  const contactEmail = process.env.VAPID_CONTACT_EMAIL || getVapidContactEmailFallback()
 
   return {
     publicKey,
