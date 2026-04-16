@@ -50,7 +50,7 @@ export function ensureVapidConfigured(): boolean {
     return false
   }
 
-  const fingerprint = `${vapidConfig.contactEmail}:${vapidConfig.publicKey}:${vapidConfig.privateKey}`
+  const fingerprint = `v2:${vapidConfig.contactEmail}:${vapidConfig.publicKey}:${vapidConfig.privateKey}`
   if (cachedVapidFingerprint === fingerprint) {
     return true
   }

@@ -82,6 +82,12 @@ describe('vapid helper', () => {
 
     expect(setVapidDetails).toHaveBeenCalledTimes(2)
     expect(setVapidDetails).toHaveBeenNthCalledWith(
+      1,
+      'mailto:first@example.com',
+      'public',
+      'private'
+    )
+    expect(setVapidDetails).toHaveBeenNthCalledWith(
       2,
       'mailto:second@example.com',
       'public',
