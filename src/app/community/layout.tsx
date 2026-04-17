@@ -1,6 +1,9 @@
 import { CommunityLayout } from "@/components/community/community-layout"
 import { getTopics } from "@/lib/actions/community-actions"
 
+export const dynamic = "force-dynamic"
+export const revalidate = 0
+
 export default async function Layout({ children }: { children: React.ReactNode }) {
     const topics = await getTopics()
     
