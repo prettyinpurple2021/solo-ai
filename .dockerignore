@@ -93,14 +93,11 @@ src/components/archive/TheCodex.tsx
 src/components/archive/ToastSystem.tsx
 src/components/archive/UniversalSearch.tsx
 
-# Config files (if not needed for build)
-/next.config.*
-/tailwind.config.*
-/postcss.config.*
-/eslint.config.*
-/playwright.config.*
-/jest.config.*
-/stackbit.config.*
+# Config files (exclude only those not needed for build)
+eslint.config.*
+playwright.config.*
+jest.config.*
+stackbit.config.*
 
 # Deployment configs
 .vercelignore
@@ -118,5 +115,4 @@ generate-auto.cjs
 skills-lock.json
 metadata.json
 openapi.json
-sanity.*
 Implementation*

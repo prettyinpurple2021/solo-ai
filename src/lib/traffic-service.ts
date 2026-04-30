@@ -28,7 +28,6 @@ export class TrafficService {
         return;
       }
 
-      // We allow userId to be non-uuid as it might be a Clerk ID or similar string
       
       // Basic URL normalization
       let sanitizedUrl = data.url;
@@ -41,12 +40,12 @@ export class TrafficService {
 
       await db.insert(trafficLogs).values({
         sessionId: sessionIdParse.data,
-        userId: data.userId || null,
+        userId: TrafficService.normalizeOptionalStr(data.userId),
         url: sanitizedUrl,
-        referrer: data.referrer || null,
-        userAgent: data.userAgent || null,
-        ipAddress: data.ipAddress || null,
-        metadata: data.metadata || {},
+        referrer: TrafficService.normalizeOptionalStr(data.referrer),
+        userAgent: TrafficService.normalizeOptionalStr(data.userAgent),
+        ipAddress: TrafficService.normalizeOptionalStr(data.ipAddress),
+        metadata: data.metadata ?? {},
       });
     } catch (error) {
       // If the table isn't deployed yet, fail silently (do not spam logs on every request).
@@ -108,6 +107,15 @@ export class TrafficService {
       logError('TrafficService: Failed to get session attribution', error);
       return null;
     }
+  }
+
+  /**
+   * Coerces empty/whitespace strings and undefined to null so optional FK
+   * columns (e.g. user_id) never receive an empty string, which would violate
+   * the foreign key constraint.
+   */
+  private static normalizeOptionalStr(v: string | undefined | null): string | null {
+    return v && v.trim().length > 0 ? v : null;
   }
 
   private static parseSourceFromReferrer(referrer: string): string {

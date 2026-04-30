@@ -244,7 +244,6 @@ export class CompetitorEnrichmentService {
       }
 
       const html = scrape.data.content
-      // Cheerio removed - using simplified parsing
 
       // Basic fields from meta tags using regex
       let description: string | undefined
@@ -257,48 +256,74 @@ export class CompetitorEnrichmentService {
       let employeeCount: number | undefined
       let products: Product[] | undefined
 
-      // Extract JSON-LD structured data
-      const jsonLdMatches = html.match(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([^<]*)<\/script>/gi)
-      if (jsonLdMatches) {
-        for (const match of jsonLdMatches) {
-          try {
-            const jsonMatch = match.match(/>([^<]*)</)
-            if (!jsonMatch) continue
-            const json = JSON.parse(jsonMatch[1])
-            const org = Array.isArray(json) ? json.find(j => j['@type'] === 'Organization') : (json['@type'] === 'Organization' ? json : null)
-            if (org) {
-              if (!description && typeof org.description === 'string') description = org.description
-              if (typeof org.foundingDate === 'string') {
-                const y = parseInt(org.foundingDate)
-                if (!Number.isNaN(y)) foundedYear = y
-              }
-              if (typeof org.numberOfEmployees === 'number') employeeCount = org.numberOfEmployees
-              if (org.address && typeof org.address === 'object') {
-                const addr = org.address
-                const parts = [addr.streetAddress, addr.addressLocality, addr.addressRegion, addr.addressCountry].filter(Boolean)
-                if (parts.length) headquarters = parts.join(', ')
+      try {
+        const companyExtractionSchema = jsonSchema<{
+          description?: string
+          industry?: string
+          headquarters?: string
+          foundedYear?: number
+          employeeCount?: number
+          products?: Array<{
+            name: string
+            description?: string
+            category?: string
+          }>
+        }>({
+          type: "object",
+          properties: {
+            description: { type: "string" },
+            industry: { type: "string" },
+            headquarters: { type: "string" },
+            foundedYear: { type: "number" },
+            employeeCount: { type: "number" },
+            products: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  name: { type: "string" },
+                  description: { type: "string" },
+                  category: { type: "string" }
+                },
+                required: ["name"]
               }
             }
-            const productJson = Array.isArray(json) ? json.filter(j => j['@type'] === 'Product') : (json['@type'] === 'Product' ? [json] : [])
-            if (productJson.length) {
-              products = productJson.map((p: any) => ({
-                name: p.name,
-                description: p.description,
-                category: p.category,
-                features: [],
-                status: 'active'
-              }))
-            }
-          } catch {}
+          }
+        })
+
+        const { object } = await generateObject({
+          model: openai('gpt-4o-mini'),
+          system: 'Extract company information from the provided HTML content. Return a JSON structure matching the schema. Focus on finding the company description, industry, headquarters, founded year, employee count, and main products.',
+          prompt: `Extract company info from this HTML: ${html.substring(0, 25000)}`,
+          schema: companyExtractionSchema
+        });
+
+        if (object.description && !description) description = object.description;
+        if (object.industry) industry = object.industry;
+        if (object.headquarters) headquarters = object.headquarters;
+        if (object.foundedYear) foundedYear = object.foundedYear;
+        if (object.employeeCount) employeeCount = object.employeeCount;
+        if (object.products && object.products.length > 0) {
+          products = object.products.map((p: any) => ({
+            name: p.name,
+            description: p.description,
+            category: p.category,
+            features: [],
+            status: 'active'
+          }))
         }
+      } catch (e) {
+        console.error('Failed to extract company info from HTML via AI:', e);
       }
 
-      // Heuristic industry detection from keywords
-      const text = html.replace(/<[^>]*>/g, ' ').toLowerCase()
-      for (const [ind, keywords] of Object.entries(INDUSTRY_KEYWORDS)) {
-        if (keywords.some(k => text.includes(k))) {
-          industry = ind
-          break
+      // If AI extraction failed or missed industry, use fallback heuristic industry detection from keywords
+      if (!industry) {
+        const text = html.replace(/<[^>]*>/g, ' ').toLowerCase()
+        for (const [ind, keywords] of Object.entries(INDUSTRY_KEYWORDS)) {
+          if (keywords.some(k => text.includes(k))) {
+            industry = ind
+            break
+          }
         }
       }
 

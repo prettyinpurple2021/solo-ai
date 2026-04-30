@@ -203,16 +203,19 @@ Provide your analysis and recommendations for this phase of the project.
     task: CollaborationTask,
   ): Promise<AgentHandoff> {
     const fromConfig = getTeamMemberConfig(fromAgent)
-    // const toConfig = getTeamMemberConfig(toAgent) // Reserved for future use
+    const toConfig = getTeamMemberConfig(toAgent)
 
     const handoffPrompt = `
 You are ${fromAgent} completing your phase of the collaboration task "${task.title}".
 
 Your completed work: ${context}
 
+The receiving agent, ${toAgent}, has the following role:
+${toConfig.systemPrompt}
+
 Generate a professional handoff to ${toAgent} that includes:
 1. Key deliverables and insights from your work
-2. Specific recommendations for their phase
+2. Specific recommendations for their phase, tailored to their capabilities
 3. Any dependencies or requirements they should be aware of
 4. Questions or areas where they should focus
 

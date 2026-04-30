@@ -4,23 +4,19 @@
 FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat
 
-# Install production dependencies
-FROM base AS deps
-WORKDIR /app
-COPY package*.json ./
-RUN npm install --omit=dev
-
-# Build stage
+# Build stage with all dependencies (including dev)
 FROM base AS builder
 WORKDIR /app
-ENV NODE_ENV=production
+ENV NODE_ENV=development
 ENV NEXT_TELEMETRY_DISABLED=1
 
 COPY package*.json ./
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 COPY . .
-RUN npm run build && npm cache clean --force
+# Disable PWA in Docker (disable in next.config.mjs for production)
+ENV DISABLE_PWA=true
+RUN NODE_ENV=production npx next build --webpack && npm cache clean --force
 
 # Production image
 FROM base AS runner
@@ -36,16 +32,12 @@ RUN addgroup --system --gid 1001 nodejs && \
     mkdir -p .next && \
     chown -R nextjs:nodejs .next
 
-# Copy built application and dependencies
+# Copy built application and all dependencies
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
-COPY --from=deps /app/node_modules ./node_modules
-
-# Copy database and script files
-COPY --from=builder --chown=nextjs:nodejs /app/db ./db
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/migrations ./migrations
-COPY --from=builder --chown=nextjs:nodejs /app/drizzle.config.ts ./
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 
 USER nextjs

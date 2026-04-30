@@ -108,20 +108,22 @@ const nextConfig = {
   },
 };
 
-const withPWA = (await import("@ducanh2912/next-pwa")).default({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
-  scope: "/",
-  sw: "sw.js",
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
-  reloadOnOnline: true,
-  sourcemap: false,
-  // Workbox default precache cap is 2 MiB; large Next.js shared chunks exceed it and spam the build log.
-  workboxOptions: {
-    maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
-  },
-});
+const withPWA = process.env.DISABLE_PWA === 'true'
+  ? (config) => config
+  : (await import("@ducanh2912/next-pwa")).default({
+      dest: "public",
+      disable: process.env.NODE_ENV === "development",
+      register: true,
+      scope: "/",
+      sw: "sw.js",
+      cacheOnFrontEndNav: true,
+      aggressiveFrontEndNavCaching: true,
+      reloadOnOnline: true,
+      sourcemap: false,
+      // Workbox default precache cap is 2 MiB; large Next.js shared chunks exceed it and spam the build log.
+      workboxOptions: {
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
+      },
+    });
 
 export default withPWA(nextConfig);

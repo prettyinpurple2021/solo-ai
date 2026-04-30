@@ -1,6 +1,6 @@
 # Production Remediation Tracker
 
-Last updated: 2026-04-12
+Last updated: 2026-04-27
 Owner: SoloSuccess AI engineering
 Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
@@ -20,7 +20,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 
 ## Current readiness baseline
 
-- Overall launch readiness score: `87/100` (ready for public launch; remaining caveat is **`elliptic`** via **`@stackframe/stack`** — low severity, tracked upstream)
+- Overall launch readiness score: `82/100` (was `87/100`; downgraded due to **CRIT-008** — all production secrets committed to git history via `.env.production` require rotation before safe public launch)
 - Build/lint/type-check: passing (verified **`npm run validate`** on 2026-03-25)
 - Production build: passing (verified **`next build --webpack`** on 2026-03-25; 185 static pages generated; PWA / Workbox compiled without precache size errors for large chunks)
 - Test suite: passing; Jest exits cleanly (**MED-005** done — lazy Express `pg` pool + global teardown); **`16/16`** suites, **`97/97`** tests (2026-03-25)
@@ -29,6 +29,12 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 - Observability: stray **`console.error`** on learning, TOTP, and guardian UI paths replaced with **`logError`** (**MED-009**)
 
 ## Work log
+
+### 2026-04-27
+
+- **🚨 CRIT-008 (Secret Rotation):** Discovered that `.env.production` containing **all real production secrets** was committed to git history (commit `34980ff6` and predecessors; file deleted in commit `cef2a0ad` on 2026-01-11). Despite `.gitignore` coverage and file removal from HEAD, secrets remain recoverable from git history. **17 secret categories** identified for mandatory rotation across Neon DB, JWT/Auth, Stripe (LIVE), OpenAI, Anthropic, Upstash, Resend, Twitter/X, VAPID, Google Cloud, Stack Auth, Brave, Gitea, and Context7. Created **[SECRET_ROTATION_RUNBOOK.md](SECRET_ROTATION_RUNBOOK.md)** with phased rotation instructions, verification steps, and post-rotation evidence table. Downgraded readiness score from `87/100` to `82/100` until rotation is complete.
+- **Git safety audit:** Confirmed `.env` and `.env.local` were never committed. Confirmed `server/.env.example` contains only placeholder values. Confirmed `postman/environments/New Environment.environment.yaml` is empty. `.gitignore` correctly excludes all env file patterns.
+- **Recent codebase activity (since 2026-04-12):** Merged Dependabot PRs (#41, #38, #31, #30), fixed community page prerendering failure (`force-dynamic`), restored Sanity Studio config, stabilized TypeScript configuration after branch consolidation, hardened Next.js builds for missing Sanity/VAPID env vars (CI-safe), resolved TS2589 deep type instantiation errors, and implemented multi-agent collaboration framework.
 
 ### 2026-04-12
 
@@ -165,6 +171,7 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 | CRIT-005 | CRITICAL | Frontend Security | XSS risk via unsanitized `dangerouslySetInnerHTML` in email/pitch rendering | DONE | `npm run lint` passed |
 | CRIT-006 | CRITICAL | Secrets Hygiene | Credential-like `DATABASE_URL` present in `server/.env.example` | DONE | Static file verification |
 | CRIT-007 | CRITICAL | CI/CD | No real test gate in CI | DONE | `.github/workflows/ci.yml` on `main`; also run `npm run validate` + `npm test -- --runInBand` locally before push |
+| CRIT-008 | CRITICAL | Secrets Hygiene | `.env.production` with all real production secrets committed to git history (17 secret categories exposed) | IN_PROGRESS | See [SECRET_ROTATION_RUNBOOK.md](SECRET_ROTATION_RUNBOOK.md) |
 
 ## High-priority remediation queue
 
@@ -521,6 +528,7 @@ Use this block whenever an item is completed:
 
 ## Next execution queue
 
+- **🚨 CRIT-008 (IN_PROGRESS — LAUNCH-BLOCKING):** Rotate all 17 categories of compromised production secrets and scrub `.env.production` from git history. Follow **[SECRET_ROTATION_RUNBOOK.md](SECRET_ROTATION_RUNBOOK.md)** phases 1–5. **Must complete before any public launch, repo visibility change, or collaborator onboarding.**
 - **DONE (CI):** Production build gate is now enforced in CI for **push** and **pull_request** to `main` (`production-build` job runs `next build --webpack`).
 - **Optional:** Run a production **`next build`** on Vercel preview and confirm route types (static ○ vs dynamic ƒ) for key URLs; tune any remaining **`force-dynamic`** **dashboard** pages only if you need ISR/SSG later.
 - **Ongoing (runtime):** keep `npm audit --omit=dev` advisories on radar — root currently has **4 low** (`@stackframe/stack` → `elliptic`).
@@ -535,6 +543,10 @@ Use this block whenever an item is completed:
   - `railway-deploy/`: **0**
 - **Jest / async leaks:** if new suites import long-lived clients (Redis, sockets, timers), re-run `npm test -- --detectOpenHandles` and add targeted teardown or mocks. **MED-005** addressed the Express `pg` pool path.
 
+## BLOCKING residuals (launch-gating)
+
+- **CRIT-008 (secrets in git history):** `.env.production` was committed with real credentials. All secrets must be rotated and git history scrubbed before the repo can safely be made public or shared with collaborators. See **[SECRET_ROTATION_RUNBOOK.md](SECRET_ROTATION_RUNBOOK.md)** and the CRIT-008 change checklist below.
+
 ### MED-010: Enforce production build in GitHub CI for `main`
 
 - What changed:
@@ -548,3 +560,20 @@ Use this block whenever an item is completed:
   - Command: `npm run build`
   - Result: pass (`next build --webpack` succeeded locally after CI config tightening).
 - Status: DONE
+
+### CRIT-008: Rotate all production secrets exposed in git history
+
+- What changed:
+  - **Discovery (2026-04-27):** `.env.production` was committed to git history in commit `34980ff6` (and predecessors) containing **all real production secrets** — database passwords, Stripe LIVE keys, AI API keys, JWT signing secrets, Redis/QStash tokens, email API keys, Twitter OAuth, VAPID keys, and more. The file was removed from HEAD in commit `cef2a0ad` (2026-01-11) and `.gitignore` now excludes it, but secrets remain in git history.
+  - **17 secret categories** identified for mandatory rotation.
+  - Created **[SECRET_ROTATION_RUNBOOK.md](SECRET_ROTATION_RUNBOOK.md)** with phased rotation plan (5 phases), per-service instructions, and post-rotation evidence table.
+  - **Git history scrubbing** recommended via `git filter-repo --invert-paths --path .env.production`.
+- Files updated:
+  - `docs/reports/SECRET_ROTATION_RUNBOOK.md` (new)
+  - `docs/reports/PRODUCTION_REMEDIATION_TRACKER.md` (this file)
+- Why this improves production readiness:
+  - Eliminates the risk of credential theft from git history — the most common source of production breaches in SaaS projects.
+- Verification:
+  - Per-service verification checklist in runbook (login flows, Stripe checkout, AI features, email delivery, push notifications, health endpoints).
+  - Evidence table to be filled during rotation.
+- Status: IN_PROGRESS
