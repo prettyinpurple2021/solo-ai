@@ -1,5 +1,6 @@
 import { generateObject, jsonSchema } from 'ai'
 import { openai } from '@ai-sdk/openai'
+import { logError, logWarn } from '@/lib/logger'
 
 import type { 
   CompetitorProfile, 
@@ -9,6 +10,16 @@ import type {
   KeyPerson, 
   Product 
 } from './competitor-intelligence-types'
+
+/**
+ * Typed shape returned by the AI company-extraction schema.
+ * Mirrors the jsonSchema definition below so the .map() callback is type-safe.
+ */
+interface ExtractedProduct {
+  name: string
+  description?: string
+  category?: string
+}
 
 // Configuration for enrichment service
 interface EnrichmentConfig {
@@ -291,29 +302,45 @@ export class CompetitorEnrichmentService {
           }
         })
 
-        const { object } = await generateObject({
-          model: openai('gpt-4o-mini'),
-          system: 'Extract company information from the provided HTML content. Return a JSON structure matching the schema. Focus on finding the company description, industry, headquarters, founded year, employee count, and main products.',
-          prompt: `Extract company info from this HTML: ${html.substring(0, 25000)}`,
-          schema: companyExtractionSchema
-        });
+        // Validate that the OpenAI API key is configured before attempting the
+        // call — fail fast with a warning rather than hanging on a 401.
+        if (!process.env.OPENAI_API_KEY) {
+          logWarn('CompetitorEnrichmentService: OPENAI_API_KEY is not set; skipping AI extraction')
+        } else {
+          // 15-second hard timeout: the enrichment pipeline must not stall
+          // indefinitely if the OpenAI API is slow or unresponsive.
+          const controller = new AbortController()
+          const timeoutId = setTimeout(() => controller.abort(), 15_000)
 
-        if (object.description && !description) description = object.description;
-        if (object.industry) industry = object.industry;
-        if (object.headquarters) headquarters = object.headquarters;
-        if (object.foundedYear) foundedYear = object.foundedYear;
-        if (object.employeeCount) employeeCount = object.employeeCount;
-        if (object.products && object.products.length > 0) {
-          products = object.products.map((p: any) => ({
-            name: p.name,
-            description: p.description,
-            category: p.category,
-            features: [],
-            status: 'active'
-          }))
+          try {
+            const { object } = await generateObject({
+              model: openai('gpt-4o-mini'),
+              system: 'Extract company information from the provided HTML content. Return a JSON structure matching the schema. Focus on finding the company description, industry, headquarters, founded year, employee count, and main products.',
+              prompt: `Extract company info from this HTML: ${html.substring(0, 25_000)}`,
+              schema: companyExtractionSchema,
+              abortSignal: controller.signal,
+            })
+
+            if (object.description && !description) description = object.description
+            if (object.industry) industry = object.industry
+            if (object.headquarters) headquarters = object.headquarters
+            if (object.foundedYear) foundedYear = object.foundedYear
+            if (object.employeeCount) employeeCount = object.employeeCount
+            if (object.products && object.products.length > 0) {
+              products = object.products.map((p: ExtractedProduct): Product => ({
+                name: p.name,
+                description: p.description,
+                category: p.category,
+                features: [],
+                status: 'active',
+              }))
+            }
+          } finally {
+            clearTimeout(timeoutId)
+          }
         }
       } catch (e) {
-        console.error('Failed to extract company info from HTML via AI:', e);
+        logError('CompetitorEnrichmentService: Failed to extract company info from HTML via AI', e instanceof Error ? e : undefined)
       }
 
       // If AI extraction failed or missed industry, use fallback heuristic industry detection from keywords
@@ -729,8 +756,8 @@ export class CompetitorEnrichmentService {
               }
             }
           } catch (e) {
-            // AI extraction failed, fallback gracefully and continue silently
-            console.error('Failed to extract team members from HTML via AI:', e);
+            // AI extraction failed — log and continue; JSON-LD fallback still applies.
+            logError('CompetitorEnrichmentService: Failed to extract team members from HTML via AI', e instanceof Error ? e : undefined)
           }
         }
 

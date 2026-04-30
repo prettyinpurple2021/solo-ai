@@ -4,7 +4,13 @@
 FROM node:20-alpine AS base
 RUN apk add --no-cache libc6-compat
 
-# Build stage with all dependencies (including dev)
+# ── builder ────────────────────────────────────────────────────────────────────
+# NODE_ENV=development so devDependencies are installed (required by next build).
+# --legacy-peer-deps is required because @ducanh2912/next-pwa and
+# @stackframe/stack declare conflicting peer dependency ranges on React 18/19.
+# TODO: remove this flag once upstream resolves peer-dep alignment
+#   (track: https://github.com/DuCanhGH/next-pwa/issues — check for a new
+#    release that lifts the React 19 peer constraint).
 FROM base AS builder
 WORKDIR /app
 ENV NODE_ENV=development
@@ -14,11 +20,24 @@ COPY package*.json ./
 RUN npm install --legacy-peer-deps
 
 COPY . .
-# Disable PWA in Docker (disable in next.config.mjs for production)
+# Disable the PWA/Workbox plugin during Docker builds; DISABLE_PWA is read by
+# next.config.mjs to short-circuit the @ducanh2912/next-pwa wrapper.
 ENV DISABLE_PWA=true
-RUN NODE_ENV=production npx next build --webpack && npm cache clean --force
+# Run the build under production NODE_ENV so Next.js applies all production
+# optimizations. The `--webpack` flag does not exist in the Next.js CLI —
+# webpack is the default bundler when Turbopack is not opted in.
+RUN NODE_ENV=production npx next build && npm cache clean --force
 
-# Production image
+# ── prod-deps ──────────────────────────────────────────────────────────────────
+# Install only production dependencies so the runtime image does not carry
+# devDependencies (saves ~300–600 MB and reduces attack surface).
+FROM base AS prod-deps
+WORKDIR /app
+COPY package*.json ./
+# Use --legacy-peer-deps for the same reason as the builder stage above.
+RUN npm install --omit=dev --legacy-peer-deps
+
+# ── runner ─────────────────────────────────────────────────────────────────────
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
@@ -32,11 +51,13 @@ RUN addgroup --system --gid 1001 nodejs && \
     mkdir -p .next && \
     chown -R nextjs:nodejs .next
 
-# Copy built application and all dependencies
+# Copy the compiled Next.js output and static assets from the builder stage.
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./
-COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+# Copy production-only node_modules from the dedicated prod-deps stage — NOT
+# from builder, which also contains devDependencies.
+COPY --from=prod-deps --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/migrations ./migrations
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 

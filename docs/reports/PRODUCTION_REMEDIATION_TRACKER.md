@@ -18,6 +18,24 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
   - `LOW`: polish
 - Verification must include command(s) run and result.
 
+### Scoring methodology
+
+The **Overall launch readiness score** starts at **100** and applies weighted deductions per open finding:
+
+| Severity | Deduction per open item |
+| -------- | ----------------------- |
+| CRITICAL | −5                      |
+| HIGH     | −3                      |
+| MEDIUM   | −1                      |
+| LOW      | 0                       |
+
+Example calculation (current):
+- Baseline: 100
+- CRIT-008 open (×1 CRITICAL): −5
+- Prior resolved HIGH findings that initially brought the score down were later cleared when completed; the most recent deduction was applied going from 87 → 82 after CRIT-008 was discovered.
+- Rounding: scores are whole numbers; no partial deductions.
+- When an item moves to `DONE` its deduction is removed and the score increases accordingly.
+
 ## Current readiness baseline
 
 - Overall launch readiness score: `82/100` (was `87/100`; downgraded due to **CRIT-008** — all production secrets committed to git history via `.env.production` require rotation before safe public launch)
@@ -33,6 +51,21 @@ Scope: Full production-hardening pass (security, reliability, quality, CI/CD)
 ### 2026-04-27
 
 - **🚨 CRIT-008 (Secret Rotation):** Discovered that `.env.production` containing **all real production secrets** was committed to git history (commit `34980ff6` and predecessors; file deleted in commit `cef2a0ad` on 2026-01-11). Despite `.gitignore` coverage and file removal from HEAD, secrets remain recoverable from git history. **17 secret categories** identified for mandatory rotation across Neon DB, JWT/Auth, Stripe (LIVE), OpenAI, Anthropic, Upstash, Resend, Twitter/X, VAPID, Google Cloud, Stack Auth, Brave, Gitea, and Context7. Created **[SECRET_ROTATION_RUNBOOK.md](SECRET_ROTATION_RUNBOOK.md)** with phased rotation instructions, verification steps, and post-rotation evidence table. Downgraded readiness score from `87/100` to `82/100` until rotation is complete.
+  - **Deadline:** All secrets must be rotated and git history scrubbed **before any public launch, repo visibility change, or collaborator onboarding** — target: **2026-05-10**.
+  - **Owner:** Frances Loggins (primary); SoloSuccess AI engineering on-call (secondary).
+  - **Monitoring during rotation window:** Enable Vercel/Railway access logs; monitor Sentry error rate for auth/payment failures; watch Stripe Dashboard → Events for unexpected charges during the 24h Stripe key transition window; check Neon query logs for connection failures post-DB password rotation.
+  - **IR playbook (if secrets are exploited before rotation completes):**
+    1. **Containment:** Immediately revoke all compromised keys at each provider dashboard (do not wait for the phased rotation plan).
+    2. **Forensics:** Pull Vercel/Railway access logs and Stripe event log for the past 30 days; look for unknown IPs, unusual charge patterns, or unauthorized DB queries.
+    3. **Token revocation:** Force-expire all active user sessions by regenerating `JWT_SECRET` and `AUTH_SECRET` and deploying immediately.
+    4. **Credential re-issuance:** Issue new keys for every service in the runbook; treat all current values as compromised.
+    5. **Stakeholder notification:** Notify affected users if payment data or PII was accessed; prepare a breach disclosure per applicable law (GDPR Article 33 — 72h to supervisory authority; CCPA § 1798.82).
+  - **Stakeholder communication template:**
+    > Subject: [Action Required] SoloSuccess AI — Credential Rotation in Progress
+    >
+    > We are rotating all service credentials as a precautionary measure following an internal security audit. You may experience a brief session expiry requiring re-login. No user data has been confirmed compromised. We will update this notice upon completion.
+    >
+    > — SoloSuccess AI Engineering
 - **Git safety audit:** Confirmed `.env` and `.env.local` were never committed. Confirmed `server/.env.example` contains only placeholder values. Confirmed `postman/environments/New Environment.environment.yaml` is empty. `.gitignore` correctly excludes all env file patterns.
 - **Recent codebase activity (since 2026-04-12):** Merged Dependabot PRs (#41, #38, #31, #30), fixed community page prerendering failure (`force-dynamic`), restored Sanity Studio config, stabilized TypeScript configuration after branch consolidation, hardened Next.js builds for missing Sanity/VAPID env vars (CI-safe), resolved TS2589 deep type instantiation errors, and implemented multi-agent collaboration framework.
 
@@ -568,6 +601,16 @@ Use this block whenever an item is completed:
   - **17 secret categories** identified for mandatory rotation.
   - Created **[SECRET_ROTATION_RUNBOOK.md](SECRET_ROTATION_RUNBOOK.md)** with phased rotation plan (5 phases), per-service instructions, and post-rotation evidence table.
   - **Git history scrubbing** recommended via `git filter-repo --invert-paths --path .env.production`.
+
+  > **⚠️ DESTRUCTIVE OPERATION — required safety checklist before running git filter-repo:**
+  > - [ ] Create a full mirror backup first: `git clone --mirror <repo-url> solosuccess-mirror.git`
+  > - [ ] Document any known forks or mirrors — they will **retain the old secrets** and must be re-cloned or similarly scrubbed.
+  > - [ ] Coordinate a contributor freeze: no one pushes to `origin` during the rewrite.
+  > - [ ] Merge or save all open PRs before rewriting — open PR commits will reference rewritten SHAs and will need to be rebased.
+  > - [ ] Temporarily disable branch-protection rules on GitHub (Settings → Branches → Edit) so force-push is permitted.
+  > - [ ] After force-push, re-enable branch protection.
+  > - [ ] All local clones/forks must `git fetch --all` and `git reset --hard origin/main` (or re-clone) — existing local copies reference old SHAs.
+  > - [ ] Re-sync Vercel and Railway GitHub integration if deploy hooks reference specific commit SHAs.
 - Files updated:
   - `docs/reports/SECRET_ROTATION_RUNBOOK.md` (new)
   - `docs/reports/PRODUCTION_REMEDIATION_TRACKER.md` (this file)

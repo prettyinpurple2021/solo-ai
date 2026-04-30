@@ -115,7 +115,8 @@ export class TrafficService {
    * the foreign key constraint.
    */
   private static normalizeOptionalStr(v: string | undefined | null): string | null {
-    return v && v.trim().length > 0 ? v : null;
+    const trimmed = v?.trim();
+    return trimmed && trimmed.length > 0 ? trimmed : null;
   }
 
   private static parseSourceFromReferrer(referrer: string): string {
