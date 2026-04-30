@@ -3,9 +3,9 @@
 > **Trigger:** `.env.production` containing real production secrets was committed to git history
 > (commit `34980ff6` and predecessors; file deleted in `cef2a0ad` on 2026-01-11).
 > Even though the file is no longer in HEAD, **all secrets are recoverable from git history**.
-> 
+>
 > **Repo:** `prettyinpurple2021/SoloSuccess_AI` (private) — limits blast radius but does not eliminate risk.
-> 
+>
 > **Owner:** Frances Loggins
 > **Created:** 2026-04-27
 > **Status:** IN_PROGRESS
@@ -119,6 +119,7 @@ postgresql://neondb_owner:<NEW_DB_PASSWORD>@ep-royal-wave-ahafdikl.c-3.us-east-1
 1. **Secret key:** Click "Roll key" — Stripe allows old key for 24h during transition
 2. **Publishable key:** Regenerate (less critical but do it since it was exposed alongside the secret key)
 3. **Webhook secret:** Dashboard → Webhooks → your endpoint → "Reveal signing secret" (if you recreate the endpoint, you get a new secret)
+
 - [x] `STRIPE_SECRET_KEY` rolled
 - [x] `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` regenerated
 - [x] `STRIPE_WEBHOOK_SECRET` regenerated
@@ -167,7 +168,7 @@ postgresql://neondb_owner:<NEW_DB_PASSWORD>@ep-royal-wave-ahafdikl.c-3.us-east-1
 - [x] Old key disabled
 - [x] New key created
 - [x] Updated in V, R, L
-- [x] Deployed 
+- [x] Deployed
 
 ---
 
@@ -333,6 +334,7 @@ Note: QStash signing key rotation is a two-step process — `NEXT` becomes `CURR
 > ⚠️ **DESTRUCTIVE OPERATION — read every item before running any command**
 >
 > **Required pre-flight checklist:**
+>
 > 1. **Full mirror backup:** `git clone --mirror https://github.com/prettyinpurple2021/SoloSuccess_AI.git solosuccess-mirror.git` — keep this until the force-push is confirmed successful.
 > 2. **Document forks/mirrors:** Any forks of this repo on GitHub, Gitea, or elsewhere will **retain the old secrets in their history**. Identify and coordinate with all fork owners.
 > 3. **Contributor freeze:** Announce to all contributors that no pushes are permitted during the rewrite window. Even one concurrent push will cause conflicts.
@@ -373,14 +375,14 @@ git push --force --tags origin
 | 7   | Stripe Publishable Key      | DONE     | YES               | PENDING — checkout not yet verified   | 04/27/26 |
 | 8   | OpenAI API Key              | DONE     | YES               | PENDING — AI endpoint not yet tested  | 04/28/26 |
 | 9   | Anthropic API Key           | DONE     | YES               | PENDING — AI endpoint not yet tested  | 04/28/26 |
-| 10  | Upstash Redis Token         |          |                   |                   |          |
-| 11  | QStash Token + Signing Keys |          |                   |                   |          |
-| 12  | Resend API Key              |          |                   |                   |          |
-| 13  | Twitter/X (all 4)           |          |                   |                   |          |
-| 14  | Stack Auth Keys             |          |                   |                   |          |
-| 15  | VAPID Keys                  |          |                   |                   |          |
-| 16  | Google Cloud API Key        |          |                   |                   |          |
-| 17  | Brave API Key               |          |                   |                   |          |
-| 18  | Gitea Token                 |          |                   |                   |          |
-| 19  | Context7 API Key            |          |                   |                   |          |
-| 20  | Git history scrubbed        |          | N/A               | N/A               |          |
+| 10  | Upstash Redis Token         |          |                   |                                       |          |
+| 11  | QStash Token + Signing Keys |          |                   |                                       |          |
+| 12  | Resend API Key              |          |                   |                                       |          |
+| 13  | Twitter/X (all 4)           |          |                   |                                       |          |
+| 14  | Stack Auth Keys             |          |                   |                                       |          |
+| 15  | VAPID Keys                  |          |                   |                                       |          |
+| 16  | Google Cloud API Key        |          |                   |                                       |          |
+| 17  | Brave API Key               |          |                   |                                       |          |
+| 18  | Gitea Token                 |          |                   |                                       |          |
+| 19  | Context7 API Key            |          |                   |                                       |          |
+| 20  | Git history scrubbed        |          | N/A               | N/A                                   |          |
