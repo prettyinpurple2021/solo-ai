@@ -1,7 +1,0 @@
-{
-  "name": "SoloSuccess AI",
-  "description": "A virtual executive team for solo founders. Features a 'Mission Control' dashboard, AI personas, and a 'Competitor Stalker' intelligence tool.",
-  "requestFramePermissions": [
-    "microphone"
-  ]
-}
