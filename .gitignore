@@ -28,6 +28,9 @@ server/.env.local
 # Local symlink only (canonical skill is .agents/skills/gemini-api-dev); absolute symlinks break Linux CI
 .agent/skills/gemini-api-dev
 
+# Scratch files (temporary debugging scripts)
+scratch/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

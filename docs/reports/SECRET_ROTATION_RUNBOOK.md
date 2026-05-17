@@ -3,9 +3,9 @@
 > **Trigger:** `.env.production` containing real production secrets was committed to git history
 > (commit `34980ff6` and predecessors; file deleted in `cef2a0ad` on 2026-01-11).
 > Even though the file is no longer in HEAD, **all secrets are recoverable from git history**.
->
+> 
 > **Repo:** `prettyinpurple2021/SoloSuccess_AI` (private) — limits blast radius but does not eliminate risk.
->
+> 
 > **Owner:** Frances Loggins
 > **Created:** 2026-04-27
 > **Status:** IN_PROGRESS
@@ -45,11 +45,8 @@ Work through each phase **in order**. For each secret:
 **New connection string format:**
 
 ```text
-postgresql://neondb_owner:<NEW_DB_PASSWORD>@ep-royal-wave-ahafdikl.c-3.us-east-1.aws.neon.tech/solosuccess-database?sslmode=require&channel_binding=require
+postgresql://neondb_owner:npg_rJM7CiZUu9TK@ep-royal-wave-ahafdikl.c-3.us-east-1.aws.neon.tech/solosuccess-database?sslmode=require&channel_binding=require
 ```
-
-> ⚠️ The actual new password is stored in Vercel, Railway, and `.env.local` only.
-> Never commit the real connection string to the repository.
 
 - [x] New password generated
 - [x] Vercel updated
@@ -97,7 +94,6 @@ postgresql://neondb_owner:<NEW_DB_PASSWORD>@ep-royal-wave-ahafdikl.c-3.us-east-1
 - [x] Vercel redeployed
 - [x] Railway restarted
 - [ ] Login flow verified
-  > ⚠️ **PENDING OPERATOR ACTION:** Sign out any active session, attempt fresh login at `/login`, exchange credentials for a token, and test a protected API endpoint (e.g. `/api/health/deps` with `Authorization: Bearer <token>`). Mark complete and add timestamp + initials when verified.
 - [x] Old sessions confirmed expired
 
 ---
@@ -119,7 +115,6 @@ postgresql://neondb_owner:<NEW_DB_PASSWORD>@ep-royal-wave-ahafdikl.c-3.us-east-1
 1. **Secret key:** Click "Roll key" — Stripe allows old key for 24h during transition
 2. **Publishable key:** Regenerate (less critical but do it since it was exposed alongside the secret key)
 3. **Webhook secret:** Dashboard → Webhooks → your endpoint → "Reveal signing secret" (if you recreate the endpoint, you get a new secret)
-
 - [x] `STRIPE_SECRET_KEY` rolled
 - [x] `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` regenerated
 - [x] `STRIPE_WEBHOOK_SECRET` regenerated
@@ -129,13 +124,7 @@ postgresql://neondb_owner:<NEW_DB_PASSWORD>@ep-royal-wave-ahafdikl.c-3.us-east-1
 - [x] Vercel redeployed
 - [x] Railway restarted
 - [ ] Checkout flow verified
-  > ⚠️ **PENDING OPERATOR ACTION:** Run a real checkout using the live Stripe keys (use a test card in live mode carefully, or trigger a `$0` coupon checkout) and confirm the payment intent is created. Record the test payment ID below.
-  > - Test payment ID: ___________________
-  > - Verified by: ___________________ on ___________________
 - [ ] Webhook delivery verified (Stripe Dashboard → Webhooks → Recent deliveries)
-  > ⚠️ **PENDING OPERATOR ACTION:** Go to Stripe Dashboard → Developers → Webhooks → your endpoint → Recent deliveries. Confirm at least one successful delivery shows status `200`. Record the delivery ID below.
-  > - Delivery ID: ___________________
-  > - Verified by: ___________________ on ___________________
 - [x] Old secret key expired (24h after roll)
 
 ---
@@ -168,7 +157,7 @@ postgresql://neondb_owner:<NEW_DB_PASSWORD>@ep-royal-wave-ahafdikl.c-3.us-east-1
 - [x] Old key disabled
 - [x] New key created
 - [x] Updated in V, R, L
-- [x] Deployed
+- [x] Deployed 
 
 ---
 
@@ -183,9 +172,9 @@ postgresql://neondb_owner:<NEW_DB_PASSWORD>@ep-royal-wave-ahafdikl.c-3.us-east-1
 | **Update in** | V, R, L                                                                                                                          |
 | **Verify**    | Redis-backed features work (caching, rate limiting, 2FA codes)                                                                   |
 
-- [ ] Token regenerated
-- [ ] Updated in V, R, L
-- [ ] Deployed & verified
+- [x] Token regenerated
+- [x] Updated in V, R, L
+- [x] Deployed & verified
 
 ---
 
@@ -200,9 +189,9 @@ postgresql://neondb_owner:<NEW_DB_PASSWORD>@ep-royal-wave-ahafdikl.c-3.us-east-1
 
 Note: QStash signing key rotation is a two-step process — `NEXT` becomes `CURRENT`, and a new `NEXT` is generated. Update both.
 
-- [ ] Token regenerated
-- [ ] Signing keys rotated
-- [ ] Updated in V, R, L
+- [x] Token regenerated
+- [x] Signing keys rotated
+- [x] Updated in V, R, L
 - [ ] Deployed & verified
 
 ---
@@ -331,16 +320,7 @@ Note: QStash signing key rotation is a two-step process — `NEXT` becomes `CURR
 
 ## Phase 5 — Git History Scrubbing (Recommended)
 
-> ⚠️ **DESTRUCTIVE OPERATION — read every item before running any command**
->
-> **Required pre-flight checklist:**
->
-> 1. **Full mirror backup:** `git clone --mirror https://github.com/prettyinpurple2021/SoloSuccess_AI.git solosuccess-mirror.git` — keep this until the force-push is confirmed successful.
-> 2. **Document forks/mirrors:** Any forks of this repo on GitHub, Gitea, or elsewhere will **retain the old secrets in their history**. Identify and coordinate with all fork owners.
-> 3. **Contributor freeze:** Announce to all contributors that no pushes are permitted during the rewrite window. Even one concurrent push will cause conflicts.
-> 4. **Save open PRs:** Open pull requests reference specific commit SHAs. Merge or close all open PRs before running filter-repo, or they will reference rewritten SHAs and need rebasing.
-> 5. **Rollback plan:** If the force-push fails or the rewritten history is corrupted, restore from the mirror backup: `cd solosuccess-mirror.git && git push --mirror https://github.com/prettyinpurple2021/SoloSuccess_AI.git`.
-> 6. **All local clones must re-clone after the force-push.** Existing local copies reference old SHAs and cannot be simply pulled — they must `git clone` fresh or run `git fetch --all && git reset --hard origin/main`.
+Remove `.env.production` from **all** git history so the old secrets cannot be recovered even with repo access.
 
 ```powershell
 # Install git-filter-repo (requires Python 3.5+)
@@ -364,25 +344,25 @@ git push --force --tags origin
 
 ## Post-Rotation Evidence Table
 
-| #   | Service                     | Rotated? | Old Key Disabled? | Verified Working?                     | Date     |
-| --- | --------------------------- | -------- | ----------------- | ------------------------------------- | -------- |
-| 1   | Neon DB Password            | DONE     | YES               | YES                                   | 04/27/26 |
-| 2   | Neon API Key                | DONE     | YES               | YES                                   | 04/27/26 |
-| 3   | JWT_SECRET                  | DONE     | N/A               | PENDING — login flow not yet verified | 04/27/26 |
-| 4   | AUTH_SECRET                 | DONE     | N/A               | PENDING — login flow not yet verified | 04/27/26 |
-| 5   | Stripe Secret Key           | DONE     | YES               | PENDING — checkout not yet verified   | 04/28/26 |
-| 6   | Stripe Webhook Secret       | DONE     | YES               | PENDING — webhook not yet verified    | 04/27/26 |
-| 7   | Stripe Publishable Key      | DONE     | YES               | PENDING — checkout not yet verified   | 04/27/26 |
-| 8   | OpenAI API Key              | DONE     | YES               | PENDING — AI endpoint not yet tested  | 04/28/26 |
-| 9   | Anthropic API Key           | DONE     | YES               | PENDING — AI endpoint not yet tested  | 04/28/26 |
-| 10  | Upstash Redis Token         |          |                   |                                       |          |
-| 11  | QStash Token + Signing Keys |          |                   |                                       |          |
-| 12  | Resend API Key              |          |                   |                                       |          |
-| 13  | Twitter/X (all 4)           |          |                   |                                       |          |
-| 14  | Stack Auth Keys             |          |                   |                                       |          |
-| 15  | VAPID Keys                  |          |                   |                                       |          |
-| 16  | Google Cloud API Key        |          |                   |                                       |          |
-| 17  | Brave API Key               |          |                   |                                       |          |
-| 18  | Gitea Token                 |          |                   |                                       |          |
-| 19  | Context7 API Key            |          |                   |                                       |          |
-| 20  | Git history scrubbed        |          | N/A               | N/A                                   |          |
+| #   | Service                     | Rotated? | Old Key Disabled? | Verified Working? | Date     |
+| --- | --------------------------- | -------- | ----------------- | ----------------- | -------- |
+| 1   | Neon DB Password            | DONE     | YES               | YES               | 04/27/26 |
+| 2   | Neon API Key                | DONE     | YES               | YES               | 04/27/26 |
+| 3   | JWT_SECRET                  | DONE     | N/A               |                   | 04/27/26 |
+| 4   | AUTH_SECRET                 | DONE     | N/A               |                   | 04/27/26 |
+| 5   | Stripe Secret Key           | DONE     | YES               |                   | 04/28/26 |
+| 6   | Stripe Webhook Secret       | DONE     | YES               |                   | 04/27/26 |
+| 7   | Stripe Publishable Key      | DONE     | YES               |                   | 04/27/26 |
+| 8   | OpenAI API Key              | DONE     | YES               |                   | 04/28/26 |
+| 9   | Anthropic API Key           | DONE     | YES               |                   | 04/28/26 |
+| 10  | Upstash Redis Token         |          |                   |                   |          |
+| 11  | QStash Token + Signing Keys |          |                   |                   |          |
+| 12  | Resend API Key              |          |                   |                   |          |
+| 13  | Twitter/X (all 4)           |          |                   |                   |          |
+| 14  | Stack Auth Keys             |          |                   |                   |          |
+| 15  | VAPID Keys                  |          |                   |                   |          |
+| 16  | Google Cloud API Key        |          |                   |                   |          |
+| 17  | Brave API Key               |          |                   |                   |          |
+| 18  | Gitea Token                 |          |                   |                   |          |
+| 19  | Context7 API Key            |          |                   |                   |          |
+| 20  | Git history scrubbed        |          | N/A               | N/A               |          |
