@@ -8,7 +8,8 @@ import { CheckCircle, Circle, PlayCircle, ChevronLeft, ChevronRight, Menu, Party
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { useRouter } from "next/navigation"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import ReactMarkdown from 'react-markdown' // Assuming you have markdown support, if not just render text
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 
@@ -182,13 +183,11 @@ export function CoursePlayer({ pathId }: CoursePlayerProps) {
                                    }}
                                />
                            ) : (
-                               <div>
-                                   <p>This is a placeholder for the module content. Imagine rich text, images, and interactive elements here.</p>
-                                   <p>Learning content for <strong>{activeModule.title}</strong> would appear here.</p>
-                                   <div className="mt-8 p-4 bg-muted rounded-md text-sm">
-                                       <strong>Module Type:</strong> {activeModule.module_type}
-                                   </div>
-                               </div>
+                                <div className="space-y-4">
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                                        {activeModule.content}
+                                    </ReactMarkdown>
+                                </div>
                            )}
                         </Card>
 

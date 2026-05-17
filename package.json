@@ -94,6 +94,7 @@
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^2.1.7",
     "recharts": "^3.4.1",
+    "remark-gfm": "^4.0.1",
     "resend": "^6.5.2",
     "robots-parser": "^3.0.0",
     "sanity": "^4.22.0",
