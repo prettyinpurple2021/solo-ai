@@ -343,9 +343,9 @@ export default function BillingPage() {
                   variant="ghost"
                   className="w-full mb-8 border-neon-cyan/30 text-neon-cyan hover:bg-neon-cyan/10"
                   onClick={() => handleUpgrade('launch')}
-                  disabled={subscription?.tier === 'launch' || subscription?.tier === 'free' || downgradeLoading || checkoutLoading}
+                  disabled={subscription?.tier === 'launch' || downgradeLoading || checkoutLoading}
                 >
-                  {subscription?.tier === 'launch' || subscription?.tier === 'free' ? 'Current Plan' : 'Downgrade'}
+                  {subscription?.tier === 'launch' ? 'Current Plan' : 'Downgrade'}
                 </CyberButton>
 
                 <div className="space-y-4">

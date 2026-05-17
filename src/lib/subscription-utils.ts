@@ -7,7 +7,6 @@ import { eq, and, gte, sql, count, sum } from "drizzle-orm"
 // --- CONSTANTS ---
 
 export const TIERS = {
-  FREE: 'free',
   LAUNCH: 'launch',
   ACCELERATOR: 'accelerator',
   DOMINATOR: 'dominator'
@@ -31,7 +30,6 @@ export const AGENTS = {
 
 // 1. Agent Access Rules — Aura + Finn are always on the team (every tier)
 export const AGENT_ACCESS: Record<SubscriptionTier, string[]> = {
-  [TIERS.FREE]: [AGENTS.AURA, AGENTS.FINN],
   [TIERS.LAUNCH]: [AGENTS.AURA, AGENTS.FINN],
   [TIERS.ACCELERATOR]: [AGENTS.AURA, AGENTS.BLAZE, AGENTS.GLITCH, AGENTS.VEX, AGENTS.FINN],
   [TIERS.DOMINATOR]: Object.values(AGENTS),
@@ -42,7 +40,6 @@ const MB = 1024 * 1024;
 const GB = 1024 * MB;
 
 export const STORAGE_LIMITS: Record<SubscriptionTier, number> = {
-  [TIERS.FREE]: 50 * MB,
   [TIERS.LAUNCH]: 50 * MB,
   [TIERS.ACCELERATOR]: 1 * GB,
   [TIERS.DOMINATOR]: 100 * GB,
@@ -51,7 +48,6 @@ export const STORAGE_LIMITS: Record<SubscriptionTier, number> = {
 // 3. Chat Limits (Messages per Day)
 // -1 means Unlimited
 export const CHAT_LIMITS: Record<SubscriptionTier, number> = {
-  [TIERS.FREE]: 10,
   [TIERS.LAUNCH]: 10,
   [TIERS.ACCELERATOR]: 100,
   [TIERS.DOMINATOR]: -1,
@@ -59,16 +55,6 @@ export const CHAT_LIMITS: Record<SubscriptionTier, number> = {
 
 // 4. Feature Flags (Booleans)
 export const TIER_FEATURES = {
-  [TIERS.FREE]: {
-    canUseWarRoom: false,
-    canUseIronclad: false,
-    canUseCompetitorStalker: false,
-    canUseIdeaIncinerator: false,
-    canUseTacticalRoadmap: false,
-    canUseBoardroom: false,
-    customBranding: false,
-    prioritySupport: false,
-  },
   [TIERS.LAUNCH]: {
     canUseWarRoom: false,
     canUseIronclad: false,
@@ -137,7 +123,9 @@ export async function getUserSubscription(userId: string): Promise<SubscriptionI
       throw new Error('User not found')
     }
 
-    const tier = (user.tier || TIERS.FREE) as SubscriptionTier
+    let tierRaw = user.tier || TIERS.LAUNCH
+    if (tierRaw === 'free') tierRaw = TIERS.LAUNCH
+    const tier = tierRaw as SubscriptionTier
     const status = user.status || 'active'
 
     return {
@@ -148,9 +136,9 @@ export async function getUserSubscription(userId: string): Promise<SubscriptionI
   } catch (error) {
     logError('Error fetching user subscription:', error)
     return {
-      tier: TIERS.FREE,
+      tier: TIERS.LAUNCH,
       status: 'active',
-      features: getFeaturesByTier(TIERS.FREE)
+      features: getFeaturesByTier(TIERS.LAUNCH)
     }
   }
 }
@@ -172,7 +160,7 @@ function getFeaturesByTier(tier: SubscriptionTier): SubscriptionInfo['features']
   };
 
   if (!Object.values(TIERS).includes(tier)) {
-    return { ...defaults, ...getFeaturesByTier(TIERS.FREE) };
+    return { ...defaults, ...getFeaturesByTier(TIERS.LAUNCH) };
   }
 
   const access = AGENT_ACCESS[tier];
@@ -184,7 +172,7 @@ function getFeaturesByTier(tier: SubscriptionTier): SubscriptionInfo['features']
     maxAgents: access.length,
     maxConversationsPerDay: chatLimit,
     maxTeamMembers: tier === TIERS.DOMINATOR ? -1 : (tier === TIERS.ACCELERATOR ? 3 : 1),
-    hasAdvancedAnalytics: tier !== TIERS.FREE,
+    hasAdvancedAnalytics: tier !== TIERS.LAUNCH,
     hasPrioritySupport: flags.prioritySupport,
     hasAPIAccess: tier === TIERS.DOMINATOR,
     hasCustomBranding: flags.customBranding,
@@ -198,7 +186,7 @@ function getFeaturesByTier(tier: SubscriptionTier): SubscriptionInfo['features']
  */
 export async function canAccessFeature(
   userId: string,
-  featureName: keyof typeof TIER_FEATURES[typeof TIERS.FREE]
+  featureName: keyof typeof TIER_FEATURES[typeof TIERS.LAUNCH]
 ): Promise<boolean> {
   const subscription = await getUserSubscription(userId);
   const tierFeatures = TIER_FEATURES[subscription.tier];

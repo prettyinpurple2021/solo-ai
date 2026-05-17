@@ -16,9 +16,9 @@ export const SUBSCRIPTION_TIERS = {
     stripePriceId: '',
     stripeYearlyPriceId: '',
     limits: {
-      dailyConversations: 5,
-      aiAgents: 1,
-      fileStorage: '100MB'
+      dailyConversations: 10,
+      aiAgents: 2,
+      fileStorage: '50MB'
     }
   },
   ACCELERATOR: {
@@ -27,7 +27,7 @@ export const SUBSCRIPTION_TIERS = {
     stripePriceId: PRICE_IDS.accelerator.monthly,
     stripeYearlyPriceId: PRICE_IDS.accelerator.yearly,
     limits: {
-      dailyConversations: 50,
+      dailyConversations: 100,
       aiAgents: 5,
       fileStorage: '10GB'
     }

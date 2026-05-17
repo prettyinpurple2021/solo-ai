@@ -8,16 +8,16 @@
 
 | Agent Name | Role | Access Level |
 | :--- | :--- | :--- |
-| **Aura** | Wellness & Balance Subroutine | **All Tiers** |
-| **Finn** | Financial Logistics Core | **All Tiers** |
-| **Blaze** | Revenue Growth Processor | **Accelerator & Dominator** |
-| **Glitch** | Systems Optimization Utility | **Accelerator & Dominator** |
-| **Vex** | Operations Efficiency Unit | **Accelerator & Dominator** |
-| **Roxy** | Strategic Operations Architect | **Dominator Only** |
-| **Lexi** | Legal & Compliance Protocol | **Dominator Only** |
-| **Nova** | Product Visionary System | **Dominator Only** |
-| **Echo** | Viral Marketing Engine | **Dominator Only** |
-| **Lumi** | Quality Assurance Sentinel | **Dominator Only** |
+| **Aura** | Emotional Support Agent | **All Tiers** |
+| **Finn** | Financial Operations Engine | **All Tiers** |
+| **Blaze** | Growth Acceleration Engine | **Accelerator & Dominator** |
+| **Glitch** | Technical Integration Hub (edge deployments) | **Accelerator & Dominator** |
+| **Vex** | Executive Intelligence System | **Accelerator & Dominator** |
+| **Roxy** | Strategic Foresight Engine | **Dominator Only** |
+| **Lexi** | Compliance Intelligence Module | **Dominator Only** |
+| **Nova** | Creative Intelligence Lab | **Dominator Only** |
+| **Echo** | Signal Amplification Matrix (audience analytics) | **Dominator Only** |
+| **Lumi** | Quality Assurance Network | **Dominator Only** |
 
 ### 🛠️ High-Value Tools & Engines
 
@@ -37,14 +37,8 @@
 
 ## 2. Current Tier Structure & Limits
 
-### 🚀 Free Tier
-* **Agents**: Aura, Finn
-* **Tools**: None
-* **Chat Limits**: 10 msgs/day
-* **Data Vault**: 50MB Storage Limit
-* **Team Members**: 1
-
 ### 🌱 Launch Tier
+*(Note: Launch Tier is the free entry tier)*
 * **Agents**: Aura, Finn
 * **Tools**: None
 * **Chat Limits**: 10 msgs/day

@@ -2,6 +2,7 @@ import { logError,} from '@/lib/logger'
 import { neon } from '@neondatabase/serverless'
 import { SUBSCRIPTION_TIERS } from '@/lib/pricing'
 import { isAdminIdentity } from '@/lib/admin-access'
+import { getUserSubscription } from '@/lib/subscription-utils'
 
 function getSql() {
   const url = process.env.DATABASE_URL
@@ -60,7 +61,8 @@ export async function getUserLimits(userId: string) {
     return SUBSCRIPTION_TIERS.DOMINATOR.limits
   }
 
-  const tier = subscription_tier || 'launch'
+  let tier = subscription_tier || 'launch'
+  if (tier === 'free') tier = 'launch'
 
   // Get limits from SUBSCRIPTION_TIERS
   const tierConfig = SUBSCRIPTION_TIERS[tier.toUpperCase() as keyof typeof SUBSCRIPTION_TIERS]
@@ -154,7 +156,7 @@ export async function checkAgentAccess(userId: string, agentId: string): Promise
     }
 
     const allowed = current <= limit
-    const remaining = Math.max(0, limit - current + 1)
+    const remaining = Math.max(0, limit - current)
 
     return { allowed, current, limit, remaining }
   } catch (error) {
@@ -243,17 +245,17 @@ export async function checkFileStorageLimit(userId: string, additionalBytes: num
  */
 export async function hasAdvancedFeatureAccess(userId: string, feature: 'analytics' | 'priority_support' | 'api_access' | 'custom_branding'): Promise<boolean> {
   try {
-    const limits = await getUserLimits(userId)
+    const subscription = await getUserSubscription(userId)
 
     switch (feature) {
       case 'analytics':
-        return limits.aiAgents >= 5 // Accelerator or higher
+        return subscription.features.hasAdvancedAnalytics
       case 'priority_support':
-        return limits.aiAgents >= 5 // Accelerator or higher  
+        return subscription.features.hasPrioritySupport
       case 'api_access':
-        return limits.aiAgents === 10 && limits.dailyConversations === -1 // Dominator only
+        return subscription.features.hasAPIAccess
       case 'custom_branding':
-        return limits.aiAgents >= 5 // Accelerator or higher
+        return subscription.features.hasCustomBranding
       default:
         return false
     }
