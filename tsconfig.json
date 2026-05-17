@@ -66,6 +66,7 @@
     "scripts",
     "tests",
     "server",
+    "scratch",
     "src/components/archive"
   ]
 }
