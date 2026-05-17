@@ -90,6 +90,13 @@ Provide your collaboration response with Finn's financial discipline.`
         outcome && typeof outcome === "object" && "roiPositive" in outcome
           ? Boolean((outcome as { roiPositive?: boolean }).roiPositive)
           : undefined
+          
+      if (!this.memory) {
+        this.memory = { messages: [], context: {} } as any
+      } else if (!this.memory.context) {
+        this.memory.context = {}
+      }
+
       const ctx = this.memory.context as Record<string, any>
       ctx.financialPatterns = ctx.financialPatterns || []
       ctx.financialPatterns.push({
