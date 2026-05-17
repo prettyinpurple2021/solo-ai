@@ -4,41 +4,42 @@ import { openai } from "@ai-sdk/openai"
 export class FinnAgent extends CustomAgent {
   constructor(userId: string) {
     const capabilities: AgentCapabilities = {
-      frameworks: ["MEDDIC", "Challenger Sale", "SPIN", "Value-Based Selling"],
+      frameworks: ["Profitability Benchmarking", "Lean Business Optimization", "Value-Based Pricing", "Cashflow Forecasting"],
       specializations: [
-        "Pipeline design",
-        "Discovery calls",
-        "Objection handling",
-        "Proposals and closing",
-        "ICP and outreach sequences",
+        "Expense auditing",
+        "Revenue maximization strategy",
+        "Pricing model analysis",
+        "Financial runway visualization",
+        "ROI optimization",
       ],
-      tools: ["CRM hygiene", "Sequence templates", "Call frameworks", "Deal review"],
-      collaborationStyle: "leader",
+      tools: ["Ledger Review", "Margin Analysis", "Opportunity Cost Calculator", "Runway Forecaster"],
+      collaborationStyle: "analyst",
     }
 
-    const systemPrompt = `You are Finn, the Sales Closer & Pipeline Architect. You are direct, persuasive, and ethical.
+    const systemPrompt = `You are Finn, the Financial Operations Engine. You are sharp, data-driven, encouraging, and clear.
 
 CORE IDENTITY:
-- You own deal execution: ICP clarity, sequences, discovery, objections, proposals, and next steps
-- You complement Blaze (growth strategy) with tactical revenue motion and rep-level discipline
+- You own financial strategy: profit maximization, expense reduction, pricing, and cashflow
+- You act as the financial architect energy for the user, turning overhead into opportunity
 - You are a full member of the SoloSuccess agent team alongside Aura, Roxy, Echo, and the rest
 
 EXPERTISE AREAS:
-- ICP definition and list-building criteria
-- Multi-touch outreach sequences (email, DM, call) with ethical persistence
-- Discovery question tracks and qualification
-- Objection mapping and reframes
-- Proposal structure, pricing conversation, and mutual close plans
-- Pipeline stages, hygiene, and forecast honesty
+- Profitability benchmarking against niche standards
+- Expense auditing to consolidate or eliminate wasted spend
+- Pricing model analysis and establishing value-based pricing strategies
+- Cashflow forecasting and "financial runway" visualization
+- Analyzing unit economics and ROI of initiatives
 
 PERSONALITY:
-- Clear, confident, never manipulative
-- Numbers- and outcome-aware without being cold
-- Ends every substantive reply with a concrete next step
+- Sharp, precise, and financially astute
+- Clear, confident, never dry; you build wealth, not just spreadsheets
+- Outcome-aware, focusing on the bottom line
+- Ends every substantive reply with a concrete financial insight or next step
 
 COLLABORATION STYLE:
-- Pulls in Echo for messaging tone, Lexi for metrics, Lumi when contracts matter, Blaze for GTM strategy
-- Hands off implementation details to Vex when systems integrate
+- Pulls in Blaze to ensure growth strategies have sound unit economics
+- Works with Lexi to validate metrics and ROIs
+- Defers to Lumi on financial compliance and risk
 
 Always respond as Finn in first person.`
 
@@ -50,13 +51,13 @@ Always respond as Finn in first person.`
 
     const prompt = `User Request: ${request}
 
-As Finn, analyze this from a sales and pipeline perspective. Consider:
-1. Where is the buyer in the journey?
-2. What is the single best next step?
-3. What risks or objections need naming now?
-4. What proof or data would increase win rate?
+As Finn, analyze this from a financial operations perspective. Consider:
+1. What is the impact on cashflow and runway?
+2. Are the unit economics of this decision sound?
+3. What is the potential ROI or opportunity cost?
+4. How can we optimize expenses or maximize revenue here?
 
-Provide your response with Finn's direct, ethical closing mindset.`
+Provide your response with Finn's sharp, profit-focused mindset.`
 
     return await this.generateStructuredResponse(prompt, agentContext)
   }
@@ -69,13 +70,13 @@ Provide your response with Finn's direct, ethical closing mindset.`
 
     const prompt = `Collaboration Request from ${agentId}: ${request}
 
-As Finn, how do you contribute to this revenue motion? Consider:
-1. Sequence or talk-track support
-2. Objection handling angles
-3. Deal structure and mutual action plan
-4. When to escalate or loop another agent
+As Finn, how do you contribute to this financial motion? Consider:
+1. Validating the ROI of the proposed strategy
+2. Auditing any required expenses
+3. Pricing or margin optimization
+4. Ensuring cashflow is protected
 
-Provide your collaboration response with Finn's pipeline discipline.`
+Provide your collaboration response with Finn's financial discipline.`
 
     return await this.generateStructuredResponse(prompt, collaborationContext)
   }
@@ -83,16 +84,17 @@ Provide your collaboration response with Finn's pipeline discipline.`
   async learnFromInteraction(interaction: any, outcome: any): Promise<void> {
     await super.learnFromInteraction(interaction, outcome)
 
-    if (interaction.type === "sales_motion") {
-      const motion = typeof interaction.motion === "string" ? interaction.motion : "unknown"
-      const closed =
-        outcome && typeof outcome === "object" && "closed" in outcome
-          ? Boolean((outcome as { closed?: boolean }).closed)
+    if (interaction.type === "financial_decision") {
+      const decision = typeof interaction.decision === "string" ? interaction.decision : "unknown"
+      const roiPositive =
+        outcome && typeof outcome === "object" && "roiPositive" in outcome
+          ? Boolean((outcome as { roiPositive?: boolean }).roiPositive)
           : undefined
-      this.memory.context.salesPatterns = this.memory.context.salesPatterns || []
-      this.memory.context.salesPatterns.push({
-        motion,
-        outcome: closed,
+      const ctx = this.memory.context as Record<string, any>
+      ctx.financialPatterns = ctx.financialPatterns || []
+      ctx.financialPatterns.push({
+        decision,
+        outcome: roiPositive,
         timestamp: new Date(),
       })
     }

@@ -47,20 +47,20 @@ const fallbackAgentMeta: Record<string, AgentMeta> = {
   },
   aura: {
     image: '/images/agents/aura.png',
-    alt: 'Aura - Brand Presence & Creative Synthesis',
+    alt: 'Aura - Emotional Support Agent',
   },
   finn: {
     image: '/images/agents/finn.png',
-    alt: 'Finn - Sales Closer & Pipeline Architect',
+    alt: 'Finn - Financial Operations Engine',
   },
   // Legacy IDs (older clients / stored rows)
   aurara: {
     image: '/images/agents/aura.png',
-    alt: 'Aura - Brand Presence & Creative Synthesis',
+    alt: 'Aura - Emotional Support Agent',
   },
   ace: {
     image: '/images/agents/finn.png',
-    alt: 'Finn - Sales Closer & Pipeline Architect',
+    alt: 'Finn - Financial Operations Engine',
   },
 }
 
