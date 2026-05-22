@@ -216,8 +216,9 @@ if (response.ok) {
 ```typescript
 {
   success: true
-  message: "Subscription will cancel at end of period"
-  cancelDate: Date
+  message: "Subscription will be canceled at the end of the current period"
+  cancel_at_period_end: boolean
+  current_period_end: Date
 }
 ```
 
@@ -234,8 +235,8 @@ const response = await fetch('/api/billing/cancel-subscription', {
 })
 
 if (response.ok) {
-  const { cancelDate } = await response.json()
-  console.log(`Subscription cancels on ${cancelDate}`)
+  const { current_period_end } = await response.json()
+  console.log(`Subscription cancels on ${current_period_end}`)
 }
 ```
 
