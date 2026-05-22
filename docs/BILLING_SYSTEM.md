@@ -154,6 +154,7 @@ const subscription = await response.json()
 {
   success: true
   url: "https://checkout.stripe.com/..." // Stripe checkout URL
+  sessionId: "cs_live_..." // Stripe checkout session ID
 }
 ```
 
