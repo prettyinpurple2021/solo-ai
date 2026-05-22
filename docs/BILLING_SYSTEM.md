@@ -40,7 +40,7 @@ SoloSuccess AI implements a three-tier subscription model with Stripe integratio
 - Unlimited AI Credits
 - Email + Slack support
 
-**Stripe Product ID**: Retrieved from `NEXT_PUBLIC_STRIPE_ACCELERATOR_PRICE_ID` environment variable
+**Stripe Product ID**: Retrieved from `STRIPE_ACCELERATOR_PRICE_ID` environment variable (monthly) or `STRIPE_ACCELERATOR_YEARLY_PRICE_ID` (yearly)
 
 ### 3. Dominator Tier (Premium)
 
@@ -56,7 +56,7 @@ SoloSuccess AI implements a three-tier subscription model with Stripe integratio
 - Priority support (1-hour response)
 - Advanced analytics and forecasting
 
-**Stripe Product ID**: Retrieved from `NEXT_PUBLIC_STRIPE_DOMINATOR_PRICE_ID` environment variable
+**Stripe Product ID**: Retrieved from `STRIPE_DOMINATOR_PRICE_ID` environment variable (monthly) or `STRIPE_DOMINATOR_YEARLY_PRICE_ID` (yearly)
 
 ## Billing Architecture
 
@@ -328,8 +328,10 @@ STRIPE_SECRET_KEY=sk_live_...           # Live secret key
 NEXT_PUBLIC_STRIPE_KEY=pk_live_...      # Public key (safe to expose)
 
 # Pricing
-NEXT_PUBLIC_STRIPE_ACCELERATOR_PRICE_ID=price_...
-NEXT_PUBLIC_STRIPE_DOMINATOR_PRICE_ID=price_...
+STRIPE_ACCELERATOR_PRICE_ID=price_...
+STRIPE_ACCELERATOR_YEARLY_PRICE_ID=price_...
+STRIPE_DOMINATOR_PRICE_ID=price_...
+STRIPE_DOMINATOR_YEARLY_PRICE_ID=price_...
 
 # Webhook
 STRIPE_WEBHOOK_SECRET=whsec_...         # For verifying webhooks
