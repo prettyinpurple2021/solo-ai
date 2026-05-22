@@ -104,17 +104,25 @@ subscriptions?: {
 
 **Description**: Fetch current subscription info for authenticated user
 
-**Response** (SubscriptionInfo):
+**Response** (UnifiedSubscriptionPayload):
 ```typescript
 {
-  tier: "accelerator" | "launch" | "dominator"
-  status: "active" | "cancelled" | "past_due"
-  currentPeriodStart: Date
-  currentPeriodEnd: Date
-  usage_count: number      // AI credits used
-  usage_limit: number      // AI credits allowed
-  usage_percentage: number // 0-100
-  cancelAtPeriodEnd?: boolean
+  tier: string                    // "launch" | "accelerator" | "dominator"
+  status: string                  // "active" | "inactive" | "past_due" | "cancelled"
+  current_period_end: string | null  // ISO 8601 date string
+  cancel_at_period_end: boolean
+  interval: string                // "monthly" or other billing period
+  subscription: {
+    subscription_tier: string
+    subscription_status: string
+    stripe_customer_id: string | null
+    stripe_subscription_id: string | null
+    current_period_start: string | null  // ISO 8601 date string
+    current_period_end: string | null    // ISO 8601 date string
+    cancel_at_period_end: boolean
+    stripe_subscription?: unknown         // Optional Stripe subscription object
+    is_admin_override?: boolean           // True if using admin bypass
+  }
 }
 ```
 
