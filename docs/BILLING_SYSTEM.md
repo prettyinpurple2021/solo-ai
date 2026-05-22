@@ -407,8 +407,25 @@ console.log(customer)  // Should show subscription
 **Fix**:
 ```typescript
 // Sync Stripe subscription to database
+import { updateUserSubscription } from '@/lib/stripe-db-utils'
+
 const subscription = await stripe.subscriptions.retrieve(stripeSubId)
-await syncSubscriptionToDb(userId, subscription)
+
+// Determine tier from price ID
+const priceId = subscription.items.data[0].price.id
+let tier = 'launch'
+if (priceId === process.env.STRIPE_ACCELERATOR_PRICE_ID) tier = 'accelerator'
+else if (priceId === process.env.STRIPE_DOMINATOR_PRICE_ID) tier = 'dominator'
+
+// Update database
+await updateUserSubscription(userId, {
+  stripe_subscription_id: subscription.id,
+  subscription_tier: tier,
+  subscription_status: subscription.status === 'active' ? 'active' : 'past_due',
+  current_period_start: new Date(subscription.current_period_start * 1000),
+  current_period_end: new Date(subscription.current_period_end * 1000),
+  cancel_at_period_end: subscription.cancel_at_period_end
+})
 ```
 
 ### Issue: Billing Portal Shows Wrong Subscription Details
