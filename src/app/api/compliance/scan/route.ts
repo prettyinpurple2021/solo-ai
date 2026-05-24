@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { analyze } from '@/lib/compliance-analyzer'
 import { getSql } from '@/lib/api-utils'
 import dns from 'node:dns/promises'
-export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
 
 function isPrivateIPv4(ip: string): boolean {
