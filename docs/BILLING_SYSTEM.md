@@ -7,7 +7,7 @@ SoloSuccess AI implements a three-tier subscription model with Stripe integratio
 **Key Files**:
 - `src/app/dashboard/billing/page.tsx` - Billing UI
 - `src/lib/subscription-utils.ts` - Subscription logic
-- `src/api/billing/*` - Billing API endpoints
+- `src/app/api/billing/*` - Billing API endpoints
 - `src/lib/stripe.ts` - Stripe integration
 
 ## Subscription Tiers
@@ -20,7 +20,7 @@ SoloSuccess AI implements a three-tier subscription model with Stripe integratio
 **Included Features**:
 - Basic Business Plan
 - 3 Competitor Analyses per month
-- Limited AI Credits (50 credits/month)
+- Usage limits: 10 daily conversations, 2 unique agents/day, 50MB file storage
 - Community access
 - Email support
 
@@ -28,27 +28,27 @@ SoloSuccess AI implements a three-tier subscription model with Stripe integratio
 
 ### 2. Accelerator Tier (Standard)
 
-**Price**: $29/month  
+**Price**: $19/month  
 **Target**: Growing businesses with increasing needs
 
 **Included Features**:
 - Advanced Business Plan
 - 10 Competitor Analyses per month
+- Usage limits: 100 daily conversations, 5 unique agents/day, 10GB file storage
 - Priority AI Support (24-hour response)
 - Market Intelligence dashboard
 - API access (basic)
-- Unlimited AI Credits
 - Email + Slack support
 
-**Stripe Product ID**: Retrieved from `STRIPE_ACCELERATOR_PRICE_ID` environment variable (monthly) or `STRIPE_ACCELERATOR_YEARLY_PRICE_ID` (yearly)
+**Stripe Price ID**: Retrieved from `STRIPE_ACCELERATOR_PRICE_ID` environment variable (monthly) or `STRIPE_ACCELERATOR_YEARLY_PRICE_ID` (yearly)
 
 ### 3. Dominator Tier (Premium)
 
-**Price**: $99/month  
+**Price**: $29/month  
 **Target**: Fully-scaled businesses needing complete toolset
 
 **Included Features**:
-- Unlimited Everything
+- Unlimited daily conversations, 10 unique agents/day, 100GB file storage
 - Dedicated Strategist (weekly 1-on-1)
 - Advanced API access (webhooks, rate limit: 10k/day)
 - White Label Reports
@@ -56,7 +56,7 @@ SoloSuccess AI implements a three-tier subscription model with Stripe integratio
 - Priority support (1-hour response)
 - Advanced analytics and forecasting
 
-**Stripe Product ID**: Retrieved from `STRIPE_DOMINATOR_PRICE_ID` environment variable (monthly) or `STRIPE_DOMINATOR_YEARLY_PRICE_ID` (yearly)
+**Stripe Price ID**: Retrieved from `STRIPE_DOMINATOR_PRICE_ID` environment variable (monthly) or `STRIPE_DOMINATOR_YEARLY_PRICE_ID` (yearly)
 
 ## Billing Architecture
 
@@ -85,17 +85,14 @@ Database
 ### Key Database Fields
 
 ```typescript
-// In user profile
-subscriptions?: {
-  tier: "launch" | "accelerator" | "dominator"
-  stripeCustomerId?: string
-  stripeSubscriptionId?: string
-  currentPeriodStart?: Date
-  currentPeriodEnd?: Date
-  cancelAtPeriodEnd?: boolean
-  usageCount?: number  // AI credits used
-  usageLimit?: number  // AI credits allowed
-}
+// On users table
+subscription_tier: "free" | "launch" | "accelerator" | "dominator"
+subscription_status: "active" | "inactive" | "past_due" | "canceled"
+stripe_customer_id: string | null
+stripe_subscription_id: string | null
+current_period_start: Date | null
+current_period_end: Date | null
+cancel_at_period_end: boolean
 ```
 
 ## Billing API Endpoints
@@ -108,7 +105,7 @@ subscriptions?: {
 ```typescript
 {
   tier: string                    // "launch" | "accelerator" | "dominator"
-  status: string                  // "active" | "inactive" | "past_due" | "cancelled"
+  status: string                  // "active" | "inactive" | "past_due" | "canceled"
   current_period_end: string | null  // ISO 8601 date string
   cancel_at_period_end: boolean
   interval: string                // "monthly" or other billing period
@@ -146,6 +143,7 @@ const subscription = await response.json()
 ```typescript
 {
   tier: "accelerator" | "dominator"
+  billing?: "monthly" | "yearly" // Optional, defaults to "monthly"
 }
 ```
 
@@ -287,35 +285,27 @@ SoloSuccess AI listens for these Stripe webhook events:
 
 ### How Usage Limits Work
 
-Each tier has different AI credit allowances:
+Usage limits are enforced by tier config in `src/lib/pricing.ts` and tracked in `daily_usage_limits`:
 
-| Tier | Monthly Credits | Renewal | Overage |
-|------|-----------------|---------|---------|
-| Launch | 50 | Monthly | Soft limit (slows responses) |
-| Accelerator | Unlimited | N/A | N/A |
-| Dominator | Unlimited | N/A | N/A |
+| Tier | Daily Conversations | Unique Agents / Day | File Storage |
+|------|---------------------|---------------------|--------------|
+| Launch | 10 | 2 | 50MB |
+| Accelerator | 100 | 5 | 10GB |
+| Dominator | Unlimited (`-1`) | 10 | 100GB |
 
 ### API Usage Tracking
 
 ```typescript
-// src/lib/usage-tracking.ts
-async function trackUsage(userId: string, creditsUsed: number) {
-  // Increment usage count
-  // Check against tier limits
-  // Return true if allowed, false if exceeded
-}
+const conversations = await checkConversationLimit(userId)
+const agentAccess = await checkAgentAccess(userId, agentId)
+const storage = await checkFileStorageLimit(userId, fileSizeBytes)
 ```
 
 **Integration**:
 ```typescript
-// Before each AI API call
-const allowed = await trackUsage(userId, estimatedTokens)
-
-if (!allowed && userTier === 'launch') {
-  return {
-    error: 'Usage limit reached. Upgrade to continue.',
-    nextRenewal: calculateNextRenewalDate(user)
-  }
+const { allowed } = await checkConversationLimit(userId)
+if (!allowed) {
+  return { error: 'Daily conversation limit reached. Upgrade to continue.' }
 }
 ```
 
@@ -326,7 +316,7 @@ if (!allowed && userTier === 'launch') {
 ```bash
 # Stripe
 STRIPE_SECRET_KEY=sk_live_...           # Live secret key
-NEXT_PUBLIC_STRIPE_KEY=pk_live_...      # Public key (safe to expose)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_live_...  # Public key (safe to expose)
 
 # Pricing
 STRIPE_ACCELERATOR_PRICE_ID=price_...
@@ -344,7 +334,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...         # For verifying webhooks
 2. **Navigate**: Products → Create Product
 3. **Configure**:
    - Product name: "SoloSuccess AI - Accelerator"
-   - Pricing: Standard pricing ($29/month)
+   - Pricing: Standard pricing ($19/month)
    - Billing period: Monthly
 4. **Copy price ID** (format: `price_1ABC...`)
 5. **Add to environment variables** in Vercel
@@ -386,10 +376,8 @@ vercel logs --follow
 await db.user.update({
   where: { id: userId },
   data: {
-    subscriptions: {
-      tier: 'accelerator',
-      stripeSubscriptionId: 'sub_...'
-    }
+    subscription_tier: 'accelerator',
+    stripe_subscription_id: 'sub_...'
   }
 })
 ```
@@ -449,11 +437,10 @@ await updateUserSubscription(userId, {
 ```typescript
 // In admin dashboard or script
 const user = await db.user.findUnique({
-  where: { id: userId },
-  include: { subscriptions: true }
+  where: { id: userId }
 })
 
-console.log(`${user.name} - Tier: ${user.subscriptions?.tier}`)
+console.log(`${user.name} - Tier: ${user.subscription_tier}`)
 ```
 
 ### Manually Upgrading User
@@ -463,10 +450,8 @@ console.log(`${user.name} - Tier: ${user.subscriptions?.tier}`)
 const updatedUser = await db.user.update({
   where: { id: userId },
   data: {
-    subscriptions: {
-      tier: 'dominator',
-      // Note: Don't set stripeSubscriptionId unless from Stripe
-    }
+    subscription_tier: 'dominator',
+    // Note: Don't set stripe_subscription_id unless from Stripe
   }
 })
 ```
@@ -537,6 +522,6 @@ stripe trigger customer.subscription.created
 ## Related Documentation
 
 - [Stripe Integration Guide](https://stripe.com/docs/billing) - Official Stripe docs
-- [Subscription Utils Guide](./SUBSCRIPTION_UTILS.md) - Code-level subscription helpers
+- [Subscription Utils Source](../src/lib/subscription-utils.ts) - Code-level subscription helpers
 - [Finn Agent Guide](./FINN_AGENT_GUIDE.md) - AI-powered financial recommendations
 - [Deployment Configuration](./deployment/ENV_VARS_VERCEL_AND_RAILWAY.md) - Environment setup

@@ -322,7 +322,7 @@ const [marketAnalysis, techAnalysis, competitorAnalysis] = await Promise.all([
 const strategyOutput = await manager.executePhase(
   task,
   "phase_4",
-  `Synthesize these analyses:\n${marketAnalysis}\n${techAnalysis}\n${competitorAnalysis}`,
+  `Synthesize these analyses:\n${marketAnalysis.output}\n${techAnalysis.output}\n${competitorAnalysis.output}`,
   {}
 )
 ```
@@ -334,7 +334,7 @@ const strategyOutput = await manager.executePhase(
 **How**:
 ```typescript
 // Phase 1: Generate ideas (Nova)
-const ideas = await manager.executePhase(task, "phase_1", "Generate product ideas", {})
+const { output: ideas } = await manager.executePhase(task, "phase_1", "Generate product ideas", {})
 
 // Phase 2: Evaluate ideas (Lexi)
 const evaluated = await manager.executePhase(
@@ -349,7 +349,7 @@ const prioritized = await manager.executePhase(
   task,
   "phase_3",
   "Prioritize top opportunities",
-  { phase_2: evaluated }
+  { phase_2: evaluated.output }
 )
 ```
 
@@ -360,7 +360,7 @@ const prioritized = await manager.executePhase(
 **How**:
 ```typescript
 // High-level output from Roxy
-const output = await manager.executePhase(task, "phase_1", userInput, {})
+const { output } = await manager.executePhase(task, "phase_1", userInput, {})
 
 // Deep dive by specialist (Lumi) on compliance aspects
 const deepDive = await manager.executePhase(
@@ -375,7 +375,7 @@ const nextOutput = await manager.executePhase(
   task,
   "phase_2",
   userInput,
-  { phase_1_legal_deepdive: deepDive }
+  { phase_1_legal_deepdive: deepDive.output }
 )
 ```
 
@@ -551,7 +551,7 @@ previousOutputs = {
   techRequirements: "Features X, Y, Z require 6 months development"
 }
 
-// Now agents see both context when evaluating feasibility
+// Now agents see both contexts when evaluating feasibility
 ```
 
 ## Performance Considerations
@@ -597,4 +597,4 @@ console.log(`Consensus: ${consensus}/3 agents recommend funding`)
 
 - [AI Agent Personality System](./AGENT_PERSONALITY_SYSTEM.md) - Personality layer
 - [Finn Agent Guide](./FINN_AGENT_GUIDE.md) - Financial specialist agent
-- [Agent Architecture](../docs/ARCHITECTURE.md#ai-agent-system) - Low-level architecture
+- [Agent Architecture](./ARCHITECTURE.md) - Low-level architecture

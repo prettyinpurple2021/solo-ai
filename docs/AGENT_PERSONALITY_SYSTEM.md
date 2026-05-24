@@ -221,6 +221,7 @@ newAgent: {
 ```typescript
 // src/lib/custom-ai-agents/my-agent.ts
 import { CustomAgent } from "./core-agent"
+import { openai } from "@ai-sdk/openai"
 
 export class MyAgent extends CustomAgent {
   constructor(userId: string) {
@@ -232,6 +233,7 @@ export class MyAgent extends CustomAgent {
     }
     
     const systemPrompt = `You are MyAgent...`
+    const model = openai("gpt-4o")
     super("myagent", "My Agent", capabilities, userId, model, systemPrompt)
   }
 
@@ -313,7 +315,7 @@ const response = await engine.generateContextualResponse(
 Integrate in chat handlers:
 
 ```typescript
-const { text } = await engine.generateContextualResponse(
+const text = await engine.generateContextualResponse(
   agentId,
   userMessage,
   chatHistory
@@ -359,6 +361,6 @@ const quote = engine.getMotivationalQuote(currentAgent)
 
 ## Related Documentation
 
-- [AI Configuration Guide](./AI_CONFIGURATION.md) - Model setup and team member configs
+- [AI Configuration Source](../src/lib/ai-config.ts) - Model setup and team member configs
 - [Agent Collaboration Guide](./AGENT_COLLABORATION.md) - Detailed handoff patterns
-- [Custom Agent Development](./CUSTOM_AGENT_DEVELOPMENT.md) - Building specialized agents
+- [Custom Agent Source](../src/lib/custom-ai-agents/) - Building specialized agents
