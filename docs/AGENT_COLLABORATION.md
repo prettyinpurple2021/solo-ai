@@ -572,7 +572,7 @@ const growth = await blaze.processRequest(
   { marketSize: "$100M", competitorCount: 5 }
 )
 
-const financialReview = await finn.collaborateWith(
+const { content: financialReview } = await finn.collaborateWith(
   "blaze",
   growth.content
 )
