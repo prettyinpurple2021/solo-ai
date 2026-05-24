@@ -41,6 +41,16 @@
 - **[Stack Auth Setup](./technical/setup/stack-auth-setup.md)** - Authentication system configuration
 - **[Stripe Setup Guide](./stripe/integration-setup-guide.md)** - Payment processing configuration
 
+### 🤖 **AI Agent System**
+
+- **[AI Agent Personality System](./AGENT_PERSONALITY_SYSTEM.md)** - Configurable agent archetypes, personality adaptation, and context awareness
+- **[Finn Agent Guide](./FINN_AGENT_GUIDE.md)** - Financial operations agent for profitability, pricing, and cashflow analysis
+- **[Agent Collaboration Patterns](./AGENT_COLLABORATION.md)** - Multi-agent workflows, handoffs, and collaboration orchestration
+
+### 💳 **Billing & Subscription**
+
+- **[Billing System Guide](./BILLING_SYSTEM.md)** - Subscription tiers, payment processing, usage tracking, and Stripe integration
+
 ### 📊 **Project Management**
 
 - **[Current Todo List](./project-management/todo-list.md)** - Active development tasks and priorities
