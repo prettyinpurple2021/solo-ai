@@ -572,10 +572,12 @@ const growth = await blaze.processRequest(
   { marketSize: "$100M", competitorCount: 5 }
 )
 
-const { content: financialReview } = await finn.collaborateWith(
+const financialReview = await finn.collaborateWith(
   "blaze",
   growth.content
 )
+
+console.log(financialReview.content)
 ```
 
 ### Consensus Pattern
