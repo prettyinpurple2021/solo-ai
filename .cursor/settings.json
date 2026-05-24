@@ -17,6 +17,9 @@
     },
     "browse": {
       "enabled": true
+    },
+    "docs-canvas": {
+      "enabled": true
     }
   }
 }

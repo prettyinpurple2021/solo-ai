@@ -22,7 +22,7 @@ Monitoring dry run: `docs/deployment/MONITORING_VERIFICATION.md`
 ### Visual progress meter
 
 ```mermaid
-pie title Public Launch Readiness (Now)
+pie showData title Public Launch Readiness
     "Completed Foundations" : 87
     "Remaining Hardening" : 13
 ```
