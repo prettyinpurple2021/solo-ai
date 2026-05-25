@@ -7,7 +7,11 @@ import { rateLimitByIp} from '@/lib/rate-limit'
 import { z} from 'zod'
 import { eq, and, gte, desc, inArray, sql} from 'drizzle-orm'
 import type { AlertSeverity } from '@/lib/competitor-intelligence-types'
-import { Resend } from 'resend'
+import {
+  getDefaultFromAddress,
+  isEmailConfigured,
+  sendTransactionalEmail,
+} from '@/lib/mail-transport'
 import webpush from 'web-push'
 import twilio from 'twilio'
 import { getSql } from '@/lib/api-utils'
@@ -29,15 +33,11 @@ const NotificationDeliverySchema = z.object({
   template: z.enum(['summary', 'detailed', 'critical_only']).default('summary'),
 })
 
-// Initialize notification services
-let resendClient: Resend | null = null
 let twilioClient: twilio.Twilio | null = null
 
 function initializeServices() {
-  // Initialize Resend
-  if (!resendClient && process.env.RESEND_API_KEY) {
-    resendClient = new Resend(process.env.RESEND_API_KEY)
-    logInfo('Resend email service initialized')
+  if (isEmailConfigured()) {
+    logInfo('SMTP email service configured (Zoho Mail)')
   }
 
   // Initialize Twilio
@@ -224,8 +224,8 @@ async function sendNotification(
   // Send email notifications
   if (channels.includes('email')) {
     try {
-      if (!resendClient) {
-        throw new Error('Resend API key not configured')
+      if (!isEmailConfigured()) {
+        throw new Error('SMTP email not configured')
       }
 
       if (!user.email) {
@@ -234,20 +234,20 @@ async function sendNotification(
 
       const { subject, html, text } = generateEmailContent(alerts, template, priority)
       
-      const response = await resendClient.emails.send({
-        from: process.env.FROM_EMAIL || 'SoloSuccess AI <support@solosuccesss.com>',
+      const response = await sendTransactionalEmail({
+        from: getDefaultFromAddress(),
         to: user.email,
         subject,
         html,
         text,
       })
 
-      if (response.error) {
-        throw new Error(`Resend API error: ${response.error.message}`)
+      if (!response.success) {
+        throw new Error(`Email error: ${response.error ?? 'send failed'}`)
       }
 
       logInfo(`Email notification sent to ${user.email}`, {
-        emailId: response.data?.id,
+        emailId: response.messageId,
         alertCount: alerts.length,
         template,
         priority,

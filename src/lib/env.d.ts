@@ -12,7 +12,13 @@ declare global {
       readonly OPENAI_API_KEY?: string;
       readonly ANTHROPIC_API_KEY?: string;
       readonly GOOGLE_GENERATIVE_AI_API_KEY?: string;
-      readonly RESEND_API_KEY?: string;
+      readonly SMTP_HOST?: string;
+      readonly SMTP_PORT?: string;
+      readonly SMTP_SECURE?: string;
+      readonly SMTP_USER?: string;
+      readonly SMTP_PASSWORD?: string;
+      readonly FROM_EMAIL?: string;
+      readonly CONTACT_INBOX_EMAIL?: string;
       readonly NEXT_PUBLIC_APP_URL: string;
       
       // Legacy / Misc

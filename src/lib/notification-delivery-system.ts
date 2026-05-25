@@ -1,5 +1,9 @@
 import { logError, logInfo,} from '@/lib/logger'
-import { Resend } from 'resend';
+import {
+  getDefaultFromAddress,
+  isEmailConfigured,
+  sendTransactionalEmail,
+} from '@/lib/mail-transport';
 import { CompetitorAlert } from '@/hooks/use-competitor-alerts';
 import { AlertSeverity, AlertType } from './competitor-alert-system';
 
@@ -46,7 +50,6 @@ export interface EmailTemplate {
 
 export class NotificationDeliverySystem {
   private static instance: NotificationDeliverySystem;
-  private resend: Resend | null = null;
   private batchedNotifications: Map<string, CompetitorAlert[]> = new Map();
   private batchTimers: Map<string, NodeJS.Timeout> = new Map();
 
@@ -58,11 +61,7 @@ export class NotificationDeliverySystem {
   }
 
   constructor() {
-    // Initialize Resend if API key is available
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (resendApiKey) {
-      this.resend = new Resend(resendApiKey);
-    }
+    // SMTP (Zoho Mail) configured via SMTP_* env vars — see mail-transport.ts
   }
 
   async deliverNotification(
@@ -192,8 +191,8 @@ export class NotificationDeliverySystem {
     alert: CompetitorAlert,
     channel: NotificationChannel
   ): Promise<string> {
-    if (!this.resend) {
-      throw new Error('Resend not configured');
+    if (!isEmailConfigured()) {
+      throw new Error('SMTP email not configured');
     }
 
     const template = this.generateEmailTemplate(alert);
@@ -203,19 +202,19 @@ export class NotificationDeliverySystem {
       throw new Error('No email address configured for channel');
     }
 
-    const response = await this.resend.emails.send({
-      from: process.env.FROM_EMAIL || 'support@solosuccesss.com',
+    const response = await sendTransactionalEmail({
+      from: getDefaultFromAddress(),
       to: toEmail,
       subject: template.subject,
       html: template.html,
       text: template.text,
     });
 
-    if (response.error) {
-      throw new Error(`Email delivery failed: ${response.error.message}`);
+    if (!response.success) {
+      throw new Error(`Email delivery failed: ${response.error ?? 'unknown'}`);
     }
 
-    return response.data?.id || 'email_sent';
+    return response.messageId || 'email_sent';
   }
 
   private generateEmailTemplate(alert: CompetitorAlert): EmailTemplate {

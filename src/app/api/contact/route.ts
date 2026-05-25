@@ -14,18 +14,18 @@ export async function POST(request: NextRequest) {
       return createErrorResponse('Name and email are required', 400)
     }
 
-    // Send email via Resend if configured
+    // Send email via Zoho Mail SMTP if configured
     try {
-        if (process.env.RESEND_API_KEY) {
-            const { Resend } = await import('resend');
-            const resend = new Resend(process.env.RESEND_API_KEY);
-            await resend.emails.send({
-                from: 'SoloSuccess AI <onboarding@resend.dev>', // Update validation domain in prod
-                to: 'support@solosuccesss.com', // Configurable admin email
+        const { isEmailConfigured, sendTransactionalEmail, getDefaultFromAddress } = await import('@/lib/mail-transport');
+        const adminInbox = process.env.CONTACT_INBOX_EMAIL || process.env.SMTP_USER;
+        if (isEmailConfigured() && adminInbox) {
+            await sendTransactionalEmail({
+                from: getDefaultFromAddress(),
+                to: adminInbox,
                 subject: `New Contact Request: ${type}`,
                 html: `<p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Type:</strong> ${type}</p>`
             });
-            logInfo('Contact email dispatched via Resend');
+            logInfo('Contact email dispatched via SMTP');
         } else {
              logInfo('Contact request logged (Email service not configured):', { 
                 type, 

@@ -11,7 +11,13 @@ async function main() {
 
     const serverProcess = spawn('npx', ['tsx', serverPath], {
         cwd: process.cwd(),
-        env: { ...process.env, PORT: '3001', STRIPE_SECRET_KEY: 'sk_test_dummy' },
+        env: {
+            ...process.env,
+            PORT: '3001',
+            ...(process.env.STRIPE_SECRET_KEY
+                ? { STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY }
+                : {}),
+        },
         stdio: 'pipe',
         shell: true
     });

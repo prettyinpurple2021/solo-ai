@@ -83,14 +83,20 @@ export async function POST(request: NextRequest) {
     )
 
     if (!emailResult.success) {
-      logError('Failed to send password reset email', { 
-        userId: user.id, 
+      logError('Failed to send password reset email', {
+        userId: user.id,
         email: user.email,
-        error: emailResult.error 
+        error: emailResult.error,
+        smtpConfigured: Boolean(
+          process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASSWORD
+        ),
       })
       return NextResponse.json(
-        { error: 'Failed to send reset email. Please try again.' },
-        { status: 500 }
+        {
+          error:
+            'Email could not be sent. If this continues, contact support — the mail service may need configuration on the server.',
+        },
+        { status: 503 }
       )
     }
 

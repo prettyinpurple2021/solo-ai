@@ -75,18 +75,16 @@ export const POST = withDocumentAuth(
         VALUES (${documentId}, ${user.id}, ${'invitation_sent'}, ${detailsJson}: jsonb, NOW())
       `
 
-      // Send email invitation via Resend
+      // Send email invitation via Zoho Mail SMTP
       try {
-        const { Resend } = await import('resend')
-        const resendApiKey = process.env.RESEND_API_KEY
-        if (!resendApiKey) {
-          throw new Error('RESEND_API_KEY not configured')
+        const { isEmailConfigured, sendTransactionalEmail, getDefaultFromAddress } = await import('@/lib/mail-transport')
+        if (!isEmailConfigured()) {
+          throw new Error('SMTP email not configured')
         }
-        const resend = new Resend(resendApiKey)
-        const appUrl = process.env.APP_URL || 'https://solosuccessai.fun'
+        const appUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'https://solosuccessai.fun'
         const inviteLink = `${appUrl}/briefcase/invite/accept?doc=${encodeURIComponent(documentId)}&email=${encodeURIComponent(email)}`
-        await resend.emails.send({
-          from: 'SoloSuccess AI <support@solosuccesss.com>',
+        const mailResult = await sendTransactionalEmail({
+          from: getDefaultFromAddress(),
           to: email,
           subject: `You have been invited to access "${document.name}"`,
           html: `<p>Hello,</p>
@@ -96,6 +94,9 @@ export const POST = withDocumentAuth(
                  <p><a href="${inviteLink}">Accept Invitation</a></p>
                  <p>If you did not expect this email, you can ignore it.</p>`
         })
+        if (!mailResult.success) {
+          throw new Error(mailResult.error ?? 'Failed to send invitation email')
+        }
         logInfo(`Invitation email sent to ${email} for document ${document.name} with role ${role}`)
       } catch (mailError) {
         logWarn('Failed to send invitation email. Proceeding without email.', mailError)
