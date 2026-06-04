@@ -36,7 +36,8 @@ User's inbox
 All SMTP settings are environment variables:
 
 ```bash
-SMTP_HOST=smtp.zoho.com          # (or smtp.zoho.eu for EU)
+SMTP_HOST=smtp.zoho.com
+# For EU data residency, use: smtp.zoho.eu
 SMTP_PORT=587                     # 587 for TLS, 465 for SSL
 SMTP_SECURE=false                 # true for port 465 (SSL)
 SMTP_USER=support@yourdomain.com  # Zoho mailbox
@@ -76,27 +77,27 @@ await EmailService.sendEmail({
 
 ### Error Handling
 
-Transactional emails are **best-effort** — they do not block user operations. If email fails:
+Email behavior depends on which helper is used:
 
-1. Error is logged to the project logger (structured)
-2. User is informed via API response (e.g., 200 OK with `emailSent: false`)
-3. Retry mechanism: None built-in (relies on manual retry or alternative contact)
+1. `EmailService.sendEmail()` logs a simulation and returns `true` when SMTP is not configured.
+2. Auth flows like `forgot-password` use `sendPasswordResetEmail()` from `src/lib/email.ts`, which returns `{ success: false }` when SMTP is missing.
+3. `src/app/api/auth/forgot-password/route.ts` returns **503** if reset email delivery fails.
 
-**Example** (forgot-password endpoint):
+This mismatch exists because authentication email paths are treated as fail-closed security flows, while generic email utility calls support simulation for local/dev workflows.
+
+**Example** (forgot-password endpoint behavior):
 
 ```typescript
-// src/app/api/auth/forgot-password/route.ts
-const emailSent = await EmailService.sendEmail({
-  to: user.email,
-  subject: 'Password Reset Code',
-  html: resetTemplate
-})
+const emailResult = await sendPasswordResetEmail(user.email, user.full_name || 'User', resetToken)
 
-return Response.json({
-  success: true,
-  emailSent, // true if sent, false if failed
-  message: 'Password reset code sent' // works even if email failed
-})
+if (!emailResult.success) {
+  return NextResponse.json(
+    { error: 'Email could not be sent. If this continues, contact support — the mail service may need configuration on the server.' },
+    { status: 503 }
+  )
+}
+
+return NextResponse.json({ message: successMessage })
 ```
 
 ---
@@ -133,8 +134,8 @@ interface NotificationPreferences {
     timezone: 'America/New_York'
   }
   frequency: {
-    immediate: ['critical', 'high'] // deliver immediately
-    batched: ['medium', 'low']       // batch and send hourly
+    immediate: ['critical', 'urgent'] // deliver immediately
+    batched: ['warning', 'info']      // batch and send hourly
     batchInterval: 60 // minutes
   }
 }
@@ -142,7 +143,7 @@ interface NotificationPreferences {
 // Trigger an alert
 const alert: CompetitorAlert = {
   id: 'alert-123',
-  severity: 'high',
+  severity: 'urgent',
   alert_type: 'price_change',
   title: 'Competitor Price Drop Detected',
   description: 'Acme Corp dropped prices 15%...'
@@ -154,7 +155,7 @@ await NotificationDeliverySystem.getInstance().deliverNotification(alert, userPr
 
 ### Quiet Hours (Timezone-Aware)
 
-Users can configure a time window where non-critical alerts are queued:
+Users can configure a time window where non-critical alerts are suppressed:
 
 ```typescript
 quietHours: {
@@ -166,14 +167,14 @@ quietHours: {
 ```
 
 - **Critical** alerts bypass quiet hours
-- **Lower severity** alerts are batched and delivered after quiet hours end
+- **Lower severity** alerts are skipped during quiet hours (`deliverNotification()` returns early)
 
 ### Channel Routing
 
 Each channel can have **severity and type filters**:
 
 ```typescript
-// Example: Slack channel only for high/critical price changes
+// Example: Slack channel only for urgent/critical price changes
 const slackChannel: NotificationChannel = {
   id: 'slack-channel-1',
   name: 'Price Alerts to #alerts',
@@ -182,7 +183,7 @@ const slackChannel: NotificationChannel = {
   config: {
     webhookUrl: 'https://hooks.slack.com/services/...'
   },
-  severityFilter: ['high', 'critical'], // Only these severities
+  severityFilter: ['urgent', 'critical'], // Only these severities
   typeFilter: ['price_change'] // Only these alert types
 }
 
@@ -204,13 +205,13 @@ Lower-severity alerts are batched:
 
 ```typescript
 frequency: {
-  immediate: ['critical', 'high'],
-  batched: ['medium', 'low'],
+  immediate: ['critical', 'urgent'],
+  batched: ['warning', 'info'],
   batchInterval: 60 // Send batch every 60 minutes
 }
 ```
 
-If a user has 10 "low" severity alerts in an hour, they receive **one email** with all 10, not 10 separate emails.
+If a user has 10 "info" alerts in an hour, they receive **one email** with all 10, not 10 separate emails.
 
 ### Usage Example
 
@@ -238,7 +239,7 @@ const results = await system.deliverNotification(alert, userPreferences)
 ```typescript
 // src/app/api/auth/forgot-password/route.ts
 
-import { EmailService } from '@/lib/email-service'
+import { sendPasswordResetEmail } from '@/lib/email'
 
 export async function POST(request: Request) {
   const { email } = await request.json()
@@ -252,23 +253,16 @@ export async function POST(request: Request) {
   })
   
   // Send email
-  const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset?token=${resetToken}`
-  const sent = await EmailService.sendEmail({
-    to: email,
-    subject: 'Reset Your SoloSuccess AI Password',
-    html: `
-      <p>Click the link below to reset your password.</p>
-      <p><a href="${resetUrl}">Reset Password</a></p>
-      <p>This link expires in 15 minutes.</p>
-    `,
-    text: `Reset your password: ${resetUrl}`
-  })
-  
-  return Response.json({
-    success: true,
-    emailSent: sent,
-    message: 'Password reset email sent (check spam if not received)'
-  })
+  const emailResult = await sendPasswordResetEmail(email, 'User', resetToken)
+
+  if (!emailResult.success) {
+    return NextResponse.json(
+      { error: 'Email could not be sent. If this continues, contact support — the mail service may need configuration on the server.' },
+      { status: 503 }
+    )
+  }
+
+  return NextResponse.json({ message: 'If an account with this email exists, a password reset link has been sent.' })
 }
 ```
 
@@ -285,7 +279,7 @@ const preferences: NotificationPreferences = {
       type: 'email',
       enabled: true,
       config: { to: 'user@example.com' },
-      severityFilter: ['critical', 'high'],
+      severityFilter: ['critical', 'urgent'],
       typeFilter: [] // All alert types
     },
     {
@@ -306,14 +300,14 @@ const preferences: NotificationPreferences = {
   },
   frequency: {
     immediate: ['critical'],
-    batched: ['high', 'medium', 'low'],
+    batched: ['urgent', 'warning', 'info'],
     batchInterval: 60
   }
 }
 
 // When a price drop is detected:
 const alert: CompetitorAlert = {
-  severity: 'high',
+  severity: 'urgent',
   alert_type: 'price_change',
   title: 'Competitor Price Drop',
   description: '...'
@@ -365,16 +359,16 @@ await system.deliverNotification(alert, preferences)
    ```typescript
    frequency: {
      immediate: ['critical'],
-     batched: ['high', 'medium', 'low'],
+     batched: ['urgent', 'warning', 'info'],
      batchInterval: 60 // minutes
    }
    ```
 
-2. **Are alerts marked as low-severity?**
+2. **Are alerts marked as `warning`/`info` severities?**
    Only `immediate` severities bypass batching.
 
 3. **Are quiet hours active?**
-   Non-critical alerts queue during quiet hours. Check user's timezone.
+   Non-critical alerts are skipped during quiet hours. Check user's timezone before expecting batch delivery.
 
 ### Slack/Discord Webhook Failing
 

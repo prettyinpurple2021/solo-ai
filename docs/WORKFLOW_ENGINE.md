@@ -5,9 +5,9 @@
 The **Workflow Engine** is a core system for building, executing, and monitoring automated workflows using a visual node-based builder. Users can create sequences of tasks (email, AI, conditions, delays) triggered manually, on schedule, or by webhooks.
 
 **Key Files**:
-- `src/lib/workflow-engine.ts` — Core execution engine (1000+ lines)
-- `src/shared/db/schema.ts` — Workflow storage schema
-- Workflow UI components (in dashboard)
+- `src/lib/workflow-engine.ts` — Core execution engine
+- `src/lib/shared/db/schema/workflow.ts` — Workflow-related DB schema
+- `src/lib/shared/db/schema/index.ts` (imported as `@/shared/db/schema`) — Schema exports used by the app
 
 ---
 
@@ -71,13 +71,12 @@ interface WorkflowNode {
   type: 'send_email',
   name: 'Welcome Email',
   config: {
-    to: '{{trigger.email}}',           // Reference trigger output
-    subject: 'Welcome {{trigger.name}}!',
-    template: 'welcome_template_id',
-    // or raw HTML:
-    html: '<h1>Welcome {{trigger.name}}!</h1>'
+    to: 'user@example.com',
+    subject: 'Welcome to SoloSuccess',
+    body: '<h1>Welcome!</h1>',
+    variables: { name: 'John' }
   },
-  inputs: ['trigger.email', 'trigger.name']
+  inputs: ['trigger']
 }
 ```
 
@@ -88,9 +87,9 @@ interface WorkflowNode {
   type: 'condition',
   name: 'Is Premium?',
   config: {
-    condition: '{{trigger.tier}} === "premium"' // expr-eval expression
+    condition: 'tier === "premium"' // expr-eval expression
   },
-  outputs: ['true_branch', 'false_branch']
+  outputs: ['true', 'false']
 }
 ```
 
@@ -98,11 +97,11 @@ interface WorkflowNode {
 ```typescript
 {
   id: 'node-4',
-  type: 'delay',
-  name: 'Wait 1 day',
+  type: 'delay', 
+  name: 'Wait 24 hours',
   config: {
-    duration: 1,
-    unit: 'day'  // 'second', 'minute', 'hour', 'day', 'week'
+    duration: 24,
+    unit: 'hours'  // 'milliseconds' | 'seconds' | 'minutes' | 'hours'
   }
 }
 ```
@@ -115,7 +114,7 @@ interface WorkflowNode {
   name: 'Generate Business Plan',
   config: {
     agentId: 'finn',           // Which agent to use
-    prompt: 'Generate a 30-day plan for {{trigger.businessName}}',
+    prompt: 'Generate a 30-day plan for this business',
     model: 'gpt-4-turbo',
     temperature: 0.7,
     maxTokens: 2000
@@ -134,7 +133,7 @@ interface WorkflowEdge {
   id: string
   source: string           // Node UUID
   target: string           // Node UUID
-  sourceHandle?: string    // "true_branch" for conditions
+  sourceHandle?: string    // "true" or "false" for conditions
   targetHandle?: string
   condition?: string       // Optional: expr-eval condition
   label?: string           // "Yes", "No", etc
@@ -168,22 +167,22 @@ Results stored in database
 
 **Webhook Trigger**:
 ```
-External POST /api/workflows/webhook/{workflowId}
+Workflow contains a webhook_trigger node with config:
+  { path, method, authentication, secret? }
     ↓
-Payload becomes trigger input
+Your application route/controller receives the external request
     ↓
-Workflow executes
+Your route passes request data into engine.executeWorkflow(...)
 ```
 
 ### Execution Flow
 
 ```typescript
-const workflow = await db.query.workflows.findOne({ where: { id: workflowId } })
-const execution = await engine.executeWorkflow({
-  workflowId,
-  triggerId: 'manual_trigger_node_id',
-  input: { email: 'user@example.com', name: 'John' }
-})
+const execution = await engine.executeWorkflow(
+  'workflow-123',
+  { email: 'user@example.com', tier: 'premium' },
+  'user-123'
+)
 
 // execution = {
 //   id: 'exec-123',
@@ -202,15 +201,18 @@ const execution = await engine.executeWorkflow({
 
 ### Variable Resolution
 
-Variables are referenced with `{{variable.path}}` syntax:
+The engine does **not** currently implement mustache-style (`{{...}}`) interpolation.
 
-```
-{{trigger.email}}           → Input from trigger node
-{{node-2.output}}           → Output from node-2
-{{node-3.businessPlan}}     → Specific output from node-3
-```
+For condition nodes, expressions are evaluated with:
 
-The engine resolves these before executing each node by looking up previous node outputs.
+- `context.variables` (workflow input variables)
+- `results` (object built from prior node results)
+- Optional `value` alias when `config.variable` is set
+
+Example:
+```typescript
+config: { condition: 'tier === "premium"' }
+```
 
 ---
 
@@ -222,7 +224,7 @@ The engine resolves these before executing each node by looking up previous node
 ```
 [Manual Trigger] 
     ↓
-[Send Email] → "Welcome {{name}}"
+[Send Email] → "Welcome"
     ↓
 [Delay] → 1 day
     ↓
@@ -248,33 +250,33 @@ const nodes: WorkflowNode[] = [
     type: 'send_email',
     name: 'Send Welcome',
     config: {
-      to: '{{trigger.email}}',
-      subject: 'Welcome {{trigger.name}}!',
-      html: '<h1>Hi {{trigger.name}}</h1>'
+      to: 'user@example.com',
+      subject: 'Welcome!',
+      body: '<h1>Hi there</h1>'
     }
   },
   {
-    id: 'delay-1-day',
+    id: 'delay-24-hours',
     type: 'delay',
-    name: 'Wait 1 day',
-    config: { duration: 1, unit: 'day' }
+    name: 'Wait 24 hours',
+    config: { duration: 24, unit: 'hours' }
   },
   {
     id: 'followup-email',
     type: 'send_email',
     name: 'Follow-up Email',
     config: {
-      to: '{{trigger.email}}',
+      to: 'user@example.com',
       subject: 'Getting Started with SoloSuccess',
-      html: '<h1>Next Steps</h1>...'
+      body: '<h1>Next Steps</h1>...'
     }
   }
 ]
 
 const edges: WorkflowEdge[] = [
   { id: 'e1', source: 'trigger', target: 'welcome-email' },
-  { id: 'e2', source: 'welcome-email', target: 'delay-1-day' },
-  { id: 'e3', source: 'delay-1-day', target: 'followup-email' }
+  { id: 'e2', source: 'welcome-email', target: 'delay-24-hours' },
+  { id: 'e3', source: 'delay-24-hours', target: 'followup-email' }
 ]
 ```
 
@@ -308,7 +310,7 @@ const nodes = [
     type: 'condition',
     name: 'Check Subscription',
     config: {
-      condition: '{{webhook.tier}} === "premium"'
+      condition: 'tier === "premium"'
     }
   },
   {
@@ -316,9 +318,9 @@ const nodes = [
     type: 'send_email',
     name: 'Premium Welcome',
     config: {
-      to: '{{webhook.email}}',
+      to: 'premium-user@example.com',
       subject: 'Unlock Premium Features',
-      html: '<h1>You have premium access!</h1>'
+      body: '<h1>You have premium access!</h1>'
     }
   },
   {
@@ -326,17 +328,17 @@ const nodes = [
     type: 'send_email',
     name: 'Upgrade Offer',
     config: {
-      to: '{{webhook.email}}',
+      to: 'free-user@example.com',
       subject: 'Upgrade to Premium',
-      html: '<h1>Try premium free for 7 days</h1>'
+      body: '<h1>Try premium free for 7 days</h1>'
     }
   }
 ]
 
 const edges = [
   { id: 'e1', source: 'webhook', target: 'check-tier' },
-  { id: 'e2', source: 'check-tier', target: 'premium-email', sourceHandle: 'true_branch' },
-  { id: 'e3', source: 'check-tier', target: 'free-email', sourceHandle: 'false_branch' }
+  { id: 'e2', source: 'check-tier', target: 'premium-email', sourceHandle: 'true' },
+  { id: 'e3', source: 'check-tier', target: 'free-email', sourceHandle: 'false' }
 ]
 ```
 
@@ -379,8 +381,8 @@ const nodes = [
     name: 'Email Report',
     config: {
       to: 'user@example.com',
-      subject: 'Daily Report - {{now.date}}',
-      html: '{{generate-report.output}}'
+      subject: 'Daily Report',
+      body: 'Your report has been generated.'
     }
   }
 ]
@@ -405,11 +407,11 @@ const workflow = await WorkflowEngine.createWorkflow({
 ### Execute Workflow
 
 ```typescript
-const execution = await WorkflowEngine.getInstance().executeWorkflow({
-  workflowId: 'workflow-123',
-  triggerId: 'manual_trigger_node_id',
-  input: { email: 'user@example.com', name: 'John' }
-})
+const execution = await WorkflowEngine.getInstance().executeWorkflow(
+  'workflow-123',
+  { email: 'user@example.com', name: 'John' },
+  'user-123'
+)
 
 console.log(execution.status) // 'completed', 'failed', etc
 console.log(execution.nodeResults) // Results from each node
@@ -510,11 +512,12 @@ logError('Node execution failed...', { nodeId, error })
 2. **No loop constructs** — Can't repeat nodes N times
 3. **Limited data transformation** — Only basic `transform_data` node
 4. **No sub-workflows** — Can't call another workflow from within a workflow
-5. **Timeout**: 30 seconds per execution (constraint from serverless runtime)
+5. **Timeout defaults**: `WorkflowSchema.settings.timeout` in `src/lib/workflow-engine.ts` defaults to 300000ms (5 minutes), while deployment platforms may impose lower hard limits
 
 ### Scalability
 
-- **Delay nodes** use background jobs, not blocking timers
+- **Delay nodes** currently use in-process `setTimeout` inside execution (blocking the invocation for the delay duration)
+  - Recommended workaround: offload long waits to an external queue/scheduler and resume workflow execution from a follow-up trigger
 - **Scheduled triggers** use cron scheduling (managed externally)
 - **Database**: Store execution history with TTL (auto-purge old executions)
 
@@ -526,37 +529,29 @@ To add a new node type (e.g., `sms_send`):
 
 1. **Update schema**:
    ```typescript
-   // src/shared/db/schema.ts
-   type: z.enum([
-     'manual_trigger', 'scheduled_trigger', 'webhook_trigger',
-     'ai_task', 'send_email', 'sms_send', // ← Add here
-     'condition', 'delay', 'transform_data'
-   ])
+   // src/lib/workflow-engine.ts
+   // Add 'sms_send' to WorkflowNodeSchema.type enum values
    ```
 
 2. **Implement executor**:
    ```typescript
    // src/lib/workflow-engine.ts
-   private async executeNode(node, context) {
-     if (node.type === 'sms_send') {
-       return await this.executeSmsNode(node, context)
+   this.registerNodeType({
+     id: 'sms_send',
+     name: 'Send SMS',
+     category: 'communication',
+     inputs: [{ id: 'input', name: 'Data', type: 'object', required: true }],
+     outputs: [{ id: 'output', name: 'Result', type: 'object', required: true }],
+     configSchema: z.object({
+       phoneNumber: z.string(),
+       message: z.string(),
+     }),
+     execute: async (config) => {
+       const smsConfig = config as { phoneNumber: string; message: string }
+       const result = await sendSms(smsConfig.phoneNumber, smsConfig.message)
+       return { sent: result.success, messageId: result.id, error: result.error }
      }
-     // ...
-   }
-
-   private async executeSmsNode(node, context) {
-     const { phoneNumber, message } = node.config
-     const resolvedPhone = this.resolveVariables(phoneNumber, context)
-     const resolvedMessage = this.resolveVariables(message, context)
-     
-     const result = await sendSms(resolvedPhone, resolvedMessage)
-     
-     return {
-       status: result.success ? 'completed' : 'failed',
-       output: { messageId: result.id },
-       error: result.error
-     }
-   }
+   })
    ```
 
 3. **Update UI** to allow configuring the new node type.
@@ -605,18 +600,18 @@ CREATE TABLE workflowExecutions (
 3. **Check isActive**: Verify `workflows.isActive = true`
 4. **Check logs**: Look for `ScheduledTrigger: No workflows to execute`
 
-### Variable Not Resolving
+### Condition Evaluation Failing
 
-**Problem**: Node receives `"{{trigger.email}}"` literally instead of the actual email.
+**Problem**: Condition node evaluates unexpectedly.
 
 **Solution**:
-1. Verify previous node has completed
-2. Verify output variable name matches exactly
-3. Check for typos: `{{trigger.email}}` vs `{{trigger.Email}}`
+1. Verify expected values exist in workflow input variables
+2. Verify condition expression matches available keys (for example `tier === "premium"`)
+3. Check prior node outputs in execution logs under `results`
 
 ### Node Timeout
 
-**Problem**: Workflow execution times out at 30 seconds.
+**Problem**: Workflow execution times out.
 
 **Solution**:
 1. Break into multiple workflows with delays
@@ -627,10 +622,10 @@ CREATE TABLE workflowExecutions (
 
 ## 10. Code References
 
-- **Core engine**: `src/lib/workflow-engine.ts` (1100+ lines)
+- **Core engine**: `src/lib/workflow-engine.ts`
 - **Node execution**: `src/lib/workflow-engine.ts` lines 200-500
-- **Database schema**: `src/shared/db/schema.ts` (workflows, workflowExecutions tables)
-- **Variable resolution**: `src/lib/workflow-engine.ts` — `resolveVariables()` method
+- **Database schema**: `src/lib/shared/db/schema/workflow.ts`
+- **Schema exports used by app code**: `src/lib/shared/db/schema/index.ts`
 - **Cron scheduling**: External (via cron library or cloud scheduler)
 
 ---

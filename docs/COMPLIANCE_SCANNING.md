@@ -94,35 +94,35 @@ Prevents: `file://`, `ftp://`, `gopher://`, etc.
 ```json
 {
   "url": "https://example.com",
-  "checkType": "security" | "privacy" | "accessibility" | "performance"
+  "userId": "user-123"
 }
 ```
 
 **Response (Success)**:
 ```json
 {
-  "success": true,
+  "id": "scan-uuid",
+  "scan_date": "2026-05-27T13:00:00Z",
   "url": "https://example.com/",
-  "checks": [
-    {
-      "name": "SSL/TLS Certificate",
-      "status": "pass",
-      "message": "Valid SSL certificate"
-    },
-    {
-      "name": "GDPR Cookie Consent",
-      "status": "warning",
-      "message": "No visible privacy policy"
-    }
-  ],
-  "scannedAt": "2026-05-27T13:00:00Z"
+  "trust_score": 75,
+  "details": {
+    "page_title": "Example Domain",
+    "has_privacy_policy": true,
+    "has_cookie_banner": false,
+    "has_contact_form": false,
+    "has_newsletter_signup": false,
+    "has_analytics": false,
+    "data_collection_points": [],
+    "cookie_types": [],
+    "consent_mechanisms": [],
+    "trust_score": 75
+  }
 }
 ```
 
 **Response (SSRF Blocked)**:
 ```json
 {
-  "success": false,
   "error": "Private network addresses are not allowed"
 }
 ```
@@ -130,7 +130,6 @@ Prevents: `file://`, `ftp://`, `gopher://`, etc.
 **Response (Invalid URL)**:
 ```json
 {
-  "success": false,
   "error": "Invalid URL"
 }
 ```
@@ -148,16 +147,18 @@ const handleScan = async (url: string) => {
     const response = await fetch('/api/compliance/scan', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url, checkType: 'security' })
+      body: JSON.stringify({ url, userId: 'user-123' })
     })
 
     const data = await response.json()
-    
-    if (data.success) {
-      console.log('Scan results:', data.checks)
-    } else {
+
+    if (!response.ok || data.error) {
       console.error('Scan failed:', data.error)
+      return
     }
+
+    console.log('Scan results:', data.details)
+    console.log('Trust score:', data.trust_score)
   } catch (error) {
     console.error('Request failed:', error)
   }
@@ -172,85 +173,55 @@ export async function scanWebsite(url: string) {
   const response = await fetch('http://localhost:3000/api/compliance/scan', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url, checkType: 'security' })
+    body: JSON.stringify({ url, userId: 'user-123' })
   })
 
-  if (!response.ok) {
-    throw new Error(`Scan failed: ${response.statusText}`)
-  }
+  const data = await response.json()
+  if (!response.ok || data.error) throw new Error(data.error || `Scan failed: ${response.statusText}`)
 
-  return await response.json()
+  return data
 }
 ```
 
 ---
 
-## 4. Compliance Checks
+## 4. Analyzer Outputs
 
-The analyzer runs multiple checks based on `checkType`:
+The current analyzer runs a single heuristic pass and returns:
 
-### Security Checks
-- SSL/TLS certificate validity
-- Mixed content (HTTP resources on HTTPS page)
-- Security headers (X-Frame-Options, X-Content-Type-Options, etc.)
-- Vulnerable dependencies (checks package.json if available)
-- CSP (Content Security Policy) presence
-
-### Privacy Checks
-- Privacy policy visibility
-- Cookie consent banner
-- GDPR/CCPA compliance signals
-- Data retention policy
-- Third-party tracking scripts
-
-### Accessibility Checks
-- WCAG 2.1 compliance (automated subset)
-- Alt text for images
-- Form labels
-- Keyboard navigation
-- Color contrast ratios
-
-### Performance Checks
-- Page load time
-- Resource compression (gzip)
-- Image optimization
-- Caching headers
-- Bundle size
+- `trust_score` (0-100 heuristic score)
+- `page_title`
+- `has_privacy_policy`
+- `has_cookie_banner`
+- `has_contact_form`
+- `has_newsletter_signup`
+- `has_analytics`
+- `data_collection_points`
+- `cookie_types`
+- `consent_mechanisms`
 
 ---
 
 ## 5. Implementing New Checks
 
-### Add a Security Check
+### Add a New Heuristic Check
 
 ```typescript
 // src/lib/compliance-analyzer.ts
 
-export async function analyze(html: string, checkType: string) {
-  const results: ComplianceCheck[] = []
+export function analyze(html: string) {
+  const text = html.toLowerCase()
+  const hasTermsOfService = text.includes('terms of service') || text.includes('terms and conditions')
 
-  if (checkType === 'security') {
-    // Add your check
-    results.push({
-      name: 'Custom Security Check',
-      status: checkResult ? 'pass' : 'fail',
-      message: 'Description of finding'
-    })
+  const baseTrustScore = 50
+  const trustScoreBonus = hasTermsOfService ? 5 : 0
+
+  return {
+    // existing fields...
+    has_terms_of_service: hasTermsOfService,
+    trust_score: Math.min(100, baseTrustScore + trustScoreBonus),
   }
-
-  return results
 }
-
-// Example: Check for X-XSS-Protection header
-const hasXssProtection = html.includes('X-XSS-Protection')
-
-results.push({
-  name: 'XSS Protection Header',
-  status: hasXssProtection ? 'pass' : 'warning',
-  message: hasXssProtection 
-    ? 'X-XSS-Protection header present'
-    : 'X-XSS-Protection header not found'
-})
 ```
 
 ---
@@ -265,7 +236,7 @@ results.push({
 // src/app/api/compliance/scan/route.ts
 export const dynamic = 'force-dynamic'
 // NO `runtime = 'edge'` because:
-// - dns.lookup() requires Node.js
+// - node:dns/promises lookup() requires Node.js runtime APIs
 // - Edge runtime (Cloudflare Workers, etc.) doesn't support dns module
 ```
 
@@ -294,10 +265,10 @@ COMPLIANCE_SCAN_TIMEOUT=30     # seconds
 # Valid public website
 curl -X POST http://localhost:3000/api/compliance/scan \
   -H "Content-Type: application/json" \
-  -d '{"url":"https://example.com","checkType":"security"}'
+  -d '{"url":"https://example.com","userId":"user-123"}'
 
 # Response:
-# {"success":true,"url":"https://example.com/","checks":[...]}
+# {"id":"...","scan_date":"...","url":"https://example.com/","trust_score":75,"details":{...}}
 ```
 
 ### SSRF Testing (Should Block)
@@ -306,26 +277,26 @@ curl -X POST http://localhost:3000/api/compliance/scan \
 # Private IP address (should reject)
 curl -X POST http://localhost:3000/api/compliance/scan \
   -H "Content-Type: application/json" \
-  -d '{"url":"http://192.168.1.1","checkType":"security"}'
+  -d '{"url":"http://192.168.1.1","userId":"user-123"}'
 
 # Response:
-# {"success":false,"error":"Private network addresses are not allowed"}
+# {"error":"Private network addresses are not allowed"}
 
 # Localhost (should reject)
 curl -X POST http://localhost:3000/api/compliance/scan \
   -H "Content-Type: application/json" \
-  -d '{"url":"http://localhost:8000","checkType":"security"}'
+  -d '{"url":"http://localhost:8000","userId":"user-123"}'
 
 # Response:
-# {"success":false,"error":"Local addresses are not allowed"}
+# {"error":"Local addresses are not allowed"}
 
 # Hostname that resolves to private IP (should reject)
 curl -X POST http://localhost:3000/api/compliance/scan \
   -H "Content-Type: application/json" \
-  -d '{"url":"http://internal.company.com","checkType":"security"}'
+  -d '{"url":"http://internal.company.com","userId":"user-123"}'
 
 # Response (if internal.company.com resolves to 10.0.0.1):
-# {"success":false,"error":"Target resolves to a private network address"}
+# {"error":"Target resolves to a private network address"}
 ```
 
 ---
@@ -334,16 +305,11 @@ curl -X POST http://localhost:3000/api/compliance/scan \
 
 ### Timeout
 
-Each scan has a **30-second timeout** (serverless function constraint):
+The route does **not** currently set an explicit fetch timeout. Effective timeout comes from the deployment platform/runtime limits (for example Vercel, Lambda, or container settings).
 
-```typescript
-const signal = AbortSignal.timeout(30000)
-const response = await fetch(url, { signal })
-```
-
-For large sites, this may timeout. Solutions:
-1. Implement lazy checks (run subset immediately, queue full scan)
-2. Add user feedback: "Large site detected, scan may take 30+ seconds"
+For large sites:
+1. Add an explicit timeout via `AbortSignal.timeout(...)` if you want deterministic behavior
+2. Implement lazy checks (run subset immediately, queue full scan)
 3. Cache results if same URL scanned recently
 
 ### DNS Lookup Performance
@@ -377,7 +343,7 @@ async function cachedDnsLookup(hostname: string) {
 **Check**:
 1. **Verify it's actually public**: `nslookup example.com`
 2. **Check DNS resolution**: Ensure it doesn't resolve to 10.x, 172.16-31.x, 192.168.x
-3. **Check CDN/proxy**: If behind CloudFlare, DNS may show different IPs
+3. **Check CDN/proxy**: If behind Cloudflare, DNS may show different IPs
 
 ### "Fetch failed: 403"
 
