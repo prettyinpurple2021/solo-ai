@@ -201,9 +201,9 @@ const execution = await engine.executeWorkflow(
 
 ### Variable Resolution
 
-The engine does **not** currently implement mustache-style (`{{...}}`) interpolation.
+The engine has **no generic** `resolveVariables()` helper. Most node configs are executed as provided.
 
-For condition nodes, expressions are evaluated with:
+Condition node expressions are evaluated with:
 
 - `context.variables` (workflow input variables)
 - `results` (object built from prior node results)
@@ -213,6 +213,8 @@ Example:
 ```typescript
 config: { condition: 'tier === "premium"' }
 ```
+
+`ai_task` is the main exception: it performs simple `{{key}}` replacement in `prompt` using `context.variables`.
 
 ---
 
@@ -395,13 +397,20 @@ const nodes = [
 ### Create Workflow
 
 ```typescript
-const workflow = await WorkflowEngine.createWorkflow({
+const engine = WorkflowEngine.getInstance()
+
+const workflow = await engine.createWorkflow({
   name: 'Welcome Sequence',
   description: 'Send welcome email and follow-up',
+  version: '1.0.0',
+  status: 'draft',
+  triggerType: 'manual',
+  triggerConfig: {},
+  variables: {},
+  settings: {},
   nodes: [...],
-  edges: [...],
-  isActive: true
-})
+  edges: [...]
+}, 'user-123')
 ```
 
 ### Execute Workflow
@@ -420,33 +429,32 @@ console.log(execution.nodeResults) // Results from each node
 ### Query Executions
 
 ```typescript
-// Get recent executions
-const executions = await db.query.workflowExecutions.findMany({
-  where: eq(workflowExecutions.workflowId, workflowId),
-  orderBy: desc(workflowExecutions.startedAt),
-  limit: 10
-})
+const engine = WorkflowEngine.getInstance()
+
+// Get recent executions for a workflow
+const executions = await engine.getWorkflowExecutions('workflow-123')
 
 // Get execution details
-const exec = await db.query.workflowExecutions.findOne({
-  where: eq(workflowExecutions.id, executionId)
-})
+const exec = await engine.getExecution(executionId)
 
-console.log(exec.nodeResults) // Results from each node
-console.log(exec.error) // Error message if failed
+console.log(exec?.nodeResults) // Results from each node
+console.log(exec?.status) // 'running' | 'completed' | 'failed'
 ```
 
 ### List Analytics
 
 ```typescript
-const stats = await WorkflowEngine.getExecutionStats(workflowId, {
-  days: 30
-})
+const engine = WorkflowEngine.getInstance()
+const executions = await engine.getWorkflowExecutions(workflowId)
 
-console.log(stats.totalExecutions)
-console.log(stats.successRate) // 0.95 = 95%
-console.log(stats.averageExecutionTime) // milliseconds
-console.log(stats.nodeFailureRate) // Breakdown by node
+const total = executions.length
+const successful = executions.filter((e) => e.status === 'completed').length
+const successRate = total ? successful / total : 0
+const averageExecutionTime = total
+  ? executions.reduce((sum, e) => sum + e.executionTime, 0) / total
+  : 0
+
+console.log({ total, successRate, averageExecutionTime })
 ```
 
 ---

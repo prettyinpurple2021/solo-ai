@@ -116,7 +116,7 @@ The **NotificationDeliverySystem** (singleton) routes alerts and notifications t
 
 Supports:
 - **Immediate delivery** for critical alerts
-- **Batched delivery** for lower-severity alerts (configurable intervals)
+- **Batched delivery** for lower-severity alerts outside quiet hours (configurable intervals)
 - **Quiet hours** (timezone-aware, respects user preferences)
 - **Severity and type filtering** per channel (`critical`, `urgent`, `warning`, `info`)
 
@@ -201,7 +201,7 @@ const emailChannel: NotificationChannel = {
 
 ### Batch Processing
 
-Lower-severity alerts are batched:
+Outside quiet hours, lower-severity alerts are batched:
 
 ```typescript
 frequency: {

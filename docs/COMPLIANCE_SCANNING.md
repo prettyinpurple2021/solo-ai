@@ -361,12 +361,12 @@ async function cachedDnsLookup(hostname: string) {
 
 ### Scan Times Out
 
-**Problem**: Large website scan times out at 30 seconds.
+**Problem**: Large website scan times out due to platform/runtime request limits.
 
 **Solution**:
 1. Fetch only first 1MB of HTML (set Content-Length limit)
 2. Async checks: Run non-blocking checks immediately, queue heavy checks
-3. Inform user of timeout: Return partial results with `scannedAt` timestamp
+3. Inform user of timeout by surfacing the route error payload (`{ error: ... }`)
 
 ---
 
