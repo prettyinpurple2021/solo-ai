@@ -399,6 +399,15 @@ const nodes = [
 ```typescript
 const engine = WorkflowEngine.getInstance()
 
+const nodes = [
+  {
+    id: 'start',
+    type: 'manual_trigger',
+    name: 'Start',
+    config: { inputSchema: {} }
+  }
+]
+
 const workflow = await engine.createWorkflow({
   name: 'Welcome Sequence',
   description: 'Send welcome email and follow-up',
@@ -408,8 +417,8 @@ const workflow = await engine.createWorkflow({
   triggerConfig: {},
   variables: {},
   settings: {},
-  nodes: [...],
-  edges: [...]
+  nodes,
+  edges: []
 }, 'user-123')
 ```
 
@@ -430,9 +439,10 @@ console.log(execution.nodeResults) // Results from each node
 
 ```typescript
 const engine = WorkflowEngine.getInstance()
+const workflowId = workflow.id
 
 // Get recent executions for a workflow
-const executions = await engine.getWorkflowExecutions('workflow-123')
+const executions = await engine.getWorkflowExecutions(workflowId)
 
 // Get execution details
 const exec = await engine.getExecution(executionId)
