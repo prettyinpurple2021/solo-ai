@@ -366,7 +366,7 @@ async function cachedDnsLookup(hostname: string) {
 **Solution**:
 1. Fetch only first 1MB of HTML (set Content-Length limit)
 2. Async checks: Run non-blocking checks immediately, queue heavy checks
-3. Inform user of timeout by surfacing the route error payload (`{ error: ... }`)
+3. Inform user of timeout by surfacing the route response body (`{ error: string }`)
 
 ---
 

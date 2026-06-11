@@ -201,7 +201,7 @@ const execution = await engine.executeWorkflow(
 
 ### Variable Resolution
 
-The engine has **no generic** `resolveVariables()` helper. Most node configs are executed as provided.
+The engine does not provide a generic `resolveVariables()` helper. Most node configs are executed as provided.
 
 Condition node expressions are evaluated with:
 
@@ -214,7 +214,7 @@ Example:
 config: { condition: 'tier === "premium"' }
 ```
 
-`ai_task` is the main exception: it performs simple `{{key}}` replacement in `prompt` using `context.variables`.
+`ai_task` is the only built-in exception: it performs simple `{{key}}` replacement in `prompt` using `context.variables`.
 
 ---
 
@@ -451,7 +451,15 @@ const total = executions.length
 const successful = executions.filter((e) => e.status === 'completed').length
 const successRate = total ? successful / total : 0
 const averageExecutionTime = total
-  ? executions.reduce((sum, e) => sum + e.executionTime, 0) / total
+  ? executions.reduce(
+      (sum, e) =>
+        sum +
+        (e.executionTime ??
+          (e.completedAt && e.startedAt
+            ? new Date(e.completedAt).getTime() - new Date(e.startedAt).getTime()
+            : 0)),
+      0
+    ) / total
   : 0
 
 console.log({ total, successRate, averageExecutionTime })
