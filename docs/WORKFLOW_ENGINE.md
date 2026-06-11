@@ -419,7 +419,7 @@ const workflow = await engine.createWorkflow({
   settings: {},
   nodes,
   edges: []
-}, 'user-123')
+}, currentUser.id) // createdBy user ID from authenticated session
 ```
 
 ### Execute Workflow
@@ -461,7 +461,7 @@ const total = executions.length
 const successful = executions.filter((e) => e.status === 'completed').length
 const successRate = total ? successful / total : 0
 const averageExecutionTime = total
-  ? executions.reduce((sum, e) => sum + e.executionTime, 0) / total
+  ? executions.reduce((sum, e) => sum + (e.executionTime ?? 0), 0) / total
   : 0
 
 console.log({ total, successRate, averageExecutionTime })
