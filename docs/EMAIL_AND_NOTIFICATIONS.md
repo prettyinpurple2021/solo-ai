@@ -118,7 +118,7 @@ Supports:
 - **Immediate delivery** for critical alerts
 - **Batched delivery** for lower-severity alerts (configurable intervals)
 - **Quiet hours** (timezone-aware, respects user preferences)
-- **Severity and type filtering** per channel
+- **Severity and type filtering** per channel (`critical`, `urgent`, `warning`, `info`)
 
 ### Architecture
 
