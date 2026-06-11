@@ -409,8 +409,8 @@ const nodes = [
 ]
 
 const workflow = await engine.createWorkflow({
-  name: 'Welcome Sequence',
-  description: 'Send welcome email and follow-up',
+  name: 'Manual Starter',
+  description: 'Minimal workflow with one trigger node',
   version: '1.0.0',
   status: 'draft',
   triggerType: 'manual',
@@ -461,15 +461,7 @@ const total = executions.length
 const successful = executions.filter((e) => e.status === 'completed').length
 const successRate = total ? successful / total : 0
 const averageExecutionTime = total
-  ? executions.reduce(
-      (sum, e) =>
-        sum +
-        (e.executionTime ??
-          (e.completedAt && e.startedAt
-            ? new Date(e.completedAt).getTime() - new Date(e.startedAt).getTime()
-            : 0)),
-      0
-    ) / total
+  ? executions.reduce((sum, e) => sum + e.executionTime, 0) / total
   : 0
 
 console.log({ total, successRate, averageExecutionTime })
