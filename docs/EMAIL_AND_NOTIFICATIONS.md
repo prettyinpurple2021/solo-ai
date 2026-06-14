@@ -4,17 +4,12 @@
 
 SoloSuccess AI uses a **multi-channel notification delivery system** with email as the primary transactional channel. Notifications handle password resets, 2FA codes, subscription updates, competitor alerts, and invitation links.
 
-The email system was recently migrated from Resend to **Zoho Mail SMTP**, providing reliable transactional email with better cost control and operational simplicity.
-
 **Key Components**:
 - `src/lib/mail-transport.ts` — Zoho Mail SMTP integration (nodemailer)
-- `src/lib/email-service.ts` — High-level email API with template methods
-- `src/lib/email.ts` — Legacy email utilities (being consolidated)
-- `src/lib/notification-delivery-system.ts` — Multi-channel delivery orchestrator
-- `src/lib/notification-job-queue.ts` — Job queueing and retry logic
-- `src/services/notificationService.ts` — Service layer
-- `src/app/api/notifications/send/route.ts` — Notification API endpoint
-- `docs/deployment/ZOHO_MAIL_SMTP_SETUP.md` — Deployment setup guide
+- `src/lib/email-service.ts` — High-level email API
+- `src/lib/notification-delivery-system.ts` — Multi-channel delivery (email, Slack, webhooks, in-app)
+- `src/app/api/alerts/notifications/route.ts` — Notification API endpoint
+- `docs/deployment/ZOHO_MAIL_SMTP_SETUP.md` — Deployment guide
 
 ---
 

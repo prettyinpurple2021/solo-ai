@@ -979,3 +979,6 @@ const workflow = await db.query.workflows.findFirst({
 - [Workflow Dashboard](../src/app/dashboard/workflow) — UI for managing workflows
 - [Temporal Integration](temporal-workflow-store.ts) — Long-running workflow support
 - [AI Task Integration](../AGENT_PERSONALITY_SYSTEM.md) — AI task nodes and agents
+- [EMAIL_AND_NOTIFICATIONS.md](EMAIL_AND_NOTIFICATIONS.md) — Email sending in workflows
+- [AGENT_PERSONALITY_SYSTEM.md](AGENT_PERSONALITY_SYSTEM.md) — AI task nodes
+- [ARCHITECTURE.md](ARCHITECTURE.md) — System overview
