@@ -362,6 +362,6 @@ Redeploy without code changes via Vercel dashboard.
 
 ## 10. References
 
-- **Time-Window Algorithm**: [Wikipedia](https://en.wikipedia.org/wiki/Token_bucket)
+- **Token Bucket Algorithm**: [Wikipedia](https://en.wikipedia.org/wiki/Token_bucket)
 - **Rate Limiting Best Practices**: [OWASP](https://owasp.org/www-community/attacks/Brute_force_attack)
 - **Vercel Limits**: https://vercel.com/docs/edge-network/usage-and-limits
