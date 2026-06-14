@@ -14,7 +14,7 @@ The Compliance Scanning system performs automated security and regulatory checks
 - `src/lib/compliance-analyzer.ts` — Core scanning logic
 - `src/components/guardian-ai/compliance-scanner.tsx` — UI component
 - `src/app/api/compliance/scan/route.ts` — Scan endpoint (POST)
-- `src/app/api/compliance/policies/route.ts` — Policy management (GET/POST)
+- `src/app/api/compliance/policies/route.ts` — Policy generation (POST)
 - `src/app/api/compliance/consent/route.ts` — Consent tracking
 - `src/app/compliance/page.tsx` — Compliance dashboard
 
@@ -89,152 +89,104 @@ Content-Type: application/json
 
 {
   "url": "https://example.com",
-  "depth": "full",              // "simple" | "full" | "deep"
-  "checkPolicies": true,
-  "checkCookies": true
+  "userId": "user-123"
 }
 
 Response (200):
 {
+  "id": "scan-123",
+  "scan_date": "2026-06-10T13:00:00Z",
   "url": "https://example.com",
-  "scanId": "scan-123",
-  "timestamp": "2026-06-10T13:00:00Z",
-  "page_title": "Example Site",
-  "has_privacy_policy": true,
-  "has_cookie_banner": true,
-  "has_contact_form": true,
-  "has_newsletter_signup": false,
-  "has_analytics": true,
-  "data_collection_points": [
-    "Contact Form",
-    "Analytics Tracking"
-  ],
-  "cookie_types": [
-    "Analytics",
-    "Necessary",
-    "Marketing"
-  ],
-  "consent_mechanisms": [
-    "Cookie Banner"
-  ],
   "trust_score": 72,
-  "compliance_status": {
-    "gdpr": "partial",
-    "ccpa": "compliant",
-    "gdpr_issues": [
-      "Missing legitimate interest disclosure for analytics"
+  "details": {
+    "page_title": "Example Site",
+    "has_privacy_policy": true,
+    "has_cookie_banner": true,
+    "has_contact_form": true,
+    "has_newsletter_signup": false,
+    "has_analytics": true,
+    "data_collection_points": [
+      "Contact Form",
+      "Analytics Tracking"
+    ],
+    "cookie_types": [
+      "Analytics",
+      "Necessary",
+      "Marketing"
+    ],
+    "consent_mechanisms": [
+      "Cookie Banner"
     ]
   }
 }
 
 Error Responses:
-- 400: Invalid URL or malformed request
+- 400: Invalid URL, missing required fields, or blocked/private target
   { "error": "Invalid URL format" }
-- 403: SSRF detected or blocked URL
-  { "error": "URL blocked for security reasons" }
-- 504: Timeout (URL unreachable)
-  { "error": "Failed to fetch URL: connection timeout" }
-```
-
-### GET `/api/compliance/scan/{scanId}`
-
-Retrieve previous scan results.
-
-```
-GET /api/compliance/scan/scan-123
-
-Response:
-{
-  "id": "scan-123",
-  "url": "https://example.com",
-  "scanResults": { ... },
-  "timestamp": "2026-06-10T13:00:00Z"
-}
-```
-
-### GET `/api/compliance/policies`
-
-List compliance policies (GDPR, CCPA, SOC2, etc).
-
-```
-GET /api/compliance/policies
-
-Response:
-{
-  "policies": [
-    {
-      "id": "gdpr",
-      "name": "GDPR (EU)",
-      "requirements": [
-        "Privacy policy required",
-        "Cookie consent mechanism",
-        "Right to be forgotten",
-        "Data processing agreements"
-      ],
-      "severity": "high"
-    },
-    {
-      "id": "ccpa",
-      "name": "CCPA (California)",
-      "requirements": [...],
-      "severity": "high"
-    },
-    {
-      "id": "soc2",
-      "name": "SOC 2 Type II",
-      "requirements": [...],
-      "severity": "medium"
-    }
-  ]
-}
+- 500: Fetch, analysis, or database persistence failure
+  { "error": "Scan failed" }
 ```
 
 ### POST `/api/compliance/policies`
 
-Create custom compliance policy.
+Generate policy content (privacy, terms, cookies) from business profile data.
 
 ```
 POST /api/compliance/policies
 
 {
-  "name": "Custom Enterprise Policy",
-  "description": "Our internal security standard",
-  "requirements": [
-    { "rule": "has_privacy_policy", "description": "Privacy policy required" },
-    { "rule": "has_cookie_banner", "description": "Cookie consent" },
-    { "rule": "no_analytics_without_consent", "description": "Analytics requires opt-in" }
-  ]
+  "userId": "user-123",
+  "businessName": "Example Co",
+  "websiteUrl": "https://example.com",
+  "contactEmail": "legal@example.com",
+  "jurisdiction": "US",
+  "policyTypes": ["privacy", "terms", "cookies"]
 }
 
 Response:
 {
-  "id": "policy-custom-123",
-  "name": "Custom Enterprise Policy",
-  "requirements": [...],
-  "createdAt": "2026-06-10T13:00:00Z"
+  "policy_data_id": "policy-data-123",
+  "generated": [
+    {
+      "id": "generated-policy-1",
+      "type": "privacy",
+      "version": 1,
+      "generated_at": "2026-06-10T13:00:00Z"
+    }
+  ]
 }
+```
+
+### GET `/api/compliance/consent?userId={userId}`
+
+Fetch consent logs and data requests for a user.
+
+```
+GET /api/compliance/consent?userId=user-123
+
+Response:
+{ "consent_logs": [...], "data_requests": [...] }
 ```
 
 ### POST `/api/compliance/consent`
 
-Track user consent for analytics.
+Track consent events or create data requests.
 
 ```
 POST /api/compliance/consent
 
 {
   "userId": "user-123",
-  "consentType": "analytics",
-  "consentGiven": true,
-  "timestamp": "2026-06-10T13:00:00Z",
-  "ipAddress": "192.168.1.1"
+  "type": "log-consent",
+  "payload": {
+    "userEmail": "user@example.com",
+    "consentType": "analytics",
+    "action": "accepted",
+    "ipAddress": "203.0.113.10"
+  }
 }
 
-Response:
-{
-  "consentId": "consent-456",
-  "status": "recorded"
-}
+Response: { "ok": true }
 ```
 
 ---
@@ -256,65 +208,33 @@ Result: Attacker gains access to internal systems
 ```typescript
 // src/app/api/compliance/scan/route.ts
 
-export async function POST(request: Request) {
-  const { url } = await request.json()
-  
-  // 1. Validate URL format
-  const parsed = new URL(url)
-  
-  // 2. Reject private IP ranges (SSRF protection)
-  const blockedIPs = [
-    '127.0.0.1',           // localhost
-    '0.0.0.0',             // 0.0.0.0
-    '169.254.169.254',     // AWS metadata
-    '::1',                 // IPv6 localhost
-    /^10\./,               // Private: 10.0.0.0/8
-    /^172\.(1[6-9]|2[0-9]|3[01])\./,  // Private: 172.16.0.0/12
-    /^192\.168\./          // Private: 192.168.0.0/16
-  ]
-  
-  for (const blocked of blockedIPs) {
-    if (typeof blocked === 'string' && parsed.hostname === blocked) {
-      return Response.json(
-        { error: 'URL blocked for security reasons' },
-        { status: 403 }
-      )
-    }
-    if (blocked instanceof RegExp && blocked.test(parsed.hostname)) {
-      return Response.json(
-        { error: 'URL blocked for security reasons' },
-        { status: 403 }
-      )
-    }
+async function validateAndNormalizeScanUrl(input: string): Promise<string> {
+  const parsed = new URL(input)
+  if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
+    throw new Error('Only http and https URLs are allowed')
   }
-  
-  // 3. DNS lookup validation (verify hostname resolves to public IP)
-  const dns = require('dns').promises
-  try {
-    const addresses = await dns.resolve4(parsed.hostname)
-    for (const addr of addresses) {
-      if (isPrivateIP(addr)) {
-        return Response.json(
-          { error: 'URL resolves to private IP' },
-          { status: 403 }
-        )
-      }
-    }
-  } catch (err) {
-    return Response.json(
-      { error: 'Failed to resolve hostname' },
-      { status: 400 }
-    )
+  if (parsed.username || parsed.password) {
+    throw new Error('URLs with credentials are not allowed')
   }
-  
-  // 4. Safe to scan
-  const html = await fetch(url).then(r => r.text())
-  const results = analyze(html)
-  return Response.json(results)
+  // Blocks localhost/private targets and validates DNS resolves to public IPs
+  const records = await dns.lookup(parsed.hostname, { all: true })
+  // ...private IPv4/IPv6 checks...
+  return parsed.toString()
 }
 
-function isPrivateIP(ip: string): boolean {
-  return /^(10|172|192)\./.test(ip) || ip === '127.0.0.1'
+export async function POST(req: NextRequest) {
+  const { url, userId } = await req.json()
+  const scanUrl = await validateAndNormalizeScanUrl(url)
+  const html = await fetchHtml(scanUrl)
+  const result = analyze(html)
+  // Persist in compliance_scans and trust_score_history
+  return NextResponse.json({
+    id: inserted[0].id,
+    scan_date: inserted[0].scan_date,
+    url: scanUrl,
+    trust_score: result.trust_score,
+    details: result,
+  })
 }
 ```
 
@@ -619,7 +539,7 @@ open https://example.com
 
 **Cause**: DNS resolution failed
 
-**Diagnos**:
+**Diagnosis**:
 ```bash
 # Test DNS resolution locally
 nslookup example.com

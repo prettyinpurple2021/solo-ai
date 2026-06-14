@@ -19,10 +19,7 @@ SoloSuccess AI uses a **multi-channel notification delivery system** with email 
 
 ```
 User Action
-├─ Password reset → EmailService.sendPasswordReset()
-├─ 2FA code → EmailService.send2FACode()
 ├─ Welcome → EmailService.sendWelcomeEmail()
-├─ Billing event → EmailService.sendBillingEmail()
 └─ Competitor alert → EmailService.sendCompetitorAlertEmail()
     ↓
 EmailService.sendEmail(options)
@@ -67,8 +64,6 @@ SMTP_PASSWORD=<app-specific-password> # NOT your Zoho login password
 FROM_EMAIL="SoloSuccess AI <support@solosuccessai.fun>"
 CONTACT_INBOX_EMAIL=support@solosuccessai.fun  # For contact form submissions
 
-# Optional: For development/testing
-SKIP_EMAIL_VERIFICATION=false         # Skip TLS verification (dev only)
 ```
 
 **Important**: Always generate an **app-specific password** in Zoho Mail's security settings. This is NOT your login password. See [ZOHO_MAIL_SMTP_SETUP.md](deployment/ZOHO_MAIL_SMTP_SETUP.md) for detailed setup steps.
@@ -439,10 +434,10 @@ Or leave empty to use simulation mode.
 ### Optional Variables
 
 ```bash
-SKIP_EMAIL_VERIFICATION=false    # For testing in dev, not production
-LOG_EMAIL_CONTENT=false          # Log full email body to console
-EMAIL_QUEUE_BATCH_SIZE=10        # For job queue
-EMAIL_QUEUE_PROCESS_INTERVAL=5s  # For job queue
+SMTP_PORT=587                    # Optional; defaults to 587
+SMTP_SECURE=false                # Optional; inferred true when port is 465
+FROM_EMAIL="SoloSuccess AI <support@solosuccessai.fun>" # Optional sender override
+CONTACT_INBOX_EMAIL=support@solosuccessai.fun           # Optional contact-form inbox
 ```
 
 ---
@@ -554,7 +549,7 @@ Error: 535 5.7.8 Error: authentication failed
 
 **Causes**:
 - ❌ Using Zoho login password instead of app password
-- ❌ Password has special characters that need URL encoding
+- ❌ SMTP password value is mis-copied or not quoted correctly in env/CI secret settings
 - ❌ Zoho account locked for security
 - ❌ IP not whitelisted in Zoho account
 

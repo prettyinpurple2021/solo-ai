@@ -13,7 +13,7 @@ The engine supports multiple node types (AI tasks, email, conditions, delays), p
 - `src/components/workflow/visual-workflow-builder.tsx` — Visual editor UI
 - `src/app/api/workflows/*` — REST API endpoints
 - `src/app/dashboard/workflow` — Dashboard pages
-- `src/db/schema/workflow.ts` — Database schema
+- `src/lib/shared/db/schema/workflow.ts` — Database schema
 
 ---
 
@@ -25,7 +25,7 @@ The engine supports multiple node types (AI tasks, email, conditions, delays), p
 Trigger
   ├─ Manual (User clicks "Run")
   ├─ Scheduled (Cron: "Every Monday at 9 AM")
-  ├─ Webhook (HTTP POST to /api/workflows/{id}/trigger)
+  ├─ Webhook (HTTP POST to /api/workflows/{id}/execute)
   └─ Event (Competitor alert, billing event, etc.)
       ↓
   Workflow Engine
@@ -81,7 +81,7 @@ Every workflow is a **directed acyclic graph (DAG)** with:
       type: "condition",
       name: "Check if competitors tracked",
       config: {
-        expression: "variables.competitors.length > 0"
+        condition: "competitors.length > 0"
       }
     },
     // AI task node
@@ -499,32 +499,35 @@ Response: 204 No Content
 ### Trigger Workflow (Manual)
 
 ```
-POST /api/workflows/{id}/trigger
+POST /api/workflows/{id}/execute
 
 {
-  "inputs": {
+  "input": {
     "recipient": "user@example.com"
   }
 }
 
-Response:
+Response (202):
 {
-  "executionId": "exec-456",
-  "status": "pending",
-  "startedAt": "2026-06-10T13:05:00Z"
+  "execution": {
+    "id": "exec-456",
+    "workflowId": "wf-123",
+    "status": "running",
+    "startedAt": "2026-06-10T13:05:00Z"
+  }
 }
 ```
 
 ### Webhook Trigger
 
 ```
-POST /api/workflows/trigger?token={webhook_token}
+POST /api/workflows/{id}/execute
 
 {
-  "data": { ... }
+  "input": { ... }
 }
 
-Response: Workflow triggered
+Response (202): execution started
 ```
 
 ### Get Execution
@@ -575,80 +578,68 @@ Response:
 ### Using the Workflow Engine
 
 ```typescript
-import { WorkflowEngine } from '@/lib/workflow-engine'
-import { db } from '@/db'
+import { workflowEngine } from '@/lib/workflow-engine'
 
-// Create engine instance
-const engine = new WorkflowEngine({
-  db,
-  logger: console
-})
-
-// Get workflow
-const workflow = await db.query.workflows.findFirst({
-  where: (w) => w.id === 'wf-123'
-})
-
-// Execute workflow
-const execution = await engine.execute(workflow, {
-  triggerType: 'manual',
-  inputs: { recipient: 'user@example.com' }
-})
+// Execute workflow by ID
+const execution = await workflowEngine.executeWorkflow(
+  'wf-123',
+  { recipient: 'user@example.com' },
+  'user-123'
+)
 
 console.log(execution.status)    // 'completed' or 'failed'
 console.log(execution.logs)      // Array of execution logs
-console.log(execution.outputs)   // Final outputs
+console.log(execution.nodeResults) // Final node outputs
 ```
 
 ### Creating a Custom Node Type
 
 ```typescript
-// 1. Add to node type enum
-export const WorkflowNodeSchema = z.object({
-  type: z.enum([
-    ...,
-    'custom_api_call'  // New node type
-  ]),
-  ...
-})
+import { workflowEngine, type NodeType } from '@/lib/workflow-engine'
 
-// 2. Implement executor
-import { WorkflowNodeExecutor } from '@/lib/workflow-engine'
-
-const customApiExecutor: WorkflowNodeExecutor = async (node, context) => {
-  const { url, method } = node.config
-  const response = await fetch(url, {
-    method: method || 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  })
-  return {
-    status: 'completed',
-    output: await response.json()
-  }
+const customApiNodeType: NodeType = {
+  id: 'custom_api_call',
+  name: 'Custom API Call',
+  description: 'Call a custom API endpoint',
+  category: 'action',
+  icon: 'Globe',
+  color: '#6366F1',
+  inputs: [{ id: 'input', name: 'Input', type: 'object', required: false }],
+  outputs: [{ id: 'output', name: 'Output', type: 'object', required: true }],
+  configSchema: z.object({
+    url: z.string().url(),
+    method: z.enum(['GET', 'POST']).default('GET')
+  }),
+  execute: async (config) => {
+    const typed = config as { url: string; method: 'GET' | 'POST' }
+    const response = await fetch(typed.url, {
+      method: typed.method,
+      headers: { 'Content-Type': 'application/json' }
+    })
+    return {
+      status: response.status,
+      data: await response.json()
+    }
+  },
 }
 
-// 3. Register executor
-engine.registerNodeExecutor('custom_api_call', customApiExecutor)
+workflowEngine.registerNodeType(customApiNodeType)
 ```
 
 ### Handling Execution Events
 
 ```typescript
 // Subscribe to execution events
-engine.on('step:start', (step) => {
-  console.log(`Starting: ${step.name}`)
+workflowEngine.on('workflow_created', (event) => {
+  console.log('Workflow created:', event)
 })
 
-engine.on('step:complete', (step) => {
-  console.log(`Completed: ${step.name}`)
+workflowEngine.on('workflow_completed', (event) => {
+  console.log('Workflow completed:', event)
 })
 
-engine.on('step:error', (step, error) => {
-  console.error(`Failed: ${step.name}`, error)
-})
-
-engine.on('workflow:complete', (execution) => {
-  console.log(`Workflow completed with status: ${execution.status}`)
+workflowEngine.on('workflow_failed', (event) => {
+  console.error('Workflow failed:', event)
 })
 ```
 
@@ -678,10 +669,12 @@ export function WorkflowEditor() {
 
   const handleExecute = async () => {
     setExecuting(true)
-    const response = await fetch(`/api/workflows/${workflow.id}/trigger`, {
-      method: 'POST'
+    const response = await fetch(`/api/workflows/${workflow.id}/execute`, {
+      method: 'POST',
+      body: JSON.stringify({ input: {} })
     })
-    const execution = await response.json()
+    const data = await response.json()
+    const execution = data.execution
     setExecuting(false)
     // Show execution status
   }
@@ -977,7 +970,7 @@ const workflow = await db.query.workflows.findFirst({
 
 - [Workflow Templates API](../src/app/api/workflow-templates) — Pre-built templates
 - [Workflow Dashboard](../src/app/dashboard/workflow) — UI for managing workflows
-- [Temporal Integration](temporal-workflow-store.ts) — Long-running workflow support
+- [Temporal Integration](../src/lib/temporal-workflow-store.ts) — Long-running workflow support
 - [AI Task Integration](../AGENT_PERSONALITY_SYSTEM.md) — AI task nodes and agents
 - [EMAIL_AND_NOTIFICATIONS.md](EMAIL_AND_NOTIFICATIONS.md) — Email sending in workflows
 - [AGENT_PERSONALITY_SYSTEM.md](AGENT_PERSONALITY_SYSTEM.md) — AI task nodes
