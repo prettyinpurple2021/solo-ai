@@ -144,6 +144,18 @@ io.use((socket, next) => {
 io.on('connection', (socket) => {
     logInfo(`Client connected: ${socket.id} (User: ${socket.data.userId})`);
 
+    // Setup periodic token verification for long-lived connections
+    const tokenCheckInterval = setInterval(() => {
+        const token = socket.handshake.auth.token;
+        if (!token) return;
+
+        const decoded = verifyAccessToken(token);
+        if (!decoded.ok) {
+            logWarn(`Socket forcibly disconnected: Token expired or invalid (${socket.id})`);
+            socket.disconnect(true);
+        }
+    }, 5 * 60 * 1000); // Check every 5 minutes
+
     // SECURE Join: Only join the room belonging to the verified userId
     socket.on('join', () => {
         const userId = socket.data.userId;
@@ -152,6 +164,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
+        clearInterval(tokenCheckInterval);
         logInfo(`Client disconnected: ${socket.id}`);
     });
 });
