@@ -6,6 +6,7 @@ import { db } from '../db';
 import { businessContext, tasks, competitorReports, boardReports, pivotAnalyses, warRoomSessions, dailyIntelligence, userBrandSettings, users } from '../../src/lib/shared/db/schema';
 import { eq, desc, and, gte } from 'drizzle-orm';
 import { authMiddleware } from '../middleware/auth';
+import { aiExecutionLimiter } from '../middleware/rate-limiter';
 import { SYSTEM_INSTRUCTIONS, AGENTS, AgentId } from '../constants';
 import { logError } from '../utils/logger';
 import { requireSubscription, checkUsage, TIER_LEVELS } from '../middleware/subscription';
@@ -169,6 +170,7 @@ const ContractAnalysisSchema = z.object({
 });
 
 const router = Router();
+router.use(aiExecutionLimiter);
 
 // Apply auth middleware to all AI routes
 router.use(authMiddleware);

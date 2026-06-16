@@ -7,6 +7,8 @@ import { generateToken } from '../utils/jwt';
 import { z } from 'zod';
 import { logError } from '../utils/logger';
 
+import { authLimiter } from '../middleware/rate-limiter';
+
 const router = express.Router();
 
 const authSchema = z.object({
@@ -14,7 +16,7 @@ const authSchema = z.object({
     password: z.string().min(6),
 });
 
-router.post('/signup', async (req, res) => {
+router.post('/signup', authLimiter, async (req, res) => {
     try {
         const { email, password } = authSchema.parse(req.body);
 
@@ -55,7 +57,7 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
     try {
         const { email, password } = authSchema.parse(req.body);
 
