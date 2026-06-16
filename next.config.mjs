@@ -85,13 +85,16 @@ const nextConfig = {
   async headers() {
     return [
       {
-        source: "/api/(.*)",
+        source: "/(.*)",
         headers: [
           { key: "X-Frame-Options", value: "DENY" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "origin-when-cross-origin" },
-          { key: "X-Robots-Tag", value: "noindex" },
         ],
+      },
+      {
+        source: "/api/(.*)",
+        headers: [{ key: "X-Robots-Tag", value: "noindex" }],
       },
     ];
   },

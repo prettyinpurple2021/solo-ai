@@ -140,6 +140,28 @@ io.use((socket, next) => {
     next();
 });
 
+const socketTokenCheckIntervalMs = 5 * 60 * 1000;
+
+const socketTokenCheckInterval = setInterval(() => {
+    for (const socket of io.sockets.sockets.values()) {
+        const token = socket.handshake.auth.token;
+        if (!token) continue;
+
+        const decoded = verifyAccessToken(token);
+        if (!decoded.ok) {
+            logWarn(`Socket forcibly disconnected: Token expired or invalid (${socket.id})`);
+            socket.disconnect(true);
+        }
+    }
+}, socketTokenCheckIntervalMs);
+
+const cleanupSocketTokenCheckInterval = () => {
+    clearInterval(socketTokenCheckInterval);
+};
+
+process.once('SIGINT', cleanupSocketTokenCheckInterval);
+process.once('SIGTERM', cleanupSocketTokenCheckInterval);
+
 // Standard Socket handlers
 io.on('connection', (socket) => {
     logInfo(`Client connected: ${socket.id} (User: ${socket.data.userId})`);
@@ -166,17 +188,9 @@ app.use(cors({
 }));
 app.use(express.json());
 
-// Global API rate limiter — 200 requests per 15 minutes per IP.
-// Fine-grained limiters (e.g. stripe routes) apply stricter limits on top.
-const globalApiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
-    max: 200,
-    standardHeaders: true,
-    legacyHeaders: false,
-    message: { error: 'Too many requests, please try again later.' },
-    skip: (req) => req.path === '/api/health', // health checks are never rate-limited
-});
-app.use('/api', globalApiLimiter);
+import { standardApiLimiter } from './middleware/rate-limiter';
+
+app.use('/api', standardApiLimiter);
 
 // Routes
 app.use('/api/auth', authRouter);
