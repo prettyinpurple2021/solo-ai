@@ -142,7 +142,7 @@ io.use((socket, next) => {
 
 const socketTokenCheckIntervalMs = 5 * 60 * 1000;
 
-setInterval(() => {
+const socketTokenCheckInterval = setInterval(() => {
     for (const socket of io.sockets.sockets.values()) {
         const token = socket.handshake.auth.token;
         if (!token) continue;
@@ -154,6 +154,13 @@ setInterval(() => {
         }
     }
 }, socketTokenCheckIntervalMs);
+
+const cleanupSocketTokenCheckInterval = () => {
+    clearInterval(socketTokenCheckInterval);
+};
+
+process.once('SIGINT', cleanupSocketTokenCheckInterval);
+process.once('SIGTERM', cleanupSocketTokenCheckInterval);
 
 // Standard Socket handlers
 io.on('connection', (socket) => {
