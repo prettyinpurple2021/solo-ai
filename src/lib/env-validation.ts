@@ -28,9 +28,14 @@ const envSchema = z.object({
   ANTHROPIC_API_KEY: z.string().min(1, "Anthropic API key is required").optional(),
   GOOGLE_GENERATIVE_AI_API_KEY: z.string().min(1, "Google Gemini API key is required").optional(),
 
-  // Email - Optional for notifications
-  RESEND_API_KEY: z.string().min(1, "Resend API key is required").optional(),
-  FROM_EMAIL: z.string().email("Invalid from email address").optional(),
+  // Email - Zoho Mail SMTP (transactional)
+  SMTP_HOST: z.string().min(1, "SMTP host is required").optional(),
+  SMTP_PORT: z.string().optional(),
+  SMTP_SECURE: z.enum(["true", "false"]).optional(),
+  SMTP_USER: z.string().min(1, "SMTP user is required").optional(),
+  SMTP_PASSWORD: z.string().min(1, "SMTP password is required").optional(),
+  FROM_EMAIL: z.string().min(1, "From address is required").optional(),
+  CONTACT_INBOX_EMAIL: z.string().email("Invalid contact inbox email").optional(),
 
   // SMS Notifications - Optional for SMS notifications
   TWILIO_ACCOUNT_SID: z.string().min(1, "Twilio account SID is required").optional(),
@@ -127,7 +132,11 @@ export function getFeatureFlags() {
     hasAuth: !!(process.env.JWT_SECRET || (process.env.NEXT_PUBLIC_STACK_PROJECT_ID && process.env.NEXT_PUBLIC_STACK_PUBLISHABLE_CLIENT_KEY)),
     hasBilling: !!process.env.STRIPE_SECRET_KEY,
     hasAI: !!(process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY || process.env.GOOGLE_GENERATIVE_AI_API_KEY),
-    hasEmail: !!process.env.RESEND_API_KEY,
+    hasEmail: !!(
+      process.env.SMTP_HOST &&
+      process.env.SMTP_USER &&
+      process.env.SMTP_PASSWORD
+    ),
     hasSMS: !!(process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN && process.env.TWILIO_PHONE_NUMBER),
     hasPushNotifications: !!(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY),
     hasRecaptcha: !!(process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && process.env.RECAPTCHA_SECRET_KEY),

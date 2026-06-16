@@ -71,8 +71,13 @@ GOOGLE_GENERATIVE_AI_API_KEY="AIza..."
 #### Email Services
 ```bash
 # Resend API Key for email delivery
-RESEND_API_KEY="re_..."
-FROM_EMAIL="noreply@yourdomain.com"
+SMTP_HOST="smtp.zoho.com"
+SMTP_PORT="587"
+SMTP_SECURE="false"
+SMTP_USER="support@yourdomain.com"
+SMTP_PASSWORD="your-zoho-app-password"
+FROM_EMAIL="SoloSuccess AI <support@yourdomain.com>"
+CONTACT_INBOX_EMAIL="support@yourdomain.com"
 ```
 
 #### Payment Processing

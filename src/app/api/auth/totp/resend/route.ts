@@ -4,12 +4,9 @@ import { db } from '@/lib/database-client';
 import { userMfaSettings, users } from '@/shared/db/schema';
 import { eq } from 'drizzle-orm';
 import { z } from 'zod';
-import { Resend } from 'resend';
 import { Redis } from '@upstash/redis';
 import { logError } from '@/lib/logger';
-
-// Configure Resend
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+import { isEmailConfigured, sendTransactionalEmail, getDefaultFromAddress } from '@/lib/mail-transport';
 
 // Configure Redis for session/temp data storage
 const redis = (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) 
@@ -54,7 +51,7 @@ export async function POST(req: Request) {
     }
 
     if (method === 'email') {
-      if (!resend) {
+      if (!isEmailConfigured()) {
         return NextResponse.json({ success: false, error: 'Email service not configured' }, { status: 503 });
       }
       if (!redis) {
@@ -72,8 +69,8 @@ export async function POST(req: Request) {
       // Store this code in Redis with a 5-minute expiry
       await redis.set(`2fa:code:${session.user.id}`, randomCode, { ex: 300 });
 
-      await resend.emails.send({
-        from: 'support@solosuccesss.com',
+      const emailResult = await sendTransactionalEmail({
+        from: getDefaultFromAddress(),
         to: user.email,
         subject: 'Your 2FA Login Code',
         html: `
@@ -89,6 +86,10 @@ export async function POST(req: Request) {
           </div>
         `,
       });
+
+      if (!emailResult.success) {
+        return NextResponse.json({ success: false, error: 'Failed to send verification email' }, { status: 503 });
+      }
 
       return NextResponse.json({ success: true, message: 'Verification code sent to your email.' });
     }

@@ -8,7 +8,7 @@
 > 
 > **Owner:** Frances Loggins
 > **Created:** 2026-04-27
-> **Status:** IN_PROGRESS
+> **Status:** IN_PROGRESS (Phases 1–3 largely complete as of **2026-05-17**; Phase 4 + Phase 5 git scrub remain)
 
 ## Instructions
 
@@ -37,15 +37,15 @@ Work through each phase **in order**. For each secret:
 | Detail                         | Value                                                                                                                             |
 | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
 | **Variable**                   | `DATABASE_URL`                                                                                                                    |
-| **Compromised value contains** | password `npg_QIj0fGxldW6J`, host `ep-royal-wave-ahafdikl`                                                                        |
+| **Compromised value contains** | old Neon password (revoked) and host `ep-royal-wave-ahafdikl` — **never paste live passwords in this doc**                        |
 | **Rotate at**                  | [console.neon.tech](https://console.neon.tech) → Project `hidden-snow-05992338` → **Roles** → `neondb_owner` → **Reset password** |
 | **Update in**                  | V, R, L                                                                                                                           |
 | **Verify**                     | App connects; `/api/health/deps` returns `status: ok`                                                                             |
 
-**New connection string format:**
+**New connection string format:** copy the full `DATABASE_URL` from the Neon console after reset — store only in Vercel/Railway/local env, **not** in git or this runbook.
 
 ```text
-postgresql://neondb_owner:npg_rJM7CiZUu9TK@ep-royal-wave-ahafdikl.c-3.us-east-1.aws.neon.tech/solosuccess-database?sslmode=require&channel_binding=require
+postgresql://neondb_owner:<NEW_PASSWORD_FROM_NEON_CONSOLE>@<your-neon-host>/solosuccess-database?sslmode=require
 ```
 
 - [x] New password generated
@@ -214,14 +214,16 @@ Note: QStash signing key rotation is a two-step process — `NEXT` becomes `CURR
 
 ### 10. Twitter/X API Credentials
 
-| Detail        | Value                                                                                                                 |
-| ------------- | --------------------------------------------------------------------------------------------------------------------- |
-| **Variables** | `TWITTER_APP_KEY`, `TWITTER_APP_SECRET`, `TWITTER_ACCESS_TOKEN`, `TWITTER_ACCESS_SECRET`                              |
-| **Rotate at** | [developer.x.com](https://developer.x.com/en/portal/dashboard) → Your App → **Keys and tokens** → Regenerate all four |
-| **Update in** | V, R, L                                                                                                               |
-| **Verify**    | Twitter integration features work                                                                                     |
+| Detail        | Value                                                                                                                                                                                                                                              |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Variables** | Whichever you use in Vercel/Railway — commonly `TWITTER_API_KEY`, `TWITTER_API_SECRET`, plus OAuth 2.0 client id/secret on the integration route (see `src/lib/social-media-monitor.ts`, `src/app/api/integrations/social-media/twitter/route.ts`) |
+| **Rotate at** | [developer.x.com](https://developer.x.com/en/portal/dashboard) → Your App → **Keys and tokens** → Regenerate                                                                                                                                       |
+| **Update in** | V, R, L                                                                                                                                                                                                                                            |
+| **Verify**    | Twitter integration / social connect flow in dashboard                                                                                                                                                                                             |
 
-- [ ] All four credentials regenerated
+> **Founder shortcut:** [CRIT-008_FINISH_CHECKLIST.md](./CRIT-008_FINISH_CHECKLIST.md) Step 5.
+
+- [ ] All Twitter-related credentials regenerated or revoked
 - [ ] Updated in V, R, L
 - [ ] Deployed & verified
 
@@ -262,17 +264,19 @@ Note: QStash signing key rotation is a two-step process — `NEXT` becomes `CURR
 
 ---
 
-### 13. Google Cloud API Key
+### 13. Google reCAPTCHA (API key + site/secret)
 
-| Detail        | Value                                                                                                                                                                   |
-| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Variable**  | `GOOGLE_CLOUD_API_KEY`                                                                                                                                                  |
-| **Rotate at** | [console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials) → Delete old key → Create new → **Restrict to reCAPTCHA Enterprise API** |
-| **Update in** | V, L                                                                                                                                                                    |
-| **Verify**    | reCAPTCHA validation works                                                                                                                                              |
+| Detail        | Value                                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Variables** | `GOOGLE_CLOUD_API_KEY`, `RECAPTCHA_SECRET_KEY`, `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`, `NEXT_PUBLIC_RECAPTCHA_PROJECT_ID` (see `src/lib/recaptcha.ts`, `src/lib/env-validation.ts`) |
+| **Rotate at** | [GCP Credentials](https://console.cloud.google.com/apis/credentials) + [reCAPTCHA Enterprise](https://console.cloud.google.com/security/recaptcha)                             |
+| **Update in** | V, L                                                                                                                                                                           |
+| **Verify**    | Registration / login reCAPTCHA works (no browser console errors)                                                                                                               |
 
-- [ ] Old key deleted
-- [ ] New key created (with API restriction)
+> **Founder shortcut:** [CRIT-008_FINISH_CHECKLIST.md](./CRIT-008_FINISH_CHECKLIST.md) Step 2.
+
+- [ ] Old GCP / reCAPTCHA credentials revoked
+- [ ] New values created (GCP key restricted to reCAPTCHA Enterprise API)
 - [ ] Updated in V, L
 - [ ] Deployed & verified
 
@@ -344,25 +348,25 @@ git push --force --tags origin
 
 ## Post-Rotation Evidence Table
 
-| #   | Service                     | Rotated? | Old Key Disabled? | Verified Working? | Date     |
-| --- | --------------------------- | -------- | ----------------- | ----------------- | -------- |
-| 1   | Neon DB Password            | DONE     | YES               | YES               | 04/27/26 |
-| 2   | Neon API Key                | DONE     | YES               | YES               | 04/27/26 |
-| 3   | JWT_SECRET                  | DONE     | N/A               |                   | 04/27/26 |
-| 4   | AUTH_SECRET                 | DONE     | N/A               |                   | 04/27/26 |
-| 5   | Stripe Secret Key           | DONE     | YES               |                   | 04/28/26 |
-| 6   | Stripe Webhook Secret       | DONE     | YES               |                   | 04/27/26 |
-| 7   | Stripe Publishable Key      | DONE     | YES               |                   | 04/27/26 |
-| 8   | OpenAI API Key              | DONE     | YES               |                   | 04/28/26 |
-| 9   | Anthropic API Key           | DONE     | YES               |                   | 04/28/26 |
-| 10  | Upstash Redis Token         |          |                   |                   |          |
-| 11  | QStash Token + Signing Keys |          |                   |                   |          |
-| 12  | Resend API Key              |          |                   |                   |          |
-| 13  | Twitter/X (all 4)           |          |                   |                   |          |
-| 14  | Stack Auth Keys             |          |                   |                   |          |
-| 15  | VAPID Keys                  |          |                   |                   |          |
-| 16  | Google Cloud API Key        |          |                   |                   |          |
-| 17  | Brave API Key               |          |                   |                   |          |
-| 18  | Gitea Token                 |          |                   |                   |          |
-| 19  | Context7 API Key            |          |                   |                   |          |
-| 20  | Git history scrubbed        |          | N/A               | N/A               |          |
+| #   | Service                     | Rotated? | Old Key Disabled? | Verified Working?            | Date     |
+| --- | --------------------------- | -------- | ----------------- | ---------------------------- | -------- |
+| 1   | Neon DB Password            | DONE     | YES               | YES                          | 04/27/26 |
+| 2   | Neon API Key                | DONE     | YES               | YES                          | 04/27/26 |
+| 3   | JWT_SECRET                  | DONE     | N/A               |                              | 04/27/26 |
+| 4   | AUTH_SECRET                 | DONE     | N/A               |                              | 04/27/26 |
+| 5   | Stripe Secret Key           | DONE     | YES               |                              | 04/28/26 |
+| 6   | Stripe Webhook Secret       | DONE     | YES               |                              | 04/27/26 |
+| 7   | Stripe Publishable Key      | DONE     | YES               |                              | 04/27/26 |
+| 8   | OpenAI API Key              | DONE     | YES               |                              | 04/28/26 |
+| 9   | Anthropic API Key           | DONE     | YES               |                              | 04/28/26 |
+| 10  | Upstash Redis Token         | DONE     | YES               | YES                          | 04/27/26 |
+| 11  | QStash Token + Signing Keys | DONE     | YES               | partial                      | 04/27/26 |
+| 12  | Resend API Key              | REPLACED | WITH              | ZOHO                         |          |
+| 13  | Twitter/X (all 4)           |          |                   |                              |          |
+| 14  | Stack Auth Keys             |          |                   |                              |          |
+| 15  | VAPID Keys                  |          |                   |                              |          |
+| 16  | Google Cloud API Key        |          |                   |                              |          |
+| 17  | Brave API Key               |          |                   |                              |          |
+| 18  | Gitea Token                 | REMOVED  | REMOVED           |  |          |
+| 19  | Context7 API Key            |          |                   |                              |          |
+| 20  | Git history scrubbed        |          | N/A               | N/A                          |          |
