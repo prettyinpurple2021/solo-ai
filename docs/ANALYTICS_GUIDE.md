@@ -192,8 +192,13 @@ setInterval(async () => {
   const toInsert = [...eventBatch]
   eventBatch.length = 0  // Clear
 
-  await db.insert(analyticsEvents).values(toInsert)
-  logInfo(`Flushed ${toInsert.length} analytics events`)
+  try {
+    await db.insert(analyticsEvents).values(toInsert)
+    logInfo("Flushed " + toInsert.length + " analytics events")
+  } catch (error) {
+    logError("Failed to flush analytics events, restoring to batch", error)
+    eventBatch.unshift(...toInsert)
+  }
 }, 30000)  // Every 30 seconds
 ```
 
