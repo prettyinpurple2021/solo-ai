@@ -77,10 +77,10 @@ Configure in API route handlers:
 
 ```typescript
 // Sign-up endpoint - strict limit
-import { checkRateLimit } from '@/lib/rate-limit'
+import { rateLimitByIp } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
-  const { allowed, remaining } = await checkRateLimit(request, {
+  const { allowed, remaining } = await rateLimitByIp(request, {
     window: 900, // 15 minutes in seconds
     requests: 5
   })
@@ -95,7 +95,7 @@ export async function POST(request: Request) {
 
 ## 4. API Reference
 
-### `checkRateLimit(request, options)`
+### `rateLimitByIp(request, options)`
 
 Check if a request is within rate limits.
 
@@ -114,7 +114,7 @@ Check if a request is within rate limits.
 
 **Example:**
 ```typescript
-const { allowed, remaining } = await checkRateLimit(request, {
+const { allowed, remaining } = await rateLimitByIp(request, {
   window: 60,
   requests: 100
 })
@@ -130,31 +130,16 @@ if (!allowed) {
 console.log(`${remaining} requests remaining`)
 ```
 
-### `clearRateLimitBucket(bucketName)`
-
-Manually clear rate limit entries for a bucket (e.g., during tests or manual reset).
-
-**Parameters:**
-- `bucketName: string` — Bucket identifier (usually request URL)
-
-**Example:**
-```typescript
-// Clear rate limits for testing
-import { clearRateLimitBucket } from '@/lib/rate-limit'
-
-clearRateLimitBucket('/api/auth/signup')
-```
-
 ## 5. Implementation Guide
 
 ### 5.1 Adding Rate Limiting to an Endpoint
 
 ```typescript
-import { checkRateLimit } from '@/lib/rate-limit'
+import { rateLimitByIp } from '@/lib/rate-limit'
 
 export async function POST(request: Request) {
   // Step 1: Check rate limit
-  const { allowed } = await checkRateLimit(request, {
+  const { allowed } = await rateLimitByIp(request, {
     window: 60,        // 60 seconds
     requests: 50       // 50 requests max
   })
@@ -194,8 +179,8 @@ export async function checkUserJobCap(
 
   const jobs = await db.query.scrapingJobs.findMany({
     where: and(
-      eq(scrapingJobs.userId, userId),
-      gte(scrapingJobs.createdAt, cutoff)
+      eq(scrapingJobs.user_id, userId),
+      gte(scrapingJobs.created_at, cutoff)
     )
   })
 
@@ -223,7 +208,7 @@ if (!allowed) {
 ```typescript
 import { logInfo } from '@/lib/logger'
 
-const { allowed, remaining } = await checkRateLimit(request, {
+const { allowed, remaining } = await rateLimitByIp(request, {
   window: 60,
   requests: 100
 })
@@ -271,7 +256,7 @@ if (emailExists) {
 }
 
 // ✅ Good: Same limit for all sign-up attempts
-await checkRateLimit(request, { window: 900, requests: 5 })
+await rateLimitByIp(request, { window: 900, requests: 5 })
 // Rate limit equally regardless of email validity
 ```
 

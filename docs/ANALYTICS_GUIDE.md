@@ -100,15 +100,16 @@ interface AnalyticsEventData {
 | `error_occurred` | Client-side error | errorType, message, stack |
 | `performance_metric` | Performance data | metric, value, context |
 
-### 3.2 Custom Events
+### 3.2 Feature-Specific Events
 
-Applications can track custom events:
+Applications can attach feature-specific details to the supported analytics event types:
 
 ```typescript
-import { trackEvent } from '@/lib/analytics'
+import { analytics } from '@/lib/analytics'
 
 // In a React component
-await trackEvent('premium_feature_accessed', {
+await analytics.trackEvent('feature_used', {
+  userId: user.id,
   featureName: 'advanced_analytics',
   userTier: 'pro',
   context: { pageUrl: window.location.href }
@@ -119,10 +120,10 @@ import { db } from '@/db/index'
 import { analyticsEvents } from '@/shared/db/schema'
 
 await db.insert(analyticsEvents).values({
-  event: 'custom_event',
-  userId: user.id,
+  event: 'feature_used',
+  user_id: user.id,
   timestamp: new Date(),
-  properties: { customField: 'value' }
+  properties: { featureName: 'advanced_analytics', source: 'api' }
 })
 ```
 
@@ -133,21 +134,20 @@ await db.insert(analyticsEvents).values({
 ```typescript
 // hooks/useAnalytics.ts
 import { useEffect } from 'react'
-import { trackEvent } from '@/lib/analytics'
+import { trackPageView } from '@/lib/analytics'
 
-export function usePageView(pageName: string) {
+export function usePageView(userId: string, pageName: string) {
   useEffect(() => {
-    trackEvent('page_view', {
+    void trackPageView(userId, window.location.pathname, {
       pageTitle: pageName,
-      path: window.location.pathname,
       url: window.location.href
     })
-  }, [pageName])
+  }, [pageName, userId])
 }
 
 // Usage in component
 function Dashboard() {
-  usePageView('Dashboard')
+  usePageView(user.id, 'Dashboard')
   
   return <div>...</div>
 }
@@ -165,7 +165,7 @@ export async function POST(request: Request) {
   // Track API usage
   await db.insert(analyticsEvents).values({
     event: 'feature_used',
-    userId: session.user.id,
+    user_id: session.user.id,
     timestamp: new Date(),
     properties: { featureName: 'export_pdf' }
   })
@@ -207,9 +207,13 @@ setInterval(async () => {
 ### 5.1 User Metrics
 
 ```typescript
-import { getUserMetrics } from '@/lib/analytics'
+import { analytics } from '@/lib/analytics'
 
-const metrics = await getUserMetrics(userId)
+const metrics = await analytics.getUserMetrics(userId)
+if (!metrics) {
+  return
+}
+
 console.log({
   sessions: metrics.totalSessions,
   engagement: metrics.retentionScore,   // 0-100
@@ -230,72 +234,64 @@ Score = (Days Active Last 30 / 30) * (Features Used / Max Features) * 100
 ### 5.2 Business Metrics
 
 ```typescript
-import { getBusinessMetrics } from '@/lib/analytics'
+import { analytics } from '@/lib/analytics'
 
-const metrics = await getBusinessMetrics()
+const metrics = await analytics.calculateBusinessMetrics()
 console.log({
   dau: metrics.activeUsers,             // Daily active users
   mau: metrics.totalUsers,              // Total registered
   newToday: metrics.newUsersToday,
   churnRate: metrics.churnRate,         // % inactive
-  mrr: metrics.totalMRR,
-  runway: metrics.runway                // Months until $0 (if negative)
+  retention: metrics.userRetentionRate, // % active users
+  revenue: metrics.revenue,
+  mrr: metrics.mrr
 })
 ```
 
 ### 5.3 Performance Metrics
 
 ```typescript
-import { getPerformanceMetrics } from '@/lib/analytics'
+import { analytics } from '@/lib/analytics'
 
-const perf = await getPerformanceMetrics()
+const [perf] = await analytics.getPerformanceMetrics()
 console.log({
-  pageLoad: perf.pageLoadTime,          // ms
-  apiResponse: perf.apiResponseTime,    // ms
-  errorRate: perf.errorRate,            // %
-  uptime: perf.uptime                   // % (last 30 days)
+  pageLoad: perf?.pageLoadTime ?? 0,       // ms
+  apiResponse: perf?.apiResponseTime ?? 0, // ms
+  errorRate: perf?.errorRate ?? 0,         // %
+  uptime: perf?.uptime ?? 0                // % (last 30 days)
 })
 ```
 
 ## 6. Revenue Tracking
 
-The analytics system integrates with the billing system to track revenue metrics.
+The analytics layer reads revenue metrics from connected billing providers through
+`RevenueTrackingService`.
 
-### 6.1 Revenue Events
+### 6.1 User Revenue Metrics
 
 ```typescript
-import { recordRevenue } from '@/lib/analytics'
+import { RevenueTrackingService } from '@/lib/revenue-tracking'
 
-// On subscription creation
-await recordRevenue({
-  userId: user.id,
-  type: 'subscription',
-  amount: 29.99,
-  tier: 'pro',
-  event: 'upgrade'
-})
+const revenue = await RevenueTrackingService.calculateRevenue(
+  user.id,
+  new Date(Date.now() - 30 * 86400000),
+  new Date()
+)
 
-// On payment received
-await recordRevenue({
-  userId: user.id,
-  type: 'payment',
-  amount: 29.99,
-  orderId: 'or_123'
-})
+const mrr = await RevenueTrackingService.calculateMRR(user.id)
 ```
 
-### 6.2 Churn Tracking
+### 6.2 Platform Revenue Metrics
 
 ```typescript
-// On subscription cancellation
-await recordRevenue({
-  userId: user.id,
-  type: 'churn',
-  amount: -29.99,  // Negative to reduce MRR
-  tier: 'pro',
-  event: 'downgrade',
-  reason: 'user_requested'
-})
+import { RevenueTrackingService } from '@/lib/revenue-tracking'
+
+const totalRevenue = await RevenueTrackingService.calculateGlobalRevenue(
+  new Date(Date.now() - 30 * 86400000),
+  new Date()
+)
+
+const totalMrr = await RevenueTrackingService.calculateGlobalMRR()
 ```
 
 ## 7. Monitoring & Dashboards
@@ -315,41 +311,48 @@ Monitor these KPIs continuously:
 ### 7.2 Querying Analytics
 
 ```typescript
+const featureName = sql<string>`(${analyticsEvents.properties}->>'featureName')`
+const eventCount = sql<number>`count(*)`
+
 const activeUsers = await db
-  .select()
+  .selectDistinct({ userId: analyticsEvents.user_id })
   .from(analyticsEvents)
   .where(
     and(
       gte(analyticsEvents.timestamp, new Date(Date.now() - 7 * 86400000)),
-      notInArray(analyticsEvents.user_id, getInactiveUserIds())
+      isNotNull(analyticsEvents.user_id)
     )
   )
 
 // Get top features by usage
 const topFeatures = await db
   .select({
-    feature: sql<string>(analyticsEvents.properties, "->>'featureName'"),
-    count: sql<number>("count(*)")
+    feature: featureName.as('feature'),
+    count: eventCount.as('count')
   })
   .from(analyticsEvents)
   .where(eq(analyticsEvents.event, 'feature_used'))
-  .groupBy(sql(analyticsEvents.properties, "->>'featureName'"))
-  .orderBy(desc(sql("count(*)")))
+  .groupBy(featureName)
+  .orderBy(desc(eventCount))
   .limit(10)
+```
 
 ### 7.3 Time-Series Analysis
 
 ```typescript
-// Track revenue over time
-const revenueTimeSeries = await db
+const eventDate = sql<string>`date(${analyticsEvents.timestamp})`
+
+// Track feature usage over time
+const featureUsageTimeSeries = await db
   .select({
-    date: sql<string>("DATE(", analyticsEvents.timestamp, ")"),
-    revenue: sql<number>("sum((", analyticsEvents.properties, "->>'amount')::numeric)")
+    date: eventDate.as('date'),
+    count: sql<number>`count(*)`.as('count')
   })
   .from(analyticsEvents)
-  .where(eq(analyticsEvents.event, 'payment'))
-  .groupBy(sql("DATE(", analyticsEvents.timestamp, ")"))
-  .orderBy(sql("DATE(", analyticsEvents.timestamp, ")"))
+  .where(eq(analyticsEvents.event, 'feature_used'))
+  .groupBy(eventDate)
+  .orderBy(eventDate)
+```
 
 ## 8. Best Practices
 
@@ -359,13 +362,13 @@ Never track personally identifiable information:
 
 ```typescript
 // ❌ Bad: Tracks sensitive data
-trackEvent('user_login', {
+analytics.trackEvent('user_login', {
   email: user.email,        // PII
   password: user.password   // Secret
 })
 
 // ✅ Good: Anonymized data
-trackEvent('user_login', {
+analytics.trackEvent('user_login', {
   userId: user.id,
   method: 'password_auth'   // Non-sensitive
 })
@@ -393,13 +396,21 @@ Don't fire individual analytics requests for high-frequency events:
 
 ```typescript
 // ❌ Bad: Creates request per keystroke
-onTextChange = () => {
-  await trackEvent('text_input', { text: value })
+onTextChange = async () => {
+  await analytics.trackEvent('feature_used', {
+    userId: user.id,
+    featureName: 'editor_typing',
+    textPreview: value
+  })
 }
 
 // ✅ Good: Batch or debounce
-onTextChange = debounce(() => {
-  await trackEvent('text_input', { wordCount: value.split(' ').length })
+onTextChange = debounce(async () => {
+  await analytics.trackEvent('feature_used', {
+    userId: user.id,
+    featureName: 'editor_typing',
+    wordCount: value.split(' ').length
+  })
 }, 1000)
 ```
 
@@ -409,7 +420,8 @@ Make events queryable and understandable:
 
 ```typescript
 // ✅ Good: Rich context
-trackEvent('file_uploaded', {
+analytics.trackEvent('file_uploaded', {
+  userId: user.id,
   fileSize: file.size,
   fileType: file.type,
   uploadDuration: endTime - startTime,
@@ -450,14 +462,14 @@ Check logs for tracking messages.
 ### Issue: Revenue metrics not updating
 
 **Causes:**
-1. `recordRevenue()` not called during payment
+1. Revenue provider connection not active
 2. Billing integration disconnected
-3. Time zone mismatch
+3. Time window mismatch
 
 **Solution:**
 1. Check Stripe webhook logs
-2. Verify recordRevenue calls in billing routes
-3. Check timezone in revenue tracking
+2. Verify payment provider connections are active
+3. Check the date range passed to `RevenueTrackingService`
 
 ## 10. Future Enhancements
 
@@ -470,7 +482,7 @@ Check logs for tracking messages.
 
 ## 11. References
 
-- **Database Schema**: `analyticsEvents` table in `/shared/db/schema.ts`
+- **Database Schema**: `analyticsEvents` table in `src/lib/shared/db/schema/business.ts`
 - **Revenue Tracking**: See `revenue-tracking.ts`
 - **Metrics API**: See `analytics.ts`
 - **Event Types**: See type definitions in `analytics.ts`

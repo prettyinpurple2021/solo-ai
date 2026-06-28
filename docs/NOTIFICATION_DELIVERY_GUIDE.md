@@ -100,36 +100,14 @@ import { notificationPreferences } from '@/shared/db/schema'
 // Called during user signup
 await db.insert(notificationPreferences).values({
   userId: newUser.id,
-  channels: [
-    {
-      id: 'email_ch',
-      name: 'Email',
-      type: 'email',
-      enabled: true,
-      config: { address: user.email },
-      severityFilter: ['critical', 'high'],
-      typeFilter: []  // All types
-    },
-    {
-      id: 'push_ch',
-      name: 'Web Push',
-      type: 'push',
-      enabled: false,
-      config: {},
-      severityFilter: ['critical'],
-      typeFilter: []
-    }
-  ],
-  quietHours: {
-    enabled: true,
-    start: '22:00',
-    end: '08:00',
-    timezone: 'America/New_York'
-  },
-  frequency: {
-    immediate: ['critical'],
-    batched: ['high', 'medium', 'low'],
-    batchInterval: 60
+  email: true,
+  push: false,
+  inApp: true,
+  categories: {
+    alerts: true,
+    reminders: true,
+    achievements: true,
+    marketing: false
   }
 })
 ```
@@ -137,29 +115,35 @@ await db.insert(notificationPreferences).values({
 #### Load User Preferences
 
 ```typescript
-import { NotificationDeliverySystem } from '@/lib/notification-delivery-system'
+import { db } from '@/db/index'
+import { eq } from 'drizzle-orm'
+import { notificationPreferences } from '@/shared/db/schema'
 
-const system = NotificationDeliverySystem.getInstance()
-const prefs = await system.getUserPreferences(userId)
+const prefs = await db.query.notificationPreferences.findFirst({
+  where: eq(notificationPreferences.userId, userId)
+})
 ```
 
 #### Update Preferences
 
 ```typescript
-// Allow user to change preferences
-await system.updateUserPreferences(userId, {
-  quietHours: {
-    enabled: true,
-    start: '23:00',
-    end: '07:00',
-    timezone: user.timezone
-  },
-  frequency: {
-    immediate: ['critical'],
-    batched: ['high', 'medium'],
-    batchInterval: 120  // 2 hours
-  }
-})
+import { db } from '@/db/index'
+import { eq } from 'drizzle-orm'
+import { notificationPreferences } from '@/shared/db/schema'
+
+await db
+  .update(notificationPreferences)
+  .set({
+    email: false,
+    push: true,
+    categories: {
+      alerts: true,
+      reminders: true,
+      achievements: true,
+      marketing: false
+    }
+  })
+  .where(eq(notificationPreferences.userId, userId))
 ```
 
 ### 3.2 Quiet Hours Logic
@@ -259,45 +243,63 @@ interface PushNotification {
   data?: Record<string, any>
 }
 
-// Send push
-const result = await system.deliverViaChannel(
-  'push_ch',
-  {
-    title: 'Competitor Alert',
-    body: 'TechCorp launched new product',
-    tag: 'competitor_alert_comp_123',  // Deduplicate
-    data: { competitorId: 'comp_123', alertId: 'alert_456' }
+// Send through the public delivery API using push-enabled preferences
+const results = await system.deliverNotification(alert, {
+  userId,
+  channels: [
+    {
+      id: 'push_ch',
+      name: 'Web Push',
+      type: 'push',
+      enabled: true,
+      config: {
+        title: 'Competitor Alert',
+        body: 'TechCorp launched new product',
+        tag: 'competitor_alert_comp_123',
+        data: { competitorId: 'comp_123', alertId: 'alert_456' }
+      },
+      severityFilter: ['critical', 'high'],
+      typeFilter: []
+    }
+  ],
+  quietHours: {
+    enabled: false,
+    start: '22:00',
+    end: '08:00',
+    timezone: 'UTC'
+  },
+  frequency: {
+    immediate: ['critical', 'high'],
+    batched: ['medium', 'low'],
+    batchInterval: 60
   }
-)
+})
+
+const pushResult = results.find(result => result.channelId === 'push_ch')
 ```
 
 ### 4.4 Batching Example
 
 ```typescript
-// Batch medium/low severity alerts
 import { NotificationDeliverySystem } from '@/lib/notification-delivery-system'
 
 const system = NotificationDeliverySystem.getInstance()
 
-// Track batched alerts in memory
-private batchedNotifications: Map<string, CompetitorAlert[]> = new Map()
-
-// Add to batch
-for (const alert of mediumSeverityAlerts) {
-  const batch = batchedNotifications.get(userId) || []
-  batch.push(alert)
-  batchedNotifications.set(userId, batch)
+const preferences: NotificationPreferences = {
+  userId,
+  channels,
+  quietHours,
+  frequency: {
+    immediate: ['critical'],
+    batched: ['high', 'medium', 'low'],
+    batchInterval: 60
+  }
 }
 
-// Flush batch every N minutes
-setInterval(async () => {
-  for (const [userId, alerts] of batchedNotifications) {
-    if (alerts.length === 0) continue
-
-    await system.sendBatch(userId, alerts)
-    batchedNotifications.delete(userId)
-  }
-}, preferences.frequency.batchInterval * 60 * 1000)
+// Medium/low alerts are queued internally by deliverNotification(...)
+for (const alert of mediumSeverityAlerts) {
+  await system.deliverNotification(alert, preferences)
+}
 ```
 
 ## 5. Integration with Systems
@@ -309,17 +311,19 @@ import { competitorAlertSystem } from '@/lib/competitor-alert-system'
 import { NotificationDeliverySystem } from '@/lib/notification-delivery-system'
 
 // When a competitor alert is triggered
-export async function handleCompetitorAlert(alert: CompetitorAlert) {
+export async function handleCompetitorAlert(
+  alert: CompetitorAlert,
+  preferences: NotificationPreferences
+) {
+  const system = NotificationDeliverySystem.getInstance()
+
   // 1. Store alert in database
   await db.insert(competitorAlerts).values(alert)
 
-  // 2. Get user preferences
-  const prefs = await system.getUserPreferences(alert.userId)
+  // 2. Deliver notification
+  const results = await system.deliverNotification(alert, preferences)
 
-  // 3. Deliver notification
-  const results = await system.deliverNotification(alert, prefs)
-
-  // 4. Log delivery
+  // 3. Log delivery
   logInfo(`Alert ${alert.id} delivered to ${results.length} channels`)
 }
 ```
@@ -330,14 +334,14 @@ export async function handleCompetitorAlert(alert: CompetitorAlert) {
 // Send notifications as part of workflow
 export async function executeNotificationNode(
   node: WorkflowNode,
-  context: ExecutionContext
+  context: ExecutionContext,
+  preferencesByUser: Record<string, NotificationPreferences>
 ) {
   const system = NotificationDeliverySystem.getInstance()
   
   const recipients = await resolveRecipients(node.config.recipients)
   
   for (const userId of recipients) {
-    const prefs = await system.getUserPreferences(userId)
     await system.deliverNotification(
       {
         type: node.config.alertType,
@@ -345,7 +349,7 @@ export async function executeNotificationNode(
         message: node.config.message,
         userId
       },
-      prefs
+      preferencesByUser[userId]
     )
   }
 }
@@ -355,9 +359,12 @@ export async function executeNotificationNode(
 
 ```typescript
 // Send notifications on important database events
-export async function onSubscriptionUpgrade(user: User, newTier: string) {
+export async function onSubscriptionUpgrade(
+  user: User,
+  newTier: string,
+  preferences: NotificationPreferences
+) {
   const system = NotificationDeliverySystem.getInstance()
-  const prefs = await system.getUserPreferences(user.id)
   
   await system.deliverNotification(
     {
@@ -366,7 +373,7 @@ export async function onSubscriptionUpgrade(user: User, newTier: string) {
       message: `Welcome to ${newTier}! Check out new features.`,
       userId: user.id
     },
-    prefs
+    preferences
   )
 }
 ```
@@ -394,30 +401,13 @@ Deliver alert to all active channels.
 Promise<NotificationDeliveryResult[]>  // One per channel
 ```
 
-### `getUserPreferences(userId)`
+### Internal batching and persistence
 
-Load user notification preferences.
-
-**Returns:**
-```typescript
-Promise<NotificationPreferences>
-```
-
-### `updateUserPreferences(userId, updates)`
-
-Update user preferences (channels, quiet hours, frequency).
-
-**Parameters:**
-- `userId: string`
-- `updates: Partial<NotificationPreferences>`
-
-### `sendBatch(userId, alerts)`
-
-Send batched notification (combined summary).
-
-**Parameters:**
-- `userId: string`
-- `alerts: CompetitorAlert[]`
+`NotificationDeliverySystem` only exposes `getInstance()` and `deliverNotification(...)`.
+Persisting notification settings in `notification_preferences` and assembling a
+`NotificationPreferences` object for delivery are application-level concerns.
+Non-immediate alerts are batched internally when `frequency.batched` includes the
+alert severity.
 
 ## 7. Best Practices
 
@@ -425,14 +415,13 @@ Send batched notification (combined summary).
 
 ```typescript
 // ✅ Good: Check preferences before sending
-const prefs = await system.getUserPreferences(userId)
-if (!prefs.channels.some(c => c.enabled)) {
+if (!preferences.channels.some(c => c.enabled)) {
   // User has disabled all notifications
   return
 }
 
 // ❌ Bad: Ignore preferences
-await system.sendEmail(userId, message)
+await sendEmail(user.email, message)
 ```
 
 ### 7.2 Use Appropriate Severity Levels
@@ -467,7 +456,7 @@ const debouncedNotify = debounce(
 ### 7.4 Handle Failures Gracefully
 
 ```typescript
-const results = await system.deliverNotification(alert, prefs)
+const results = await system.deliverNotification(alert, preferences)
 
 for (const result of results) {
   if (!result.success) {
@@ -489,7 +478,7 @@ for (const result of results) {
 ```typescript
 // Track delivery success rates
 const results = await Promise.all(
-  alerts.map(a => system.deliverNotification(a, prefs))
+  alerts.map(a => system.deliverNotification(a, preferences))
 )
 
 const successCount = results.flat().filter(r => r.success).length
@@ -502,11 +491,13 @@ console.log(`Delivery success rate: ${successRate.toFixed(1)}%`)
 ### 8.2 Check User Preferences
 
 ```typescript
-const prefs = await system.getUserPreferences(userId)
-console.log('Notification Channels:')
-prefs.channels.forEach(ch => {
-  console.log(`- ${ch.name}: ${ch.enabled ? 'enabled' : 'disabled'}`)
+const prefs = await db.query.notificationPreferences.findFirst({
+  where: eq(notificationPreferences.userId, userId)
 })
+console.log('Notification Channels:')
+console.log(`- email: ${prefs?.email ? 'enabled' : 'disabled'}`)
+console.log(`- push: ${prefs?.push ? 'enabled' : 'disabled'}`)
+console.log(`- in-app: ${prefs?.inApp ? 'enabled' : 'disabled'}`)
 ```
 
 ### 8.3 Test Notification
@@ -520,7 +511,7 @@ const testResult = await system.deliverNotification(
     message: 'This is a test notification',
     userId
   },
-  prefs
+  preferences
 )
 
 console.log('Test results:', testResult)
@@ -538,9 +529,8 @@ console.log('Test results:', testResult)
 
 **Debug:**
 ```typescript
-const prefs = await system.getUserPreferences(userId)
-console.log('Preferences:', JSON.stringify(prefs, null, 2))
-console.log('In quiet hours?', system.isQuietHours(prefs))
+console.log('Preferences:', JSON.stringify(preferences, null, 2))
+console.log('In quiet hours?', isQuietHours(preferences))
 ```
 
 ### Issue: Email not sending

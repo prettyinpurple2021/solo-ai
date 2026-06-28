@@ -124,63 +124,67 @@ console.log(`Created ${jobIds.length} monitoring jobs`)
 // Output: Created 4 monitoring jobs
 ```
 
-#### `updateJobConfig(jobId, config)`
+#### `updateMonitoringConfig(competitorId, userId, config)`
 
-Update configuration for an existing job.
+Update configuration for all monitoring jobs for a competitor.
 
 **Parameters:**
-- `jobId: string` — Job ID
+- `competitorId: string` — Competitor ID
+- `userId: string` — Owner of the monitoring jobs
 - `config: Partial<SocialMediaJobConfig>` — Updated config
 
 **Example:**
 ```typescript
-await scheduler.updateJobConfig('job_123', {
+await scheduler.updateMonitoringConfig('comp_123', 'user_456', {
   frequency: 'weekly',
   enabled: false
 })
 ```
 
-#### `pauseMonitoring(competitorId)`
+#### `pauseMonitoring(competitorId, userId)`
 
 Temporarily disable all monitoring for a competitor.
 
 **Parameters:**
 - `competitorId: string` — Competitor ID
+- `userId: string` — Owner of the monitoring jobs
 
 **Example:**
 ```typescript
-await scheduler.pauseMonitoring('comp_123')
+await scheduler.pauseMonitoring('comp_123', 'user_456')
 // Later...
-await scheduler.resumeMonitoring('comp_123')
+await scheduler.resumeMonitoring('comp_123', 'user_456')
 ```
 
-#### `getMonitoringStatus(competitorId)`
+#### `getMonitoringStatus(competitorId, userId)`
 
 Get current status of all jobs for a competitor.
 
 **Returns:**
 ```typescript
 {
-  competitorId: string
-  totalJobs: number
-  activeJobs: number
-  lastRunAt: Date | null
-  nextRunAt: Date | null
+  total_jobs: number
+  active_jobs: number
+  paused_jobs: number
+  failed_jobs: number
   jobs: {
     id: string
     platform: string
     frequency: string
-    status: 'pending' | 'running' | 'completed' | 'failed'
-    lastExecutedAt: Date | null
-    nextExecutionAt: Date | null
+    priority: string
+    status: 'pending' | 'running' | 'paused' | 'failed'
+    last_run_at: Date | null
+    next_run_at: Date | null
+    retry_count: number
   }[]
+  recent_results: typeof scrapingJobResults.$inferSelect[]
 }
 ```
 
 **Example:**
 ```typescript
-const status = await scheduler.getMonitoringStatus('comp_123')
-console.log(`${status.activeJobs}/${status.totalJobs} jobs running`)
+const status = await scheduler.getMonitoringStatus('comp_123', 'user_456')
+console.log(`${status.active_jobs}/${status.total_jobs} jobs active`)
 ```
 
 ### 4.2 SocialMediaMonitor
@@ -370,22 +374,31 @@ export async function getCompetitorDashboard(competitorId: string) {
 
 ```typescript
 import { db } from '@/db/index'
-import { scrapingJobResults } from '@/shared/db/schema'
-import { eq, gte } from 'drizzle-orm'
+import { scrapingJobs, scrapingJobResults } from '@/shared/db/schema'
+import { and, desc, eq, gte, sql } from 'drizzle-orm'
+
+const content = sql<string>`${scrapingJobResults.data}->>'content'`
+const engagement = sql<number>`coalesce((${scrapingJobResults.data}->>'engagement')::int, 0)`
 
 // Find all posts from a competitor mentioning "AI"
 const aiPosts = await db
-  .select()
+  .select({
+    completedAt: scrapingJobResults.completed_at,
+    content: content.as('content'),
+    engagement: engagement.as('engagement')
+  })
   .from(scrapingJobResults)
   .innerJoin(scrapingJobs, eq(scrapingJobResults.job_id, scrapingJobs.id))
   .where(
     and(
       eq(scrapingJobs.competitor_id, competitorId),
       gte(scrapingJobResults.completed_at, new Date(Date.now() - 7 * 86400000)),
-      sql(scrapingJobResults.data, "->>'content' LIKE '%AI%'")
+      sql`${content} ILIKE ${'%AI%'}`
     )
   )
-  .orderBy(desc(sql(scrapingJobResults.data, "->>'engagement'")))
+  .orderBy(desc(engagement))
+  .limit(20)
+
 console.log(`Found ${aiPosts.length} posts mentioning AI`)
 ```
 
@@ -441,13 +454,13 @@ try {
 
 ```typescript
 const scheduler = new SocialMediaScheduler()
-const status = await scheduler.getMonitoringStatus(competitorId)
+const status = await scheduler.getMonitoringStatus(competitorId, userId)
 
-console.log(`Jobs: ${status.activeJobs} active / ${status.totalJobs} total`)
+console.log(`Jobs: ${status.active_jobs} active / ${status.total_jobs} total`)
 status.jobs.forEach(job => {
   console.log(`${job.platform}: ${job.status}`)
-  if (job.lastExecutedAt) {
-    const ago = Date.now() - job.lastExecutedAt.getTime()
+  if (job.last_run_at) {
+    const ago = Date.now() - job.last_run_at.getTime()
     console.log(`  Last run: ${ago / 1000 / 60} minutes ago`)
   }
 })
@@ -457,7 +470,10 @@ status.jobs.forEach(job => {
 
 ```typescript
 const results = await db
-  .select()
+  .select({
+    completedAt: scrapingJobResults.completed_at,
+    data: scrapingJobResults.data
+  })
   .from(scrapingJobResults)
   .innerJoin(scrapingJobs, eq(scrapingJobResults.job_id, scrapingJobs.id))
   .where(
@@ -470,7 +486,7 @@ const results = await db
   .limit(10)
 
 results.forEach(r => {
-  console.log(`${r.data.platform}: ${r.data.metrics.followers} followers`)
+  console.log(`${r.data?.platform}: ${r.data?.metrics?.followers} followers`)
 })
 ```
 
