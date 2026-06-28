@@ -172,9 +172,12 @@ function isQuietHours(preferences: NotificationPreferences): boolean {
 
   // Get current time in user's timezone
   const now = new Date()
-  const userTime = now.toLocaleString('en-US', { timeZone: timezone })
-  const [hours, minutes] = userTime.split(':').map(Number)
-  const currentTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+  const currentTime = new Intl.DateTimeFormat('en-US', {
+    timeZone: timezone,
+    hour12: false,
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(now)
 
   // Check if within quiet hours
   if (start < end) {
