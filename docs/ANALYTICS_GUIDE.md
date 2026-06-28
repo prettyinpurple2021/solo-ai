@@ -323,15 +323,14 @@ const activeUsers = await db
 // Get top features by usage
 const topFeatures = await db
   .select({
-    feature: analyticsEvents.properties.featureName,
-    count: count()
+    feature: sql<string>(analyticsEvents.properties, "->>'featureName'"),
+    count: sql<number>("count(*)")
   })
   .from(analyticsEvents)
   .where(eq(analyticsEvents.event, 'feature_used'))
-  .groupBy(analyticsEvents.properties.featureName)
-  .orderBy(desc(count()))
+  .groupBy(sql(analyticsEvents.properties, "->>'featureName'"))
+  .orderBy(desc(sql("count(*)")))
   .limit(10)
-```
 
 ### 7.3 Time-Series Analysis
 
