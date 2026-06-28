@@ -310,14 +310,13 @@ Monitor these KPIs continuously:
 ### 7.2 Querying Analytics
 
 ```typescript
-// Find active users in the last 7 days
 const activeUsers = await db
   .select()
   .from(analyticsEvents)
   .where(
     and(
       gte(analyticsEvents.timestamp, new Date(Date.now() - 7 * 86400000)),
-      notInArray(analyticsEvents.userId, getInactiveUserIds())
+      notInArray(analyticsEvents.user_id, getInactiveUserIds())
     )
   )
 
