@@ -377,15 +377,15 @@ import { eq, gte } from 'drizzle-orm'
 const aiPosts = await db
   .select()
   .from(scrapingJobResults)
+  .innerJoin(scrapingJobs, eq(scrapingJobResults.job_id, scrapingJobs.id))
   .where(
     and(
-      eq(scrapingJobResults.competitorId, competitorId),
-      gte(scrapingJobResults.timestamp, new Date(Date.now() - 7 * 86400000)),
-      like(scrapingJobResults.data.content, '%AI%')
+      eq(scrapingJobs.competitor_id, competitorId),
+      gte(scrapingJobResults.completed_at, new Date(Date.now() - 7 * 86400000)),
+      sql(scrapingJobResults.data, "->>'content' LIKE '%AI%'")
     )
   )
-  .orderBy(desc(scrapingJobResults.data.engagement))
-
+  .orderBy(desc(sql(scrapingJobResults.data, "->>'engagement'")))
 console.log(`Found ${aiPosts.length} posts mentioning AI`)
 ```
 
