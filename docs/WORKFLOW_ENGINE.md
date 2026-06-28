@@ -1,655 +1,977 @@
-# Workflow Engine — Visual Automation System
+# Workflow Engine
 
 ## Overview
 
-The **Workflow Engine** is a core system for building, executing, and monitoring automated workflows using a visual node-based builder. Users can create sequences of tasks (email, AI, conditions, delays) triggered manually, on schedule, or by webhooks.
+SoloSuccess AI's **Workflow Engine** is a visual workflow automation system that enables solopreneurs to automate complex business processes without coding. Users can build workflows using a visual node-based interface, then trigger them manually, via schedule, or by webhook.
 
-**Key Files**:
-- `src/lib/workflow-engine.ts` — Core execution engine
-- `src/lib/shared/db/schema/workflow.ts` — Workflow-related DB schema
-- `src/lib/shared/db/schema/index.ts` (imported as `@/shared/db/schema`) — Schema exports used by the app
+The engine supports multiple node types (AI tasks, email, conditions, delays), parallel execution, conditional branching, and error handling with retry logic.
+
+**Key Components**:
+- `src/lib/workflow-engine.ts` — Core workflow execution engine
+- `src/lib/services/workflow-service.ts` — Service layer for workflow management
+- `src/lib/temporal-workflow-store.ts` — Temporal workflow integration
+- `src/components/workflow/visual-workflow-builder.tsx` — Visual editor UI
+- `src/app/api/workflows/*` — REST API endpoints
+- `src/app/dashboard/workflow` — Dashboard pages
+- `src/lib/shared/db/schema/workflow.ts` — Database schema
 
 ---
 
 ## 1. Architecture
 
-### Node Types
+### Execution Model
 
-Every workflow is composed of nodes connected by edges. Each node performs one action:
-
-```typescript
-type NodeType =
-  | 'manual_trigger'       // User clicks "Run Now"
-  | 'scheduled_trigger'    // Cron: "Every Monday at 9 AM"
-  | 'webhook_trigger'      // External API calls /webhook/xyz
-  | 'ai_task'              // Call LLM (FINN agent, etc)
-  | 'send_email'           // Email via Zoho SMTP
-  | 'condition'            // If/else branching
-  | 'delay'                // Wait N seconds/minutes/hours
-  | 'transform_data'       // Map, filter, or enrich data
+```
+Trigger
+  ├─ Manual (User clicks "Run")
+  ├─ Scheduled (Cron: "Every Monday at 9 AM")
+  ├─ Webhook (HTTP POST to /api/workflows/{id}/execute)
+  └─ Event (Competitor alert, billing event, etc.)
+      ↓
+  Workflow Engine
+      ├─ Parse nodes and edges
+      ├─ Build execution graph
+      ├─ Resolve variables/context
+      └─ Execute in DAG order (or parallel if allowed)
+          ↓
+  Node Execution
+      ├─ Condition node: Evaluate expression
+      ├─ AI task node: Call AI API
+      ├─ Email node: Send email
+      ├─ Delay node: Wait
+      ├─ Transform node: Modify data
+      └─ Webhook node: Call external API
+          ↓
+  Execution Log
+      ├─ Record step status (pending → running → completed/failed)
+      ├─ Store outputs
+      ├─ Track timing
+      └─ Store in workflowExecutions table
+          ↓
+  Result
+      ├─ Success: All steps completed
+      ├─ Failure: Step failed, error handling kicks in
+      └─ Partial: Some steps completed before error
 ```
 
-### Node Structure
+### Workflow Structure
 
-```typescript
-interface WorkflowNode {
-  id: string                    // UUID
-  type: NodeType
-  name: string                  // "Send Welcome Email"
-  description?: string
-  position: { x: number; y: number } // For visual builder
-  config: Record<string, any>   // Node-specific config
-  inputs: string[]              // Variable names from previous nodes
-  outputs: string[]             // Variable names this node outputs
-  status: 'pending' | 'running' | 'completed' | 'failed' | 'skipped'
-  createdAt: Date
-  updatedAt: Date
-}
-```
+Every workflow is a **directed acyclic graph (DAG)** with:
 
-### Example Node Configs
-
-**Manual Trigger** (entry point):
 ```typescript
 {
-  id: 'node-1',
-  type: 'manual_trigger',
-  name: 'Start',
-  config: {
-    inputSchema: {
-      email: { type: 'string', required: true },
-      name: { type: 'string' }
+  id: "workflow-123",
+  name: "Weekly Competitor Report",
+  status: "active",
+  triggerType: "scheduled",
+  triggerConfig: {
+    schedule: "0 9 * * 1"  // Every Monday at 9 AM
+  },
+  nodes: [
+    // Trigger node (always first)
+    {
+      id: "node-1",
+      type: "scheduled_trigger",
+      name: "Monday Trigger",
+      config: { schedule: "0 9 * * 1" }
+    },
+    // Condition node
+    {
+      id: "node-2",
+      type: "condition",
+      name: "Check if competitors tracked",
+      config: {
+        condition: "competitors.length > 0"
+      }
+    },
+    // AI task node
+    {
+      id: "node-3",
+      type: "ai_task",
+      name: "Generate Report",
+      config: {
+        prompt: "Analyze competitors and create a report",
+        model: "gpt-4"
+      }
+    },
+    // Email node
+    {
+      id: "node-4",
+      type: "send_email",
+      name: "Send Report",
+      config: {
+        to: "user@example.com",
+        subject: "Weekly Competitor Report",
+        bodyTemplate: "Here's your report: {report_output}"
+      }
     }
+  ],
+  edges: [
+    { source: "node-1", target: "node-2" },
+    { source: "node-2", target: "node-3", condition: "passed" },
+    { source: "node-3", target: "node-4" }
+  ],
+  variables: {
+    competitors: [],
+    report: ""
+  },
+  settings: {
+    timeout: 300000,           // 5 minutes
+    retryAttempts: 3,
+    retryDelay: 5000,
+    parallelExecution: true,
+    errorHandling: "stop"      // "stop" | "continue" | "rollback"
   }
 }
 ```
 
-**Send Email**:
+---
+
+## 2. Node Types
+
+### Trigger Nodes
+
+**Manual Trigger**: User clicks "Run" button
+
 ```typescript
 {
-  id: 'node-2',
-  type: 'send_email',
-  name: 'Welcome Email',
-  config: {
-    to: 'user@example.com',
-    subject: 'Welcome to SoloSuccess',
-    body: '<h1>Welcome!</h1>',
-    variables: { name: 'John' }
-  },
-  inputs: ['trigger']
+  type: "manual_trigger",
+  name: "Start",
+  config: {}
 }
 ```
 
-**Condition** (branching):
-```typescript
-{
-  id: 'node-3',
-  type: 'condition',
-  name: 'Is Premium?',
-  config: {
-    condition: 'tier === "premium"' // expr-eval expression
-  },
-  outputs: ['true', 'false']
-}
-```
+**Scheduled Trigger**: Run on a schedule (cron)
 
-**Delay**:
 ```typescript
 {
-  id: 'node-4',
-  type: 'delay', 
-  name: 'Wait 24 hours',
+  type: "scheduled_trigger",
+  name: "Daily at 9 AM",
   config: {
-    duration: 24,
-    unit: 'hours'  // 'milliseconds' | 'seconds' | 'minutes' | 'hours'
+    schedule: "0 9 * * *"  // Cron expression
   }
 }
 ```
 
-**AI Task**:
+**Webhook Trigger**: Receive HTTP POST
+
 ```typescript
 {
-  id: 'node-5',
-  type: 'ai_task',
-  name: 'Generate Business Plan',
+  type: "webhook_trigger",
+  name: "Receive Data",
   config: {
-    agentId: 'finn',           // Which agent to use
-    prompt: 'Generate a 30-day plan for this business',
-    model: 'gpt-4-turbo',
+    path: "/workflows/competitor-alert",
+    method: "POST",
+    auth: "apiKey"  // Optional authentication
+  }
+}
+```
+
+### Action Nodes
+
+**AI Task**: Call AI model (OpenAI, Claude, Gemini)
+
+```typescript
+{
+  type: "ai_task",
+  name: "Generate Content",
+  config: {
+    model: "gpt-4",
+    prompt: "Analyze this: {input_data}",
     temperature: 0.7,
-    maxTokens: 2000
-  },
-  inputs: ['trigger.businessName'],
-  outputs: ['businessPlan']
+    maxTokens: 1000,
+    systemPrompt: "You are a business analyst"
+  }
 }
 ```
 
-### Edges (Connections)
-
-Nodes are connected by edges that determine execution flow:
+**Send Email**: Send transactional email
 
 ```typescript
-interface WorkflowEdge {
-  id: string
-  source: string           // Node UUID
-  target: string           // Node UUID
-  sourceHandle?: string    // "true" or "false" for conditions
-  targetHandle?: string
-  condition?: string       // Optional: expr-eval condition
-  label?: string           // "Yes", "No", etc
-  animated: boolean        // Visual only
+{
+  type: "send_email",
+  name: "Send Report",
+  config: {
+    to: "{user.email}",  // Variable interpolation
+    subject: "Your Weekly Report",
+    bodyTemplate: "Here's your data: {previous_node_output}",
+    bodyHTML: "<h1>Report</h1><p>{report}</p>"
+  }
+}
+```
+
+**Webhook**: Call external API
+
+```typescript
+{
+  type: "webhook",
+  name: "Call Slack",
+  config: {
+    url: "https://hooks.slack.com/services/...",
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: {
+      text: "Workflow {workflow.name} completed: {status}",
+      blocks: []  // Slack Block Kit
+    }
+  }
+}
+```
+
+**Transform Data**: Modify/compute data
+
+```typescript
+{
+  type: "transform_data",
+  name: "Format Report",
+  config: {
+    expression: "inputs.data.map(x => ({ ...x, formatted: x.value * 100 }))",
+    language: "javascript"
+  }
+}
+```
+
+### Control Flow Nodes
+
+**Condition**: Branch based on expression
+
+```typescript
+{
+  type: "condition",
+  name: "Check threshold",
+  config: {
+    expression: "inputs.value > 100"  // Must evaluate to boolean
+  }
+}
+// Edges: true branch goes to one node, false to another
+```
+
+**Delay**: Wait before proceeding
+
+```typescript
+{
+  type: "delay",
+  name: "Wait 5 minutes",
+  config: {
+    duration: 300000,  // milliseconds
+    unit: "ms"  // or "s", "m", "h"
+  }
 }
 ```
 
 ---
 
-## 2. Execution Model
+## 3. Execution Model
 
-### Trigger Types
+### Sequential Execution (Default)
 
-**Manual Trigger** (entry):
 ```
-User clicks "Run Now" with input data
-    ↓
-Workflow executes from start
-    ↓
-All connected nodes execute in dependency order
+node-1 → node-2 → node-3 → node-4
+Each waits for the previous to complete
+Total time: time(1) + time(2) + time(3) + time(4)
 ```
 
-**Scheduled Trigger** (cron):
+### Parallel Execution
+
 ```
-At specified time (e.g., "0 9 * * MON"):
-    ↓
-Workflow executes automatically
-    ↓
-Results stored in database
+        ↙ node-2 ↘
+node-1 → node-3 ← node-4
+        ↖ parallel ↗
+Total time: time(1) + max(time(2), time(3), time(4))
+Faster, but requires independent nodes
 ```
 
-**Webhook Trigger**:
-```
-Workflow contains a webhook_trigger node with config:
-  { path, method, authentication, secret? }
-    ↓
-Your application route/controller receives the external request
-    ↓
-Your route passes request data into engine.executeWorkflow(...)
-```
-
-### Execution Flow
+**Enable in settings**:
 
 ```typescript
-const execution = await engine.executeWorkflow(
-  'workflow-123',
-  { email: 'user@example.com', tier: 'premium' },
-  'user-123'
-)
-
-// execution = {
-//   id: 'exec-123',
-//   workflowId,
-//   status: 'completed', // 'pending', 'running', 'completed', 'failed'
-//   nodeResults: [
-//     { nodeId: 'node-1', status: 'completed', output: {...} },
-//     { nodeId: 'node-2', status: 'completed', output: {...} },
-//     { nodeId: 'node-3', status: 'completed', output: {...} }
-//   ],
-//   startedAt: Date,
-//   completedAt: Date,
-//   error?: string
-// }
+settings: {
+  parallelExecution: true
+}
 ```
 
-### Variable Resolution
+### Variable Interpolation
 
-The engine does not provide a generic `resolveVariables()` helper. Most node configs are executed as provided.
+Variables are available throughout the workflow:
 
-Condition node expressions are evaluated with:
-
-- `context.variables` (workflow input variables)
-- `results` (object built from prior node results)
-- Optional `value` alias when `config.variable` is set
-
-Example:
 ```typescript
-config: { condition: 'tier === "premium"' }
-```
-
-`ai_task` is the only built-in exception: it performs simple `{{key}}` replacement in `prompt` using `context.variables`.
-
----
-
-## 3. Common Workflows
-
-### Example 1: Welcome Email Sequence
-
-**Visual Flow**:
-```
-[Manual Trigger] 
-    ↓
-[Send Email] → "Welcome"
-    ↓
-[Delay] → 1 day
-    ↓
-[Send Email] → "Getting Started Guide"
-```
-
-**Node Definitions**:
-```typescript
-const nodes: WorkflowNode[] = [
-  {
-    id: 'trigger',
-    type: 'manual_trigger',
-    name: 'Start',
-    config: {
-      inputSchema: {
-        email: { type: 'string' },
-        name: { type: 'string' }
-      }
-    }
-  },
-  {
-    id: 'welcome-email',
-    type: 'send_email',
-    name: 'Send Welcome',
-    config: {
-      to: 'user@example.com',
-      subject: 'Welcome!',
-      body: '<h1>Hi there</h1>'
-    }
-  },
-  {
-    id: 'delay-24-hours',
-    type: 'delay',
-    name: 'Wait 24 hours',
-    config: { duration: 24, unit: 'hours' }
-  },
-  {
-    id: 'followup-email',
-    type: 'send_email',
-    name: 'Follow-up Email',
-    config: {
-      to: 'user@example.com',
-      subject: 'Getting Started with SoloSuccess',
-      body: '<h1>Next Steps</h1>...'
-    }
+// Global variables (set in workflow.variables)
+{
+  variables: {
+    user_email: "alice@example.com",
+    report_type: "weekly"
   }
-]
+}
 
-const edges: WorkflowEdge[] = [
-  { id: 'e1', source: 'trigger', target: 'welcome-email' },
-  { id: 'e2', source: 'welcome-email', target: 'delay-24-hours' },
-  { id: 'e3', source: 'delay-24-hours', target: 'followup-email' }
-]
-```
-
-### Example 2: Conditional Premium Offer
-
-**Visual Flow**:
-```
-[Webhook Trigger] "New Signup"
-    ↓
-[Condition] Is Premium?
-    ├─ YES → [Send Email] "Premium Features"
-    └─ NO → [Send Email] "Try Premium"
-```
-
-**Node Definitions**:
-```typescript
-const nodes = [
-  {
-    id: 'webhook',
-    type: 'webhook_trigger',
-    name: 'New User Signup',
-    config: {
-      inputSchema: {
-        email: { type: 'string' },
-        tier: { type: 'string', enum: ['free', 'premium'] }
-      }
-    }
-  },
-  {
-    id: 'check-tier',
-    type: 'condition',
-    name: 'Check Subscription',
-    config: {
-      condition: 'tier === "premium"'
-    }
-  },
-  {
-    id: 'premium-email',
-    type: 'send_email',
-    name: 'Premium Welcome',
-    config: {
-      to: 'premium-user@example.com',
-      subject: 'Unlock Premium Features',
-      body: '<h1>You have premium access!</h1>'
-    }
-  },
-  {
-    id: 'free-email',
-    type: 'send_email',
-    name: 'Upgrade Offer',
-    config: {
-      to: 'free-user@example.com',
-      subject: 'Upgrade to Premium',
-      body: '<h1>Try premium free for 7 days</h1>'
-    }
+// In node config, reference as {variable_name}
+{
+  type: "send_email",
+  config: {
+    to: "{user_email}",
+    subject: "Your {report_type} report"
   }
-]
+}
 
-const edges = [
-  { id: 'e1', source: 'webhook', target: 'check-tier' },
-  { id: 'e2', source: 'check-tier', target: 'premium-email', sourceHandle: 'true' },
-  { id: 'e3', source: 'check-tier', target: 'free-email', sourceHandle: 'false' }
-]
-```
-
-### Example 3: Scheduled Daily Report
-
-**Visual Flow**:
-```
-[Scheduled Trigger] Every day at 9 AM
-    ↓
-[AI Task] Generate daily report
-    ↓
-[Send Email] Report to user
-```
-
-**Node Definitions**:
-```typescript
-const nodes = [
-  {
-    id: 'schedule',
-    type: 'scheduled_trigger',
-    name: 'Daily at 9 AM',
-    config: {
-      cron: '0 9 * * *',           // Every day at 9 AM UTC
-      timezone: 'America/New_York' // Or user's timezone
-    }
-  },
-  {
-    id: 'generate-report',
-    type: 'ai_task',
-    name: 'Generate Report',
-    config: {
-      agentId: 'finn',
-      prompt: 'Generate a daily business summary report',
-      model: 'gpt-4-turbo'
-    }
-  },
-  {
-    id: 'send-report',
-    type: 'send_email',
-    name: 'Email Report',
-    config: {
-      to: 'user@example.com',
-      subject: 'Daily Report',
-      body: 'Your report has been generated.'
-    }
+// In expressions, reference as variables.name
+{
+  type: "condition",
+  config: {
+    expression: "variables.user_email.includes('@')"
   }
-]
+}
+
+// Node outputs become available
+{
+  type: "ai_task",
+  name: "gen_report"  // Sets outputs.gen_report = result
+}
+
+// Reference node outputs
+{
+  type: "send_email",
+  config: {
+    bodyTemplate: "Report: {outputs.gen_report}"
+  }
+}
+```
+
+### Error Handling
+
+**Mode: "stop"** (default) — Stop execution on first failure
+
+```
+node-1 → node-2 (fails) → [STOP]
+         (node-3, node-4 never run)
+```
+
+**Mode: "continue"** — Continue despite failures
+
+```
+node-1 → node-2 (fails) → node-3 → node-4
+         (logs error but continues)
+```
+
+**Mode: "rollback"** — Undo changes on failure
+
+```
+node-1 ✓ → node-2 (fails) → [ROLLBACK]
+         (undo changes from node-1)
 ```
 
 ---
 
-## 4. API Usage
+## 4. Database Schema
+
+### Workflows Table
+
+```sql
+CREATE TABLE workflows (
+  id UUID PRIMARY KEY,
+  user_id UUID NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  status TEXT CHECK (status IN ('draft', 'active', 'paused', 'archived')),
+  trigger_type TEXT CHECK (trigger_type IN ('manual', 'scheduled', 'webhook', 'event')),
+  trigger_config JSONB,
+  nodes JSONB NOT NULL,         -- Array of WorkflowNode
+  edges JSONB NOT NULL,          -- Array of WorkflowEdge
+  variables JSONB DEFAULT '{}',
+  settings JSONB,
+  created_at TIMESTAMP,
+  updated_at TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
+### Workflow Executions Table
+
+```sql
+CREATE TABLE workflow_executions (
+  id UUID PRIMARY KEY,
+  workflow_id UUID NOT NULL,
+  user_id UUID NOT NULL,
+  status TEXT CHECK (status IN ('pending', 'running', 'completed', 'failed')),
+  trigger_type TEXT,
+  context JSONB,                -- Trigger context
+  inputs JSONB,
+  outputs JSONB,
+  steps JSONB,                  -- Array of WorkflowExecutionStep
+  logs JSONB,                   -- Array of WorkflowExecutionLog
+  started_at TIMESTAMP,
+  completed_at TIMESTAMP,
+  duration BIGINT,              -- milliseconds
+  error_message TEXT,
+  created_at TIMESTAMP,
+  FOREIGN KEY (workflow_id) REFERENCES workflows(id),
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+```
+
+---
+
+## 5. REST API
 
 ### Create Workflow
 
-```typescript
-const engine = WorkflowEngine.getInstance()
-
-const nodes = [
-  {
-    id: 'start',
-    type: 'manual_trigger',
-    name: 'Start',
-    config: { inputSchema: {} }
-  }
-]
-
-const workflow = await engine.createWorkflow({
-  name: 'Manual Starter',
-  description: 'Minimal workflow with one trigger node',
-  version: '1.0.0',
-  status: 'draft',
-  triggerType: 'manual',
-  triggerConfig: {},
-  variables: {},
-  settings: {},
-  nodes,
-  edges: []
-}, currentUser.id) // createdBy user ID from authenticated session
 ```
+POST /api/workflows
+Content-Type: application/json
 
-### Execute Workflow
-
-```typescript
-const execution = await WorkflowEngine.getInstance().executeWorkflow(
-  'workflow-123',
-  { email: 'user@example.com', name: 'John' },
-  'user-123'
-)
-
-console.log(execution.status) // 'completed', 'failed', etc
-console.log(execution.nodeResults) // Results from each node
-```
-
-### Query Executions
-
-```typescript
-const engine = WorkflowEngine.getInstance()
-const workflowId = workflow.id
-
-// Get recent executions for a workflow
-const executions = await engine.getWorkflowExecutions(workflowId)
-
-// Get execution details
-const exec = await engine.getExecution(executionId)
-
-console.log(exec?.nodeResults) // Results from each node
-console.log(exec?.status) // 'running' | 'completed' | 'failed'
-```
-
-### List Analytics
-
-```typescript
-const engine = WorkflowEngine.getInstance()
-const executions = await engine.getWorkflowExecutions(workflowId)
-
-const total = executions.length
-const successful = executions.filter((e) => e.status === 'completed').length
-const successRate = total ? successful / total : 0
-const averageExecutionTime = total
-  ? executions.reduce((sum, e) => sum + (e.executionTime ?? 0), 0) / total
-  : 0
-
-console.log({ total, successRate, averageExecutionTime })
-```
-
----
-
-## 5. Error Handling
-
-### Node Execution Errors
-
-If a node fails:
-
-1. **Execution stops** (unless there's a fallback edge)
-2. **Error is logged** with node ID and error details
-3. **Execution status** set to `'failed'`
-4. **User is notified** (if email notification is configured)
-
-Example error:
-```json
 {
-  "executionId": "exec-123",
-  "status": "failed",
-  "error": "Node send-email failed: Invalid email address 'notanemail'",
-  "failedNodeId": "send-email",
-  "nodeResults": [
-    { "nodeId": "trigger", "status": "completed", "output": {...} },
-    { "nodeId": "send-email", "status": "failed", "error": "..." }
+  "name": "Weekly Report",
+  "description": "Generate and send competitor report weekly",
+  "triggerType": "scheduled",
+  "triggerConfig": {
+    "schedule": "0 9 * * 1"
+  },
+  "nodes": [
+    { type: "scheduled_trigger", ... },
+    { type: "ai_task", ... },
+    { type: "send_email", ... }
+  ],
+  "edges": [
+    { source: "node-1", target: "node-2" }
+  ]
+}
+
+Response:
+{
+  "id": "wf-123",
+  "name": "Weekly Report",
+  "status": "draft",
+  "createdAt": "2026-06-10T13:00:00Z"
+}
+```
+
+### Get Workflow
+
+```
+GET /api/workflows/{id}
+
+Response:
+{
+  "id": "wf-123",
+  "name": "Weekly Report",
+  "status": "active",
+  "nodes": [...],
+  "edges": [...],
+  "createdAt": "2026-06-10T13:00:00Z"
+}
+```
+
+### List Workflows
+
+```
+GET /api/workflows?status=active&limit=10&offset=0
+
+Response:
+{
+  "workflows": [
+    { "id": "wf-123", "name": "...", "status": "active" },
+    { "id": "wf-124", "name": "...", "status": "draft" }
+  ],
+  "total": 25,
+  "limit": 10
+}
+```
+
+### Update Workflow
+
+```
+PUT /api/workflows/{id}
+
+{
+  "name": "Updated name",
+  "nodes": [...],
+  "edges": [...]
+}
+
+Response: Updated workflow
+```
+
+### Delete Workflow
+
+```
+DELETE /api/workflows/{id}
+
+Response: 204 No Content
+```
+
+### Trigger Workflow (Manual)
+
+```
+POST /api/workflows/{id}/execute
+
+{
+  "input": {
+    "recipient": "user@example.com"
+  }
+}
+
+Response (202):
+{
+  "execution": {
+    "id": "exec-456",
+    "workflowId": "wf-123",
+    "status": "running",
+    "startedAt": "2026-06-10T13:05:00Z"
+  }
+}
+```
+
+### Webhook Trigger
+
+```
+POST /api/workflows/{id}/execute
+
+{
+  "input": { ... }
+}
+
+Response (202): execution started
+```
+
+### Get Execution
+
+```
+GET /api/workflows/{id}/executions/{executionId}
+
+Response:
+{
+  "id": "exec-456",
+  "status": "completed",
+  "startedAt": "2026-06-10T13:05:00Z",
+  "completedAt": "2026-06-10T13:08:30Z",
+  "duration": 210000,
+  "steps": [
+    {
+      "id": "step-1",
+      "name": "Generate Report",
+      "status": "completed",
+      "output": "Report content..."
+    }
+  ],
+  "logs": [
+    { "level": "info", "message": "Step completed", "timestamp": "..." }
   ]
 }
 ```
 
-### Retry Mechanism
+### List Executions
 
-Currently, **no automatic retries** are built-in. To retry:
+```
+GET /api/workflows/{id}/executions?limit=20&status=completed
 
-1. Check execution status via API
-2. If failed, user clicks "Retry" in UI
-3. System re-executes from the failed node (with fresh output from dependencies)
+Response:
+{
+  "executions": [
+    { "id": "exec-456", "status": "completed", "duration": 210000 },
+    { "id": "exec-455", "status": "completed", "duration": 195000 }
+  ],
+  "total": 156
+}
+```
 
-### Debugging
+---
 
-Enable verbose logging:
+## 6. Implementation Guide
+
+### Using the Workflow Engine
+
 ```typescript
-// src/lib/logger.ts
-logInfo('Executing node...', {
-  workflowId,
-  nodeId,
-  nodeType,
-  config
+import { workflowEngine } from '@/lib/workflow-engine'
+
+// Execute workflow by ID
+const execution = await workflowEngine.executeWorkflow(
+  'wf-123',
+  { recipient: 'user@example.com' },
+  'user-123'
+)
+
+console.log(execution.status)    // 'completed' or 'failed'
+console.log(execution.logs)      // Array of execution logs
+console.log(execution.nodeResults) // Final node outputs
+```
+
+### Creating a Custom Node Type
+
+```typescript
+import { workflowEngine, type NodeType } from '@/lib/workflow-engine'
+
+const customApiNodeType: NodeType = {
+  id: 'custom_api_call',
+  name: 'Custom API Call',
+  description: 'Call a custom API endpoint',
+  category: 'action',
+  icon: 'Globe',
+  color: '#6366F1',
+  inputs: [{ id: 'input', name: 'Input', type: 'object', required: false }],
+  outputs: [{ id: 'output', name: 'Output', type: 'object', required: true }],
+  configSchema: z.object({
+    url: z.string().url(),
+    method: z.enum(['GET', 'POST']).default('GET')
+  }),
+  execute: async (config) => {
+    const typed = config as { url: string; method: 'GET' | 'POST' }
+    const response = await fetch(typed.url, {
+      method: typed.method,
+      headers: { 'Content-Type': 'application/json' }
+    })
+    return {
+      status: response.status,
+      data: await response.json()
+    }
+  },
+}
+
+workflowEngine.registerNodeType(customApiNodeType)
+```
+
+### Handling Execution Events
+
+```typescript
+// Subscribe to execution events
+workflowEngine.on('workflow_created', (event) => {
+  console.log('Workflow created:', event)
+})
+
+workflowEngine.on('workflow_completed', (event) => {
+  console.log('Workflow completed:', event)
+})
+
+workflowEngine.on('workflow_failed', (event) => {
+  console.error('Workflow failed:', event)
 })
 ```
 
-Check logs for:
-```
-logError('Node execution failed...', { nodeId, error })
-```
-
 ---
 
-## 6. Limitations & Constraints
+## 7. Visual Builder Integration
 
-### Current Limitations
+### Using the Visual Workflow Builder
 
-1. **No parallel execution** — Nodes execute sequentially
-2. **No loop constructs** — Can't repeat nodes N times
-3. **Limited data transformation** — Only basic `transform_data` node
-4. **No sub-workflows** — Can't call another workflow from within a workflow
-5. **Timeout defaults**: `WorkflowSchema.settings.timeout` in `src/lib/workflow-engine.ts` defaults to 300000ms (5 minutes), while deployment platforms may impose lower hard limits
+The visual builder is a React component that enables drag-and-drop workflow creation:
 
-### Scalability
+```tsx
+import { VisualWorkflowBuilder } from '@/components/workflow/visual-workflow-builder'
 
-- **Delay nodes** currently use in-process `setTimeout` inside execution (blocking the invocation for the delay duration)
-  - Recommended workaround: offload long waits to an external queue/scheduler and resume workflow execution from a follow-up trigger
-- **Scheduled triggers** use cron scheduling (managed externally)
-- **Database**: Store execution history with TTL (auto-purge old executions)
+export function WorkflowEditor() {
+  const [workflow, setWorkflow] = useState(null)
+  const [executing, setExecuting] = useState(false)
 
----
+  const handleSave = async (newWorkflow) => {
+    const response = await fetch('/api/workflows', {
+      method: 'POST',
+      body: JSON.stringify(newWorkflow)
+    })
+    const saved = await response.json()
+    setWorkflow(saved)
+  }
 
-## 7. Adding New Node Types
+  const handleExecute = async () => {
+    setExecuting(true)
+    const response = await fetch(`/api/workflows/${workflow.id}/execute`, {
+      method: 'POST',
+      body: JSON.stringify({ input: {} })
+    })
+    const data = await response.json()
+    const execution = data.execution
+    setExecuting(false)
+    // Show execution status
+  }
 
-To add a new node type (e.g., `sms_send`):
-
-1. **Update schema**:
-   ```typescript
-   // src/lib/workflow-engine.ts
-   // Add 'sms_send' to WorkflowNodeSchema.type enum values
-   ```
-
-2. **Implement executor**:
-   ```typescript
-   // src/lib/workflow-engine.ts
-   this.registerNodeType({
-     id: 'sms_send',
-     name: 'Send SMS',
-     category: 'communication',
-     inputs: [{ id: 'input', name: 'Data', type: 'object', required: true }],
-     outputs: [{ id: 'output', name: 'Result', type: 'object', required: true }],
-     configSchema: z.object({
-       phoneNumber: z.string(),
-       message: z.string(),
-     }),
-     execute: async (config) => {
-       const smsConfig = config as { phoneNumber: string; message: string }
-       const result = await sendSms(smsConfig.phoneNumber, smsConfig.message)
-       return { sent: result.success, messageId: result.id, error: result.error }
-     }
-   })
-   ```
-
-3. **Update UI** to allow configuring the new node type.
-
----
-
-## 8. Database Schema
-
-### workflows table
-```sql
-CREATE TABLE workflows (
-  id UUID PRIMARY KEY,
-  userId UUID NOT NULL,
-  name VARCHAR(255),
-  description TEXT,
-  nodes JSONB NOT NULL,
-  edges JSONB NOT NULL,
-  isActive BOOLEAN DEFAULT true,
-  createdAt TIMESTAMP,
-  updatedAt TIMESTAMP
-)
+  return (
+    <VisualWorkflowBuilder
+      workflow={workflow}
+      onSave={handleSave}
+      onExecute={handleExecute}
+      readonly={false}
+    />
+  )
+}
 ```
 
-### workflowExecutions table
-```sql
-CREATE TABLE workflowExecutions (
-  id UUID PRIMARY KEY,
-  workflowId UUID NOT NULL,
-  status VARCHAR(50), -- 'pending', 'running', 'completed', 'failed'
-  input JSONB,
-  nodeResults JSONB NOT NULL,
-  error TEXT,
-  startedAt TIMESTAMP,
-  completedAt TIMESTAMP
-)
+### Components
+
+| Component | Purpose |
+|-----------|---------|
+| `visual-workflow-builder.tsx` | Main drag-and-drop editor |
+| `workflow-dashboard.tsx` | Overview and execution history |
+| `workflow-templates.tsx` | Pre-built templates |
+| `workflow-execution-monitor.tsx` | Real-time execution view |
+
+---
+
+## 8. Troubleshooting
+
+### Issue: Workflow Stuck in "Running" Status
+
+**Diagnosis**:
+```typescript
+// Check execution logs
+const execution = await db.query.workflowExecutions.findFirst({
+  where: (we) => we.id === 'exec-456'
+})
+console.log(execution.logs)  // Look for hung step
+
+// Check database for active executions
+const hanging = await db.query.workflowExecutions.findMany({
+  where: (we) => we.status === 'running'
+})
+```
+
+**Fix**:
+```typescript
+// Manually mark as failed
+await db.update(workflowExecutions)
+  .set({
+    status: 'failed',
+    error_message: 'Timeout after 5 minutes',
+    completed_at: new Date()
+  })
+  .where(eq(workflowExecutions.id, 'exec-456'))
+```
+
+### Issue: Scheduled Trigger Not Running
+
+**Diagnosis**:
+```bash
+# Check if workflow is active
+SELECT * FROM workflows WHERE id = 'wf-123' AND status = 'active'
+
+# Check scheduled jobs (backend log)
+vercel logs --follow | grep -i "scheduled trigger"
+
+# Check cron expression
+# Use: https://crontab.guru to validate
+```
+
+**Fix**:
+```typescript
+// Activate workflow
+await db.update(workflows)
+  .set({ status: 'active' })
+  .where(eq(workflows.id, 'wf-123'))
+
+// Validate cron and update if needed
+// "0 9 * * 1" = Every Monday at 9 AM UTC
+```
+
+### Issue: AI Task Node Returns Null Output
+
+**Diagnosis**:
+```typescript
+const execution = await db.query.workflowExecutions.findFirst({
+  where: (we) => we.id === 'exec-456'
+})
+const aiStep = execution.steps.find(s => s.name === 'Generate Report')
+console.log(aiStep.error)  // Check error message
+console.log(aiStep.input)  // Verify prompt was formatted correctly
+```
+
+**Causes**:
+- ❌ AI model not configured (missing API key)
+- ❌ Prompt has unresolved variables
+- ❌ AI model rate limited
+- ❌ Network timeout
+
+**Fixes**:
+```typescript
+// 1. Check AI credentials
+process.env.OPENAI_API_KEY  // Must be set
+
+// 2. Verify variable interpolation
+// In node config, ensure variables exist:
+{
+  config: {
+    prompt: "Analyze {variable_name}"  // {variable_name} must be defined
+  }
+}
+
+// 3. Increase timeout for slow models
+{
+  settings: {
+    timeout: 600000  // 10 minutes instead of 5
+  }
+}
+
+// 4. Check rate limits
+console.log(execution.logs)  // Look for 429 errors
+```
+
+### Issue: Condition Node Evaluation Error
+
+```
+Error: expression evaluation failed
+```
+
+**Diagnosis**:
+```typescript
+// Check condition expression
+const node = workflow.nodes.find(n => n.type === 'condition')
+console.log(node.config.expression)  // e.g., "variables.count > 10"
+```
+
+**Common Issues**:
+- ❌ Syntax error: `variables.count >` (missing right side)
+- ❌ Undefined variable: `{undefined_var} > 10`
+- ❌ Wrong type: `"string" > 10` (comparing string to number)
+
+**Fix**:
+```typescript
+// Valid expressions
+"variables.count > 10"
+"variables.name.includes('test')"
+"outputs.generated_text.length > 100"
+"variables.items.some(x => x.status === 'active')"
 ```
 
 ---
 
-## 9. Troubleshooting
+## 9. Best Practices
 
-### Workflow Not Triggering on Schedule
+### 1. Use Variables for Configuration
 
-1. **Check cron expression**: Use [crontab.guru](https://crontab.guru) to validate
-2. **Check timezone**: Ensure user's timezone is set correctly
-3. **Check isActive**: Verify `workflows.isActive = true`
-4. **Check logs**: Look for `ScheduledTrigger: No workflows to execute`
+```typescript
+// ❌ Hardcoded values
+{
+  type: "send_email",
+  config: {
+    to: "alice@example.com",
+    subject: "Report for Alice"
+  }
+}
 
-### Condition Evaluation Failing
+// ✅ Use variables for reusability
+// In workflow.variables: { user_email: "alice@example.com", user_name: "Alice" }
+{
+  type: "send_email",
+  config: {
+    to: "{user_email}",
+    subject: "Report for {user_name}"
+  }
+}
+```
 
-**Problem**: Condition node evaluates unexpectedly.
+### 2. Limit Timeout Based on Longest Step
 
-**Solution**:
-1. Verify expected values exist in workflow input variables
-2. Verify condition expression matches available keys (for example `tier === "premium"`)
-3. Check prior node outputs in execution logs under `results`
+```typescript
+// ✅ If slowest step is 2 min AI task, set timeout to 3-5 min
+{
+  settings: {
+    timeout: 300000  // 5 minutes
+  }
+}
 
-### Node Timeout
+// ❌ Too short timeout causes failures
+{
+  settings: {
+    timeout: 10000   // 10 seconds — AI will fail!
+  }
+}
+```
 
-**Problem**: Workflow execution times out.
+### 3. Use Conditions to Guard Expensive Operations
 
-**Solution**:
-1. Break into multiple workflows with delays
-2. Move heavy computation to background job
-3. Increase timeout (requires runtime config change)
+```typescript
+// ✅ Check condition before expensive AI task
+edges: [
+  { source: "check_data", target: "process_if_has_data", condition: "passed" },
+  { source: "process_if_has_data", target: "ai_task" }
+]
+
+// ❌ Always run AI task (wasteful)
+edges: [
+  { source: "trigger", target: "ai_task" }
+]
+```
+
+### 4. Log Important State Changes
+
+```typescript
+// ✅ Add transform node to log key data
+{
+  type: "transform_data",
+  name: "Log Results",
+  config: {
+    expression: "(console.log('Rows processed:', inputs.count), inputs)"
+  }
+}
+
+// Then check logs in execution UI
+```
+
+### 5. Test with Manual Trigger First
+
+```typescript
+// Workflow creation flow:
+// 1. Build workflow (visual builder)
+// 2. Save as draft
+// 3. Trigger manually to test
+// 4. Check execution logs
+// 5. Refine based on errors
+// 6. Activate scheduled trigger
+```
+
+### 6. Use Error Handling Appropriately
+
+```typescript
+// ✅ "stop" for critical flows (payment, auth)
+{
+  settings: {
+    errorHandling: "stop"  // Stop on first error
+  }
+}
+
+// ✅ "continue" for analytics/reporting (error in one competitor shouldn't skip others)
+{
+  settings: {
+    errorHandling: "continue"  // Log errors but keep going
+  }
+}
+
+// ⚠️ "rollback" only when you have transaction support
+{
+  settings: {
+    errorHandling: "rollback"  // Undo changes on failure
+  }
+}
+```
 
 ---
 
-## 10. Code References
+## 10. Performance & Scaling
 
-- **Core engine**: `src/lib/workflow-engine.ts`
-- **Node execution**: `src/lib/workflow-engine.ts` lines 200-500
-- **Database schema**: `src/lib/shared/db/schema/workflow.ts`
-- **Schema exports used by app code**: `src/lib/shared/db/schema/index.ts`
-- **Cron scheduling**: External (via cron library or cloud scheduler)
+| Scenario | Recommendation |
+|----------|-----------------|
+| Simple workflows (3-5 nodes) | No optimization needed |
+| Complex workflows (10+ nodes) | Use `parallelExecution: true` |
+| Frequent executions (100s/day) | Queue executions async |
+| Long-running (5+ min) | Increase timeout, use job queue |
+| Timeout issues | Move slow tasks to separate workflow |
+
+### Query Optimization
+
+```typescript
+// ✅ Fetch minimal data needed
+const workflow = await db.query.workflows.findFirst({
+  where: (w) => w.id === 'wf-123',
+  columns: { id: true, name: true, nodes: true, edges: true }
+})
+
+// ❌ Fetch entire workflow with all metadata
+const workflow = await db.query.workflows.findFirst({
+  where: (w) => w.id === 'wf-123'
+})
+```
 
 ---
 
 ## 11. Related Documentation
 
+- [Workflow Templates API](../src/app/api/workflow-templates) — Pre-built templates
+- [Workflow Dashboard](../src/app/dashboard/workflow) — UI for managing workflows
+- [Temporal Integration](../src/lib/temporal-workflow-store.ts) — Long-running workflow support
+- [AI Task Integration](../AGENT_PERSONALITY_SYSTEM.md) — AI task nodes and agents
 - [EMAIL_AND_NOTIFICATIONS.md](EMAIL_AND_NOTIFICATIONS.md) — Email sending in workflows
 - [AGENT_PERSONALITY_SYSTEM.md](AGENT_PERSONALITY_SYSTEM.md) — AI task nodes
 - [ARCHITECTURE.md](ARCHITECTURE.md) — System overview
