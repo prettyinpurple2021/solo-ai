@@ -456,14 +456,18 @@ status.jobs.forEach(job => {
 ### 9.2 View Results
 
 ```typescript
-const results = await db.query.scrapingJobResults.findMany({
-  where: and(
-    eq(scrapingJobResults.competitorId, competitorId),
-    gte(scrapingJobResults.timestamp, new Date(Date.now() - 24 * 3600000))
-  ),
-  orderBy: desc(scrapingJobResults.timestamp),
-  limit: 10
-})
+const results = await db
+  .select()
+  .from(scrapingJobResults)
+  .innerJoin(scrapingJobs, eq(scrapingJobResults.job_id, scrapingJobs.id))
+  .where(
+    and(
+      eq(scrapingJobs.competitor_id, competitorId),
+      gte(scrapingJobResults.completed_at, new Date(Date.now() - 24 * 3600000))
+    )
+  )
+  .orderBy(desc(scrapingJobResults.completed_at))
+  .limit(10)
 
 results.forEach(r => {
   console.log(`${r.data.platform}: ${r.data.metrics.followers} followers`)
