@@ -338,14 +338,13 @@ const topFeatures = await db
 // Track revenue over time
 const revenueTimeSeries = await db
   .select({
-    date: sql<string>`DATE(timestamp)`,
-    revenue: sum(analyticsEvents.properties.amount)
+    date: sql<string>("DATE(", analyticsEvents.timestamp, ")"),
+    revenue: sql<number>("sum((", analyticsEvents.properties, "->>'amount')::numeric)")
   })
   .from(analyticsEvents)
   .where(eq(analyticsEvents.event, 'payment'))
-  .groupBy(sql<string>`DATE(timestamp)`)
-  .orderBy(sql<string>`DATE(timestamp)`)
-```
+  .groupBy(sql("DATE(", analyticsEvents.timestamp, ")"))
+  .orderBy(sql("DATE(", analyticsEvents.timestamp, ")"))
 
 ## 8. Best Practices
 
