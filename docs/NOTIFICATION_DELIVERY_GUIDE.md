@@ -112,6 +112,8 @@ await db.insert(notificationPreferences).values({
 })
 ```
 
+`notificationPreferences.inApp` is the Drizzle field for the `push_in_app` column.
+
 #### Load User Preferences
 
 ```typescript

@@ -127,6 +127,9 @@ await db.insert(analyticsEvents).values({
 })
 ```
 
+Use `userId` when calling the `analytics` service and `user_id` when inserting rows directly
+through the Drizzle schema.
+
 ## 4. Tracking Implementation
 
 ### 4.1 Client-Side Tracking (React)

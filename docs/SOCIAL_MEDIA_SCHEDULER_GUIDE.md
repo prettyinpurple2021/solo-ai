@@ -383,7 +383,7 @@ const engagement = sql<number>`coalesce((${scrapingJobResults.data}->>'engagemen
 // Find all posts from a competitor mentioning "AI"
 const aiPosts = await db
   .select({
-    completedAt: scrapingJobResults.completed_at,
+    completed_at: scrapingJobResults.completed_at,
     content: content.as('content'),
     engagement: engagement.as('engagement')
   })
