@@ -4,6 +4,11 @@ import { getSql } from '@/lib/api-utils'
 import dns from 'node:dns/promises'
 export const dynamic = 'force-dynamic'
 
+const ALLOWED_SCAN_HOSTS = new Set<string>([
+  'example.com',
+  'www.example.com',
+])
+
 function isPrivateIPv4(ip: string): boolean {
   const parts = ip.split('.').map(Number)
   if (parts.length !== 4 || parts.some((n) => Number.isNaN(n) || n < 0 || n > 255)) return true
@@ -57,6 +62,10 @@ async function validateAndNormalizeScanUrl(input: string): Promise<string> {
     throw new Error('Local addresses are not allowed')
   }
 
+  if (!ALLOWED_SCAN_HOSTS.has(hostname)) {
+    throw new Error('Hostname is not allowed')
+  }
+
   if (isIpLiteral(hostname)) {
     if (hostname.includes(':')) {
       if (isPrivateIPv6(hostname)) throw new Error('Private network addresses are not allowed')
@@ -85,7 +94,7 @@ async function fetchHtml(url: string): Promise<string> {
     redirect: 'manual',
   })
 
-  if (res.status >= 300 && res.status < 400) {
+  if (res.type === 'opaqueredirect' || (res.status >= 300 && res.status < 400)) {
     throw new Error('Redirects are not allowed')
   }
 
