@@ -51,6 +51,13 @@
 
 - **[Billing System Guide](./BILLING_SYSTEM.md)** - Subscription tiers, payment processing, usage tracking, and Stripe integration
 
+### 📊 **System Operations & Infrastructure**
+
+- **[Rate Limiting Guide](./RATE_LIMITING_GUIDE.md)** - Request rate limiting, abuse protection, and configuration
+- **[Analytics System Guide](./ANALYTICS_GUIDE.md)** - Event tracking, user metrics, business KPIs, and dashboards
+- **[Notification Delivery Guide](./NOTIFICATION_DELIVERY_GUIDE.md)** - Multi-channel notifications, quiet hours, user preferences
+- **[Social Media Scheduler Guide](./SOCIAL_MEDIA_SCHEDULER_GUIDE.md)** - Competitor monitoring, job scheduling, and social analysis
+
 ### 📊 **Project Management**
 
 - **[Current Todo List](./project-management/todo-list.md)** - Active development tasks and priorities
