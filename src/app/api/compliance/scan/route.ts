@@ -43,6 +43,15 @@ async function validateAndNormalizeScanUrl(input: string): Promise<string> {
     throw new Error('URLs with credentials are not allowed')
   }
 
+  if (parsed.port) {
+    const port = Number(parsed.port)
+    const isAllowedHttpPort = parsed.protocol === 'http:' && port === 80
+    const isAllowedHttpsPort = parsed.protocol === 'https:' && port === 443
+    if (!isAllowedHttpPort && !isAllowedHttpsPort) {
+      throw new Error('Only default ports are allowed')
+    }
+  }
+
   const hostname = parsed.hostname.toLowerCase()
   if (hostname === 'localhost' || hostname.endsWith('.localhost')) {
     throw new Error('Local addresses are not allowed')
@@ -71,7 +80,15 @@ async function validateAndNormalizeScanUrl(input: string): Promise<string> {
 }
 
 async function fetchHtml(url: string): Promise<string> {
-  const res = await fetch(url, { headers: { 'User-Agent': 'SoloSuccess-GuardianAI/1.0' } })
+  const res = await fetch(url, {
+    headers: { 'User-Agent': 'SoloSuccess-GuardianAI/1.0' },
+    redirect: 'manual',
+  })
+
+  if (res.status >= 300 && res.status < 400) {
+    throw new Error('Redirects are not allowed')
+  }
+
   if (!res.ok) throw new Error(`Fetch failed: ${res.status}`)
   return await res.text()
 }
