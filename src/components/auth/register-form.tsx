@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import posthog from 'posthog-js';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import { socialLogin } from '@/lib/auth-actions';
@@ -71,6 +72,9 @@ export function RegisterForm() {
       });
 
       if (logIn?.ok && !logIn.error) {
+        posthog.capture('user_registered', {
+          subscription_tier: 'launch',
+        });
         setIsPending(false);
         router.push('/dashboard');
         router.refresh();

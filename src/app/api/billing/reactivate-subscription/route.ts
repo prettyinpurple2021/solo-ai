@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { reactivateSubscription } from '@/lib/billing/subscription-lifecycle'
 import { logError } from '@/lib/logger'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -16,6 +17,17 @@ export async function POST() {
     const result = await reactivateSubscription(session.user.id)
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: result.status })
+    }
+
+    try {
+      const posthog = getPostHogClient()
+      posthog.capture({
+        distinctId: session.user.id,
+        event: 'subscription_reactivated',
+      })
+      await posthog.flush()
+    } catch (analyticsErr) {
+      logError('PostHog reactivation tracking failed', analyticsErr)
     }
 
     return NextResponse.json({

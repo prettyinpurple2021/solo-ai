@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { cancelSubscriptionAtPeriodEnd } from '@/lib/billing/subscription-lifecycle'
 import { logError } from '@/lib/logger'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -16,6 +17,20 @@ export async function POST() {
     const result = await cancelSubscriptionAtPeriodEnd(session.user.id)
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: result.status })
+    }
+
+    try {
+      const posthog = getPostHogClient()
+      posthog.capture({
+        distinctId: session.user.id,
+        event: 'subscription_cancelled',
+        properties: {
+          cancel_at_period_end: result.cancel_at_period_end,
+        },
+      })
+      await posthog.flush()
+    } catch (analyticsErr) {
+      logError('PostHog cancellation tracking failed', analyticsErr)
     }
 
     return NextResponse.json({

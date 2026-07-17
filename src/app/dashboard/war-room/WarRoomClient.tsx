@@ -2,6 +2,7 @@
 "use client"
 
 import React, { useState } from 'react';
+import posthog from 'posthog-js';
 import { Target, Users, ShieldAlert, Swords, Terminal, MessageSquare, Play, Trash2, History } from 'lucide-react';
 import { WarRoomSession } from '@/lib/services/war-room-service';
 import { simulateWarRoom, deleteWarRoomSession } from '@/lib/actions/war-room-actions';
@@ -46,6 +47,7 @@ export function WarRoomClient({ initialSessions, user }: WarRoomClientProps) {
                 const newSession = result.session as WarRoomSession;
                 setSessions([newSession, ...sessions]);
                 setActiveSession(newSession);
+                posthog.capture('war_room_session_started')
                 toast.success("Consensus reached. Tactical directives generated.");
             }
         } catch (error) {

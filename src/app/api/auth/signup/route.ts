@@ -1,5 +1,6 @@
 import { logError, logInfo } from '@/lib/logger'
 import { NextRequest, NextResponse } from 'next/server'
+import { getPostHogClient } from '@/lib/posthog-server'
 import bcrypt from 'bcryptjs'
 import * as jose from 'jose' 
 import { db } from '@/lib/database-client'
@@ -97,6 +98,28 @@ export async function POST(request: NextRequest) {
       .setProtectedHeader({ alg: 'HS256' })
       .setExpirationTime('7d')
       .sign(secret)
+
+    // Track signup event server-side
+    try {
+      const posthog = getPostHogClient()
+      posthog.capture({
+        distinctId: newUser.id,
+        event: 'user_signed_up',
+        properties: {
+          subscription_tier: newUser.subscription_tier,
+        },
+      })
+      posthog.identify({
+        distinctId: newUser.id,
+        properties: {
+          name: newUser.full_name || undefined,
+          email: newUser.email,
+        },
+      })
+      await posthog.flush()
+    } catch (analyticsErr) {
+      logError('PostHog signup tracking failed', analyticsErr)
+    }
 
     // Trigger onboarding workflow asynchronously
     try {
