@@ -24,6 +24,10 @@ export async function POST() {
       posthog.capture({
         distinctId: session.user.id,
         event: 'subscription_reactivated',
+        properties: {
+          cancel_at_period_end: result.cancel_at_period_end,
+          current_period_end: result.current_period_end,
+        },
       })
       await posthog.flush()
     } catch (analyticsErr) {

@@ -22,7 +22,7 @@ export default function PitchDeckDashboard() {
       setIsCreating(true)
       const title = `Untitled Deck ${new Date().toLocaleDateString()}`
       await createDeck(title)
-      posthog.capture('pitch_deck_created')
+      posthog.capture('pitch_deck_created', { deck_count: decks.length + 1 })
     } catch (error) {
        // Error handled in hook
     } finally {

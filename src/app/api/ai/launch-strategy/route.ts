@@ -2,11 +2,14 @@ import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import { logError } from '@/lib/logger';
+import { auth } from '@/lib/auth';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
     try {
+        const session = await auth();
         const { product, context } = await req.json();
 
         const schema = z.object({
@@ -35,6 +38,17 @@ export async function POST(req: Request) {
             prompt: `Create a launch strategy for: "${product}". Context: "${context}". Break it down into phases (Pre-launch, Launch Day, Post-launch).`,
             schema: schema as any,
         });
+
+        if (session?.user?.id) {
+            const posthog = getPostHogClient();
+            const result = object as { phases?: unknown[] };
+            posthog.capture({
+                distinctId: session.user.id,
+                event: 'ai_launch_strategy_generated',
+                properties: { phase_count: result.phases?.length },
+            });
+            await posthog.flush();
+        }
 
         return Response.json(object);
     } catch (error) {

@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
         properties: {
           tier,
           billing,
+          session_id: result.sessionId,
         },
       })
       await posthog.flush()
