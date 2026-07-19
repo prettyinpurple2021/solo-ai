@@ -1,5 +1,6 @@
 "use client"
 
+import posthog from "posthog-js"
 import { usePitchDecks } from "@/hooks/use-pitch-decks"
 import { NeuralNetworkCanvas } from "@/components/cyber/NeuralNetworkCanvas"
 import { UIOverlayLines } from "@/components/cyber/UIOverlayLines"
@@ -21,6 +22,7 @@ export default function PitchDeckDashboard() {
       setIsCreating(true)
       const title = `Untitled Deck ${new Date().toLocaleDateString()}`
       await createDeck(title)
+      posthog.capture('pitch_deck_created', { deck_count: decks.length + 1 })
     } catch (error) {
        // Error handled in hook
     } finally {
@@ -32,6 +34,7 @@ export default function PitchDeckDashboard() {
     e.preventDefault() // Prevent navigation if button is inside Link (though we structure it outside)
     if (confirm('Are you sure you want to delete this deck?')) {
         await deleteDeck(id)
+        posthog.capture('pitch_deck_deleted')
     }
   }
 

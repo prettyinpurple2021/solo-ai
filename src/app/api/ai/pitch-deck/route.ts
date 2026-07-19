@@ -2,11 +2,14 @@ import { openai } from '@ai-sdk/openai';
 import { generateObject } from 'ai';
 import { z } from 'zod';
 import { logError } from '@/lib/logger';
+import { auth } from '@/lib/auth';
+import { getPostHogClient } from '@/lib/posthog-server';
 
 export const maxDuration = 60;
 
 export async function POST(req: Request) {
     try {
+        const session = await auth();
         const { businessName, description } = await req.json();
 
         const schema = z.object({
@@ -27,6 +30,17 @@ export async function POST(req: Request) {
             prompt: `Create a pitch deck for "${businessName}". Description: "${description}". Follow the standard Sequoia format.`,
             schema: schema as any,
         });
+
+        if (session?.user?.id) {
+            const posthog = getPostHogClient();
+            const result = object as { slides?: unknown[] };
+            posthog.capture({
+                distinctId: session.user.id,
+                event: 'ai_pitch_deck_generated',
+                properties: { slide_count: result.slides?.length },
+            });
+            await posthog.flush();
+        }
 
         return Response.json(object);
     } catch (error) {

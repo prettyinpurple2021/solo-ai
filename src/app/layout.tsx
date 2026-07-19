@@ -19,6 +19,7 @@ import { OfflineProvider } from "@/components/providers/offline-provider"
 import PWAInstallPrompt from "@/components/mobile/pwa-install-prompt"
 import { GlobalNotificationCenter } from "@/components/notifications/GlobalNotificationCenter"
 import { AmplitudeAnalytics } from "@/components/analytics/AmplitudeAnalytics"
+import { PostHogIdentify } from "@/components/posthog/posthog-identify"
 
 // Font configuration - Cyberpunk Design System v3 fonts
 const orbitronFont = Orbitron({ 
@@ -151,6 +152,7 @@ export default function RootLayout({
   const appShell = (
     <ThemeProvider>
       <AuthProvider>
+        <PostHogIdentify />
         <RecaptchaProvider>
           <OfflineProvider>
             <AccessibilityProvider>

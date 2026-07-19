@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { createSubscriptionCheckoutForUser } from '@/lib/billing/checkout'
 import { logError, logInfo } from '@/lib/logger'
 import { z } from 'zod'
+import { getPostHogClient } from '@/lib/posthog-server'
 
 export const runtime = 'nodejs'
 export const dynamic = 'force-dynamic'
@@ -52,6 +53,18 @@ export async function POST(req: NextRequest) {
     if (!result.ok) {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
+
+    const posthog = getPostHogClient()
+    posthog.capture({
+      distinctId: session.user.id,
+      event: 'checkout_session_created',
+      properties: {
+        tier,
+        billing,
+        session_id: result.sessionId,
+      },
+    })
+    await posthog.flush()
 
     return NextResponse.json({
       url: result.url,
