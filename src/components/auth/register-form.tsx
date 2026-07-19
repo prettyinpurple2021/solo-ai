@@ -72,11 +72,6 @@ export function RegisterForm() {
       });
 
       if (logIn?.ok && !logIn.error) {
-        const email = formData.get('email') as string
-        const fullName = `${formData.get('firstName')} ${formData.get('lastName')}`.trim()
-        posthog.identify(email, {
-          name: fullName || undefined,
-        })
         posthog.capture('user_registered', {
           subscription_tier: 'launch',
         });
