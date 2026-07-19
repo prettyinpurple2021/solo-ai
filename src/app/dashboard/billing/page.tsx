@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic'
 
 import { useState, useEffect } from "react"
+import posthog from "posthog-js"
 import { useAuth } from "@/hooks/use-auth"
 import { logError, logInfo } from "@/lib/logger"
 import { useToast } from "@/hooks/use-toast"
@@ -108,6 +109,10 @@ export default function BillingPage() {
     // Free/Launch is not a Stripe checkout plan.
     // If user is paid, this requests cancellation at period end.
     if (tier === 'launch') {
+      posthog.capture('downgrade_plan_clicked', {
+        current_tier: subscription?.tier,
+        target_tier: 'launch',
+      })
       setDowngradeLoading(true)
       try {
         const response = await fetch('/api/billing/cancel-subscription', {
@@ -150,6 +155,10 @@ export default function BillingPage() {
       return
     }
 
+    posthog.capture('upgrade_plan_clicked', {
+      current_tier: subscription?.tier,
+      target_tier: tier,
+    })
     setCheckoutLoading(true)
     toast({
       title: "Upgrade Initiated",
