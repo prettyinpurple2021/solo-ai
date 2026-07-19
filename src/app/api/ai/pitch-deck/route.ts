@@ -32,14 +32,18 @@ export async function POST(req: Request) {
         });
 
         if (session?.user?.id) {
-            const posthog = getPostHogClient();
-            const result = object as { slides?: unknown[] };
-            posthog.capture({
-                distinctId: session.user.id,
-                event: 'ai_pitch_deck_generated',
-                properties: { slide_count: result.slides?.length },
-            });
-            await posthog.flush();
+            try {
+                const posthog = getPostHogClient();
+                const result = object as { slides?: unknown[] };
+                posthog.capture({
+                    distinctId: session.user.id,
+                    event: 'ai_pitch_deck_generated',
+                    properties: { slide_count: result.slides?.length },
+                });
+                await posthog.flush();
+            } catch (analyticsErr) {
+                logError('PostHog pitch deck tracking failed', analyticsErr);
+            }
         }
 
         return Response.json(object);
