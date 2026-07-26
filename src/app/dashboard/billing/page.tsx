@@ -109,8 +109,8 @@ export default function BillingPage() {
     // Free/Launch is not a Stripe checkout plan.
     // If user is paid, this requests cancellation at period end.
     if (tier === 'launch') {
-      posthog.capture('downgrade_plan_clicked', {
-        current_tier: subscription?.tier,
+      posthog.capture('subscription_downgrade_initiated', {
+        current_tier: subscription?.tier ?? 'unknown',
         target_tier: 'launch',
       })
       setDowngradeLoading(true)
@@ -155,9 +155,9 @@ export default function BillingPage() {
       return
     }
 
-    posthog.capture('upgrade_plan_clicked', {
-      current_tier: subscription?.tier,
+    posthog.capture('upgrade_initiated', {
       target_tier: tier,
+      current_tier: subscription?.tier ?? 'unknown',
     })
     setCheckoutLoading(true)
     toast({

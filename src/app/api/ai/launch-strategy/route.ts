@@ -40,14 +40,18 @@ export async function POST(req: Request) {
         });
 
         if (session?.user?.id) {
-            const posthog = getPostHogClient();
-            const result = object as { phases?: unknown[] };
-            posthog.capture({
-                distinctId: session.user.id,
-                event: 'ai_launch_strategy_generated',
-                properties: { phase_count: result.phases?.length },
-            });
-            await posthog.flush();
+            try {
+                const posthog = getPostHogClient();
+                const result = object as { phases?: unknown[] };
+                posthog.capture({
+                    distinctId: session.user.id,
+                    event: 'ai_launch_strategy_generated',
+                    properties: { phase_count: result.phases?.length },
+                });
+                await posthog.flush();
+            } catch (analyticsErr) {
+                logError('PostHog launch strategy tracking failed', analyticsErr);
+            }
         }
 
         return Response.json(object);
