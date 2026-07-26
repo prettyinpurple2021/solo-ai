@@ -99,25 +99,30 @@ export async function POST(request: NextRequest) {
       .setExpirationTime('7d')
       .sign(secret)
 
-    // Track new user signup
-    const posthog = getPostHogClient()
-    posthog.identify({
-      distinctId: newUser.id,
-      properties: {
-        name: newUser.full_name,
-        username: newUser.username,
-        subscription_tier: newUser.subscription_tier,
-        createdAt: newUser.created_at,
-      },
-    })
-    posthog.capture({
-      distinctId: newUser.id,
-      event: 'user_signed_up',
-      properties: {
-        subscription_tier: newUser.subscription_tier,
-      },
-    })
-    await posthog.flush()
+    // Track signup event server-side
+    try {
+      const posthog = getPostHogClient()
+      posthog.identify({
+        distinctId: newUser.id,
+        properties: {
+          name: newUser.full_name || undefined,
+          email: newUser.email,
+          username: newUser.username || undefined,
+          subscription_tier: newUser.subscription_tier,
+          createdAt: newUser.created_at,
+        },
+      })
+      posthog.capture({
+        distinctId: newUser.id,
+        event: 'user_signed_up',
+        properties: {
+          subscription_tier: newUser.subscription_tier,
+        },
+      })
+      await posthog.flush()
+    } catch (analyticsErr) {
+      logError('PostHog signup tracking failed', analyticsErr)
+    }
 
     // Trigger onboarding workflow asynchronously
     try {

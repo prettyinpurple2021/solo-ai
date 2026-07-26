@@ -19,16 +19,20 @@ export async function POST() {
       return NextResponse.json({ error: result.error }, { status: result.status })
     }
 
-    const posthog = getPostHogClient()
-    posthog.capture({
-      distinctId: session.user.id,
-      event: 'subscription_cancelled',
-      properties: {
-        cancel_at_period_end: result.cancel_at_period_end,
-        current_period_end: result.current_period_end,
-      },
-    })
-    await posthog.flush()
+    try {
+      const posthog = getPostHogClient()
+      posthog.capture({
+        distinctId: session.user.id,
+        event: 'subscription_cancelled',
+        properties: {
+          cancel_at_period_end: result.cancel_at_period_end,
+          current_period_end: result.current_period_end,
+        },
+      })
+      await posthog.flush()
+    } catch (analyticsErr) {
+      logError('PostHog cancellation tracking failed', analyticsErr)
+    }
 
     return NextResponse.json({
       success: true,

@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import posthog from 'posthog-js';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import posthog from 'posthog-js';
 import { socialLogin } from '@/lib/auth-actions';
 import { registerUser } from '@/lib/actions/register-action';
 import { PrimaryButton } from '@/components/ui/button';
@@ -72,11 +72,9 @@ export function RegisterForm() {
       });
 
       if (logIn?.ok && !logIn.error) {
-        const email = formData.get('email') as string
-        posthog.identify(email, {
-          name: `${formData.get('firstName')} ${formData.get('lastName')}`.trim(),
-        })
-        posthog.capture('user_registered')
+        posthog.capture('user_registered', {
+          subscription_tier: 'launch',
+        });
         setIsPending(false);
         router.push('/dashboard');
         router.refresh();
